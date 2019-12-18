@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2016 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service.util;
 
 import java.util.Arrays;
@@ -5,8 +13,8 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 
 /**
  * Holds a RelationshipType ({@link RelationshipTermBase}) of type {@code <T>}
@@ -19,7 +27,6 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
  *
  * @author a.kohlbecker
  * @since Dec 7, 2012
- *
  *
  * @param <T> a sub class of ({@link RelationshipTermBase})
  */
@@ -102,6 +109,4 @@ public class AbstractRelationshipEdge<T extends RelationshipTermBase> {
     public boolean isBidirectional() {
         return directions.equals(EnumSet.allOf(Direction.class));
     }
-
-
 }

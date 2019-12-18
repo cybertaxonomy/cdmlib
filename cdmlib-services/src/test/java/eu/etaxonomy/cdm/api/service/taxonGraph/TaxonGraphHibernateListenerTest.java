@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.kohlbecker
  * @since Oct 1, 2018
- *
  */
 public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegrationTestWithSecurity {
 

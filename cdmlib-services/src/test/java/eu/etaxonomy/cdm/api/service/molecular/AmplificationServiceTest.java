@@ -19,28 +19,20 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author pplitzner
  * @since 31.03.2014
- *
  */
-public class AmplificationServiceTest  extends CdmTransactionalIntegrationTest {
+public class AmplificationServiceTest extends CdmTransactionalIntegrationTest {
+
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AmplificationServiceTest.class);
 
     @SpringBeanByType
     private IAmplificationService amplificationService;
 
-
     @Test
     public void testNothingTest(){
     	//dummy as min 1 Test is required
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

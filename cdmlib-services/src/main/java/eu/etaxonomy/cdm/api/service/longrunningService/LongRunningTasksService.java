@@ -46,19 +46,19 @@ import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 public class LongRunningTasksService implements ILongRunningTasksService{
 
     @Autowired
-    ITaxonNodeService taxonNodeService;
+    private ITaxonNodeService taxonNodeService;
 
     @Autowired
-    IDescriptiveDataSetService descriptiveDataSetService;
+    private IDescriptiveDataSetService descriptiveDataSetService;
 
     @Autowired
-    IProgressMonitorService progressMonitorService;
+    private IProgressMonitorService progressMonitorService;
 
     @Autowired
-    CacheUpdater updater;
+    private CacheUpdater updater;
 
     @Autowired
-    SortIndexUpdaterWrapper sortIndexUpdater;
+    private SortIndexUpdaterWrapper sortIndexUpdater;
 
     @Autowired
     @Qualifier("cdmRepository")
@@ -119,7 +119,6 @@ public class LongRunningTasksService implements ILongRunningTasksService{
                 }
                 monitor.setResult(updateResult);
                 return updateResult;
-
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
@@ -154,10 +153,9 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult result;
                 config.setMonitor(monitor);
 
-                result = updateData(config);
+                UpdateResult result = updateData(config);
                 for(Exception e : result.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }
@@ -230,10 +228,9 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult result;
-                configurator.setMonitor(monitor);
 
-                result = sortIndexUpdater.doInvoke(configurator);
+                configurator.setMonitor(monitor);
+                UpdateResult result = sortIndexUpdater.doInvoke(configurator);
 
                 for(Exception e : result.getExceptions()) {
                     monitor.addReport(e.getMessage());
@@ -247,5 +244,4 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
-
 }

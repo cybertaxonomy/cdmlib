@@ -199,7 +199,7 @@ public interface IService<T extends ICdmBase>{
 
     /**
      * Returns a list of entities of type <T> optionally restricted
-     * to objects belonging to a class that that extends <T>
+     * to objects belonging to a class that extends <T>
      *
      * @param type  The type of entities to return (can be null to count all entities of type <T>)
      * @param limit The maximum number of objects returned (can be null for all matching objects)

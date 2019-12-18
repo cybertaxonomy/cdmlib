@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2016 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service.util;
 
 import java.io.Serializable;
@@ -49,33 +57,24 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class CacheUpdater implements Serializable {
 
     private static final long serialVersionUID = -1410600568024821771L;
-
     private static final Logger logger = Logger.getLogger(CacheUpdater.class);
 
     @Autowired
     protected INameService nameService;
-
     @Autowired
     protected ITaxonService taxonService;
-
     @Autowired
     protected  IClassificationService classificationService;
-
     @Autowired
     protected IReferenceService referenceService;
-
     @Autowired
     protected IAgentService agentService;
-
-
     @Autowired
     protected IOccurrenceService occurrenceService;
-
     @Autowired
     protected ITermService termService;
     @Autowired
     protected IDescriptionService descriptionService;
-
     @Autowired
     protected ICollectionService collectionService;
     @Autowired
@@ -83,7 +82,6 @@ public class CacheUpdater implements Serializable {
 
     @Autowired
     protected IVocabularyService vocabularyService;
-
     @Autowired
     protected IPolytomousKeyService polytomousKeyService;
     @Autowired
