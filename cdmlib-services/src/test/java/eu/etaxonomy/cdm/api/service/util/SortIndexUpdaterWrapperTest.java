@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -64,23 +65,38 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
             config.setMonitor(DefaultProgressMonitor.NewInstance());
             UpdateResult result = sortIndexUpdater.doInvoke(config);
 
+            Assert.assertEquals("No exception should be thrown during sortindex update", 0, result.getExceptions().size());
+
             @SuppressWarnings("unchecked")
             TermTree<Feature> termTree = termTreeService.find(uuidTermTree);
             Assert.assertNotNull(termTree);
-            List<TermNode<Feature>> children = termTree.getRootChildren();
-            for (int i = 0 ; i < children.size(); i++){
-                try {
-                    Integer sortIndex = (Integer)sortIndexField.get(children.get(i));
-                    Assert.assertEquals((Integer)i, sortIndex);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    Assert.fail("sortIndex field not accessible");
-                }
-            }
-            Assert.assertEquals(0, result.getExceptions().size());
+            TermNode<Feature> rootNode = termTree.getRoot();
+            testTreeRecursive(sortIndexField, rootNode);
 
         } catch (NoSuchFieldException | SecurityException e1) {
             Assert.fail("sortIndex field not found");
         }
+    }
+
+    private <T extends ITreeNode<T>> void testTreeRecursive(Field sortIndexField, ITreeNode<T> rootNode) {
+        @SuppressWarnings("deprecation")
+        List<T> children = rootNode.getChildNodes();
+        for (int i = 0 ; i < children.size(); i++){
+            try {
+                T child = children.get(i);
+                Integer sortIndex = (Integer)sortIndexField.get(child);
+                Assert.assertEquals((Integer)i, sortIndex);
+                testTreeRecursive(sortIndexField, child);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                Assert.fail("sortIndex field not accessible");
+            }
+        }
+    }
+
+    @Test
+//    @DataSet
+    public void testPolytomousKeyNode() {
+        //TODO
     }
 
     @Test
