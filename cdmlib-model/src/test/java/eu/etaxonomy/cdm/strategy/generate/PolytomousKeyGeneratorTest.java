@@ -627,10 +627,10 @@ public class PolytomousKeyGeneratorTest {
     }
 
     private void removeTaxon5_8(TaxonNode genus1Node) {
-        genus1Node.removeChild(7);
-        genus1Node.removeChild(6);
-        genus1Node.removeChild(5);
-        genus1Node.removeChild(4);
+        genus1Node.deleteChildNode(genus1Node.getChildNodes().get(7));
+        genus1Node.deleteChildNode(genus1Node.getChildNodes().get(6));
+        genus1Node.deleteChildNode(genus1Node.getChildNodes().get(5));
+        genus1Node.deleteChildNode(genus1Node.getChildNodes().get(4));
     }
 
     @Test
