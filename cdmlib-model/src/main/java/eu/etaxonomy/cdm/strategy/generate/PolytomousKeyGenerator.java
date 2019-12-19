@@ -271,6 +271,7 @@ public class PolytomousKeyGenerator {
 			    /************** either the feature supports quantitative data... **************/
 			    // NB: in this version, "quantitative features" are dealt with in a dichotomous way
 			    if (winnerFeature.isSupportsQuantitativeData()) {
+			        featuresLeft.add(winnerFeature);  //as quantitative data are currently only split in 2 parts there might be further splits possible and needed
 			        handleQuantitativeData(parent, featuresLeft, taxaCovered,
 			                quantitativeFeaturesThresholds, winnerFeature, featureStatesFilter);
 			    }
@@ -282,7 +283,9 @@ public class PolytomousKeyGenerator {
 	                throw new RuntimeException("Winner feature does not support character data.");
 			    }
 			    // the winner features are put back to the features left once the branch is done
-			    featuresLeft.add(winnerFeature);
+			    if (!featuresLeft.contains(winnerFeature)){  //TODO why is a list and not a set?
+			        featuresLeft.add(winnerFeature);
+			    }
 			}else if (featuresLeft.isEmpty()){
 			    handleLeaf(parent, taxaCovered);
 			}else{
