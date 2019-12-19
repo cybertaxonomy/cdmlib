@@ -414,8 +414,6 @@ public class Taxon
                 for (int i = 0; i<node.getChildNodes().size(); i++){
                     node.removeChild(i);
                 }
-
-
             }
 
             removeNodes.add(node);
@@ -430,9 +428,6 @@ public class Taxon
 
     }
 
-    /**
-     * @param classification
-     */
     public TaxonNode getTaxonNode(Classification classification) {
         if (classification == null){
             return null;
@@ -460,8 +455,6 @@ public class Taxon
         return synonyms;
     }
 
-
-
     /**
      * Returns the set of all {@link TaxonRelationship taxon relationships}
      * between two taxa in which <i>this</i> taxon is involved as a source.
@@ -476,7 +469,6 @@ public class Taxon
         return relationsFromThisTaxon;
     }
 
-
     /**
      * Returns the set of all {@link TaxonRelationship taxon relationships}
      * between two taxa in which <i>this</i> taxon is involved as a target.
@@ -490,6 +482,7 @@ public class Taxon
         }
         return relationsToThisTaxon;
     }
+
     /**
      * Returns the set of all {@link TaxonRelationship taxon relationships}
      * between two taxa in which <i>this</i> taxon is involved either as a source or
