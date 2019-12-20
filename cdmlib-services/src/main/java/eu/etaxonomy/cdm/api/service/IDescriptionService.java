@@ -629,6 +629,8 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs,
             DescriptionBase targetDescription, boolean isCopy, boolean setNameInSource);
 
+    public DeleteResult isDeletable(UUID descriptionUuid);
+
 
 
 }
