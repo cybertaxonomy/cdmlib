@@ -42,8 +42,10 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
-	private static final long serialVersionUID = 4904519152652248312L;
+public class MeasurementUnit
+        extends DefinedTermBase<MeasurementUnit> {
+
+    private static final long serialVersionUID = 4904519152652248312L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MeasurementUnit.class);
 
