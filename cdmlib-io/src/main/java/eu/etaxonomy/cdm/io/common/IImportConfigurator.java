@@ -98,19 +98,6 @@ public interface IImportConfigurator extends IIoConfigurator {
     public void setEditor(EDITOR editor);
 
     /**
-     * If true, no errors occurs if objects are not found that should exist. This may
-     * be needed e.g. when only subsets of the data are imported.
-     * Default value is <cod>false</code>.
-     * @return the ignoreNull
-     */
-    public boolean isIgnoreNull();
-    /**
-     * @param ignoreNull the ignoreNull to set
-     */
-    public void setIgnoreNull(boolean ignoreNull);
-
-
-    /**
      * The destination data source for the import
      * Don't use when using a spring data source
      * @return
