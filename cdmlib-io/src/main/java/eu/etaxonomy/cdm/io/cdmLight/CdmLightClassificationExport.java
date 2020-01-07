@@ -1265,16 +1265,16 @@ public class CdmLightClassificationExport
                         csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
                         csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
                                 IPNIidentifiers);
-                        state.getProcessor().put(table, name, csvLine);
+                        state.getProcessor().put(table, name.getUuid() + ", " + IPNI_NAME_IDENTIFIER, csvLine);
                     }
                     if (!tropicosIdentifiers.isEmpty()) {
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
                         csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = name.getUuid() + ", " + IPNI_NAME_IDENTIFIER;
                         csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
                                 tropicosIdentifiers);
-                        state.getProcessor().put(table, name, csvLine);
+                        state.getProcessor().put(table, name.getUuid() + ", " + IPNI_NAME_IDENTIFIER, csvLine);
                     }
                     if (!WFOIdentifiers.isEmpty()) {
                         csvLine = new String[table.getSize()];
@@ -1283,7 +1283,7 @@ public class CdmLightClassificationExport
                         csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
                         csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
                                 WFOIdentifiers);
-                        state.getProcessor().put(table, name, csvLine);
+                        state.getProcessor().put(table, name.getUuid() + ", " + WFO_NAME_IDENTIFIER, csvLine);
                     }
                 }catch(Exception e){
                     state.getResult().addWarning("Please check the identifiers for "
@@ -1322,7 +1322,7 @@ public class CdmLightClassificationExport
                             csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
                             csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = identifier.getType() != null? identifier.getType().getLabel():null;
                             csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = identifier.getIdentifier();
-                            state.getProcessor().put(table, cdmBase, csvLine);
+                            state.getProcessor().put(table, cdmBase.getUuid() + (identifier.getType() != null? identifier.getType().getLabel():null), csvLine);
                         }
                     }
                     if (cdmBase instanceof Reference ){
@@ -1333,7 +1333,7 @@ public class CdmLightClassificationExport
                             csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
                             csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "DOI";
                             csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = ref.getDoiString();
-                            state.getProcessor().put(table, cdmBase, csvLine);
+                            state.getProcessor().put(table, cdmBase.getUuid() + "DOI", csvLine);
                         }
                     }
 
@@ -1345,7 +1345,7 @@ public class CdmLightClassificationExport
                             csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = tableName;
                             csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = "ORCID";
                             csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)]=  ((Person)person).getOrcid().asURI();
-                            state.getProcessor().put(table, cdmBase, csvLine);
+                            state.getProcessor().put(table, cdmBase.getUuid() + "ORCID", csvLine);
                         }
                     }
                 }
@@ -1984,8 +1984,8 @@ public class CdmLightClassificationExport
                                     csvLine[table.getIndex(CdmLightExportTable.FURTHER_AREAS)] = "0";
                                     for (NamedArea area : gathering.getCollectingAreas()) {
                                         if (index == 0) {
-                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY1)] = area
-                                                    .getLevel().getLabel();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY1)] = area.getLevel() != null?area
+                                                    .getLevel().getLabel():"";
                                             csvLine[table.getIndex(CdmLightExportTable.AREA_NAME1)] = area.getLabel();
                                         }
                                         if (index == 1) {
