@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -346,23 +347,14 @@ public interface ITaxonDao
      */
     public long countSynonyms(Synonym synonym, SynonymType type);
 
- //   public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
-
     public long countTaxaByCommonName(String searchString,
             Classification classification, MatchMode matchMode,
             Set<NamedArea> namedAreas);
 
- //   public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
-
-
     /**
-     * finds all names with identical nameCache but belonging to taxa with different sec references
-     * @param sec1
-     * @param sec2
-     * @param propertyPaths
-     * @return
+     * see service layer documentation
      */
-    public Map<String, List<TaxonName>> findIdenticalNamesNew(Reference sec1, Reference sec2, List<String> propertyPaths);
+    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNamesNew(List<UUID> sourceRefUuids, List<String> propertyPaths);
 
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,

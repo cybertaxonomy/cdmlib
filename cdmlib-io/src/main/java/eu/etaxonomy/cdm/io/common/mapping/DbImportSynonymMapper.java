@@ -32,8 +32,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
+ * A mapper that can be used to create synonym relationships for real synonyms with a {@link SynonymType},
+ * synonyms relationships that are handled as concept relationships if the synonym needs to be handled
+ * as accepted taxon (misapplied names, pro parte synonyms, synonyms with attached factual data, ...)
+ * and even synonym relationships which in reality are only name relationships.
+ * The mapping is defined in the transformer.
+ *
  * @author a.mueller
  * @since 02.03.2010
+ *
+ * @see DbImportTaxIncludedInMapper
  */
 public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
         extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
@@ -41,16 +49,17 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
     private static final Logger logger = Logger.getLogger(DbImportSynonymMapper.class);
 
 //******************************* ATTRIBUTES ***************************************/
-      private String fromAttribute;
-      private String toAttribute;
-      private TaxonRelationshipType taxonRelType;
-      private SynonymType synType;
-      private String relatedObjectNamespace;
-      private String citationAttribute;
-      private String microCitationAttribute;
-      private String relationshipTypeAttribute;
-      boolean forceTaxonLevelRelation = true;
-      boolean saveSourceValueAsAnnotation;
+
+    private String fromAttribute;
+    private String toAttribute;
+    private TaxonRelationshipType taxonRelType;
+    private SynonymType synType;
+    private String relatedObjectNamespace;
+    private String citationAttribute;
+    private String microCitationAttribute;
+    private String relationshipTypeAttribute;
+    boolean forceTaxonLevelRelation = true;
+    boolean saveSourceValueAsAnnotation;
 
 //******************************** FACTORY METHOD ***************************************************/
 
@@ -71,10 +80,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
 	}
 
 //********************************* CONSTRUCTOR ****************************************/
-	/**
-	 * @param relatedObjectNamespace
-	 * @param mappingImport
-	 */
+
 	protected DbImportSynonymMapper(String fromAttribute, String toAttribute, SynonymType synType,
 	        TaxonRelationshipType relType, String relatedObjectNamespace, String relTypeAttribute
 	        , boolean saveSourceValueAsAnnotation) {
@@ -133,7 +139,6 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase<?,?>>
             nameType = (NameRelationshipType)relTypes[2];
             hybridType = (HybridRelationshipType)relTypes[3];
 		}
-
 
 		if (fromObject == null){
 			String warning  = "The synonym (" + fromId + ") could not be found. Synonym not added to accepted taxon";
