@@ -602,15 +602,19 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        commitTransaction(state.getTx());
 	        state.setTx(startTransaction());
 	        try{
-	        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
-	        if(!existingSpecimens.getRecords().isEmpty()){
-	            if(existingSpecimens.getRecords().size()==1){
-	                return existingSpecimens.getRecords().iterator().next();
-	            }
-	        }
+		        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
+		        if(!existingSpecimens.getRecords().isEmpty()){
+		            if(existingSpecimens.getRecords().size()==1){
+		                return existingSpecimens.getRecords().iterator().next();
+		            }
+		        }
+	        
 	        }catch(NullPointerException e){
 	        	logger.error("searching for existing specimen creates NPE: " + config.getSignificantIdentifier());
-	        }
+	        	e.printStackTrace();
+	        }   
+	        
+	        
 	        return null;
 	    }
 

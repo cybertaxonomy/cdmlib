@@ -415,8 +415,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             associatedFieldUnit = associatedFieldUnits.iterator().next();
                         }
                         // parent-child relation:
-                        if (associationType.contains("individual") || associationType.contains("culture")
-                                || associationType.contains("sample") || associationType.contains("isolated")) {
+                        if (associationType != null && (associationType.contains("individual") || associationType.contains("culture")
+                                || associationType.contains("sample") || associationType.contains("isolated"))) {
                             DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit,
                                     associatedUnit, DerivationEventType.ACCESSIONING());
 
@@ -519,6 +519,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), state.getReport(),
                         state.getCdmRepository());
                 DnaSample dnaSample = dnaParser.parse(item, state);
+                dnaSample.addSource(OriginalSourceType.Import, dnaSample.getAccessionNumber(), "", state.getRef(), "");
                 save(dnaSample, state);
                 // set dna as derived unit to avoid creating an extra specimen
                 // for this dna sample (instead just the field unit will be
@@ -1219,9 +1220,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         // + state.getDataHolder().accessionNumber + ", " +
                         // state.getDataHolder().getRecordBasis() + ", " +
                         // state.getDataHolder().getUnitID());
-
+                        URI lastAccessPoint = state.getActualAccessPoint();
+                        state.setActualAccessPoint(dnaSource);
                         handleSingleUnit(state, associatedUnits.item(m), false);
-
+                        state.setActualAccessPoint(lastAccessPoint);
                         DerivedUnit associatedUnit = state.getDerivedUnitBase();
                         FieldUnit associatedFieldUnit = null;
                         java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository()

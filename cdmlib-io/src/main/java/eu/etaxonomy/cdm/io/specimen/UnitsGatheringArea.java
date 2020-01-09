@@ -273,7 +273,11 @@ public class UnitsGatheringArea {
 
 
         if (!StringUtils.isEmpty(iso)){
-            wbc = occurrenceService.getCountryByIso(iso);
+        	try {
+        		wbc = occurrenceService.getCountryByIso(iso);
+        	}catch(NullPointerException e) {
+        		wbc = null;
+        	}
         }
         if (wbc == null){
             if (!StringUtils.isEmpty(fullName)){
@@ -287,17 +291,22 @@ public class UnitsGatheringArea {
                 if (areaUUID == null){
                 	List<UUID> countryUuids = new ArrayList<UUID>();
                 	HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
-
-                	Pager<Country> countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
-
-                	for (NamedArea na:countryList.getRecords()){
-	                   	if (na.getTitleCache().equalsIgnoreCase(fullName)) {
-	                   		countryUuids.add(na.getUuid());
-	                   	}
-		                if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
-		                	matchingTerms.put(na.getTitleCache()+" ("+na.getTermType().getMessage() + ")",na.getUuid());
+                	Pager<Country> countryList;
+                	try {
+                		countryList = termService.findByRepresentationText(fullName, Country.class, 100, 0);
+                	}catch(NullPointerException e) {
+                		countryList = null;
+                	}
+                	if (countryList != null) {
+	                	for (NamedArea na:countryList.getRecords()){
+		                   	if (na.getTitleCache().equalsIgnoreCase(fullName)) {
+		                   		countryUuids.add(na.getUuid());
+		                   	}
+			                if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
+			                	matchingTerms.put(na.getTitleCache()+" ("+na.getTermType().getMessage() + ")",na.getUuid());
+			                }
 		                }
-	                }
+                	}
                 	if (countryUuids.isEmpty()){
                 		List<NamedArea> namedAreaList = termService.list(NamedArea.class,0,0,null,null);
 

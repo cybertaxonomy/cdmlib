@@ -1600,7 +1600,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
                 }
             }else{
-                if (authorName != null){
+                if (StringUtils.isNotBlank(authorName)){
                     author = Person.NewInstance();
                     author.setTitleCache(authorName, true);
                 }else{
