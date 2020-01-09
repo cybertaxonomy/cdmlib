@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -796,10 +797,13 @@ public interface ITaxonService
      */
     public long countSynonyms(boolean onlyAttachedToTaxon);
 
-
-
-    public Map<String, List<TaxonName>> findIdenticalTaxonNameIds(Reference sec1, Reference sec2, List<String> propertyPaths);
-
+    /**
+     * Returns a map of taxon names that have identical name caches but derive from different sources.
+     * The sources are defined via the sources reference uuid.
+     *
+     * @return map of nameCaches and taxon name maps where the key is the UUID of the according sourceRefUuid
+     */
+    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalTaxonNames(List<UUID> sourceRefUuids, List<String> propertyPaths);
 
     /**
      * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or

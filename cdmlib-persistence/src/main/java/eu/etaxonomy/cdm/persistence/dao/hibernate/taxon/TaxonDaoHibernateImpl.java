@@ -1391,38 +1391,47 @@ public class TaxonDaoHibernateImpl
      *
      */
     @Override
-    public Map<String, List<TaxonName>> findIdenticalNamesNew(Reference sec1, Reference sec2, List<String> propertyPaths){
+    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNamesNew(List<UUID> sourceRefUuids, List<String> propertyPaths){
 
+        Query query=getSession().createQuery(
+                  " SELECT DISTINCT n1.nameCache "
+                + " FROM TaxonName n1 JOIN n1.sources s1 JOIN s1.citation ref1 "
+                + " WHERE ref1.uuid IN (:sourceUuids ) AND  EXISTS ("
+                + "         FROM TaxonName n2 JOIN n2.sources s2 JOIN s2.citation ref2 "
+                + "         WHERE ref2.uuid IN (:sourceUuids ) AND ref1.uuid <> ref2.uuid "
+                + " ORDER BY n1.nameCache ");
+        query.setParameterList("sourceUuids", sourceRefUuids);
 
-        //get all names from erms
-        Query query=getSession().createQuery("SELECT DISTINCT ermsName from TaxonName ermsName join ermsName.taxonBases ermsTaxon WHERE ermsTaxon.sec = :ermsSec AND ermsName.nameCache IN ( Select faunaName.nameCache FROM TaxonName faunaName JOIN faunaName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec) ORDER BY ermsName.nameCache");
-        query.setParameter("ermsSec", sec1);
-        query.setParameter("faunaSec", sec2);
-        List <TaxonName> identicalErmsNames = query.list();
-        defaultBeanInitializer.initializeAll(identicalErmsNames, propertyPaths);
+        @SuppressWarnings("unchecked")
+        List<String> nameCacheCandidates = query.list();
 
-        //get all nameCaches
-        List<String> nameCacheList = identicalErmsNames.stream().map(TaxonName::getNameCache).collect(Collectors.toList());
+        Map<UUID, List<TaxonName>> duplicates = new HashMap<>();
+        for (UUID sourceUuid : sourceRefUuids){
+            query=getSession().createQuery("SELECT n "
+                    + " FROM TaxonName n JOIN n.sources s JOIN s.citation ref "
+                    + " WHERE ref.uuid = :sourceUuid AND n.nameCache IN (:nameCacheCandidates) "
+                    + " ORDER BY n.nameCache");
+            query.setParameter("sourceUuid", sourceUuid);
+            query.setParameterList("nameCacheCandidates", nameCacheCandidates);
+            @SuppressWarnings("unchecked")
+            List<TaxonName> sourceDuplicates = query.list();
+            defaultBeanInitializer.initializeAll(sourceDuplicates, propertyPaths);
 
-        //get all names from fauna europaea having the same nameCache as a name from erms
-        query=getSession().createQuery("SELECT DISTINCT faunaEuName from TaxonName faunaEuName join faunaEuName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec AND faunaEuName.nameCache IN (:ermsNameCaches) ORDER BY faunaEuName.nameCache");
-        query.setParameter("faunaSec", sec2);
-        query.setParameterList("ermsNameCaches", nameCacheList);
+            duplicates.put(sourceUuid, sourceDuplicates);
+        }
 
-        List <TaxonName> identicalFaunaEuNames = query.list();
-        defaultBeanInitializer.initializeAll(identicalFaunaEuNames, propertyPaths);
-        //create a map with nameCache and list of identical names
-       Map<String, List<TaxonName>> nameCacheNameMap = new HashMap();
-       for (String nameCache: nameCacheList) {
-    	   List<TaxonName> names = identicalErmsNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList());
-    	   names.addAll(identicalFaunaEuNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList()));
-    	   nameCacheNameMap.put(nameCache, names);
+        Map<String, Map<UUID,Set<TaxonName>>> result = new HashMap<>();
+        for (String nameCache: nameCacheCandidates) {
+            Map<UUID,Set<TaxonName>> uuidNameMap = new HashMap<>();
+            result.put(nameCache, uuidNameMap);
+            for(UUID sourceUuid: duplicates.keySet()){
+                Set<TaxonName> names = duplicates.get(sourceUuid).stream().filter(name->
+                        name.getNameCache().equals(nameCache)).collect(Collectors.toSet());
+                uuidNameMap.put(sourceUuid, names);
+            }
+        }
 
-       }
-
-
-        return nameCacheNameMap;
-
+        return result;
     }
 
     @Override
