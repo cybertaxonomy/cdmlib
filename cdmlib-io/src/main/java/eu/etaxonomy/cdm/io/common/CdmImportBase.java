@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -172,7 +171,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	protected Classification makeTree(STATE state, Reference reference){
 		String treeName = "Classification (Import)";
-		if (reference != null && StringUtils.isNotBlank(reference.getTitleCache())){
+		if (reference != null && isNotBlank(reference.getTitleCache())){
 			treeName = reference.getTitleCache();
 		}
 		Classification tree = Classification.NewInstance(treeName);
@@ -202,7 +201,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 */
 	protected Classification makeTreeMemSave(STATE state, Reference ref){
 		String treeName = "Classification (Import)";
-		if (ref != null && StringUtils.isNotBlank(ref.getTitleCache())){
+		if (ref != null && isNotBlank(ref.getTitleCache())){
 			treeName = ref.getTitleCache();
 		}
 		Classification tree = Classification.NewInstance(treeName);
@@ -1045,11 +1044,11 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param childTaxon
 	 */
 	protected void fillMissingEpithets(INonViralName parentName, INonViralName childName) {
-		if (StringUtils.isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
+		if (isBlank(childName.getGenusOrUninomial()) && childName.getRank().isLower(Rank.GENUS()) ){
 			childName.setGenusOrUninomial(parentName.getGenusOrUninomial());
 		}
 
-		if (StringUtils.isBlank(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
+		if (isBlank(childName.getSpecificEpithet()) && childName.getRank().isLower(Rank.SPECIES()) ){
 			childName.setSpecificEpithet(parentName.getSpecificEpithet());
 		}
 		if (childName.isAutonym() && childName.getCombinationAuthorship() == null && childName.getBasionymAuthorship() == null ){
@@ -1550,7 +1549,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 */
 	protected String NB(String str) {
-		if (StringUtils.isBlank(str)){
+		if (isBlank(str)){
 			return null;
 		}else{
 			return str;
@@ -1600,7 +1599,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
                 }
             }else{
-                if (StringUtils.isNotBlank(authorName)){
+                if (isNotBlank(authorName)){
                     author = Person.NewInstance();
                     author.setTitleCache(authorName, true);
                 }else{
