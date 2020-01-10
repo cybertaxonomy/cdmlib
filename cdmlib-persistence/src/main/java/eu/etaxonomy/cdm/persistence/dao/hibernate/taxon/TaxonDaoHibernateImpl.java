@@ -1379,59 +1379,69 @@ public class TaxonDaoHibernateImpl
         return taxonNames;
     }
 
-
-
-    /**
-     * Returns a map of nameCaches and names available for sec1 and sec2
-     * this is used for the merging of two instances into one
-     *
-     * @param secRef1
-     * @param secRef2
-     * return map
-     *
-     */
     @Override
     public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNamesNew(List<UUID> sourceRefUuids, List<String> propertyPaths){
+        Set<String> nameCacheCandidates = new HashSet<>();
+        try {
+            for (int i = 0; i<sourceRefUuids.size()-1;i++){
+                UUID sourceUuid1 = sourceRefUuids.get(i);
+                for (int j = i+1; j<sourceRefUuids.size();j++){
+                    UUID sourceUuid2 = sourceRefUuids.get(j);
+                    if (sourceUuid1.equals(sourceUuid2)){
+                        continue;  //just in case we have duplicates in the list
+                    }
 
-        Query query=getSession().createQuery(
-                  " SELECT DISTINCT n1.nameCache "
-                + " FROM TaxonName n1 JOIN n1.sources s1 JOIN s1.citation ref1 "
-                + " WHERE ref1.uuid IN (:sourceUuids ) AND  EXISTS ("
-                + "         FROM TaxonName n2 JOIN n2.sources s2 JOIN s2.citation ref2 "
-                + "         WHERE ref2.uuid IN (:sourceUuids ) AND ref1.uuid <> ref2.uuid "
-                + " ORDER BY n1.nameCache ");
-        query.setParameterList("sourceUuids", sourceRefUuids);
+                    Query query = getSession().createQuery(
+                            " SELECT DISTINCT n1.nameCache "
+                          + " FROM TaxonName n1 JOIN n1.sources s1 JOIN s1.citation ref1 "
+                          +         " , TaxonName n2 JOIN n2.sources s2 JOIN s2.citation ref2 "
+                          + " WHERE  ref1.uuid = (:sourceUuid1) "
+                          + "       AND n1.id <> n2.id "
+                          + "       AND ref2.uuid IN (:sourceUuid2)"
+                          + "       AND ref1.uuid <> ref2.uuid "
+                          + "       AND n1.nameCache = n2.nameCache) "
+                          + " ORDER BY n1.nameCache ");
+                    query.setParameter("sourceUuid1", sourceUuid1);
+                    query.setParameter("sourceUuid2", sourceUuid2);
 
-        @SuppressWarnings("unchecked")
-        List<String> nameCacheCandidates = query.list();
-
-        Map<UUID, List<TaxonName>> duplicates = new HashMap<>();
-        for (UUID sourceUuid : sourceRefUuids){
-            query=getSession().createQuery("SELECT n "
-                    + " FROM TaxonName n JOIN n.sources s JOIN s.citation ref "
-                    + " WHERE ref.uuid = :sourceUuid AND n.nameCache IN (:nameCacheCandidates) "
-                    + " ORDER BY n.nameCache");
-            query.setParameter("sourceUuid", sourceUuid);
-            query.setParameterList("nameCacheCandidates", nameCacheCandidates);
-            @SuppressWarnings("unchecked")
-            List<TaxonName> sourceDuplicates = query.list();
-            defaultBeanInitializer.initializeAll(sourceDuplicates, propertyPaths);
-
-            duplicates.put(sourceUuid, sourceDuplicates);
-        }
-
-        Map<String, Map<UUID,Set<TaxonName>>> result = new HashMap<>();
-        for (String nameCache: nameCacheCandidates) {
-            Map<UUID,Set<TaxonName>> uuidNameMap = new HashMap<>();
-            result.put(nameCache, uuidNameMap);
-            for(UUID sourceUuid: duplicates.keySet()){
-                Set<TaxonName> names = duplicates.get(sourceUuid).stream().filter(name->
-                        name.getNameCache().equals(nameCache)).collect(Collectors.toSet());
-                uuidNameMap.put(sourceUuid, names);
+                    @SuppressWarnings("unchecked")
+                    List<String> queryNameCacheCandidates = query.list();
+                    nameCacheCandidates.addAll(queryNameCacheCandidates);
+                }
             }
-        }
 
-        return result;
+            Map<UUID, List<TaxonName>> duplicates = new HashMap<>();
+            for (UUID sourceUuid : sourceRefUuids){
+                Query query=getSession().createQuery("SELECT n "
+                        + " FROM TaxonName n JOIN n.sources s JOIN s.citation ref "
+                        + " WHERE ref.uuid = :sourceUuid AND n.nameCache IN (:nameCacheCandidates) "
+                        + " ORDER BY n.nameCache");
+                query.setParameter("sourceUuid", sourceUuid);
+                query.setParameterList("nameCacheCandidates", nameCacheCandidates);
+                @SuppressWarnings("unchecked")
+                List<TaxonName> sourceDuplicates = query.list();
+                defaultBeanInitializer.initializeAll(sourceDuplicates, propertyPaths);
+
+                 duplicates.put(sourceUuid, sourceDuplicates);
+            }
+
+            List<String> nameCacheCandidateList = new ArrayList<>(nameCacheCandidates);
+            Map<String, Map<UUID,Set<TaxonName>>> result = new HashMap<>();
+            for (String nameCache: nameCacheCandidateList) {
+                Map<UUID,Set<TaxonName>> uuidNameMap = new HashMap<>();
+                result.put(nameCache, uuidNameMap);
+                for(UUID sourceUuid: duplicates.keySet()){
+                    Set<TaxonName> names = duplicates.get(sourceUuid).stream().filter(name->
+                            name.getNameCache().equals(nameCache)).collect(Collectors.toSet());
+                    uuidNameMap.put(sourceUuid, names);
+                }
+            }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override
