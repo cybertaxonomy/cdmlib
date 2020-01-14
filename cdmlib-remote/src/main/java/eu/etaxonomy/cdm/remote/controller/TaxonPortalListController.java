@@ -27,7 +27,7 @@ import io.swagger.annotations.Api;
 public class TaxonPortalListController extends TaxonListController {
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
-            "$",
+            //"$",
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",

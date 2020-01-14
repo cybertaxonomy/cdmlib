@@ -101,7 +101,6 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
     /**
      * Checks that the AdvancedBeanInitializer is available and that the expected set of beanAutoInitializers is configured
      * in the persitence.xml.
-
      */
     @Before
     public void assertAutoinitializers(){

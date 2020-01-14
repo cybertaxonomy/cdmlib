@@ -992,7 +992,7 @@ public class TaxonDaoHibernateImpl
         @SuppressWarnings({ "unchecked", "rawtypes" })
         List<TaxonBase> result = criteria.list();
 
-        defaultBeanInitializer.initialize(result, propertyPaths);
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
 
