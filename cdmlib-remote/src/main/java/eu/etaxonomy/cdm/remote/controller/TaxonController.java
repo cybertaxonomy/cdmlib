@@ -496,7 +496,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
 
         Set<MarkerType> markerTypesSet = new HashSet<>();
-        if (markerTypes == null) {
+        if (markerTypes != null) {
             markerTypesSet.addAll(markerTypes);
         }
         Set<DescriptionType> descriptionTypesSet = new HashSet<>();
