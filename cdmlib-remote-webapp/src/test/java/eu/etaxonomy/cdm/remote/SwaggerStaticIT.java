@@ -44,7 +44,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
         FileUtils.deleteQuietly(new File(staticResourcesFolder));
         FileUtils.deleteQuietly(new File(staticResourcesFolder + StaticSwaggerApiDoc.JSON));
 
-        staticResourcesFolder.replace("/", File.separator);
+        staticResourcesFolder = staticResourcesFolder.replace("/", File.separator);
 
         for(String path : swaggerResourcesPaths){
             String resourcePath = swagger2Endpoint + path;
@@ -71,7 +71,7 @@ public class SwaggerStaticIT extends WebServiceTestBase {
 
         String staticApiDocFolder = "./target/classes/"+ StaticSwaggerApiDoc.SWAGGER_STATIC + "/api-docs/";
 
-        staticApiDocFolder.replace("/", File.separator);
+        staticApiDocFolder = staticApiDocFolder.replace("/", File.separator);
 
 
         for(SwaggerGroupsConfig group : SwaggerGroupsConfig.values()) {
