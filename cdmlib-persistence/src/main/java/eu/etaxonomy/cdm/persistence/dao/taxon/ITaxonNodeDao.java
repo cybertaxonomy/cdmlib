@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -58,14 +57,14 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return a list of UuidAndTitleCache objects that represent children of the
      * parent
      */
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(TaxonNodeDto parent);
 
     /**
      * Retrieves the parent node of the {@link TaxonNode} represented by the given {@link UuidAndTitleCache}.
      * @param child the child for which the parent should be retrieved
      * @return an UuidAndTitleCache object representing the parent node
      */
-    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child);
+    public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child);
 
     /**
      * Retrieves a list of {@link UuidAndTitleCache} objects that have a matching titleCache
@@ -74,7 +73,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classificationUuid if specified only nodes of this classification are retrieved
      * @return a list of matches
      */
-    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+    public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths);
@@ -197,11 +196,12 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
             Set<UUID> relationTypes, boolean includeSharedTaxa, boolean includeHybrids,
             IProgressMonitor monitor);
 
+
     /**
      * @param parent
      * @return
      */
-    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 
     /**
      * @param classification

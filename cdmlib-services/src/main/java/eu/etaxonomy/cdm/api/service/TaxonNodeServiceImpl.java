@@ -77,7 +77,6 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -162,10 +161,10 @@ public class TaxonNodeServiceImpl
      * {@inheritDoc}
      */
     @Override
-    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(ITaxonTreeNode child) {
+    public TaxonNodeDto getParentUuidAndTitleCache(ITaxonTreeNode child) {
         UUID uuid = child.getUuid();
         int id = child.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
+        TaxonNodeDto uuidAndTitleCache = new TaxonNodeDto(uuid, id, null);
         return getParentUuidAndTitleCache(uuidAndTitleCache);
     }
 
@@ -173,41 +172,28 @@ public class TaxonNodeServiceImpl
      * {@inheritDoc}
      */
     @Override
-    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child) {
+    public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child) {
         return dao.getParentUuidAndTitleCache(child);
     }
 
     @Override
-    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent) {
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent) {
         return dao.listChildNodesAsTaxonNodeDto(parent);
     }
 
-    @Override
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
-        return dao.listChildNodesAsUuidAndTitleCache(parent);
-    }
 
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
+    public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         return dao.getUuidAndTitleCache(limit, pattern, classificationUuid);
     }
 
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent) {
-        UUID uuid = parent.getUuid();
-        int id = parent.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
+        TaxonNodeDto uuidAndTitleCache = new TaxonNodeDto(parent);
         return listChildNodesAsTaxonNodeDto(uuidAndTitleCache);
     }
 
-    @Override
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
-        UUID uuid = parent.getUuid();
-        int id = parent.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
-        return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
-    }
 
     @Override
     public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
