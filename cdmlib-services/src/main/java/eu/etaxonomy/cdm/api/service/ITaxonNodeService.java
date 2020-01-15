@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-
 /**
  * @author n.hoffmann
  * @since Apr 9, 2010
@@ -69,6 +68,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	/**
      * Retrieves a list of {@link UuidAndTitleCache} objects that have a matchin titleCache
+     *
      * @param limit the maximum results
      * @param pattern the titleCache that is searched for
      * @param classificationUuid if specified only nodes of this classification are retrieved
@@ -119,34 +119,15 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	/**
 	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
 	 * All data associated with the former taxon are moved to the newly accepted taxon.
-	 *
-	 * @param oldTaxonNode
-	 * @param newAcceptedTaxonNode
-	 * @param synonymType
-	 * @param citation
-	 * @param citationMicroReference
-	 * @param setNameInSource
-	 * @return
-	 *
 	 */
 	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource) ;
 
 	/**
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
 	 * All data associated with the former taxa are moved to the newly accepted taxon.
-	 *
-	 * @param oldTaxonNodes
-	 * @param newAcceptedTaxonNode
-	 * @param synonymType
-	 * @param citation
-	 * @param citationMicroReference
-	 * @param setNameInSource
-	 * @return
-	 *
 	 */
-	UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
+	public UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
 			SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource);
-
 
 	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
@@ -155,23 +136,13 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	        String citationMicroReference,
 	        boolean setNameInSource) ;
 
-
-    /**
-     * @param nodeUuids
-     * @param config
-     * @return
-     */
     public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config);
 
 	/**
 	 * deletes the given taxon node the configurator defines whether the children will be deleted too or not
-	 *
-	 * @param node
-	 * @param conf
-	 * @return
-	 *
 	 */
 	public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config);
+
 	/**
 	 * Returns a List of all TaxonNodes of a given Classification.
 	 *
@@ -194,37 +165,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * Counts all TaxonNodes for a given Classification
 	 *
 	 * @param classification - according to the given classification the TaxonNodes are filtered.
-	 * @return
+	 * @return the count result
 	 */
 	public int countAllNodesForClassification(Classification classification);
 
-
-    /**
-     * @param taxonNodeUuid
-     * @param newParentTaxonNodeUuid
-     * @return
-     */
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID newParentTaxonNodeUuid, int movingType);
 
-
-
-
-
-    /**
-     * @param taxonNode
-     * @param newParent
-     * @param parent
-     * @return
-     */
-    UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType);
+    public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType);
 
     /**
      * deletes the given taxon nodes
-     *
-     * @param nodes
-     * @param config
-     * @return
-     *
      */
     public DeleteResult deleteTaxonNodes(List<TaxonNode> list, TaxonDeletionConfigurator config);
 
@@ -242,21 +192,8 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
-    /**
-     * @param parentNodeUuid
-     * @param newTaxon
-     * @param ref
-     * @param microref
-     * @return
-     */
-   public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref);
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref);
 
-    /**
-     * @param taxonNodeUUID
-     * @param agentUUID
-     * @param relationshipType
-     * @return
-     */
     public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
 
     /**
@@ -273,8 +210,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * Depending on the configuration, also synonym secundum will be set.
      * See {@link SetSecundumForSubtreeConfigurator} for further configuration
      * options.
-     * @param b
-     * @param configurator
      * @return UpdateResult
      */
     public UpdateResult setSecundumForSubtree(SecundumForSubtreeConfigurator config);
@@ -282,60 +217,29 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     /**
      * Sets the publish flag for all taxa and/or synonyms of the subtree.
-     * @param configurator
-     * @return
      */
     public UpdateResult setPublishForSubtree(PublishForSubtreeConfigurator configurator);
 
-
     /**
      * Returns a list of taxon node {@link UUID uuids} according to the given filter.
-     * @param filter
-     * @return
      */
     public long count(TaxonNodeFilter filter);
 
     /**
      * Returns a list of taxon node {@link UUID uuids} according to the given filter.
-     * @param filter
-     * @return
      */
     public List<UUID> uuidList(TaxonNodeFilter filter);
 
     /**
      * Returns a list of taxon node IDs according to the given filter.
-     * @param filter
-     * @return
      */
     public List<Integer> idList(TaxonNodeFilter filter);
 
-//    /**
-//     * @param configurator
-//     * @return
-//     */
-//    UUID monitSetSecundum(SecundumForSubtreeConfigurator configurator);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
 
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
 
-    /**
-     * @param parent
-     * @return
-     */
-    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
-
-    /**
-     * @param parent
-     * @return
-     */
-    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
-
-    /**
-     * @param taxonNodeUuids
-     * @param newParentNodeUuid
-     * @param movingType
-     * @param monitor
-     * @return
-     */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
             IProgressMonitor monitor);
 
     /**
@@ -349,55 +253,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public TaxonNodeDto findCommonParentDto(Collection<TaxonNodeDto> nodes);
 
-    /**
-     * @param taxonNodeUuid
-     * @return
-     */
-    TaxonNodeDto dto(UUID taxonNodeUuid);
+    public TaxonNodeDto dto(UUID taxonNodeUuid);
 
-    /**
-     * @param parentNodeUuid
-     * @param areas
-     * @param authentication
-     * @return
-     */
-    List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication);
+    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication);
 
-    /**
-     * @param parentNodeUuid
-     * @param areas
-     * @return
-     */
-    List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths);
+    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths);
 
-    /**
-     * @param parentNodeUuid
-     * @param newTaxonNode
-     * @return
-     */
-    UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode);
+    public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode);
 
-    /**
-     * @param clazz
-     * @param restrictions
-     * @param pageSize
-     * @param pageIndex
-     * @param orderHints
-     * @param propertyPaths
-     * @param includeUnpublished
-     * @return
-     */
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
-    
-    /**
-    * @param classification
-    * @param rank
-    * @return
-    */
+
 	public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
-
-
-
-
 }
