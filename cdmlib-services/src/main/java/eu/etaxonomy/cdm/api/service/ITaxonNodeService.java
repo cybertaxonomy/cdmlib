@@ -61,7 +61,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return a list of UuidAndTitleCache objects that represent children of the
 	 * parent
 	 */
-	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+//	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths);
@@ -74,29 +74,29 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param classificationUuid if specified only nodes of this classification are retrieved
      * @return a list of matches
      */
-	public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+	public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     /**
      * Retrieves the parent node of the child {@link TaxonNode}
      * @param child the child for which the parent should be retrieved
      * @return the parent taxon node
      */
-	public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(ITaxonTreeNode child);
+	public TaxonNodeDto getParentUuidAndTitleCache(ITaxonTreeNode child);
 
 	/**
      * Retrieves the parent node of the {@link TaxonNode} represented by the given {@link UuidAndTitleCache}.
      * @param child the child for which the parent should be retrieved
      * @return an UuidAndTitleCache object representing the parent node
      */
-	public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child);
+	public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child);
 
-	/**
-     * Lists all direct child nodes of the given {@link ITaxonTreeNode}
-     * @param parent the parent ITaxonTreeNode
-     * @return a list of UuidAndTitleCache objects that represent children of the
-     * parent
-     */
-	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
+//	/**
+//     * Lists all direct child nodes of the given {@link ITaxonTreeNode}
+//     * @param parent the parent ITaxonTreeNode
+//     * @return a list of UuidAndTitleCache objects that represent children of the
+//     * parent
+//     */
+//	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
 
 	/**
      *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
@@ -235,11 +235,19 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public List<Integer> idList(TaxonNodeFilter filter);
 
-    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 
-    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
 
-    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
+    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
+
+    /**
+     * @param taxonNodeUuids
+     * @param newParentNodeUuid
+     * @param movingType
+     * @param monitor
+     * @return
+     */
+    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
             IProgressMonitor monitor);
 
     /**
