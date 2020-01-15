@@ -97,10 +97,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
-	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 	private static final UUID uuidOrthographyRejected = UUID.fromString("39a25673-f716-4ec7-ae27-2498fce43166");
 	private static final UUID uuidConservedDesig = UUID.fromString("4e9c9702-a74d-4033-9d47-792ad123712c");
 	private static final UUID uuidIned = UUID.fromString("51429574-c6f9-4aa1-bab9-0bbc5b160ba1");
+
+	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
 	//zoological uuids
 	public static final UUID uuidIcznNomStatusVocabulary = UUID.fromString("5e3c08e9-13a9-498e-861e-b9b5656ab6ac");
