@@ -257,7 +257,7 @@ public class CdmLightClassificationExport
                     childNodes = new ArrayList<>();
                     for (TaxonNode child : root.getChildNodes()) {
                     	if (child != null) {
-                    		childNodes.add(new TaxonNodeDto(TaxonNode.class, child));
+                    		childNodes.add(new TaxonNodeDto(child));
                     	}
                     }
                     state.getNodeChildrenMap().put(root.getUuid(), childNodes);
@@ -1989,13 +1989,13 @@ public class CdmLightClassificationExport
                                             csvLine[table.getIndex(CdmLightExportTable.AREA_NAME1)] = area.getLabel();
                                         }
                                         if (index == 1) {
-                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY2)] = area
-                                                    .getLevel().getLabel();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY2)] = area.getLevel() != null?area
+                                                    .getLevel().getLabel():"";
                                             csvLine[table.getIndex(CdmLightExportTable.AREA_NAME2)] = area.getLabel();
                                         }
                                         if (index == 2) {
-                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY3)] = area
-                                                    .getLevel().getLabel();
+                                            csvLine[table.getIndex(CdmLightExportTable.AREA_CATEGORY3)] = area.getLevel() != null?area
+                                                    .getLevel().getLabel():"";
                                             csvLine[table.getIndex(CdmLightExportTable.AREA_NAME3)] = area.getLabel();
                                         }
                                         if (index == 3) {
