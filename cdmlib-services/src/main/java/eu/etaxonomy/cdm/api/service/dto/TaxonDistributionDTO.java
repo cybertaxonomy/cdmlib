@@ -29,6 +29,7 @@ public class TaxonDistributionDTO implements Serializable{
     Integer rankOrderIndex = null;
     String rankLabel = null;
     TaxonDescriptionDTO descriptionsWrapper;
+    String concatenatedSynonyms = null;
 //    Map<NamedArea,Set<DescriptionElementBase>> distributionMap = new HashMap();
 
 
@@ -55,11 +56,13 @@ public class TaxonDistributionDTO implements Serializable{
         //}
 
         this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
+        concatenateSynonyms(taxon);
 
 
     }
 
    /* ------ Getter / Setter -----------*/
+
 
     /**
      * @return the taxonUuid
@@ -121,6 +124,27 @@ public class TaxonDistributionDTO implements Serializable{
      */
     public void setDescriptionsWrapper(TaxonDescriptionDTO descriptionsWrapper) {
         this.descriptionsWrapper = descriptionsWrapper;
+    }
+
+    public String getConcatenatedSynonyms(){
+        return concatenatedSynonyms;
+    }
+
+    /**
+     * @param taxon
+     * @return
+     */
+    private void concatenateSynonyms(Taxon taxon) {
+       concatenatedSynonyms = "";
+       int i = 0;
+       for (TaxonName synName: taxon.getSynonymNames()){
+           concatenatedSynonyms += synName.getNameCache();
+           i++;
+           if (i<taxon.getSynonymNames().size()){
+               concatenatedSynonyms += "; ";
+           }
+       }
+
     }
 
 //    /**
