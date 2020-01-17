@@ -77,6 +77,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -1197,6 +1198,24 @@ public class TaxonNodeServiceImpl
     public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid,
             List<String> propertyPaths) {
         return getTaxonDistributionDTOForSubtree(parentNodeUuid, propertyPaths, null);
+    }
+
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
+        return dao.getTaxonNodeDto(limit, pattern, classificationUuid);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
+        UUID uuid = parent.getUuid();
+        int id = parent.getId();
+        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
+        return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+        return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
 
 

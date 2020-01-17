@@ -74,7 +74,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param classificationUuid if specified only nodes of this classification are retrieved
      * @return a list of matches
      */
-	public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+	public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
 
     /**
      * Retrieves the parent node of the child {@link TaxonNode}
@@ -273,4 +273,15 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
 	public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
+
+    /**
+     * Lists all direct child nodes of the given {@link ITaxonTreeNode}
+     * @param parent the parent ITaxonTreeNode
+     * @return a list of UuidAndTitleCache objects that represent children of the
+     * parent
+     */
+	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
+	 public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+
 }
