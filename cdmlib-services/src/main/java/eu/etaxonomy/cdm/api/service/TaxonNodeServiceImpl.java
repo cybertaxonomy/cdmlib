@@ -716,8 +716,8 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType){
-        TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid), TaxonNode.class);
-    	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), TaxonNode.class);
+        TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid));
+    	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid));
     	UpdateResult result = moveTaxonNode(taxonNode, targetNode, movingType);
     	return result;
     }

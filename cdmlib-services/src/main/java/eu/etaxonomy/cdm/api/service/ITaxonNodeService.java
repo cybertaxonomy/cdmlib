@@ -99,7 +99,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 //	public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
 
 	/**
-     *returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
+     *Returns the childnodes of the taxonNode, if recursive is true it returns all descendants, if sort is true the nodes are sorted
      *
      * @param taxonNode
      * @param recursive
