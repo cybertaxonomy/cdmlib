@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.database.update.LanguageStringTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.v36_40.SchemaUpdater_36_40;
 import eu.etaxonomy.cdm.database.update.v41_47.SchemaUpdater_41_47;
 
@@ -372,17 +372,17 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
 	    //remove SynonymRelationship_Annotation
         stepName = "Remove SynonymRelationship_Annotation table";
         tableName = "SynonymRelationship_Annotation";
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
         //remove SynonymRelationship_Marker
         stepName = "Remove SynonymRelationship_Marker table";
         tableName = "SynonymRelationship_Marker";
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
         //remove SynonymRelationship table
         stepName = "Remove synonym relationship table";
         tableName = "SynonymRelationship";
-        TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+        TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 	}
 
     /**

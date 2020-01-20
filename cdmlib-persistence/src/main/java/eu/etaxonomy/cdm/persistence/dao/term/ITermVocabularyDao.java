@@ -115,6 +115,13 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
     public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid);
 
     /**
+     * Loads all top level terms, i.e. terms that have no parent terms, for the given vocabulary
+     * @param vocabularyUuid the id of the vocabulary
+     * @return a collection of top level terms
+     */
+    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type);
+
+    /**
      * Loads all terms for the given vocabulary
      * @param vocabularyUuid the id of the vocabulary
      * @return a collection of terms
@@ -127,6 +134,13 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @return a collection of terms
      */
     public Collection<TermDto> getTerms(List<UUID> vocabularyUuids);
+
+    /**
+     * Loads all namedArea term dtos with level information for the given vocabularies
+     * @param vocabularyUuids the ids of the vocabularies
+     * @return a collection of namedArea terms
+     */
+    public Collection<TermDto> getNamedAreaTerms(List<UUID> vocabularyUuids);
 
     /**
      * Returns term vocabularies that contain terms of a certain {@link TermType} e.g. Feature, Modifier, State.

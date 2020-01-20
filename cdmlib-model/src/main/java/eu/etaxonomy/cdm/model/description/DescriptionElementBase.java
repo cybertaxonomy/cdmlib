@@ -527,10 +527,10 @@ public abstract class DescriptionElementBase
 
 
     /**
-     * Is this description item of a class type which is considere to
+     * Is this description item of a class type which is considered to
      * represent character data? These classes are {@link QuantitativeData}
      * and {@link CategoricalData}.
-     * To be overriden by these classes.
+     * To be overridden by these classes.
      */
     @Transient
     @XmlTransient
@@ -542,7 +542,7 @@ public abstract class DescriptionElementBase
 
     /**
      * Clones the description element. The element is <b>not</b> added to the same
-     * description as the orginal element (inDescription is set to <code>null</null>).
+     * description as the original element (inDescription is set to <code>null</null>).
      * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
      */
     @Override

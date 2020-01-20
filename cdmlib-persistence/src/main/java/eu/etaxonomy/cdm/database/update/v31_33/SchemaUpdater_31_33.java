@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SingleTermRemover;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
 import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermMover;
 import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
@@ -118,7 +118,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// drop TypeDesignationBase_TaxonNameBase //from schemaUpdater 301_31
 		stepName = "Drop duplicate TypeDesignation-TaxonName table";
 		tableName = "TypeDesignationBase_TaxonNameBase";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// create original source type column
 		stepName = "Create original source type column";
@@ -423,7 +423,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// remove tables DescriptionBase_SpecimenOrObservationBase(_AUD) #3571
 		stepName = "Remove table DescriptionBase_SpecimenOrObservationBase";
 		tableName = "DescriptionBase_SpecimenOrObservationBase";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// change column type for reference type
 		stepName = "Change column type for Reference.type";
@@ -467,37 +467,37 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// remove table Sequence_GenBankAccession #3552
 		stepName = "Remove table Sequence_GenBankAccession";
 		tableName = "Sequence_GenBankAccession";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// remove table GenBankAccession #3552
 		stepName = "Remove table GenBankAccession";
 		tableName = "GenBankAccession";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// remove table Sequence_Credit #3360
 		stepName = "Remove table Sequence_Credit";
 		tableName = "Sequence_Credit";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// remove table Sequence_Extension #3360
 		stepName = "Remove table Sequence_Extension";
 		tableName = "Sequence_Extension";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		//remove table Sequence_Media #3360
 		stepName = "Remove table Sequence_Media";
 		tableName = "Sequence_Media";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// remove table Sequence_OriginalSourceBase #3360
 		stepName = "Remove table Sequence_OriginalSourceBase";
 		tableName = "Sequence_OriginalSourceBase";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// remove table Sequence_OriginalSourceBase #3360
 		stepName = "Remove table Sequence_Rights";
 		tableName = "Sequence_Rights";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// remove old sequence columns
 		removeOldSequenceColumns(stepList);
@@ -514,7 +514,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// remove DescriptionBase_Feature #2202
 		stepName = "Remove table DescriptionBase_Feature";
 		tableName = "DescriptionBase_Feature";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// add timeperiod to columns to description element base #3312
 		addTimeperiodToDescriptionElement(stepList);
@@ -526,7 +526,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// SpecimenOrObservationBase_Media #3597
 		stepName = "Remove table SpecimenOrObservationBase_Media";
 		tableName = "SpecimenOrObservationBase_Media";
-		TableDroper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 
 		// all molecular (#3360) and related updates
 		updateMolecularAndRelated(stepList);

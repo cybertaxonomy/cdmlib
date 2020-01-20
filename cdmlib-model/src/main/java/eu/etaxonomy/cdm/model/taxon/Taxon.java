@@ -54,11 +54,13 @@ import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
@@ -93,7 +95,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 })
 public class Taxon
             extends TaxonBase<ITaxonCacheStrategy<Taxon>>
-            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>{
+            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, ICdmTarget{
 
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
@@ -232,8 +234,6 @@ public class Taxon
 
 //********* METHODS **************************************/
 
-
-
     /**
      * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
      * concerning <i>this</i> taxon.
@@ -245,9 +245,19 @@ public class Taxon
     @Override
     public Set<TaxonDescription> getDescriptions() {
         if(descriptions == null) {
-            descriptions = new HashSet<TaxonDescription>();
+            descriptions = new HashSet<>();
         }
         return descriptions;
+    }
+
+    public Set<TaxonDescription> getDescriptions(DescriptionType type) {
+        Set<TaxonDescription> result = new HashSet<>();
+        for (TaxonDescription description : getDescriptions()){
+            if (description.getTypes().contains(type)){
+                result.add(description);
+            }
+        }
+        return result;
     }
 
     /**
@@ -385,7 +395,7 @@ public class Taxon
         TaxonNode node;
         TaxonNode parent;
         boolean success = false;
-        List<TaxonNode> removeNodes = new ArrayList<TaxonNode>();
+        List<TaxonNode> removeNodes = new ArrayList<>();
         while (nodesIterator.hasNext()){
             node = nodesIterator.next();
             if (!deleteChildren){
@@ -404,8 +414,6 @@ public class Taxon
                 for (int i = 0; i<node.getChildNodes().size(); i++){
                     node.removeChild(i);
                 }
-
-
             }
 
             removeNodes.add(node);
@@ -420,9 +428,6 @@ public class Taxon
 
     }
 
-    /**
-     * @param classification
-     */
     public TaxonNode getTaxonNode(Classification classification) {
         if (classification == null){
             return null;
@@ -450,8 +455,6 @@ public class Taxon
         return synonyms;
     }
 
-
-
     /**
      * Returns the set of all {@link TaxonRelationship taxon relationships}
      * between two taxa in which <i>this</i> taxon is involved as a source.
@@ -466,7 +469,6 @@ public class Taxon
         return relationsFromThisTaxon;
     }
 
-
     /**
      * Returns the set of all {@link TaxonRelationship taxon relationships}
      * between two taxa in which <i>this</i> taxon is involved as a target.
@@ -480,6 +482,7 @@ public class Taxon
         }
         return relationsToThisTaxon;
     }
+
     /**
      * Returns the set of all {@link TaxonRelationship taxon relationships}
      * between two taxa in which <i>this</i> taxon is involved either as a source or

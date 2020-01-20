@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_34_341;
 import eu.etaxonomy.cdm.database.update.v35_36.SchemaUpdater_35_36;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -82,11 +82,11 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 		//#4709
 		stepName = "Drop EntityConstraintViolation table";
 		tableName = "EntityConstraintViolation";
-		TableDroper.NewInstance(stepList, stepName, tableName, !INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, !INCLUDE_AUDIT);
 
 		stepName = "Drop EntityValidationResult table";
 		tableName = "EntityValidationResult";
-		TableDroper.NewInstance(stepList, stepName, tableName, !INCLUDE_AUDIT);
+		TableDropper.NewInstance(stepList, stepName, tableName, !INCLUDE_AUDIT);
 
         //... and create new entity validation and
         stepName = "Create EntityValidation table";

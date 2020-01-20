@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.update.IndexAdder;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
-import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 
 /**
@@ -133,12 +133,12 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
         stepName = "Remove CDM_VIEW_CDM_VIEW table";
         tableName = "CDM_VIEW_CDM_VIEW";
         boolean ifExists = true;
-        TableDroper.NewInstance(stepList, stepName, tableName, ! INCLUDE_AUDIT, ifExists);
+        TableDropper.NewInstance(stepList, stepName, tableName, ! INCLUDE_AUDIT, ifExists);
 
         stepName = "Remove CDM_VIEW table";
         tableName = "CDM_VIEW";
         ifExists = true;
-        TableDroper.NewInstance(stepList, stepName, tableName, ! INCLUDE_AUDIT, ifExists);
+        TableDropper.NewInstance(stepList, stepName, tableName, ! INCLUDE_AUDIT, ifExists);
 
         //TODO not null on username, groupname and authority  #4382
 

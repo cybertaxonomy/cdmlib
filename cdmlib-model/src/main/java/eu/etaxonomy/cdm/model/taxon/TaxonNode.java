@@ -549,10 +549,9 @@ public class TaxonNode
     @Override
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
-        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon(), Taxon.class);
-        node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
+        node = HibernateProxyHelper.deproxy(node);
         node.setTaxon(null);
-
 
         ArrayList<TaxonNode> childNodes = new ArrayList<>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
@@ -617,7 +616,9 @@ public class TaxonNode
      * from the list of {@link #getChildNodes() children} of <i>this</i> taxon node.
      * Sets the parent and the classification of the child
      * node to null.
-     * If the given index is out of bounds no child will be removed.
+     * If the given index is out of bounds no child will be removed.<BR>
+     * NOTE: this is more for inner use. It does not remove the node from the taxon!!
+     * Use deleteChildNode(TaxonNode) instead
      *
      * @param  index	the integer indicating the position of the taxon node to
      * 					be removed
@@ -630,12 +631,12 @@ public class TaxonNode
         //TODO: Only as a workaround. We have to find out why merge creates null entries.
 
         TaxonNode child = childNodes.get(index);
-        child = HibernateProxyHelper.deproxy(child, TaxonNode.class); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
+        child = HibernateProxyHelper.deproxy(child); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
 
         if (child != null){
 
-            TaxonNode parent = HibernateProxyHelper.deproxy(child.getParent(), TaxonNode.class);
-            TaxonNode thisNode = HibernateProxyHelper.deproxy(this, TaxonNode.class);
+            TaxonNode parent = HibernateProxyHelper.deproxy(child.getParent());
+            TaxonNode thisNode = HibernateProxyHelper.deproxy(this);
             if(parent != null && parent != thisNode){
                 throw new IllegalArgumentException("Child TaxonNode (id:" + child.getId() +") must be a child of this (id:" + thisNode.getId() + " node. Sortindex is: " + index + ", parent-id:" + parent.getId());
             }else if (parent == null){

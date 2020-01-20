@@ -71,7 +71,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @author m.doering
  * @since 08-Nov-2007 13:06:24
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionBase", propOrder = {
     "describedSpecimenOrObservation",
@@ -160,7 +159,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * this attribute should be empty.
      * To handle sets of specimen or observations one may first group them by a derivation event of type
      * "Grouping" and then use the grouped unit here.
-     * @return
      */
     public SpecimenOrObservationBase getDescribedSpecimenOrObservation() {
 		return describedSpecimenOrObservation;
@@ -387,13 +385,13 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 //*********************** CLONE ********************************************************/
 
     /**
-     * Clones <i>this</i> descriptioin. This is a shortcut that enables to create
+     * Clones <i>this</i> description. This is a shortcut that enables to create
      * a new instance that differs only slightly from <i>this</i> description by
      * modifying only some of the attributes.<BR>
      *
      * Usages of this name in a taxon concept are NOT cloned.<BR>
      * The name is added to the same homotypical group as the original name
-     * (CAUTION: this behaviour needs to be discussed and may change in future).<BR>
+     * (CAUTION: this behavior needs to be discussed and may change in future).<BR>
      * {@link TaxonNameDescription Name descriptions} are cloned as XXX.<BR>
      * {@link TypeDesignationBase Type designations} are cloned as XXX.<BR>
      * {@link NameRelationship Name relation} are cloned as XXX.<BR>

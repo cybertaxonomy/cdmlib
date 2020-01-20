@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.util;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,39 +25,34 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
-import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
 
 /**
  * @author k.luther
  * @since 08.07.2016
- *
  */
 @Component
 public class SortIndexUpdaterWrapper implements Serializable {
 
     private static final long serialVersionUID = 1152526455024556637L;
     private static final Logger logger = Logger.getLogger(SortIndexUpdaterWrapper.class);
-    @Autowired
-    IAgentService agentService;
-    @Autowired
-    ITaxonService taxonService;
-    @Autowired
-    ITaxonNodeService taxonNodeService;
-    @Autowired
-    protected IProgressMonitorService progressMonitorService;
+
+    private static final String TAXON_NODE = "TaxonNode";
+    private static final String TERM_NODE = "TermRelation";
+    private static final String POLYTOMOUS_KEY_NODE = "PolytomousKeyNode";
 
     @Autowired
     private HibernateTransactionManager transactionManager;
 //    @Autowired
-//    private CdmRepository repository;
+//    private CdmRepository repository;  //TODO not unique therefore byName or so is needed
+    @Autowired
+    private ITaxonService repository;
 
     public UpdateResult doInvoke(SortIndexUpdaterConfigurator config) {
 
@@ -67,59 +61,55 @@ public class SortIndexUpdaterWrapper implements Serializable {
        // CaseType caseType = CaseType.caseTypeOfDatasource(config.getDestination());
 
         IProgressMonitor  monitor = config.getMonitor();
+        if (monitor == null){
+            monitor = new NullProgressMonitor();
+        }
 
         if (config.isDoTaxonNode()){
-            updater = SortIndexUpdater.NewInstance(null, "Update taxonnode sortindex", "TaxonNode", "parent_id", "sortIndex", true);
+            updater = SortIndexUpdater.NewInstance(null, "Update taxon node sortindex", TAXON_NODE, "parent_id", "sortIndex", true);
 
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoTermNode()){
-            updater = SortIndexUpdater.NewInstance(null, "Update Feature node sortindex", "TermNode", "parent_id", "sortIndex", true);
+            updater = SortIndexUpdater.NewInstance(null, "Update term node sortindex", TERM_NODE, "parent_id", "sortIndex", true);
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoPolytomousKeyNode()){
-            updater = SortIndexUpdater.NewInstance(null, "Update Polytomouskey node sortindex", "PolytomousKeyNode", "parent_id", "sortindex", true);
+            updater = SortIndexUpdater.NewInstance(null, "Update polytomous key node sortindex", POLYTOMOUS_KEY_NODE, "parent_id", "sortindex", true);
             result.includeResult(update(updater, monitor));
         }
         return result;
-
     }
 
     private UpdateResult update(SortIndexUpdater updater,  IProgressMonitor  monitor){
+
+        //TODO change to long running task result
         UpdateResult updateResult = new UpdateResult();
         try {
 
-            TransactionStatus tx;
-            tx = startTransaction(true);
+            TransactionStatus tx = startTransaction(true);
             String query = updater.createIndexMapQuery();
-            SQLQuery sqlQuery = agentService.getSession().createSQLQuery(query);
+            List<?> data = getSqlResult(query);
 
-            List data = sqlQuery.list();
             int c = 2;
-            if (updater.getTableName().equals("TaxonNode")){
+            if (updater.getTableName().equals(TAXON_NODE)){
                 c= 3;
             }
             monitor.beginTask("Update index", data.size()*c);
             monitor.subTask("Create new index");
             IProgressMonitor subMonitor = new SubProgressMonitor(monitor, data.size());
-           List<Integer[]> result = new ArrayList<Integer[]>();
-           int id;
-           int parentId;
-           Object oId;
-           Object oParentId;
-           Integer[] rowArray = new Integer[2];
-           int done = 0;
-            for(Object object : data)
-            {
-               Object[] row = (Object[])object;
-               oId = row[0];
+            List<Integer[]> result = new ArrayList<>();
+            int done = 0;
+            for(Object object : data){
+                Object[] row = (Object[])object;
+                Object oId = row[0];
 
                 if (oId != null){
-                    id = Integer.valueOf(oId.toString());
-                    rowArray = new Integer[2];
-                    oParentId = row[1];
+                    int id = Integer.valueOf(oId.toString());
+                    Integer[] rowArray = new Integer[2];
+                    Object oParentId = row[1];
                     if (oParentId != null){
-                        parentId = Integer.valueOf(oParentId.toString());
+                        int parentId = Integer.valueOf(oParentId.toString());
                         rowArray[1]= parentId;
 
                     }else{
@@ -132,43 +122,38 @@ public class SortIndexUpdaterWrapper implements Serializable {
                 subMonitor.internalWorked(done);
             }
             subMonitor.done();
-            monitor.subTask("update indeces");
+            monitor.subTask("update indices");
 
             Map<Integer, Set<Integer>> indexMap =  updater.makeIndexMap(result);
             subMonitor = new SubProgressMonitor(monitor, indexMap.size());
             done = 0;
             for (Map.Entry<Integer, Set<Integer>> entry: indexMap.entrySet()){
-                String idSet = updater.makeIdSetString(entry.getValue());
+                String idSet = SortIndexUpdater.makeIdSetString(entry.getValue());
                 query = updater.createUpdateIndicesQuery(null,entry.getKey(), idSet);
-                sqlQuery = agentService.getSession().createSQLQuery(query);
-                int resultInt = sqlQuery.executeUpdate();
-                logger.debug("update all indice with index "+entry.getKey()+ " - " + resultInt);
+                int resultInt = executeSqlResult(query);
+                logger.debug("update all indice with index " + entry.getKey() + " - " + resultInt);
                 done++;
                 subMonitor.internalWorked(done);
-
             }
             subMonitor.done();
             //Update childrenCount
-            if (updater.getTableName().equals("TaxonNode")){
+            if (updater.getTableName().equals(TAXON_NODE)){
 
                 query = updater.getChildrenCountQuery();
-                sqlQuery = taxonService.getSession().createSQLQuery(query);
-                data = sqlQuery.list();
+                data = getSqlResult(query);
                 subMonitor = new SubProgressMonitor(monitor, data.size());
                 int realCount;
                 int countChildren;
                 int work = 0;
-                for(Object object : data)
-                {
+                for(Object object : data){
                    Object[] row = (Object[])object;
                    realCount =  ((Number) row[0]).intValue();
                    countChildren = ((Number) row[1]).intValue();
-                   id = ((Number) row[2]).intValue();
+                   int id = ((Number) row[2]).intValue();
 
                    if (realCount != countChildren){
                        query = updater.getUpdateChildrenCount(realCount, id);
-                       sqlQuery = taxonNodeService.getSession().createSQLQuery(query);
-                       int resultInt = sqlQuery.executeUpdate();
+                       int resultInt = executeSqlResult(query);
                        logger.debug("update all childrenCount "+ resultInt);
                    }
                    work ++;
@@ -180,13 +165,23 @@ public class SortIndexUpdaterWrapper implements Serializable {
             monitor.done();
             commitTransaction(tx);
             return updateResult;
-        } catch (SQLException e) {
-
+        } catch (Exception e) {
             monitor.warning("Stopped sortIndex updater");
             updateResult.setAbort();
             updateResult.addException(e);
         }
         return null;
+    }
+
+    private List<?> getSqlResult(String query) {
+        SQLQuery sqlQuery = getSession().createSQLQuery(query);
+        List<?> data = sqlQuery.list();
+        return data;
+    }
+
+    private int executeSqlResult(String query) {
+        SQLQuery sqlQuery = getSession().createSQLQuery(query);
+        return sqlQuery.executeUpdate();
     }
 
     public TransactionStatus startTransaction(Boolean readOnly) {
@@ -209,16 +204,14 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
 
+        //TODO is this really necessary
         getSession().setFlushMode(FlushMode.COMMIT);
 
         return txStatus;
     }
 
-    /**
-     * @return
-     */
     private Session getSession() {
-        return agentService.getSession();
+        return repository.getSession();
     }
 
     public void commitTransaction(TransactionStatus txStatus){

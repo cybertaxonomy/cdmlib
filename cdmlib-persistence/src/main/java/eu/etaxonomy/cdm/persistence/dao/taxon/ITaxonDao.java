@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IPublishableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -140,9 +141,11 @@ public interface ITaxonDao
      * @param specificEpithet
      * @param infraspecificEpithet
      * @param rank
+     * @param authorshipCache
      * @return a count of TaxonBase instances
      */
-    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, String authorship, Rank rank);
+    public long countTaxaByName(Class <? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank);
 
     /**
      * Returns a list of TaxonBase instances where the
@@ -161,11 +164,13 @@ public interface ITaxonDao
      * @param specificEpithet
      * @param infraspecificEpithet
      * @param rank
+     * @param authorshipCache
      * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a list of TaxonBase instances
      */
-    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize, Integer pageNumber);
+    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Find taxa by searching for Taxa and Synonyms where the
@@ -342,23 +347,14 @@ public interface ITaxonDao
      */
     public long countSynonyms(Synonym synonym, SynonymType type);
 
- //   public List<TaxonName> findIdenticalTaxonNames(List<String> propertyPath);
-
     public long countTaxaByCommonName(String searchString,
             Classification classification, MatchMode matchMode,
             Set<NamedArea> namedAreas);
 
- //   public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);
-
-
     /**
-     * finds all names with identical nameCache but belonging to taxa with different sec references
-     * @param sec1
-     * @param sec2
-     * @param propertyPaths
-     * @return
+     * see service layer documentation
      */
-    public Map<String, List<TaxonName>> findIdenticalNamesNew(Reference sec1, Reference sec2, List<String> propertyPaths);
+    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNamesNew(List<UUID> sourceRefUuids, List<String> propertyPaths);
 
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
             boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,

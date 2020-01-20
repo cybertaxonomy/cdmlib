@@ -151,15 +151,6 @@ public class Rank extends OrderedTermBase<Rank> {
 
 //*********************** Factory methods ********************************************/
 
-//    /**
-//     * Creates a new empty rank.
-//     *
-//     * @see #NewInstance(String, String, String)
-//     */
-//    private static Rank NewInstance(){
-//        return new Rank();
-//    }
-
     /**
      * Creates an additional rank with a description (in the {@link Language#DEFAULT() default language}),
      * a label and a label abbreviation.
@@ -219,8 +210,6 @@ public class Rank extends OrderedTermBase<Rank> {
     public void resetTerms(){
         termMap = null;
     }
-
-
 
     protected static Rank getTermByUuid(UUID uuid){
         if (termMap == null || termMap.isEmpty()){
@@ -1017,9 +1006,6 @@ public class Rank extends OrderedTermBase<Rank> {
         (new Rank()).setDefaultTerms(vocabulary);
     }
 
-    /**
-     * @param term
-     */
     private void addRank(Rank rank) {
         if (rank == null){
             logger.warn("rank is NULL");
@@ -1036,10 +1022,10 @@ public class Rank extends OrderedTermBase<Rank> {
 
         //initialize maps
         if (idInVocMap == null){
-            idInVocMap = new HashMap<String, UUID>();
+            idInVocMap = new HashMap<>();
         }
         if (labelMap == null){
-            labelMap = new HashMap<String, UUID>();
+            labelMap = new HashMap<>();
         }
         labelMap.put(label.toLowerCase(), rank.getUuid());
         //add to map

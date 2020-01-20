@@ -8,9 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.util.List;
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 
 /**
  * @author a.mueller
@@ -21,29 +23,36 @@ public class StructuredDescriptionAggregationConfiguration
 
     private static final long serialVersionUID = 7485291596888612932L;
 
-    private DescriptiveDataSet dataset;
+    private UUID datasetUuid;
+
+
+    //TODO merge with DistributionAggregationConfiguration.aggregationMode
+    private boolean aggregateToHigherRanks;
 
     boolean includeDefault = true;
     boolean includeLiterature = false;
+
+    private MissingMinimumMode missingMinimumMode = MissingMinimumMode.MinToZero;
+    private MissingMaximumMode missingMaximumMode = MissingMaximumMode.MaxToMin;
 
 // ******************* FACTORY ***************************************/
 
     public static StructuredDescriptionAggregationConfiguration NewInstance(
             TaxonNodeFilter filter, IProgressMonitor monitor){
-        return new StructuredDescriptionAggregationConfiguration(filter, monitor, null, null);
+        return new StructuredDescriptionAggregationConfiguration(filter, null, monitor, null, null);
     }
 
 
     public static StructuredDescriptionAggregationConfiguration NewInstance(TaxonNodeFilter filter,
             IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature){
-        return new StructuredDescriptionAggregationConfiguration(filter, monitor, includeDefault, includeLiterature);
+        return new StructuredDescriptionAggregationConfiguration(filter, null, monitor, includeDefault, includeLiterature);
     }
 
 // ******************* CONSTRUCTOR ***********************************/
 
     protected StructuredDescriptionAggregationConfiguration(TaxonNodeFilter filter,
-            IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature) {
-        super(filter, monitor);
+            List<AggregationMode> aggregationModes, IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature) {
+        super(filter, monitor, aggregationModes);
         if (includeDefault != null){
             this.includeDefault = includeDefault;
         }
@@ -61,6 +70,17 @@ public class StructuredDescriptionAggregationConfiguration
 
 // *********************** GETTER / SETTER ****************************/
 
+    //TODO remove
+//    public boolean isAggregateToHigherRanks() {
+//        return getAggregationModes().contains(AggregationMode.ToParent);
+//    }
+    public boolean isAggregateToHigherRanks() {
+        return this.aggregateToHigherRanks;
+    }
+    public void setAggregateToHigherRanks(boolean aggregateToHigherRanks) {
+        this.aggregateToHigherRanks = aggregateToHigherRanks;
+    }
+
     public boolean isIncludeDefault() {
         return includeDefault;
     }
@@ -75,10 +95,24 @@ public class StructuredDescriptionAggregationConfiguration
         this.includeLiterature = includeLiterature;
     }
 
-    public DescriptiveDataSet getDataset() {
-        return dataset;
+    public UUID getDatasetUuid() {
+        return datasetUuid;
     }
-    public void setDataset(DescriptiveDataSet dataset) {
-        this.dataset = dataset;
+    public void setDatasetUuid(UUID datasetUuid) {
+        this.datasetUuid = datasetUuid;
+    }
+
+    public MissingMinimumMode getMissingMinimumMode() {
+        return missingMinimumMode;
+    }
+    public void setMissingMinimumMode(MissingMinimumMode missingMinimumMode) {
+        this.missingMinimumMode = missingMinimumMode;
+    }
+
+    public MissingMaximumMode getMissingMaximumMode() {
+        return missingMaximumMode;
+    }
+    public void setMissingMaximumMode(MissingMaximumMode missingMaximumMode) {
+        this.missingMaximumMode = missingMaximumMode;
     }
 }

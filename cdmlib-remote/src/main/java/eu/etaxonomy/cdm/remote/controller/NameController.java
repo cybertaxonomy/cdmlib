@@ -141,7 +141,10 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         if (request != null) {
             logger.info("doGetTypeDesignations()" + requestPathAndQuery(request));
         }
-        TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>) null);
+        TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
+        if(tnb == null){
+            return null;
+        }
         Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return pager.getRecords();
@@ -181,6 +184,9 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
 
         logger.info("doGetNameCache()" + requestPathAndQuery(request));
         TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
+        if(tnb == null){
+            return null;
+        }
         String nameCacheString = tnb.getNameCache();
         List<String> result = new ArrayList<>();
         result.add(nameCacheString);

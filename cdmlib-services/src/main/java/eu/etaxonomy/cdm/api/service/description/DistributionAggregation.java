@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,15 +23,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.search.Search;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.UpdateResult;
-import eu.etaxonomy.cdm.common.DynamicBatch;
-import eu.etaxonomy.cdm.common.JvmLimitsException;
-import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
-import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
-import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
@@ -41,7 +32,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -49,7 +39,6 @@ import eu.etaxonomy.cdm.model.term.TermCollection;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  *
@@ -85,27 +74,10 @@ public class DistributionAggregation
 
     public static final Logger logger = Logger.getLogger(DistributionAggregation.class);
 
-    public static final String EXTENSION_VALUE_PREFIX = "transmissionEngineDistribution.priority:";
-
-    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;
-    /**
-     * ratio of the initially free heap which should not be used
-     * during the batch processing. This amount of the heap is reserved
-     * for the flushing of the session and to the index
-     */
-    private static final double BATCH_FREE_HEAP_RATIO = 0.9;
-    private static final int BATCH_SIZE_BY_AREA = 1000;
-    private static final int BATCH_SIZE_BY_RANK = 500;
-
-    /**
-     * only used for performance testing
-     */
-    final boolean ONLY_FISRT_BATCH = false;
-
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
-            "description.markers.markerType",
-            "description.elements.markers.markerType",
+//            "description.markers.markerType",
+//            "description.elements.markers.markerType",
             "description.elements.area",
             "description.elements.status",
             "description.elements.sources.citation.authorship",
@@ -121,154 +93,73 @@ public class DistributionAggregation
      */
     private List<PresenceAbsenceTerm> statusOrder = null;
 
-    private List<PresenceAbsenceTerm> byAreaIgnoreStatusList = null;
-
-    private List<PresenceAbsenceTerm> byRankIgnoreStatusList = null;
-
     private final Map<NamedArea, Set<NamedArea>> subAreaMap = new HashMap<>();
-
-    private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 // ******************* CONSTRUCTOR *********************************/
 
-    public DistributionAggregation() {
+    public DistributionAggregation() {}
+    @Override
+    protected String pluralDataType(){
+        return "distributions";
     }
 
-// ********************* METHODS *****************************************/
+// ********************* METHODS *********************************/
 
-
-    /**
-     * runs both steps
-     * <ul>
-     * <li>Step 1: Accumulate occurrence records by area</li>
-     * <li>Step 2: Accumulate by ranks starting from lower rank to upper rank,
-     * the status of all children are accumulated on each rank starting from
-     * lower rank to upper rank.</li>
-     * </ul>
-     *
-     * @param superAreas
-     *            the areas to which the subordinate areas should be projected.
-     * @param lowerRank
-     * @param upperRank
-     * @param classification
-     * @param classification
-     *            limit the accumulation process to a specific classification
-     *            (not yet implemented)
-     * @param monitor
-     *            the progress monitor to use for reporting progress to the
-     *            user. It is the caller's responsibility to call done() on the
-     *            given monitor. Accepts null, indicating that no progress
-     *            should be reported and that the operation cannot be cancelled.
-     * @throws JvmLimitsException
-     */
     @Override
-    protected UpdateResult doInvoke() throws JvmLimitsException {
-
-        //TODO FIXME use UpdateResult
-        UpdateResult result = new UpdateResult();
-
-        // only for debugging:
-        //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
-        //Logger.getLogger("org.hibernate.SQL").setLevel(Level.DEBUG);
-
-        logger.info("Hibernate JDBC Batch size: "
-                +  getSession().getSessionFactory().getSessionFactoryOptions().getJdbcBatchSize());
-
-        TaxonNodeFilter filter = getConfig().getTaxonNodeFilter();
-        filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
-
-        Long countTaxonNodes = getTaxonNodeService().count(filter);
-        int aggregationWorkTicks = countTaxonNodes.intValue();
-        int getIdListTicks = 1;
-        int makeStatusOrderTicks = 1;
-        beginTask("Accumulating distributions", (aggregationWorkTicks) + getIdListTicks + makeStatusOrderTicks);
-
-        List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
-        worked(getIdListTicks);
+    protected void preAggregate() {
+        subTask("make status order");
 
         // take start time for performance testing
         double start = System.currentTimeMillis();
 
         makeStatusOrder();
-        worked(makeStatusOrderTicks);
 
         double end1 = System.currentTimeMillis();
-        logger.info("Time elapsed for fetching taxon node id list and making status order() : " + (end1 - start) / (1000) + "s");
+        logger.info("Time elapsed for making status order : " + (end1 - start) / (1000) + "s");
 
-        //TODO AM toString for filter
-        subTask("Accumulating distributions per taxon for taxon filter " + filter.toString());
+        makeSuperAreas();
+        double end2 = System.currentTimeMillis();
+        logger.info("Time elapsed for making super areas : " + (end2 - end1) / (1000) + "s");
 
-        //TODO AM move to invokeOnSingleTaxon()
-        accumulate(taxonNodeIdList, new SubProgressMonitor(getMonitor(), aggregationWorkTicks));
+    }
 
-        double end3 = System.currentTimeMillis();
-        logger.info("Time elapsed for accumulate only(): " + (end3 - end1) / (1000) + "s");
-        logger.info("Time elapsed for invoking task(): " + (end3 - start) / (1000) + "s");
+    @Override
+    protected void initTransaction() {
+    }
 
-        done();
+    List<NamedArea> superAreaList;
 
-        return result;
+    private void makeSuperAreas() {
+        TransactionStatus tx = startTransaction(true);
+        if (getConfig().getSuperAreas()!= null){
+            Set<UUID> superAreaUuids = new HashSet<>(getConfig().getSuperAreas());
+            superAreaList = getTermService().find(NamedArea.class, superAreaUuids);
+            for (NamedArea superArea : superAreaList){
+                Set<NamedArea> subAreas = getSubAreasFor(superArea);
+                for(NamedArea subArea : subAreas){
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Initialize " + subArea.getTitleCache());
+                    }
+                }
+            }
+        }
+        commitTransaction(tx);
     }
 
 
-    /**
-     * byAreaIgnoreStatusList contains by default:
-     *  <ul>
-     *    <li>AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR()</li>
-     *    <li>AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR()</li>
-     *    <li>AbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED()</li>
-     *    <li>AbsenceTerm.NATIVE_REPORTED_IN_ERROR()</li>
-     *    <li>AbsenceTerm.NATIVE_FORMERLY_NATIVE()</li>
-     *  </ul>
-     *
-     * @return the byAreaIgnoreStatusList
-     */
+    @Override
+    protected List<String> descriptionInitStrategy() {
+        return TAXONDESCRIPTION_INIT_STRATEGY;
+    }
+
+// ********************* METHODS *****************************************/
+
     private List<PresenceAbsenceTerm> getByAreaIgnoreStatusList() {
-        if(byAreaIgnoreStatusList == null ){
-            byAreaIgnoreStatusList = Arrays.asList(
-                    new PresenceAbsenceTerm[] {
-                    		PresenceAbsenceTerm.CULTIVATED_REPORTED_IN_ERROR(),
-                    		PresenceAbsenceTerm.INTRODUCED_REPORTED_IN_ERROR(),
-                    		PresenceAbsenceTerm.NATIVE_REPORTED_IN_ERROR(),
-                    		PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(),
-                    		PresenceAbsenceTerm.NATIVE_FORMERLY_NATIVE()
-                            // TODO what about PresenceAbsenceTerm.ABSENT() also ignore?
-                    });
-        }
-        return byAreaIgnoreStatusList;
+        return getConfig().getByAreaIgnoreStatusList();
     }
 
-    public void setByAreaIgnoreStatusList(List<PresenceAbsenceTerm> byAreaIgnoreStatusList) {
-        this.byAreaIgnoreStatusList = byAreaIgnoreStatusList;
-    }
-
-    /**
-     * byRankIgnoreStatusList contains by default
-     *  <ul>
-     *    <li>PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()</li>
-     *    <li>PresenceTerm.ENDEMIC_DOUBTFULLY_PRESENT()</li>
-     *    <li>PresenceTerm.ENDEMIC_REPORTED_IN_ERROR()</li>
-     *    <li>PresenceTerm.NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()</li>
-     *  </ul>
-     *
-     * @return the byRankIgnoreStatusList
-     */
     private List<PresenceAbsenceTerm> getByRankIgnoreStatusList() {
-
-        if (byRankIgnoreStatusList == null) {
-            byRankIgnoreStatusList = Arrays.asList(
-                    new PresenceAbsenceTerm[] {
-                    		PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA(),
-                    		PresenceAbsenceTerm.ENDEMIC_DOUBTFULLY_PRESENT(),
-                            PresenceAbsenceTerm.ENDEMIC_REPORTED_IN_ERROR(),
-                            PresenceAbsenceTerm.NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()
-                    });
-        }
-        return byRankIgnoreStatusList;
-    }
-
-    public void setByRankIgnoreStatusList(List<PresenceAbsenceTerm> byRankIgnoreStatusList) {
-        this.byRankIgnoreStatusList = byRankIgnoreStatusList;
+        return getConfig().getByRankIgnoreStatusList();
     }
 
     /**
@@ -281,192 +172,98 @@ public class DistributionAggregation
      *
      * @see initializeStatusPriorityMap()
      *
-     * @param a
-     * @param b
-     * @param sourcesForWinnerB
-     *  In the case when <code>b</code> is preferred over <code>a</code> these Set of sources will be added to the sources of <code>b</code>
+     * @param accumulatedStatus
+     * @param newStatus
+     * @param additionalSourcesForWinningNewStatus Not in Use!
+     *  In the case when <code>newStatus</code> is preferred over <code>accumulatedStatus</code> these Set of sources will be added to the sources of <code>b</code>
+     * @param aggregationSourceMode
      * @return
      */
-    private StatusAndSources choosePreferredOrMerge(StatusAndSources a, StatusAndSources b,
-            Set<DescriptionElementSource> sourcesForWinnerB){
+    private StatusAndSources choosePreferredOrMerge(StatusAndSources accumulatedStatus, StatusAndSources newStatus,
+            Set<DescriptionElementSource> additionalSourcesForWinningNewStatus, AggregationSourceMode aggregationSourceMode){
 
-        if (b == null || b.status == null) {
-            return a;
+        if (newStatus == null || newStatus.status == null) {
+            return accumulatedStatus;
         }
-        if (a == null || a.status == null) {
-            return b;
+        if (accumulatedStatus == null || accumulatedStatus.status == null) {
+            return newStatus;
         }
 
-        Integer indexA = statusOrder.indexOf(a.status);
-        Integer indexB = statusOrder.indexOf(b.status);
+        Integer indexAcc = statusOrder.indexOf(accumulatedStatus.status);
+        Integer indexNew = statusOrder.indexOf(newStatus.status);
 
-        if (indexB == -1) {
-            logger.warn("No priority found in map for " + b.status.getLabel());
-            return a;
+        if (indexNew == -1) {
+            logger.warn("No priority found in map for " + newStatus.status.getLabel());
+            return accumulatedStatus;
         }
-        if (indexA == -1) {
-            logger.warn("No priority found in map for " + a.status.getLabel());
-            return b;
+        if (indexAcc == -1) {
+            logger.warn("No priority found in map for " + accumulatedStatus.status.getLabel());
+            return newStatus;
         }
-        if(indexA < indexB){
-            if(sourcesForWinnerB != null) {
-                b.addSources(sourcesForWinnerB);
+        if(indexAcc < indexNew){
+            if(additionalSourcesForWinningNewStatus != null) {
+                newStatus.addSources(additionalSourcesForWinningNewStatus);
             }
-            return b;
+            if (aggregationSourceMode == AggregationSourceMode.ALL){
+                newStatus.addSources(accumulatedStatus.sources);
+            }
+            return newStatus;
         } else {
-            if (indexA == indexB){
-                a.addSources(b.sources);
+            if (indexAcc == indexNew || aggregationSourceMode == AggregationSourceMode.ALL){
+                accumulatedStatus.addSources(newStatus.sources);
             }
-            return a;
+            return accumulatedStatus;
         }
     }
 
+    @Override
+    protected void addAggregationResultToDescription(TaxonDescription targetDescription,
+            ResultHolder resultHolder) {
 
-    /**
-     * Step 1: Accumulate occurrence records by area
-     * <ul>
-     * <li>areas are projected to super areas e.g.:  HS <-- HS(A), HS(G), HS(S)</li>
-     * <li>super areas do initially not have a status set ==> Prerequisite to check in CDM</li>
-     * <li>areas having a summary status of summary value different from {@link #getByAreaIgnoreStatusList()} are ignored</li>
-     * <li>areas have a priority value, the status of the area with highest priority determines the status of the super area</li>
-     * <li>the source references of the accumulated distributions are also accumulated into the new distribution,,</li>
-     * <li>this has been especially implemented for the EuroMed Checklist Vol2 and might not be a general requirement</li>
-     * </ul>
-     *
-     * @param superAreas
-     *      the areas to which the subordinate areas should be projected
-     * @param classificationLookupDto
-     * @throws JvmLimitsException
-     *
-     */
-    protected void accumulate(List<Integer> taxonNodeIdList,
-            IProgressMonitor subMonitor) throws JvmLimitsException {
+        Map<NamedArea, StatusAndSources> accumulatedStatusMap = ((DistributionResultHolder)resultHolder).accumulatedStatusMap;
 
-        List<NamedArea> superAreas = getConfig().getSuperAreas();
-
-        DynamicBatch batch = new DynamicBatch(BATCH_SIZE_BY_AREA, batchMinFreeHeap);
-        batch.setRequiredFreeHeap(BATCH_FREE_HEAP_RATIO);
-        //TODO AM from aggByRank          batch.setMaxAllowedGcIncreases(10);
-
-        TransactionStatus txStatus = startTransaction(false);
-
-        // reload superAreas TODO is it faster to getSession().merge(object) ??
-        Set<UUID> superAreaUuids = new HashSet<>(superAreas.size());
-        for (NamedArea superArea : superAreas){
-            superAreaUuids.add(superArea.getUuid());
-        }
-
-        // visit all accepted taxa
-        subMonitor.beginTask("Accumulating bottom up ", taxonNodeIdList.size());
-
-        //TODO FIXME this was a Taxon not a TaxonNode id list
-        Iterator<Integer> taxonIdIterator = taxonNodeIdList.iterator();
-
-        while (taxonIdIterator.hasNext() || batch.hasUnprocessedItems()) {
-
-            if(txStatus == null) {
-                // transaction has been committed at the end of this batch, start a new one
-                txStatus = startTransaction(false);
-            }
-
-            // the session is cleared after each batch, so load the superAreaList for each batch
-            //TODO AM reload areas needed? Terms do not cascade!
-            List<NamedArea> superAreaList = getTermService().find(NamedArea.class, superAreaUuids);
-
-            // load taxa for this batch
-            List<Integer> taxonIds = batch.nextItems(taxonIdIterator);
-//            logger.debug("accumulateByArea() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
-
-            //TODO AM adapt init-strat to taxonnode if it stays a taxon node list
-            List<OrderHint> orderHints = new ArrayList<>();
-            orderHints.add(OrderHint.BY_TREE_INDEX_DESC);
-            List<TaxonNode> taxonNodes = getTaxonNodeService().loadByIds(taxonIds, orderHints, TAXONDESCRIPTION_INIT_STRATEGY);
-
-            // iterate over the taxa and accumulate areas
-            // start processing the new batch
-
-            for(TaxonNode taxonNode : taxonNodes) {
-
-                accumulateSingleTaxon(taxonNode, superAreaList);
-                batch.incrementCounter();
-
-                subMonitor.worked(1);
-
-                //TODO handle canceled better if needed
-                if(subMonitor.isCanceled()){
-                    return;
-                }
-
-                if(!batch.isWithinJvmLimits()) {
-                    break; // flushAndClear and start with new batch
-                }
-            } // next taxon
-
-//            flushAndClear();
-
-            // commit for every batch, otherwise the persistent context
-            // may grow too much and eats up all the heap
-            commitTransaction(txStatus);
-            txStatus = null;
-
-
-            // flushing the session and to the index (flushAndClear() ) can impose a
-            // massive heap consumption. therefore we explicitly do a check after the
-            // flush to detect these situations and to reduce the batch size.
-            if(batch.getJvmMonitor().getGCRateSiceLastCheck() > 0.05) {
-                batch.reduceSize(0.5);
-            }
-
-        } // next batch of taxa
-
-        subMonitor.done();
-    }
-
-    private void accumulateSingleTaxon(TaxonNode taxonNode, List<NamedArea> superAreaList) {
-
-        Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
-        if(logger.isDebugEnabled()){
-            logger.debug("accumulate - taxon :" + taxonToString(taxon));
-        }
-
-        Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<>();
-        if (getConfig().getAggregationMode().isByRank()){
-            accumulateByRankSingleTaxon(taxonNode, accumulatedStatusMap);
-        }
-        if (getConfig().getAggregationMode().isByArea()){
-            accumulateByAreaSingleTaxon(taxonNode, superAreaList, accumulatedStatusMap);
-        }
-        addAggregationResultToDescription(taxon, accumulatedStatusMap);
-    }
-
-    private void addAggregationResultToDescription(Taxon taxon, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
-        TaxonDescription aggregationDescription = getAggregatedDescription(taxon);
         Set<Distribution> toDelete = new HashSet<>();
         if (getConfig().isDoClearExistingDescription()){
-            clearDescription(aggregationDescription);
+            clearDescription(targetDescription);
         }else{
-            //TODO only distributions (but nothing else expected)
-            toDelete = new HashSet<>((Set)aggregationDescription.getElements());
+            toDelete = new HashSet<>(getDistributions(targetDescription));
         }
         for (NamedArea area : accumulatedStatusMap.keySet()) {
-            Distribution distribution = findDistributionForAreaAndStatus(aggregationDescription, area, accumulatedStatusMap.get(area).status);
+            PresenceAbsenceTerm status = accumulatedStatusMap.get(area).status;
+            Distribution distribution = findDistributionForArea(targetDescription, area);
+            //old: if we want to reuse distribution only with exact same status
+//          Distribution distribution = findDistributionForAreaAndStatus(aggregationDescription, area, status);
+
             if(distribution == null) {
                 // create a new distribution element
-                distribution = Distribution.NewInstance(area, accumulatedStatusMap.get(area).status);
-                aggregationDescription.addElement(distribution);
+                distribution = Distribution.NewInstance(area, status);
+                targetDescription.addElement(distribution);
             }else{
-                toDelete.remove(distribution);
-                //TODO improve source reuse
-                distribution.getSources().clear();
+                distribution.setStatus(status);
+                toDelete.remove(distribution);  //we keep the distribution for reuse
             }
-            addSourcesDeduplicated(distribution.getSources(), accumulatedStatusMap.get(area).sources);
-
+            replaceSources(distribution.getSources(), accumulatedStatusMap.get(area).sources);
+//            addSourcesDeduplicated(distribution.getSources(), accumulatedStatusMap.get(area).sources);
         }
         for(Distribution toDelteDist: toDelete){
-            aggregationDescription.removeElement(toDelteDist);
+            targetDescription.removeElement(toDelteDist);
         }
     }
 
+    private Set<Distribution> getDistributions(TaxonDescription aggregationDescription) {
+        Set<Distribution> result = new HashSet<>();
+        for (DescriptionElementBase deb: aggregationDescription.getElements()){
+            if (deb.isInstanceOf(Distribution.class)){
+                result.add(CdmBase.deproxy(deb,Distribution.class));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Removes all description elements of type {@link Distribution} from the
+     * (aggregation) description.
+     */
     private void clearDescription(TaxonDescription aggregationDescription) {
         int deleteCount = 0;
         Set<DescriptionElementBase> deleteCandidates = new HashSet<>();
@@ -488,21 +285,27 @@ public class DistributionAggregation
         }
     }
 
-    private void accumulateByAreaSingleTaxon(TaxonNode taxonNode,
-            List<NamedArea> superAreaList, Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
+    @Override
+    protected void aggregateWithinSingleTaxon(Taxon taxon,
+            ResultHolder  resultHolder,
+            Set<TaxonDescription> excludedDescriptions) {
 
-        Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
+        Map<NamedArea, StatusAndSources> accumulatedStatusMap =
+                ((DistributionResultHolder)resultHolder).accumulatedStatusMap;
+
         if(logger.isDebugEnabled()){
             logger.debug("accumulateByArea() - taxon :" + taxonToString(taxon));
         }
 
-        List<Distribution> distributions = distributionsFor(taxon);
+        Set<TaxonDescription> descriptions = descriptionsFor(taxon, excludedDescriptions);
+        Set<Distribution> distributions = distributionsFor(descriptions);
 
         // Step through superAreas for accumulation of subAreas
         for (NamedArea superArea : superAreaList){
 
             // accumulate all sub area status
             StatusAndSources accumulatedStatusAndSources = null;
+            AggregationSourceMode aggregationSourceMode = getConfig().getWithinTaxonSourceMode();
             // TODO consider using the TermHierarchyLookup (only in local branch a.kohlbecker)
             Set<NamedArea> subAreas = getSubAreasFor(superArea);
             for(NamedArea subArea : subAreas){
@@ -517,27 +320,72 @@ public class DistributionAggregation
                         if(logger.isTraceEnabled()){
                             logger.trace("accumulateByArea() - \t\t" + termToString(subArea) + ": " + termToString(status));
                         }
-                        // skip all having a status value not in the ignore list
-                        if (getByAreaIgnoreStatusList().contains(status)){
+                        // skip all having a status value in the ignore list
+                        if (status == null || getByAreaIgnoreStatusList().contains(status)
+                                || (getConfig().isIgnoreAbsentStatusByArea() && status.isAbsenceTerm())){
                             continue;
                         }
-                        StatusAndSources subStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                        accumulatedStatusAndSources = choosePreferredOrMerge(accumulatedStatusAndSources, subStatusAndSources, null);
+                        StatusAndSources subAreaStatusAndSources = new StatusAndSources(status, distribution, aggregationSourceMode);
+                        accumulatedStatusAndSources = choosePreferredOrMerge(accumulatedStatusAndSources, subAreaStatusAndSources, null, aggregationSourceMode);
                     }
                 }
             } // next sub area
 
 
             if (accumulatedStatusAndSources != null) {
-                StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(superArea), accumulatedStatusAndSources, null);
+                StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(superArea), accumulatedStatusAndSources, null, aggregationSourceMode);
                 accumulatedStatusMap.put(superArea, preferedStatus);
             }
 
         } // next super area ....
     }
 
-    private void accumulateByRankSingleTaxon(TaxonNode taxonNode,
-            Map<NamedArea, StatusAndSources> accumulatedStatusMap) {
+    private class DistributionResultHolder implements ResultHolder{
+        Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<>();
+    }
+
+    @Override
+    protected ResultHolder createResultHolder() {
+        return new DistributionResultHolder();
+    }
+
+    protected class StatusAndSources {
+
+        private final PresenceAbsenceTerm status;
+        private final Set<DescriptionElementSource> sources = new HashSet<>();
+
+        public StatusAndSources(PresenceAbsenceTerm status, DescriptionElementBase deb, AggregationSourceMode aggregationSourceMode) {
+            this.status = status;
+            if (aggregationSourceMode == AggregationSourceMode.NONE){
+                return;
+            }else if (aggregationSourceMode == AggregationSourceMode.DESCRIPTION){
+                sources.add(DescriptionElementSource.NewAggregationInstance(deb.getInDescription()));
+            }else if (aggregationSourceMode == AggregationSourceMode.TAXON){
+                if (deb.getInDescription().isInstanceOf(TaxonDescription.class)){
+                    TaxonDescription td = CdmBase.deproxy(deb.getInDescription(), TaxonDescription.class);
+                    sources.add(DescriptionElementSource.NewAggregationInstance(td.getTaxon()));
+                }else{
+                    logger.warn("Description is not of type TaxonDescription. Adding source not possible");
+                }
+            }else if (aggregationSourceMode == AggregationSourceMode.ALL || aggregationSourceMode == AggregationSourceMode.ALL_SAMEVALUE){
+                addSourcesDeduplicated(this.sources, deb.getSources());
+            }else{
+                throw new RuntimeException("Unhandled source aggregation mode: " + aggregationSourceMode);
+            }
+        }
+
+        public void addSources(Set<DescriptionElementSource> sources) {
+            addSourcesDeduplicated(this.sources, sources);
+        }
+    }
+
+    @Override
+    protected void aggregateToParentTaxon(TaxonNode taxonNode,
+            ResultHolder  resultHolder,
+            Set<TaxonDescription> excludedDescriptions) {
+
+        Map<NamedArea, StatusAndSources> accumulatedStatusMap =
+                ((DistributionResultHolder)resultHolder).accumulatedStatusMap;
 
         Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
         if(logger.isDebugEnabled()){
@@ -548,7 +396,15 @@ public class DistributionAggregation
 
             LinkedList<Taxon> childStack = new LinkedList<>();
             for (TaxonNode node : taxonNode.getChildNodes()){
-                childStack.add(CdmBase.deproxy(node.getTaxon()));
+                Taxon child = CdmBase.deproxy(node.getTaxon());
+                //TODO maybe we should also use child catching from taxon node filter
+                //     we could e.g. clone the filter and set the parent as subtree filter
+                //     and this way get all children via service layer, this may improve also
+                //     memory usage
+                if (getConfig().getTaxonNodeFilter().isIncludeUnpublished()||
+                        taxon.isPublish()){
+                    childStack.add(child);
+                }
             }
 
             while(childStack.size() > 0){
@@ -559,15 +415,21 @@ public class DistributionAggregation
                     logger.trace("                   subtaxon :" + taxonToString(childTaxon));
                 }
 
-                for(Distribution distribution : distributionsFor(childTaxon) ) {
+                Set<Distribution> distributions = distributionsFor(descriptionsFor(childTaxon, excludedDescriptions));
+                for(Distribution distribution : distributions) {
+
                     PresenceAbsenceTerm status = distribution.getStatus();
-                    NamedArea area = distribution.getArea();
-                    if (status == null || getByRankIgnoreStatusList().contains(status)){
+                    if (status == null || getByRankIgnoreStatusList().contains(status)
+                            || (getConfig().isIgnoreAbsentStatusByRank() && status.isAbsenceTerm())){
                         continue;
                     }
 
-                    StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution.getSources());
-                    StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(area), childStatusAndSources, null);
+                    NamedArea area = distribution.getArea();
+                    AggregationSourceMode aggregationSourceMode = getConfig().getToParentSourceMode();
+
+                    StatusAndSources childStatusAndSources = new StatusAndSources(status, distribution, aggregationSourceMode);
+                    StatusAndSources preferedStatus = choosePreferredOrMerge(accumulatedStatusMap.get(area),
+                            childStatusAndSources, null, aggregationSourceMode );
                     accumulatedStatusMap.put(area, preferedStatus);
                 }
 
@@ -584,6 +446,23 @@ public class DistributionAggregation
         }
     }
 
+    private Distribution findDistributionForArea(TaxonDescription description, NamedArea area) {
+        for(DescriptionElementBase item : description.getElements()) {
+            if(!(item.isInstanceOf(Distribution.class))) {
+                continue;
+            }
+            Distribution distribution = CdmBase.deproxy(item, Distribution.class);
+            if(distribution.getArea().equals(area)) {
+                return distribution;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Old: For if we want to reuse distributions only for the exact same status or
+     * if we aggregate for each status separately. Otherwise use {@link #findDistributionForArea(TaxonDescription, NamedArea)}
+     */
     private Distribution findDistributionForAreaAndStatus(TaxonDescription description, NamedArea area, PresenceAbsenceTerm status) {
         for(DescriptionElementBase item : description.getElements()) {
             if(!(item.isInstanceOf(Distribution.class))) {
@@ -596,25 +475,6 @@ public class DistributionAggregation
         }
         return null;
     }
-
-//    private List<Rank> rankInterval(UUID lowerRankUuid, UUID upperRankUuid) {
-//
-//        TransactionStatus txStatus = startTransaction(false);
-//        Rank lowerRank = (Rank)getTermService().load(lowerRankUuid);
-//        Rank upperRank = (Rank)getTermService().load(upperRankUuid);
-//
-//        Rank currentRank = lowerRank;
-//        List<Rank> ranks = new ArrayList<>();
-//        do {
-//            ranks.add(currentRank);
-//            currentRank = findNextHigherRank(currentRank);
-//        }while (!currentRank.isHigher(upperRank));
-//
-//
-//        commitTransaction(txStatus);
-//        txStatus = null;
-//        return ranks;
-//    }
 
     private void flush() {
         logger.debug("flushing session ...");
@@ -634,56 +494,10 @@ public class DistributionAggregation
        flush();
        logger.debug("clearing session ...");
        getSession().clear();
-   }
-
-//
-//    /**
-//     * Returns the next higher rank
-//     *
-//     * TODO better implement OrderedTermBase.getNextHigherTerm() and OrderedTermBase.getNextLowerTerm()?
-//     *
-//     * @param rank the lower rank
-//     */
-//    private Rank findNextHigherRank(Rank rank) {
-//        rank = (Rank) getTermService().load(rank.getUuid());
-//        return rank.getNextHigherTerm();
-////        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
-////        return rankVocabulary.getNextHigherTerm(rank);
-//    }
-
-    /**
-     * Either finds an existing taxon description of the given taxon or creates a new one.
-     * If the doClear is set all existing description elements will be cleared.
-     *
-     * @param taxon
-     * @param doClear will remove all existing Distributions if the taxon already
-     *     has a description of type {@link DescriptionType#AGGREGATED_DISTRIBUTION}
-     *     (or a MarkerType COMPUTED for historical reasons, will be removed in future)
-     * @return
-     */
-    private TaxonDescription getAggregatedDescription(Taxon taxon) {
-
-        // find existing one
-        for (TaxonDescription description : taxon.getDescriptions()) {
-            // TODO remove COMPUTED;
-            if (description.isAggregatedDistribution() || description.hasMarker(MarkerType.COMPUTED(), true)) {
-                logger.debug("reusing computed description for " + taxon.getTitleCache());
-                if (description.hasMarker(MarkerType.COMPUTED(), true)){
-                    description.removeMarker(MarkerType.COMPUTED().getUuid());
-                }
-                if(!description.isAggregatedDistribution()){
-                    description.addType(DescriptionType.AGGREGATED_DISTRIBUTION);
-                }
-                setDescriptionTitle(description, taxon);  //maybe we want to redefine the title
-                return description;
-            }
-        }
-
-        // create a new one
-        return createNewDescription(taxon);
     }
 
-    private TaxonDescription createNewDescription(Taxon taxon) {
+    @Override
+    protected TaxonDescription createNewDescription(Taxon taxon) {
         String title = taxon.getTitleCache();
         logger.debug("creating new description for " + title);
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
@@ -692,8 +506,14 @@ public class DistributionAggregation
         return description;
     }
 
-    private void setDescriptionTitle(TaxonDescription description, Taxon taxon) {
-        String title = taxon.getTitleCache();
+    @Override
+    protected boolean hasDescriptionType(TaxonDescription description) {
+        return description.isAggregatedDistribution();
+    }
+
+    @Override
+    protected void setDescriptionTitle(TaxonDescription description, Taxon taxon) {
+        String title = taxon.getName() != null? taxon.getName().getTitleCache() : taxon.getTitleCache();
         description.setTitleCache("Aggregated distribution for " + title, true);
         return;
     }
@@ -709,18 +529,28 @@ public class DistributionAggregation
         return subAreaMap.get(superArea);
     }
 
-    private List<Distribution> distributionsFor(Taxon taxon) {
-        List<Distribution> distributions = new ArrayList<>();
+    private Set<TaxonDescription> descriptionsFor(Taxon taxon, Set<TaxonDescription> excludedDescriptions) {
+        Set<TaxonDescription> result = new HashSet<>();
         for(TaxonDescription description: taxon.getDescriptions()) {
-//            readOnlyIfInSession(description);
+//            readOnlyIfInSession(description); //not needed for tests anymore
+            if (!excludedDescriptions.contains(description)){
+                result.add(description);
+            }
+        }
+        return result;
+    }
+
+    private Set<Distribution> distributionsFor(Set<TaxonDescription> descriptions) {
+        Set<Distribution> result = new HashSet<>();
+        for(TaxonDescription description: descriptions) {
             for(DescriptionElementBase deb : description.getElements()) {
                 if(deb.isInstanceOf(Distribution.class)) {
-//                    readOnlyIfInSession(deb);
-                    distributions.add(CdmBase.deproxy(deb, Distribution.class));
+//                    readOnlyIfInSession(deb); //not needed for tests anymore
+                    result.add(CdmBase.deproxy(deb, Distribution.class));
                 }
             }
         }
-        return distributions;
+        return result;
     }
 
     /**
@@ -737,13 +567,6 @@ public class DistributionAggregation
         }
     }
 
-    private String taxonToString(TaxonBase<?> taxon) {
-        if(logger.isTraceEnabled()) {
-            return taxon.getTitleCache();
-        } else {
-            return taxon.toString();
-        }
-    }
 
     private String termToString(OrderedTermBase<?> term) {
         if(logger.isTraceEnabled()) {
@@ -783,72 +606,30 @@ public class DistributionAggregation
         return voc;
     }
 
-    private void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sources) {
-        for(DescriptionElementSource source : sources) {
+    private void replaceSources(Set<DescriptionElementSource> oldSources, Set<DescriptionElementSource> newSources) {
+        Set<DescriptionElementSource> toDeleteSources = new HashSet<>(oldSources);
+        for(DescriptionElementSource newSource : newSources) {
             boolean contained = false;
-            for(DescriptionElementSource existingSource: target) {
-                if(existingSource.equalsByShallowCompare(source)) {
+            for(DescriptionElementSource existingSource: oldSources) {
+                if(existingSource.equalsByShallowCompare(newSource)) {
                     contained = true;
+                    toDeleteSources.remove(existingSource);
                     break;
                 }
             }
             if(!contained) {
                 try {
-                    target.add((DescriptionElementSource)source.clone());
+                    oldSources.add((DescriptionElementSource)newSource.clone());
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     throw new RuntimeException(e);
                 }
             }
         }
-    }
-
-    public void setBatchMinFreeHeap(long batchMinFreeHeap) {
-        this.batchMinFreeHeap = batchMinFreeHeap;
-    }
-
-    public enum AggregationMode {
-        byAreas,
-        byRanks,
-        byAreasAndRanks;
-        public boolean isByRank() {
-           return this==byRanks || this == byAreasAndRanks;
-        }
-        public boolean isByArea() {
-            return this==byAreas || this == byAreasAndRanks;
-         }
-    }
-
-    private class StatusAndSources {
-
-        private final PresenceAbsenceTerm status;
-        private final Set<DescriptionElementSource> sources = new HashSet<>();
-
-        public StatusAndSources(PresenceAbsenceTerm status, Set<DescriptionElementSource> sources) {
-            this.status = status;
-            addSourcesDeduplicated(this.sources, sources);
-        }
-
-        public void addSources(Set<DescriptionElementSource> sources) {
-            addSourcesDeduplicated(this.sources, sources);
+        for (DescriptionElementSource toDeleteSource : toDeleteSources){
+            oldSources.remove(toDeleteSource);
         }
     }
 
-    @Override
-    protected UpdateResult invokeOnSingleTaxon() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
-    @Override
-    protected UpdateResult removeExistingAggregationOnTaxon() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected UpdateResult invokeHigherRankAggregation() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

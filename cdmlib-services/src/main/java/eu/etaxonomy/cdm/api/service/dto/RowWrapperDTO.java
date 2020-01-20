@@ -10,12 +10,18 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import eu.etaxonomy.cdm.api.service.description.MissingMaximumMode;
+import eu.etaxonomy.cdm.api.service.description.MissingMinimumMode;
+import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -31,7 +37,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 /**
  * @author pplitzner
  * @since 16.04.2018
- *
  */
 public abstract class RowWrapperDTO <T extends DescriptionBase> implements Serializable {
 
@@ -41,7 +46,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     private TaxonNodeDto taxonNode;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
-    private Map<Feature, String> featureToDisplayDataMap;
+    private Map<Feature, Collection<String>> featureToDisplayDataMap;
 
     public RowWrapperDTO(T description, TaxonNodeDto taxonNode) {
         this.taxonNode = taxonNode;
@@ -51,11 +56,13 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
         Set<DescriptionElementBase> elements = description.getElements();
         for (DescriptionElementBase descriptionElementBase : elements) {
-            Feature feature = descriptionElementBase.getFeature();
-            featureToElementMap.put(feature, descriptionElementBase);
-            String displayData = generateDisplayString(descriptionElementBase);
-            if(displayData!=null){
-                featureToDisplayDataMap.put(feature, displayData);
+            if(hasData(descriptionElementBase)){
+                Feature feature = descriptionElementBase.getFeature();
+                featureToElementMap.put(feature, descriptionElementBase);
+                Collection<String> displayData = generateDisplayString(descriptionElementBase);
+                if(displayData!=null){
+                    featureToDisplayDataMap.put(feature, displayData);
+                }
             }
         }
     }
@@ -82,7 +89,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return taxonNode;
     }
 
-    public String getDisplayDataForFeature(Feature feature){
+    public Collection<String> getDisplayDataForFeature(Feature feature){
         return featureToDisplayDataMap.get(feature);
     }
 
@@ -91,17 +98,17 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return descriptionElementBase;
     }
 
-    private String generateDisplayString(DescriptionElementBase descriptionElementBase){
-        String displayData = null;
+    private Collection<String> generateDisplayString(DescriptionElementBase descriptionElementBase){
+        Collection<String> displayData = new ArrayList<>();
         if(descriptionElementBase instanceof CategoricalData){
             CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
             displayData = categoricalData.getStateData().stream()
                     .map(stateData->generateStateDataString(stateData))
-                    .collect(Collectors.joining(","));
+                    .collect(Collectors.toList());
         }
         if(descriptionElementBase instanceof QuantitativeData){
             QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
-            displayData = generateQuantitativeDataString(quantitativeData);
+            displayData = Collections.singleton(generateQuantitativeDataString(quantitativeData));
         }
         return displayData;
     }
@@ -128,18 +135,33 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     public void setDataValueForCategoricalData(Feature feature, List<State> states){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
+        if(states.isEmpty()){
+            removeFeature(feature, descriptionElementBase);
+            return;
+        }
         if(descriptionElementBase!=null && descriptionElementBase.isInstanceOf(CategoricalData.class)){
             CategoricalData categoricalData = HibernateProxyHelper.deproxy(descriptionElementBase, CategoricalData.class);
             categoricalData.setStateDataOnly(states);
             // update display data cache
-            String displayData = generateDisplayString(categoricalData);
-            featureToDisplayDataMap.put(feature, displayData);
+            featureToDisplayDataMap.put(feature, generateDisplayString(categoricalData));
+        }
+    }
+
+    private void removeFeature(Feature feature, DescriptionElementBase descriptionElementBase) {
+        featureToElementMap.remove(feature);
+        featureToDisplayDataMap.remove(feature);
+        if(descriptionElementBase!=null){
+            description.removeElement(descriptionElementBase);
         }
     }
 
     public void setDataValueForQuantitativeData(Feature feature, Map<StatisticalMeasure, List<String>> textFields){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
-        if(descriptionElementBase instanceof QuantitativeData){
+        if(textFields.values().stream().allMatch(listOfStrings->listOfStrings.isEmpty())){
+            removeFeature(feature, descriptionElementBase);
+            return;
+        }
+        if(descriptionElementBase.isInstanceOf(QuantitativeData.class)){
             QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
             //clear values
             quantitativeData.getStatisticalValues().clear();
@@ -154,9 +176,10 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                     }
                 });
             });
+            QuantitativeData fixedQuantitativeData = StructuredDescriptionAggregation.handleMissingMinOrMax(quantitativeData,
+                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
             // update display data cache
-            String displayData = generateDisplayString(quantitativeData);
-            featureToDisplayDataMap.put(feature, displayData);
+            featureToDisplayDataMap.put(feature, generateDisplayString(fixedQuantitativeData));
         }
     }
 
@@ -181,7 +204,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         if (getClass() != obj.getClass()) {
             return false;
         }
-        RowWrapperDTO other = (RowWrapperDTO) obj;
+        RowWrapperDTO<?> other = (RowWrapperDTO<?>) obj;
         if (description == null) {
             if (other.description != null) {
                 return false;
@@ -204,6 +227,18 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             return false;
         }
         return true;
+    }
+
+    public static boolean hasData(DescriptionElementBase element){
+        if(element.isInstanceOf(CategoricalData.class)){
+            CategoricalData categoricalData = HibernateProxyHelper.deproxy(element, CategoricalData.class);
+            return !categoricalData.getStatesOnly().isEmpty();
+        }
+        else if(element.isInstanceOf(QuantitativeData.class)){
+            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(element, QuantitativeData.class);
+            return !quantitativeData.getStatisticalValues().isEmpty();
+        }
+        return false;
     }
 
 }

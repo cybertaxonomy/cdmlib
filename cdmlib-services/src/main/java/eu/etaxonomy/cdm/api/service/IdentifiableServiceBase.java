@@ -416,7 +416,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	private <S extends T> List<S> getPages(Class<S> clazz, DeduplicateState dedupState, List<OrderHint> orderHints) {
 		List<S> result = new ArrayList<>();
 		for (int pageNo = dedupState.startPage; pageNo < dedupState.startPage + dedupState.nPages; pageNo++){
-			List<S> objectList = listByTitleWithRestrictions(clazz, null, null, null, dedupState.pageSize, pageNo, orderHints, null);
+			List<S> objectList = this.list(clazz, dedupState.pageSize, pageNo, orderHints, null);
 			result.addAll(objectList);
 		}
 		if (result.size()< dedupState.nPages * dedupState.pageSize ){

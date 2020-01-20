@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2016 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service.util;
 
 import java.io.Serializable;
@@ -12,7 +20,6 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -21,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
@@ -49,41 +57,30 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class CacheUpdater implements Serializable {
 
     private static final long serialVersionUID = -1410600568024821771L;
-
     private static final Logger logger = Logger.getLogger(CacheUpdater.class);
 
     @Autowired
     protected INameService nameService;
-
     @Autowired
     protected ITaxonService taxonService;
-
     @Autowired
     protected  IClassificationService classificationService;
-
     @Autowired
     protected IReferenceService referenceService;
-
     @Autowired
     protected IAgentService agentService;
-
-
     @Autowired
     protected IOccurrenceService occurrenceService;
-
     @Autowired
     protected ITermService termService;
     @Autowired
     protected IDescriptionService descriptionService;
-
     @Autowired
     protected ICollectionService collectionService;
     @Autowired
-    protected IFeatureTreeService featureTreeService;
-
+    protected ITermTreeService termTreeService;
     @Autowired
     protected IVocabularyService vocabularyService;
-
     @Autowired
     protected IPolytomousKeyService polytomousKeyService;
     @Autowired
@@ -163,7 +160,7 @@ public class CacheUpdater implements Serializable {
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
 			    result.includeResult(termService.updateCaches((Class) clazz, null, null, subMonitor));
 			}else if (TermTree.class.isAssignableFrom(clazz)){
-			    result.includeResult(featureTreeService.updateCaches((Class) clazz, null, null, subMonitor));
+			    result.includeResult(termTreeService.updateCaches((Class) clazz, null, null, subMonitor));
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 			    result.includeResult(vocabularyService.updateCaches((Class) clazz, null, null, subMonitor));
 			}

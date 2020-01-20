@@ -15,6 +15,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -32,7 +33,10 @@ public class PolytomousKeyGeneratorConfigurator {
 
     private boolean useDependencies = true; // if this boolean is true, the dependencies are taken into account
 
+    private boolean useTaxonHierarchy = true; //if true the taxa are resolved hierarchically, first the top taxa are resolved, and in a further step their children, and in again a further step the children of the children
+
     private DescriptiveDataSet dataSet;
+
 
     /**
      * If true allows the generator to merge branches if the corresponding states can be used together without diminishing their score.
@@ -41,19 +45,24 @@ public class PolytomousKeyGeneratorConfigurator {
     public boolean isMerge() {
         return merge;
     }
-
+    /**
+     * @see #isMerge()
+     */
     public void setMerge(boolean merge) {
         this.merge = merge;
     }
 
     /**
-     * If true allows the generator to use the dependencies given by the function "setDependencies".
-     * If false prevents the generator from using dependencies.
+     * If <code>true</code> allows the generator to use the dependencies
+     * given by the function "setDependencies".
+     * If <code>false</code> prevents the generator from using dependencies.
      */
     public boolean isUseDependencies() {
         return useDependencies;
     }
-
+    /**
+     * @see #isUseDependencies()
+     */
     public void setUseDependencies(boolean useDependencies) {
         this.useDependencies = useDependencies;
     }
@@ -61,14 +70,20 @@ public class PolytomousKeyGeneratorConfigurator {
     public DescriptiveDataSet getDataSet() {
         return dataSet;
     }
-
+    /**
+     * @see #getDataSet()
+     */
     public void setDataSet(DescriptiveDataSet dataSet) {
         this.dataSet = dataSet;
     }
 
-    /**
-     * @return
-     */
+    public boolean isUseTaxonHierarchy() {
+        return useTaxonHierarchy;
+    }
+    public void setUseTaxonHierarchy(boolean useTaxonHierarchy) {
+        this.useTaxonHierarchy = useTaxonHierarchy;
+    }
+
     public Set<DescriptionBase<?>> getDescriptions() {
         Set<DescriptionBase<?>> result = (Set)dataSet.getDescriptions();
         if (result == null || result.isEmpty()){
@@ -81,16 +96,25 @@ public class PolytomousKeyGeneratorConfigurator {
     public Set<TaxonDescription> getTaxonDescriptions() {
         Set<TaxonDescription> result = new HashSet<>();
         for (DescriptionBase<?> desc: getDescriptions()){
-            if (desc.isInstanceOf(TaxonDescription.class)){
+            if (desc.isInstanceOf(TaxonDescription.class) && hasStructuredDescriptiveData(desc)){
                 result.add(CdmBase.deproxy(desc, TaxonDescription.class));
             }
         }
         return result;
     }
 
+    private boolean hasStructuredDescriptiveData(DescriptionBase<?> desc) {
+        for (DescriptionElementBase el : desc.getElements()){
+            if (el.isCharacterData()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Feature> getFeatures() {
         List<Feature> result;
-        if(!useDependencies){
+        if(!isUseDependencies()){
             result = dataSet.getDescriptiveSystem().asTermList();
         }else{
             result = new ArrayList<>(dataSet.getDescriptiveSystem().independentTerms());
@@ -104,6 +128,8 @@ public class PolytomousKeyGeneratorConfigurator {
 
     public boolean isDebug() {return debug;}
     public void setDebug(boolean debug) {this.debug = debug;}
+
+
 
 
 }

@@ -506,7 +506,7 @@ public class TaxonDaoHibernateImpl
 
             hql = String.format(hql, classString);
 
-            if (hql == "") {
+            if (hql.isEmpty()) {
                 return null;
             }
             if(!doCount){
@@ -887,8 +887,9 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorship, Rank rank) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorship, Rank rank)");
+    public long countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
+            String infraSpecificEpithet, String authorshipCache, Rank rank) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, String authorshipCache, Rank rank)");
         Criteria criteria = null;
 
         criteria = getCriteria(clazz);
@@ -921,10 +922,10 @@ public class TaxonDaoHibernateImpl
             criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
         }
 
-        if(authorship == null) {
+        if(authorshipCache == null) {
             criteria.add(Restrictions.eq("name.authorshipCache", ""));
-        } else if(!authorship.equals("*")) {
-            criteria.add(Restrictions.eq("name.authorshipCache", authorship));
+        } else if(!authorshipCache.equals("*")) {
+            criteria.add(Restrictions.eq("name.authorshipCache", authorshipCache));
         }
 
         if(rank != null) {
@@ -937,8 +938,9 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber)");
+    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
+            String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+        checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths)");
         Criteria criteria = getCriteria(clazz);
 
         criteria.setFetchMode( "name", FetchMode.JOIN );
@@ -989,6 +991,8 @@ public class TaxonDaoHibernateImpl
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
         List<TaxonBase> result = criteria.list();
+
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
 
@@ -1375,50 +1379,69 @@ public class TaxonDaoHibernateImpl
         return taxonNames;
     }
 
-
-
-    /**
-     * Returns a map of nameCaches and names available for sec1 and sec2
-     * this is used for the merging of two instances into one
-     *
-     * @param secRef1
-     * @param secRef2
-     * return map
-     *
-     */
     @Override
-    public Map<String, List<TaxonName>> findIdenticalNamesNew(Reference sec1, Reference sec2, List<String> propertyPaths){
+    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNamesNew(List<UUID> sourceRefUuids, List<String> propertyPaths){
+        Set<String> nameCacheCandidates = new HashSet<>();
+        try {
+            for (int i = 0; i<sourceRefUuids.size()-1;i++){
+                UUID sourceUuid1 = sourceRefUuids.get(i);
+                for (int j = i+1; j<sourceRefUuids.size();j++){
+                    UUID sourceUuid2 = sourceRefUuids.get(j);
+                    if (sourceUuid1.equals(sourceUuid2)){
+                        continue;  //just in case we have duplicates in the list
+                    }
 
+                    Query query = getSession().createQuery(
+                            " SELECT DISTINCT n1.nameCache "
+                          + " FROM TaxonName n1 JOIN n1.sources s1 JOIN s1.citation ref1 "
+                          +         " , TaxonName n2 JOIN n2.sources s2 JOIN s2.citation ref2 "
+                          + " WHERE  ref1.uuid = (:sourceUuid1) "
+                          + "       AND n1.id <> n2.id "
+                          + "       AND ref2.uuid IN (:sourceUuid2)"
+                          + "       AND ref1.uuid <> ref2.uuid "
+                          + "       AND n1.nameCache = n2.nameCache) "
+                          + " ORDER BY n1.nameCache ");
+                    query.setParameter("sourceUuid1", sourceUuid1);
+                    query.setParameter("sourceUuid2", sourceUuid2);
 
-        //get all names from erms
-        Query query=getSession().createQuery("SELECT DISTINCT ermsName from TaxonName ermsName join ermsName.taxonBases ermsTaxon WHERE ermsTaxon.sec = :ermsSec AND ermsName.nameCache IN ( Select faunaName.nameCache FROM TaxonName faunaName JOIN faunaName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec) ORDER BY ermsName.nameCache");
-        query.setParameter("ermsSec", sec1);
-        query.setParameter("faunaSec", sec2);
-        List <TaxonName> identicalErmsNames = query.list();
-        defaultBeanInitializer.initializeAll(identicalErmsNames, propertyPaths);
+                    @SuppressWarnings("unchecked")
+                    List<String> queryNameCacheCandidates = query.list();
+                    nameCacheCandidates.addAll(queryNameCacheCandidates);
+                }
+            }
 
-        //get all nameCaches
-        List<String> nameCacheList = identicalErmsNames.stream().map(TaxonName::getNameCache).collect(Collectors.toList());
+            Map<UUID, List<TaxonName>> duplicates = new HashMap<>();
+            for (UUID sourceUuid : sourceRefUuids){
+                Query query=getSession().createQuery("SELECT n "
+                        + " FROM TaxonName n JOIN n.sources s JOIN s.citation ref "
+                        + " WHERE ref.uuid = :sourceUuid AND n.nameCache IN (:nameCacheCandidates) "
+                        + " ORDER BY n.nameCache");
+                query.setParameter("sourceUuid", sourceUuid);
+                query.setParameterList("nameCacheCandidates", nameCacheCandidates);
+                @SuppressWarnings("unchecked")
+                List<TaxonName> sourceDuplicates = query.list();
+                defaultBeanInitializer.initializeAll(sourceDuplicates, propertyPaths);
 
-        //get all names from fauna europaea having the same nameCache as a name from erms
-        query=getSession().createQuery("SELECT DISTINCT faunaEuName from TaxonName faunaEuName join faunaEuName.taxonBases faunaTaxon WHERE faunaTaxon.sec = :faunaSec AND faunaEuName.nameCache IN (:ermsNameCaches) ORDER BY faunaEuName.nameCache");
-        query.setParameter("faunaSec", sec2);
-        query.setParameterList("ermsNameCaches", nameCacheList);
+                 duplicates.put(sourceUuid, sourceDuplicates);
+            }
 
-        List <TaxonName> identicalFaunaEuNames = query.list();
-        defaultBeanInitializer.initializeAll(identicalFaunaEuNames, propertyPaths);
-        //create a map with nameCache and list of identical names
-       Map<String, List<TaxonName>> nameCacheNameMap = new HashMap();
-       for (String nameCache: nameCacheList) {
-    	   List<TaxonName> names = identicalErmsNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList());
-    	   names.addAll(identicalFaunaEuNames.stream().filter(name-> name.getNameCache().equals(nameCache)).collect(Collectors.toList()));
-    	   nameCacheNameMap.put(nameCache, names);
+            List<String> nameCacheCandidateList = new ArrayList<>(nameCacheCandidates);
+            Map<String, Map<UUID,Set<TaxonName>>> result = new HashMap<>();
+            for (String nameCache: nameCacheCandidateList) {
+                Map<UUID,Set<TaxonName>> uuidNameMap = new HashMap<>();
+                result.put(nameCache, uuidNameMap);
+                for(UUID sourceUuid: duplicates.keySet()){
+                    Set<TaxonName> names = duplicates.get(sourceUuid).stream().filter(name->
+                            name.getNameCache().equals(nameCache)).collect(Collectors.toSet());
+                    uuidNameMap.put(sourceUuid, names);
+                }
+            }
 
-       }
-
-
-        return nameCacheNameMap;
-
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override

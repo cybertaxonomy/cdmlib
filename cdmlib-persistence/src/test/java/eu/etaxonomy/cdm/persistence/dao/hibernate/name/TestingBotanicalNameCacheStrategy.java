@@ -81,4 +81,10 @@ public class TestingBotanicalNameCacheStrategy implements INonViralNameCacheStra
         return null;
     }
 
+    @Override
+    public String getNameCache(TaxonName nonViralName, HTMLTagRules htmlTagRules) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

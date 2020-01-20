@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  *
  * @author a.mueller
  * @since 25.05.2016
- *
  */
 public class DefaultReferenceCacheStrategy extends StrategyBase implements INomenclaturalReferenceCacheStrategy{
     private static final long serialVersionUID = 6773742298840407263L;
@@ -79,26 +78,20 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     private static final String beforeMicroReference = ": ";
     private static final String afterYear = "";
 
-
     private static final boolean trim = true;
 
 // ************************ FACTORY ****************************/
 
-    /**
-     * Factory method
-     * @return
-     */
     public static DefaultReferenceCacheStrategy NewInstance(){
         return new DefaultReferenceCacheStrategy();
     }
 
+// ******************************* Main methods ******************************/
 
     @Override
     protected UUID getUuid() {
         return uuid;
     }
-
-// ******************************* Main methods ******************************/
 
     @Override
     public String getTitleCache(Reference reference) {
@@ -154,11 +147,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
-
-    /**
-     * @param accessed
-     * @return
-     */
     private String getAccessedString(DateTime accessed) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
         String result = formatter.print(accessed);
@@ -183,7 +171,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }
         return str;
     }
-
 
     @Override
     public String getFullAbbrevTitleString(Reference reference) {
@@ -328,7 +315,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return concat;
     }
 
-
     @Override
     public String getNomenclaturalCache(Reference reference) {
         return this.getNomenclaturalCitation(reference, null);
@@ -446,6 +432,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     }
 
 // ******************************* HELPER *****************************************/
+
     @Override
     public String getBeforeMicroReference(){
         return beforeMicroReference;
@@ -484,7 +471,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
             return type.getMessage();
         }
     }
-
 
     /**
      * Returns <code>true</code> if the type of the reference originally corresponded to a cache strategy
@@ -529,7 +515,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     }
 
     /**
-     * Returns year information as originally computed by {@link ReferenceDefaultCacheStrategy}
+     * Returns year information as originally computed by {@link ReferenceDefaultCacheStrategy}.
      */
     private String addYearReferenceDefault(String string, Reference ref){
         String result;
@@ -544,7 +530,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }
         return result;
     }
-
 
 // ********************* Nomenclatural title ***************************************/
 
@@ -628,7 +613,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         String result;
         //use generics's publication date if it exists
         if (inRef == null ||  (thisRef.hasDatePublished() ) ){
-            getTitleWithoutYearAndAuthorGeneric(inRef, true);
             result =  inRef == null ? "" : getTitleWithoutYearAndAuthorGeneric(inRef, true);
             //added //TODO unify with non-inRef references formatting
 

@@ -805,6 +805,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.titleCache like :title "
                 + (termType!=null?" and a.termType = :termType ":"");
+
+        title = title.replace("*", "%");
         Query query =  getSession().createQuery(queryString);
         query.setParameter("title", "%"+title+"%");
         if(termType!=null){

@@ -29,15 +29,9 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
     //per import
 
     protected List<String> knownABCDelements = new ArrayList<String>();
-    protected HashMap<String,String> allABCDelements = new HashMap<String,String>();
+    protected HashMap<String,String> allABCDelements = new HashMap<>();
     public String gatheringAgentsText ="";
-    public List<String> gatheringAgentsList=new ArrayList<String>();
-
-    //per unit
-
-
-
-
+    public List<String> gatheringAgentsList=new ArrayList<>();
 
     protected List<String[]> associatedUnitIds;
 
@@ -50,9 +44,6 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         return institutionCode;
     }
 
-
-
-
     /**
      * @param institutionCode the institutionCode to set
      */
@@ -60,17 +51,12 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         this.institutionCode = institutionCode;
     }
 
-
-
-
     /**
      * @return the collectionCode
      */
     public String getCollectionCode() {
         return collectionCode;
     }
-
-
 
 
     /**
@@ -133,8 +119,9 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         setReferenceList(new ArrayList<String[]>());
         setMultimediaObjects(new HashMap<String,Map<String, String>>());
         setGatheringMultimediaObjects(new HashMap<String,Map<String, String>>());
-        setDocSources(new ArrayList<String>());
-        associatedUnitIds = new ArrayList<String[]>();
+        setDocSources(new ArrayList<>());
+        associatedUnitIds = new ArrayList<>();
+
     }
 
 
@@ -152,8 +139,6 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         return gatheringDepthMin;
 
     }
-
-
 
     /**
      * @param textContent
@@ -182,9 +167,6 @@ public class Abcd206DataHolder extends SpecimenDataHolder{
         return gatheringDepthUnit;
 
     }
-
-
-
 
 
     /**

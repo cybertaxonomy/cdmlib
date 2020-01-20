@@ -29,6 +29,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.mueller
  * @since 02.03.2010
+ *
+ * @see DbImportSynonymMapper
  */
 public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<DbImportConfiguratorBase<STATE>,?>>
         extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {

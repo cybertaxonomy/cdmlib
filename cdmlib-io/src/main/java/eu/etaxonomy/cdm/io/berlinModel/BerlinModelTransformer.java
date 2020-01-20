@@ -312,6 +312,8 @@ public class BerlinModelTransformer {
 	public static UUID uuidCc = UUID.fromString("05B0DD06-30F8-477D-BF4C-30D9DEF56320");
 	public static UUID uuidBt = UUID.fromString("EE13FB74-F3AC-46B1-9F23-6A25AC504446");
 	public static UUID uuidTcs = UUID.fromString("904C3980-B98D-422E-A195-95F4F41FC734");
+	public static UUID uuidKo = UUID.fromString("f3f05e88-99af-48fa-92ef-1a169bcc7acf");
+	public static UUID uuidSe = UUID.fromString("75facd9a-125d-41b5-8f90-776234e782e9");
 
 	//Caucasus area
 	public static UUID uuidVocCaucasusAreas = UUID.fromString("3ef82b77-23cb-4b60-a4b3-edc7e4775ddb");

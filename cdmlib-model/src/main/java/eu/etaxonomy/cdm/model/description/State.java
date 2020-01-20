@@ -48,6 +48,10 @@ public class State extends OrderedTermBase<State> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(State.class);
 
+	public static final UUID uuidPresent = UUID.fromString("4f90d908-2061-4627-b251-0683c55b9c2e");
+	public static final UUID uuidAbsent = UUID.fromString("f193112f-68b2-4c74-bb82-05791892d2c4");
+
+
 	protected static Map<UUID, State> termMap = null;
 
 

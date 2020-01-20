@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.database.update.v58_511;
+package eu.etaxonomy.cdm.database.update.v508_511;
 
 import java.util.ArrayList;
 import java.util.List;

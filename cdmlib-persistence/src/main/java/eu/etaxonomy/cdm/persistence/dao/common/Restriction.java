@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  *
  * @author a.kohlbecker
  * @since May 8, 2017
- *
  */
 public class Restriction<T extends Object> {
 
@@ -64,30 +63,16 @@ public class Restriction<T extends Object> {
         }
     }
 
-    /**
-     * @return the propertyName
-     */
     public String getPropertyName() {
         return propertyName;
     }
-
-    /**
-     * @param propertyName the propertyName to set
-     */
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
 
-    /**
-     * @return the matchMode
-     */
     public MatchMode getMatchMode() {
         return matchMode;
     }
-
-    /**
-     * @param matchMode the matchMode to set
-     */
     public void setMatchMode(MatchMode matchMode) {
         this.matchMode = matchMode;
     }
@@ -101,41 +86,21 @@ public class Restriction<T extends Object> {
         }
         return values;
     }
-
-    /**
-     * @param values the values to set
-     */
     public void setValues(List<T> values) {
         this.values = values;
     }
-
-    /**
-     *
-     * @param value
-     */
     public void addValue(T value){
         getValues().add(value);
     }
 
-    /**
-     * @return the operator
-     */
     public Operator getOperator() {
         return operator;
     }
-
-    /**
-     * @param operator the operator to set
-     */
     public void setOperator(Operator operator) {
         this.operator = operator;
     }
 
-    /**
-     * @return
-     */
     public boolean isNot() {
         return NOT_OPERATORS.contains(operator);
     }
-
 }

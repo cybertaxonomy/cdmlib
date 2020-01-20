@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
@@ -48,6 +50,7 @@ public class TermDto extends AbstractTermDto{
     private String vocRepresentation_L10n = null;
     private String vocRepresentation_L10n_abbreviatedLabel = null;
     private Collection<UUID> media = null;
+    private NamedAreaLevel level = null;
 
     private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
@@ -64,6 +67,7 @@ public class TermDto extends AbstractTermDto{
         this.idInVocabulary = idInVocabulary;
         this.vocRepresentations = vocRepresentations;
         setTermType(termType);
+
     }
 
     static public TermDto fromTerm(DefinedTermBase term) {
@@ -111,8 +115,12 @@ public class TermDto extends AbstractTermDto{
             }
             dto.setMedia(mediaUuids);
         }
+        if (term instanceof NamedArea && ((NamedArea)term).getLevel() != null){
+            dto.setLevel(((NamedArea)term).getLevel());
+        }
         return dto;
     }
+
 
     @Override
     public void localize(ITermRepresentation_L10n representation_L10n) {
@@ -237,8 +245,27 @@ public class TermDto extends AbstractTermDto{
         this.media.add(mediaUuid);
     }
 
+    public void setLevel(NamedAreaLevel level) {
+        this.level = level;
+    }
+
+    public NamedAreaLevel getLevel(){
+        return level;
+    }
+
+
     public static String getTermDtoSelect(String fromTable){
-        return ""
+        String[] result = createSqlParts(fromTable);
+
+        return result[0]+result[1]+result[2];
+    }
+
+    /**
+     * @param fromTable
+     * @return
+     */
+    private static String[] createSqlParts(String fromTable) {
+        String sqlSelectString = ""
                 + "select a.uuid, "
                 + "r, "
                 + "p.uuid, "
@@ -249,15 +276,27 @@ public class TermDto extends AbstractTermDto{
                 + "voc_rep,  "
                 + "a.termType,  "
                 + "a.uri,  "
-                + "m  "
-                + "from "+fromTable+" as a "
-                + "LEFT JOIN a.partOf as p "
+                + "m  ";
+        String sqlFromString =   "from "+fromTable+" as a ";
+
+        String sqlJoinString =  "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
                 + "LEFT JOIN a.media as m "
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
                 + "LEFT JOIN v.representations as voc_rep "
                 ;
+
+        String[] result = new String[3];
+        result[0] = sqlSelectString;
+        result[1] = sqlFromString;
+        result[2] = sqlJoinString;
+        return result;
+    }
+
+    public static String getTermDtoSelectNamedArea(){
+        String[] result = createSqlParts("NamedArea");
+        return result[0]+  ", level  " + result[1] + result[2]+ "LEFT JOIN a.level as level ";
     }
 
 
@@ -310,6 +349,9 @@ public class TermDto extends AbstractTermDto{
                         vocRepresentations);
                 termDto.setUri((URI)elements[9]);
                 termDto.setMedia(mediaUuids);
+                if (elements.length>11 && elements[11] != null){
+                    termDto.setLevel((NamedAreaLevel)elements[11]);
+                }
 
                 dtoMap.put(uuid, termDto);
                 dtos.add(termDto);

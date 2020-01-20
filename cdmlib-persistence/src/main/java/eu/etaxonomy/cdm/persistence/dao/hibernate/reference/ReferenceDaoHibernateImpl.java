@@ -99,10 +99,16 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 	@Override
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids){
-	    List<Reference> result = getReferenceListForUuids(uuids, null);
-        List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
+	    return getUuidAndTitle(uuids, null);
+    }
+
+
+    @Override
+    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {
+        List<Reference> result = getReferenceListForUuids(uuids, refType);
+        List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
         for(Reference object : result){
-            list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
+                list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
         }
 
         return list;
@@ -110,7 +116,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 	private List<Reference> getReferenceListForUuids(Set<UUID> uuids, ReferenceType refType){
 	    if (uuids.isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
         Criteria criteria = null;
 
@@ -122,7 +128,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
             criteria.add(Restrictions.in("uuid", uuids ) );
         }
 
-        return criteria.list();
+        @SuppressWarnings("unchecked")
+        List<Reference> result = criteria.list();
+        return result;
 	}
 
 	@Override
@@ -398,14 +406,4 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
     }
 
-    @Override
-    public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {
-        List<Reference> result = getReferenceListForUuids(uuids, refType);
-        List<UuidAndTitleCache<Reference>> list = new ArrayList<UuidAndTitleCache<Reference>>();
-        for(Reference object : result){
-                list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
-        }
-
-        return list;
-    }
 }

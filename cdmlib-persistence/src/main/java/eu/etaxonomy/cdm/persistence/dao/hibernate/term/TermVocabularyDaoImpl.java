@@ -280,9 +280,46 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    return list;
 	}
 
+	@Override
+    public Collection<TermDto> getNamedAreaTerms(List<UUID> vocabularyUuids) {
+        String queryString = TermDto.getTermDtoSelectNamedArea()
+                + "where v.uuid in :vocabularyUuids "
+                + "order by a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameterList("vocabularyUuids", vocabularyUuids);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
     @Override
     public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid) {
         String queryString = TermDto.getTermDtoSelect()
+                + "where v.uuid = :vocabularyUuid "
+                + "and a.partOf is null "
+                + "and a.kindOf is null";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("vocabularyUuid", vocabularyUuid);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
+    @Override
+    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type) {
+        String queryString;
+        if (type.equals(TermType.NamedArea)){
+            queryString = TermDto.getTermDtoSelectNamedArea();
+        }else{
+            queryString = TermDto.getTermDtoSelect();
+        }
+        queryString = queryString
                 + "where v.uuid = :vocabularyUuid "
                 + "and a.partOf is null "
                 + "and a.kindOf is null";

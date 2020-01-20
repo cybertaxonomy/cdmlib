@@ -505,27 +505,26 @@ public class TaxonServiceImpl
 
 
     @Override
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank);
+    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
+        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank);
 
         List<TaxonBase> results = new ArrayList<>();
         if(numberOfResults > 0) { // no point checking again
-            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
+            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorshipCache, rank,
+                    pageSize, pageNumber, propertyPaths);
         }
 
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
-    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber) {
-        long numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank);
+    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
 
-        List<TaxonBase> results = new ArrayList<>();
-        if(numberOfResults > 0) { // no point checking again
-            results = dao.findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, authorship, rank, pageSize, pageNumber);
-        }
 
-        return results;
+        return findTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infragenericEpithet, authorshipCache, rank,
+                pageSize, pageNumber, propertyPaths).getRecords();
     }
 
     @Override
@@ -1011,6 +1010,7 @@ public class TaxonServiceImpl
     	}
     	taxon = HibernateProxyHelper.deproxy(taxon);
     	Classification classification = HibernateProxyHelper.deproxy(classificationDao.load(classificationUuid), Classification.class);
+    	config.setClassificationUuid(classificationUuid);
         result = isDeletable(taxonUUID, config);
 
         if (result.isOk()){
@@ -1257,9 +1257,8 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public Map<String,List<TaxonName>> findIdenticalTaxonNameIds(Reference sec1, Reference sec2, List<String> propertyPaths) {
-
-        return this.dao.findIdenticalNamesNew(sec1, sec2, propertyPaths);
+    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalTaxonNames(List<UUID> sourceRefUuids, List<String> propertyPaths) {
+        return this.dao.findIdenticalNamesNew(sourceRefUuids, propertyPaths);
     }
 
 
@@ -2991,7 +2990,11 @@ public class TaxonServiceImpl
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
-            result = isDeletableForTaxon(references, taxonConfig);
+            List<String> propertyPaths = new ArrayList();
+            propertyPaths.add("taxonNodes");
+            Taxon taxon = (Taxon)load(taxonBaseUuid, propertyPaths);
+
+            result = isDeletableForTaxon(references, taxonConfig );
         }else{
             SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
             result = isDeletableForSynonym(references, synonymConfig);
@@ -3014,6 +3017,8 @@ public class TaxonServiceImpl
         return result;
     }
 
+
+
     private DeleteResult isDeletableForTaxon(Set<CdmBase> references, TaxonDeletionConfigurator config){
         String message = null;
         DeleteResult result = new DeleteResult();
@@ -3028,7 +3033,12 @@ public class TaxonServiceImpl
                 }
 
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
+
                     message = "The taxon can't be deleted as long as it belongs to a taxon node.";
+                }
+                if (ref instanceof TaxonNode && config.getClassificationUuid() != null && !config.isDeleteInAllClassifications() && !((TaxonNode)ref).getClassification().getUuid().equals(config.getClassificationUuid())){
+                    message = "The taxon can't be deleted as long as it is used in more than one classification";
+
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonRelationship)){
                     if (!config.isDeleteMisappliedNamesAndInvalidDesignations() &&

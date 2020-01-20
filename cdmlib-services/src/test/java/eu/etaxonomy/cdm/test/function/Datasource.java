@@ -36,7 +36,9 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -53,6 +55,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
+import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGeneratorConfigurator;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
@@ -86,7 +90,7 @@ public class Datasource {
 
 
 		server = "test.e-taxonomy.eu";
-		database = "cdm_rem_conf_am";
+		database = "cdm_caryo_spp";
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
@@ -134,11 +138,14 @@ public class Datasource {
 
 		TransactionStatus tx = appCtr.startTransaction(true);
 
-//		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().list(null, null, null, null, null).get(0);
-//		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
-//		config.setDataSet(dataset);
-//		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
-//		key.print(System.out);
+		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().find(10);
+		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
+		config.setDataSet(dataset);
+		config.setDebug(true);
+		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
+//		appCtr.getPolytomousKeyService().save(key);
+		key.print(System.out);
+		System.out.println(key.getUuid());
 
 		appCtr.commitTransaction(tx);
 
@@ -172,11 +179,6 @@ public class Datasource {
 		System.exit(0);
 	}
 
-
-    /**
-     * @param appCtr
-     * @param propertyPaths
-     */
     private void listClassification(CdmApplicationController appCtr, List<String> propertyPaths) {
         try {
             List<Classification> list = appCtr.getClassificationService().list(null, null, null, null, propertyPaths);
@@ -186,10 +188,6 @@ public class Datasource {
         }
     }
 
-
-    /**
-     * @param appCtr
-     */
     private void testGroupedTaxa(CdmApplicationController appCtr) {
         UUID classificationUuid = UUID.fromString("91231ebf-1c7a-47b9-a56c-b45b33137244");
 		UUID taxonUuid1 = UUID.fromString("3bae1c86-1235-4e2e-be63-c7f8c4410527");
@@ -201,13 +199,11 @@ public class Datasource {
         System.out.println(groupedTaxa);
     }
 
-
     private void addPerson(CdmApplicationController appCtr) {
         TransactionStatus tx = appCtr.startTransaction();
 		appCtr.getAgentService().save(Person.NewInstance());
 		appCtr.commitTransaction(tx);
     }
-
 
 	private void deleteHighLevelNode(CdmApplicationController appCtr) {
 		TransactionStatus tx = appCtr.startTransaction();
@@ -318,7 +314,6 @@ public class Datasource {
 		appCtr.close();
 
 	}
-
 
 	private void testLocalHsql(){
 		CdmApplicationController appCtr = null;

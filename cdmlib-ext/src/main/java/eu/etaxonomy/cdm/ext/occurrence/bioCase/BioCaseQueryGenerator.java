@@ -95,7 +95,9 @@ public class BioCaseQueryGenerator {
     private static final String HERBARIUM_PATH_ABCD_2_0 = UNIT_PATH + "/SourceID";
     private static final String COUNTRY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Country/ISO3166Code";
     private static final String COLLECTOR_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/CollectorsFieldNumber";
-    private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgentsText";
+    private static final String COLLECTOR_PATH_ABCD_2_0_a = UNIT_PATH + "/Gathering/Agents/GatheringAgentsText";
+    private static final String COLLECTOR_PATH_ABCD_2_0_b = UNIT_PATH + "/Gathering/Agents/GatheringAgent/AgentText";
+    private static final String COLLECTOR_PATH_ABCD_2_0_c = UNIT_PATH + "/Gathering/Agents/GatheringAgent/Person/Fullname";
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
     private static final String CAT_PATH_ABCD_2_0 = UNIT_PATH + "/CAT";
     private static final String ASSOCIATION_UNIT_ID_ABCD_2_0 = UNIT_PATH +"/Associations/UnitAssociation/AssociatedUnitID";
@@ -174,7 +176,11 @@ public class BioCaseQueryGenerator {
                 elAnd.addContent(elOr);
             }
             if(query.collector!=null && !query.collector.trim().isEmpty()){
-                addLikeFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
+                Element elOr = new Element(OR);
+                addLikeFilter(elOr, query.collector, COLLECTOR_PATH_ABCD_2_0_a);
+                addLikeFilter(elOr, query.collector, COLLECTOR_PATH_ABCD_2_0_b);
+                addLikeFilter(elOr, query.collector, COLLECTOR_PATH_ABCD_2_0_c);
+                elAnd.addContent(elOr);
             }
             if(query.collectorsNumber!=null && !query.collectorsNumber.trim().isEmpty()){
                 addLikeFilter(elAnd, query.collectorsNumber, COLLECTOR_NUMBER_PATH_ABCD_2_0);

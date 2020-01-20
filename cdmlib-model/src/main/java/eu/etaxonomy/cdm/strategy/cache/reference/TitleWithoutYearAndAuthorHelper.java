@@ -272,7 +272,7 @@ public class TitleWithoutYearAndAuthorHelper {
         }
         result += volumePart;
 
-        //delete .
+        //delete .   //TODO needed? Creates problems e.g. if vol ends with dot, like vol="3, Suppl.", this is not handled correctly
         while (result.endsWith(".")){
             result = result.substring(0, result.length()-1);
         }
@@ -302,7 +302,6 @@ public class TitleWithoutYearAndAuthorHelper {
 //      }
 //      nomRefCache += publisherPart;
 
-
         //delete .
         while (nomRefCache.endsWith(".")){
             nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
@@ -310,11 +309,6 @@ public class TitleWithoutYearAndAuthorHelper {
         return nomRefCache.trim();
     }
 
-    /**
-     * @param ref
-     * @param isAbbrev
-     * @return
-     */
     private static String getTitleWithoutYearAndAuthorThesis(Reference ref, boolean isAbbrev) {
         //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 
@@ -337,11 +331,6 @@ public class TitleWithoutYearAndAuthorHelper {
         return nomRefCache.trim();
     }
 
-    /**
-     * @param ref
-     * @param isAbbrev
-     * @return
-     */
     private static String getTitleWithoutYearAndAuthorWebPage(Reference ref, boolean isAbbrev) {
         //FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 

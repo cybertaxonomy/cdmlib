@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
@@ -225,17 +226,26 @@ public class DescriptiveDataSetService
         UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = load(datasetUuid);
         result.setCdmEntity(dataSet);
+
+        List<UUID> taxonUuids = wrappers.stream().map(wrapper->wrapper.getTaxonNode().getTaxon().getUuid()).collect(Collectors.toList());
+        List<TaxonBase> taxa = taxonService.load(taxonUuids, Arrays.asList(new String[]{"descriptions"}));
+
         for (SpecimenNodeWrapper wrapper : wrappers) {
+            Optional<TaxonBase> findAny = taxa.stream().filter(taxon->taxon.getUuid().equals(wrapper.getTaxonNode().getTaxon().getUuid())).findAny();
+            if(!findAny.isPresent()){
+                result.addException(new IllegalArgumentException("Could not create wrapper for "+wrapper.getUuidAndTitleCache().getTitleCache()));
+                continue;
+            }
+            Taxon taxon = (Taxon) findAny.get();
             UUID taxonDescriptionUuid = wrapper.getTaxonDescriptionUuid();
             TaxonDescription taxonDescription = null;
             if(taxonDescriptionUuid!=null){
                 taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
             }
             if(taxonDescription==null){
-                Optional<TaxonDescription> associationDescriptionOptional = wrapper.getTaxonNode().getTaxon().getDescriptions().stream()
+                Optional<TaxonDescription> associationDescriptionOptional = taxon.getDescriptions().stream()
                         .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
                         .findFirst();
-                Taxon taxon = wrapper.getTaxonNode().getTaxon();
                 if(!associationDescriptionOptional.isPresent()){
                     taxonDescription = TaxonDescription.NewInstance(taxon);
                 }
@@ -459,7 +469,7 @@ public class DescriptiveDataSetService
             for (DescriptionElementBase specimenDescriptionElement : specimenDescription.getElements()) {
                 Feature feature = specimenDescriptionElement.getFeature();
                 specimenDescriptionFeatures.add(feature);
-                if(datasetFeatures.contains(feature)){
+                if(datasetFeatures.contains(feature) && RowWrapperDTO.hasData(specimenDescriptionElement)){
                     matchingDescriptionElements.add(specimenDescriptionElement);
                 }
             }
@@ -525,24 +535,6 @@ public class DescriptiveDataSetService
             }
         }
 
-        //add all remaining description elements to the new description
-        for(Feature wsFeature:datasetFeatures){
-            boolean featureFound = false;
-            for(DescriptionElementBase element:newDesription.getElements()){
-                if(element.getFeature().equals(wsFeature)){
-                    featureFound = true;
-                    break;
-                }
-            }
-            if(!featureFound){
-                if(wsFeature.isSupportsCategoricalData()){
-                    newDesription.addElement(CategoricalData.NewInstance(wsFeature));
-                }
-                else if(wsFeature.isSupportsQuantitativeData()){
-                    newDesription.addElement(QuantitativeData.NewInstance(wsFeature));
-                }
-            }
-        }
         //add sources of data set
         if(addDatasetSource){
             dataSet.getSources().forEach(source->{

@@ -56,9 +56,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 //	//TODO
 //	private boolean deleteAll = false;
 
-	//nullValues
-	private boolean ignoreNull = false;
-
 	private UUID uuidFeatureTree;
 
 	private String featureTreeTitle;
@@ -86,7 +83,8 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 
-	protected Class<ICdmImport>[] ioClassList;
+	@SuppressWarnings("rawtypes")
+    protected Class<ICdmImport>[] ioClassList;
 
 	protected ICdmIO[] ioList;
 
@@ -175,21 +173,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	@Override
     public void setEditor(EDITOR editor) {
 		ImportConfiguratorBase.editor = editor;
-	}
-
-	/**
-	 * If true, no errors occur if objects are not found that should exist. This may
-	 * be needed e.g. when only subsets of the data are imported.
-	 * Default value is <cod>false</code>.
-	 * @return the ignoreNull
-	 */
-	@Override
-    public boolean isIgnoreNull() {
-		return ignoreNull;
-	}
-	@Override
-    public void setIgnoreNull(boolean ignoreNull) {
-		this.ignoreNull = ignoreNull;
 	}
 
 	@Override

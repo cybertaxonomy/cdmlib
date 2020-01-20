@@ -35,8 +35,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @author a.mueller
  * @since 03.06.2010
  */
-public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<FieldUnit> {
-	private static final long serialVersionUID = 1578628591216605619L;
+public class DerivedUnitFacadeFieldUnitCacheStrategy
+        extends StrategyBase
+        implements IIdentifiableEntityCacheStrategy<FieldUnit> {
+
+    private static final long serialVersionUID = 1578628591216605619L;
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldUnitCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
@@ -61,6 +64,12 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 	}
 
 	protected String getFieldData(DerivedUnitFacade facade) {
+
+	    FieldUnit fieldUnit = facade.getFieldUnit(false);
+	    if (fieldUnit != null && fieldUnit.isProtectedTitleCache()){
+	        return fieldUnit.getTitleCache();
+	    }
+
 		String ALTITUDE_PREFIX = "alt. ";
 //		String ALTITUDE_POSTFIX = " m";
 

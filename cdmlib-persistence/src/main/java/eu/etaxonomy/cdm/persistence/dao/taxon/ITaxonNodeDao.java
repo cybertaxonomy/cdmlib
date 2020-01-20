@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
@@ -58,14 +57,14 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return a list of UuidAndTitleCache objects that represent children of the
      * parent
      */
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+    //public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(TaxonNodeDto parent);
 
     /**
      * Retrieves the parent node of the {@link TaxonNode} represented by the given {@link UuidAndTitleCache}.
      * @param child the child for which the parent should be retrieved
      * @return an UuidAndTitleCache object representing the parent node
      */
-    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child);
+    public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child);
 
     /**
      * Retrieves a list of {@link UuidAndTitleCache} objects that have a matching titleCache
@@ -197,11 +196,12 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
             Set<UUID> relationTypes, boolean includeSharedTaxa, boolean includeHybrids,
             IProgressMonitor monitor);
 
+
     /**
      * @param parent
      * @return
      */
-    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 
     /**
      * @param classification
@@ -232,12 +232,13 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return
      */
     long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished);
-    /**
-     * get taxonNodeDto of parent with given rank
-     * @param classification
-     * @param rank
-     * @return
-     */
+
 	public TaxonNodeDto getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonName name);
+
+
+    public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
+
+
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
 }

@@ -40,10 +40,6 @@ public class CdmUtils {
 
     private static final Logger logger = Logger.getLogger(CdmUtils.class);
 
-    /**
-     * @param url
-     * @return
-     */
     static private boolean urlIsJarOrBundle(URL url){
         return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
     }

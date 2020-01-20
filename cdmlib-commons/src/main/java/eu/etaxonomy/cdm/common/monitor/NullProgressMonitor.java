@@ -10,11 +10,12 @@ import java.io.Serializable;
  * Empty default implementation
  *
  * @author n.hoffmann
- *
  */
 public class NullProgressMonitor implements IProgressMonitor {
 
-	@Override
+    static final long serialVersionUID = -1641601841621954955L;
+
+    @Override
 	public void beginTask(String name, int totalWork) {
 		// do nothing
 	}

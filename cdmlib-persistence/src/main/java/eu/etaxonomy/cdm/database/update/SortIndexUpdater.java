@@ -27,25 +27,12 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @since 16.09.2010
  */
 public class SortIndexUpdater extends SchemaUpdaterStepBase {
-	private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
+
+    private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
 
 	private final String tableName;
-	/**
-     * @return the tableName
-     */
-    public String getTableName() {
-        return tableName;
-    }
-
     private final String sortIndexColumn;
 	private final String parentColumn;
-	/**
-     * @return the parentColumn
-     */
-    public String getParentColumn() {
-        return parentColumn;
-    }
-
     private String idColumn = "id";
 	private String currentSortColumn = "id";
 	private final boolean includeAudTable;
@@ -60,13 +47,11 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	}
 
     /**
-     * Returns an SortIndexUpdater that updates an existing sortindex which might have missing sortindex numbers in between.
-     *
+     * Returns an SortIndexUpdater that updates an existing sort index which might have missing sortindex numbers in between.
      */
     public static final SortIndexUpdater NewUpdateExistingSortindexInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
         return new SortIndexUpdater(stepList, stepName, tableName, parentColumn,sortIndexColumn, "id", sortIndexColumn, includeAudTable, 0);
     }
-
 
 	protected SortIndexUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, String currentSortColumn, boolean includeAudTable, Integer baseValue) {
 		super(stepList, stepName);
@@ -114,7 +99,6 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	        return resultsetQuery;
 	}
 
-
 	/**
 	 * For each (new) sortIndex value the according record ids are computed.
 	 * This allows updating all records sortindex by sortindex.
@@ -138,14 +122,10 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 		}
         return makeIndexMap( result);
 
-
-
-
 		//increase index with each row, set to 0 if parent is not the same as the previous one
-
 	}
 
-	public Map<Integer, Set<Integer>> makeIndexMap(List<Integer[]> oldIndexMap) throws NumberFormatException, SQLException{
+	public Map<Integer, Set<Integer>> makeIndexMap(List<Integer[]> oldIndexMap) throws NumberFormatException{
 	    int oldParentId = -1;
 	    Integer index = baseValue;
 	    Map<Integer, Set<Integer>> indexMap = new HashMap<>();
@@ -181,7 +161,6 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
         updateQuery = updateQuery.replace("@idList", idSetString);
         updateQuery = updateQuery.replace("@id", idColumn);
         return updateQuery;
-
 	}
 
 	private void updateIndices(String tableName, ICdmDataSource datasource, Map<Integer, Set<Integer>> indexMap)
@@ -216,35 +195,29 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 		set.add(id);
 	}
 
-
 	public String getChildrenCountQuery(){
 
         String countSelect = "SELECT COUNT(child.id) as realCount, parent.countChildren as countChildren, parent.id as parentID FROM @tableName child RIGHT JOIN @tableName parent ON child.parent_id = parent.id GROUP BY parent.id";
         countSelect = countSelect.replace("@tableName", tableName);
         return countSelect;
-
 	}
 
 	public String getUpdateChildrenCount(int count, int id){
-
-        String countUpdate =  "UPDATE @tableName SET countChildren = " + count+" WHERE id = " + id;
+        String countUpdate =
+                  " UPDATE @tableName "
+                + " SET countChildren = " + count
+                + " WHERE id = " + id;
         countUpdate = countUpdate.replace("@tableName", tableName);
-
-
         return countUpdate;
-
     }
 
 	public void updateChildrenCount(String select, ICdmDataSource datasource) throws SQLException{
-	    ResultSet rs;
 
-        rs = datasource.executeQuery(select);
+	    ResultSet rs = datasource.executeQuery(select);
 
-        List<Integer[]> result = new ArrayList<Integer[]>();
         int count ;
         int countChildren;
         int parentId;
-
         while (rs.next()){
             count = rs.getInt("realCount");
             countChildren = rs.getInt("countChildren");
@@ -254,7 +227,13 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
                 datasource.executeUpdate(updateQuery);
             }
         }
-
 	}
 
+    public String getParentColumn() {
+        return parentColumn;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
 }

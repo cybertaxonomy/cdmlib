@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2016 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service.util;
 
 import org.apache.log4j.Logger;
@@ -24,7 +32,6 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
     private static final long serialVersionUID = 7667521864001167289L;
     private static final Logger logger = Logger.getLogger(CacheUpdaterWithNewCacheStrategy.class);
 
-
 	private boolean handleSingleTableClass(Class<? extends IdentifiableEntity> clazz) {
 		logger.warn("Updating class " + clazz.getSimpleName() + " ...");
 		try {
@@ -32,7 +39,7 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 			if (DefinedTermBase.class.isAssignableFrom(clazz)){
 				termService.updateCaches((Class) clazz, null, null, null);
 			}else if (TermTree.class.isAssignableFrom(clazz)){
-				featureTreeService.updateCaches((Class) clazz, null, null, null);
+				termTreeService.updateCaches((Class) clazz, null, null, null);
 			}else if (TermVocabulary.class.isAssignableFrom(clazz)){
 				vocabularyService.updateCaches((Class) clazz, null, null, null);
 			}

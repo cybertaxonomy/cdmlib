@@ -20,17 +20,12 @@ import org.junit.Test;
 /**
  * @author a.mueller
  * @since 14.09.2017
- *
  */
 public class RegistrationTest {
 
     private TaxonName name1;
     private TaxonName name2;
 
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         name1 = TaxonNameFactory.NewBotanicalInstance(null);

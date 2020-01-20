@@ -132,6 +132,9 @@ public class NamePortalController extends BaseController<TaxonName, INameService
     public List<TypeDesignationBase> doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
+        if(tnb == null){
+            return null;
+        }
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
         return p.getRecords();
     }
@@ -180,9 +183,14 @@ public class NamePortalController extends BaseController<TaxonName, INameService
     public List<TaxonNameDescription> doGetNameDescriptions(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         logger.info("doGetNameDescriptions()" + request.getRequestURI());
-        TaxonName tnb = service.load(uuid, null);
+
+        TaxonName tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
+        if(tnb == null){
+            return null;
+        }
         Pager<TaxonNameDescription> p = descriptionService.getTaxonNameDescriptions(tnb, null, null, NAMEDESCRIPTION_INIT_STRATEGY);
         return p.getRecords();
+
     }
 
 

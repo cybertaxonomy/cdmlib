@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
@@ -73,6 +74,7 @@ public class AbcdDnaParser {
                 }
             }
         }
+        
         return dnaSample;
     }
 

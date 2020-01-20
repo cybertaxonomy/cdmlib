@@ -162,10 +162,10 @@ public class TaxonNodeServiceImpl
      * {@inheritDoc}
      */
     @Override
-    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(ITaxonTreeNode child) {
+    public TaxonNodeDto getParentUuidAndTitleCache(ITaxonTreeNode child) {
         UUID uuid = child.getUuid();
         int id = child.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
+        TaxonNodeDto uuidAndTitleCache = new TaxonNodeDto(uuid, id, null);
         return getParentUuidAndTitleCache(uuidAndTitleCache);
     }
 
@@ -173,19 +173,15 @@ public class TaxonNodeServiceImpl
      * {@inheritDoc}
      */
     @Override
-    public UuidAndTitleCache<TaxonNode> getParentUuidAndTitleCache(UuidAndTitleCache<TaxonNode> child) {
+    public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child) {
         return dao.getParentUuidAndTitleCache(child);
     }
 
     @Override
-    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(UuidAndTitleCache<TaxonNode> parent) {
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent) {
         return dao.listChildNodesAsTaxonNodeDto(parent);
     }
 
-    @Override
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
-        return dao.listChildNodesAsUuidAndTitleCache(parent);
-    }
 
 
     @Override
@@ -195,19 +191,10 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent) {
-        UUID uuid = parent.getUuid();
-        int id = parent.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
+        TaxonNodeDto uuidAndTitleCache = new TaxonNodeDto(parent);
         return listChildNodesAsTaxonNodeDto(uuidAndTitleCache);
     }
 
-    @Override
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
-        UUID uuid = parent.getUuid();
-        int id = parent.getId();
-        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
-        return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
-    }
 
     @Override
     public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
@@ -551,6 +538,7 @@ public class TaxonNodeServiceImpl
 	            		    saveOrUpdate(taxonNode);
 
 			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+			            	configNew.setClassificationUuid(classification.getUuid());
 			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
 			            	if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
@@ -562,7 +550,7 @@ public class TaxonNodeServiceImpl
             		classification = null;
 
 	            } else {
-	            	classification = null;
+	            	//classification = null;
 	            	Taxon taxon = taxonNode.getTaxon();
 	            	taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
 	            	if (taxon != null){
@@ -571,7 +559,7 @@ public class TaxonNodeServiceImpl
 			            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
 			            	saveOrUpdate(taxonNode);
 			            	taxonService.saveOrUpdate(taxon);
-			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, null);
+			            	DeleteResult resultTaxon = taxonService.deleteTaxon(taxon.getUuid(), configNew, classification.getUuid());
 
                             if (!resultTaxon.isOk()){
                                 result.addExceptions(resultTaxon.getExceptions());
@@ -728,8 +716,8 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional
     public UpdateResult moveTaxonNode(UUID taxonNodeUuid, UUID targetNodeUuid, int movingType){
-        TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid), TaxonNode.class);
-    	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid), TaxonNode.class);
+        TaxonNode taxonNode = HibernateProxyHelper.deproxy(dao.load(taxonNodeUuid));
+    	TaxonNode targetNode = HibernateProxyHelper.deproxy(dao.load(targetNodeUuid));
     	UpdateResult result = moveTaxonNode(taxonNode, targetNode, movingType);
     	return result;
     }
@@ -774,7 +762,6 @@ public class TaxonNodeServiceImpl
 
         TaxonNode targetNode = dao.load(newParentNodeUuid);
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
-        boolean hasPermission = true;
 
         monitor.beginTask("Move Taxonnodes", nodes.size()*2);
         monitor.subTask("move taxon nodes");
@@ -1162,10 +1149,10 @@ public class TaxonNodeServiceImpl
                true, true, propertyPaths);
         List<TaxonDistributionDTO> result = new ArrayList<>();
         boolean hasPermission = false;
-        TaxonDescription instance = TaxonDescription.NewInstance();
-        hasPermission = permissionEvaluator.hasPermission(authentication, instance, Operation.UPDATE);
+        //TaxonDescription instance = TaxonDescription.NewInstance();
+        //hasPermission = permissionEvaluator.hasPermission(authentication, instance, Operation.UPDATE);
         for(TaxonNode node:nodes){
-            if (authentication != null && !hasPermission) {
+            if (authentication != null ) {
                 hasPermission = permissionEvaluator.hasPermission(authentication, node, Operation.UPDATE);
             }else if (authentication == null){
                 hasPermission = true;
@@ -1210,6 +1197,24 @@ public class TaxonNodeServiceImpl
     public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid,
             List<String> propertyPaths) {
         return getTaxonDistributionDTOForSubtree(parentNodeUuid, propertyPaths, null);
+    }
+
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
+        return dao.getTaxonNodeDto(limit, pattern, classificationUuid);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent) {
+        UUID uuid = parent.getUuid();
+        int id = parent.getId();
+        UuidAndTitleCache<TaxonNode> uuidAndTitleCache = new UuidAndTitleCache<>(uuid, id, null);
+        return listChildNodesAsUuidAndTitleCache(uuidAndTitleCache);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
+        return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
 
 

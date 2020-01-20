@@ -280,7 +280,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
 
                     state.reset();
-
+                    state.getDataHolder().setNomenclatureCode(state.getConfig().getNomenclaturalCode()!= null? state.getConfig().getNomenclaturalCode().getKey() : null);
                     Element item = (Element) unitsList.item(i);
                     Abcd206ImportParser.setUnitPropertiesXML(item, abcdFieldGetter, state);
                     updateProgress(state, "Importing data for unit " + state.getDataHolder().getUnitID() + " (" + i
@@ -356,6 +356,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         if (unitId == null) {
             unitId = facade.getAccessionNumber();
         }
+        if (unitId == null){
+            unitId = facade.getBarcode();
+        }
 
         UnitAssociationParser unitParser = new UnitAssociationParser(state.getPrefix(), state.getReport(),
                 state.getCdmRepository());
@@ -412,8 +415,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             associatedFieldUnit = associatedFieldUnits.iterator().next();
                         }
                         // parent-child relation:
-                        if (associationType.contains("individual") || associationType.contains("culture")
-                                || associationType.contains("sample") || associationType.contains("isolated")) {
+                        if (associationType != null && (associationType.contains("individual") || associationType.contains("culture")
+                                || associationType.contains("sample") || associationType.contains("isolated"))) {
                             DerivationEvent updatedDerivationEvent = DerivationEvent.NewSimpleInstance(currentUnit,
                                     associatedUnit, DerivationEventType.ACCESSIONING());
 
@@ -516,6 +519,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), state.getReport(),
                         state.getCdmRepository());
                 DnaSample dnaSample = dnaParser.parse(item, state);
+                dnaSample.addSource(OriginalSourceType.Import, dnaSample.getAccessionNumber(), "", state.getRef(), "");
                 save(dnaSample, state);
                 // set dna as derived unit to avoid creating an extra specimen
                 // for this dna sample (instead just the field unit will be
@@ -557,18 +561,29 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsText);
                 if (team == null){
                     team = parseAuthorString(state.getDataHolder().gatheringAgentsText);
-                    state.getPersonStore().put(team.getTitleCache(), team);
+                    if (team != null){
+                        state.getPersonStore().put(team.getTitleCache(), team);
+                    }
                 }
-                unitsGatheringEvent.setCollector(team,
+                if (team != null){
+                    unitsGatheringEvent.setCollector(team,
                             config);
+                }
+
 
             } else {
                 TeamOrPersonBase team = state.getPersonStore().get(state.getDataHolder().gatheringAgentsList.toString());
                 if (team == null){
                     team = parseAuthorString(state.getDataHolder().gatheringAgentsList.toString());
-                    state.getPersonStore().put(team.getTitleCache(), team);
+                    if (team != null){
+                        state.getPersonStore().put(team.getTitleCache(), team);
+                    }
+
                 }
-                unitsGatheringEvent.setCollector(team, config);
+                if (team != null){
+                    unitsGatheringEvent.setCollector(team,
+                            config);
+                }
             }
             // count
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
@@ -597,7 +612,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (fieldUnit != null) {
                 derivedUnitFacade.setFieldUnit(fieldUnit);
             }
-
+            if (derivedUnitFacade.getGatheringPeriod() == null && gatheringEvent.getTimeperiod() != null){
+                derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
+            }
             if (derivedUnitFacade.getLocality() == null && gatheringEvent.getLocality() != null){
                 derivedUnitFacade.setLocality(gatheringEvent.getLocality());
             }
@@ -769,6 +786,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 IdentifiableSource sour = getIdentifiableSource(reference, citationDetail);
                 sour.getCitation().setUri(state.getActualAccessPoint());
                 sour.setType(OriginalSourceType.PrimaryTaxonomicSource);
+
                 try {
                     if (sour.getCitation() != null) {
                         if (StringUtils.isNotBlank(sour.getCitationMicroReference())) {
@@ -802,7 +820,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             IdentifiableSource sour = getIdentifiableSource(state.getRef(), null);
             String idInSource = derivedUnitFacade.getAccessionNumber() != null ? derivedUnitFacade.getAccessionNumber()
-                    : derivedUnitFacade.getCatalogNumber();
+                    : derivedUnitFacade.getCatalogNumber() != null ? derivedUnitFacade.getCatalogNumber() : derivedUnitFacade.getBarcode();
             sour.getCitation().setUri(state.getActualAccessPoint());
             sour.setIdInSource(idInSource);
             try {
@@ -1189,7 +1207,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (int m = 0; m < associatedUnits.getLength(); m++) {
                     if (associatedUnits.item(m) instanceof Element) {
                         state.reset();
-
                         String associationType = AbcdParseUtility
                                 .parseFirstTextContent(((Element) associatedUnits.item(m))
                                         .getElementsByTagName(unitAssociationWrapper.getPrefix() + "AssociationType"));
@@ -1203,9 +1220,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         // + state.getDataHolder().accessionNumber + ", " +
                         // state.getDataHolder().getRecordBasis() + ", " +
                         // state.getDataHolder().getUnitID());
-
+                        URI lastAccessPoint = state.getActualAccessPoint();
+                        state.setActualAccessPoint(dnaSource);
                         handleSingleUnit(state, associatedUnits.item(m), false);
-
+                        state.setActualAccessPoint(lastAccessPoint);
                         DerivedUnit associatedUnit = state.getDerivedUnitBase();
                         FieldUnit associatedFieldUnit = null;
                         java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository()
@@ -1228,7 +1246,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             updatedDerivationEvent.setDescription(associationType);
                             if (associatedFieldUnit != null && associatedFieldUnit != currentFieldUnit) {
                                 associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
-                                if (associatedFieldUnit.getGatheringEvent().getActor() != null && currentFieldUnit.getGatheringEvent().getActor() == null){
+                                if ((associatedFieldUnit.getGatheringEvent() != null && associatedFieldUnit.getGatheringEvent().getActor() != null) && (currentFieldUnit.getGatheringEvent() != null && currentFieldUnit.getGatheringEvent().getActor() == null)){
                                     currentFieldUnit.getGatheringEvent().setActor(associatedFieldUnit.getGatheringEvent().getActor());
                                 }
                                 if (associatedFieldUnit.getFieldNumber() != null && currentFieldUnit.getFieldNumber() == null){

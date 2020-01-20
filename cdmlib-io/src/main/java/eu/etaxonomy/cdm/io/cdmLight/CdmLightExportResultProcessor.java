@@ -20,11 +20,9 @@ import org.apache.commons.io.IOUtils;
 import eu.etaxonomy.cdm.io.common.ExportType;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 
-
 /**
  * @author k.luther
  * @since 16.03.2017
- *
  */
 public class CdmLightExportResultProcessor {
 
@@ -33,10 +31,6 @@ public class CdmLightExportResultProcessor {
     private Map<CdmLightExportTable, Map<String,String[]>> result = new HashMap<>();
     private CdmLightExportState state;
 
-
-    /**
-     * @param state
-     */
     public CdmLightExportResultProcessor(CdmLightExportState state) {
         super();
         this.state = state;
@@ -48,14 +42,8 @@ public class CdmLightExportResultProcessor {
             }
             result.put(table, resultMap);
         }
-
     }
 
-
-    /**
-     * @param taxon
-     * @param csvLine
-     */
     public void put(CdmLightExportTable table, String id, String[] csvLine) {
         Map<String,String[]> resultMap = result.get(table);
         if (resultMap == null ){
@@ -73,15 +61,12 @@ public class CdmLightExportResultProcessor {
 
             String[] newRecord = resultMap.get(id);
 
-
             if (oldRecord != null){
                 String message = "Output processor already has a record for id " + id + ". This should not happen.";
                 state.getResult().addWarning(message);
             }
         }
     }
-
-
 
     public boolean hasRecord(CdmLightExportTable table, String id){
         Map<String, String[]> resultMap = result.get(table);
@@ -94,29 +79,19 @@ public class CdmLightExportResultProcessor {
 
     public  String[] getRecord(CdmLightExportTable table, String id){
         return result.get(table).get(id);
-
     }
 
-    /**
-     * @param table
-     * @param taxon
-     * @param csvLine
-     */
     public void put(CdmLightExportTable table, ICdmBase cdmBase, String[] csvLine) {
        this.put(table, cdmBase.getUuid().toString(), csvLine);
     }
 
-
-    /**
-     * @return
-     */
     public void createFinalResult(CdmLightExportState state) {
 
         if (!result.isEmpty() ){
             state.setAuthorStore(new HashMap<>());
             state.setHomotypicalGroupStore(new ArrayList<>());
-            state.setReferenceStore(new ArrayList());
-            state.setSpecimenStore(new ArrayList());
+            state.setReferenceStore(new ArrayList<>());
+            state.setSpecimenStore(new ArrayList<>());
             state.setNodeChildrenMap(new HashMap<>());
             //Replace quotes by double quotes
             for (CdmLightExportTable table: result.keySet()){
@@ -142,7 +117,7 @@ public class CdmLightExportResultProcessor {
                     if (table.equals(CdmLightExportTable.SIMPLE_FACT) && data.size() == 1){
                         String[] csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = "<UUID>";
-                        csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId().toString();
+                        csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId() != null? state.getRootId().toString(): "UUID";
                         csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)]= "Dummy";
                         data.add(createCsvLine(config, csvLine));
                     }
@@ -153,7 +128,6 @@ public class CdmLightExportResultProcessor {
                     state.getResult().addException(e, e.getMessage());
                 }
 
-
                 state.getResult().putExportData(table.getTableName(), exportStream.toByteArray());
                 state.getResult().setExportType(ExportType.CDM_LIGHT);
 
@@ -162,12 +136,6 @@ public class CdmLightExportResultProcessor {
         result.clear();
     }
 
-
-    /**
-     * @param config
-     * @param csvLine
-     * @return
-     */
     private String createCsvLine(CdmLightExportConfigurator config, String[] csvLine) {
         String lineString = "";
         boolean first = true;

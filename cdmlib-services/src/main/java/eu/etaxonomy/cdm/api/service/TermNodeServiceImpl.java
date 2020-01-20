@@ -130,11 +130,18 @@ public class TermNodeServiceImpl
 
 	 @Override
 	 public UpdateResult addChildNode(UUID nodeUUID, UUID termChildUuid, int position){
+	     UpdateResult result = new UpdateResult();
+
 	     TermNode node = load(nodeUUID);
 	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
 
+	     if(!node.getGraph().isAllowDuplicates() && node.getGraph().getDistinctTerms().contains(child)){
+	         result.setError();
+	         result.addException(new Exception("This term tree does not allow duplicate terms."));
+	         return result;
+	     }
+
 	     TermNode childNode;
-         UpdateResult result = new UpdateResult();
          if(position<0) {
              childNode = node.addChild(child);
          }

@@ -164,6 +164,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
 
         for (GbifResponse response:results) {
             if(state.getConfig().getProgressMonitor().isCanceled()){
+                logger.info("Import has been canceled");
                 break;
             }
 
@@ -335,8 +336,8 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
 
             // handle collection data
             handleCollectionData(state, derivedUnitFacade);
-            save(item.getDerivedUnitFacade().baseUnit(), state);
-            save(item.getDerivedUnitFacade().getFieldUnit(false), state);
+//            save(item.getDerivedUnitFacade().baseUnit(), state);
+//            save(item.getDerivedUnitFacade().getFieldUnit(false), state);
             importAssociatedUnits(state, item, derivedUnitFacade);
             /*
             if(state.getConfig().isIgnoreImportOfExistingSpecimens()){

@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
  *
  * @author a.mueller
  * @since 14.09.2010
- *
  */
 public class DefaultProgressMonitor implements IProgressMonitor {
 

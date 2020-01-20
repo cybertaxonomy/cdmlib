@@ -20,7 +20,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -68,9 +67,7 @@ import eu.etaxonomy.cdm.model.description.State;
 		"sortIndex",
 		"children",
 		"onlyApplicableIf",
-		"inapplicableIf",
-		"onlyApplicableIf_old",
-		"inapplicableIf_old"
+		"inapplicableIf"
 })
 @XmlRootElement(name = "TermNode")
 @Entity
@@ -105,24 +102,6 @@ public class TermNode <T extends DefinedTermBase>
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
-
-	@XmlElementWrapper(name = "OnlyApplicableIf_old")
-	@XmlElement(name = "OnlyApplicableIf")
-	@XmlIDREF
-	@XmlSchemaType(name="IDREF")
-	@ManyToMany(fetch = FetchType.LAZY)
-//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_OnlyApplicable")
-	private final Set<State> onlyApplicableIf_old = new HashSet<>();
-
-	@XmlElementWrapper(name = "InapplicableIf_old")
-	@XmlElement(name = "InapplicableIf")
-	@XmlIDREF
-	@XmlSchemaType(name="IDREF")
-	@ManyToMany(fetch = FetchType.LAZY)
-//	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})  remove cascade #5755
-	@JoinTable(name="TermNode_DefinedTermBase_InapplicableIf")
-	private final Set<State> inapplicableIf_old = new HashSet<>();
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
     @XmlElement(name = "OnlyApplicableIf")
@@ -184,7 +163,6 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
 //** ********************** CHILDREN ******************************/
-
 
 	/**
 	 * @deprecated for internal use only.
@@ -594,15 +572,13 @@ public class TermNode <T extends DefinedTermBase>
 
     /**
      * Returns all terms that are contained in this node or a child node
-     * as long as this node or the child nodes are not {@link #isDependend() dependend}
+     * as long as this node or the child nodes are not {@link #isDependent() dependent}
      * on higher nodes/feature states.
-     * @param terms
-     * @return
      */
     @Transient
     public Set<T> getIndependentTermsRecursive(){
         Set<T> terms = new HashSet<>();
-        if (!isDependend()){
+        if (!isDependent()){
             T term = this.getTerm();
             if(term != null){
                 terms.add(term);
@@ -622,7 +598,7 @@ public class TermNode <T extends DefinedTermBase>
      */
     @Transient
     @XmlTransient
-    public boolean isDependend() {
+    public boolean isDependent() {
         return inapplicableIf.size()>0 || onlyApplicableIf.size()>0;
     }
 

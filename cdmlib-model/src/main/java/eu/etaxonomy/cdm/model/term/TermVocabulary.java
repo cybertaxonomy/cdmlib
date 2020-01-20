@@ -99,7 +99,7 @@ public class TermVocabulary<T extends DefinedTermBase>
 	}
 
 	/**
-	 * @deprecated used {@link #NewInstance(TermType, Class, String, String, String, URI)} instead
+	 * @deprecated use {@link #NewInstance(TermType, Class, String, String, String, URI)} instead
 	 */
 	@Deprecated
 	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){

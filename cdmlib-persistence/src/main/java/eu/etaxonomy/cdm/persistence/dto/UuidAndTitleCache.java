@@ -20,12 +20,8 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
  * @author n.hoffmann
  * @since Aug 14, 2009
  */
-
-
 public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = 3446993458279371682L;
 
 	@SuppressWarnings("unused")

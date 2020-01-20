@@ -121,9 +121,6 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	 *
 	 * Uses a content based compare strategy which avoids bean initialization. This is achieved by
 	 * comparing the cdm entity ids.
-	 *
-	 * @param other
-	 * @return
 	 */
 	public boolean equalsByShallowCompare(ReferencedEntityBase other) {
 

@@ -840,7 +840,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testGetTaxonMatchingUninomial() {
         @SuppressWarnings("rawtypes")
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*","*",null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*","*",null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertEquals("findTaxaByName should return two Taxa",2,result.size());
@@ -851,7 +851,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testGetTaxonMatchingSpeciesBinomial() {
         @SuppressWarnings("rawtypes")
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii", null,"*",null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii", null,"*",null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertEquals("findTaxaByName should return one Taxon",1,result.size());
@@ -862,7 +862,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testGetTaxonMatchingTrinomial() {
         @SuppressWarnings("rawtypes")
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Cryptocoryne", null,"purpurea","borneoensis","*",null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Cryptocoryne", null,"purpurea","borneoensis","*",null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertEquals("findTaxaByName should return one Taxon",1,result.size());
@@ -873,7 +873,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testNegativeMatch() {
         @SuppressWarnings("rawtypes")
-        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Acherontia", null,"atropos","dehli",null,null,null,null);
+        List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Acherontia", null,"atropos","dehli",null,null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
         assertTrue("findTaxaByName should return an empty List",result.isEmpty());

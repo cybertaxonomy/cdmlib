@@ -117,11 +117,6 @@ public abstract class NameCacheStrategyBase
         return nomStatusTags;
     }
 
-
-    /**
-     * Generates and returns the "name cache" (only scientific name without author teams and year).
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonName)
-     */
     @Override
     public String getNameCache(TaxonName nonViralName) {
         List<TaggedText> tags = getTaggedName(nonViralName);
@@ -129,6 +124,17 @@ public abstract class NameCacheStrategyBase
             return null;
         }else{
             String result = createString(tags);
+            return result;
+        }
+    }
+
+    @Override
+    public String getNameCache(TaxonName nonViralName, HTMLTagRules htmlTagRules) {
+        List<TaggedText> tags = getTaggedName(nonViralName);
+        if (tags == null){
+            return null;
+        }else{
+            String result = createString(tags, htmlTagRules);
             return result;
         }
     }

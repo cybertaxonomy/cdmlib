@@ -32,7 +32,7 @@ public enum CdmLightExportTable {
     GEOGRAPHIC_AREA_FACT("GeographicAreaFact", geographicAreaFactsColumns()),
     COMMON_NAME_FACT("CommonNameFact", commonNameFactsColumns()),
     FACT_SOURCES("FactSources", factSourcesColumns()),
-    IDENTIFIER("NameIdentifier", identifierColumns()),
+    IDENTIFIER("Identifier", identifierColumns()),
     MEDIA("MediaFact", mediaColumns()),
     CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
     NAME_FACT("NameFact", nameFactColumns())
@@ -229,8 +229,10 @@ public enum CdmLightExportTable {
 
 
   //Identifiers
-    protected static final String EXTERNAL_NAME_IDENTIFIER = "ExternalNameIdentifier";
+    protected static final String EXTERNAL_NAME_IDENTIFIER = "ExternalIdentifier";
     protected static final String IDENTIFIER_TYPE = "IdentifierType";
+    protected static final String FK = "ForeignKey";
+    protected static final String REF_TABLE = "ReferencedTable";
 
     final static String[] homotypicGroupColumns(){
         return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE};
@@ -269,7 +271,7 @@ public enum CdmLightExportTable {
 
     final static String[] identifierColumns() {
 
-        return new String[]{ NAME_FK, EXTERNAL_NAME_IDENTIFIER, IDENTIFIER_TYPE};
+        return new String[]{ FK, REF_TABLE, EXTERNAL_NAME_IDENTIFIER, IDENTIFIER_TYPE};
     }
 
     final static String[] mediaColumns() {
@@ -345,8 +347,6 @@ public enum CdmLightExportTable {
                 FURTHER_AREAS, COLLECTOR_STRING, COLLECTOR_NUMBER, COLLECTION_DATE, SPECIMEN_IMAGE_URIS, HERBARIUM_ABBREV, MEDIA_SPECIMEN_URL, PREFERREDSTABLE_ID, BARCODE, CATALOGUE_NUMBER, ACCESSION_NUMBER};
     }
 
-
-
     private String tableName;
     private String[] columnNames;
 
@@ -365,10 +365,6 @@ public enum CdmLightExportTable {
 
     public String[] getColumnNames(){return columnNames;}
 
-    /**
-     * @param taxonId
-     * @return
-     */
     public int getIndex(String columnName) {
         int index= 0;
         for(String column : getColumnNames()){
@@ -379,6 +375,4 @@ public enum CdmLightExportTable {
         }
         return -1;
     }
-
-
 }

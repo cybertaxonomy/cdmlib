@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IntextReference", propOrder = {
     "taxonName",
-    "taxon",
     "occurrence",
     "agent",
     "reference",
@@ -67,12 +66,6 @@ public class IntextReference extends CdmLinkBase {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private TaxonName taxonName;
-
-    @XmlElement(name = "Taxon")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-	private TaxonBase<?> taxon;
 
     @XmlElement(name = "Occurrence")
     @XmlIDREF

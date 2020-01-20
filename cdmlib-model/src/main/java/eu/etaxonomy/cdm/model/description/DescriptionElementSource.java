@@ -109,6 +109,12 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
         return result;
     }
 
+    public static DescriptionElementSource NewAggregationInstance(ICdmTarget target){
+        DescriptionElementSource result = NewInstance(OriginalSourceType.Aggregation);
+        result.setCdmSource(target);
+        return result;
+    }
+
 	public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microCitation){
 		DescriptionElementSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 		result.setCitation(citation);
@@ -150,16 +156,10 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 
 // **************************  GETTER / SETTER ***************************/
 
-	/**
-	 * @return the taxonNameUsedInSource
-	 */
 	public TaxonName getNameUsedInSource() {
 		return nameUsedInSource;
 	}
 
-	/**
-	 * @param nameUsedInReference the nameUsedInReference to set
-	 */
 	public void setNameUsedInSource(TaxonName nameUsedInSource) {
 		this.nameUsedInSource = nameUsedInSource;
 	}
@@ -177,9 +177,6 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 
 //*********************************** EQUALS *********************************************************/
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equalsByShallowCompare(ReferencedEntityBase other) {
 
@@ -198,6 +195,5 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
         }
 	    return a == b;
 	}
-
 
 }

@@ -63,6 +63,11 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
 
     public static final EntityInitStrategy DESCRIPTION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String [] {
             "$",
+            "descriptiveDataSets",
+            "descriptiveDataSets.descriptiveSystem",
+            "descriptiveDataSets.descriptiveSystem.root",
+            "descriptiveDataSets.descriptiveSystem.root.childNodes",
+            "descriptiveDataSets.descriptiveSystem.root.childNodes.term",
             "elements.$",
             "elements.annotations",
             "elements.multilanguageText.*",

@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -25,8 +24,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @author a.mueller
  * @since 03.06.2010
  */
-public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnit> {
-	private static final long serialVersionUID = 1578628591216605619L;
+public class DerivedUnitFacadeCacheStrategy
+        extends StrategyBase implements
+        IIdentifiableEntityCacheStrategy<DerivedUnit> {
+
+    private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategy.class);
 
@@ -44,9 +46,9 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	}
 
 	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
-		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
 
-		String result = "";
+	    String result = "";
+	    DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
 
 		DerivedUnitFacade facade;
 		// NOTE: regarding the string representations of MediaTypes, see https://dev.e-taxonomy.eu/redmine/issues/7608
@@ -55,14 +57,10 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			config.setFirePropertyChangeEvents(false);
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 
-			FieldUnit fieldUnit = facade.getFieldUnit(false);
-			if(!skipFieldUnit && fieldUnit != null){
-			    if(fieldUnit.isProtectedTitleCache()){
-			        result += fieldUnit.getTitleCache();
-			    } else {
-			        result += fieldStrategy.getFieldData(facade);
-			    }
-			}
+	        if(!skipFieldUnit){
+	                result += fieldStrategy.getFieldData(facade);
+	        }
+
 			//Exsiccatum
 			String exsiccatum = null;
 			try {

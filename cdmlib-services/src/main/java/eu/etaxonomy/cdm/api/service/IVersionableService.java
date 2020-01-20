@@ -21,7 +21,8 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 
-public interface IVersionableService<T extends VersionableEntity> extends IService<T> {
+public interface IVersionableService<T extends VersionableEntity>
+        extends IService<T> {
 
 	/**
 	 * Returns a paged list of audit events (in order) which affected the state of an entity t.

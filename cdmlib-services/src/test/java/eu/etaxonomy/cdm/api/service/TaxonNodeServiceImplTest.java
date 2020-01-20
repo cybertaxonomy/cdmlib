@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -465,7 +464,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         node1 = taxonNodeService.load(node1Uuid);
         assertNull(newNode);
         assertNull(node1);
-        assertNotNull(taxonNodeService.load(nodeUUID));
+        List<String> propertyPath = new ArrayList<>();
+        propertyPath.add("taxon.name.*");
+        nodeClassification2 =taxonNodeService.load(nodeUUID, propertyPath);
+        assertNotNull(nodeClassification2);
+        assertNotNull(nodeClassification2.getTaxon());
+        assertNotNull(nodeClassification2.getTaxon().getName());
 
         t1 = (Taxon) taxonService.load(t1Uuid);
         assertNotNull(t1);
@@ -473,11 +477,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(newTaxon);
         IBotanicalName name = nameService.load(nameUUID);
         assertNull(name);
-
-
     }
-
-
 
 	@Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -504,9 +504,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertNull(t1);
 		t2 = (Taxon) taxonService.load(t2Uuid);
 		assertNull(t2);
-
-
 	}
+
 	@Test
 	@DataSet
 	public void testMoveTaxonNode(){
@@ -515,9 +514,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	    List<TaxonNode>  nodes = classification.getChildNodes();
 	    System.out.println(nodes.size());
 	    classification.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), nodes.size(), null, null);
-	   nodes =  classification.getChildNodes();
+	    nodes =  classification.getChildNodes();
 	    System.out.println(nodes.size());
-
 	}
 
     @Test
@@ -578,7 +576,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
         Assert.assertEquals(allNodes.get(1).getTaxon(), abiesBalsamea );
         Assert.assertEquals(allNodes.get(2).getTaxon(), abiesAlba );
-
     }
 
     @Test
@@ -648,7 +645,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Classification classification = classificationService.load(classificationUuid);
 
         List<TaxonNode> expectedChildTaxonNodes = classification.getChildNodes();
-        List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache = taxonNodeService.listChildNodesAsUuidAndTitleCache(classification.getRootNode());
+        List<TaxonNodeDto> childNodesUuidAndTitleCache = taxonNodeService.listChildNodesAsTaxonNodeDto(classification.getRootNode());
         assertNotNull("child UuidAndTitleCache list is null", childNodesUuidAndTitleCache);
 
         compareChildren(expectedChildTaxonNodes, childNodesUuidAndTitleCache);
@@ -657,7 +654,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Taxon abiesAlbaSubBrota = HibernateProxyHelper.deproxy(taxonService.load(abiesAlbaSubBrotaUuid), Taxon.class);
         TaxonNode abiesAlbaSubBrotaNode = abiesAlbaSubBrota.getTaxonNodes().iterator().next();
         TaxonNode expectedTaxonParent = HibernateProxyHelper.deproxy(abiesAlbaSubBrotaNode.getParent(), TaxonNode.class);
-        UuidAndTitleCache<TaxonNode> taxonParent = taxonNodeService.getParentUuidAndTitleCache(abiesAlbaSubBrotaNode);
+        TaxonNodeDto taxonParent = taxonNodeService.getParentUuidAndTitleCache(abiesAlbaSubBrotaNode);
         assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getUuid(), taxonParent.getUuid());
         assertEquals("Taxon Nodes do not match. ", (Integer)expectedTaxonParent.getId(), taxonParent.getId());
         assertEquals("Taxon Nodes do not match. ", expectedTaxonParent.getTaxon().getTitleCache(), taxonParent.getTitleCache());
@@ -667,29 +664,30 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Taxon abies = HibernateProxyHelper.deproxy(taxonService.load(abiesUuid), Taxon.class);
         TaxonNode abiesNode = abies.getTaxonNodes().iterator().next();
         TaxonNode expectedClassificationParent = HibernateProxyHelper.deproxy(abiesNode.getParent(), TaxonNode.class);
-        UuidAndTitleCache<TaxonNode> classificationParent= taxonNodeService.getParentUuidAndTitleCache(abiesNode);
+        TaxonNodeDto classificationParent= taxonNodeService.getParentUuidAndTitleCache(abiesNode);
         assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getUuid(), classificationParent.getUuid());
         assertEquals("Taxon Nodes do not match. ", (Integer)expectedClassificationParent.getId(), classificationParent.getId());
         assertEquals("Taxon Nodes do not match. ", expectedClassificationParent.getClassification().getTitleCache(), classificationParent.getTitleCache());
         assertEquals("Taxon Nodes do not match. ", expectedClassificationParent, taxonNodeService.load(classificationParent.getUuid()));
     }
 
-    private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<UuidAndTitleCache<TaxonNode>> childNodesUuidAndTitleCache){
-        assertEquals("Number of children does not match", expectedChildTaxonNodes.size(), childNodesUuidAndTitleCache.size());
-        UuidAndTitleCache<TaxonNode> foundMatch = null;
+    private void compareChildren(List<TaxonNode> expectedChildTaxonNodes, List<TaxonNodeDto> childNodesDto){
+        assertEquals("Number of children does not match", expectedChildTaxonNodes.size(), childNodesDto.size());
+        TaxonNodeDto foundMatch = null;
         for (TaxonNode taxonNode : expectedChildTaxonNodes) {
             foundMatch = null;
-            for (UuidAndTitleCache<TaxonNode> uuidAndTitleCache : childNodesUuidAndTitleCache) {
+            for (TaxonNodeDto uuidAndTitleCache : childNodesDto) {
                 if(uuidAndTitleCache.getUuid().equals(taxonNode.getUuid())){
-                    String titleCache = taxonNode.getTaxon().getTitleCache();
-                    if(uuidAndTitleCache.getTitleCache().equals(titleCache)){
+                    Taxon taxon = HibernateProxyHelper.deproxy(taxonNode.getTaxon(), Taxon.class);
+                    String titleCache = taxon.getTitleCache();
+                    if(uuidAndTitleCache.getTaxonTitleCache().equals(titleCache)){
                         foundMatch = uuidAndTitleCache;
                         break;
                     }
                 }
             }
             assertTrue(String.format("no matching UuidAndTitleCache found for child %s", taxonNode), foundMatch!=null);
-            compareChildren(taxonNode.getChildNodes(), taxonNodeService.listChildNodesAsUuidAndTitleCache(foundMatch));
+            compareChildren(taxonNode.getChildNodes(), taxonNodeService.listChildNodesAsTaxonNodeDto(foundMatch));
         }
     }
 //

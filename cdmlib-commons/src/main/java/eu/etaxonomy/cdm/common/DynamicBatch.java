@@ -83,7 +83,7 @@ public class DynamicBatch {
 
     /**
      *
-     * @param allowedGcIncreases the amount of continiously observed increases of the gc time
+     * @param allowedGcIncreases the amount of continuously observed increases of the gc time
      */
     public void setMaxAllowedGcIncreases(int allowedGcIncreases) {
         this.allowedGcIncreases = allowedGcIncreases;

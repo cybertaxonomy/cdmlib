@@ -99,7 +99,7 @@ public class UnitsGatheringEvent {
              Abcd206ImportConfigurator config) {
         this.setLocality(termService, locality, languageIso);
         Integer errorRadiusInt = null;
-        if (errorRadius != null){
+        if (StringUtils.isNotBlank(errorRadius)){
             errorRadiusInt = Integer.getInteger(errorRadius);
         }
 
@@ -187,13 +187,7 @@ public class UnitsGatheringEvent {
     }
 
     public void setDate(String date){
-        TimePeriod timeperiod = this.gatheringEvent.getTimeperiod();
-        if(timeperiod==null){
-            timeperiod = TimePeriod.NewInstance();
-            this.gatheringEvent.setTimeperiod(timeperiod);
-        }else{
             this.gatheringEvent.setTimeperiod(TimePeriodParser.parseString(date));
-        }
 
     }
 
@@ -204,15 +198,15 @@ public class UnitsGatheringEvent {
         else{
             //TODO check for unit at string end
             String pattern = "\\D";// regex for non-digits
-            if(elevationMin!=null){
+            if(StringUtils.isNotBlank(elevationMin)){
                 Integer min = Integer.parseInt(elevationMin.replaceAll(pattern, ""));
                 this.gatheringEvent.setAbsoluteElevation(min);
             }
-            if(elevationMax!=null){
+            if(StringUtils.isNotBlank(elevationMax)){
                 Integer max = Integer.parseInt(elevationMax.replaceAll(pattern, ""));
                 this.gatheringEvent.setAbsoluteElevationMax(max);
             }
-            if(elevationUnit!=null){
+            if(StringUtils.isNotBlank(elevationUnit)){
                 if(!elevationUnit.equals("m")){
                     //TODO convert if necessary
                 }
@@ -227,15 +221,15 @@ public class UnitsGatheringEvent {
         else{
             //TODO check for unit at string end
             String pattern = "\\D";// regex for non-digits
-            if(heightMin!=null){
+            if(StringUtils.isNotBlank(heightMin)){
                 Double min = Double.parseDouble(heightMin.replaceAll(pattern, ""));
                 this.gatheringEvent.setDistanceToGround(min);
             }
-            if(heightMax!=null){
+            if(StringUtils.isNotBlank(heightMax)){
                 Double max = Double.parseDouble(heightMax.replaceAll(pattern, ""));
                 this.gatheringEvent.setDistanceToGroundMax(max);
             }
-            if(heightUnit!=null){
+            if(StringUtils.isNotBlank(heightUnit)){
                 if (!heightUnit.equals("m")){
                     logger.debug("The unit " + heightUnit + " of the distance to ground is not meter.");
                 }
@@ -248,7 +242,7 @@ public class UnitsGatheringEvent {
             this.gatheringEvent.setDistanceToWaterSurfaceText(depthText);
         }
         else{
-            if (depthUnit != null && depthUnit.equals("cm")){
+            if (StringUtils.isNotBlank(depthUnit) && depthUnit.equals("cm")){
             	if (depthMin != null) {
             		depthMin = depthMin/100;
             	}
@@ -262,7 +256,7 @@ public class UnitsGatheringEvent {
             if(depthMax!=null){
                 this.gatheringEvent.setDistanceToWaterSurfaceMax(depthMax);
             }
-            if(depthUnit!=null){
+            if(StringUtils.isNotBlank(depthUnit)){
 
                 if (!depthUnit.equals("m")){
                     logger.debug("The unit " + depthUnit + " of the distance to ground is not meter.");

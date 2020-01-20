@@ -386,7 +386,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @return a set of identifier value strings
      */
     public Set<String> getIdentifiers(DefinedTerm type){
-       return getIdentifiers(type.getUuid());
+       return getIdentifiers(type == null? null :type.getUuid());
     }
     /**
      * @param identifierTypeUuid
@@ -395,7 +395,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
         Set<String> result = new HashSet<>();
         for (Identifier<?> identifier : getIdentifiers()){
-            if (identifier.getType().getUuid().equals(identifierTypeUuid)){
+            if ( (identifier.getType()== null && identifierTypeUuid == null)
+                || (identifier.getType().getUuid().equals(identifierTypeUuid))){
                 result.add(identifier.getIdentifier());
             }
         }

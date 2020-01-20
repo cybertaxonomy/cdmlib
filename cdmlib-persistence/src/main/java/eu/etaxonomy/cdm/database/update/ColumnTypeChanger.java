@@ -52,9 +52,13 @@ public class ColumnTypeChanger
 		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, includeAudTable, defaultValue, notNull, null);
 	}
 
-//	public static final ColumnTypeChanger NewChangeAllowNullOnStringChanger(){
-//
-//	}
+	public static final ColumnTypeChanger NewChangeAllowNullOnIntChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, boolean includeAudTable){
+	    return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.INTEGER, null, includeAudTable, null, false, null);
+	}
+
+    public static final ColumnTypeChanger NewChangeAllowNullOnStringChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Integer size, boolean includeAudTable){
+        return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, includeAudTable, null, false, null);
+    }
 
 
 	protected ColumnTypeChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Datatype newColumnType, Integer size, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
@@ -107,15 +111,6 @@ public class ColumnTypeChanger
 		}
 	}
 
-    /**
-     * @param tableName
-     * @param datasource
-     * @param monitor
-     * @param result
-     * @param caseType
-     * @throws DatabaseTypeNotSupportedException
-     * @throws SQLException
-     */
     protected void changeType(String tableName, ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result)
             throws DatabaseTypeNotSupportedException, SQLException {
@@ -127,7 +122,6 @@ public class ColumnTypeChanger
             datasource.executeUpdate(updateQuery);
         }
     }
-
 
     private String getNotNullUpdateQuery(String tableName) {
 		String query = " UPDATE %s SET %s = %s WHERE %s IS NULL ";

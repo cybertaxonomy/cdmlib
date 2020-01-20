@@ -103,18 +103,19 @@ public class StaticSwaggerApiDoc {
         SwaggerGroupsConfig groupConfig = SwaggerGroupsConfig.byGroupName(group);
         if(groupConfig == null) {
             HttpStatusMessage.create("Unknown swagger group name.", 400).send(response);
-        }
-        InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/api-docs/" + groupConfig.name() + JSON);
-        if(staticDocStream == null) {
-            HttpStatusMessage.create("Static swagger api doc file for group '" + group + "' not found.", 500).send(response);
         } else {
-            response.addHeader("Content-Type", "application/json;charset=utf-8");
-            String staticDocText = IOUtils.toString(staticDocStream);
-            staticDocText = staticDocText.replaceFirst(HOST_REGEX, hostValue);
-            staticDocText = staticDocText.replaceFirst(BASE_PATH_REGEX, basePathValue);
+            InputStream staticDocStream = getClass().getClassLoader().getResourceAsStream(SWAGGER_STATIC + "/api-docs/" + groupConfig.name() + JSON);
+            if(staticDocStream == null) {
+                HttpStatusMessage.create("Static swagger api doc file for group '" + group + "' not found.", 500).send(response);
+            } else {
+                response.addHeader("Content-Type", "application/json;charset=utf-8");
+                String staticDocText = IOUtils.toString(staticDocStream);
+                staticDocText = staticDocText.replaceFirst(HOST_REGEX, hostValue);
+                staticDocText = staticDocText.replaceFirst(BASE_PATH_REGEX, basePathValue);
 
-            IOUtils.write(staticDocText, response.getOutputStream());
-            staticDocStream.close();
+                IOUtils.write(staticDocText, response.getOutputStream());
+                staticDocStream.close();
+            }
         }
     }
 

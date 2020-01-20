@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -473,6 +474,10 @@ public class DescriptionServiceImpl
         List<Distribution> toDelete = new ArrayList<>();
         for(TaxonDistributionDTO obj : descriptionElements) {
             Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
+            List<DescriptionBase> list = new ArrayList(obj.getDescriptionsWrapper().getDescriptions());
+          //  Map<UUID, DescriptionBase> map = dao.saveOrUpdateAll(list);
+//            MergeResult<DescriptionBase> mergeResult = new MergeResult<DescriptionBase>(mergedEntity, newEntities)
+//            mergedObjects.add(map.values());
             while (iterator.hasNext()){
                 TaxonDescription desc = iterator.next();
                 mergedObjects.add(dao.merge(desc, returnTransientEntity));
@@ -501,31 +506,40 @@ public class DescriptionServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteDescription(DescriptionBase description) {
+
         DeleteResult deleteResult = new DeleteResult();
-        description = load(description.getId(), Arrays.asList("descriptiveDataSets"));//avoid lazy init exception
-
-    	if (description instanceof TaxonDescription){
-    		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-    		Taxon tax = taxDescription.getTaxon();
-    		tax.removeDescription(taxDescription, true);
-            deleteResult.addUpdatedObject(tax);
-    	}
-    	else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
-    	    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
-    	    SpecimenOrObservationBase<?> specimen = specimenDescription.getDescribedSpecimenOrObservation();
-    	    specimen.removeDescription(specimenDescription);
-    	    deleteResult.addUpdatedObject(specimen);
-    	}
-
-    	Set<DescriptiveDataSet> descriptiveDataSets = description.getDescriptiveDataSets();
-    	for (Iterator<DescriptiveDataSet> iterator = descriptiveDataSets.iterator(); iterator.hasNext();) {
-    	    iterator.next().removeDescription(description);
+        if (description == null){
+            return deleteResult;
         }
+        description = load(description.getId(), Arrays.asList("descriptiveDataSets"));
+        //avoid lazy init exception
 
-    	dao.delete(description);
-    	deleteResult.addDeletedObject(description);
-    	deleteResult.setCdmEntity(description);
+        deleteResult = isDeletable(description.getUuid());
+        if (deleteResult.isOk()){
+        	if (description instanceof TaxonDescription){
+        		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+        		Taxon tax = taxDescription.getTaxon();
+        		tax.removeDescription(taxDescription, true);
+                deleteResult.addUpdatedObject(tax);
+        	}
+        	else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
+        	    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
+        	    SpecimenOrObservationBase<?> specimen = specimenDescription.getDescribedSpecimenOrObservation();
+        	    specimen.removeDescription(specimenDescription);
+        	    deleteResult.addUpdatedObject(specimen);
+        	}
 
+        	Set<DescriptiveDataSet> descriptiveDataSets = description.getDescriptiveDataSets();
+        	for (Iterator<DescriptiveDataSet> iterator = descriptiveDataSets.iterator(); iterator.hasNext();) {
+        	    iterator.next().removeDescription(description);
+            }
+
+        	dao.delete(description);
+        	deleteResult.addDeletedObject(description);
+        	deleteResult.setCdmEntity(description);
+        }else{
+            logger.info(deleteResult.getExceptions().toString());
+        }
 
         return deleteResult;
     }
@@ -540,6 +554,41 @@ public class DescriptionServiceImpl
         return deleteDescription(dao.load(descriptionUuid));
     }
 
+
+    @Override
+    public DeleteResult isDeletable(UUID descriptionUuid){
+        DeleteResult result = new DeleteResult();
+        DescriptionBase description = this.load(descriptionUuid);
+        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(description);
+
+        if (references == null || references.isEmpty()){
+            return result;
+        }
+        for (CdmBase ref: references){
+            String message = null;
+            if (description instanceof TaxonDescription && ref instanceof Taxon && ((TaxonDescription)description).getTaxon().equals(ref)){
+                continue;
+            } else if (description instanceof TaxonNameDescription && ref instanceof TaxonName && ((TaxonNameDescription)description).getTaxonName().equals(ref)){
+                continue;
+            } else if (description instanceof SpecimenDescription && ref instanceof SpecimenOrObservationBase && ((SpecimenDescription)description).getDescribedSpecimenOrObservation().equals(ref)){
+                continue;
+            } else if (ref instanceof DescriptionElementBase){
+                continue;
+
+            }else {
+                message = "The description can't be completely deleted because it is referenced by " + ref.getUserFriendlyTypeName() ;
+                result.setAbort();
+            }
+            if (message != null){
+                result.addException(new ReferencedObjectUndeletableException(message));
+                result.addRelatedObject(ref);
+
+            }
+
+        }
+
+        return result;
+    }
 
     @Override
     public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {

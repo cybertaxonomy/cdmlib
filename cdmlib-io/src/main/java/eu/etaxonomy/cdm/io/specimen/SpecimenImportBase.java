@@ -177,7 +177,12 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
             state.getReport().addName(taxonName);
             logger.info("Created new taxon name "+taxonName);
         }
-        save(taxonName, state);
+        if (taxonName != null){
+            state.names.put(taxonName.getNameCache(), taxonName);
+        }
+        if(!taxonName.isPersited()) {
+            save(taxonName, state);
+        }
         return taxonName;
     }
 
@@ -268,25 +273,25 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            logger.debug("parseScientificName " + state.getDataHolder().getNomenclatureCode().toString());
 	        }
 
-	        if (state.getDataHolder().getNomenclatureCode().toString().equals("Zoological") || state.getDataHolder().getNomenclatureCode().toString().contains("ICZN")) {
+	        if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Zoological") || state.getDataHolder().getNomenclatureCode().toString().contains("ICZN"))) {
 	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICZN, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")  || state.getDataHolder().getNomenclatureCode().toString().contains("ICNAFP")) {
+	        else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Botanical") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")  || state.getDataHolder().getNomenclatureCode().toString().contains("ICNAFP"))) {
 	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNAFP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN")) {
+	        else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN"))) {
 	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNB, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().toString().equals("Cultivar") || state.getDataHolder().getNomenclatureCode().toString().contains("ICNCP")) {
+	        else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Cultivar") || state.getDataHolder().getNomenclatureCode().toString().contains("ICNCP"))) {
 	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNCP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
@@ -597,15 +602,19 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        commitTransaction(state.getTx());
 	        state.setTx(startTransaction());
 	        try{
-	        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
-	        if(!existingSpecimens.getRecords().isEmpty()){
-	            if(existingSpecimens.getRecords().size()==1){
-	                return existingSpecimens.getRecords().iterator().next();
-	            }
-	        }
+		        Pager<SpecimenOrObservationBase> existingSpecimens = cdmAppController.getOccurrenceService().findByTitle(config);
+		        if(!existingSpecimens.getRecords().isEmpty()){
+		            if(existingSpecimens.getRecords().size()==1){
+		                return existingSpecimens.getRecords().iterator().next();
+		            }
+		        }
+	        
 	        }catch(NullPointerException e){
 	        	logger.error("searching for existing specimen creates NPE: " + config.getSignificantIdentifier());
-	        }
+	        	e.printStackTrace();
+	        }   
+	        
+	        
 	        return null;
 	    }
 
@@ -990,7 +999,9 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            String preferred = identification.getPreferred();
 	            preferredFlag = false;
 	            if (preferred != null || state.getDataHolder().getIdentificationList().size()==1){
-    	            if (preferred.equals("1") || preferred.toLowerCase().indexOf("true") != -1 || state.getDataHolder().getIdentificationList().size()==1) {
+	                if (state.getDataHolder().getIdentificationList().size()==1){
+	                    preferredFlag = true;
+	                }else if (preferred != null && (preferred.equals("1") || preferred.toLowerCase().indexOf("true") != -1) ) {
     	                preferredFlag = true;
     	            }
 

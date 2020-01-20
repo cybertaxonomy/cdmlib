@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.SpecimenImportReport;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -69,6 +70,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private boolean descriptionGroupSet = false;
     protected HashMap<String, Institution> institutions = new HashMap<String, Institution>();
     protected HashMap<String, Collection> collections= new HashMap<String, Collection>();
+    protected HashMap<String, TaxonName> names= new HashMap<String, TaxonName>();
     private HashMap<String,FieldUnit> fieldUnits = new HashMap<String, FieldUnit>();
 
     MapWrapper<TeamOrPersonBase<?>> personStore;

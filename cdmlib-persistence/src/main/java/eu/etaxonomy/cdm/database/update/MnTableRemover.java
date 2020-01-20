@@ -111,7 +111,7 @@ public class MnTableRemover extends AuditedSchemaUpdaterStepBase {
         SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(innerStepList, stepName, sql, sqlAudited, 99);
 
         //delete old table
-        step = TableDroper.NewInstance(innerStepList, "Drop MN table", mnTableName, includeAudTable, true);
+        step = TableDropper.NewInstance(innerStepList, "Drop MN table", mnTableName, includeAudTable, true);
 
         return;
     }

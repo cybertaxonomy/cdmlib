@@ -57,7 +57,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 /**
  * @author a.mueller
- *
  */
 public class DeduplicationHelper {
 	private static final Logger logger = Logger.getLogger(DeduplicationHelper.class);
