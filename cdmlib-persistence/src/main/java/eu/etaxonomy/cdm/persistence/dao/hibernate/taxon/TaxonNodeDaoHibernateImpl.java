@@ -198,7 +198,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name.rank "
                 + " FROM TaxonNode tn "
         		+ "   INNER JOIN tn.taxon AS t "
@@ -217,9 +217,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         List<Object[]> result = query.list();
         Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
 
-        List<UuidAndTitleCache> list = new ArrayList<>();
+        List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache((UUID) object[0],(Integer) object[1], (String) object[2]));
+            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
         return list;
     }

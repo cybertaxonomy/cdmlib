@@ -73,7 +73,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classificationUuid if specified only nodes of this classification are retrieved
      * @return a list of matches
      */
-    public List<UuidAndTitleCache> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths);

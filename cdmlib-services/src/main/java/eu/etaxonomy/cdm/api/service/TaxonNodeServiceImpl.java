@@ -185,7 +185,7 @@ public class TaxonNodeServiceImpl
 
 
     @Override
-    public List<UuidAndTitleCache> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
+    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         return dao.getUuidAndTitleCache(limit, pattern, classificationUuid);
     }
 
@@ -762,7 +762,6 @@ public class TaxonNodeServiceImpl
 
         TaxonNode targetNode = dao.load(newParentNodeUuid);
         List<TaxonNode> nodes = dao.list(taxonNodeUuids, null, null, null, null);
-        boolean hasPermission = true;
 
         monitor.beginTask("Move Taxonnodes", nodes.size()*2);
         monitor.subTask("move taxon nodes");
