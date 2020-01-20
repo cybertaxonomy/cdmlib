@@ -728,7 +728,6 @@ public class TaxonNodeServiceImpl
         UpdateResult result = new UpdateResult();
 
         TaxonNode parentParent = HibernateProxyHelper.deproxy(newParent.getParent());
-        TaxonNode oldParent = HibernateProxyHelper.deproxy(taxonNode.getParent());
         Integer sortIndex = -1;
         if (movingType == 0){
             sortIndex = 0;
@@ -748,8 +747,6 @@ public class TaxonNodeServiceImpl
 
         return result;
     }
-
-
 
     @Override
     @Transactional

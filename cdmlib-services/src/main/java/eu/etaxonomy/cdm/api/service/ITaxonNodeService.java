@@ -173,6 +173,9 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType);
 
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
+            IProgressMonitor monitor);
+
     /**
      * deletes the given taxon nodes
      */
@@ -235,20 +238,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public List<Integer> idList(TaxonNodeFilter filter);
 
-    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 
 
-    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
-
-    /**
-     * @param taxonNodeUuids
-     * @param newParentNodeUuid
-     * @param movingType
-     * @param monitor
-     * @return
-     */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
-            IProgressMonitor monitor);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
 
     /**
      * Retrieves the first taxon node that is direct or indirect parent
