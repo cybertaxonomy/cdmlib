@@ -281,7 +281,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * parent
      */
 	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
-	 public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+	 public List<UuidAndTitleCache> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
 }

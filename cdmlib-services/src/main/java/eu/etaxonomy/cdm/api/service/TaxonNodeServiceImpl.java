@@ -185,7 +185,7 @@ public class TaxonNodeServiceImpl
 
 
     @Override
-    public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
+    public List<UuidAndTitleCache> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         return dao.getUuidAndTitleCache(limit, pattern, classificationUuid);
     }
 
