@@ -608,13 +608,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 		                return existingSpecimens.getRecords().iterator().next();
 		            }
 		        }
-	        
+
 	        }catch(NullPointerException e){
 	        	logger.error("searching for existing specimen creates NPE: " + config.getSignificantIdentifier());
 	        	e.printStackTrace();
-	        }   
-	        
-	        
+	        }
+
+
 	        return null;
 	    }
 
@@ -860,6 +860,30 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                if (preferredFlag) {
 	                    parent = linkParentChildNode(species, subspecies, classification, state);
 	                }
+	            }
+	        }else{
+	            //handle cf. and aff. taxa
+	            String genusEpithet = null;
+	            if (nvname.getTitleCache().contains("cf.")){
+	                genusEpithet = nvname.getTitleCache().substring(0, nvname.getTitleCache().indexOf("cf."));
+	            } else if (nvname.getTitleCache().contains("aff.")){
+	                genusEpithet = nvname.getTitleCache().substring(0, nvname.getTitleCache().indexOf("aff."));
+	            }
+	            if (genusEpithet != null){
+    	            genusEpithet = genusEpithet.trim();
+    	            TaxonName taxonName = null;
+    	            if (genusEpithet.contains(" ")){
+    	                taxonName = getOrCreateTaxonName(genusEpithet, Rank.SPECIES(), preferredFlag, state, -1);
+    	            }else{
+    	                taxonName = getOrCreateTaxonName(genusEpithet, Rank.GENUS(), preferredFlag, state, -1);
+    	            }
+    	            genus = getOrCreateTaxonForName(taxonName, state);
+                    if (genus == null){
+                        logger.debug("The genus should not be null " + taxonName);
+                    }
+                    if (preferredFlag) {
+                        parent = linkParentChildNode(null, genus, classification, state);
+                    }
 	            }
 	        }
 	        if (preferredFlag && parent!=taxon ) {
