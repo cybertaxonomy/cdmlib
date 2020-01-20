@@ -236,7 +236,12 @@ public class CommonServiceImpl
 
     @Override
     public List getHqlResult(String hqlQuery){
-        return genericDao.getHqlResult(hqlQuery);
+        return genericDao.getHqlResult(hqlQuery, new Object[0]);
+    }
+
+    @Override
+    public List getHqlResult(String hqlQuery, Object[] params){
+        return genericDao.getHqlResult(hqlQuery, params);
     }
 
     @Override

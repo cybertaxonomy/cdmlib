@@ -475,8 +475,11 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-	public List<CdmBase> getHqlResult(String hqlQuery){
+	public List<CdmBase> getHqlResult(String hqlQuery, Object[] params){
 		Query query = getSession().createQuery(hqlQuery);
+		for(int i = 0; i<params.length; i++){
+		    query.setParameter(String.valueOf(i), params[i]);  //for some reason using int, not String, throws exceptions, this seems to be a hibernate bug
+		}
 		@SuppressWarnings("unchecked")
         List<CdmBase> result = query.list();
 		return result;

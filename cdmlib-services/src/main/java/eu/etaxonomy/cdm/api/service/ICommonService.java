@@ -201,7 +201,25 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public <T extends CdmBase> T find(Class<T> clazz, UUID uuid, List<String> propertyPaths);
 
-	public List getHqlResult(String hqlQuery);
+	/**
+	 * Returns the result of an HQL Query which does
+	 * not inlcude parameters
+	 * @see #getHqlResult(String, Object[])
+	 */
+	@SuppressWarnings("rawtypes")
+    public List getHqlResult(String hqlQuery);
+
+	/**
+	 * Returns the result of an HQL Query which inlcudes parameters as
+	 * ordinal parameters (e.g. a = ?0).
+	 *
+	 * @param hqlQuery the HQL query
+	 * @param params the parameter values
+	 * @return  the result of the HQL query
+     * @see #getHqlResult(String)
+	 */
+	@SuppressWarnings("rawtypes")
+    public List getHqlResult(String hqlQuery, Object[] params);
 
 
     /**
