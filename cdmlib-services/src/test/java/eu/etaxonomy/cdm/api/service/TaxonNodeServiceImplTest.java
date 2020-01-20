@@ -477,11 +477,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(newTaxon);
         IBotanicalName name = nameService.load(nameUUID);
         assertNull(name);
-
-
     }
-
-
 
 	@Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -508,9 +504,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertNull(t1);
 		t2 = (Taxon) taxonService.load(t2Uuid);
 		assertNull(t2);
-
-
 	}
+
 	@Test
 	@DataSet
 	public void testMoveTaxonNode(){
@@ -519,9 +514,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	    List<TaxonNode>  nodes = classification.getChildNodes();
 	    System.out.println(nodes.size());
 	    classification.addChildTaxon(Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES()), null), nodes.size(), null, null);
-	   nodes =  classification.getChildNodes();
+	    nodes =  classification.getChildNodes();
 	    System.out.println(nodes.size());
-
 	}
 
     @Test
@@ -582,7 +576,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
         Assert.assertEquals(allNodes.get(1).getTaxon(), abiesBalsamea );
         Assert.assertEquals(allNodes.get(2).getTaxon(), abiesAlba );
-
     }
 
     @Test
