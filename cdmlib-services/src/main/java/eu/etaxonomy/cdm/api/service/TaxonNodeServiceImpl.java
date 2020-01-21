@@ -1151,7 +1151,7 @@ public class TaxonNodeServiceImpl
         for(TaxonNode node:nodes){
             if (authentication != null ) {
                 hasPermission = permissionEvaluator.hasPermission(authentication, node, Operation.UPDATE);
-            }else if (authentication == null){
+            }else {
                 hasPermission = true;
             }
             if (node.getTaxon() != null && hasPermission){
@@ -1159,7 +1159,7 @@ public class TaxonNodeServiceImpl
                     TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
                     result.add(dto);
                 }catch(Exception e){
-                    System.err.println(node.getTaxon().getTitleCache());
+                    logger.error(e.getMessage(), e);
                 }
 
             }
