@@ -195,10 +195,14 @@ public class TaxonNodeServiceImpl
         return listChildNodesAsTaxonNodeDto(uuidAndTitleCache);
     }
 
+    @Override
+    public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
+    	return dao.getParentTaxonNodeDtoForRank(classification, rank, name);
+    }
 
     @Override
-    public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name) {
-    	return dao.getParentTaxonNodeDtoForRank(classification, rank, name);
+    public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase) {
+        return dao.getParentTaxonNodeDtoForRank(classification, rank, taxonBase);
     }
 
     @Override

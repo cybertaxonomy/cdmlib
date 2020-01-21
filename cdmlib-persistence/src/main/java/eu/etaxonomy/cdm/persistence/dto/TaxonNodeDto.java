@@ -72,19 +72,12 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     private UUID classificationUUID = null;
     private UUID parentUUID = null;
 
-    private  String treeIndex = null;
+    private String treeIndex = null;
     private Integer sortIndex = null;
 
 
-
-
-    /**
-     * @param taxonNode
-     */
-
     public TaxonNodeDto(ITaxonTreeNode taxonNode) {
         this(TaxonNode.class, taxonNode);
-
     }
 
     public TaxonNodeDto(UUID uuid, Integer id, String titleCache) {

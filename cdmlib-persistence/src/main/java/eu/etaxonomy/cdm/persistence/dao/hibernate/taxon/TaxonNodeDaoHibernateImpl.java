@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -563,63 +562,77 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public TaxonNodeDto getParentTaxonNodeDtoForRank(Classification classification, Rank rank, TaxonName name) {
+    public List<TaxonNodeDto> getParentTaxonNodeDtoForRank(
+            Classification classification, Rank rank, TaxonBase<?> taxonBase) {
+
+        Taxon taxon = null;
+        if (taxonBase instanceof Taxon) {
+            taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+        }else {
+            taxon = CdmBase.deproxy(((Synonym)taxonBase).getAcceptedTaxon());
+        }
+        TaxonNode node = null;
+        if (taxon != null) {
+            node = taxon.getTaxonNode(classification);
+        }
+        List<TaxonNodeDto> result = new ArrayList<>();
+        if (node != null) {
+            String treeIndex = node.treeIndex();
+            List<Integer> ancestorNodeIds = TreeIndex.NewInstance(treeIndex).parentNodeIds(false);
+
+            Criteria nodeCrit = getSession().createCriteria(TaxonNode.class);
+            Criteria taxonCrit = nodeCrit.createCriteria("taxon");
+            Criteria nameCrit = taxonCrit.createCriteria("name");
+            nodeCrit.add(Restrictions.in("id", ancestorNodeIds));
+            nodeCrit.add(Restrictions.eq("classification", classification));
+            nameCrit.add(Restrictions.eq("rank", rank));
+
+//          ProjectionList projList = Projections.projectionList();
+//          projList.add(Projections.property("treeIndex"));
+//          projList.add(Projections.property("uuid"));
+//          nodeCrit.setProjection(projList);
+
+            @SuppressWarnings("unchecked")
+            List<TaxonNode> list = nodeCrit.list();
+//          for (Object[] objectArray: list) {
+//              String treeIndexParent = (String) objectArray[0];
+//              UUID uuid = (UUID)objectArray[1];
+//              if (treeIndex.startsWith(treeIndexParent)) {
+//                  node = load(uuid);
+//                  break;
+//              }
+//          }
+
+            for (TaxonNode rankNode : list){
+                TaxonNodeDto dto = new TaxonNodeDto(rankNode);
+                result.add(dto);
+            }
+        }
+        return result;
+    }
+
+
+    @Override
+    public List<TaxonNodeDto> getParentTaxonNodeDtoForRank(
+            Classification classification, Rank rank, TaxonName name) {
 
     	Set<TaxonBase> taxa = name.getTaxonBases();
-    	TaxonNode node = null;
-    	String treeIndex = null;
-    	Taxon taxon = null;
+    	List<TaxonNodeDto> result = new ArrayList<>();
     	for (TaxonBase<?> taxonBase:taxa) {
-    		if (taxonBase instanceof Taxon) {
-    			taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-    		}else {
-    			taxon = CdmBase.deproxy(((Synonym)taxonBase).getAcceptedTaxon());
-    		}
-    		if (taxon != null) {
-    			node = taxon.getTaxonNode(classification);
-	    		if (node != null) {
-	    			break;
-	    		}
-    		}
+    	    List<TaxonNodeDto> tmpList = getParentTaxonNodeDtoForRank(classification, rank, taxonBase);
+    	    for (TaxonNodeDto tmpDto : tmpList){
+    	        boolean exists = false; //an equal method does not yet exist for TaxonNodeDto therefore this workaround
+    	        for (TaxonNodeDto dto: result){
+    	            if (dto.getTreeIndex().equals(tmpDto.getTreeIndex())){
+    	                exists = true;
+    	            }
+    	        }
+    	        if (!exists){
+    	            result.add(tmpDto);
+    	        }
+    	    }
     	}
-    	if (node != null) {
-    		treeIndex = node.treeIndex();
-    	}
-    	Criteria nodeCrit = getSession().createCriteria(TaxonNode.class);
-    	Criteria taxonCrit = nodeCrit.createCriteria("taxon");
-    	Criteria nameCrit = taxonCrit.createCriteria("name");
-    	nodeCrit.add(Restrictions.eq("classification", classification));
-    	nameCrit.add(Restrictions.eq("rank", rank));
-
-    	ProjectionList projList = Projections.projectionList();
-        projList.add(Projections.property("treeIndex"));
-        projList.add(Projections.property("uuid"));
-        nodeCrit.setProjection(projList);
-        @SuppressWarnings("unchecked")
-        List<Object[]> list = nodeCrit.list();
-        UUID uuid = null;
-        if (list.size() > 0) {
-        	for (Object o: list) {
-        		 Object[] objectArray = (Object[]) o;
-                 uuid = (UUID)objectArray[1];
-                 String treeIndexParent = (String) objectArray[0];
-                 try {
-                     if (treeIndex.startsWith(treeIndexParent)) {
-                    	 node = load(uuid);
-                    	 break;
-                     }
-                 }catch(NullPointerException e) {
-                	 System.err.println("Parent: " + treeIndexParent + " treeIndex: " + treeIndex + " taxon: " + taxon != null?taxon.getTitleCache(): "");
-                 }
-        	}
-        	if (node != null) {
-        		TaxonNodeDto dto = new TaxonNodeDto(node);
-        		return dto;
-        	}
-
-        }
-
-        return null;
+    	return result;
     }
 
     @Override

@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -265,7 +266,9 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
-	public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
+	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
+
+	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
 
     /**
      * Lists all direct child nodes of the given {@link ITaxonTreeNode}

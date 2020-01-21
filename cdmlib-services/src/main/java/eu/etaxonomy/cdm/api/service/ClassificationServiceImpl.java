@@ -812,7 +812,6 @@ public class ClassificationServiceImpl
         //get all marked tree indexes
         Set<TreeIndex> markedTreeIndexes = dao.getMarkedTreeIndexes(markerType, flag);
 
-
         Map<TreeIndex, TreeIndex> groupedMap = TreeIndex.group(markedTreeIndexes, taxonIdTreeIndexMap.values());
         Set<TreeIndex> notNullGroups = new HashSet<>(groupedMap.values());
         notNullGroups.remove(null);
