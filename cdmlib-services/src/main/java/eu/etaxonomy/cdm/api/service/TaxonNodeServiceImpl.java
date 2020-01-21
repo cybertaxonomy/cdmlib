@@ -606,7 +606,7 @@ public class TaxonNodeServiceImpl
     @Transactional(readOnly = false)
     public DeleteResult deleteTaxonNode(UUID nodeUUID, TaxonDeletionConfigurator config) {
 
-    	TaxonNode node = HibernateProxyHelper.deproxy(dao.load(nodeUUID), TaxonNode.class);
+    	TaxonNode node = CdmBase.deproxy(dao.load(nodeUUID));
     	return deleteTaxonNode(node, config);
     }
 
