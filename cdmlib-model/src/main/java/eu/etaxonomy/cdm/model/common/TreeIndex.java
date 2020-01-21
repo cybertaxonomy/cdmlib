@@ -26,19 +26,26 @@ import eu.etaxonomy.cdm.model.term.TermNode;
  *
  * @author a.mueller
  * @since 02.12.2016
- *
  */
 public class TreeIndex {
+
+    public static String sep = "#";
+
+    //regEx, we also allow the tree itself to have a tree index (e.g. #t1#)
+    //this may change in future as not necessarily needed
+    private static String regEx = sep+"[a-z](\\d+"+sep+")+";
+    private static Pattern pattern = Pattern.compile(regEx);
+
+    private static TreeIndexComparator comparator = new TreeIndexComparator();
+
+    private String treeIndex;
+
+//***************** FACTORY ********************************/
 
     public static TreeIndex NewInstance(String treeIndex){
         return new TreeIndex(treeIndex);
     }
 
-
-    /**
-     * @param subtree
-     * @return
-     */
     public static TreeIndex NewInstance(TaxonNode node) {
         if (node == null){
             return null;
@@ -47,11 +54,6 @@ public class TreeIndex {
         }
     }
 
-
-    /**
-     * @param stringList
-     * @return
-     */
     public static List<TreeIndex> NewListInstance(List<String> stringList) {
         List<TreeIndex> result = new ArrayList<>();
         for (String string: stringList){
@@ -60,14 +62,7 @@ public class TreeIndex {
         return result;
     }
 
-    //regEx, we also allow the tree itself to have a tree index (e.g. #t1#)
-    //this may change in future as not necessarily needed
-    private static String regEx = "#[a-z](\\d+#)+";
-    private static Pattern pattern = Pattern.compile(regEx);
-
-    private static TreeIndexComparator comparator = new TreeIndexComparator();
-
-    private String treeIndex;
+// ******************* CONSTRUCTOR ********************/
 
     private TreeIndex(String treeIndex){
         if (! pattern.matcher(treeIndex).matches()){
@@ -78,19 +73,13 @@ public class TreeIndex {
 
 // ************** METHODS ***************************************/
 
-    /**
-     * @param taxonTreeIndex
-     * @return
-     */
     public boolean hasChild(TreeIndex childCandidateTreeIndex) {
         return childCandidateTreeIndex.treeIndex.startsWith(treeIndex);
     }
 
-
     /**
      * Returns a new TreeIndex instance which represents the parent of this tree index.
      * Returns null if this tree index already represents the root node of the tree.
-     * @return
      */
     public TreeIndex parent(){
         int index = treeIndex.substring(0, treeIndex.length()-1).lastIndexOf(ITreeNode.separator);
@@ -126,6 +115,37 @@ public class TreeIndex {
 // ********************** STATIC METHODS  *****************************/
 
     /**
+     * Returns a list of string based tree node ids of all ancestors. Starts with the highest ancestor.
+     *
+     * @param includeRoot if the root node which has no data attached should be included
+     * @param includeTree if the tree node which precedes the treeindex representing the tree should be included
+     */
+    public List<String> parentNodeIds(boolean includeRoot, boolean includeTree){
+        String[] splits = treeIndex.split(sep);
+        List<String> result = new ArrayList<>();
+        for (int i = 1; i<splits.length; i++){  //the first split is empty
+            if (i > 2 || i == 1 && includeTree || i == 2 && includeRoot){
+                result.add(splits[i]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of integer based tree node ids of all ancestors. Starts with the highest ancestor.
+     * @param treeIndex the tree index
+     * @param includeRoot if the root node which has no data attached should be included
+     */
+    public List<Integer> parentNodeIds(boolean includeRoot){
+        List<String> split = parentNodeIds(includeRoot, false);
+        List<Integer> result = new ArrayList<>();
+        for (String str:split){
+            result.add(Integer.valueOf(str));
+        }
+        return result;
+    }
+
+    /**
      * Creates a list for the given tree indexes and sorts them in ascending
      * order.
      * @param treeIndexSet
@@ -137,12 +157,9 @@ public class TreeIndex {
         return result;
     }
 
-
     /**
      * Creates a list for the given tree indexes and sorts them in descending
      * order.
-     * @param treeIndexSet
-     * @return
      */
     public static List<TreeIndex> sortDesc(Collection<TreeIndex> treeIndexSet) {
         List<TreeIndex> result = sort(treeIndexSet);
@@ -173,7 +190,6 @@ public class TreeIndex {
         return result;
     }
 
-
 // **************************** EQUALS *****************************/
 
     @Override
@@ -192,8 +208,6 @@ public class TreeIndex {
 
 // *************************** toString() ***********************
 
-
-
     @Override
     public String toString(){
         return treeIndex;
@@ -201,18 +215,11 @@ public class TreeIndex {
 
     /**
      * Null save toString method.
-     * @param treeIndex
-     * @return
      */
     public static String toString(TreeIndex treeIndex) {
         return treeIndex == null? null: treeIndex.toString();
     }
 
-
-    /**
-     * @param treeIndexes
-     * @return
-     */
     public static List<String> toString(Collection<TreeIndex> treeIndexes) {
         List<String> result = new ArrayList<>();
         for (TreeIndex treeIndex : treeIndexes){
@@ -220,7 +227,4 @@ public class TreeIndex {
         }
         return result;
     }
-
-
-
 }
