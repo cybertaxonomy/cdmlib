@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -125,6 +126,9 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
         .map(exact->Float.toString(exact.getValue()))
         .collect(Collectors.joining(", "));
+        if (quantitativeData.getUnit() != null){
+            displayData += " "+ quantitativeData.getUnit().getIdInVocabulary();
+        }
         return displayData;
     }
 
@@ -155,7 +159,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         }
     }
 
-    public void setDataValueForQuantitativeData(Feature feature, Map<StatisticalMeasure, List<String>> textFields){
+    public void setDataValueForQuantitativeData(Feature feature, Map<StatisticalMeasure, List<String>> textFields, MeasurementUnit unit){
         DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
         if(textFields.values().stream().allMatch(listOfStrings->listOfStrings.isEmpty())){
             removeFeature(feature, descriptionElementBase);
@@ -179,6 +183,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             QuantitativeData fixedQuantitativeData = StructuredDescriptionAggregation.handleMissingMinOrMax(quantitativeData,
                     MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
             // update display data cache
+            fixedQuantitativeData.setUnit(unit);
             featureToDisplayDataMap.put(feature, generateDisplayString(fixedQuantitativeData));
         }
     }
