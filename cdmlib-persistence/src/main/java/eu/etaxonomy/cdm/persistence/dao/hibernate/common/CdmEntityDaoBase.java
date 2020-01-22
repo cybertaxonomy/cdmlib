@@ -31,6 +31,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.criterion.LogicalExpression;
@@ -1049,21 +1050,52 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) {
+        Set<String> stringSet = new HashSet<>();
+        stringSet.add(param);
+        return this.findByParam(clazz, stringSet, queryString, matchmode,
+                criterion, pageSize, pageNumber, orderHints,
+                propertyPaths);
+    }
+
+    @Override
+    public <S extends T> List<S> findByParam(Class<S> clazz, Set<String> params, String queryString, MatchMode matchmode,
+            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
 
         Criteria criteria = criterionForType(clazz);
 
         if (queryString != null) {
-            if (matchmode == null) {
-                criteria.add(Restrictions.ilike(param, queryString));
-            } else if (matchmode == MatchMode.BEGINNING) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
-            } else if (matchmode == MatchMode.END) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
-            } else if (matchmode == MatchMode.EXACT) {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
-            } else {
-                criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
+            Set<Criterion> criterions = new HashSet<>();
+            for (String param: params){
+                Criterion crit;
+                if (matchmode == null) {
+                     crit = Restrictions.ilike(param, queryString);
+                } else if (matchmode == MatchMode.BEGINNING) {
+                     crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START);
+                } else if (matchmode == MatchMode.END) {
+                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END);
+                } else if (matchmode == MatchMode.EXACT) {
+                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT);
+                } else {
+                    crit = Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE);
+                }
+                criterions.add(crit);
             }
+            if (criterions.size()>1){
+                Iterator<Criterion> critIterator = criterions.iterator();
+                Disjunction disjunction = Restrictions.disjunction();
+                while (critIterator.hasNext()){
+                    disjunction.add(critIterator.next());
+                }
+
+                criteria.add(disjunction);
+
+            }else{
+                if (!criterions.isEmpty()){
+                    criteria.add(criterions.iterator().next());
+                }
+            }
+
         }
 
         addCriteria(criteria, criterion);
