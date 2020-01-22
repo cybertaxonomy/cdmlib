@@ -587,22 +587,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             nodeCrit.add(Restrictions.eq("classification", classification));
             nameCrit.add(Restrictions.eq("rank", rank));
 
-//          ProjectionList projList = Projections.projectionList();
-//          projList.add(Projections.property("treeIndex"));
-//          projList.add(Projections.property("uuid"));
-//          nodeCrit.setProjection(projList);
-
             @SuppressWarnings("unchecked")
             List<TaxonNode> list = nodeCrit.list();
-//          for (Object[] objectArray: list) {
-//              String treeIndexParent = (String) objectArray[0];
-//              UUID uuid = (UUID)objectArray[1];
-//              if (treeIndex.startsWith(treeIndexParent)) {
-//                  node = load(uuid);
-//                  break;
-//              }
-//          }
-
             for (TaxonNode rankNode : list){
                 TaxonNodeDto dto = new TaxonNodeDto(rankNode);
                 result.add(dto);
