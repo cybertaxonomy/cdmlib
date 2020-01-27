@@ -565,7 +565,7 @@ public class CdmGenericDaoImpl
 
 		getSession().flush();
 		try {
-			List<T> result = new ArrayList<T>();
+			List<T> result = new ArrayList<>();
 			if(objectToMatch == null){
 				return result;
 			}
@@ -581,8 +581,10 @@ public class CdmGenericDaoImpl
 		}
 	}
 
-	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategyEqual matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
-		List<T> result = new ArrayList<T>();
+	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,
+	        IMatchStrategyEqual matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+
+	    List<T> result = new ArrayList<>();
 		Session session = getSession();
 		Class<?> matchClass = objectToMatch.getClass();
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
@@ -605,16 +607,6 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/**
-	 * @param <T>
-	 * @param objectToMatch
-	 * @param matchStrategy
-	 * @param classMetaData
-	 * @param criteria
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws MatchException
-	 */
 	private <T> boolean makeCriteria(T objectToMatch,
 			IMatchStrategyEqual matchStrategy, ClassMetadata classMetaData,
 			Criteria criteria) throws IllegalAccessException, MatchException {

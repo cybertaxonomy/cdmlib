@@ -45,7 +45,7 @@ public class TaggedCacheHelper {
 
     /**
      * Creates a string from tagged text by concatenating all tags. If no separator tag is defined
-     * tags are seperated by simple whitespace.
+     * tags are separated by simple whitespace.
      * @param tags
      * @return
      */
@@ -131,7 +131,7 @@ public class TaggedCacheHelper {
     }
 
     private static SortedSet<String> getCommonRules(SortedSet<String> rules1,SortedSet<String> rules2) {
-        SortedSet<String> result = new TreeSet<String>();
+        SortedSet<String> result = new TreeSet<>();
         for (String str : rules1){
             if (rules2.contains(str)){
                 result.add(str);

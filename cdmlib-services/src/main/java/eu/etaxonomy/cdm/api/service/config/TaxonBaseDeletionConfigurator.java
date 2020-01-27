@@ -21,7 +21,9 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
  */
 public class TaxonBaseDeletionConfigurator extends DeleteConfiguratorBase{
 
-	private boolean deleteNameIfPossible = true;
+    private static final long serialVersionUID = -370747732061036090L;
+
+    private boolean deleteNameIfPossible = true;
 	private boolean deleteSynonymRelations = true;
 
 	private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();

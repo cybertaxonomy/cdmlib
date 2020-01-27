@@ -158,9 +158,6 @@ public class TaxonNodeServiceImpl
         return dao.listChildrenOf(node, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TaxonNodeDto getParentUuidAndTitleCache(ITaxonTreeNode child) {
         UUID uuid = child.getUuid();
@@ -169,9 +166,6 @@ public class TaxonNodeServiceImpl
         return getParentUuidAndTitleCache(uuidAndTitleCache);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child) {
         return dao.getParentUuidAndTitleCache(child);
@@ -181,8 +175,6 @@ public class TaxonNodeServiceImpl
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent) {
         return dao.listChildNodesAsTaxonNodeDto(parent);
     }
-
-
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
@@ -1081,8 +1073,6 @@ public class TaxonNodeServiceImpl
         return result;
     }
 
-
-
     @Override
     public long count(TaxonNodeFilter filter){
         return nodeFilterDao.count(filter);
@@ -1141,8 +1131,6 @@ public class TaxonNodeServiceImpl
         }
         return commonParent;
     }
-
-
 
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication){
@@ -1217,6 +1205,4 @@ public class TaxonNodeServiceImpl
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
-
-
 }
