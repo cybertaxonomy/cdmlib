@@ -1041,7 +1041,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            TaxonName taxonName = getOrCreateTaxonName(scientificName, null, preferredFlag, state, i);
 	            Taxon taxon = getOrCreateTaxonForName(taxonName, state);
 	            addTaxonNode(taxon, state,preferredFlag);
-	            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate());
+	            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate(), identification.getModifier());
 	        }
 	    }
 
@@ -1111,7 +1111,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param derivedFacade : the derived Unit Facade
 	     */
 	    @SuppressWarnings("rawtypes")
-        protected void linkDeterminationEvent(STATE state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade, String identifierStr, String dateStr) {
+        protected void linkDeterminationEvent(STATE state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade, String identifierStr, String dateStr, String modifier) {
 	        SpecimenImportConfiguratorBase config = state.getConfig();
 	        if (logger.isDebugEnabled()){
 	            logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
@@ -1132,6 +1132,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	        if (dateStr != null){
 	            determinationEvent.setTimeperiod(TimePeriodParser.parseString(dateStr));
+	        }
+	        if (modifier != null){
+	            if (modifier.equals("cf.")){
+	                determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_CONFER());
+	            }else if (modifier.equals("aff.")){
+	                determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_AFFINIS());
+	            }
 	        }
 	        state.getDerivedUnitBase().addDetermination(determinationEvent);
 

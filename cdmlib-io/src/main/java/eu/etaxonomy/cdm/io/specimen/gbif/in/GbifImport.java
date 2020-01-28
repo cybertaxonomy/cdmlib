@@ -640,7 +640,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
             }
             if (taxon != null){
                 addTaxonNode(taxon, state,preferredFlag);
-                linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, null, null);
+                linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, null, null, null);
             }
         }
 
