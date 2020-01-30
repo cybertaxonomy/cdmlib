@@ -37,13 +37,13 @@ public class Role extends AuthorityBase {
 //    @NotNull
     private String role;
 
-// *************************** Factory Methods ********************************/
+    // *************************** Factory Methods ********************************/
 
     public static Role NewInstance(String role){
         return new Role(role);
     }
 
-// *************************** CONSTRUCTOR ********************************/
+    // *************************** CONSTRUCTOR ********************************/
 
     //for hibernate use only
     private Role(){}
@@ -64,6 +64,10 @@ public class Role extends AuthorityBase {
         this.role = role;
     }
 
+    @Override
+    public String toString() {
+        return getRole();
+    }
 
 
 }
