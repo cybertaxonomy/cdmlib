@@ -1,6 +1,5 @@
-// $Id$
 /**
-* Copyright (C) 2018 EDIT
+* Copyright (C) 2020 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *
@@ -21,48 +20,26 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
- * @author pplitzner
- * @date 05.11.2018
- *
+ * @author k.luther
+ * @since 07.01.2020
  */
-public class TermVocabularyDto extends AbstractTermDto {
+public class TermVocabularyDto extends TermCollectionDto {
 
-    private static final long serialVersionUID = 6053392236860675874L;
-
-    private Set<TermDto> terms;
-
+    private static final long serialVersionUID = 7667822208618658310L;
+    /**
+     * @param uuid
+     * @param representations
+     * @param termType
+     */
     public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType) {
-        super(uuid, representations);
-        terms = new HashSet<>();
-        setTermType(termType);
+        super(uuid, representations, termType);
+        // TODO Auto-generated constructor stub
     }
 
-    public Set<TermDto> getTerms() {
-        return terms;
-    }
-
-    public void addTerm(TermDto term){
-        terms.add(term);
-    }
-
-    public static String getTermDtoSelect(){
-        return getTermDtoSelect("TermVocabulary");
-    }
-
-    public static String getTermDtoSelect(String fromTable){
-        return ""
-                + "select a.uuid, "
-                + "r, "
-                + "a.termType "
-
-                + "FROM "+fromTable+" as a "
-                + "LEFT JOIN a.representations AS r ";
-    }
-
-    public static List<TermVocabularyDto> termDtoListFrom(List<Object[]> results) {
+    public static List<TermVocabularyDto> termVocabularyDtoListFrom(List<Object[]> results) {
         List<TermVocabularyDto> dtos = new ArrayList<>(); // list to ensure order
         // map to handle multiple representations because of LEFT JOIN
-        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(results.size());
+        Map<UUID, TermCollectionDto> dtoMap = new HashMap<>(results.size());
         for (Object[] elements : results) {
             UUID uuid = (UUID)elements[0];
             if(dtoMap.containsKey(uuid)){
@@ -92,6 +69,5 @@ public class TermVocabularyDto extends AbstractTermDto {
         }
         return dtos;
     }
-
 
 }
