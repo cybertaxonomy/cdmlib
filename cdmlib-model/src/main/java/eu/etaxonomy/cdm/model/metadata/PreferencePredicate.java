@@ -141,9 +141,9 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     NameTypeDesignationStatus(UUID.fromString("6091668a-9bcf-4c79-8c53-7e4b98de1ccb"), "Name Type Designation Status", "name.nameTypeDesignationStatus", null),
     SortRanksHierarchichally(UUID.fromString("073c34f3-5e20-4dcd-a12b-ca7336f37fb5"), "Sort Ranks Hierarchically", "name.sortRankHierarchically", true),
     //Language
-    DefaultLanguage(UUID.fromString("0817d7f3-e88c-4064-be09-bc7adf5c2bd7"), "Default Language", "defaultLanguage", Language.ENGLISH()),
-    AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "AvailableLanguages", null),
-    MultiLanguageTextEditing(UUID.fromString("373f38ae-981d-492c-a01c-71134034208d"), "Multi Language Text Editing", "MultiLanguageTextEditing", Boolean.FALSE),
+    DefaultLanguage(UUID.fromString("0817d7f3-e88c-4064-be09-bc7adf5c2bd7"), "Default Language", "languages.defaultLanguage", Language.ENGLISH()),
+    AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "languages.availableLanguages", null),
+    MultiLanguageTextEditing(UUID.fromString("373f38ae-981d-492c-a01c-71134034208d"), "Multi Language Text Editing", "languages.multiLanguageTextEditing", Boolean.FALSE),
 
     //Search
     ShowIdInSelectionDialog(UUID.fromString("2b2dbafe-186e-4411-aca0-74348c0946b7"), "Show Id In Selection Dialog", "search.selectionDialog.showId", Boolean.TRUE),
