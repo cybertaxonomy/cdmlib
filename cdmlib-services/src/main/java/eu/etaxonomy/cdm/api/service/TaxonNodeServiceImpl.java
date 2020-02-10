@@ -474,11 +474,11 @@ public class TaxonNodeServiceImpl
         	if (treeNode != null){
 
         		TaxonNode taxonNode;
-	            taxonNode = HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
+	            taxonNode = CdmBase.deproxy(treeNode);
 	            TaxonNode parent = taxonNode.getParent();
 	            	//check whether the node has children or the children are already deleted
 	            if(taxonNode.hasChildNodes()) {
-            		List<TaxonNode> children = new ArrayList<TaxonNode> ();
+            		List<TaxonNode> children = new ArrayList<> ();
             		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
         			children.addAll(childNodesList);
         			//To avoid NPE when child is also in list of taxonNodes, remove it from the list
@@ -548,7 +548,7 @@ public class TaxonNodeServiceImpl
 	            } else {
 	            	//classification = null;
 	            	Taxon taxon = taxonNode.getTaxon();
-	            	taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+	            	taxon = CdmBase.deproxy(taxon);
 	            	if (taxon != null){
 	            		taxon.removeTaxonNode(taxonNode);
 	            		if (config.getTaxonNodeConfig().isDeleteTaxon()){

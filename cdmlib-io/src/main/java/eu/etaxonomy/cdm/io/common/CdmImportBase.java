@@ -832,11 +832,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Returns a taxon relationship type for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the taxon relationship type exists in the database, if not creating it anew (with vocabulary etc.).
 	 * If label, text and labelAbbrev are all <code>null</code> no taxon relationship type is created.
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
 	 * @return
 	 */
 	public TaxonRelationshipType getTaxonRelationshipType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<TaxonRelationshipType> voc){
