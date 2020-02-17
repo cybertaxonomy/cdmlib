@@ -11,6 +11,9 @@
   <!-- The beans for the implementation classes are declared with the @Service 
     annotation. See ClassificationServiceImpl for an example. -->
 
+  <bean id="remoteInvocationExecutor" class="eu.etaxonomy.cdm.api.remoting.DebuggingRemoteInvocationExecutor"
+    scope="prototype" />
+
   <bean id="httpAgentService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -19,6 +22,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IAgentService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpAnnotationService"
@@ -29,6 +33,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IAnnotationService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpAuditEventService"
@@ -39,6 +44,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IAuditEventService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpClassificationService"
@@ -49,6 +55,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IClassificationService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpCollectionService"
@@ -59,6 +66,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ICollectionService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpCommonService"
@@ -69,9 +77,10 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ICommonService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
-  
+
+
   <bean id="httpDescriptionService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -80,6 +89,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IDescriptionService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpFeatureNodeService"
@@ -90,6 +100,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IFeatureNodeService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpTermNodeService"
@@ -100,6 +111,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ITermNodeService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpFeatureTreeService"
@@ -110,8 +122,9 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IFeatureTreeService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpTermTreeService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -120,8 +133,9 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ITermTreeService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpGroupService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -130,6 +144,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IGroupService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpIdentificationKeyService"
@@ -141,6 +156,7 @@
       <value>eu.etaxonomy.cdm.api.service.IIdentificationKeyService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpLocationService"
@@ -151,6 +167,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ILocationService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpMarkerService"
@@ -161,6 +178,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IMarkerService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpMediaService"
@@ -171,9 +189,10 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IMediaService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
-    <bean id="httpMetadataService"
+
+  <bean id="httpMetadataService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="metadataServiceImpl" />
@@ -181,6 +200,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IMetadataService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpNameService"
@@ -191,6 +211,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.INameService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpOccurrenceService"
@@ -201,6 +222,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IOccurrenceService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpPolytomousKeyNodeService"
@@ -212,6 +234,7 @@
       <value>eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpPolytomousKeyService"
@@ -222,8 +245,9 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IPolytomousKeyService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpPreferenceService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -232,16 +256,19 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IPreferenceService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpProgressMonitorService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="progressMonitorServiceImpl" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IProgressMonitorService</value>
+      <value>eu.etaxonomy.cdm.api.service.IProgressMonitorService
+      </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpReferenceService"
@@ -252,9 +279,10 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
-   <bean id="httpExtReferenceService"
+
+  <bean id="httpExtReferenceService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="referenceServiceImpl" />
@@ -262,6 +290,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IReferenceService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpBaseService"
@@ -272,6 +301,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpTaxonNodeService"
@@ -282,6 +312,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ITaxonNodeService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpTaxonService"
@@ -292,6 +323,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ITaxonService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpTermService"
@@ -302,9 +334,10 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.ITermService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
-   <bean id="httpRightsService"
+
+  <bean id="httpRightsService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="rightsServiceImpl" />
@@ -312,6 +345,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IRightsService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpEntityValidationService"
@@ -323,6 +357,7 @@
       <value>eu.etaxonomy.cdm.api.service.IEntityValidationService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpEntityConstraintViolationService"
@@ -334,6 +369,7 @@
       <value>eu.etaxonomy.cdm.api.service.IEntityConstraintViolationService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpUserService"
@@ -344,6 +380,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IUserService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpVocabularyService"
@@ -354,6 +391,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IVocabularyService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpDescriptiveDataSetService"
@@ -362,8 +400,10 @@
       <ref bean="descriptiveDataSetService" />
     </property>
     <property name="serviceInterface">
-      <value>eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService</value>
+      <value>eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService
+      </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpGrantedAuthorityService"
@@ -375,6 +415,7 @@
       <value>eu.etaxonomy.cdm.api.service.IGrantedAuthorityService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpDatabaseService"
@@ -385,6 +426,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.IDatabaseService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpLsidAuthorityService"
@@ -396,6 +438,7 @@
       <value>eu.etaxonomy.cdm.api.service.lsid.LSIDAuthorityService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpLsidMetadataService"
@@ -407,6 +450,7 @@
       <value>eu.etaxonomy.cdm.api.service.lsid.LSIDMetadataService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpLsidDataService"
@@ -417,6 +461,7 @@
     <property name="serviceInterface">
       <value>eu.etaxonomy.cdm.api.service.lsid.LSIDDataService</value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpAuthenticationManager"
@@ -428,6 +473,7 @@
       <value>org.springframework.security.authentication.AuthenticationManager
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpPrimerService"
@@ -439,8 +485,9 @@
       <value>eu.etaxonomy.cdm.api.service.molecular.IPrimerService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpAmplificationService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -450,8 +497,9 @@
       <value>eu.etaxonomy.cdm.api.service.molecular.IAmplificationService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpSequenceService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -461,6 +509,7 @@
       <value>eu.etaxonomy.cdm.api.service.molecular.ISequenceService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 
   <bean id="httpEventBaseService"
@@ -472,8 +521,9 @@
       <value>eu.etaxonomy.cdm.api.service.IEventBaseService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpIOService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -483,8 +533,9 @@
       <value>eu.etaxonomy.cdm.io.service.IIOService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-  
+
   <bean id="httpLongRunningTasksService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
@@ -494,9 +545,10 @@
       <value>eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
-       
-   <bean id="httpTestService"
+
+  <bean id="httpTestService"
     class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service">
       <ref bean="testServiceImpl" />
@@ -505,5 +557,6 @@
       <value>eu.etaxonomy.cdm.api.service.ITestService
       </value>
     </property>
+    <property name="remoteInvocationExecutor" ref="remoteInvocationExecutor" />
   </bean>
 </beans>
