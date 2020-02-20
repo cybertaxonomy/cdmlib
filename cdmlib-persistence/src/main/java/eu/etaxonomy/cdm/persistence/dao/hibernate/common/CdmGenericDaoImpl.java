@@ -56,9 +56,13 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.data.FullCoverageDataGenerator;
 import eu.etaxonomy.cdm.hibernate.DOIUserType;
+import eu.etaxonomy.cdm.hibernate.EnumSetUserType;
 import eu.etaxonomy.cdm.hibernate.EnumUserType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.OrcidUserType;
 import eu.etaxonomy.cdm.hibernate.PartialUserType;
+import eu.etaxonomy.cdm.hibernate.SeverityUserType;
+import eu.etaxonomy.cdm.hibernate.ShiftUserType;
 import eu.etaxonomy.cdm.hibernate.URIUserType;
 import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
@@ -458,7 +462,11 @@ public class CdmGenericDaoImpl
 				URIUserType.class,
 				EnumType.class,
 				EnumUserType.class,
-				DOIUserType.class
+				DOIUserType.class,
+				OrcidUserType.class,
+				ShiftUserType.class,
+				EnumSetUserType.class,
+				SeverityUserType.class
 				};
 		Set<String> classNames = new HashSet<>();
 		for (Class<?> clazz: classes){
