@@ -18,7 +18,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -117,7 +116,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		if (recordList != null) {
     		Map<String,String> record = null;
 
-    		TransactionStatus txStatus = startTransaction();
+    		state.setTransactionStatus(startTransaction());
 
     		//first pass
     		state.setCurrentLine(startingLine);
@@ -136,7 +135,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 //                            e.printStackTrace();
 //                        }
 //					}
-					DefaultTransactionStatus defStatus = (DefaultTransactionStatus) txStatus;
+					DefaultTransactionStatus defStatus = (DefaultTransactionStatus) state.getTransactionStatus();
 			        if (defStatus.isRollbackOnly()){
 			            logger.warn("Rollback only in line: " + i);
 			        }
@@ -161,7 +160,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
     		if (configurator.isDeduplicateAuthors()){
                 getAgentService().deduplicate(TeamOrPersonBase.class, null, null);
             }
-    		commitTransaction(txStatus);
+    		commitTransaction(state.getTransactionStatus());
     	}else{
     		logger.warn("No records found in " + source);
     	}

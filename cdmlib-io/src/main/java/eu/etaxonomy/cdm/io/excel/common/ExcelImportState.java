@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -31,6 +32,8 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
     private Map<String, String> originalRecord;
 
     private Reference sourceReference;
+
+    private TransactionStatus transactionStatus;
 
     public ExcelImportState(CONFIG config) {
         super(config);
@@ -76,6 +79,14 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
     }
     public void setSourceReference(Reference sourceReference) {
         this.sourceReference = sourceReference;
+    }
+
+    //tx
+    public TransactionStatus getTransactionStatus() {
+        return transactionStatus;
+    }
+    public void setTransactionStatus(TransactionStatus tx){
+        this.transactionStatus = tx;
     }
 
 }
