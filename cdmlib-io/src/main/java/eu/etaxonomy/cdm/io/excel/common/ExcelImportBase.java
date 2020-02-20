@@ -112,12 +112,6 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		return true;
 	}
 
-	/**
-	 * @param state
-	 * @param success
-	 * @param source
-	 * @return
-	 */
 	private void handleRecordList(STATE state, URI source) {
 		Integer startingLine = 2;
 		if (recordList != null) {

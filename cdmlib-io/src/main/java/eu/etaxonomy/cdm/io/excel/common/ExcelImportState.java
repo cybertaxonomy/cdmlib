@@ -22,7 +22,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW extends ExcelRowBase>
         extends ImportStateBase<CONFIG, ExcelImportBase>{
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelImportState.class);
 
 	private Integer currentLine;
@@ -35,6 +36,7 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
         super(config);
     }
 
+    //current line
 	public Integer getCurrentLine() {
 		return currentLine;
 	}
@@ -49,28 +51,26 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
 		this.currentLine++;
 	}
 
-
+	//current row
 	/**
 	 * The data holder class in which results for the current record are stored.
-	 * @return
 	 */
 	public ROW getCurrentRow() {
 		return currentRow;
 	}
-
 	public void setCurrentRow(ROW currentRow) {
 		this.currentRow = currentRow;
 	}
 
+	//original record
 	public Map<String,String> getOriginalRecord(){
 	    return this.originalRecord;
 	}
-
     public void setOriginalRecord(Map<String,String> originalRecord){
         this.originalRecord = originalRecord;
     }
 
-
+    //sourceReference
     public Reference getSourceReference() {
         return this.sourceReference;
     }

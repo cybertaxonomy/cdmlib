@@ -48,15 +48,15 @@ public abstract class ExcelRowBase {
 //	private String specificEpithet;
 
 
-	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<Integer, IdentifiableSource>();
-	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<Integer, SpecimenTypeDesignation>();
-	private List<PostfixTerm> extensions  = new ArrayList<PostfixTerm>();
+	private TreeMap<Integer, IdentifiableSource> sources = new TreeMap<>();
+	private TreeMap<Integer, SpecimenTypeDesignation> types = new TreeMap<>();
+	private List<PostfixTerm> extensions  = new ArrayList<>();
 
 	//features
-	private Map<UUID, TreeMap<Integer, String>> featureTexts = new HashMap<UUID, TreeMap<Integer, String>>();
-	private Map<UUID, TreeMap<Integer, String>> featureLanguages = new HashMap<UUID, TreeMap<Integer, String>>();
+	private Map<UUID, TreeMap<Integer, String>> featureTexts = new HashMap<>();
+	private Map<UUID, TreeMap<Integer, String>> featureLanguages = new HashMap<>();
 	//feature sources
-	private Map<UUID, TreeMap<Integer, SourceDataHolder>> textSources = new HashMap<UUID, TreeMap<Integer, SourceDataHolder>>();
+	private Map<UUID, TreeMap<Integer, SourceDataHolder>> textSources = new HashMap<>();
 
 
 	public ExcelRowBase() {
@@ -70,7 +70,7 @@ public abstract class ExcelRowBase {
 
 
 	public class SourceDataHolder{
-		private TreeMap<Integer, Map<SourceType, String>> sources = new TreeMap<Integer, Map<SourceType, String>>();
+		private TreeMap<Integer, Map<SourceType, String>> sources = new TreeMap<>();
 
 		public void putSource(int index, SourceType type, String value){
 			Map<SourceType, String> map = sources.get(index);
@@ -86,65 +86,26 @@ public abstract class ExcelRowBase {
 		}
 	}
 
-
-
 // **************************** GETTER / SETTER *********************************/
-
 
 	public void setCdmUuid(UUID cdmUuid) {
 		this.cdmUuid = cdmUuid;
 	}
-
-
 	public UUID getCdmUuid() {
 		return cdmUuid;
 	}
 
-//
-//	/**
-//	 * @return the author
-//	 */
-//	public String getAuthor() {
-//		return author;
-//	}
-//
-//
-//	/**
-//	 * @param author the author to set
-//	 */
-//	public void setAuthor(String author) {
-//		this.author = author;
-//	}
 
-
-
-	/**
-	 * @return the ecology
-	 */
 	public String getEcology() {
 		return ecology;
 	}
-
-
-	/**
-	 * @param ecology the ecology to set
-	 */
 	public void setEcology(String ecology) {
 		this.ecology = ecology;
 	}
 
-
-	/**
-	 * @return the plantDescription
-	 */
 	public String getPlantDescription() {
 		return plantDescription;
 	}
-
-
-	/**
-	 * @param plantDescription the plantDescription to set
-	 */
 	public void setPlantDescription(String plantDescription) {
 		this.plantDescription = plantDescription;
 	}
@@ -162,11 +123,6 @@ public abstract class ExcelRowBase {
 		return getOrdered(sources);
 	}
 
-
-	/**
-	 * @param key
-	 * @return
-	 */
 	private IdentifiableSource getOrMakeSource(int key) {
 		IdentifiableSource  source = sources.get(key);
 		if (source == null){
@@ -175,7 +131,6 @@ public abstract class ExcelRowBase {
 		}
 		return source;
 	}
-
 
 	public void putTypeCategory(int key, SpecimenTypeDesignationStatus status){
 		SpecimenTypeDesignation designation = getOrMakeTypeDesignation(key);
@@ -263,7 +218,6 @@ public abstract class ExcelRowBase {
 		}
 	}
 
-
 	public void putFeatureSource(UUID featureUuid,	int featureIndex, SourceType refType, String value, int refIndex) {
 		//feature Map
 		TreeMap<Integer, SourceDataHolder> featureMap = textSources.get(featureUuid);
@@ -281,7 +235,6 @@ public abstract class ExcelRowBase {
 		sourceDataHolder.putSource(refIndex, refType, value);
 	}
 
-
 	public SourceDataHolder getFeatureTextReferences(UUID featureUuid, int index) {
 		TreeMap<Integer, SourceDataHolder> textMap = textSources.get(featureUuid);
 		if (textMap == null){
@@ -292,7 +245,4 @@ public abstract class ExcelRowBase {
 		}
 
 	}
-
-
-
 }
