@@ -183,6 +183,9 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent) {
+        List<String> propertyPaths = new ArrayList<>();
+        propertyPaths.add("parent");
+        parent = dao.load(parent.getId(), propertyPaths);
         TaxonNodeDto uuidAndTitleCache = new TaxonNodeDto(parent);
         return listChildNodesAsTaxonNodeDto(uuidAndTitleCache);
     }
@@ -239,6 +242,9 @@ public class TaxonNodeServiceImpl
 
     @Override
     public TaxonNodeDto parentDto(UUID taxonNodeUuid) {
+        if (taxonNodeUuid == null){
+            return null;
+        }
         TaxonNode taxonNode = dao.load(taxonNodeUuid);
         if(taxonNode.getParent() != null) {
             return new TaxonNodeDto(taxonNode.getParent());
@@ -248,6 +254,9 @@ public class TaxonNodeServiceImpl
 
     @Override
     public TaxonNodeDto dto(UUID taxonNodeUuid) {
+        if (taxonNodeUuid == null){
+            return null;
+        }
         TaxonNode taxonNode = dao.load(taxonNodeUuid);
         if (taxonNode != null){
             return new TaxonNodeDto(taxonNode);
@@ -1133,9 +1142,16 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication){
-        List<TaxonNode> nodes = listChildrenOf(load(parentNodeUuid), null, null,
-               true, true, propertyPaths);
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, Authentication authentication, boolean openChildren){
+        Set<TaxonNode> nodes = new HashSet<>();
+        if (openChildren){
+            List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
+            for (TaxonNode node: parentNodes){
+                nodes.addAll(listChildrenOf(node, null, null, true, true, propertyPaths));
+            }
+            nodes.addAll(parentNodes);
+
+        }
         List<TaxonDistributionDTO> result = new ArrayList<>();
         boolean hasPermission = false;
         //TaxonDescription instance = TaxonDescription.NewInstance();
@@ -1182,10 +1198,16 @@ public class TaxonNodeServiceImpl
         return pager;
     }
 
+//    @Override
+//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid,
+//            List<String> propertyPaths, boolean openChildren) {
+//        return getTaxonDistributionDTOForSubtree(parentNodeUuid, propertyPaths, null, openChildren);
+//    }
+
     @Override
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid,
-            List<String> propertyPaths) {
-        return getTaxonDistributionDTOForSubtree(parentNodeUuid, propertyPaths, null);
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids,
+            List<String> propertyPaths, boolean openChildren) {
+        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren);
     }
 
     @Override
@@ -1205,4 +1227,6 @@ public class TaxonNodeServiceImpl
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent) {
         return dao.listChildNodesAsUuidAndTitleCache(parent);
     }
+
+
 }

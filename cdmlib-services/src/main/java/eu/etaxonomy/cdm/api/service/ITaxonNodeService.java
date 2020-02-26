@@ -257,9 +257,9 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     public TaxonNodeDto dto(UUID taxonNodeUuid);
 
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication);
-
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths);
+//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication, boolean openChildren);
+//
+//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, boolean openChildren);
 
     public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode);
 
@@ -279,5 +279,22 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
 	 public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+
+    /**
+     * @param nodeUuids
+     * @param propertyPaths
+     * @param authentication
+     * @param openChildren
+     * @return
+     */
+    List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
+            Authentication authentication, boolean openChildren);
+
+    /**
+     * @param nodeUuids
+     * @param propertyPaths
+     * @return
+     */
+    List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
 
 }
