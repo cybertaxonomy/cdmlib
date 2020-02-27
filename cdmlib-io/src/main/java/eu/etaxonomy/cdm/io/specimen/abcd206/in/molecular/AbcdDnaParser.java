@@ -58,8 +58,13 @@ public class AbcdDnaParser {
             fieldUnit = state.getLastFieldUnit();
             if (fieldUnit == null){
                 fieldUnit = FieldUnit.NewInstance();
+                if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber())){
+                    fieldUnit.setFieldNumber(state.getDataHolder().getFieldNumber());
+                }
             }
+
             state.setFieldUnit(fieldUnit);
+            state.setLastFieldUnit(fieldUnit);
         }
         DnaSample dnaSample = DnaSample.NewInstance();
         DerivationEvent.NewSimpleInstance(fieldUnit, dnaSample, DerivationEventType.DNA_EXTRACTION());

@@ -304,6 +304,12 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     }
 
     public Reference getImportReference(URI accessPoint){
+        if (accessPoint == null){
+            return null;
+        }
+        if (importReferences == null){
+            importReferences = new HashMap();
+        }
         if (this.importReferences.containsKey(accessPoint.toString())){
             return this.importReferences.get(accessPoint.toString());
         }else{

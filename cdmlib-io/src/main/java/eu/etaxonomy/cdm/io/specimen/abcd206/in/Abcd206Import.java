@@ -509,13 +509,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             FieldUnit fieldUnit = null;
             if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber())){
                 fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
-                state.setLastFieldUnit(fieldUnit);
+                if (fieldUnit != null){
+                    state.setLastFieldUnit(fieldUnit);
+                }
             }else{
                 fieldUnit = state.getLastFieldUnit();
 
             }
             if (fieldUnit == null){
                 fieldUnit = FieldUnit.NewInstance();
+                fieldUnit.setFieldNumber(state.getDataHolder().getFieldNumber());
                 state.setLastFieldUnit(fieldUnit);
             }
 

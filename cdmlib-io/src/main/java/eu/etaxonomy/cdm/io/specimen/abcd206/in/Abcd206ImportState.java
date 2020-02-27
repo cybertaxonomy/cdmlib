@@ -132,6 +132,9 @@ public class Abcd206ImportState
 
     public void setLastFieldUnit(FieldUnit lastFieldUnit) {
         this.lastFieldUnit = lastFieldUnit;
+        if (lastFieldUnit != null){
+            this.setFieldUnit(lastFieldUnit);
+        }
     }
 
 

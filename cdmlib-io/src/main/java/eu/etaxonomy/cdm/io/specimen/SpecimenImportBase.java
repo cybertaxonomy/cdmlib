@@ -767,28 +767,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    //    for our new source.
 	    protected IdentifiableSource getIdentifiableSource(Reference reference, String citationDetail) {
 
-	      /*  List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
-
-
-	        if (reference != null){
-	            try {
-	                for (OriginalSourceBase<?> osb: issTmp){
-	                    if (osb.getCitation() != null && osb.getCitation().getTitleCache().equalsIgnoreCase(reference.getTitleCache())){
-	                        String osbDetail = osb.getCitationMicroReference();
-	                        if ((StringUtils.isBlank(osbDetail) && StringUtils.isBlank(citationDetail))
-	                                || (osbDetail != null && osbDetail.equalsIgnoreCase(citationDetail)) ) {
-//	                            System.out.println("REFERENCE FOUND RETURN EXISTING SOURCE");
-	                            return (IdentifiableSource) osb.clone();
-	                        }
-	                    }
-	                }
-	            } catch (CloneNotSupportedException e) {
-	                throw new RuntimeException(e);
-	            } catch (Exception e1){
-	                e1.printStackTrace();
-	            }
-	        }
-	*/
 	        IdentifiableSource sour = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null, reference,citationDetail);
 	        return sour;
 	    }
