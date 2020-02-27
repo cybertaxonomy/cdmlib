@@ -87,6 +87,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	protected Map<String, DefinedTerm> kindOfUnitsMap;
 
 
+
 	@Override
     protected abstract void doInvoke(STATE state);
 
@@ -1358,19 +1359,19 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 //	                }
 //	            }
 //	        }else {
-	            if(sourceNotLinkedToElement(indAssociation,state.getRef(),null)) {
-	                indAssociation.addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
+	            if(sourceNotLinkedToElement(indAssociation,state.getImportReference(state.getActualAccessPoint()),null)) {
+	                indAssociation.addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
 	            }
-	            if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getRef(),null)) {
-	                state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
+	            if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
+	                state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
 	            }
 	            for (Reference citation : determinationEvent.getReferences()) {
 	                if(sourceNotLinkedToElement(indAssociation,citation,null))
 	                {
 	                    indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
 	                }
-	                if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getRef(),null)) {
-	                    state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
+	                if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
+	                    state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
 	                }
 	            }
 	   //     }
@@ -1514,6 +1515,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	    }
+
+
 
 
 }

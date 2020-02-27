@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 import java.util.Date;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -27,7 +28,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
@@ -50,9 +50,15 @@ public class AbcdDnaParser {
     }
 
     public DnaSample parse(Element item, Abcd206ImportState state) {
-        FieldUnit fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+        FieldUnit fieldUnit = null;
+        if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber())){
+            fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+        }
         if (fieldUnit == null){
-            fieldUnit = FieldUnit.NewInstance();
+            fieldUnit = state.getLastFieldUnit();
+            if (fieldUnit == null){
+                fieldUnit = FieldUnit.NewInstance();
+            }
             state.setFieldUnit(fieldUnit);
         }
         DnaSample dnaSample = DnaSample.NewInstance();
@@ -74,7 +80,7 @@ public class AbcdDnaParser {
                 }
             }
         }
-        
+
         return dnaSample;
     }
 
