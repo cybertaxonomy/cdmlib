@@ -976,11 +976,18 @@
         <version>2.4</version>
         <classifier>jdk15</classifier>
       </dependency>
+      <!-- media  -->
       <dependency>
         <groupId>org.devlib.schmidt</groupId>
         <artifactId>imageinfo</artifactId>
         <version>1.9</version>
       </dependency>
+       <dependency>
+        <groupId>de.digitalcollections.iiif</groupId>
+        <artifactId>iiif-apis</artifactId>
+        <version>0.3.7</version>
+      </dependency>
+      <!--         -->
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>

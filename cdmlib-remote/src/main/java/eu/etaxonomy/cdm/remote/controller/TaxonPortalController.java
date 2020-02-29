@@ -236,10 +236,7 @@ public class TaxonPortalController extends TaxonController{
         binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
-
     }
-
-
 
     /**
      * Get the synonymy for a taxon identified by the <code>{taxon-uuid}</code>.

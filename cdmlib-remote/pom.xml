@@ -200,6 +200,11 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
     </dependency>
+    <!-- iif -->
+    <dependency>
+      <groupId>de.digitalcollections.iiif</groupId>
+      <artifactId>iiif-apis</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
