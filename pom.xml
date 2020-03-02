@@ -232,26 +232,6 @@
       <id>CodehausMuleRepository</id>
       <url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
     </repository>    -->
-    <!-- current spring source repositories -->
- <!--   <repository>
-      <id>SpringSource Enterprise Bundle Repository - External Bundle Milestones</id>
-      <url>http://repository.springsource.com/maven/bundles/milestone</url>
-    </repository> 
-    <repository>
-      <id>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</id>
-      <url>http://repository.springsource.com/maven/bundles/release</url>
-    </repository>
-    <repository>
-      <id>SpringSource Enterprise Bundle Repository - External Bundle Releases</id>
-      <url>http://repository.springsource.com/maven/bundles/external</url>
-    </repository>   -->
-    <!-- for jena snapshot -->
- <!--   <repository>
-      <id>apache</id>
-      <name>Apache Repository for Snapshots</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </repository> -->
-
 
   </repositories>
   <!-- **** PLUGINS **** -->
