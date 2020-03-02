@@ -32,7 +32,7 @@ public interface ILongRunningTasksService {
 
     public UUID monitLongRunningTask(CacheUpdaterConfigurator configurator);
 
-    UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
+    public UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType);
 
     /**
      * Monitored invocation of {@link DescriptionAggregationBase#invoke(DescriptionAggregationConfigurationBase, eu.etaxonomy.cdm.api.application.ICdmRepository)}

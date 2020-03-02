@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 /**
  * @author a.mueller
  * @since 09.08.2013
- *
  */
 public class TreeIndexUpdater
         extends AuditedSchemaUpdaterStepBase {
@@ -39,7 +38,6 @@ public class TreeIndexUpdater
 		return new TreeIndexUpdater(stepList, stepName, tableName, treeIdColumnName, indexColumnName, includeAudTable);
 	}
 
-
 	protected TreeIndexUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String treeIdColumnName, String indexColumnName, boolean includeAudTable) {
 		super(stepList, stepName, tableName, includeAudTable);
 		this.treeIdColumnName = treeIdColumnName;
@@ -49,8 +47,8 @@ public class TreeIndexUpdater
     @Override
     protected void invokeOnTable(String tableName, ICdmDataSource datasource,
             IProgressMonitor monitor, CaseType caseType, SchemaUpdateResult result) {
-        try{
 
+        try{
 	//		String charType = "CHAR";  //TODO may depend on database type
 
 			//clean up nodes without classification  //this should not happen with correct "delete" implementation
