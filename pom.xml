@@ -245,12 +245,6 @@
       <id>SpringSource Enterprise Bundle Repository - External Bundle Releases</id>
       <url>http://repository.springsource.com/maven/bundles/external</url>
     </repository>   -->
-    <!-- for ikey-plus -->
- <!--   <repository>
-      <id>itextpdf.com</id>
-      <name>Maven Repository for iText</name>
-      <url>http://maven.itextpdf.com/</url>
-    </repository>  -->
     <!-- for jena snapshot -->
  <!--   <repository>
       <id>apache</id>
