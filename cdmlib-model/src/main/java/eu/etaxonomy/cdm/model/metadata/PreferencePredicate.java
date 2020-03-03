@@ -88,6 +88,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     //distribution editor
     DistributionEditorActivated(UUID.fromString("733e9bce-4394-4fae-97d3-1b7dfc48ee3c"), "Distribution Editor Is activated", "distribution.editor.activated",  Boolean.TRUE),
     AreasSortedInDistributionEditor(UUID.fromString("513d7de9-fec4-432c-b4dd-75f9f6e74ad0"), "Distribution Editor: Areas sorted in Distribution Editor", "distribution.editor.areas.sortedInDistributionEditor", TermOrder.IdInVoc),  //unsure about correct default value, please decide
+    StatusSortedInDistributionEditor(UUID.fromString("83e9ddb7-e498-4e00-bfdc-69c68f3ad5eb"), "Distribution Editor: Status sorted in Distribution Editor", "distribution.editor.areas.sortedStatusInDistributionEditor", TermOrder.IdInVoc),  //unsure about correct default value, please decide
     //the following 4 should be replaced by termLabelPreferenceEnum , enum should contain label, abbrevLabel, idInVoc, symbol1, symbol2, ...
     DisplayOfStatus(UUID.fromString("1ee6b945-0a81-4f05-b867-f9d105882249"), "Distribution Editor: Display of Status", "distribution.editor.status.display", TermDisplayEnum.Title),
     DisplayOfStatusInCombo(UUID.fromString("a8ff1763-987f-4935-aaba-910f3a870d07"), "Distribution Editor: Display of Status", "distribution.editor.status.combo_display", TermComboEnum.TermDisplayPlusTitle),
