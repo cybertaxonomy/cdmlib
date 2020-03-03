@@ -217,7 +217,7 @@ public class OccurenceQuery implements Serializable{
         if(tripleIds!=null ){
             string += " unitId=" ;
             for (String[] unitId: tripleIds){
-                string += unitId + ", ";
+                string += unitId.toString() + ", ";
             }
         }
         if(taxonName!=null && !taxonName.trim().isEmpty()){

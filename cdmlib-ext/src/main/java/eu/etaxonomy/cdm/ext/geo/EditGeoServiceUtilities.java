@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -67,37 +66,36 @@ public class EditGeoServiceUtilities {
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
 
-    private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = null;
+    private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = new HashMap<>();
+    static {
+        defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.FieldUnit, Color.ORANGE);
+        defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.DerivedUnit, Color.RED);
+        defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.LivingSpecimen, Color.GREEN);
+        defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.Observation, Color.ORANGE);
+        defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.PreservedSpecimen, Color.GRAY);
+        defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.Media, Color.BLUE);
+    }
 
     private static HashMap<SpecimenOrObservationType, Color> getDefaultSpecimenOrObservationTypeColors() {
-        if(defaultSpecimenOrObservationTypeColors == null){
-            defaultSpecimenOrObservationTypeColors = new HashMap<>();
-            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.FieldUnit, Color.ORANGE);
-            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.DerivedUnit, Color.RED);
-            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.LivingSpecimen, Color.GREEN);
-            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.Observation, Color.ORANGE);
-            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.PreservedSpecimen, Color.GRAY);
-            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.Media, Color.BLUE);
-        }
         return defaultSpecimenOrObservationTypeColors;
     }
 
-    private static HashMap<PresenceAbsenceTerm, Color> defaultPresenceAbsenceTermBaseColors = null;
+    private static HashMap<PresenceAbsenceTerm, Color> defaultPresenceAbsenceTermBaseColors =  new HashMap<>();
+    static {
+        defaultPresenceAbsenceTermBaseColors = new HashMap<>();
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.PRESENT(), Color.decode("0x4daf4a"));
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE(), Color.decode("0x4daf4a"));
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.CASUAL(), Color.decode("0xffff33"));
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
+        defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATURALISED(), Color.decode("0xf781bf"));
+    }
 
     private static List<UUID>  presenceAbsenceTermVocabularyUuids = null;
 
     private static HashMap<PresenceAbsenceTerm, Color> getDefaultPresenceAbsenceTermBaseColors() {
-        if(defaultPresenceAbsenceTermBaseColors == null){
-            defaultPresenceAbsenceTermBaseColors = new HashMap<>();
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.PRESENT(), Color.decode("0x4daf4a"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE(), Color.decode("0x4daf4a"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.CASUAL(), Color.decode("0xffff33"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
-            defaultPresenceAbsenceTermBaseColors.put(PresenceAbsenceTerm.NATURALISED(), Color.decode("0xf781bf"));
-        }
         return defaultPresenceAbsenceTermBaseColors;
     }
 
@@ -402,7 +400,7 @@ public class EditGeoServiceUtilities {
         TermVocabulary<NamedArea> voc = area.getVocabulary();
         String result = null;
 
-        if (voc != null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary) ||  voc.getUuid().equals(Country.uuidCountryVocabulary)) {
+        if (voc != null && (voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary) ||  voc.getUuid().equals(Country.uuidCountryVocabulary))) {
             // TDWG or Country
             result = area.getIdInVocabulary();
             if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())) {
@@ -413,7 +411,7 @@ public class EditGeoServiceUtilities {
             // of the
             // named area
             GeoServiceArea areas = mapping.valueOf(area);
-            if ((areas != null) && areas.size() > 0) {
+            if (areas != null && areas.size() > 0) {
                 // FIXME multiple layers
                 List<String> values = areas.getAreasMap().values().iterator().next().values().iterator().next();
                 for (String value : values) {
