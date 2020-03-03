@@ -227,12 +227,6 @@
       <name>JBoss Repository</name>
       <url>https://repository.jboss.org</url>
     </repository>
-    <!-- codehaus mule repository needed for yourkit -->
- <!--   <repository>
-      <id>CodehausMuleRepository</id>
-      <url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
-    </repository>    -->
-
   </repositories>
   <!-- **** PLUGINS **** -->
   <build>
