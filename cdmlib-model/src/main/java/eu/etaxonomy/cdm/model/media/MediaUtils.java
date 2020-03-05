@@ -1,12 +1,12 @@
 package eu.etaxonomy.cdm.model.media;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -20,31 +20,29 @@ public class MediaUtils {
 
     private static final Logger logger = Logger.getLogger(MediaUtils.class);
 
+
     /**
-     * @param representationPartType TODO
+     *
+     * @param media
+     * @param representationPartType
      * @param size
      * @param height
      * @param widthOrDuration
-     * @param mimeTypeRegexes
+     * @param mimeTypes
+     * @param missingValStrategy
      * @return
-     *
-     *
      */
     public static MediaRepresentation findBestMatchingRepresentation(Media media,
             Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height,
-            Integer widthOrDuration, String[] mimeTypes){
+            Integer widthOrDuration, String[] mimeTypes, MissingValueStrategy missingValStrategy){
+
         // find best matching representations of each media
-        SortedMap<Integer, MediaRepresentation> prefRepresentations
-                = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes,
-                        size, widthOrDuration, height, false);
-        try {
-            // take first one and remove all other representations
+        SortedMap<Long, MediaRepresentation> prefRepresentations
+                = filterAndOrderMediaRepresentations(media.getRepresentations(), representationPartType, mimeTypes,
+                        size, widthOrDuration, height, missingValStrategy);
+        if(prefRepresentations.size() > 0){
             MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
-
             return prefOne;
-
-        } catch (NoSuchElementException nse) {
-            /* IGNORE */
         }
         return null;
     }
@@ -72,107 +70,27 @@ public class MediaUtils {
     }
 
     /**
-     * Creates one single {@link MediaRepresentationPart} for the given {@link Media}
-     * if it does not already exists. Otherwise the first part found is returned.<br>
-     * @param media the media for which the representation part should be created
-     * @return the first or newly created representation part
-     */
-    public static MediaRepresentationPart initFirstMediaRepresentationPart(Media media, boolean isImage) {
-        MediaRepresentationPart mediaRepresentationPart = getFirstMediaRepresentationPart(media);
-        if(mediaRepresentationPart==null){
-            Set<MediaRepresentation> representations = media.getRepresentations();
-            if(representations!=null && representations.size()>0){
-                MediaRepresentation mediaRepresentation = representations.iterator().next();
-                if(isImage){
-                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
-                }
-                else{
-                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
-                }
-                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
-            }
-            else{
-                if(isImage){
-                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
-                }
-                else{
-                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
-                }
-
-                MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance();
-                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
-                media.addRepresentation(mediaRepresentation);
-            }
-        }
-        return mediaRepresentationPart;
-    }
-
-    /**
-     * @see #findPreferredMedia(List, Class, String[], String[], Integer, Integer, Integer, boolean)
-     */
-    public static Map<Media, MediaRepresentation> findPreferredMedia(List<Media> mediaList,
-            Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypes, String[] sizeTokens,
-            Integer widthOrDuration, Integer height, Integer size
-            ) {
-        return findPreferredMedia(mediaList, representationPartType, mimeTypes, sizeTokens,
-                widthOrDuration, height, size, false);
-    }
-
-
-    /**
      * Filters the given List of Media by the supplied filter parameters <code>representationPartType</code>,
-     * <code>mimeTypes</code>, <code>sizeTokens</code>, <code>widthOrDuration</code>, <code>height</code>, <code>size</code>.
+     * <code>mimeTypes</code>, <code>widthOrDuration</code>, <code>height</code>, <code>size</code>.
      * Only best matching MediaRepresentation remains attached to the Media entities.
      * A Media entity may be completely omitted in the resulting list if  {@link #filterAndOrderMediaRepresentations(Set, Class, String[], Integer, Integer, Integer)}
      * is not returning any matching representation. This can be the case if a <code>representationPartType</code> is supplied.
-     * <p>
-     * In order to prevent the media entities returned by this method from being persisted accidentally the resulting list contains cloned versions of the originally
-     * supplied media entities, which have the same UUIDs as the original ones.
      *
      * @param mediaList
      * @param representationPartType any subclass of {@link MediaRepresentationPart}
      * @param mimeTypes
-     * @param sizeTokens
      * @param widthOrDuration
      * @param height
      * @param size
-     * @param onlyBestMatchIfFilterMatches if <code>true</code> and all required filter parameters
-     *      (like size, width and height) are not <code>null</code> only the best matching representation is returned.
-     *       Otherwise all representations are returned in sorted order.
      * @return
      */
     public static Map<Media, MediaRepresentation> findPreferredMedia(List<Media> mediaList,
-            Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypes, String[] sizeTokens,
-            Integer widthOrDuration, Integer height, Integer size,
-            boolean onlyBestMatchIfFilterMatches) {
+            Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypes, Integer widthOrDuration,
+            Integer height, Integer size, MissingValueStrategy missingValStrat) {
 
         if(mimeTypes != null) {
             for(int i=0; i<mimeTypes.length; i++){
                 mimeTypes[i] = mimeTypes[i].replace(':', '/');
-            }
-        }
-
-        if(sizeTokens != null) {
-            if(sizeTokens.length > 0){
-                try {
-                    size = Integer.valueOf(sizeTokens[0]);
-                } catch (NumberFormatException nfe) {
-                    /* IGNORE */
-                }
-            }
-            if(sizeTokens.length > 1){
-                try {
-                    widthOrDuration = Integer.valueOf(sizeTokens[1]);
-                } catch (NumberFormatException nfe) {
-                    /* IGNORE */
-                }
-            }
-            if(sizeTokens.length > 2){
-                try {
-                    height = Integer.valueOf(sizeTokens[2]);
-                } catch (NumberFormatException nfe) {
-                    /* IGNORE */
-                }
             }
         }
 
@@ -184,20 +102,17 @@ public class MediaUtils {
                 Set<MediaRepresentation> candidateRepresentations = new LinkedHashSet<>();
                 candidateRepresentations.addAll(media.getRepresentations());
 
-                SortedMap<Integer, MediaRepresentation> prefRepresentations
+                SortedMap<Long, MediaRepresentation> prefRepresentations
                     = filterAndOrderMediaRepresentations(candidateRepresentations, representationPartType,
-                            mimeTypes, size, widthOrDuration, height, false);
-                try {
-                    if(prefRepresentations.size() > 0){
-                        // Media.representations is a set
-                        // so it cannot retain the sorting which has been found by filterAndOrderMediaRepresentations()
-                        // thus we take first one and remove all other representations
-                        returnMediaList.put(media, prefRepresentations.get(prefRepresentations.firstKey()));
-                    }
-                } catch (NoSuchElementException nse) {
-                    logger.debug(nse);
-                    /* IGNORE */
+                            mimeTypes, size, widthOrDuration, height, missingValStrat);
+
+                if(prefRepresentations.size() > 0){
+                    // Media.representations is a set
+                    // so it cannot retain the sorting which has been found by filterAndOrderMediaRepresentations()
+                    // thus we take first one and remove all other representations
+                    returnMediaList.put(media, prefRepresentations.get(prefRepresentations.firstKey()));
                 }
+
             }
         }
         else{
@@ -207,83 +122,36 @@ public class MediaUtils {
     }
 
     /**
-     * @param media
-     * @param mimeTypeRegexes
-     * @param size
-     * @param widthOrDuration
-     * @param height
-     * @return
+     * @see also cdm-dataportal: cdm-api.module#cdm_preferred_media_representations()
      *
-     * TODO move into a media utils class
-     * TODO implement the quality filter
-
-    public static SortedMap<String, MediaRepresentation> orderMediaRepresentations(Media media, String[] mimeTypeRegexes,
-            Integer size, Integer widthOrDuration, Integer height) {
-        SortedMap<String, MediaRepresentation> prefRepr = new TreeMap<String, MediaRepresentation>();
-        for (String mimeTypeRegex : mimeTypeRegexes) {
-            // getRepresentationByMimeType
-            Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
-            int representationCnt = 0;
-            for (MediaRepresentation representation : media.getRepresentations()) {
-                int dwa = 0;
-                if(representation.getMimeType() == null){
-                    prefRepr.put((dwa + representationCnt++) + "_NA", representation);
-                } else {
-                    Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
-                    if (mather.matches()) {
-
-                        /* TODO the quality filter part is being skipped
-                         * // look for representation with the best matching parts
-                        for (MediaRepresentationPart part : representation.getParts()) {
-                            if (part instanceof ImageFile) {
-                                ImageFile image = (ImageFile) part;
-                                int dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
-                                if (dw < 0) {
-                                    dw *= -1;
-                                }
-                                dwa += dw;
-                            }
-                            dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
-                        }
-                        prefRepr.put((dwa + representationCnt++) + '_' + representation.getMimeType(), representation);
-
-                        // preferred mime type found => end loop
-                        break;
-                    }
-                }
-            }
-        }
-        return prefRepr;
-    }
-
-    */
-
-    /**
      * @param mediaRepresentations
      * @param representationPartType
      * @param mimeTypeRegexes
      * @param size
+     *  Applies to all {@link MediaRepresentationPart}s (value = <code>null</code> means ignore, for maximum size use {@link Integer#MAX_VALUE})
      * @param widthOrDuration
+     *   Applied to {@link ImageFile#getWidth()}, or {@link {@link MovieFile#getDuration()},
+     *   or {@link {@link AudioFile#getDuration()} (value = <code>null</code> means ignore,
+     *   for maximum use {@link Integer#MAX_VALUE})
      * @param height
-     * @param onlyBestMatchIfFilterMatches if <code>true</code> and all required filter parameters
-     *      (like size, width and height) are not <code>null</code> only the best matching representation is returned.
-     *       Otherwise all representations are returned in sorted order.
+     *   The height is only applied to {@link ImageFile}s (value = <code>null</code> means ignore,
+     *   for maximum height use {@link Integer#MAX_VALUE})
      * @return
      */
-    private static SortedMap<Integer, MediaRepresentation> filterAndOrderMediaRepresentations(
+    public static SortedMap<Long, MediaRepresentation> filterAndOrderMediaRepresentations(
             Set<MediaRepresentation> mediaRepresentations,
             Class<? extends MediaRepresentationPart> representationPartType, String[] mimeTypeRegexes,
-            Integer size, Integer widthOrDuration, Integer height, boolean onlyBestMatchIfFilterMatches) {
+            Integer size, Integer widthOrDuration, Integer height,
+            MissingValueStrategy missingValStrat) {
 
-        SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<>();
+        SortedMap<Long, MediaRepresentation> prefRepr = new TreeMap<>();
 
+        Dimension preferredImageDimensions = dimensionsFilter(widthOrDuration, height, null);
+        long preferredExpansion = expanse(preferredImageDimensions);
+        logger.debug("preferredExpansion: " + preferredExpansion);
 
-        size = (size == null ? new Integer(0) : size );
-        widthOrDuration = (widthOrDuration == null ? new Integer(0) : widthOrDuration);
-        height = (height == null ? new Integer(0) : height);
         mimeTypeRegexes = (mimeTypeRegexes == null ? new String[]{".*"} : mimeTypeRegexes);
 
-        boolean filterMatches = true;
         for (String mimeTypeRegex : mimeTypeRegexes) {
             // getRepresentationByMimeType
             Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
@@ -294,93 +162,169 @@ public class MediaUtils {
 
 
                 // check MIME type
-                boolean mimeTypeOK = representation.getMimeType() == null
+                boolean isMimeTypeMatch = representation.getMimeType() == null
                         || mimeTypePattern.matcher(representation.getMimeType()).matches();
-                logger.debug("mimeTypeOK: " + Boolean.valueOf(mimeTypeOK).toString());
+                if(logger.isDebugEnabled()){
+                    logger.debug("isMimeTypeMatch: " + Boolean.valueOf(isMimeTypeMatch).toString());
+                }
 
-                int dwa = 0;
+                long dimensionsDeltaAllParts = 0;
 
                 //first the size is used for comparison
                 for (MediaRepresentationPart part : representation.getParts()) {
 
                     // check representationPartType
-                    boolean representationPartTypeOK = representationPartType == null
+                    boolean isRepresentationPartTypeMatch = representationPartType == null
                             || part.getClass().isAssignableFrom(representationPartType);
-                    logger.debug("representationPartTypeOK: " + Boolean.valueOf(representationPartTypeOK).toString());
+                    if(logger.isDebugEnabled()){
+                        logger.debug("isRepresentationPartTypeMatch: " + Boolean.valueOf(isRepresentationPartTypeMatch).toString());
+                    }
 
-                    if ( !(representationPartTypeOK && mimeTypeOK) ) {
+                    if ( !(isRepresentationPartTypeMatch && isMimeTypeMatch) ) {
                         continue;
                     }
 
-                    logger.debug(part + " matches");
+                    if(logger.isDebugEnabled()){
+                        logger.debug(part + " matches");
+                    }
                     matchingParts.add(part);
 
-                    boolean partFilterMatches = false;
-
-                    if (part.getSize()!= null){
-                        int sizeOfPart = part.getSize();
+                    if (size != null && missingValStrat.applyTo(part.getSize()) != null){
+                        int sizeOfPart = missingValStrat.applyTo(part.getSize());
                         int distance = sizeOfPart - size;
                         if (distance < 0) {
                             distance *= -1;
                         }
-                        dwa += distance;
-                        if (size > 0){
-                            partFilterMatches = true;
-                        }
+                        dimensionsDeltaAllParts += distance;
+
                     }
 
                     //if height and width/duration is defined, add this information, too
-                    if (height != 0 && widthOrDuration != 0){
-                        int durationWidthWeight = 0;
-
+                    if (preferredImageDimensions != null || widthOrDuration != null){
+                        long expansionDelta = 0;
                         if (part.isInstanceOf(ImageFile.class)) {
-                            ImageFile image = CdmBase.deproxy(part, ImageFile.class);
-                            if (image.getWidth() != null && image.getHeight() != null){
-                                durationWidthWeight = image.getWidth() * image.getHeight() - height * widthOrDuration;
+                            if (preferredImageDimensions != null){
+                                ImageFile image = CdmBase.deproxy(part, ImageFile.class);
+                                Dimension imageDimension = dimensionsFilter(image.getWidth(), image.getHeight(), missingValStrat);
+                                if (imageDimension != null){
+                                    expansionDelta = Math.abs(expanse(imageDimension) - preferredExpansion);
+                                    logger.debug("#### " +  preferredExpansion + " - " +  expanse(imageDimension) + " = " + (preferredExpansion - expanse(imageDimension)));
+                                }
+                                if(logger.isDebugEnabled()){
+                                    if(logger.isDebugEnabled()){
+                                        logger.debug("part [" + part.getUri() + "; " + imageDimension + "] : preferredImageDimensions= " + preferredImageDimensions + ", size= "  + size+ " >>" + expansionDelta );
+                                    }
+                                }
                             }
                         }
                         else if (part.isInstanceOf(MovieFile.class)){
-                            MovieFile movie = CdmBase.deproxy(part, MovieFile.class);
-                            durationWidthWeight = movie.getDuration() - widthOrDuration;
-                        }else if (part.isInstanceOf(AudioFile.class)){
+                                MovieFile movie = CdmBase.deproxy(part, MovieFile.class);
+                             if(widthOrDuration != null){
+                                expansionDelta = missingValStrat.applyTo(movie.getDuration()) - widthOrDuration;
+                            }
+                             if(logger.isDebugEnabled()){
+                                 logger.debug("part MovieFile[" + part.getUri() + "; duration=" + missingValStrat.applyTo(movie.getDuration()) + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size+ " >>" + expansionDelta );
+                             }
+                        } else if (part.isInstanceOf(AudioFile.class)){
                             AudioFile audio = CdmBase.deproxy(part, AudioFile.class);
-                            durationWidthWeight = audio.getDuration() - widthOrDuration;
+                            if(widthOrDuration != null) {
+                                expansionDelta = missingValStrat.applyTo(audio.getDuration()) - widthOrDuration;
+                            }
+                            if(logger.isDebugEnabled()){
+                                logger.debug("part AudioFile[" + part.getUri() + "; duration=" + missingValStrat.applyTo(audio.getDuration()) + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size + " >>" + expansionDelta );
+                            }
                         }
-                        if (durationWidthWeight < 0) {
-                            durationWidthWeight *= -1;
-                        }
-                        dwa += durationWidthWeight;
+                        // the expansionDelta is summed up since the parts together for the whole
+                        // which is bigger than only a part. By simply summing up images splitted
+                        // into parts have too much weight compared to the single image but since
+                        // parts are not used at all this is currently not a problem
+                        dimensionsDeltaAllParts += expansionDelta;
 
-                    }else{
-                        partFilterMatches = true;
                     }
-                    filterMatches &= partFilterMatches;
                 } // loop parts
                 logger.debug("matchingParts.size():" + matchingParts.size());
                 if(matchingParts.size() > 0 ){
-                    dwa = dwa / matchingParts.size();
-
                     representation.getParts().clear();
                     representation.getParts().addAll(matchingParts);
-
-                    //keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
-
-                    prefRepr.put((dwa + representationCnt++), representation);
+                    prefRepr.put((dimensionsDeltaAllParts + representationCnt++), representation);
                 }
             } // loop representations
         } // loop mime types
         logger.debug(prefRepr.size() + " preferred representations found");
 
-        if (onlyBestMatchIfFilterMatches && filterMatches){
-            SortedMap<Integer, MediaRepresentation> result = new TreeMap<>();
-            try {
-                result.put(prefRepr.firstKey(), prefRepr.get(prefRepr.firstKey()));
-                return result;
-            } catch (Exception e) {
-                return result;
+
+        return prefRepr;
+
+    }
+
+    /**
+     * @param imageDimension
+     * @return
+     */
+    static long expanse(Dimension imageDimension) {
+        if(imageDimension != null){
+            if(imageDimension.height >= Integer.MAX_VALUE-1 && imageDimension.width >= Integer.MAX_VALUE-1){
+                return Long.MAX_VALUE;
+            } else {
+                return imageDimension.height * imageDimension.width;
             }
-        }else{
-            return prefRepr;
+        } else {
+            return -1;
         }
     }
-}
+
+    /**
+     * @param widthOrDuration
+     * @param height
+     * @param mvs Will be applied when both, width and height, are <code>null</code>
+     */
+    static Dimension dimensionsFilter(Integer width, Integer height, MissingValueStrategy mvs) {
+        Dimension imageDimensions = null;
+        if(height != null || width != null){
+            imageDimensions = new Dimension();
+            if (height != null && width == null){
+                imageDimensions.setSize(1, height);
+            } else if(height == null && width != null) {
+                imageDimensions.setSize(width, 1); // --> height will be respected and width is ignored
+            } else {
+                imageDimensions.setSize(width, height);
+            }
+        } else {
+            // both, width and height, are null
+            if(mvs != null){
+                imageDimensions = new Dimension(mvs.applyTo(null), mvs.applyTo(null));
+            }
+        }
+        return imageDimensions;
+    }
+
+    /**
+     * Strategies for replacing <code>null</code> values with a numeric value.
+     *
+     * @author a.kohlbecker
+     */
+    public enum MissingValueStrategy {
+        /**
+         * replace <code>null</code> by {@link Integer#MAX_VALUE}
+         */
+        MAX(Integer.MAX_VALUE),
+        /**
+         * replace <code>null</code> by <code>0</code>
+         */
+        ZERO(0);
+
+        private Integer defaultValue;
+
+        MissingValueStrategy(Integer defaultValue){
+            this.defaultValue = defaultValue;
+        }
+
+        public Integer applyTo(Integer val){
+            if(val == null){
+                return defaultValue;
+            } else {
+                return val;
+            }
+        }
+    }
+  }

@@ -15,9 +15,11 @@ public class MediaUtilsTest {
     private Media mediaImage1;
     private Media mediaImage2;
     private Media mediaImage3;
+    private Media mediaImage4;
     private Media mediaAudio1;
     private MediaRepresentation smallJPGRepresentation;
     private MediaRepresentation bigJPGRepresentation;
+    private MediaRepresentation unknownDimensionJPGRepresentation;
     private MediaRepresentation smallPNGRepresentation;
     private MediaRepresentation bigPNGRepresentation;
     private MediaRepresentation bigMP3Representation;
@@ -25,19 +27,23 @@ public class MediaUtilsTest {
     @Before
     public void setUp() throws Exception {
 
-        ImageFile smallJPG = ImageFile.NewInstance(new URI("http://foo.bar.net/small.JPG"), 200, 100, 200);
+        ImageFile smallJPG = ImageFile.NewInstance(new URI("http://foo.bar.net/small.JPG"), 200 * 100, 100, 200);
         smallJPGRepresentation = MediaRepresentation.NewInstance("image/jpg", "jpg");
         smallJPGRepresentation.addRepresentationPart(smallJPG);
 
-        ImageFile bigJPG = ImageFile.NewInstance(new URI("http://foo.bar.net/big.JPG"), 2000, 1000, 2000);
+        ImageFile bigJPG = ImageFile.NewInstance(new URI("http://foo.bar.net/big.JPG"), 2000 * 1000, 1000, 2000);
         bigJPGRepresentation = MediaRepresentation.NewInstance("image/jpg", "jpg");
         bigJPGRepresentation.addRepresentationPart(bigJPG);
 
-        ImageFile smallPNG = ImageFile.NewInstance(new URI("http://foo.bar.net/small.PNG"), 200, 100, 200);
+        ImageFile unknownDimensionJPG = ImageFile.NewInstance(new URI("http://foo.bar.net/unknownDimension.JPG"), null, null, null);
+        unknownDimensionJPGRepresentation = MediaRepresentation.NewInstance("image/jpg", "jpg");
+        unknownDimensionJPGRepresentation.addRepresentationPart(unknownDimensionJPG);
+
+        ImageFile smallPNG = ImageFile.NewInstance(new URI("http://foo.bar.net/small.PNG"), 200 * 100, 100, 200);
         smallPNGRepresentation = MediaRepresentation.NewInstance("image/png", "png");
         smallPNGRepresentation.addRepresentationPart(smallPNG);
 
-        ImageFile bigPNG = ImageFile.NewInstance(new URI("http://foo.bar.net/big.PNG"), 2000, 1000, 2000);
+        ImageFile bigPNG = ImageFile.NewInstance(new URI("http://foo.bar.net/big.PNG"), 2000 * 1000, 1000, 2000);
         bigPNGRepresentation = MediaRepresentation.NewInstance("image/png", "png");
         bigPNGRepresentation.addRepresentationPart(bigPNG);
 
@@ -49,6 +55,11 @@ public class MediaUtilsTest {
         mediaImage1 = Media.NewInstance();
         mediaImage1.addRepresentation(smallJPGRepresentation);
         mediaImage1.addRepresentation(bigJPGRepresentation);
+
+        mediaImage4 = Media.NewInstance();
+        mediaImage4.addRepresentation(smallJPGRepresentation);
+        mediaImage4.addRepresentation(bigJPGRepresentation);
+        mediaImage4.addRepresentation(unknownDimensionJPGRepresentation);
 
         mediaImage2 = Media.NewInstance();
         mediaImage2.addRepresentation(smallPNGRepresentation);
@@ -78,7 +89,7 @@ public class MediaUtilsTest {
         imageList.add(mediaImage3);
 
         Map<Media, MediaRepresentation> filteredList = MediaUtils.findPreferredMedia(
-                imageList, ImageFile.class, null, null, null, null, null);
+                imageList, ImageFile.class, null, null, null, null, MediaUtils.MissingValueStrategy.MAX);
 
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage1.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage2.getUuid()));
@@ -89,16 +100,16 @@ public class MediaUtilsTest {
         mixedMediaList.add(mediaImage2);
         mixedMediaList.add(mediaImage3);
         mixedMediaList.add(mediaAudio1);
-        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, null, null, null, null, null, null);
+        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, null, null, null, null, null, MediaUtils.MissingValueStrategy.MAX);
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage1.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage2.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage3.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaAudio1.getUuid()));
 
-        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, AudioFile.class, null, null, null, null, null);
+        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, AudioFile.class, null, null, null, null, MediaUtils.MissingValueStrategy.MAX);
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaAudio1.getUuid()));
 
-        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, ImageFile.class, null, null, null, null, null);
+        filteredList = MediaUtils.findPreferredMedia(mixedMediaList, ImageFile.class, null, null, null, null, MediaUtils.MissingValueStrategy.MAX);
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage1.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage2.getUuid()));
         Assert.assertNotNull(findMediaByUUID(filteredList.keySet(), mediaImage3.getUuid()));
@@ -108,17 +119,27 @@ public class MediaUtilsTest {
     @Test
     public void testfindBestMatchingRepresentation() {
 
+        // Logger.getLogger(MediaUtils.class).setLevel(Level.DEBUG);
+
         String[] mimetypes = {".*"};
 
-        Assert.assertEquals(smallJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
-                mediaImage1, null, null, 200, 300, mimetypes));
         Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
-                mediaImage1, null, null, 1500, 1500, mimetypes));
+                mediaImage1, null,  null, Integer.MAX_VALUE, Integer.MAX_VALUE, mimetypes, MediaUtils.MissingValueStrategy.MAX));
+
+        Assert.assertEquals(unknownDimensionJPGRepresentation.getParts().get(0), MediaUtils.findBestMatchingRepresentation(
+                mediaImage4, ImageFile.class, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX).getParts().get(0));
 
         Assert.assertEquals(smallJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
-                mediaImage1, null, 300, null, null, mimetypes));
+                mediaImage1, null, null, 200, 300, mimetypes, MediaUtils.MissingValueStrategy.MAX));
         Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
-                mediaImage1, null, 1500, null, null, mimetypes));
+                mediaImage1, null, null, 1500, 1500, mimetypes, MediaUtils.MissingValueStrategy.MAX));
+
+        Assert.assertEquals(smallJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
+                mediaImage1, null, 300, null, null, mimetypes, MediaUtils.MissingValueStrategy.MAX));
+        Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
+                mediaImage1, null, bigJPGRepresentation.getParts().get(0).getSize() - 100, null, null, mimetypes, MediaUtils.MissingValueStrategy.MAX));
+        Assert.assertEquals(bigJPGRepresentation, MediaUtils.findBestMatchingRepresentation(
+                mediaImage4, null, bigJPGRepresentation.getParts().get(0).getSize() + 2000, null, null, mimetypes, MediaUtils.MissingValueStrategy.MAX));
 
     }
 

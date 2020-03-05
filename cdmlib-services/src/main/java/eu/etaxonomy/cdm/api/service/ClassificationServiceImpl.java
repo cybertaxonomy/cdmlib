@@ -506,7 +506,7 @@ public class ClassificationServiceImpl
                     for (DescriptionElementBase descriptionElement: taxonDescription.getElements()){
                         for(Media media : descriptionElement.getMedia()){
                             //find the best matching representation
-                            mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
+                            mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes, MediaUtils.MissingValueStrategy.MAX));
                         }
                     }
                 }
