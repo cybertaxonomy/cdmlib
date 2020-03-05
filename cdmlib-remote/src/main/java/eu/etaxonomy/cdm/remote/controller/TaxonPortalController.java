@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -503,12 +504,12 @@ public class TaxonPortalController extends TaxonController{
 
         List<String> initStrategy = null;
 
-        List<Media> media = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
+        EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
                 relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
                 response, initStrategy);
 
         List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
-                media);
+                taxonMediaContext.media);
 
         return mediafilteredForPreferredRepresentations;
     }
@@ -530,13 +531,14 @@ public class TaxonPortalController extends TaxonController{
      * @return
      * @throws IOException
      */
-    public List<Media> loadMediaForTaxonAndRelated(UUID uuid,
+    public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID uuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
             HttpServletResponse response,
             List<String> initStrategy) throws IOException {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
+
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, initStrategy);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
@@ -546,7 +548,9 @@ public class TaxonPortalController extends TaxonController{
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
                 includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions);
 
-        return media;
+        EntityMediaContext<Taxon> entityMediaContext = new EntityMediaContext<Taxon>(taxon, media);
+
+        return entityMediaContext;
     }
 
     @RequestMapping(
@@ -653,6 +657,31 @@ public class TaxonPortalController extends TaxonController{
             filteredMedia.add(media);
         }
         return filteredMedia;
+    }
+
+
+    public class EntityMediaContext<T extends IdentifiableEntity> {
+
+        T entity;
+        List<Media> media;
+        /**
+         * @param entity
+         * @param media
+         */
+        public EntityMediaContext(T entity, List<Media> media) {
+            super();
+            this.entity = entity;
+            this.media = media;
+        }
+        public T getEntity() {
+            return entity;
+        }
+        public List<Media> getMedia() {
+            return media;
+        }
+
+
+
     }
 
 // ---------------------- code snippet preserved for possible later use --------------------

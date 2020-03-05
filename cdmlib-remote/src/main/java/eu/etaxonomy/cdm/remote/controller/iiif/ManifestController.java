@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import de.digitalcollections.iiif.model.ImageContent;
+import de.digitalcollections.iiif.model.MetadataEntry;
 import de.digitalcollections.iiif.model.PropertyValue;
 import de.digitalcollections.iiif.model.enums.ViewingDirection;
 import de.digitalcollections.iiif.model.jackson.IiifObjectMapper;
@@ -38,6 +39,7 @@ import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import de.digitalcollections.model.api.identifiable.resource.MimeType;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -47,6 +49,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
+import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -105,12 +108,12 @@ public class ManifestController {
 
             logger.info("doGetMedia() " + AbstractController.requestPathAndQuery(request));
 
-            List<Media> media = taxonPortalController.loadMediaForTaxonAndRelated(uuid,
+            EntityMediaContext entityMediaContext = taxonPortalController.loadMediaForTaxonAndRelated(uuid,
                     relationshipUuids, relationshipInversUuids,
                     includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
                     response, TaxonPortalController.TAXON_INIT_STRATEGY);
 
-            return serializeManifest(manifestFor(media, "taxon", uuid.toString()));
+            return serializeManifest(manifestFor(entityMediaContext, "taxon", uuid.toString()));
     }
 
     private String serializeManifest(Manifest manifest) throws JsonProcessingException{
@@ -122,16 +125,17 @@ public class ManifestController {
      * @param media
      * @return
      */
-    private Manifest manifestFor(List<Media> mediaList, String onEntitiyType, String onEntityUuid) {
+    private <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) {
 
-        List<Canvas> canvases = new ArrayList<>(mediaList.size());
+
+        List<Canvas> canvases = new ArrayList<>(entityMediaContext.getMedia().size());
 
 
 //        Logger.getLogger(MediaUtils.class).setLevel(Level.DEBUG);
 //        logger.setLevel(Level.DEBUG);
 
         int mediaID = 0;
-        for(Media media : mediaList){
+        for(Media media : entityMediaContext.getMedia()){
 
             MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
             MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
@@ -185,9 +189,19 @@ public class ManifestController {
         } else {
             manifest.setLabel(new PropertyValue("No media found for " + onEntitiyType + "[" + onEntityUuid + "]")); // TODO better label!!
         }
+        List<MetadataEntry> entityMetadata = metadata(entityMediaContext.getEntity());
 
 
         return manifest;
+    }
+
+    /**
+     * @param entity
+     * @return
+     */
+    private <T extends IdentifiableEntity> List<MetadataEntry> metadata(T entity) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**

@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
@@ -225,8 +226,11 @@ public class MediaUtils {
                     }
                     matchingParts.add(part);
 
-                    if (size != null && missingValStrat.applyTo(part.getSize()) != null){
-                        int sizeOfPart = missingValStrat.applyTo(part.getSize());
+                    Integer sizeOfPart = part.getSize();
+                    if(isUndefined(sizeOfPart)){
+                        sizeOfPart = missingValStrat.applyTo(sizeOfPart);
+                    }
+                    if (size != null && sizeOfPart != null){
                         int distance = sizeOfPart - size;
                         if (distance < 0) {
                             distance *= -1;
@@ -244,7 +248,6 @@ public class MediaUtils {
                                 Dimension imageDimension = dimensionsFilter(image.getWidth(), image.getHeight(), missingValStrat);
                                 if (imageDimension != null){
                                     expansionDelta = Math.abs(expanse(imageDimension) - preferredExpansion);
-                                    logger.debug("#### " +  preferredExpansion + " - " +  expanse(imageDimension) + " = " + (preferredExpansion - expanse(imageDimension)));
                                 }
                                 if(logger.isDebugEnabled()){
                                     if(logger.isDebugEnabled()){
@@ -254,20 +257,30 @@ public class MediaUtils {
                             }
                         }
                         else if (part.isInstanceOf(MovieFile.class)){
-                                MovieFile movie = CdmBase.deproxy(part, MovieFile.class);
+                             MovieFile movie = CdmBase.deproxy(part, MovieFile.class);
+                             Integer durationOfMovie = movie.getDuration();
+                             if(isUndefined(durationOfMovie)){
+                                 durationOfMovie = null; // convert potential 0 to null!
+                             }
+                             durationOfMovie = missingValStrat.applyTo(durationOfMovie);
                              if(widthOrDuration != null){
-                                expansionDelta = missingValStrat.applyTo(movie.getDuration()) - widthOrDuration;
+                                expansionDelta = durationOfMovie - widthOrDuration;
                             }
                              if(logger.isDebugEnabled()){
-                                 logger.debug("part MovieFile[" + part.getUri() + "; duration=" + missingValStrat.applyTo(movie.getDuration()) + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size+ " >>" + expansionDelta );
+                                 logger.debug("part MovieFile[" + part.getUri() + "; duration=" + movie.getDuration() + "-> " + durationOfMovie + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size+ " >>" + expansionDelta );
                              }
                         } else if (part.isInstanceOf(AudioFile.class)){
                             AudioFile audio = CdmBase.deproxy(part, AudioFile.class);
+                            Integer durationOfAudio = audio.getDuration();
+                            if(isUndefined(durationOfAudio)){
+                                durationOfAudio = null;  // convert potential 0 to null!
+                            }
+                            durationOfAudio = missingValStrat.applyTo(durationOfAudio);
                             if(widthOrDuration != null) {
-                                expansionDelta = missingValStrat.applyTo(audio.getDuration()) - widthOrDuration;
+                                expansionDelta = durationOfAudio - widthOrDuration;
                             }
                             if(logger.isDebugEnabled()){
-                                logger.debug("part AudioFile[" + part.getUri() + "; duration=" + missingValStrat.applyTo(audio.getDuration()) + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size + " >>" + expansionDelta );
+                                logger.debug("part AudioFile[" + part.getUri() + "; duration=" +  audio.getDuration() + "-> " + durationOfAudio + "] : preferrdDuration= " + widthOrDuration + ", size= "  + size + " >>" + expansionDelta );
                             }
                         }
                         // the expansionDelta is summed up since the parts together for the whole
@@ -286,7 +299,12 @@ public class MediaUtils {
                 }
             } // loop representations
         } // loop mime types
-        logger.debug(prefRepr.size() + " preferred representations found");
+        if(logger.isDebugEnabled()){
+            String text =  prefRepr.keySet().stream()
+            .map(key -> key + ": " + prefRepr.get(key).getParts().get(0).getUri().toString())
+            .collect(Collectors.joining(", ", "{", "}"));
+            logger.debug("resulting representations: " + text);
+        }
 
 
         return prefRepr;
@@ -299,11 +317,7 @@ public class MediaUtils {
      */
     static long expanse(Dimension imageDimension) {
         if(imageDimension != null){
-            if(imageDimension.height >= Integer.MAX_VALUE-1 && imageDimension.width >= Integer.MAX_VALUE-1){
-                return Long.MAX_VALUE;
-            } else {
-                return imageDimension.height * imageDimension.width;
-            }
+            return (long)imageDimension.height * (long)imageDimension.width;
         } else {
             return -1;
         }
@@ -316,22 +330,31 @@ public class MediaUtils {
      */
     static Dimension dimensionsFilter(Integer width, Integer height, MissingValueStrategy mvs) {
         Dimension imageDimensions = null;
-        if(height != null || width != null){
+        if(!isUndefined(height) || !isUndefined(width)){
             imageDimensions = new Dimension();
-            if (height != null && width == null){
+            if (!isUndefined(height) && isUndefined(width)){
                 imageDimensions.setSize(1, height);
-            } else if(height == null && width != null) {
+            } else if(isUndefined(height) && !isUndefined(width)) {
                 imageDimensions.setSize(width, 1); // --> height will be respected and width is ignored
             } else {
                 imageDimensions.setSize(width, height);
             }
         } else {
-            // both, width and height, are null
+            // both, width and height, are undefined
+
             if(mvs != null){
-                imageDimensions = new Dimension(mvs.applyTo(null), mvs.applyTo(null));
+                // set both values to null so that the MissingValueStrategy can be applied
+                // the MissingValueStrategy only get effective when the supplied value  is NULL
+                width = null;
+                height = null;
+                imageDimensions = new Dimension(mvs.applyTo(width), mvs.applyTo(height));
             }
         }
         return imageDimensions;
+    }
+
+    static private boolean isUndefined(Integer val) {
+        return val == null || val == 0;
     }
 
     /**
