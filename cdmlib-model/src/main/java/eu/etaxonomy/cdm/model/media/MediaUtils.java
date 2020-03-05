@@ -70,6 +70,42 @@ public class MediaUtils {
     }
 
     /**
+     * Creates one single {@link MediaRepresentationPart} for the given {@link Media}
+     * if it does not already exists. Otherwise the first part found is returned.<br>
+     * @param media the media for which the representation part should be created
+     * @return the first or newly created representation part
+     */
+    public static MediaRepresentationPart initFirstMediaRepresentationPart(Media media, boolean isImage) {
+        MediaRepresentationPart mediaRepresentationPart = getFirstMediaRepresentationPart(media);
+        if(mediaRepresentationPart==null){
+            Set<MediaRepresentation> representations = media.getRepresentations();
+            if(representations!=null && representations.size()>0){
+                MediaRepresentation mediaRepresentation = representations.iterator().next();
+                if(isImage){
+                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
+                }
+                else{
+                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
+                }
+                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+            }
+            else{
+                if(isImage){
+                    mediaRepresentationPart = ImageFile.NewInstance(null, null);
+                }
+                else{
+                    mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
+                }
+
+                MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance();
+                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+                media.addRepresentation(mediaRepresentation);
+            }
+        }
+        return mediaRepresentationPart;
+    }
+
+    /**
      * Filters the given List of Media by the supplied filter parameters <code>representationPartType</code>,
      * <code>mimeTypes</code>, <code>widthOrDuration</code>, <code>height</code>, <code>size</code>.
      * Only best matching MediaRepresentation remains attached to the Media entities.
