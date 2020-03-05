@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -71,7 +72,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 21.11.2019
  */
-//@Ignore   //preliminary ignore as it does not always work (depending on other tests)
+@Ignore   //preliminary ignore as it does not always work (depending on other tests)
 public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
