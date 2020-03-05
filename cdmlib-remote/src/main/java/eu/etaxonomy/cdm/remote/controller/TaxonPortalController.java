@@ -103,7 +103,7 @@ public class TaxonPortalController extends TaxonController{
     @Autowired
     private ITermService termService;
 
-    private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "sources",
             // taxon relations
@@ -119,7 +119,7 @@ public class TaxonPortalController extends TaxonController{
 
             });
 
-    private static final List<String> TAXON_WITH_CHILDNODES_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final List<String> TAXON_WITH_CHILDNODES_INIT_STRATEGY = Arrays.asList(new String []{
             "taxonNodes.$",
             "taxonNodes.classification.$",
             "taxonNodes.childNodes.$"
@@ -501,17 +501,52 @@ public class TaxonPortalController extends TaxonController{
 
         logger.info("doGetMedia() " + requestPathAndQuery(request));
 
+        List<String> initStrategy = null;
+
+        List<Media> media = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
+                relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                response, initStrategy);
+
+        List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
+                media);
+
+        return mediafilteredForPreferredRepresentations;
+    }
+
+    /**
+     * @param uuid
+     * @param type
+     * @param mimeTypes
+     * @param relationshipUuids
+     * @param relationshipInversUuids
+     * @param includeTaxonDescriptions
+     * @param includeOccurrences
+     * @param includeTaxonNameDescriptions
+     * @param widthOrDuration
+     * @param height
+     * @param size
+     * @param response
+     * @param initStrategy
+     * @return
+     * @throws IOException
+     */
+    public List<Media> loadMediaForTaxonAndRelated(UUID uuid,
+            UuidList relationshipUuids, UuidList relationshipInversUuids,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
+            HttpServletResponse response,
+            List<String> initStrategy) throws IOException {
+
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, initStrategy);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
-        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships,
-                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                type, mimeTypes, widthOrDuration, height, size);
-        return returnMedia;
+        List<Media> media = listMediaForTaxon(taxon, includeRelationships,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions);
+
+        return media;
     }
 
     @RequestMapping(
@@ -536,14 +571,16 @@ public class TaxonPortalController extends TaxonController{
 
         logger.info("doGetSubtreeMedia() " + requestPathAndQuery(request));
 
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, TAXON_WITH_CHILDNODES_INIT_STRATEGY);
+        List<String> initStrategy = TAXON_WITH_CHILDNODES_INIT_STRATEGY;
+
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, initStrategy);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
-        List<Media> returnMedia = getMediaForTaxon(taxon, includeRelationships,
-                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                type, mimeTypes, widthOrDuration, height, size);
+        List<Media> media = listMediaForTaxon(taxon, includeRelationships,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions);
+
         TaxonNode node;
 
         //TODO use treeindex
@@ -562,13 +599,16 @@ public class TaxonPortalController extends TaxonController{
                 childTaxon = child.getTaxon();
                 if(childTaxon != null) {
                     childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), NO_UNPUBLISHED, null);
-                    returnMedia.addAll(getMediaForTaxon(childTaxon, includeRelationships,
-                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                            type, mimeTypes, widthOrDuration, height, size));
+                    media.addAll(listMediaForTaxon(childTaxon, includeRelationships,
+                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions));
                 }
             }
         }
-        return returnMedia;
+
+        List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
+                media);
+
+        return mediafilteredForPreferredRepresentations;
     }
 
     /**
@@ -582,21 +622,29 @@ public class TaxonPortalController extends TaxonController{
      * @param size
      * @return
      */
-    private List<Media> getMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
-            Class<? extends MediaRepresentationPart> type, String[] mimeTypes, Integer widthOrDuration,
-            Integer height, Integer size) {
+    private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions) {
 
-        // list the media
-        logger.trace("getMediaForTaxon() - list the media");
-        List<Media> taxonGalleryMedia = service.listMedia(taxon, includeRelationships,
+        List<Media> media = service.listMedia(taxon, includeRelationships,
                 false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null);
 
-        // filter by preferred size and type
+        return media;
+    }
 
-        logger.trace("getMediaForTaxon() - filter the media");
+    /**
+     * @param type
+     * @param mimeTypes
+     * @param widthOrDuration
+     * @param height
+     * @param size
+     * @param taxonGalleryMedia
+     * @return
+     */
+    List<Media> filterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
+            Integer widthOrDuration, Integer height, Integer size, List<Media> taxonGalleryMedia) {
+
         Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(
-                taxonGalleryMedia, type, mimeTypes, null, widthOrDuration, height, size);
+                taxonGalleryMedia, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);
 
         List<Media> filteredMedia = new ArrayList<>(mediaRepresentationMap.size());
         for (Media media : mediaRepresentationMap.keySet()) {
@@ -604,9 +652,6 @@ public class TaxonPortalController extends TaxonController{
             media.addRepresentation(mediaRepresentationMap.get(media));
             filteredMedia.add(media);
         }
-
-        logger.trace("getMediaForTaxon() - END ");
-
         return filteredMedia;
     }
 

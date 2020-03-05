@@ -101,18 +101,14 @@ public class ManifestController {
                 @RequestParam(value = "includeTaxonDescriptions", required = false) Boolean  includeTaxonDescriptions,
                 @RequestParam(value = "includeOccurrences", required = false) Boolean  includeOccurrences,
                 @RequestParam(value = "includeTaxonNameDescriptions", required = false) Boolean  includeTaxonNameDescriptions,
-                @RequestParam(value = "widthOrDuration", required = false) Integer  widthOrDuration,
-                @RequestParam(value = "height", required = false) Integer height,
-                @RequestParam(value = "size", required = false) Integer size,
                 HttpServletRequest request, HttpServletResponse response) throws IOException {
-
 
             logger.info("doGetMedia() " + AbstractController.requestPathAndQuery(request));
 
-            List<Media> media = taxonPortalController.doGetMedia(uuid, type, mimeTypes,
+            List<Media> media = taxonPortalController.loadMediaForTaxonAndRelated(uuid,
                     relationshipUuids, relationshipInversUuids,
                     includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                    widthOrDuration, height, size, request, response);
+                    response, TaxonPortalController.TAXON_INIT_STRATEGY);
 
             return serializeManifest(manifestFor(media, "taxon", uuid.toString()));
     }
@@ -130,14 +126,22 @@ public class ManifestController {
 
         List<Canvas> canvases = new ArrayList<>(mediaList.size());
 
+
+//        Logger.getLogger(MediaUtils.class).setLevel(Level.DEBUG);
+//        logger.setLevel(Level.DEBUG);
+
         int mediaID = 0;
         for(Media media : mediaList){
 
-            MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 5000, 5000, null);
-            MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes);
+            MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
+            MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
+            if(logger.isDebugEnabled()){
+                logger.debug("fullSizeRepresentation: " + fullSizeRepresentation.getParts().get(0).getUri());
+                logger.debug("thumbnailRepresentation: " + thumbnailRepresentation.getParts().get(0).getUri());
+            }
 
             // FIXME the below only makes sense if the media is an Image!!!!!
-            List<ImageContent> fullSizeImageContents = representationPartsToImageContent(thumbnailRepresentation);
+            List<ImageContent> fullSizeImageContents = representationPartsToImageContent(fullSizeRepresentation);
 
             List<ImageContent> thumbnailImageContents;
             if(fullSizeRepresentation.equals(thumbnailRepresentation)){
