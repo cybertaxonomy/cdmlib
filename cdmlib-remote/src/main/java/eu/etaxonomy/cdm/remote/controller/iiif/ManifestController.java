@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.remote.controller.iiif;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import de.digitalcollections.model.api.identifiable.resource.MimeType;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -53,6 +55,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
@@ -178,7 +181,9 @@ public class ManifestController {
             }
             canvas.setLabel(new PropertyValue(media.getTitleCache()));
             canvas.setThumbnails(thumbnailImageContents);
-            fullSizeImageContents.stream().forEach(ic -> canvas.addImage(ic));
+            for(ImageContent image  : fullSizeImageContents){
+                canvas.addImage(image);
+            }
             // TODO  if there is only one image canvas.addImage() internally sets the canvas width and height
             //      to the height of the image, for multiple images it is required to follow the specification:
             //
@@ -195,6 +200,9 @@ public class ManifestController {
 
             // extractAndAddDesciptions(canvas, mediaMetadata);
             mediaMetadata = deduplicateMetadata(mediaMetadata);
+            canvas = addAttributionAndLicense(media, canvas);
+            copyAttributionAndLicenseToMetadata(canvas);
+            orderMedatadaItems(canvas);
             canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
             canvases.add(canvas);
         }
@@ -219,6 +227,33 @@ public class ManifestController {
 
         return manifest;
     }
+
+    /**
+     * Due to limitations in universal viewer it seems not to be able
+     * to show attribution and licenses, therefore we copy this data to
+     * also to the metadata
+     *
+     * @param canvas
+     */
+    private void copyAttributionAndLicenseToMetadata(Canvas canvas) {
+        if(canvas.getAttribution() != null){
+            canvas.addMetadata("Attibution", canvas.getAttribution().getValues().stream().collect(Collectors.joining(", ")));
+        }
+        if(canvas.getLicenses() != null && canvas.getLicenses().size() > 0){
+            String licenses = canvas.getLicenses().stream().map(uri -> htmlLink(uri)).collect(Collectors.joining("," ));
+            canvas.addMetadata("License", licenses);
+        }
+
+    }
+
+    /**
+     * @param canvas
+     */
+    private void orderMedatadaItems(Canvas canvas) {
+        // TODO Auto-generated method stub
+        // order by label name, Title, description, author, license, attribution should come first.
+    }
+
 
     /**
      * @param mediaMetadata
@@ -300,27 +335,89 @@ public class ManifestController {
     private List<MetadataEntry> mediaMetaData(Media media) {
         List<MetadataEntry> metadata = new ArrayList<>();
         List<Language> languages = LocaleContext.getLanguages();
-        // TODO get localized titleCache
+
+
         if(media.getTitle() != null){
+            // TODO get localized titleCache
             metadata.add(new MetadataEntry("Title", media.getTitleCache()));
         }
         if(media.getArtist() != null){
             metadata.add(new MetadataEntry("Artist", media.getArtist().getTitleCache()));
         }
-        PropertyValue rightsTexts = new PropertyValue();
-        for(Rights right : media.getRights()){
-            // TODO get localized text
-            if(right.getText() != null){
-                rightsTexts.addValue(right.getText());
+        if(media.getAllDescriptions().size() > 0){
+            // TODO get localized description
+            PropertyValue descriptionValues = new PropertyValue();
+            for(LanguageString description : media.getAllDescriptions().values()){
+                descriptionValues.addValue(description.getText());
             }
-        }
-        if(rightsTexts.getValues().size() > 0){
-            metadata.add(new MetadataEntry(new PropertyValue("Copyright"), rightsTexts));
+            metadata.add(new MetadataEntry(new PropertyValue("Description"), descriptionValues));
         }
         if(media.getMediaCreated() != null){
             metadata.add(new MetadataEntry("Created on", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
         }
         return metadata;
+    }
+
+    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource) {
+
+        List<Language> languages = LocaleContext.getLanguages();
+
+        PropertyValue attributions = new PropertyValue();
+        List<URI> license = new ArrayList<>();
+
+        if(entity.getRights() != null && entity.getRights().size() > 0){
+            for(Rights right : entity.getRights()){
+                // TODO get localized text
+                String rightText = "";
+                if(right.getText() != null){
+                    rightText += right.getText();
+                }
+                if(rightText.isEmpty() && right.getAbbreviatedText() != null){
+                    rightText += right.getAbbreviatedText();
+                }
+                if(right.getUri() != null){
+                    rightText +=  htmlLink(right.getUri());
+                    if(right.getType().equals(RightsType.LICENSE())){
+                        license.add(right.getUri());
+                    }
+                }
+                if(right.getAgent() != null){
+                    // may only apply to RightsType.accessRights
+                    rightText += " " + right.getAgent().getTitleCache();
+                }
+                attributions.addValue(rightText);
+            }
+            if(attributions.getValues().size() > 0){
+                // metadata.add(new MetadataEntry(new PropertyValue("Copyright"), rightsTexts));
+            }
+        }
+        if(entity.getCredits() != null && entity.getCredits().size() > 0){
+            for(Credit credit : entity.getCredits()){
+                String creditText = "";
+                if(credit.getText() != null){
+                    creditText += credit.getText();
+                }
+                if(creditText.isEmpty() && credit.getAbbreviatedText() != null){
+                    creditText += credit.getAbbreviatedText();
+                }
+                if(credit.getAgent() != null){
+                    // may only apply to RightsType.accessRights
+                    creditText += " " + credit.getAgent().getTitleCache();
+                }
+                attributions.addValue(creditText);
+            }
+        }
+        resource.setAttribution(attributions);
+        resource.setLicenses(license);
+        return resource;
+    }
+
+    /**
+     * @param right
+     * @return
+     */
+    String htmlLink(URI uri) {
+        return String.format(" <a href=\"%s\">%s</a>", uri, uri);
     }
 
     /**

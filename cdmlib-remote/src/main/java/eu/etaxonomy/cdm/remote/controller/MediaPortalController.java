@@ -36,6 +36,7 @@ public class MediaPortalController extends MediaController
             "$",
             "rights.type",
             "rights.agent",
+            "credits.agent",
             "representations.parts",
             "allDescriptions",
             "sources.citation.authorship"
