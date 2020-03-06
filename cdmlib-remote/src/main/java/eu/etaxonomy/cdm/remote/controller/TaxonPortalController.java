@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -104,7 +105,8 @@ public class TaxonPortalController extends TaxonController{
     @Autowired
     private ITermService termService;
 
-    public static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
+
+    public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "sources",
             // taxon relations
@@ -118,15 +120,15 @@ public class TaxonPortalController extends TaxonController{
 
 //            "descriptions" // TODO remove
 
-            });
+            }));
 
-    public static final List<String> TAXON_WITH_CHILDNODES_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy TAXON_WITH_CHILDNODES_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.$",
             "taxonNodes.classification.$",
             "taxonNodes.childNodes.$"
-            });
+            }));
 
-    private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final EntityInitStrategy SIMPLE_TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             // the name
             "name.$",
@@ -135,9 +137,9 @@ public class TaxonPortalController extends TaxonController{
             "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "taxonNodes.classification",
-            });
+            }));
 
-    private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final EntityInitStrategy SYNONYMY_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             // initialize homotypical and heterotypical groups; needs synonyms
             "synonyms.$",
             "synonyms.name.status.type.representations",
@@ -154,19 +156,19 @@ public class TaxonPortalController extends TaxonController{
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorship",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
 //            "name.homotypicalGroup.typifiedNames.taxonBases.$"
-    });
+    }));
 
 
-    private static final List<String> TAXONRELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final EntityInitStrategy TAXONRELATIONSHIP_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "type.inverseRepresentations",
             "fromTaxon.sec",
             "fromTaxon.name",
             "toTaxon.sec",
             "toTaxon.name"
-    });
+    }));
 
-    public static final List<String> NAMERELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy NAMERELATIONSHIP_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "type.inverseRepresentations",
             "citation",
@@ -177,17 +179,17 @@ public class TaxonPortalController extends TaxonController{
             "fromName.nomenclaturalReference.authorship",
             "fromName.nomenclaturalReference.inReference",
 
-    });
+    }));
 
     protected static final EntityInitStrategy TAXONDESCRIPTION_INIT_STRATEGY = DescriptionPortalController.DESCRIPTION_INIT_STRATEGY;
 
-    protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final EntityInitStrategy DESCRIPTION_ELEMENT_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "sources.citation.authorship",
             "sources.nameUsedInSource",
             "multilanguageText",
             "media",
-    });
+    }));
 
 
 //	private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -198,28 +200,28 @@ public class TaxonPortalController extends TaxonController{
 //			"elements.media",
 //	});
 
-    protected static final List<String> TAXONDESCRIPTION_MEDIA_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final EntityInitStrategy TAXONDESCRIPTION_MEDIA_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "elements.media"
 
-    });
+    }));
 
-    private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final EntityInitStrategy TYPEDESIGNATION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "typeSpecimen.$",
             "citation.authorship.$",
             "typeName",
             "typeStatus"
-    });
+    }));
 
-    protected static final List<String> TAXONNODE_WITH_CHILDNODES_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final EntityInitStrategy TAXONNODE_WITH_CHILDNODES_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "childNodes.taxon",
-    });
+    }));
 
     private static final String termTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 
 
     public TaxonPortalController(){
         super();
-        setInitializationStrategy(TAXON_INIT_STRATEGY);
+        setInitializationStrategy(TAXON_INIT_STRATEGY.getPropertyPaths());
     }
 
     @Autowired
@@ -281,7 +283,7 @@ public class TaxonPortalController extends TaxonController{
         Map<String, List<?>> synonymy = new Hashtable<>();
 
         //new
-        List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
+        List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY.getPropertyPaths());
         if(!includeUnpublished){
             synonymyGroups = removeUnpublishedSynonyms(synonymyGroups);
         }
@@ -331,7 +333,7 @@ public class TaxonPortalController extends TaxonController{
 
     @Override
     protected List<String> getTaxonDescriptionElementInitStrategy() {
-        return DESCRIPTION_ELEMENT_INIT_STRATEGY;
+        return DESCRIPTION_ELEMENT_INIT_STRATEGY.getPropertyPaths();
     }
 
     /**
@@ -359,9 +361,9 @@ public class TaxonPortalController extends TaxonController{
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null,
-                includeUnpublished, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
+                includeUnpublished, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY.getPropertyPaths());
         List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null,
-                includeUnpublished, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
+                includeUnpublished, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY.getPropertyPaths());
 
         List<TaxonRelationship> allRelationships = new ArrayList<>(toRelationships.size() + fromRelationships.size());
         allRelationships.addAll(toRelationships);
@@ -394,7 +396,7 @@ public class TaxonPortalController extends TaxonController{
         TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, (List<String>)null);
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
-        List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
+        List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedTo, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths());
         return list;
     }
 
@@ -420,10 +422,10 @@ public class TaxonPortalController extends TaxonController{
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
+        TaxonBase<?> taxonBase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths());
         taxonBase = checkExistsAndAccess(taxonBase, includeUnpublished, response);
 
-        List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
+        List<NameRelationship> list = nameService.listNameRelationships(taxonBase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths());
 
         return list;
     }
@@ -506,7 +508,7 @@ public class TaxonPortalController extends TaxonController{
 
         EntityMediaContext<Taxon> taxonMediaContext = loadMediaForTaxonAndRelated(uuid, relationshipUuids,
                 relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                response, initStrategy);
+                response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
 
         List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
                 taxonMediaContext.media);
@@ -530,23 +532,51 @@ public class TaxonPortalController extends TaxonController{
      * @param initStrategy
      * @return
      * @throws IOException
+     * @Deprecated To be replaced by other loadMediaForTaxonAndRelated method
+     */
+    @Deprecated
+    public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID uuid,
+            UuidList relationshipUuids, UuidList relationshipInversUuids,
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
+            HttpServletResponse response,
+            List<String> taxonInitStrategy) throws IOException {
+        return loadMediaForTaxonAndRelated(uuid, relationshipUuids, relationshipInversUuids,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, response, taxonInitStrategy, null);
+    }
+
+    /**
+     * @param uuid
+     * @param type
+     * @param mimeTypes
+     * @param relationshipUuids
+     * @param relationshipInversUuids
+     * @param includeTaxonDescriptions
+     * @param includeOccurrences
+     * @param includeTaxonNameDescriptions
+     * @param widthOrDuration
+     * @param height
+     * @param size
+     * @param response
+     * @param initStrategy
+     * @return
+     * @throws IOException
      */
     public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID uuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
             HttpServletResponse response,
-            List<String> initStrategy) throws IOException {
+            List<String> taxonInitStrategy, List<String> mediaInitStrategy) throws IOException {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
 
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, initStrategy);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, taxonInitStrategy);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
-                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions);
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, mediaInitStrategy);
 
         EntityMediaContext<Taxon> entityMediaContext = new EntityMediaContext<Taxon>(taxon, media);
 
@@ -575,7 +605,7 @@ public class TaxonPortalController extends TaxonController{
 
         logger.info("doGetSubtreeMedia() " + requestPathAndQuery(request));
 
-        List<String> initStrategy = TAXON_WITH_CHILDNODES_INIT_STRATEGY;
+        List<String> initStrategy = TAXON_WITH_CHILDNODES_INIT_STRATEGY.getPropertyPaths();
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, initStrategy);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
@@ -583,7 +613,7 @@ public class TaxonPortalController extends TaxonController{
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
-                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions);
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null);
 
         TaxonNode node;
 
@@ -596,7 +626,7 @@ public class TaxonPortalController extends TaxonController{
             node = iterator.next();
             //Check if TaxonNode belongs to the current tree
 
-            node = taxonNodeService.load(node.getUuid(), TAXONNODE_WITH_CHILDNODES_INIT_STRATEGY);
+            node = taxonNodeService.load(node.getUuid(), TAXONNODE_WITH_CHILDNODES_INIT_STRATEGY.getPropertyPaths());
             List<TaxonNode> children = node.getChildNodes();
             Taxon childTaxon;
             for (TaxonNode child : children){
@@ -604,7 +634,7 @@ public class TaxonPortalController extends TaxonController{
                 if(childTaxon != null) {
                     childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), NO_UNPUBLISHED, null);
                     media.addAll(listMediaForTaxon(childTaxon, includeRelationships,
-                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions));
+                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null));
                 }
             }
         }
@@ -627,10 +657,10 @@ public class TaxonPortalController extends TaxonController{
      * @return
      */
     private List<Media> listMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
-            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions) {
+            Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
         List<Media> media = service.listMedia(taxon, includeRelationships,
-                false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null);
+                false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, propertyPath);
 
         return media;
     }
@@ -669,8 +699,8 @@ public class TaxonPortalController extends TaxonController{
          * @param media
          */
         public EntityMediaContext(T entity, List<Media> media) {
-            super();
-            this.entity = entity;
+
+            this.entity = HibernateProxyHelper.deproxy(entity);
             this.media = media;
         }
         public T getEntity() {

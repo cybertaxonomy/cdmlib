@@ -85,16 +85,16 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         if(pathProperties.contains("nameRelations")){
             // nameRelations is a transient property!
             initStrategy.getPropertyPaths().remove("nameRelations");
-            initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
-            initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
+            initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
+            initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
         } else {
             if(pathProperties.contains("relationsFromThisName")){
                 initStrategy.getPropertyPaths().remove("relationsFromThisName");
-                initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
+                initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
             }
             if(pathProperties.contains("relationsToThisName")){
                 initStrategy.getPropertyPaths().remove("relationsToThisName");
-                initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY, true);
+                initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
             }
         }
 

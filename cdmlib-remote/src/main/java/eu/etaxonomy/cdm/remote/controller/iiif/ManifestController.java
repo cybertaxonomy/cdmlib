@@ -10,12 +10,16 @@ package eu.etaxonomy.cdm.remote.controller.iiif;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
@@ -39,6 +43,7 @@ import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import de.digitalcollections.model.api.identifiable.resource.MimeType;
+import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -47,12 +52,18 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
+import eu.etaxonomy.cdm.remote.controller.MediaPortalController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
+import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import io.swagger.annotations.Api;
 /**
  * Serves media lists as iiif manifest files ( for the IIIF Presentation API see https://iiif.io/api/presentation/2.1/#resource-structure).
@@ -68,6 +79,11 @@ import io.swagger.annotations.Api;
 @Api("iiif")
 @RequestMapping(value = {"/iiif"})
 public class ManifestController {
+
+    /**
+     *
+     */
+    private static final int IMAGE_READ_TIMEOUT = 3000;
 
     /**
      *
@@ -108,10 +124,11 @@ public class ManifestController {
 
             logger.info("doGetMedia() " + AbstractController.requestPathAndQuery(request));
 
-            EntityMediaContext entityMediaContext = taxonPortalController.loadMediaForTaxonAndRelated(uuid,
+            EntityMediaContext<Taxon> entityMediaContext = taxonPortalController.loadMediaForTaxonAndRelated(uuid,
                     relationshipUuids, relationshipInversUuids,
                     includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                    response, TaxonPortalController.TAXON_INIT_STRATEGY);
+                    response, TaxonPortalController.TAXON_INIT_STRATEGY.getPropertyPaths(),
+                    MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
 
             return serializeManifest(manifestFor(entityMediaContext, "taxon", uuid.toString()));
     }
@@ -171,6 +188,14 @@ public class ManifestController {
             // multiple full images, then the dimensions of the largest image should be used. If the largest image’s
             // dimensions are less than 1200 pixels on either edge, then the canvas’s dimensions should be double those
             // of the image.
+
+            List<MetadataEntry> mediaMetadata = mediaMetaData(media);
+            List<MetadataEntry> representationMetadata = mediaRepresentationMetaData(fullSizeRepresentation);
+            mediaMetadata.addAll(representationMetadata);
+
+            // extractAndAddDesciptions(canvas, mediaMetadata);
+            mediaMetadata = deduplicateMetadata(mediaMetadata);
+            canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
             canvases.add(canvas);
         }
 
@@ -189,19 +214,113 @@ public class ManifestController {
         } else {
             manifest.setLabel(new PropertyValue("No media found for " + onEntitiyType + "[" + onEntityUuid + "]")); // TODO better label!!
         }
-        List<MetadataEntry> entityMetadata = metadata(entityMediaContext.getEntity());
-
+        List<MetadataEntry> entityMetadata = entityMetadata(entityMediaContext.getEntity());
+        manifest.addMetadata(entityMetadata.toArray(new MetadataEntry[entityMetadata.size()]));
 
         return manifest;
+    }
+
+    /**
+     * @param mediaMetadata
+     * @return
+     */
+    private List<MetadataEntry> deduplicateMetadata(List<MetadataEntry> mediaMetadata) {
+        Map<String, MetadataEntry> dedupMap = new HashMap<>();
+        mediaMetadata.stream().forEach(mde -> {
+                dedupMap.put(mde.getLabelString() + ":" + mde.getValueString(), mde);
+            }
+        );
+        return new ArrayList<MetadataEntry>(dedupMap.values());
+    }
+
+    /**
+     * @param canvas
+     * @param mediaMetadata
+     */
+    void extractAndAddDesciptions(Resource resource, List<MetadataEntry> mediaMetadata) {
+        List<MetadataEntry> descriptions = mediaMetadata.stream()
+            .filter(mde -> mde.getLabelString().toLowerCase().matches(".*description.*|.*caption.*"))
+            .collect(Collectors.toList());
+        mediaMetadata.removeAll(descriptions);
+        // FIXME deduplicate mde.getValueString()
+        // descriptions.sream ...
+        descriptions.stream().forEach(mde -> resource.addDescription(mde.getValueString()));
     }
 
     /**
      * @param entity
      * @return
      */
-    private <T extends IdentifiableEntity> List<MetadataEntry> metadata(T entity) {
-        // TODO Auto-generated method stub
-        return null;
+    private <T extends IdentifiableEntity> List<MetadataEntry> entityMetadata(T entity) {
+
+        List<MetadataEntry> metadata = new ArrayList<>();
+        if(entity instanceof TaxonBase){
+            List taggedTitle = ((TaxonBase)entity).getTaggedTitle();
+            if(taggedTitle != null){
+                //FIXME taggedTitel to HTML!!!!
+                metadata.add(new MetadataEntry(entity.getClass().getSimpleName(), TaggedCacheHelper.createString(taggedTitle)));
+            }
+        } else {
+            String titleCache = entity.getTitleCache();
+            if(titleCache != null){
+                metadata.add(new MetadataEntry(entity.getClass().getSimpleName(), titleCache));
+            }
+        }
+
+        return metadata;
+    }
+
+    private List<MetadataEntry> mediaRepresentationMetaData(MediaRepresentation representation) {
+
+        List<MetadataEntry> metadata = new ArrayList<>();
+        boolean needsPrefix = representation.getParts().size() > 1;
+        int partIndex = 1;
+        for (MediaRepresentationPart part : representation.getParts()) {
+            String prefix = "";
+            if (needsPrefix) {
+                prefix = "Part" + partIndex + " ";
+            }
+            if (part.getUri() != null) {
+                try {
+                    ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(part.getUri(), IMAGE_READ_TIMEOUT);
+                    Map<String, String> result = imageInfo.getMetaData();
+                    for (String key : result.keySet()) {
+                        metadata.add(new MetadataEntry(key, result.get(key)));
+                    }
+                } catch (IOException | HttpException e) {
+                    logger.error(e);
+                    metadata.add(new MetadataEntry(prefix + " Error:", "Problem while loading image metadata"));
+                }
+            }
+        }
+
+        return metadata;
+  }
+
+    private List<MetadataEntry> mediaMetaData(Media media) {
+        List<MetadataEntry> metadata = new ArrayList<>();
+        List<Language> languages = LocaleContext.getLanguages();
+        // TODO get localized titleCache
+        if(media.getTitle() != null){
+            metadata.add(new MetadataEntry("Title", media.getTitleCache()));
+        }
+        if(media.getArtist() != null){
+            metadata.add(new MetadataEntry("Artist", media.getArtist().getTitleCache()));
+        }
+        PropertyValue rightsTexts = new PropertyValue();
+        for(Rights right : media.getRights()){
+            // TODO get localized text
+            if(right.getText() != null){
+                rightsTexts.addValue(right.getText());
+            }
+        }
+        if(rightsTexts.getValues().size() > 0){
+            metadata.add(new MetadataEntry(new PropertyValue("Copyright"), rightsTexts));
+        }
+        if(media.getMediaCreated() != null){
+            metadata.add(new MetadataEntry("Created on", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
+        }
+        return metadata;
     }
 
     /**

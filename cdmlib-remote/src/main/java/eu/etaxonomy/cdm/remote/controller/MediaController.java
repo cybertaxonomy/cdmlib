@@ -74,23 +74,19 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
             Set<MediaRepresentation> representations = media.getRepresentations();
             //get first representation and retrieve the according metadata
 
-            Object[] repArray = representations.toArray();
-            Object mediaRep = repArray[0];
-            URI uri = null;
+            MediaRepresentation mediaRepresentation = representations.iterator().next();
+            URI uri = mediaRepresentation.getParts().get(0).getUri();
             try {
-                if (mediaRep instanceof MediaRepresentation){
-                    MediaRepresentation medRep = (MediaRepresentation) mediaRep;
-                    uri = medRep.getParts().get(0).getUri();
                     ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(uri, 3000);
                     result = imageInfo.getMetaData();
-                    if(result != null) {
-                        mv.addObject(result);
-                    }
-                }
+
             } catch (HttpException e) {
                 logger.info(e.getMessage());
                 HttpStatusMessage.create("Reading media file from " + uri.toString() + " failed due to (" + e.getMessage() + ")", 400).send(response);
                 return null;
+            }
+            if(result != null) {
+                mv.addObject(result);
             }
         } catch (NoRecordsMatchException e){
            /* IGNORE */
