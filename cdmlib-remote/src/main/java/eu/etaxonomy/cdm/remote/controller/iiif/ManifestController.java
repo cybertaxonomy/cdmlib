@@ -200,8 +200,8 @@ public class ManifestController {
 
             // extractAndAddDesciptions(canvas, mediaMetadata);
             mediaMetadata = deduplicateMetadata(mediaMetadata);
-            canvas = addAttributionAndLicense(media, canvas);
-            copyAttributionAndLicenseToMetadata(canvas);
+            canvas = addAttributionAndLicense(media, canvas, mediaMetadata);
+            canvas.addLicense("https://creativecommons.org/publicdomain/zero/1.0/deed.de");
             orderMedatadaItems(canvas);
             canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
             canvases.add(canvas);
@@ -224,6 +224,7 @@ public class ManifestController {
         }
         List<MetadataEntry> entityMetadata = entityMetadata(entityMediaContext.getEntity());
         manifest.addMetadata(entityMetadata.toArray(new MetadataEntry[entityMetadata.size()]));
+        copyAttributionAndLicenseToManifest(manifest);
 
         return manifest;
     }
@@ -233,16 +234,79 @@ public class ManifestController {
      * to show attribution and licenses, therefore we copy this data to
      * also to the metadata
      *
+     * <b>NOTE:</b> This method expects that the canvas anntributions and
+     * licenses are not localized!!!!
+     *
      * @param canvas
      */
-    private void copyAttributionAndLicenseToMetadata(Canvas canvas) {
-        if(canvas.getAttribution() != null){
-            canvas.addMetadata("Attibution", canvas.getAttribution().getValues().stream().collect(Collectors.joining(", ")));
+    private void copyAttributionAndLicenseToManifest(Manifest manifest) {
+
+         PropertyValue attributions = new PropertyValue();
+         List<URI> licenses = new ArrayList<>();
+         String firstAttributionString = null;
+         boolean hasAttributions = false;
+         boolean hasLicenses = false;
+         boolean hasDiversAttributions = false;
+         boolean hasDiversLicenses = false;
+         String firstLicensesString = null;
+
+
+        for (Sequence sequence : manifest.getSequences()) {
+            for (Canvas canvas : sequence.getCanvases()) {
+                if (canvas.getAttribution() != null) {
+                    canvas.getAttribution().getValues().stream().forEachOrdered(val -> attributions.addValue(val));
+                    String thisAttributionString = canvas.getAttribution().getValues()
+                                .stream()
+                                .sorted()
+                                .collect(Collectors.joining());
+                    if(firstAttributionString == null){
+                        firstAttributionString = thisAttributionString;
+                        hasAttributions = true;
+                    } else {
+                        hasDiversAttributions |=  !firstAttributionString.equals(thisAttributionString);
+                    }
+                }
+                if (canvas.getLicenses() != null && canvas.getLicenses().size() > 0) {
+                    licenses.addAll(canvas.getLicenses());
+                    String thisLicensesString = canvas.getLicenses()
+                                .stream()
+                                .map(URI::toString)
+                                .sorted()
+                                .collect(Collectors.joining());
+                    if(firstLicensesString == null){
+                        firstLicensesString = thisLicensesString;
+                        hasLicenses = true;
+                    } else {
+                        hasDiversLicenses |=  !firstLicensesString.equals(thisLicensesString);
+                    }
+                }
+            }
         }
-        if(canvas.getLicenses() != null && canvas.getLicenses().size() > 0){
-            String licenses = canvas.getLicenses().stream().map(uri -> htmlLink(uri)).collect(Collectors.joining("," ));
-            canvas.addMetadata("License", licenses);
+        String diversityInfo = "";
+
+        if(hasAttributions || hasLicenses){
+            String dataTypes ;
+            if(hasAttributions && hasLicenses) {
+                dataTypes = "attributions and licenses";
+            } else if(hasAttributions){
+                dataTypes = "attributions";
+            } else {
+                dataTypes = "licenses";
+            }
+            if(hasDiversAttributions || hasDiversLicenses){
+                diversityInfo = "Individual " + dataTypes + " per Item:";
+            } else {
+                diversityInfo = "Same " + dataTypes + " for any Item:";
+            }
         }
+        manifest.addAttribution(diversityInfo, attributions.getValues().toArray(
+                    new String[attributions.getValues().size()]
+                ));
+        licenses.stream()
+            .map(URI::toString)
+            .sorted()
+            .distinct()
+            .forEachOrdered(l -> manifest.addLicense(l));
 
     }
 
@@ -358,11 +422,12 @@ public class ManifestController {
         return metadata;
     }
 
-    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource) {
+    private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata) {
 
         List<Language> languages = LocaleContext.getLanguages();
 
-        PropertyValue attributions = new PropertyValue();
+        List<String> rightsTexts = new ArrayList<>();
+        List<String> creditTexts = new ArrayList<>();
         List<URI> license = new ArrayList<>();
 
         if(entity.getRights() != null && entity.getRights().size() > 0){
@@ -385,10 +450,8 @@ public class ManifestController {
                     // may only apply to RightsType.accessRights
                     rightText += " " + right.getAgent().getTitleCache();
                 }
-                attributions.addValue(rightText);
-            }
-            if(attributions.getValues().size() > 0){
-                // metadata.add(new MetadataEntry(new PropertyValue("Copyright"), rightsTexts));
+                rightsTexts.add(rightText);
+                //if(metadata.add(e))
             }
         }
         if(entity.getCredits() != null && entity.getCredits().size() > 0){
@@ -404,10 +467,24 @@ public class ManifestController {
                     // may only apply to RightsType.accessRights
                     creditText += " " + credit.getAgent().getTitleCache();
                 }
-                attributions.addValue(creditText);
+                creditTexts.add(creditText);
             }
         }
-        resource.setAttribution(attributions);
+
+        if(rightsTexts.size() > 0){
+            String joinedRights = rightsTexts.stream().collect(Collectors.joining(", "));
+            resource.addAttribution(joinedRights);
+            if(metadata != null){
+                metadata.add(new MetadataEntry(new PropertyValue("Copyright"), new PropertyValue(joinedRights)));
+            }
+        }
+        if(creditTexts.size() > 0){
+            String joinedCredits = creditTexts.stream().collect(Collectors.joining(", "));
+            resource.addAttribution(joinedCredits);
+            if(metadata != null){
+                metadata.add(new MetadataEntry(new PropertyValue("Credit"), new PropertyValue(joinedCredits)));
+            }
+        }
         resource.setLicenses(license);
         return resource;
     }
