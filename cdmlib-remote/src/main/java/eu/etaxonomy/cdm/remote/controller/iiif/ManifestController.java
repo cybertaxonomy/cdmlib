@@ -111,6 +111,12 @@ public class ManifestController {
 
     private String[] tumbnailMimetypes = new String[] {"image/.*", ".*"};
 
+    /**
+     * Universalviewer only shows one attribution value in the popup panel
+     * Therefore it makes sense to join all of them.
+     */
+    private boolean doJoinAttributions = true;
+
     @RequestMapping(
             value = {"taxon/{uuid}/manifest"},
             method = RequestMethod.GET)
@@ -201,7 +207,6 @@ public class ManifestController {
             // extractAndAddDesciptions(canvas, mediaMetadata);
             mediaMetadata = deduplicateMetadata(mediaMetadata);
             canvas = addAttributionAndLicense(media, canvas, mediaMetadata);
-            canvas.addLicense("https://creativecommons.org/publicdomain/zero/1.0/deed.de");
             orderMedatadaItems(canvas);
             canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
             canvases.add(canvas);
@@ -234,7 +239,7 @@ public class ManifestController {
      * to show attribution and licenses, therefore we copy this data to
      * also to the metadata
      *
-     * <b>NOTE:</b> This method expects that the canvas anntributions and
+     * <b>NOTE:</b> This method expects that the canvas attributions and
      * licenses are not localized!!!!
      *
      * @param canvas
@@ -298,16 +303,24 @@ public class ManifestController {
             } else {
                 diversityInfo = "Same " + dataTypes + " for any Item:";
             }
+            if(hasAttributions){
+                if(doJoinAttributions){
+                    ArrayList<String> attrs = new ArrayList<>(attributions.getValues());
+                    attrs.add(0, diversityInfo + "<br/>" + attrs.get(0));
+                    attrs.remove(1);
+                    manifest.addAttribution(attrs.stream().collect(Collectors.joining("; ")));
+                } else {
+                    manifest.addAttribution(diversityInfo, attributions.getValues().toArray(
+                            new String[attributions.getValues().size()]
+                            ));
+                }
+            }
+            licenses.stream()
+                .map(URI::toString)
+                .sorted()
+                .distinct()
+                .forEachOrdered(l -> manifest.addLicense(l));
         }
-        manifest.addAttribution(diversityInfo, attributions.getValues().toArray(
-                    new String[attributions.getValues().size()]
-                ));
-        licenses.stream()
-            .map(URI::toString)
-            .sorted()
-            .distinct()
-            .forEachOrdered(l -> manifest.addLicense(l));
-
     }
 
     /**
@@ -432,7 +445,7 @@ public class ManifestController {
 
         if(entity.getRights() != null && entity.getRights().size() > 0){
             for(Rights right : entity.getRights()){
-                // TODO get localized text
+                // TODO get localized texts
                 String rightText = "";
                 if(right.getText() != null){
                     rightText += right.getText();
@@ -440,9 +453,9 @@ public class ManifestController {
                 if(rightText.isEmpty() && right.getAbbreviatedText() != null){
                     rightText += right.getAbbreviatedText();
                 }
-                if(right.getUri() != null){
-                    rightText +=  htmlLink(right.getUri());
-                    if(right.getType().equals(RightsType.LICENSE())){
+                if(right.getType().equals(RightsType.LICENSE())){
+                    if(right.getUri() != null){
+                        rightText =  htmlLink(right.getUri(), rightText);
                         license.add(right.getUri());
                     }
                 }
@@ -451,7 +464,6 @@ public class ManifestController {
                     rightText += " " + right.getAgent().getTitleCache();
                 }
                 rightsTexts.add(rightText);
-                //if(metadata.add(e))
             }
         }
         if(entity.getCredits() != null && entity.getCredits().size() > 0){
@@ -493,8 +505,8 @@ public class ManifestController {
      * @param right
      * @return
      */
-    String htmlLink(URI uri) {
-        return String.format(" <a href=\"%s\">%s</a>", uri, uri);
+    String htmlLink(URI uri, String text) {
+        return String.format(" <a href=\"%s\">%s</a>", uri, text);
     }
 
     /**
