@@ -533,17 +533,18 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
     @Transactional(readOnly = false)
     @Override
-    public void moveTerm(TermDto termDto, UUID parentUUID) {
-        moveTerm(termDto, parentUUID, TermMovePosition.ON);
+    public UpdateResult moveTerm(TermDto termDto, UUID parentUUID) {
+        return moveTerm(termDto, parentUUID, TermMovePosition.ON);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Transactional(readOnly = false)
     @Override
-    public void moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition) {
+    public UpdateResult moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition) {
         boolean isKindOf = termDto.getKindOfUuid()!=null && termDto.getKindOfUuid().equals(parentUuid);
         TermVocabulary vocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(termDto.getVocabularyUuid()));
         DefinedTermBase parent = HibernateProxyHelper.deproxy(dao.load(parentUuid));
+        UpdateResult result = new UpdateResult();
         if(parent==null){
             //new parent is a vocabulary
             TermVocabulary parentVocabulary = HibernateProxyHelper.deproxy(vocabularyService.load(parentUuid));
@@ -554,8 +555,13 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 
                 vocabulary.removeTerm(term);
                 parentVocabulary.addTerm(term);
+                result.addUpdatedObject(term);
+                result.addUpdatedObject(vocabulary);
+                result.addUpdatedObject(parentVocabulary);
+
             }
             vocabularyService.saveOrUpdate(parentVocabulary);
+
         }
         else {
             DefinedTermBase term = HibernateProxyHelper.deproxy(dao.load(termDto.getUuid()));
@@ -598,8 +604,12 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
                 }
                 parent.getVocabulary().addTerm(term);
             }
+            result.addUpdatedObject(term);
+            result.addUpdatedObject(parent);
+            result.addUpdatedObject(vocabulary);
             vocabularyService.saveOrUpdate(parent.getVocabulary());
         }
+        return result;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

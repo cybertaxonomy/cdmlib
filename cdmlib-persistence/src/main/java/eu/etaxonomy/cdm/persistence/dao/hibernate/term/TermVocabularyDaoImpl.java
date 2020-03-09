@@ -364,6 +364,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         Query query =  getSession().createQuery(queryString);
         query.setParameterList("termTypes", termTypeWithSubType);
         if (pattern != null){
+            pattern = pattern.replace("*", "%");
+            pattern = "%"+pattern+"%";
             query.setParameter("pattern", pattern);
         }
         @SuppressWarnings("unchecked")

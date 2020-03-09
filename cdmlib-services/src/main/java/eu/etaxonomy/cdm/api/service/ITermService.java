@@ -218,14 +218,14 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param parentUuid the {@link UUID} of the new parent term
      * @param termMovePosition enum to specify the position for {@link OrderedTermBase}s in an {@link OrderedTermVocabulary}
      */
-    public void moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition);
+    public UpdateResult moveTerm(TermDto termDto, UUID parentUuid, TermMovePosition termMovePosition);
 
     /**
      * Move the given term to the given parent
      * @param termDto the {@link TermDto} of the term to move
      * @param parentUuid the {@link UUID} of the new parent term
      */
-    public void moveTerm(TermDto termDto, UUID parentUuid);
+    public UpdateResult moveTerm(TermDto termDto, UUID parentUuid);
 
     /**
      * Creates a new term as a child of the given parent.
