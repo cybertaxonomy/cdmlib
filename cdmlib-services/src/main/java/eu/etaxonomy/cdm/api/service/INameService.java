@@ -518,6 +518,14 @@ public interface INameService
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames(Integer limit, String pattern);
 
 	/**
+     * Returns a list of names belonging to the synonymy of the taxon
+     * @param limit
+     * @param taxonUuid
+     * @return a list containing uuid and titleCache of names of the synonymy of the given taxon
+     */
+    public List<UuidAndTitleCache> getUuidAndTitleCacheOfSynonymy(Integer limit, UUID taxonUuid);
+
+	/**
 	 * Return a Pager of names matching the given query string, optionally filtered by class, optionally with a particular MatchMode
 	 *
 	 * @param clazz filter by class - can be null to include all instances of type T
@@ -595,6 +603,21 @@ public interface INameService
      */
     public <S extends TaxonName> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
+
+    /**
+     * @param clazz
+     * @param queryString
+     * @param matchmode
+     * @param criteria
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
 
 
 }
