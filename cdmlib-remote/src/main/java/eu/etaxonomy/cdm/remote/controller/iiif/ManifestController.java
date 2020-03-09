@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,8 @@ import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import de.digitalcollections.model.api.identifiable.resource.MimeType;
+import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -58,10 +61,12 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.MediaPortalController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
+import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -109,6 +114,9 @@ public class ManifestController {
     @Autowired
     TaxonPortalController taxonPortalController;
 
+    @Autowired
+    ITermService termService;
+
     private String[] tumbnailMimetypes = new String[] {"image/.*", ".*"};
 
     /**
@@ -129,15 +137,24 @@ public class ManifestController {
                 @RequestParam(value = "includeTaxonDescriptions", required = false) Boolean  includeTaxonDescriptions,
                 @RequestParam(value = "includeOccurrences", required = false) Boolean  includeOccurrences,
                 @RequestParam(value = "includeTaxonNameDescriptions", required = false) Boolean  includeTaxonNameDescriptions,
+                @RequestParam(value = "includeTaxonomicChildren", required = false) Boolean  includeTaxonomicChildren,
                 HttpServletRequest request, HttpServletResponse response) throws IOException {
 
             logger.info("doGetMedia() " + AbstractController.requestPathAndQuery(request));
 
+            EntityInitStrategy taxonInitStrategy = includeTaxonomicChildren? TaxonPortalController.TAXON_WITH_CHILDNODES_INIT_STRATEGY : TaxonPortalController.TAXON_INIT_STRATEGY;
             EntityMediaContext<Taxon> entityMediaContext = taxonPortalController.loadMediaForTaxonAndRelated(uuid,
                     relationshipUuids, relationshipInversUuids,
                     includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
-                    response, TaxonPortalController.TAXON_INIT_STRATEGY.getPropertyPaths(),
+                    response, taxonInitStrategy.getPropertyPaths(),
                     MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
+
+            if(includeTaxonomicChildren){
+                Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+                entityMediaContext.setMedia(
+                        taxonPortalController.addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, entityMediaContext.getEntity(), includeRelationships, entityMediaContext.getMedia())
+                                );
+            }
 
             return serializeManifest(manifestFor(entityMediaContext, "taxon", uuid.toString()));
     }

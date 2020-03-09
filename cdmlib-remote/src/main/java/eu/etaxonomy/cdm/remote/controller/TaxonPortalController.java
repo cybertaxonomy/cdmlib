@@ -614,11 +614,30 @@ public class TaxonPortalController extends TaxonController{
 
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
                 includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null);
+        media = addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, taxon,
+                includeRelationships, media);
 
-        TaxonNode node;
+        List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
+                media);
+
+        return mediafilteredForPreferredRepresentations;
+    }
+
+    /**
+     * @param includeTaxonDescriptions
+     * @param includeOccurrences
+     * @param includeTaxonNameDescriptions
+     * @param taxon
+     * @param includeRelationships
+     * @param media
+     */
+    public List<Media> addTaxonomicChildrenMedia(Boolean includeTaxonDescriptions, Boolean includeOccurrences,
+            Boolean includeTaxonNameDescriptions, Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            List<Media> media) {
 
         //TODO use treeindex
-        //looking for all medias of genus
+        //looking for all medias of direct children
+        TaxonNode node;
         if (taxon.getTaxonNodes().size()>0){
             Set<TaxonNode> nodes = taxon.getTaxonNodes();
             Iterator<TaxonNode> iterator = nodes.iterator();
@@ -634,15 +653,11 @@ public class TaxonPortalController extends TaxonController{
                 if(childTaxon != null) {
                     childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), NO_UNPUBLISHED, null);
                     media.addAll(listMediaForTaxon(childTaxon, includeRelationships,
-                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, null));
+                            includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths()));
                 }
             }
         }
-
-        List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
-                media);
-
-        return mediafilteredForPreferredRepresentations;
+        return media;
     }
 
     /**
@@ -708,6 +723,13 @@ public class TaxonPortalController extends TaxonController{
         }
         public List<Media> getMedia() {
             return media;
+        }
+        /**
+         * @param addTaxonomicChildrenMedia
+         */
+        public void setMedia(List<Media> media) {
+            this.media = media;
+
         }
 
 
