@@ -304,13 +304,17 @@ public class ManifestController {
                 diversityInfo = "Same " + dataTypes + " for any Item:";
             }
             if(hasAttributions){
+                List<String> attrs = new ArrayList<>(attributions.getValues());
+                attrs = attrs.stream().sorted().distinct().collect(Collectors.toList());
                 if(doJoinAttributions){
-                    ArrayList<String> attrs = new ArrayList<>(attributions.getValues());
                     attrs.add(0, diversityInfo + "<br/>" + attrs.get(0));
                     attrs.remove(1);
-                    manifest.addAttribution(attrs.stream().collect(Collectors.joining("; ")));
+                    manifest.addAttribution(attrs.stream()
+                            .sorted()
+                            .distinct()
+                            .collect(Collectors.joining("; ")));
                 } else {
-                    manifest.addAttribution(diversityInfo, attributions.getValues().toArray(
+                    manifest.addAttribution(diversityInfo, attrs.toArray(
                             new String[attributions.getValues().size()]
                             ));
                 }
@@ -339,7 +343,8 @@ public class ManifestController {
     private List<MetadataEntry> deduplicateMetadata(List<MetadataEntry> mediaMetadata) {
         Map<String, MetadataEntry> dedupMap = new HashMap<>();
         mediaMetadata.stream().forEach(mde -> {
-                dedupMap.put(mde.getLabelString() + ":" + mde.getValueString(), mde);
+                String dedupKey = mde.getLabelString() + ":" + mde.getValueString();
+                dedupMap.put(dedupKey, mde);
             }
         );
         return new ArrayList<MetadataEntry>(dedupMap.values());
@@ -445,25 +450,60 @@ public class ManifestController {
 
         if(entity.getRights() != null && entity.getRights().size() > 0){
             for(Rights right : entity.getRights()){
-                // TODO get localized texts
                 String rightText = "";
-                if(right.getText() != null){
-                    rightText += right.getText();
-                }
-                if(rightText.isEmpty() && right.getAbbreviatedText() != null){
-                    rightText += right.getAbbreviatedText();
-                }
+                // TODO get localized texts below
+                // --- LICENSE
                 if(right.getType().equals(RightsType.LICENSE())){
+                    String licenseText = "";
+                    String licenseAbbrev = "";
+                    if(right.getText() != null){
+                        licenseText = right.getText();
+                    }
+                    if(right.getAbbreviatedText() != null){
+                        licenseAbbrev = right.getAbbreviatedText().trim();
+                    }
                     if(right.getUri() != null){
-                        rightText =  htmlLink(right.getUri(), rightText);
+                        if(!licenseAbbrev.isEmpty()) {
+                            licenseAbbrev =  htmlLink(right.getUri(), licenseAbbrev);
+                        } else if(!licenseText.isEmpty()) {
+                            licenseText =  htmlLink(right.getUri(), licenseText);
+                        } else {
+                            licenseText =  htmlLink(right.getUri(), right.getUri().toString());
+                        }
                         license.add(right.getUri());
                     }
+                    rightText = licenseAbbrev + (licenseText.isEmpty() ? "" : " ") + licenseText;
                 }
-                if(right.getAgent() != null){
-                    // may only apply to RightsType.accessRights
-                    rightText += " " + right.getAgent().getTitleCache();
+                // --- COPYRIGHT
+                if(right.getType().equals(RightsType.COPYRIGHT())){
+                    // titleCache + agent
+                    String copyRightText = "";
+                    if(right.getText() != null){
+                        copyRightText = right.getText();
+                        //  sanitize potential '(c)' away
+                        copyRightText.replace("(c)", "").trim();
+                    }
+                    if(right.getAgent() != null){
+                        // may only apply to RightsType.accessRights
+                        copyRightText += " " + right.getAgent().getTitleCache();
+                    }
+                    if(!copyRightText.isEmpty()){
+                        copyRightText = "© " + copyRightText;
+                    }
+                    rightText = copyRightText;
                 }
-                rightsTexts.add(rightText);
+                if(right.getType().equals(RightsType.ACCESS_RIGHTS())){
+                    // titleCache + agent
+                    String accessRights = right.getText();
+                    if(right.getAgent() != null){
+                        // may only apply to RightsType.accessRights
+                        accessRights = " " + right.getAgent().getTitleCache();
+                    }
+                    rightText = accessRights;
+                }
+                if(!rightText.isEmpty()){
+                    rightsTexts.add(rightText);
+                }
             }
         }
         if(entity.getCredits() != null && entity.getCredits().size() > 0){
