@@ -51,13 +51,15 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 /**
- * @author a.mueller
+ * Parser for {@link TaxonName}s of type NonViralName and below.
  *
+ * @author a.mueller
  */
 public class NonViralNameParserImpl
             extends NonViralNameParserImplRegExBase
             implements INonViralNameParser<INonViralName> {
-	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
+
+    private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
 

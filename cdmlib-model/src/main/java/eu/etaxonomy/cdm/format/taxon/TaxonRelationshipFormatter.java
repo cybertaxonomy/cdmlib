@@ -197,10 +197,6 @@ public class TaxonRelationshipFormatter {
         return result;
     }
 
-    /**
-     * @param author
-     * @return
-     */
     private String getFamilyNames(TeamOrPersonBase<?> author) {
         if (author.isInstanceOf(Person.class)){
             Person person = CdmBase.deproxy(author, Person.class);

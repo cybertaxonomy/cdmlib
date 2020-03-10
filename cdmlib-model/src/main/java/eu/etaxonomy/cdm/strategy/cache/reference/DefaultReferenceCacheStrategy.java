@@ -538,8 +538,8 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if (reference.isProtectedAbbrevTitleCache()){
             String cache = reference.getAbbrevTitleCache();
             return handleDetailAndYearForProtected(reference, cache, microReference);
-
         }
+
         String result = getTokenizedNomenclaturalTitel(reference);
         //if no data is available and only titleCache is protected take the protected title
         //this is to avoid empty cache if someone forgets to set also the abbrevTitleCache
@@ -550,7 +550,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }
 
         microReference = Nz(microReference);
-        if (StringUtils.isNotBlank(microReference)){
+        if (isNotBlank(microReference)){
             microReference = getBeforeMicroReference() + microReference;
             if (microReference.endsWith(".")  && result.contains(INomenclaturalReference.MICRO_REFERENCE_TOKEN + ".") ){
                 microReference = microReference.substring(0, microReference.length() - 1);
@@ -583,9 +583,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
      * which can later be replaced by the real data.
      *
      * @see INomenclaturalReference#MICRO_REFERENCE_TOKEN
-     *
-     * @param ref The reference
-     * @return
      */
     private String getTokenizedNomenclaturalTitel(Reference ref) {
         if (isRealInRef(ref)){

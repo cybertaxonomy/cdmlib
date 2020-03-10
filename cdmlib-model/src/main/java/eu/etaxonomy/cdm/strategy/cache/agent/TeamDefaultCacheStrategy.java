@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 
 /**
  * @author AM
- *
  */
 public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclaturalAuthorCacheStrategy<Team> {
     private static final long serialVersionUID = 8375295443642690479L;
@@ -119,7 +118,6 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
         }
         return result;
     }
-
 
 	@Override
     public String getFullTitle(Team team) {

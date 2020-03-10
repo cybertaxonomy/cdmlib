@@ -100,7 +100,7 @@ public class Team extends TeamOrPersonBase<Team> {
     @XmlElement(name = "hasMoreMembers")
 	private boolean hasMoreMembers;
 
-
+// ********************************** FACTORY ***************************/
 
 	/**
 	 * Creates a new team instance without any concrete {@link Person members}.
@@ -140,9 +140,6 @@ public class Team extends TeamOrPersonBase<Team> {
 		}
 	}
 
-	/**
-	 * @return
-	 */
 	private void addListenerForTeamMember(Person member) {
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			@Override
@@ -392,4 +389,5 @@ public class Team extends TeamOrPersonBase<Team> {
 			return null;
 		}
 	}
+
 }

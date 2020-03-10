@@ -331,7 +331,6 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
     }
 
-
     @Test
     public void testBookGetTitleCache2(){
         //series
