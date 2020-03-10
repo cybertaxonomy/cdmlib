@@ -66,7 +66,7 @@ public class Role extends AuthorityBase {
 
     @Override
     public String toString() {
-        return getRole();
+        return this.role;
     }
 
 
