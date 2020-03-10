@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -318,6 +319,40 @@ public class DefaultReferenceCacheStrategyTest {
 
     }
 
+    //https://dev.e-taxonomy.eu/redmine/issues/8881
+    @Test
+    public void testInRefAuthor(){
+        Person person1 = Person.NewInstance("Inauth.", "Inauthor", "A.B.", "Ala Bala");
+        Person person2 = Person.NewInstance("Twoauth.", "Twoauthor", "C.", "Cla");
+        Person person3 = Person.NewTitledInstance("Threeauth.");
+        Team team = Team.NewInstance(person1, person2, person3);
+        IBook book1 = ReferenceFactory.newBook();
+        book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
+        book1.setVolume("Fasc. 11");
+        book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
+        bookSection1.setTitle("My chapter");
+        bookSection1.setInBook(book1);
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1956));
+
+        book1.setAuthorship(person1);
+        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
+        book1.setAuthorship(team);
+        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Twoauthor & Threeauth., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
+        team.setHasMoreMembers(true);
+        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Twoauthor, Threeauth. & al., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
+        book1.setAuthorship(Team.NewInstance(person1));
+        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
+
+        //for the following the behavior is not yet finally discussed, may change in future
+        book1.setAuthorship(team);
+        team.setTitleCache("Teamcache", true);
+        Assert.assertEquals("Unexpected nomencl. reference", "in Teamcache, Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
+        team.setTitleCache("Teamc.", true);
+        Assert.assertEquals("Unexpected nomencl. reference", "in Teamc., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
+        book1.setAuthorship(Team.NewInstance());
+        Assert.assertEquals("Unexpected nomencl. reference", "in "+TeamDefaultCacheStrategy.EMPTY_TEAM+", Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
+
+    }
 
     @Test
     public void testBookGetTitleCache1(){

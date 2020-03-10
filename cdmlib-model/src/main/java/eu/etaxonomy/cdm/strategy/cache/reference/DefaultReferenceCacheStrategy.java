@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * #5833
@@ -673,14 +674,62 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
+    /**
+     * See https://dev.e-taxonomy.eu/redmine/issues/8881
+     */
     private String getInRefAuthorPart(Reference book, String seperator){
         if (book == null){
             return "";
         }
-        TeamOrPersonBase<?> team = book.getAuthorship();
-        String result = Nz( team == null ? "" : team.getNomenclaturalTitle());
+
+        TeamOrPersonBase<?> author = book.getAuthorship();
+        String result;
+        if (author == null){
+            result = "";
+        }else if(author.isInstanceOf(Person.class)){
+            Person person = CdmBase.deproxy(author, Person.class);
+            result = getInRefPerson(person);
+        }else{
+            Team team = CdmBase.deproxy(author, Team.class);
+            if (team.isProtectedNomenclaturalTitleCache()){
+                //not yet finally discussed may change in future
+                result = team.getNomenclaturalTitle();
+            }else if (team.isProtectedTitleCache()){
+                //not yet finally discussed may change in future
+                result = team.getTitleCache();
+            }else if (team.getTeamMembers().isEmpty()){
+                //not yet finally discussed may change in future
+                result = team.getTitleCache();
+            }else{
+                result = "";
+                int size = team.getTeamMembers().size();
+                for (Person person : team.getTeamMembers()){
+                    int index = team.getTeamMembers().lastIndexOf(person);
+                    String sep = (team.isHasMoreMembers() || index != size - 1) ?
+                            TeamDefaultCacheStrategy.STD_TEAM_CONCATINATION : TeamDefaultCacheStrategy.FINAL_TEAM_CONCATINATION;
+                    result = CdmUtils.concat(sep, result, getInRefPerson(person));
+                }
+                if (team.isHasMoreMembers()){
+                    result += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
+                }
+            }
+        }
+
+        result = Nz(result);
         if (! result.trim().equals("")){
             result = result + seperator;
+        }
+        return result;
+    }
+
+    private String getInRefPerson(Person person) {
+        String result;
+        if (isNotBlank(person.getFamilyName())){
+            result = person.getFamilyName();
+        }else if (isNotBlank(person.getNomenclaturalTitle())){
+            result = person.getNomenclaturalTitle();  //TODO discuss if nomTitle is really better here then titleCache
+        }else{
+            result = person.getTitleCache();  //maybe remove everything behind a ","
         }
         return result;
     }

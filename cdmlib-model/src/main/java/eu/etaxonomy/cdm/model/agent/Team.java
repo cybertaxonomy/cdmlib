@@ -120,6 +120,16 @@ public class Team extends TeamOrPersonBase<Team> {
 		return result;
 	}
 
+    public static Team NewInstance(Person... members) {
+        Team team = new Team();
+        for (Person member : members){
+            team.addTeamMember(member);
+        }
+        return team;
+    }
+
+//************************ CONSTRUCTOR *******************************/
+
 	/**
 	 * Class constructor (including the cache strategy defined in
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
