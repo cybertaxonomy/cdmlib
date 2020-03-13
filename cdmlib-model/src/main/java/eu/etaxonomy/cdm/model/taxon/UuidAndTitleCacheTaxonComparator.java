@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
  * @author k.luther
@@ -34,13 +35,14 @@ public class UuidAndTitleCacheTaxonComparator implements Serializable, Comparato
         }
 
         //Rank
-        Rank rankTax1 = null;
+        Rank rankTax1 = Rank.UNKNOWN_RANK();
         if (o1[3] != null){
-            rankTax1 = (Rank)o1[3];
+            rankTax1 = ((TaxonName)o1[3]).getRank();
         }
-        Rank rankTax2 = null;
+        Rank rankTax2 = Rank.UNKNOWN_RANK();
         if (o2[3] != null){
-            rankTax2 = (Rank)o2[3];
+
+            rankTax2 = ((TaxonName)o2[3]).getRank();
         }
         String titleCache1 = (String)o1[2];
         String titleCache2 = (String)o2[2];
