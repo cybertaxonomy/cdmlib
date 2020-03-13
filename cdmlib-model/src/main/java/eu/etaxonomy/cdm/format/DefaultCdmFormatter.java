@@ -6,13 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.format.occurrences;
-
+package eu.etaxonomy.cdm.format;
 
 /**
+ * Default formatter that uses toString() that can be used as fallback.
+ *
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public class DefaultCdmFormatter extends AbstractCdmFormatter {
 
@@ -24,7 +24,7 @@ public class DefaultCdmFormatter extends AbstractCdmFormatter {
     public String format(Object object, FormatKey... formatKeys) {
         return object.toString();
     }
-    
+
     @Override
     public String format(Object object) {
     	return object.toString();

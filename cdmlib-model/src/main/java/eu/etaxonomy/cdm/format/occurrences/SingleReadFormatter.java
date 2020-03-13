@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.format.occurrences;
 
+import eu.etaxonomy.cdm.format.AbstractCdmFormatter;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 
 /**

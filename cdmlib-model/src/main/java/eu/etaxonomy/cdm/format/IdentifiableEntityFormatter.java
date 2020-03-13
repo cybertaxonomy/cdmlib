@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.format.occurrences;
+package eu.etaxonomy.cdm.format;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.model.common.Identifier;
 /**
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public class IdentifiableEntityFormatter extends AbstractCdmFormatter {
 
@@ -29,10 +28,10 @@ public class IdentifiableEntityFormatter extends AbstractCdmFormatter {
     @Override
     protected void initFormatKeys(Object object) {
         super.initFormatKeys(object);
-        IdentifiableEntity identifiableEntity = (IdentifiableEntity)object;
+        IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity<?>)object;
         List<Identifier> identifiers = identifiableEntity.getIdentifiers();
         String identifierString = null;
-        for (Identifier identifier : identifiers) {
+        for (Identifier<?> identifier : identifiers) {
             if(identifier.getType()!=null && identifier.getType().getUuid().equals(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc"))){
                 identifierString = identifier.getIdentifier();
                 break;

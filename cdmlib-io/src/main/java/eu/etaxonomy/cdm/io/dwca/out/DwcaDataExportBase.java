@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.mueller
  * @since 18.04.2011
- *
  */
 public abstract class DwcaDataExportBase extends DwcaExportBase{
 
@@ -40,14 +39,8 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
 
     abstract protected void handleTaxonNode(DwcaTaxExportState state, TaxonNode node)throws IOException, FileNotFoundException, UnsupportedEncodingException;
 
-
-
-
     /**
      * Creates the locationId, locality, countryCode triple
-     * @param state
-     * @param record
-     * @param area
      */
     protected void handleArea(DwcaTaxExportState state, IDwcaAreaRecord record, NamedArea area, TaxonBase<?> taxon, boolean required) {
         if (area != null){
@@ -65,11 +58,9 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
         }
     }
 
-
     protected String getTaxonLogString(TaxonBase<?> taxon) {
         return taxon.getTitleCache() + "(" + taxon.getId() + ")";
     }
-
 
     protected String getSources(ISourceable<?> sourceable, DwcaTaxExportConfigurator config) {
         String result = "";

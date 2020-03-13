@@ -6,24 +6,22 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.format.occurrences;
+package eu.etaxonomy.cdm.format;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.format.ICdmFormatter;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public abstract class AbstractCdmFormatter implements ICdmFormatter {
 
     protected FormatKey[] formatKeys;
-    
-    protected Map<FormatKey, String> formatKeyMap = new HashMap<ICdmFormatter.FormatKey, String>();
+
+    protected Map<FormatKey, String> formatKeyMap = new HashMap<>();
 
     public AbstractCdmFormatter(Object object, FormatKey[] formatKeys) {
     	this.formatKeys = formatKeys;
@@ -41,7 +39,7 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
         }
         return builder.toString().trim();
     }
-    
+
     @Override
     public String format(Object object) {
     	return format(object, formatKeys);

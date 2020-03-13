@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
  *
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public class CdmFormatterFactory {
 

@@ -33,15 +33,13 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
+ * Formatter for TaxonRelationships.
+ *
  * @author a.mueller
  * @since 13.08.2018
- *
  */
 public class TaxonRelationshipFormatter {
 
-    /**
-     *
-     */
     private static final String DOUBTFUL_TAXON_MARKER = "?" + UTF8.NARROW_NO_BREAK;
     private static final String REL_SEC = ", rel. sec. ";
     private static final String ERR_SEC = ", err. sec. ";
@@ -61,9 +59,8 @@ public class TaxonRelationshipFormatter {
         return getTaggedText(taxonRelationship, reverse, languages, false);
     }
 
-
-
-    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages, boolean withoutName) {
+    public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse,
+            List<Language> languages, boolean withoutName) {
 
         if (taxonRelationship == null){
             return null;
@@ -72,7 +69,6 @@ public class TaxonRelationshipFormatter {
         TaxonRelationshipType type = taxonRelationship.getType();
         boolean isMisapplied = type == null ? false : type.isMisappliedNameOrInvalidDesignation() && reverse;
         boolean isSynonym = type == null? false : type.isAnySynonym();
-
 
         Taxon relatedTaxon = reverse? taxonRelationship.getFromTaxon()
                 : taxonRelationship.getToTaxon();
@@ -83,7 +79,6 @@ public class TaxonRelationshipFormatter {
 
         String doubtfulTaxonStr = relatedTaxon.isDoubtful() ? DOUBTFUL_TAXON_MARKER : "";
         String doubtfulRelationStr = taxonRelationship.isDoubtful() ? "?" : "";
-
 
         TaxonName name = relatedTaxon.getName();
 
@@ -223,11 +218,6 @@ public class TaxonRelationshipFormatter {
         }
     }
 
-
-    /**
-     * @param name
-     * @return
-     */
     private List<TaggedText> getNameCacheTags(TaxonName name) {
         List<TaggedText> result = name.getCacheStrategy().getTaggedName(name);
         return result;
@@ -239,7 +229,6 @@ public class TaxonRelationshipFormatter {
         List<TaggedText> result = name.getCacheStrategy().getTaggedFullTitle(name);
         return result;
     }
-
 
     /**
      * @param type the taxon relationship type
