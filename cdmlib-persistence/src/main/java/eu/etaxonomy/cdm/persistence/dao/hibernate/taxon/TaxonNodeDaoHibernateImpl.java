@@ -198,7 +198,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name.rank "
+        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name "
                 + " FROM TaxonNode tn "
         		+ "   INNER JOIN tn.taxon AS t "
         		+ "   INNER JOIN tn.classification AS cls "
@@ -896,7 +896,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         int classificationId = classification.getId();
 
          String queryString =
-                   " SELECT nodes.uuid, nodes.id,  taxon.titleCache, taxon.name.rank " +
+                   " SELECT nodes.uuid, nodes.id,  taxon.titleCache, taxon.name" +
                    " FROM TaxonNode AS nodes "
                    + "    JOIN nodes.taxon as taxon " +
                    " WHERE nodes.classification.id = " + classificationId ;
@@ -980,7 +980,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name.rank "
+        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name "
                 + " FROM TaxonNode tn "
                 + "   INNER JOIN tn.taxon AS t "
                 + "   INNER JOIN tn.classification AS cls "

@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -351,7 +352,29 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertEquals(1, result.size());
         assertEquals("6d6b43aa-3a77-4be5-91d0-00b702fc5d6e", result.get(0).getUuid().toString());
 
+
+
     }
+    @Test
+    @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    public final void testGetTaxonNodeUuidAndTitleCacheOfacceptedTaxaByClassificationForNameWithoutRank(){
+        //test name without rank
+        Classification classification = classificationDao.findByUuid(classificationUuid);
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(null);
+        Taxon taxon = Taxon.NewInstance(name, null);
+        taxon.setTitleCache("Ricris asplenioid UNPLACED", false);
+        TaxonNode node = taxonNodeDao.load(UUID.fromString("6d6b43aa-3a77-4be5-91d0-00b702fc5d6e"));
+        TaxonNode child = node.addChildTaxon(taxon, null, null);
+        taxonNodeDao.saveOrUpdate(child);
+
+        String pattern = "Ricris asplenioid UNPLACED*";
+        List<UuidAndTitleCache<TaxonNode>> result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, null, pattern, true);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Ricris asplenioid UNPLACED", result.get(0).getTitleCache());
+
+    }
+
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
