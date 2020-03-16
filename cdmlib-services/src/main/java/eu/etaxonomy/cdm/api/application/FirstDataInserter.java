@@ -112,6 +112,11 @@ public class FirstDataInserter extends AbstractDataInserter {
             Role.ROLE_PROJECT_MANAGER.toString(),
     };
 
+    public static final String[] EDITOR_REFERENCE_GROUP_AUTHORITIES = new String[]{
+            new CdmAuthority(PermissionClass.REFERENCE, UPDATE_DELETE).toString(),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString()
+    };
+
     public static final String[] ADMIN_GROUP_AUTHORITIES = new String[]{
             Role.ROLE_ADMIN.toString()
     };
@@ -225,6 +230,7 @@ public class FirstDataInserter extends AbstractDataInserter {
         checkGroup(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID, Group.GROUP_EDITOR_EXTENDED_CREATE_NAME, EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, Group.GROUP_PROJECT_MANAGER_NAME, PROJECT_MANAGER_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE, EDITOR_REFERENCE_GROUP_AUTHORITIES);
         progressMonitor.worked(1);
     }
 
