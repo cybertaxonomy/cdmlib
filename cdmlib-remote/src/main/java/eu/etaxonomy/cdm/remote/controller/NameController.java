@@ -62,13 +62,16 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "text"
     });
 
-    private static final List<String> FULL_TITLE_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final EntityInitStrategy FULL_TITLE_CACHE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "relationsFromThisName.$",
             "relationsToThisName.$",
             "status.$",
-            "nomenclaturalReference.inReference.inReference.inReference"
-    });
+            "nomenclaturalReference.authorship.$",
+            "nomenclaturalReference.inReference.authorship.$",
+            "nomenclaturalReference.inReference.inReference.authorship.$",
+            "nomenclaturalReference.inReference.inReference.inReference.authorship.$"
+    }));
 
     private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
 
@@ -210,7 +213,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             HttpServletResponse response) throws IOException {
         logger.info("doGetTaggedFullTitle() - " + requestPathAndQuery(request));
 
-        TaxonName name = service.load(uuid, FULL_TITLE_CACHE_INIT_STRATEGY);
+        TaxonName name = service.load(uuid, FULL_TITLE_CACHE_INIT_STRATEGY.getPropertyPaths());
         return name.getTaggedFullTitle();
     }
 
