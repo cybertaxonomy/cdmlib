@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -141,7 +142,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             logger.info("doGet() " + requestPathAndQuery(request));
         }
         //TODO do we want to allow Synonyms at all? Maybe needs initialization
-        TaxonBase<?> taxonBase = getCdmBaseInstance(uuid, response, TAXONNODE_INIT_STRATEGY);
+        EntityInitStrategy initStrategy = new EntityInitStrategy(getInitializationStrategy());
+        initStrategy.extend(null, TAXONNODE_INIT_STRATEGY, false);
+        TaxonBase<?> taxonBase = getCdmBaseInstance(uuid, response, initStrategy.getPropertyPaths());
         //TODO we should move subtree check down to service or persistence
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, nodeService, response);
         taxonBase = checkExistsSubtreeAndAccess(taxonBase, subtree, NO_UNPUBLISHED, response);
