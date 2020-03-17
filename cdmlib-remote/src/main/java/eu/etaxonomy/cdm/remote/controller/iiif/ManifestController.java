@@ -418,8 +418,10 @@ public class ManifestController {
                 try {
                     ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(part.getUri(), IMAGE_READ_TIMEOUT);
                     Map<String, String> result = imageInfo.getMetaData();
-                    for (String key : result.keySet()) {
-                        metadata.add(new MetadataEntry(key, result.get(key)));
+                    if(result != null){
+                        for (String key : result.keySet()) {
+                            metadata.add(new MetadataEntry(key, result.get(key)));
+                        }
                     }
                 } catch (IOException | HttpException e) {
                     logger.error(e);
