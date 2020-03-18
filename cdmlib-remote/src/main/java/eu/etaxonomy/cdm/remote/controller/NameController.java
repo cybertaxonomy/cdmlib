@@ -26,10 +26,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -52,7 +54,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
 
     private static Logger logger = Logger.getLogger(NameController.class);
 
-    private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy TYPEDESIGNATION_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "typeStatus.representations",
             "typifiedNames",
             "typeSpecimen",
@@ -60,9 +62,9 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "citation",
             "citation.authorship.$",
             "text"
-    });
+    }));
 
-    private static final EntityInitStrategy FULL_TITLE_CACHE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+    public static final EntityInitStrategy FULL_TITLE_CACHE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "relationsFromThisName.$",
             "relationsToThisName.$",
@@ -73,14 +75,22 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "nomenclaturalReference.inReference.inReference.inReference.authorship.$"
     }));
 
-    private static final List<String> NAME_CACHE_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy NAME_RELATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+            "$",
+            "relationsFromThisName.$",
+            "relationsFromThisName.toName.registrations",
+            "relationsToThisName.$",
+            "relationsToThisName.fromName.registrations"
+    }));
 
-    });
+    public  static final EntityInitStrategy NAME_CACHE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
 
-    private static final List<String> NAME_REGISTRATIONS_INIT_STRATEGY = Arrays.asList(new String []{
+    }));
+
+    public static final EntityInitStrategy NAME_REGISTRATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "registrations.typeDesignations.$",
             "registrations.institution"
-    });
+    }));
 
     public NameController(){
         super();
@@ -149,7 +159,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             return null;
         }
         Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
-                null, null, TYPEDESIGNATION_INIT_STRATEGY);
+                null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
         return pager.getRecords();
     }
 
@@ -174,7 +184,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             logger.info("doGetTypeDesignationsInHomotypicalGroup()" + requestPathAndQuery(request));
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
-                null, null, TYPEDESIGNATION_INIT_STRATEGY);
+                null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
         return result;
     }
 
@@ -186,7 +196,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         logger.info("doGetNameCache()" + requestPathAndQuery(request));
-        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY);
+        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_CACHE_INIT_STRATEGY.getPropertyPaths());
         if(tnb == null){
             return null;
         }
@@ -218,13 +228,13 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
     }
 
     @RequestMapping(
-            value = {"registrations"},
+            value = "registrations",
             method = RequestMethod.GET)
     public Set<Registration> doGetRegistrations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         logger.info("doGetRegistrations" + requestPathAndQuery(request));
-        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_REGISTRATIONS_INIT_STRATEGY);
+        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_REGISTRATIONS_INIT_STRATEGY.getPropertyPaths());
         Set<Registration> regs = tnb.getRegistrations();
         if(regs != null && regs.size() > 0){
             Set<Registration> regsFiltered = new HashSet<>(regs.size());
@@ -236,6 +246,55 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
                 }
             }
             return regsFiltered;
+        }
+        return null;
+    }
+
+    @RequestMapping(
+            value = "nameRelations",
+            method = RequestMethod.GET)
+    public Object doGetNameRelations(
+            @PathVariable("uuid") UUID uuid,
+            // doPage request parameters
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            // doList request parameters
+            @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetNameRelations" + requestPathAndQuery(request));
+        TaxonName tnb = getCdmBaseInstance(uuid, response, NAME_RELATIONS_INIT_STRATEGY.getPropertyPaths());
+
+        Set<NameRelationship> nameRelations = tnb.getNameRelations();
+
+        if(nameRelations != null && nameRelations.size() > 0){
+        Set<NameRelationship> nameRelationsFiltered = new HashSet<>(nameRelations.size());
+
+        if(userHelper.userIsAnnonymous()){
+            // need to filter out unpublished related names in this case
+                for(NameRelationship rel : nameRelations){
+                    // check if the name has been published ba any registration
+                    Set<Registration> regsToCheck = new HashSet<>();
+                    if(rel.getToName().equals(tnb) && rel.getFromName().getRegistrations() != null) {
+                        regsToCheck.addAll(rel.getFromName().getRegistrations());
+                    }
+                    if(rel.getFromName().equals(tnb) && rel.getToName().getRegistrations() != null) {
+                        regsToCheck.addAll(rel.getToName().getRegistrations());
+                    }
+                    // if there is no registration for this name we assume that it is published
+                    boolean nameIsPublished = regsToCheck.size() == 0;
+                    nameIsPublished |= regsToCheck.stream().anyMatch(reg -> reg.getStatus().equals(RegistrationStatus.PUBLISHED));
+                    if(nameIsPublished){
+                        nameRelationsFiltered.add(rel);
+                    }
+                }
+            }  else {
+                // no filtering needed
+                nameRelationsFiltered = nameRelations;
+            }
+            return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
         }
         return null;
     }

@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,12 +25,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.Registration;
+import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
@@ -72,6 +78,19 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             "elements.media",
     });
 
+    private static EntityInitStrategy nameRelationsInitStrategy = null;
+
+    /**
+     * @return the nameRelationsInitStrategy
+     */
+    public static EntityInitStrategy getNameRelationsInitStrategy() {
+        if(nameRelationsInitStrategy == null){
+            nameRelationsInitStrategy = extendNameRelationsInitStrategies(NameController.NAME_RELATIONS_INIT_STRATEGY.getPropertyPaths());
+        }
+        return nameRelationsInitStrategy;
+    }
+
+
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
             List<String> pathProperties) {
@@ -80,6 +99,16 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             return pathProperties;
         }
 
+        EntityInitStrategy initStrategy = extendNameRelationsInitStrategies(pathProperties);
+
+        return initStrategy.getPropertyPaths();
+    }
+
+    /**
+     * @param pathProperties
+     * @return
+     */
+    static EntityInitStrategy extendNameRelationsInitStrategies(List<String> pathProperties) {
         EntityInitStrategy initStrategy = new EntityInitStrategy(pathProperties);
 
         if(pathProperties.contains("nameRelations")){
@@ -97,8 +126,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
                 initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
             }
         }
-
-        return initStrategy.getPropertyPaths();
+        return initStrategy;
     }
 
     /* (non-Javadoc)
@@ -191,6 +219,58 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         Pager<TaxonNameDescription> p = descriptionService.getTaxonNameDescriptions(tnb, null, null, NAMEDESCRIPTION_INIT_STRATEGY);
         return p.getRecords();
 
+    }
+
+    // TODO this is a copy of the same method in NameController --> this class should extend  NameController !!!
+    @RequestMapping(
+            value = "nameRelations",
+            method = RequestMethod.GET)
+    public Object doGetNameRelations(
+            @PathVariable("uuid") UUID uuid,
+            // doPage request parameters
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            // doList request parameters
+            @RequestParam(value = "start", required = false) Integer start,
+            @RequestParam(value = "limit", required = false) Integer limit,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetNameRelations" + requestPathAndQuery(request));
+        TaxonName tnb = getCdmBaseInstance(uuid, response, getNameRelationsInitStrategy().getPropertyPaths());
+
+        Set<NameRelationship> nameRelations = tnb.getNameRelations();
+
+        if(nameRelations != null && nameRelations.size() > 0){
+        Set<NameRelationship> nameRelationsFiltered = new HashSet<>(nameRelations.size());
+
+        if(userHelper.userIsAnnonymous()){
+            // need to filter out unpublished related names in this case
+                for(NameRelationship rel : nameRelations){
+                    // check if the name has been published ba any registration
+                    Set<Registration> regsToCheck = new HashSet<>();
+                    if(rel.getToName().equals(tnb) && rel.getFromName().getRegistrations() != null) {
+                        regsToCheck.addAll(rel.getFromName().getRegistrations());
+                    }
+                    if(rel.getFromName().equals(tnb) && rel.getToName().getRegistrations() != null) {
+                        regsToCheck.addAll(rel.getToName().getRegistrations());
+                    }
+                    // if there is no registration for this name we assume that it is published
+                    boolean nameIsPublished = regsToCheck.size() == 0;
+                    nameIsPublished |= regsToCheck.stream().anyMatch(reg -> reg.getStatus().equals(RegistrationStatus.PUBLISHED));
+                    if(nameIsPublished){
+                        nameRelationsFiltered.add(rel);
+                    } else {
+                        logger.debug("Hiding NameRelationship " + rel);
+                    }
+                }
+            }  else {
+                // no filtering needed
+                nameRelationsFiltered = nameRelations;
+            }
+            return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
+        }
+        return null;
     }
 
 
