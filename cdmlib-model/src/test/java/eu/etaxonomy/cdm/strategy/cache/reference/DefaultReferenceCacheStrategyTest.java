@@ -351,7 +351,6 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("Unexpected nomencl. reference", "in Teamc., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
         book1.setAuthorship(Team.NewInstance());
         Assert.assertEquals("Unexpected nomencl. reference", "in "+TeamDefaultCacheStrategy.EMPTY_TEAM+", Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-
     }
 
     @Test

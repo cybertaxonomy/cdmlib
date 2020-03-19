@@ -84,13 +84,11 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     @Before
     public void setUp(){
-
         if (state1 == null){
             state1 = State.NewInstance("state1 text", "state1", "st.1");
             termService.save(state1);
         }
     }
-
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
@@ -149,7 +147,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
         for (String key : data.keySet()){
             byte[] byt = data.get(key);
-            System.out.println(key + ": " + new String(byt) );
+//            System.out.println(key + ": " + new String(byt) );
         }
         //metadata
         byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
@@ -210,7 +208,8 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         config.setTarget(TARGET.EXPORT_DATA);
         config.setWithHigherClassification(true);
         ExportResult result = defaultExport.invoke(config);
-//        System.out.println(result.createReport());
+        System.out.println(result.createReport());
+
         ExportDataWrapper<?> exportData = result.getExportData();
         @SuppressWarnings("unchecked")
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
@@ -256,7 +255,6 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         String expectedClassification = "\"Family|Genus|Genus species\"";
         Assert.assertTrue(coreStr.contains(expectedClassification));
         Assert.assertFalse(coreStr.contains(UUID_UNPUBLISHED_TAXON));
-
 
         //reference
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
@@ -457,6 +455,10 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     }
 
+    private void setUuid(CdmBase cdmBase, String uuidStr) {
+        cdmBase.setUuid(UUID.fromString(uuidStr));
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         //      try {
@@ -467,10 +469,4 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         //      e.printStackTrace();
         //  }
     }
-
-
-    private void setUuid(CdmBase cdmBase, String uuidStr) {
-        cdmBase.setUuid(UUID.fromString(uuidStr));
-    }
-
 }

@@ -200,14 +200,9 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	@Autowired
 	private IDescriptiveDataSetService descriptiveDataSetService;
 
-
 	//********************** CONSTRUCTOR *********************************************************/
 
-	/**
-	 * Constructor
-	 */
 	protected CdmRepository(){}
-
 
 	// ****************************** APPLICATION CONTEXT *************************************************/
 
@@ -219,7 +214,7 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	// ****************************** GETTER *************************************************/
 
 	@Override
-	public final Object getBean(String name){
+	public Object getBean(String name){
 	    return this.applicationContext.getBean(name);
 	}
 
@@ -347,7 +342,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return this.transactionManager;
 	}
 
-
 	@Autowired
 	public void setTransactionManager(PlatformTransactionManager transactionManager){
 		this.transactionManager = (HibernateTransactionManager) transactionManager;
@@ -409,15 +403,11 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return polytomousKeyService;
 	}
 
-
 	@Override
 	public IPolytomousKeyNodeService getPolytomousKeyNodeService(){
 		return polytomousKeyNodeService;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IProgressMonitorService getProgressMonitorService() {
         return progressMonitorService;
@@ -433,12 +423,10 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return groupService;
 	}
 
-
 	@Override
 	public IEntityValidationService getEntityValidationService(){
 		return entityValidationService;
 	}
-
 
 	@Override
 	public IEntityConstraintViolationService getEntityConstraintViolationService(){
@@ -449,7 +437,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	public ICdmPermissionEvaluator getPermissionEvaluator(){
 		return permissionEvaluator;
 	}
-
 
 	@Override
 	public TransactionStatus startTransaction(){
@@ -480,7 +467,6 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		TransactionStatus txStatus = txManager.getTransaction(txDef);
 		return txStatus;
 	}
-
 
 	@Override
 	public void commitTransaction(TransactionStatus txStatus){
@@ -543,10 +529,5 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
         } catch (HibernateException e) {
             // no current session: nothing to clear!
         }
-
     }
-
-
-
-
 }
