@@ -52,4 +52,13 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
         formatKeyMap.put(FormatKey.COMMA, ",");
     }
 
+
+    protected boolean isNotBlank(String str) {
+        return StringUtils.isNotBlank(str);
+    }
+
+    protected boolean isBlank(String str) {
+        return StringUtils.isBlank(str);
+    }
+
 }
