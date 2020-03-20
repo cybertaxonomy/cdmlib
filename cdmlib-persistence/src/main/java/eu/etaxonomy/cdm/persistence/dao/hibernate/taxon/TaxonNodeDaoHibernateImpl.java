@@ -198,10 +198,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name "
+        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, name, rank "
                 + " FROM TaxonNode tn "
         		+ "   INNER JOIN tn.taxon AS t "
         		+ "   INNER JOIN tn.classification AS cls "
+        		+ "   INNER JOIN t.name AS name "
+        		+ "   LEFT OUTER JOIN name.rank AS rank"
         		+ "WHERE t.titleCache LIKE :pattern ";
         if(classificationUuid != null){
         	queryString += "AND cls.uuid = :classificationUuid";
@@ -896,10 +898,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         int classificationId = classification.getId();
 
          String queryString =
-                   " SELECT nodes.uuid, nodes.id,  taxon.titleCache, taxon.name" +
-                   " FROM TaxonNode AS nodes "
-                   + "    JOIN nodes.taxon as taxon " +
-                   " WHERE nodes.classification.id = " + classificationId ;
+                   " SELECT nodes.uuid, nodes.id,  t.titleCache, name, rank"
+                   + " FROM TaxonNode AS nodes "
+                   + "   JOIN nodes.taxon as t " // FIXME why not inner join here?
+                   + "   INNER JOIN t.name AS name "
+                   + "   LEFT OUTER JOIN name.rank AS rank "
+                   + " WHERE nodes.classification.id = " + classificationId ;
          if (pattern != null){
              if (pattern.equals("?")){
                  limit = null;
@@ -909,7 +913,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                  }
                  pattern = pattern.replace("*", "%");
                  pattern = pattern.replace("?", "%");
-                 queryString = queryString + " AND taxon.titleCache LIKE (:pattern) " ;
+                 queryString = queryString + " AND t.titleCache LIKE (:pattern) " ;
              }
          }
 
@@ -980,11 +984,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, t.name "
+        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, name, rank "
                 + " FROM TaxonNode tn "
                 + "   INNER JOIN tn.taxon AS t "
                 + "   INNER JOIN tn.classification AS cls "
-                + "WHERE t.titleCache LIKE :pattern ";
+                + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN name.rank AS rank "
+                + " WHERE t.titleCache LIKE :pattern ";
         if(classificationUuid != null){
             queryString += "AND cls.uuid = :classificationUuid";
         }
