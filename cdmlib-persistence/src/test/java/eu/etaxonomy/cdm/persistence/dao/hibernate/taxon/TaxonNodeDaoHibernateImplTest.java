@@ -68,10 +68,10 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @SpringBeanByType
     private IDefinedTermDao termDao;
 
-    private UUID uuid1;
-    private UUID uuid2;
-    private UUID uuid3;
-    private UUID classificationUuid;
+    private final UUID uuid1 = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
+    private final UUID uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
+    private final UUID uuid3  = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
+    private final UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
 
     boolean includeUnpublished;
 
@@ -89,10 +89,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @Before
     public void setUp(){
-        uuid1 = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
-        uuid3 = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
-        uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
-        classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         AuditEventContextHolder.clearContext();
         includeUnpublished = true;
     }
@@ -373,6 +369,19 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertEquals(1, result.size());
         assertEquals("Ricris asplenioid UNPLACED", result.get(0).getTitleCache());
 
+    }
+
+    @Test
+    @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
+    public final void testGetTaxonNodeUuidAndTitleCacheWithoutRank(){
+
+        List<UuidAndTitleCache<TaxonNode>> result = taxonNodeDao.getUuidAndTitleCache(null, "", null); // cant use "*" here since this is not supported by the method under test
+        assertNotNull(result);
+        assertEquals(4, result.size());
+        assertEquals("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7", result.get(0).getUuid().toString()); // Acherontia(Fabricius, 1798) rank: Genus
+        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(1).getUuid().toString()); // titleCache:Acherontia lachesis (Fabricius, 1798) rank: Species
+        assertEquals("770239f6-4fa8-496b-8738-fe8f7b2ad519", result.get(2).getUuid().toString()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
+        assertEquals("4f73adcc-a535-4fbe-a97a-c05ee8b12191", result.get(3).getUuid().toString()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
     }
 
 
