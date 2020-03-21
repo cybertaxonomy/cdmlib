@@ -198,7 +198,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, name, rank "
+        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, rank "
                 + " FROM TaxonNode tn "
         		+ "   INNER JOIN tn.taxon AS t "
         		+ "   INNER JOIN tn.classification AS cls "
@@ -899,7 +899,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         int classificationId = classification.getId();
 
          String queryString =
-                   " SELECT nodes.uuid, nodes.id,  t.titleCache, name, rank"
+                   " SELECT nodes.uuid, nodes.id,  t.titleCache, rank"
                    + " FROM TaxonNode AS nodes "
                    + "   JOIN nodes.taxon as t " // FIXME why not inner join here?
                    + "   INNER JOIN t.name AS name "
