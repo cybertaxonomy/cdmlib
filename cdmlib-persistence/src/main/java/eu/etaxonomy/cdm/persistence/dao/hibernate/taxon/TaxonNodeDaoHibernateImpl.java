@@ -226,9 +226,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child) {
         String queryString = ""
@@ -315,9 +312,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         return crit;
     }
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit,
@@ -372,7 +367,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return result;
     }
 
-
     @Override
     public long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions) {
         return count(type, restrictions, INCLUDE_UNPUBLISHED);
@@ -390,10 +384,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return (Long) criteria.uniqueResult();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid) {
 
@@ -406,6 +396,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         return count;
     }
+    
     /**
      * @param taxonUuid
      * @param classificationUuid
@@ -473,6 +464,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         hql.append(" ORDER BY a.titleCache");
         return hql;
     }
+    
     /**
      * @param taxonUuid
      * @param classificationUuid
