@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -257,6 +258,11 @@ public class AgentServiceImpl
     @Override
     public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern) {
         return dao.getUuidAndAbbrevTitleCache(clazz, null, pattern);
+    }
+
+    @Override
+    public List<AgentBase> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<AgentBase> config){
+        return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
 
 }

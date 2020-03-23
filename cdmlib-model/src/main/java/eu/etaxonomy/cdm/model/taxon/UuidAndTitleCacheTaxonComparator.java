@@ -34,11 +34,11 @@ public class UuidAndTitleCacheTaxonComparator implements Serializable, Comparato
         }
 
         //Rank
-        Rank rankTax1 = null;
+        Rank rankTax1 = Rank.UNKNOWN_RANK();
         if (o1[3] != null){
             rankTax1 = (Rank)o1[3];
         }
-        Rank rankTax2 = null;
+        Rank rankTax2 = Rank.UNKNOWN_RANK();
         if (o2[3] != null){
             rankTax2 = (Rank)o2[3];
         }

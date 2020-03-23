@@ -12,9 +12,9 @@ package eu.etaxonomy.cdm.format;
  * Implementing classes provide a string representation for a given object.
  * How the the string is built can be configured
  * by using the {@link FormatKey} enum.<br>
+ *
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public interface ICdmFormatter {
 
@@ -63,9 +63,13 @@ public interface ICdmFormatter {
 	 * format(derivedUnit, GATHERING_COUNTRY, COMMA, GATHERING_COLLECTOR, COMMA, OPEN_BRACKET, COLLECTION_CODE, CLOSE_BRACKET
 	 * </code> will result in something like <i>Peru, L. (B)</i>
 	 *
+	 * Note:
+	 *
 	 * @param object the object which should be formatted as a string representation
 	 * @param formatKeys a list of enum values specifying the parts of which the string consists
-	 * @return a string representation of the given object according to the chosen enum values
+	 * @throws UnsupportedOperationException if the <tt>format</tt> operation
+     *         is not supported by this formatter
+     * @return a string representation of the given object according to the chosen enum values
 	 */
     public String format(Object object, FormatKey... formatKeys);
 

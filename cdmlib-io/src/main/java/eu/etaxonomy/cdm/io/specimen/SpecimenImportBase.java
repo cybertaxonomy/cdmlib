@@ -87,6 +87,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	protected Map<String, DefinedTerm> kindOfUnitsMap;
 
 
+
 	@Override
     protected abstract void doInvoke(STATE state);
 
@@ -608,13 +609,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 		                return existingSpecimens.getRecords().iterator().next();
 		            }
 		        }
-	        
+
 	        }catch(NullPointerException e){
 	        	logger.error("searching for existing specimen creates NPE: " + config.getSignificantIdentifier());
 	        	e.printStackTrace();
-	        }   
-	        
-	        
+	        }
+
+
 	        return null;
 	    }
 
@@ -766,28 +767,6 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	    //    for our new source.
 	    protected IdentifiableSource getIdentifiableSource(Reference reference, String citationDetail) {
 
-	      /*  List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
-
-
-	        if (reference != null){
-	            try {
-	                for (OriginalSourceBase<?> osb: issTmp){
-	                    if (osb.getCitation() != null && osb.getCitation().getTitleCache().equalsIgnoreCase(reference.getTitleCache())){
-	                        String osbDetail = osb.getCitationMicroReference();
-	                        if ((StringUtils.isBlank(osbDetail) && StringUtils.isBlank(citationDetail))
-	                                || (osbDetail != null && osbDetail.equalsIgnoreCase(citationDetail)) ) {
-//	                            System.out.println("REFERENCE FOUND RETURN EXISTING SOURCE");
-	                            return (IdentifiableSource) osb.clone();
-	                        }
-	                    }
-	                }
-	            } catch (CloneNotSupportedException e) {
-	                throw new RuntimeException(e);
-	            } catch (Exception e1){
-	                e1.printStackTrace();
-	            }
-	        }
-	*/
 	        IdentifiableSource sour = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null, reference,citationDetail);
 	        return sour;
 	    }
@@ -860,6 +839,30 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                if (preferredFlag) {
 	                    parent = linkParentChildNode(species, subspecies, classification, state);
 	                }
+	            }
+	        }else{
+	            //handle cf. and aff. taxa
+	            String genusEpithet = null;
+	            if (nvname.getTitleCache().contains("cf.")){
+	                genusEpithet = nvname.getTitleCache().substring(0, nvname.getTitleCache().indexOf("cf."));
+	            } else if (nvname.getTitleCache().contains("aff.")){
+	                genusEpithet = nvname.getTitleCache().substring(0, nvname.getTitleCache().indexOf("aff."));
+	            }
+	            if (genusEpithet != null){
+    	            genusEpithet = genusEpithet.trim();
+    	            TaxonName taxonName = null;
+    	            if (genusEpithet.contains(" ")){
+    	                taxonName = getOrCreateTaxonName(genusEpithet, Rank.SPECIES(), preferredFlag, state, -1);
+    	            }else{
+    	                taxonName = getOrCreateTaxonName(genusEpithet, Rank.GENUS(), preferredFlag, state, -1);
+    	            }
+    	            genus = getOrCreateTaxonForName(taxonName, state);
+                    if (genus == null){
+                        logger.debug("The genus should not be null " + taxonName);
+                    }
+                    if (preferredFlag) {
+                        parent = linkParentChildNode(null, genus, classification, state);
+                    }
 	            }
 	        }
 	        if (preferredFlag && parent!=taxon ) {
@@ -1017,7 +1020,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            TaxonName taxonName = getOrCreateTaxonName(scientificName, null, preferredFlag, state, i);
 	            Taxon taxon = getOrCreateTaxonForName(taxonName, state);
 	            addTaxonNode(taxon, state,preferredFlag);
-	            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate());
+	            linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade, identification.getIdentifier(), identification.getDate(), identification.getModifier());
 	        }
 	    }
 
@@ -1087,7 +1090,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param derivedFacade : the derived Unit Facade
 	     */
 	    @SuppressWarnings("rawtypes")
-        protected void linkDeterminationEvent(STATE state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade, String identifierStr, String dateStr) {
+        protected void linkDeterminationEvent(STATE state, Taxon taxon, boolean preferredFlag,  DerivedUnitFacade derivedFacade, String identifierStr, String dateStr, String modifier) {
 	        SpecimenImportConfiguratorBase config = state.getConfig();
 	        if (logger.isDebugEnabled()){
 	            logger.info("start linkdetermination with taxon:" + taxon.getUuid()+", "+taxon);
@@ -1108,6 +1111,13 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        }
 	        if (dateStr != null){
 	            determinationEvent.setTimeperiod(TimePeriodParser.parseString(dateStr));
+	        }
+	        if (modifier != null){
+	            if (modifier.equals("cf.")){
+	                determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_CONFER());
+	            }else if (modifier.equals("aff.")){
+	                determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_AFFINIS());
+	            }
 	        }
 	        state.getDerivedUnitBase().addDetermination(determinationEvent);
 
@@ -1327,19 +1337,19 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 //	                }
 //	            }
 //	        }else {
-	            if(sourceNotLinkedToElement(indAssociation,state.getRef(),null)) {
-	                indAssociation.addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
+	            if(sourceNotLinkedToElement(indAssociation,state.getImportReference(state.getActualAccessPoint()),null)) {
+	                indAssociation.addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
 	            }
-	            if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getRef(),null)) {
-	                state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
+	            if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
+	                state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
 	            }
 	            for (Reference citation : determinationEvent.getReferences()) {
 	                if(sourceNotLinkedToElement(indAssociation,citation,null))
 	                {
 	                    indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
 	                }
-	                if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getRef(),null)) {
-	                    state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
+	                if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
+	                    state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
 	                }
 	            }
 	   //     }
@@ -1483,6 +1493,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	    }
+
+
 
 
 }

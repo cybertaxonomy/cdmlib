@@ -131,60 +131,21 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
 
-
-
-    /**
-     * @param subTreeIndex
-     * @param newSec
-     * @param overwriteExistingAccepted
-     * @param includeSharedTaxa
-     * @param emptySecundumDetail
-     * @return
-     */
     public int countSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExistingAccepted, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
-    /**
-     * @param subTreeIndex
-     * @param newSec
-     * @param overwriteExistingSynonyms
-     * @param includeSharedTaxa
-     * @param emptySecundumDetail
-     * @return
-     */
     public int countSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
-    /**
-     * @param subTreeIndex
-     * @param newSec
-     * @param overwriteExisting
-     * @param includeSharedTaxa
-     * @param emptyDetail
-     * @param monitor
-     * @return
-     */
     public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
 
     public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
 
-
-    /**
-     * @param subTreeIndex
-     * @param includeSharedTaxa
-     * @param includeSharedTaxa2
-     * @return
-     */
     public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, boolean includeHybrids);
     public Set<TaxonBase> setPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, boolean includeHybrids, IProgressMonitor monitor);
 
-    /**
-     * @param subTreeIndex
-     * @param includeSharedTaxa
-     * @return
-     */
     public int countPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, boolean includeHybrids);
     public Set<TaxonBase> setPublishForSubtreeSynonyms(TreeIndex subTreeIndex, boolean publish,
@@ -196,48 +157,21 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
             Set<UUID> relationTypes, boolean includeSharedTaxa, boolean includeHybrids,
             IProgressMonitor monitor);
 
-
-    /**
-     * @param parent
-     * @return
-     */
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 
-    /**
-     * @param classification
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications);
 
-    /**
-     * @param type
-     * @param restrictions
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @param includePublished
-     * @return
-     */
     public <S extends TaxonNode> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished);
 
-    /**
-     * @param type
-     * @param restrictions
-     * @param includePublished
-     * @return
-     */
     long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished);
 
-	public TaxonNodeDto getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonName name);
+	public List<TaxonNodeDto> getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonName name);
 
+	public List<TaxonNodeDto> getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonBase<?> taxonBase);
 
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
-
 
     public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 

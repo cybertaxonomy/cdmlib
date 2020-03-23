@@ -196,6 +196,7 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
         try{
             if(reference.getPages() != null){
                 pageNumber = parsePageNumber(reference.getPages());
+                pageNumber += forward;
             }
         }catch(NumberFormatException e){
             String errorMessage = "Reference has no page number or the field 'pages' is not parsable";
@@ -205,8 +206,9 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 
         MobotOpenUrlQuery query = new MobotOpenUrlQuery();
         query.bhlTitleURI = reference.getTitleUri();
-        pageNumber += forward;
-        query.startPage = pageNumber.toString();
+        if(pageNumber != null){
+            query.startPage = pageNumber.toString();
+        }
         query.refType = reference.getReferenceType();
         return doResolve(query);
     }

@@ -10,13 +10,16 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.agent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -33,6 +36,8 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Repository
@@ -217,6 +222,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         }
 
         return getUuidAndAbbrevTitleCache(query);
+    }
+
+	@Override
+    public List<AgentBase> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Set<String> params = new HashSet<>();
+        params.add("titleCache");
+        params.add("nomenclaturalTitle");
+
+	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
 

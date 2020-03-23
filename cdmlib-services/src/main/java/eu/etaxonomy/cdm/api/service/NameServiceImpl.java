@@ -80,6 +80,8 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
@@ -115,6 +117,8 @@ public class NameServiceImpl
     protected IOccurrenceService occurrenceService;
     @Autowired
     protected ICollectionService collectionService;
+    @Autowired
+    protected ITaxonService taxonService;
     @Autowired
     @Qualifier("refEntDao")
     protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
@@ -907,6 +911,20 @@ public class NameServiceImpl
     }
 
     @Override
+    public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria,
+            Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
+         Long numberOfResults = dao.countByFullTitle(clazz, queryString, matchmode, criteria);
+
+         List<TaxonName> results = new ArrayList<>();
+         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+                results = dao.findByFullTitle(queryString, matchmode, pageSize, pageNumber, criteria, propertyPaths);
+         }
+
+         return results;
+    }
+
+
+    @Override
     public HomotypicalGroup findHomotypicalGroup(UUID uuid) {
         return homotypicalGroupDao.findByUuid(uuid);
     }
@@ -999,7 +1017,7 @@ public class NameServiceImpl
             else if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
                 NameTypeDesignation typeDesignation = HibernateProxyHelper.deproxy(referencingObject, NameTypeDesignation.class);
 
-                if (typeDesignation.getTypeName().equals(name)){
+                if (typeDesignation.getTypeName().equals(name) && !typeDesignation.getTypifiedNames().isEmpty()){
                     String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
                     result.addException(new ReferencedObjectUndeletableException(message));
                     result.addRelatedObject(referencingObject);
@@ -1096,6 +1114,24 @@ public class NameServiceImpl
         }
         Pager<S> pager = new DefaultPagerImpl<>(pageIndex, resultSize, pageSize, records);
         return pager;
+    }
+
+    @Override
+    public List<UuidAndTitleCache> getUuidAndTitleCacheOfSynonymy(Integer limit, UUID taxonUuid) {
+        List<String> propertyPaths = new ArrayList();
+        propertyPaths.add("synonyms.name.*");
+        TaxonBase taxonBase = taxonService.load(taxonUuid, propertyPaths);
+        if (taxonBase instanceof Taxon){
+            Taxon taxon = (Taxon)taxonBase;
+            Set<TaxonName> names = taxon.getSynonymNames();
+            List<UuidAndTitleCache> uuidAndTitleCacheList = new ArrayList();
+            UuidAndTitleCache<TaxonName> uuidAndTitleCache;
+            for (TaxonName name: names){
+                uuidAndTitleCache = new UuidAndTitleCache<TaxonName>(TaxonName.class, name.getUuid(), name.getId(), name.getTitleCache());
+                uuidAndTitleCacheList.add(uuidAndTitleCache);
+            }
+        }
+        return null;
     }
 
 

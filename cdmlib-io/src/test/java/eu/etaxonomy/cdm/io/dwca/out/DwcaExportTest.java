@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -24,15 +25,22 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.TARGET;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -47,9 +55,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
+ * Test for Darwin Core Archive (DwCA) export.
+ *
  * @author a.mueller
  * @since 25.06.2017
- *
  */
 public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
@@ -58,7 +67,6 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     private static final UUID UUID_SUBSPEC_NODE = UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac");
     private static final String UUID_UNPUBLISHED_TAXON = "e5cdc392-4e0b-49ad-84e9-8c4b22d1827c";
-
 
     @SpringBeanByName
     private CdmApplicationAwareDefaultExport<DwcaTaxExportConfigurator> defaultExport;
@@ -69,6 +77,19 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
     @SpringBeanByType
     private ITaxonNodeService taxonNodeService;
 
+    @SpringBeanByType
+    private ITermService termService;
+
+    private static State state1;
+
+    @Before
+    public void setUp(){
+        if (state1 == null){
+            //FIXME #8891
+//            state1 = State.NewInstance("state1 text", "state1", "st.1");
+//            termService.save(state1);
+        }
+    }
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
@@ -127,7 +148,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
         for (String key : data.keySet()){
             byte[] byt = data.get(key);
-            System.out.println(key + ": " + new String(byt) );
+//            System.out.println(key + ": " + new String(byt) );
         }
         //metadata
         byte[] metadata = data.get(DwcaTaxExportFile.METADATA.getTableName());
@@ -188,7 +209,8 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         config.setTarget(TARGET.EXPORT_DATA);
         config.setWithHigherClassification(true);
         ExportResult result = defaultExport.invoke(config);
-//        System.out.println(result.createReport());
+        System.out.println(result.createReport());
+
         ExportDataWrapper<?> exportData = result.getExportData();
         @SuppressWarnings("unchecked")
         Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
@@ -235,7 +257,6 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertTrue(coreStr.contains(expectedClassification));
         Assert.assertFalse(coreStr.contains(UUID_UNPUBLISHED_TAXON));
 
-
         //reference
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
         Assert.assertNotNull("Reference must not be null", ref);
@@ -251,9 +272,25 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         byte[] distribution = data.get(DwcaTaxExportFile.DISTRIBUTION.getTableName());
         Assert.assertNotNull("Distribution must not be null", distribution);
         String distributionStr = new String(distribution);
-        expected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"c204c529-d8d2-458f-b939-96f0ebd2cbe8\",\"Africa\",,,\"present\",,\"uncertain\",,,,,,";
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"c204c529-d8d2-458f-b939-96f0ebd2cbe8\",\"Africa\",,,\"present\",,\"uncertain\",,,,,,";
         Assert.assertTrue(distributionStr.contains(expected));
 
+        //description
+        byte[] description = data.get(DwcaTaxExportFile.DESCRIPTION.getTableName());
+        Assert.assertNotNull("Description must not be null", distribution);
+        String descriptionStr = new String(description);
+        System.out.println(descriptionStr);
+
+        //   quantitative data
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1-1.3 [n=2.0]\",\"Chromosome Numbers\"";
+        Assert.assertTrue(descriptionStr.contains(expected));
+        //   textdata
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"My Description\",\"Description\",,\"eng\",,,,,";
+        Assert.assertTrue(descriptionStr.contains(expected));
+        //   categorical data
+//        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"state1\",\"Ecology\""; FIXME #8891
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"-no state-\",\"Ecology\"";
+        Assert.assertTrue(descriptionStr.contains(expected));
     }
 
     @Test
@@ -318,10 +355,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void createFullTestDataSet() {
+    private void createFullTestDataSet() {
         Set<TaxonNode> nodesToSave = new HashSet<>();
         Reference sec1 = ReferenceFactory.newGeneric();
         setUuid(sec1, "4b6acca1-959b-4790-b76e-e474a0882990");
@@ -336,7 +370,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         TaxonName familyName = parser.parseReferencedName("Family L., Sp. Pl. 3: 22. 1752",
                 NomenclaturalCode.ICNAFP, Rank.FAMILY());
         setUuid(familyName,"e983cc5e-4c77-4c80-8cb0-73d43df31ef7");
-        setUuid((Reference)familyName.getNomenclaturalReference(), "b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
+        setUuid(familyName.getNomenclaturalReference(), "b0dd7f4a-0c7f-4372-bc5d-3b676363bc63");
         Taxon family = Taxon.NewInstance(familyName, sec1);
         setUuid(family,"3162e136-f2e2-4f9a-9010-3f35908fbae1");
         TaxonNode node1 = classification.addChildTaxon(family, sec1, "22");
@@ -347,7 +381,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         TaxonName genusName = parser.parseReferencedName("Genus Humb., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.GENUS());
         setUuid(genusName,"5e83cc5e-4c77-4d80-8cb0-73d63df35ee3");
-        setUuid((Reference)genusName.getNomenclaturalReference(), "5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
+        setUuid(genusName.getNomenclaturalReference(), "5ed27f4a-6c7f-4372-bc5d-3b67636abc52");
         Taxon genus = Taxon.NewInstance(genusName, sec1);
         setUuid(genus,"3f52e136-f2e1-4f9a-9010-2f35908fbd39");
 
@@ -359,7 +393,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         TaxonName speciesName = parser.parseReferencedName("Genus species Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SPECIES());
         setUuid(speciesName,"f983cc5e-4c77-4c80-8cb0-73d43df31ee9");
-        setUuid((Reference)speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
+        setUuid(speciesName.getNomenclaturalReference(), "a0dd7f4a-0c7f-4372-bc5d-3b676363bc0e");
         Taxon species = Taxon.NewInstance(speciesName, sec1);
         setUuid(species,"9182e136-f2e2-4f9a-9010-3f35908fb5e0");
 
@@ -371,7 +405,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         TaxonName subspeciesName = parser.parseReferencedName("Genus species subsp. subspec Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(subspeciesName,"3483cc5e-4c77-4c80-8cb0-73d43df31ee3");
-        setUuid((Reference)subspeciesName.getNomenclaturalReference(), "b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
+        setUuid(subspeciesName.getNomenclaturalReference(), "b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f");
 
         Taxon subspecies = Taxon.NewInstance(subspeciesName, sec1);
         setUuid(subspecies, "b2c86698-500e-4efb-b9ae-6bb6e701d4bc");
@@ -383,7 +417,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         TaxonName unpublishedName = parser.parseReferencedName("Genus species subsp. unpublish Mill., The book of botany 3: 22. 1804",
                 NomenclaturalCode.ICNAFP, Rank.SUBSPECIES());
         setUuid(unpublishedName,"ebcf6bb6-6da8-46fe-9c22-127aa4cb9549");
-        setUuid((Reference)unpublishedName.getNomenclaturalReference(), "51725dbd-e4a1-43ea-8363-fe8eb1152a49");
+        setUuid(unpublishedName.getNomenclaturalReference(), "51725dbd-e4a1-43ea-8363-fe8eb1152a49");
 
         Taxon unpublishedSpecies = Taxon.NewInstance(unpublishedName, sec1);
         unpublishedSpecies.setPublish(false);
@@ -397,28 +431,36 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 
         TaxonDescription description = TaxonDescription.NewInstance(species);
 
+        //Distribution
         Distribution distribution = Distribution.NewInstance(NamedArea.AFRICA(), PresenceAbsenceTerm.PRESENT());
         setUuid(distribution,"674e9e27-9102-4166-8626-8cb871a9a89b");
         description.addElement(distribution);
+
+        //TextData
+        TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
+        textData.putText(Language.DEFAULT(), "My Description");
+        setUuid(textData,"16a3f63b-c554-4479-ad36-ca9c677fbb19");
+        description.addElement(textData);
+
+        //CategoricalData
+        CategoricalData catData = CategoricalData.NewInstance(state1, Feature.ECOLOGY());
+        setUuid(catData,"84b8bfd3-d982-4b5d-8d0a-fe5d80183ec4");
+        description.addElement(catData);
+
+        //QuantitativeData
+        QuantitativeData quantData = QuantitativeData.NewMinMaxInstance(Feature.CHROMOSOME_NUMBER(), 0.1f, 1.3f);
+        quantData.setSampleSize(2f, null);
+        setUuid(quantData,"011264eb-d3d4-44be-86f3-e6f69a21f36b");
+        description.addElement(quantData);
+
         commitAndStartNewTransaction(null);
 
-
     }
-
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        //      try {
-        //      writeDbUnitDataSetFile(new String[] {
-        //              "Classification",
-        //      }, "testAttachDnaSampleToDerivedUnit");
-        //  } catch (FileNotFoundException e) {
-        //      e.printStackTrace();
-        //  }
-    }
-
 
     private void setUuid(CdmBase cdmBase, String uuidStr) {
         cdmBase.setUuid(UUID.fromString(uuidStr));
     }
 
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 }

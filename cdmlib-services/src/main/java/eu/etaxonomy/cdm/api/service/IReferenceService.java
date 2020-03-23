@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -147,5 +148,11 @@ public interface IReferenceService extends IIdentifiableEntityService<Reference>
      * @return
      */
     List<UuidAndTitleCache<Reference>> getUuidAndTitleCacheForUUIDS(Set<UUID> uuids, ReferenceType refType);
+
+    /**
+     * @param config
+     * @return
+     */
+    List<Reference> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<Reference> config);
 
 }

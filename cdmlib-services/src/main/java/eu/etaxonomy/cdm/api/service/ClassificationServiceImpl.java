@@ -506,7 +506,7 @@ public class ClassificationServiceImpl
                     for (DescriptionElementBase descriptionElement: taxonDescription.getElements()){
                         for(Media media : descriptionElement.getMedia()){
                             //find the best matching representation
-                            mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes));
+                            mediaRepresentations.add(MediaUtils.findBestMatchingRepresentation(media,null, size, height, widthOrDuration, mimeTypes, MediaUtils.MissingValueStrategy.MAX));
                         }
                     }
                 }
@@ -811,7 +811,6 @@ public class ClassificationServiceImpl
 
         //get all marked tree indexes
         Set<TreeIndex> markedTreeIndexes = dao.getMarkedTreeIndexes(markerType, flag);
-
 
         Map<TreeIndex, TreeIndex> groupedMap = TreeIndex.group(markedTreeIndexes, taxonIdTreeIndexMap.values());
         Set<TreeIndex> notNullGroups = new HashSet<>(groupedMap.values());

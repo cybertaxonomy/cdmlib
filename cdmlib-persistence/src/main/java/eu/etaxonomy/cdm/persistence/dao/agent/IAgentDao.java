@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.agent;
 
 import java.util.List;
 
+import org.hibernate.criterion.Criterion;
+
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -19,6 +21,8 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 
@@ -113,4 +117,19 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
      * @return
      */
     List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern);
+
+    /**
+     * @param clazz
+     * @param queryString
+     * @param matchmode
+     * @param criterion
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    List<AgentBase> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode,
+            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
 }

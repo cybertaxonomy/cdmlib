@@ -115,7 +115,9 @@ public class TimePeriodParser {
 		}else if (isEnglishParsable(periodString)){
 		    TimePeriod enDate = parseEnglishDate(periodString, null);
 		    result.setStart(enDate.getStart());
-		}else{
+		}else if (periodString.contains("T00:00:00")){
+		    result = parseString(timePeriod, periodString.replace("T00:00:00", ""));
+	    }else{
 			result.setFreeText(periodString);
 		}
 		return result;

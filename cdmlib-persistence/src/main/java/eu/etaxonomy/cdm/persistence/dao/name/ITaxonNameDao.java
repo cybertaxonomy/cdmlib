@@ -281,9 +281,22 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 	 * @param propertyPaths TODO
 	 * @return
 	 */
-	public List<TaxonName> findByTitle(String queryString,
+	public List<TaxonName> findByFullTitle(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
 			List<Criterion> criteria, List<String> propertyPaths);
+
+	/**
+     * @param queryString
+     * @param matchmode
+     * @param pageSize
+     * @param pageNumber
+     * @param criteria
+     * @param propertyPaths TODO
+     * @return
+     */
+    public List<TaxonName> findByTitle(String queryString,
+            MatchMode matchmode, Integer pageSize, Integer pageNumber,
+            List<Criterion> criteria, List<String> propertyPaths);
 
 	/**
 	 * Returns a taxon name corresponding to the given uuid
@@ -400,5 +413,17 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
 
     public List<HybridRelationship> getHybridRelationships(Set<HybridRelationshipType> types, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * @param clazz
+     * @param queryString
+     * @param matchmode
+     * @param criteria
+     * @return
+     */
+    public long countByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
+            List<Criterion> criteria);
+
+
 
 }

@@ -150,6 +150,13 @@ public class DescriptiveDataSetService
     }
 
     @Override
+    public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid){
+        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
+        return loadSpecimens(dataSet);
+    }
+
+
+    @Override
     public List<UUID> findFilteredTaxonNodes(DescriptiveDataSet descriptiveDataSet){
         TaxonNodeFilter filter = TaxonNodeFilter.NewRankInstance(descriptiveDataSet.getMinRank(), descriptiveDataSet.getMaxRank());
         descriptiveDataSet.getGeoFilter().forEach(area -> filter.orArea(area.getUuid()));

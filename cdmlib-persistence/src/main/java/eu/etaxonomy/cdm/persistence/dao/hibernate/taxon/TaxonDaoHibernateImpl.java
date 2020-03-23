@@ -1380,7 +1380,7 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNamesNew(List<UUID> sourceRefUuids, List<String> propertyPaths){
+    public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNames(List<UUID> sourceRefUuids, List<String> propertyPaths){
         Set<String> nameCacheCandidates = new HashSet<>();
         try {
             for (int i = 0; i<sourceRefUuids.size()-1;i++){
@@ -1393,13 +1393,14 @@ public class TaxonDaoHibernateImpl
 
                     Query query = getSession().createQuery(
                             " SELECT DISTINCT n1.nameCache "
-                          + " FROM TaxonName n1 JOIN n1.sources s1 JOIN s1.citation ref1 "
-                          +         " , TaxonName n2 JOIN n2.sources s2 JOIN s2.citation ref2 "
+                          + " FROM TaxonBase t1 JOIN t1.name n1 JOIN t1.sources s1 JOIN s1.citation ref1 "
+                          +         " , TaxonBase t2 JOIN t2.name n2 JOIN t2.sources s2 JOIN s2.citation ref2 "
                           + " WHERE  ref1.uuid = (:sourceUuid1) "
                           + "       AND n1.id <> n2.id "
                           + "       AND ref2.uuid IN (:sourceUuid2)"
                           + "       AND ref1.uuid <> ref2.uuid "
                           + "       AND n1.nameCache = n2.nameCache) "
+                          + "       AND t1.publish = 1 AND t2.publish = 1) "
                           + " ORDER BY n1.nameCache ");
                     query.setParameter("sourceUuid1", sourceUuid1);
                     query.setParameter("sourceUuid2", sourceUuid2);
@@ -1413,8 +1414,8 @@ public class TaxonDaoHibernateImpl
             Map<UUID, List<TaxonName>> duplicates = new HashMap<>();
             for (UUID sourceUuid : sourceRefUuids){
                 Query query=getSession().createQuery("SELECT n "
-                        + " FROM TaxonName n JOIN n.sources s JOIN s.citation ref "
-                        + " WHERE ref.uuid = :sourceUuid AND n.nameCache IN (:nameCacheCandidates) "
+                        + " FROM TaxonBase t JOIN t.name n JOIN t.sources s JOIN s.citation ref "
+                        + " WHERE ref.uuid = :sourceUuid AND n.nameCache IN (:nameCacheCandidates) AND t.publish = 1 "
                         + " ORDER BY n.nameCache");
                 query.setParameter("sourceUuid", sourceUuid);
                 query.setParameterList("nameCacheCandidates", nameCacheCandidates);
@@ -1422,7 +1423,7 @@ public class TaxonDaoHibernateImpl
                 List<TaxonName> sourceDuplicates = query.list();
                 defaultBeanInitializer.initializeAll(sourceDuplicates, propertyPaths);
 
-                 duplicates.put(sourceUuid, sourceDuplicates);
+                duplicates.put(sourceUuid, sourceDuplicates);
             }
 
             List<String> nameCacheCandidateList = new ArrayList<>(nameCacheCandidates);

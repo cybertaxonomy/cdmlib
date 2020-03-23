@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.format.occurrences;
 
+import eu.etaxonomy.cdm.format.IdentifiableEntityFormatter;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**

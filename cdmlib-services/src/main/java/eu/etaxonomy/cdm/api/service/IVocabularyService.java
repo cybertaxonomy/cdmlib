@@ -187,4 +187,6 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
      */
     public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuid);
 
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypeAndPattern(String pattern, TermType termType);
+
 }

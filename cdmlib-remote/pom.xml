@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.12.0</version>
+    <version>5.13.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -199,6 +199,11 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
+    </dependency>
+    <!-- iif -->
+    <dependency>
+      <groupId>de.digitalcollections.iiif</groupId>
+      <artifactId>iiif-apis</artifactId>
     </dependency>
   </dependencies>
   <build>

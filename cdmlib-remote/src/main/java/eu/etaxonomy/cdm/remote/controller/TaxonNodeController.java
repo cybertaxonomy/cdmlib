@@ -80,7 +80,11 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
             ) throws IOException {
 
         logger.info("doGet() " + requestPathAndQuery(request));
-        return service.dto(uuid);
+        TaxonNodeDto dto = service.dto(uuid);
+        if(dto == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+        return dto;
     }
 
     /**

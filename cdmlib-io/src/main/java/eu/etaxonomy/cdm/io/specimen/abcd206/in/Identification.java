@@ -20,12 +20,13 @@ public class Identification {
     private final String preferred;
     private final String code;
     private final String date;
+    private final String modifier;
 
-    public Identification(String taxonName, String preferred, String identifier, String date) {
-        this(taxonName, preferred, null, identifier, date);
+    public Identification(String taxonName, String preferred, String identifier, String date, String modifierStr) {
+        this(taxonName, preferred, null, identifier, date, modifierStr);
     }
 
-    public Identification(String scientificName, String preferred, String code, String identifier, String date) {
+    public Identification(String scientificName, String preferred, String code, String identifier, String date, String modifierStr) {
         super();
         this.scientificName = scientificName.trim();
         if (preferred != null){
@@ -39,6 +40,7 @@ public class Identification {
         } else{
             this.identifier = null;
         }
+        this.modifier = modifierStr;
 
         this.date = date;
     }
@@ -84,6 +86,10 @@ public class Identification {
      */
     public String getDate() {
         return date;
+    }
+
+    public String getModifier() {
+        return modifier;
     }
 
 }

@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -124,49 +123,25 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
             SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
 
-            // init import reference
-            // List<Reference> references =
-            // getReferenceService().list(Reference.class, null, null, null,
-            // null);
-            // List<Reference> references = new ArrayList<Reference>();
-
-            // if (state.getConfig().isInteractWithUser()){
-            // Map<String,Reference> refMap = new HashMap<String, Reference>();
-            // for (Reference reference : references) {
-            // if (! StringUtils.isBlank(reference.getTitleCache())) {
-            // refMap.put(reference.getTitleCache(),reference);
-            // }
-            // }
-            // state.setRef(sui.askForReference(refMap));
-            //
-            // if (state.getRef() == null){
-            // String cla = sui.createNewReference();
-            // if (refMap.get(cla)!= null) {
-            // state.setRef(refMap.get(cla));
-            // } else {
-            // state.setRef(ReferenceFactory.newGeneric());
-            // state.getRef().setTitle(cla);
-            // }
-            // }
-            // else{
-            // state.setRef(getReferenceService().find(state.getRef().getUuid()));
-            // }
-            // }else{
             if (state.getRef() == null) {
                 String name = NB(state.getConfig().getSourceReferenceTitle());
                 for (Reference reference : referenceStore.getAllValues()) {
                     if (!StringUtils.isBlank(reference.getTitleCache())) {
                         if (reference.getTitleCache().equalsIgnoreCase(name)) {
                             state.setRef(reference);
+
                         }
                     }
                 }
                 if (state.getRef() == null) {
                     if (state.getConfig().getSourceReference() != null) {
                         state.setRef(state.getConfig().getSourceReference());
+                        state.addImportReference(state.getRef());
+
                     } else {
                         state.setRef(ReferenceFactory.newGeneric());
                         state.getRef().setUri(sourceUri);
+
                         if (sourceUri != null) {
                             state.getRef().setTitle(StringUtils.substringAfter(sourceUri.toString(), "dsa="));
                         }
@@ -174,6 +149,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         if (!StringUtils.isBlank(state.getConfig().getSourceReferenceTitle())) {
                             state.getRef().setTitle(state.getConfig().getSourceReferenceTitle());
                         }
+                        state.addImportReference(state.getRef());
                     }
 
                 }
@@ -288,7 +264,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
                     // import unit + field unit data
                     state.setAssociatedUnitIds(state.getDataHolder().getAssociatedUnitIds());
+
                     this.handleSingleUnit(state, item, true);
+                    state.setLastFieldUnit(null);
 
                 }
                 commitTransaction(state.getTx());
@@ -363,7 +341,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         UnitAssociationParser unitParser = new UnitAssociationParser(state.getPrefix(), state.getReport(),
                 state.getCdmRepository());
         UnitAssociationWrapper unitAssociationWrapper = null;
-        for (URI accessPoint : state.getActualAccesPoint()) {
+        for (URI accessPoint : state.getAllAccesPoint()) {
             unitAssociationWrapper = unitParser.parseSiblings(unitId, accessPoint);
             if (unitAssociationWrapper != null && unitAssociationWrapper.getAssociatedUnits() != null) {
                 break;
@@ -421,7 +399,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                     associatedUnit, DerivationEventType.ACCESSIONING());
 
                             updatedDerivationEvent.setDescription(associationType);
-                            if (associatedFieldUnit != null && associatedFieldUnit != currentFieldUnit) {
+                            if (associatedFieldUnit != null && associatedFieldUnit != currentFieldUnit && currentFieldUnit != null) {
                                 // associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
                                 // save(associatedFieldUnit, state);
                                 // if
@@ -501,17 +479,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             } else {
                 System.err.println("dataholder does not contain unit id");
             }
-            // TODO: implement overwrite/merge specimen
-            // else if(state.getConfig().isOverwriteExistingSpecimens()){
-            // Pager<SpecimenOrObservationBase> existingSpecimens =
-            // cdmAppController.getOccurrenceService().findByTitle(config);
-            // if(!existingSpecimens.getRecords().isEmpty()){
-            // derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit);
-            // derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
-            // fieldUnit = derivedUnitFacade.getFieldUnit(true);
-            // }
-            // }
-            // import new specimen
+
 
             // import DNA unit
             if (state.getDataHolder().getKindOfUnit() != null
@@ -519,7 +487,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 AbcdDnaParser dnaParser = new AbcdDnaParser(state.getPrefix(), state.getReport(),
                         state.getCdmRepository());
                 DnaSample dnaSample = dnaParser.parse(item, state);
-                dnaSample.addSource(OriginalSourceType.Import, dnaSample.getAccessionNumber(), "", state.getRef(), "");
+                //dnaSample.addSource(OriginalSourceType.Import, dnaSample.getAccessionNumber(), "", state.getImportReference(state.getActualAccessPoint()), "");
                 save(dnaSample, state);
                 // set dna as derived unit to avoid creating an extra specimen
                 // for this dna sample (instead just the field unit will be
@@ -538,8 +506,21 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
              */
 
             // look for existing fieldUnit
+            FieldUnit fieldUnit = null;
+            if (StringUtils.isNotBlank(state.getDataHolder().getFieldNumber())){
+                fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+                if (fieldUnit != null){
+                    state.setLastFieldUnit(fieldUnit);
+                }
+            }else{
+                fieldUnit = state.getLastFieldUnit();
 
-            FieldUnit fieldUnit = state.getFieldUnit(state.getDataHolder().getFieldNumber());
+            }
+            if (fieldUnit == null){
+                fieldUnit = FieldUnit.NewInstance();
+                fieldUnit.setFieldNumber(state.getDataHolder().getFieldNumber());
+                state.setLastFieldUnit(fieldUnit);
+            }
 
             // gathering event
             UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(),
@@ -611,62 +592,76 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
             if (fieldUnit != null) {
                 derivedUnitFacade.setFieldUnit(fieldUnit);
-            }
-            if (derivedUnitFacade.getGatheringPeriod() == null && gatheringEvent.getTimeperiod() != null){
-                derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
-            }
-            if (derivedUnitFacade.getLocality() == null && gatheringEvent.getLocality() != null){
-                derivedUnitFacade.setLocality(gatheringEvent.getLocality());
-            }
-            if (derivedUnitFacade.getExactLocation() == null && gatheringEvent.getExactLocation() != null){
-                derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
+                if (derivedUnitFacade.getGatheringPeriod() == null && gatheringEvent.getTimeperiod() != null){
+                    derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
+                }
+                if (derivedUnitFacade.getLocality() == null && gatheringEvent.getLocality() != null){
+                    derivedUnitFacade.setLocality(gatheringEvent.getLocality());
+                }
+                if (derivedUnitFacade.getExactLocation() == null && gatheringEvent.getExactLocation() != null){
+                    derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
+                }
+
+                if (derivedUnitFacade.getCollector() == null && gatheringEvent.getCollector() != null){
+                    derivedUnitFacade.setCollector(gatheringEvent.getCollector());
+                }
+                if (derivedUnitFacade.getCountry() == null && areaCountry != null){
+                    derivedUnitFacade.setCountry((NamedArea) areaCountry);
+                }
+                if (StringUtils.isBlank(derivedUnitFacade.getAbsoluteElevationText()) && StringUtils.isNotBlank(gatheringEvent.getAbsoluteElevationText())){
+                    derivedUnitFacade.setAbsoluteElevationText(gatheringEvent.getAbsoluteElevationText());
+                }
+                if (derivedUnitFacade.getAbsoluteElevation() == null && gatheringEvent.getAbsoluteElevation() != null){
+                    derivedUnitFacade.setAbsoluteElevation(gatheringEvent.getAbsoluteElevation());
+                }
+                if (derivedUnitFacade.getAbsoluteElevationMaximum() == null && gatheringEvent.getAbsoluteElevationMax() != null){
+                    derivedUnitFacade.setAbsoluteElevationMax(gatheringEvent.getAbsoluteElevationMax());
+                }
+                if (StringUtils.isBlank(derivedUnitFacade.getDistanceToGroundText()) && StringUtils.isNotBlank(gatheringEvent.getDistanceToGroundText())){
+                    derivedUnitFacade.setDistanceToGroundText(gatheringEvent.getDistanceToGroundText());
+                }
+                if (derivedUnitFacade.getDistanceToGroundMax() == null && gatheringEvent.getDistanceToGroundMax() != null){
+                    derivedUnitFacade.setDistanceToGroundMax(gatheringEvent.getDistanceToGroundMax());
+                }
+                if (derivedUnitFacade.getDistanceToGround() == null && gatheringEvent.getDistanceToGround() != null){
+                    derivedUnitFacade.setDistanceToGround(gatheringEvent.getDistanceToGround());
+                }
+                if (StringUtils.isBlank(derivedUnitFacade.getDistanceToWaterSurfaceText()) && StringUtils.isNotBlank(gatheringEvent.getDistanceToWaterSurfaceText())){
+                    derivedUnitFacade.setDistanceToWaterSurfaceText(gatheringEvent.getDistanceToWaterSurfaceText());
+                }
+                if (derivedUnitFacade.getDistanceToWaterSurfaceMax() == null && gatheringEvent.getDistanceToWaterSurfaceMax() != null){
+                    derivedUnitFacade.setDistanceToWaterSurfaceMax(gatheringEvent.getDistanceToWaterSurfaceMax());
+                }
+                if (derivedUnitFacade.getDistanceToWaterSurface() == null && gatheringEvent.getDistanceToWaterSurface() != null){
+                    derivedUnitFacade.setDistanceToWaterSurface(gatheringEvent.getDistanceToWaterSurface());
+                }
+                if (derivedUnitFacade.getGatheringPeriod() == null && gatheringEvent.getTimeperiod() != null){
+                    derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
+                }
+                if (derivedUnitFacade.getCollectingMethod() == null && gatheringEvent.getCollectingMethod() != null){
+                    derivedUnitFacade.setCollectingMethod(gatheringEvent.getCollectingMethod());
+                }
+                for (DefinedTermBase<?> area : unitsGatheringArea.getAreas()) {
+                    derivedUnitFacade.addCollectingArea((NamedArea) area);
+                }
+             // add unitNotes
+                if (state.getDataHolder().getUnitNotes() != null) {
+                    derivedUnitFacade
+                            .addAnnotation(Annotation.NewDefaultLanguageInstance(NB(state.getDataHolder().getUnitNotes())));
+                }
+                if (gatheringEvent.getAnnotations() != null) {
+                    for (Annotation annotation : gatheringEvent.getAnnotations()) {
+                        derivedUnitFacade.getGatheringEvent(true).addAnnotation(annotation);
+                    }
+                }
+
+            }else{
+//TODO??
             }
 
-            if (derivedUnitFacade.getCollector() == null && gatheringEvent.getCollector() != null){
-                derivedUnitFacade.setCollector(gatheringEvent.getCollector());
-            }
-            if (derivedUnitFacade.getCountry() == null && areaCountry != null){
-                derivedUnitFacade.setCountry((NamedArea) areaCountry);
-            }
-            if (StringUtils.isBlank(derivedUnitFacade.getAbsoluteElevationText()) && StringUtils.isNotBlank(gatheringEvent.getAbsoluteElevationText())){
-                derivedUnitFacade.setAbsoluteElevationText(gatheringEvent.getAbsoluteElevationText());
-            }
-            if (derivedUnitFacade.getAbsoluteElevation() == null && gatheringEvent.getAbsoluteElevation() != null){
-                derivedUnitFacade.setAbsoluteElevation(gatheringEvent.getAbsoluteElevation());
-            }
-            if (derivedUnitFacade.getAbsoluteElevationMaximum() == null && gatheringEvent.getAbsoluteElevationMax() != null){
-                derivedUnitFacade.setAbsoluteElevationMax(gatheringEvent.getAbsoluteElevationMax());
-            }
-            if (StringUtils.isBlank(derivedUnitFacade.getDistanceToGroundText()) && StringUtils.isNotBlank(gatheringEvent.getDistanceToGroundText())){
-                derivedUnitFacade.setDistanceToGroundText(gatheringEvent.getDistanceToGroundText());
-            }
-            if (derivedUnitFacade.getDistanceToGroundMax() == null && gatheringEvent.getDistanceToGroundMax() != null){
-                derivedUnitFacade.setDistanceToGroundMax(gatheringEvent.getDistanceToGroundMax());
-            }
-            if (derivedUnitFacade.getDistanceToGround() == null && gatheringEvent.getDistanceToGround() != null){
-                derivedUnitFacade.setDistanceToGround(gatheringEvent.getDistanceToGround());
-            }
-            if (StringUtils.isBlank(derivedUnitFacade.getDistanceToWaterSurfaceText()) && StringUtils.isNotBlank(gatheringEvent.getDistanceToWaterSurfaceText())){
-                derivedUnitFacade.setDistanceToWaterSurfaceText(gatheringEvent.getDistanceToWaterSurfaceText());
-            }
-            if (derivedUnitFacade.getDistanceToWaterSurfaceMax() == null && gatheringEvent.getDistanceToWaterSurfaceMax() != null){
-                derivedUnitFacade.setDistanceToWaterSurfaceMax(gatheringEvent.getDistanceToWaterSurfaceMax());
-            }
-            if (derivedUnitFacade.getDistanceToWaterSurface() == null && gatheringEvent.getDistanceToWaterSurface() != null){
-                derivedUnitFacade.setDistanceToWaterSurface(gatheringEvent.getDistanceToWaterSurface());
-            }
-            if (derivedUnitFacade.getGatheringPeriod() == null && gatheringEvent.getTimeperiod() != null){
-                derivedUnitFacade.setGatheringPeriod(gatheringEvent.getTimeperiod());
-            }
-            if (derivedUnitFacade.getCollectingMethod() == null && gatheringEvent.getCollectingMethod() != null){
-                derivedUnitFacade.setCollectingMethod(gatheringEvent.getCollectingMethod());
-            }
 
 
 
-            for (DefinedTermBase<?> area : unitsGatheringArea.getAreas()) {
-                derivedUnitFacade.addCollectingArea((NamedArea) area);
-            }
             // derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
             // TODO exsiccatum
 
@@ -674,21 +669,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             String fieldNumber = null;
             if (derivedUnitFacade.getFieldUnit(false) != null) {
                 fieldNumber = derivedUnitFacade.getFieldUnit(false).getFieldNumber();
-            }
-
-            derivedUnitFacade.setFieldNumber(NB(state.getDataHolder().getFieldNumber()));
-            save(unitsGatheringEvent.getLocality(), state);
-
-            // add unitNotes
-            if (state.getDataHolder().getUnitNotes() != null) {
-                derivedUnitFacade
-                        .addAnnotation(Annotation.NewDefaultLanguageInstance(NB(state.getDataHolder().getUnitNotes())));
-            }
-            if (gatheringEvent.getAnnotations() != null) {
-                for (Annotation annotation : gatheringEvent.getAnnotations()) {
-                    derivedUnitFacade.getGatheringEvent(true).addAnnotation(annotation);
+                if (fieldNumber == null){
+                    derivedUnitFacade.setFieldNumber(NB(state.getDataHolder().getFieldNumber()));
                 }
             }
+
+            save(unitsGatheringEvent.getLocality(), state);
+
+
+
 
             // //add Multimedia URLs
             if (state.getDataHolder().getMultimediaObjects().size() != -1) {
@@ -742,17 +731,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
             }
 
-            // /*
-            // * merge AND STORE DATA
-            // */
-            // getTermService().saveOrUpdate(areaCountry);// TODO save area
-            // sooner
-            //
-            // for (NamedArea area : otherAreas) {
-            // getTermService().saveOrUpdate(area);// merge it sooner (foreach
-            // area)
-            // }
-            // save(derivedUnitFacade.getFieldUnit(false), state);
+
             if (derivedUnitFacade.getFieldUnit(false) != null) {
                 state.setFieldUnit(derivedUnitFacade.getFieldUnit(false));
             }
@@ -765,63 +744,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             Map<String, OriginalSourceBase<?>> sourceMap = new HashMap<>();
 
             state.getDataHolder().setDocSources(new ArrayList<>());
-            for (String[] fullReference : state.getDataHolder().getReferenceList()) {
-                String strReference = fullReference[0];
-                String citationDetail = fullReference[1];
-                String citationURL = fullReference[2];
 
-                if (!citationURL.isEmpty()) {
-                    citationDetail += ", " + citationURL;
-                }
 
-                Reference reference;
-                if (strReference.equals(state.getRef().getTitleCache())) {
-                    reference = state.getRef();
-                } else {
-                    reference = ReferenceFactory.newGeneric();
-                    reference.setTitle(strReference);
-                }
 
-                save(reference, state);
-                IdentifiableSource sour = getIdentifiableSource(reference, citationDetail);
-                sour.getCitation().setUri(state.getActualAccessPoint());
-                sour.setType(OriginalSourceType.PrimaryTaxonomicSource);
-
-                try {
-                    if (sour.getCitation() != null) {
-                        if (StringUtils.isNotBlank(sour.getCitationMicroReference())) {
-                            state.getDataHolder().getDocSources()
-                                    .add(sour.getCitation().getTitleCache() + "---" + sour.getCitationMicroReference());
-                        } else {
-                            state.getDataHolder().getDocSources().add(sour.getCitation().getTitleCache());
-                        }
-                    }
-                } catch (Exception e) {
-                    logger.warn("oups");
-                }
-                derivedUnitFacade.addSource(sour);
-
-            }
-            // List<IdentifiableSource> issTmp = new
-            // ArrayList<IdentifiableSource>();//getCommonService().list(IdentifiableSource.class,
-            // null, null, null, null);
-            // List<DescriptionElementSource> issTmp2 = new
-            // ArrayList<DescriptionElementSource>();//getCommonService().list(DescriptionElementSource.class,
-            // null, null, null, null);
-            //
-            // Set<OriginalSourceBase> osbSet = new
-            // HashSet<OriginalSourceBase>();
-            // if(issTmp2!=null) {
-            // osbSet.addAll(issTmp2);
-            // }
-            // if(issTmp!=null) {
-            // osbSet.addAll(issTmp);
-            // }
-
-            IdentifiableSource sour = getIdentifiableSource(state.getRef(), null);
+            IdentifiableSource sour = getIdentifiableSource(state.getImportReference(state.getActualAccessPoint()), null);
             String idInSource = derivedUnitFacade.getAccessionNumber() != null ? derivedUnitFacade.getAccessionNumber()
                     : derivedUnitFacade.getCatalogNumber() != null ? derivedUnitFacade.getCatalogNumber() : derivedUnitFacade.getBarcode();
-            sour.getCitation().setUri(state.getActualAccessPoint());
+            //sour.getCitation().setUri(state.getActualAccessPoint());
             sour.setIdInSource(idInSource);
             try {
                 if (sour.getCitation() != null) {
@@ -837,47 +766,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
 
             derivedUnitFacade.addSource(sour);
-            // sourceMap.put(sour.getCitation().getTitleCache()+
-            // "---"+sour.getCitationMicroReference(),sour);
 
-            // if( state.getConfig().isInteractWithUser()){
-            // List<OriginalSourceBase<?>>sources=null;
-            // if(!state.isDerivedUnitSourcesSet()){
-            // sources= sui.askForSource(sourceMap, "the unit
-            // itself","",getReferenceService(),
-            // state.getDataHolder().getDocSources());
-            // state.setDerivedUnitSources(sources);
-            // state.setDerivedUnitSourcesSet(true);
-            // }
-            // else{
-            // sources=state.getDerivedUnitSources();
-            // }
-            //// for (OriginalSourceBase<?> source:sources){
-            //// if(source.isInstanceOf(IdentifiableSource.class)){
-            //// if(sourceNotLinkedToElement(derivedUnitFacade,source)) {
-            //// derivedUnitFacade.addSource((IdentifiableSource)source.clone());
-            //// }
-            //// }else{
-            //// if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
-            //// derivedUnitFacade.addSource(OriginalSourceType.Import,source.getCitation(),source.getCitationMicroReference(),
-            // ioName);
-            //// }
-            //// }
-            //// }
-            // }else{
-            // for (OriginalSourceBase<?> sr : sourceMap.values()){
-            // if(sr.isInstanceOf(IdentifiableSource.class)){
-            // if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-            // derivedUnitFacade.addSource((IdentifiableSource)sr.clone());
-            // }
-            // }else{
-            // if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
-            // derivedUnitFacade.addSource(OriginalSourceType.Import,sr.getCitation(),sr.getCitationMicroReference(),
-            // ioName);
-            // }
-            // }
-            // }
-            // }
 
             save(state.getDerivedUnitBase(), state);
 
@@ -1159,6 +1048,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                             DeleteResult result = state.getCdmRepository().getOccurrenceService()
                                                     .delete(currentFieldUnit, deleteConfig);
 
+
                                         } else {
 
                                             logger.debug("there are still derivation events in fieldUnit "
@@ -1166,7 +1056,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                         }
 
                                     }
-
+                                    state.setLastFieldUnit(associatedFieldUnit);
                                     save(associatedUnit, state);
                                 }
                             }
@@ -1244,7 +1134,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                     associatedUnit, DerivationEventType.ACCESSIONING());
 
                             updatedDerivationEvent.setDescription(associationType);
-                            if (associatedFieldUnit != null && associatedFieldUnit != currentFieldUnit) {
+                            if (associatedFieldUnit != null && !associatedFieldUnit.equals(currentFieldUnit) && currentFieldUnit != null) {
                                 associatedFieldUnit.removeDerivationEvent(updatedDerivationEvent);
                                 if ((associatedFieldUnit.getGatheringEvent() != null && associatedFieldUnit.getGatheringEvent().getActor() != null) && (currentFieldUnit.getGatheringEvent() != null && currentFieldUnit.getGatheringEvent().getActor() == null)){
                                     currentFieldUnit.getGatheringEvent().setActor(associatedFieldUnit.getGatheringEvent().getActor());
@@ -1265,6 +1155,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                 if (updatedDerivationEvent.getOriginals().isEmpty()) {
                                     // state.getCdmRepository().getOccurrenceService().deleteDerivationEvent(updatedDerivationEvent);
                                 }
+                            }else{
+                                state.setLastFieldUnit(associatedFieldUnit);
                             }
                             state.getReport().addDerivate(associatedUnit, currentUnit, state.getConfig());
                         }
@@ -1299,35 +1191,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         return true;
     }
 
-    // /**
-    // * @param reference
-    // * @param citationDetail
-    // * @return
-    // */
-    // private DescriptionElementSource getDescriptionSource(Reference
-    // reference, String citationDetail) {
-    //
-    // List<OriginalSourceBase> issTmp2 =
-    // getCommonService().list(DescriptionElementSource.class, null, null, null,
-    // null);
-    //
-    // try {
-    // for (OriginalSourceBase<?> osb:issTmp2){
-    // if (osb.getCitation().equals(reference) &&
-    // osb.getCitationMicroReference().equalsIgnoreCase(citationDetail)) {
-    // return (DescriptionElementSource) osb.clone();
-    // }
-    // }
-    // } catch (CloneNotSupportedException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    //
-    // DescriptionElementSource sour =
-    // DescriptionElementSource.NewInstance(OriginalSourceType.Import,null,null,
-    // reference,citationDetail);
-    // return sour;
-    // }
+
 
     /**
      * setCollectionData : store the collection object into the
@@ -1450,40 +1314,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         abcdFieldGetter.getGatheringPeople(root);
     }
 
-    // private void compareABCDtoCDM(URI urlFileName, List<String> knownElts,
-    // Abcd206XMLFieldGetter abcdFieldGetter) {
-    // try {
-    // DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    // DocumentBuilder constructeur = factory.newDocumentBuilder();
-    // URL url = urlFileName.toURL();
-    // Object o = url.getContent();
-    // InputStream is = (InputStream) o;
-    // Document document = constructeur.parse(is);
-    // Element root = document.getDocumentElement();
-    // abcdFieldGetter.traverse(root);
-    // }
-    // catch (ParserConfigurationException e){
-    // e.printStackTrace();
-    // }
-    // catch (SAXException e) {
-    // e.printStackTrace();
-    // }
-    // catch (IOException e) {
-    // e.printStackTrace();
-    // }
-    // Set<String> elts = state.getDataHolder().allABCDelements.keySet();
-    // Iterator<String> it = elts.iterator();
-    // String elt;
-    // while (it.hasNext()) {
-    // elt = it.next();
-    // if (knownElts.indexOf(elt) == -1) {
-    // if(DEBUG) {
-    // logger.info("Unmerged ABCD element: " + elt + " - "+
-    // state.getDataHolder().allABCDelements.get(elt));
-    // }
-    // }
-    // }
-    // }
 
     /**
      * Load the list of names from the ABCD file and save them
@@ -1709,5 +1539,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         return unit;
     }
+
+
 
 }

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.criterion.Criterion;
+
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -120,6 +122,21 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
      * @return
      */
     List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType);
+
+    /**
+     * @param clazz
+     * @param queryString
+     * @param matchmode
+     * @param criterion
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode,
+            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
 
 
 }

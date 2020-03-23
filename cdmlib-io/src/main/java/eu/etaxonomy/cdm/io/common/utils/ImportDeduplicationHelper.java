@@ -114,10 +114,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
          }
      }
 
-
-    /**
-     *
-     */
     public ImportDeduplicationHelper() {
         this(null);
     }
@@ -140,12 +136,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         //TODO copyright ?
     }
 
-
-    /**
-     * @param oldMap
-     * @param service
-     * @return
-     */
     private <T extends ICdmBase> Map<String, T> refreshMap(Map<String, T> oldMap,
             IService<T> service, ImportResult importResult) {
         Map<String, T> newMap = new HashMap<>();
@@ -480,11 +470,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-
-    /**
-     * @param state
-     *
-     */
     @SuppressWarnings("rawtypes")
     private void initAgentMap(STATE state) {
         if (!agentMapIsInitialized && repository != null){
@@ -497,10 +482,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    /**
-     * @param state
-     * @param author
-     */
     private void handleTeam(STATE state, Team team) {
         List<Person> members = team.getTeamMembers();
         for (int i =0; i< members.size(); i++){
@@ -514,12 +495,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-
-    /**
-     * @param state
-     * @param collection
-     * @return
-     */
     public Collection getExistingCollection(STATE state, Collection collection) {
         if (collection == null){
             return null;
@@ -538,9 +513,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    /**
-     * @param state
-     */
     private void initCollectionMap(STATE state) {
         if (!collectionMapIsInitialized && repository != null){
             List<String> propertyPaths = Arrays.asList("");
@@ -552,10 +524,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    /**
-    * @param state
-    * @param nomRef
-    */
    public Reference getExistingReference(STATE state, Reference ref) {
        if (ref == null){
            return null;
@@ -579,9 +547,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   /**
-    * @param state
-    */
    private void initRerenceMap(STATE state) {
        if (!referenceMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
@@ -593,10 +558,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   /**
-    * @param state
-    * @param name
-    */
    public <NAME extends INonViralName> NAME getExistingName(STATE state, NAME name) {
        if (name == null){
            return null;
@@ -623,9 +584,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-   /**
-    * @param state
-    */
    private void initNameMap(STATE state) {
        if (!nameMapIsInitialized && repository != null){
            List<String> propertyPaths = Arrays.asList("");
@@ -636,8 +594,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
           nameMapIsInitialized = true;
        }
    }
-
-
 
    public Rights getExistingCopyright(STATE state,
            Rights right) {
@@ -658,9 +614,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
        }
    }
 
-    /**
-     * @param state
-     */
     private void initCopyrightMap(STATE state) {
         if (!copyrightMapIsInitialized && repository != null){
             List<String> propertyPaths = Arrays.asList("");
@@ -675,10 +628,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
     }
 
-    /**
-     * @param makeCopyrightKey
-     * @param right
-     */
     private void putCopyright(String key, Rights right) {
         Set<Rights> rights = copyrightMap.get(key);
         if (rights == null){
@@ -689,10 +638,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
     }
 
-    /**
-     * @param right
-     * @return
-     */
     private String makeCopyrightKey(Rights right) {
         if (right.getAgent() != null){
             return right.getAgent().getTitleCache();
@@ -703,7 +648,4 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             return right.getUuid().toString();
         }
     }
-
-
-
 }

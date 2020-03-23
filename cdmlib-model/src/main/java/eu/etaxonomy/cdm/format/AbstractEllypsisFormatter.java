@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @since Dec 14, 2018
- *
  */
 public abstract class AbstractEllypsisFormatter<T extends CdmBase> implements EllypsisFormatter<T> {
 
@@ -29,7 +28,6 @@ public abstract class AbstractEllypsisFormatter<T extends CdmBase> implements El
 
     @Override
     public String ellypsis(T entity, String preserveString) {
-
 
         EllipsisData ed = entityEllypsis(entity, preserveString);
         String label = ed.truncated;
@@ -74,10 +72,6 @@ public abstract class AbstractEllypsisFormatter<T extends CdmBase> implements El
         return textEllipsed;
     }
 
-    /**
-     * @param label
-     * @return
-     */
     protected boolean isEllypsis(String label) {
         return label.contains(MORE);
     }

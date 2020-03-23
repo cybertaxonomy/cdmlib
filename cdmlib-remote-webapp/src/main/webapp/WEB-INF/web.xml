@@ -60,7 +60,7 @@
 
   <filter>
        <filter-name>dateHeaderFilter</filter-name>
-       <filter-class>eu.etaxonomy.cdm.remote.DateHeaderFilter</filter-class>
+       <filter-class>eu.etaxonomy.cdm.servlet.DateHeaderFilter</filter-class>
   </filter>
     <filter-mapping>
     <filter-name>dateHeaderFilter</filter-name>

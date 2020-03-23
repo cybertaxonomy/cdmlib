@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -173,6 +174,9 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     public UpdateResult moveTaxonNode(TaxonNode taxonNode, TaxonNode newParent, int movingType);
 
+    public UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
+            IProgressMonitor monitor);
+
     /**
      * deletes the given taxon nodes
      */
@@ -235,20 +239,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      */
     public List<Integer> idList(TaxonNodeFilter filter);
 
-    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 
 
-    List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
-
-    /**
-     * @param taxonNodeUuids
-     * @param newParentNodeUuid
-     * @param movingType
-     * @param monitor
-     * @return
-     */
-    UpdateResult moveTaxonNodes(Set<UUID> taxonNodeUuids, UUID newParentNodeUuid, int movingType,
-            IProgressMonitor monitor);
+    public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(ITaxonTreeNode parent);
 
     /**
      * Retrieves the first taxon node that is direct or indirect parent
@@ -263,16 +257,18 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     public TaxonNodeDto dto(UUID taxonNodeUuid);
 
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication);
-
-    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths);
+//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication, boolean openChildren);
+//
+//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, boolean openChildren);
 
     public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode);
 
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
-	public TaxonNodeDto taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
+	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonName name);
+
+	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
 
     /**
      * Lists all direct child nodes of the given {@link ITaxonTreeNode}
@@ -283,5 +279,22 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(ITaxonTreeNode parent);
 	 public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 	 public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
+
+    /**
+     * @param nodeUuids
+     * @param propertyPaths
+     * @param authentication
+     * @param openChildren
+     * @return
+     */
+    List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
+            Authentication authentication, boolean openChildren);
+
+    /**
+     * @param nodeUuids
+     * @param propertyPaths
+     * @return
+     */
+    List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
 
 }

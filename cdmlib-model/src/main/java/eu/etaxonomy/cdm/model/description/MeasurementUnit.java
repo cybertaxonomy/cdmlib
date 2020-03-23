@@ -49,6 +49,13 @@ public class MeasurementUnit
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MeasurementUnit.class);
 
+	private static final UUID uuidMeter = UUID.fromString("8bef5055-789c-41e5-bea2-8dc2ea8ecdf6");
+	private static final UUID uuidSecond = UUID.fromString("7cb20e73-d3c3-4290-bb55-98f7d1e76670");
+	private static final UUID uuidMillimeter = UUID.fromString("62b0c1fd-a502-4fba-a2c7-8df004fd2b66");
+	private static final UUID uuidMicrometer = UUID.fromString("128a5a38-6b92-45d2-8866-0d3c12a4915c");
+	private static final UUID uuidCentimeter = UUID.fromString("950c5919-53e4-47ab-9efd-0ea86daa98ca");
+	private static final UUID uuidPerSquareMillimeter = UUID.fromString("22e70b61-6474-4061-b0c9-49f86ef6b8ff");
+
 	protected static Map<UUID, MeasurementUnit> termMap = null;
 
 //********************************** Constructor *******************************************************************/
@@ -106,4 +113,21 @@ public class MeasurementUnit
 			termMap.put(term.getUuid(), term);
 		}
 	}
+
+	//******************************* STATIC METHODS *****************************************
+
+    protected static MeasurementUnit getTermByUuid(UUID uuid){
+        if (termMap == null || termMap.isEmpty()){
+            return getTermByClassAndUUID(MeasurementUnit.class, uuid);
+        } else {
+            return termMap.get(uuid);
+        }
+    }
+
+    /**
+     * Returns the "meter" unit.
+     */
+    public static final MeasurementUnit METER(){
+        return getTermByUuid(uuidMeter);
+    }
 }

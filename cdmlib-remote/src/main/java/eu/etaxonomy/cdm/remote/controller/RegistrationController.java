@@ -78,7 +78,7 @@ public class RegistrationController extends BaseController<Registration, IRegist
 
         Registration reg = super.doGet(uuid, request, response);
         if(reg != null){
-            if(userHelper.userIsAutheticated() && userHelper.userIsAnnonymous() && !reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
+            if((!userHelper.userIsAutheticated() || userHelper.userIsAnnonymous()) && !reg.getStatus().equals(RegistrationStatus.PUBLISHED)) {
                 // completely hide the fact that there is a registration
                 HttpStatusMessage.create("No such Registration", HttpServletResponse.SC_NO_CONTENT).send(response);
             }

@@ -152,6 +152,11 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     }
 
     @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypeAndPattern(String pattern, TermType termType) {
+        return dao.findVocabularyDtoByTermTypes(Collections.singleton(termType), pattern, true);
+    }
+
+    @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes) {
         return findVocabularyDtoByTermTypes(termTypes, true);
     }

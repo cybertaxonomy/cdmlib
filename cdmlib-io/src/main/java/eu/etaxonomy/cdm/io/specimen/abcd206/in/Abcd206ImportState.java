@@ -37,13 +37,11 @@ public class Abcd206ImportState
 
 	private List<String[]> associatedUnitIds = new ArrayList<String[]>();
 
-	private Set<URI> allAccesPoints = new HashSet<>();
-
-	private URI actualAccessPoint;
-
 	private Set<URI> sequenceDataStableIdentifier = new HashSet<>();
 
 	private List<UUID> fieldUnitUUIDsToDelete = new ArrayList();
+
+	private FieldUnit lastFieldUnit = null;
 
 
 
@@ -115,34 +113,9 @@ public class Abcd206ImportState
         return this.associatedUnitIds;
     }
 
-    /**
-     * @return the actualAccesPoint
-     */
-    public Set<URI> getActualAccesPoint() {
-        return allAccesPoints;
-    }
 
-    /**
-     * @param actualAccesPoint the actualAccesPoint to set
-     */
-    public void addActualAccesPoint(URI actualAccesPoint) {
-        this.allAccesPoints.add(actualAccesPoint);
-    }
 
-    /**
-     * @return the actualAccessPoint
-     */
-    public URI getActualAccessPoint() {
-        return actualAccessPoint;
-    }
 
-    /**
-     * @param actualAccessPoint the actualAccessPoint to set
-     */
-    public void setActualAccessPoint(URI actualAccessPoint) {
-        this.addActualAccesPoint(actualAccessPoint);
-        this.actualAccessPoint = actualAccessPoint;
-    }
 
     public Set<URI> getSequenceDataStableIdentifier() {
         return sequenceDataStableIdentifier;
@@ -151,6 +124,21 @@ public class Abcd206ImportState
     public void putSequenceDataStableIdentifier(URI sequenceDataStableIdentifier) {
         this.sequenceDataStableIdentifier.add(sequenceDataStableIdentifier);
     }
+
+
+    public FieldUnit getLastFieldUnit() {
+        return lastFieldUnit;
+    }
+
+    public void setLastFieldUnit(FieldUnit lastFieldUnit) {
+        this.lastFieldUnit = lastFieldUnit;
+        if (lastFieldUnit != null){
+            this.setFieldUnit(lastFieldUnit);
+        }
+    }
+
+
+
 
 //
 //    public void reset() {

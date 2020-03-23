@@ -58,6 +58,7 @@ public class Group extends CdmBase {
     public final static UUID GROUP_PROJECT_MANAGER_UUID = UUID.fromString("645191ae-32a4-4d4e-9b86-c90e0d41944a");
     public final static UUID GROUP_PUBLISHER_UUID = UUID.fromString("c1f20ad8-1782-40a7-b06b-ce4773acb5ea");
     public final static UUID GROUP_ADMIN_UUID = UUID.fromString("1739df71-bf73-4dc6-8320-aaaf72cb555f");
+    public static final UUID GROUP_EDITOR_REFERENCE_UUID = UUID.fromString("c3efd156-3a0a-4a5c-a99c-c6262fd734bd");
 
     public final static String GROUP_EDITOR_NAME = "Editor";
     /**
@@ -66,7 +67,7 @@ public class Group extends CdmBase {
     public final static String GROUP_EDITOR_EXTENDED_CREATE_NAME = "EditorExtendedCreate";
     public final static String GROUP_PROJECT_MANAGER_NAME = "ProjectManager";
     public final static String GROUP_ADMIN_NAME = "Admin";
-
+    public static final String GROUP_EDITOR_REFERENCE = "Editor-Reference";
 
 //*********************** FACTORY *********************/
 

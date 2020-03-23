@@ -104,18 +104,13 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	public String getDescription() {
 		return description;
 	}
-
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-
 	public Feature getType() {
 		return type;
 	}
-
-
 	public void setType(Feature type) {
 		this.type = type;
 	}
@@ -124,8 +119,6 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	public Language getLanguage() {
 		return language;
 	}
-
-
 	public void setLanguage(Language language) {
 		this.language = language;
 	}
@@ -134,52 +127,35 @@ public class DwcaDescriptionRecord extends DwcaRecordBase {
 	public AgentBase<?> getCreator() {
 		return creator;
 	}
-
-
 	public void setCreator(AgentBase<?> creator) {
 		this.creator = creator;
 	}
 
-
 	public AgentBase<?> getContributor() {
 		return contributor;
 	}
-
-
 	public void setContributor(AgentBase<?> contributor) {
 		this.contributor = contributor;
 	}
 
-
 	public String getAudience() {
 		return audience;
 	}
-
-
 	public void setAudience(String audience) {
 		this.audience = audience;
 	}
 
-
 	public Set<Rights> getLicense() {
 		return license;
 	}
-
-
 	public void setLicense(Set<Rights> license) {
 		this.license = license;
 	}
 
-
 	public AgentBase<?> getRightsHolder() {
 		return rightsHolder;
 	}
-
-
 	public void setRightsHolder(AgentBase<?> rightsHolder) {
 		this.rightsHolder = rightsHolder;
 	}
-
-
-
 }

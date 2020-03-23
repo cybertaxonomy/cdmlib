@@ -14,29 +14,22 @@ import org.apache.log4j.Logger;
 
 /**
  * Base class for delete configurators.
+ *
  * @author a.mueller
  * @since 04.01.2012
- *
  */
 public abstract class DeleteConfiguratorBase implements Serializable {
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = 8841790311273474123L;
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteConfiguratorBase.class);
 
 	private boolean isCheck = false;
 
-	/**
-	 * @return the isCheck
-	 */
 	public boolean isCheck() {
 		return isCheck;
 	}
-
-	/**
-	 * @param isCheck the isCheck to set
-	 */
 	public void setCheck(boolean isInternal) {
 		this.isCheck = isInternal;
 	}
-
-
 }

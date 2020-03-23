@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -340,6 +341,12 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
+        return findVocabularyDtoByTermTypes(termTypes, null, includeSubtypes);
+    }
+
+
+    @Override
+    public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes) {
         Set<TermType> termTypeWithSubType = new HashSet<>(termTypes);
         if(includeSubtypes){
             for (TermType termType : termTypes) {
@@ -351,9 +358,16 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
                 + "from TermVocabulary as v LEFT JOIN v.representations AS r "
                 + "where v.termType in (:termTypes) "
                 ;
+        if (pattern != null){
+            queryString += "AND v.titleCache like :pattern";
+        }
         Query query =  getSession().createQuery(queryString);
         query.setParameterList("termTypes", termTypeWithSubType);
-
+        if (pattern != null){
+            pattern = pattern.replace("*", "%");
+            pattern = "%"+pattern+"%";
+            query.setParameter("pattern", pattern);
+        }
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
@@ -419,7 +433,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
             return null;
         }
 
-        String queryString = TermVocabularyDto.getTermDtoSelect()
+        String queryString = TermCollectionDto.getTermDtoSelect()
                 + "where a.uuid like :uuid ";
 //                + "order by a.titleCache";
         Query query =  getSession().createQuery(queryString);
@@ -428,7 +442,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
         if (result.size() == 1){
-            return TermVocabularyDto.termDtoListFrom(result).get(0);
+            return TermVocabularyDto.termVocabularyDtoListFrom(result).get(0);
         }
         return null;
     }
@@ -442,7 +456,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         List<TermVocabularyDto> list = new ArrayList<>();
 
 
-        String queryString = TermVocabularyDto.getTermDtoSelect()
+        String queryString = TermCollectionDto.getTermDtoSelect()
                 + "where a.uuid in :uuidList ";
 //                + "order by a.titleCache";
         Query query =  getSession().createQuery(queryString);
@@ -451,9 +465,11 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        list = TermVocabularyDto.termDtoListFrom(result);
+        list = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return list;
 
     }
+
+
 
 }

@@ -261,8 +261,7 @@ public class TaxonDescription
      */
     @Override
     public Object clone() {
-        TaxonDescription result;
-        result = (TaxonDescription)super.clone();
+        TaxonDescription result = (TaxonDescription)super.clone();
 
         //scopes
         result.scopes = new HashSet<>();

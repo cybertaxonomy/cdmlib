@@ -10,13 +10,13 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import io.swagger.annotations.Api;
 
 /**
@@ -32,18 +32,19 @@ import io.swagger.annotations.Api;
 public class MediaPortalController extends MediaController
 {
 
-    private static final List<String> MEDIA_INIT_STRATEGY = Arrays.asList(new String []{
+    public static final EntityInitStrategy MEDIA_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "rights.type",
             "rights.agent",
+            "credits.agent",
             "representations.parts",
             "allDescriptions",
             "sources.citation.authorship"
-    });
+    }));
 
     public MediaPortalController(){
         super();
-        setInitializationStrategy(MEDIA_INIT_STRATEGY);
+        setInitializationStrategy(MEDIA_INIT_STRATEGY.getPropertyPaths());
     }
 
     @Autowired

@@ -79,6 +79,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -832,22 +833,21 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * Returns a taxon relationship type for a given uuid by first checking if the uuid has already been used in this import, if not
 	 * checking if the taxon relationship type exists in the database, if not creating it anew (with vocabulary etc.).
 	 * If label, text and labelAbbrev are all <code>null</code> no taxon relationship type is created.
-	 * @param state
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
 	 * @return
 	 */
-	public TaxonRelationshipType getTaxonRelationshipType(STATE state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<TaxonRelationshipType> voc){
+	public TaxonRelationshipType getTaxonRelationshipType(STATE state, UUID uuid, String label, String description, String labelAbbrev,
+	        String reverseLabel, String reverseDescription, String reverseAbbrev, TermVocabulary<TaxonRelationshipType> voc){
 		if (uuid == null){
 			return null;
 		}
 		TaxonRelationshipType relType = state.getTaxonRelationshipType(uuid);
 		if (relType == null){
 			relType = (TaxonRelationshipType)getTermService().find(uuid);
-			if (relType == null && ! hasNoLabel(label, text, labelAbbrev)){
-				relType = TaxonRelationshipType.NewInstance(text, label, labelAbbrev, false, false);
+			if (relType == null && ! hasNoLabel(label, description, labelAbbrev)){
+				relType = TaxonRelationshipType.NewInstance(description, label, labelAbbrev, false, false);
+				if (!hasNoLabel(reverseLabel, reverseDescription, reverseAbbrev)){
+				    relType.addInverseRepresentation(Representation.NewInstance(reverseDescription, reverseLabel, reverseAbbrev, Language.DEFAULT()));
+				}
 				relType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = true;

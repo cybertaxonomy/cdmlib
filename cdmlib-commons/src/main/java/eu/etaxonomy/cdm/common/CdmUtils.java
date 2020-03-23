@@ -58,7 +58,7 @@ public class CdmUtils {
     }
 
     /**
-     * Returns the an InputStream for a read-only source
+     * Returns an InputStream for a read-only source
      * @param resourceFileName the resources path within the classpath(!)
      * @return
      * @throws IOException
@@ -94,10 +94,10 @@ public class CdmUtils {
     }
 
     static public String readInputLine(String inputQuestion){
-        try {
 
+        try {
             System.out.print(inputQuestion);
-            BufferedReader in = new BufferedReader( new java.io.InputStreamReader( System.in ));
+            BufferedReader in = new BufferedReader( new InputStreamReader( System.in ));
             String input;
             input = in.readLine();
             return input;
@@ -106,7 +106,6 @@ public class CdmUtils {
             return null;
         }
     }
-
 
     /**
      * Returns the trimmed value string if value is not <code>null</code>.

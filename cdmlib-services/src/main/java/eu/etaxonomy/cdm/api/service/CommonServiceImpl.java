@@ -50,14 +50,11 @@ public class CommonServiceImpl
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 
-
     @Autowired
     private IOriginalSourceDao originalSourceDao;
 
-
     @Autowired
     private ICdmGenericDao genericDao;
-
 
     @Override
     public <T extends CdmBase> T findWithUpdate(Class<T> clazz, int id){
@@ -90,7 +87,6 @@ public class CommonServiceImpl
         return list;
     }
 
-
     @Override
     public <S extends ISourceable> S getSourcedObjectByIdInSource(Class<S> clazz, String idInSource, String idNamespace) {
         S result = null;
@@ -99,7 +95,6 @@ public class CommonServiceImpl
             result = list.get(0);
         }return result;
     }
-
 
     @Override
     public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
@@ -236,7 +231,12 @@ public class CommonServiceImpl
 
     @Override
     public List getHqlResult(String hqlQuery){
-        return genericDao.getHqlResult(hqlQuery);
+        return genericDao.getHqlResult(hqlQuery, new Object[0]);
+    }
+
+    @Override
+    public List getHqlResult(String hqlQuery, Object[] params){
+        return genericDao.getHqlResult(hqlQuery, params);
     }
 
     @Override
@@ -291,7 +291,6 @@ public class CommonServiceImpl
         merge(mergeFirst, mergeSecond, mergeStrategy);
     }
 
-
     @Override
     public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategyEqual matchStrategy) throws MatchException {
         if (matchStrategy == null){
@@ -300,27 +299,10 @@ public class CommonServiceImpl
         return genericDao.findMatching(objectToMatch, matchStrategy);
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ICommonService#findMatching(eu.etaxonomy.cdm.strategy.match.IMatchable, eu.etaxonomy.cdm.strategy.match.MatchStrategyConfigurator.MatchStrategy)
-     */
     @Override
     public <T extends IMatchable> List<T> findMatching(T objectToMatch, MatchStrategy strategy) throws MatchException {
         return findMatching(objectToMatch, MatchStrategyConfigurator.getMatchStrategy(strategy));
     }
-
-    //	/* (non-Javadoc)
-    //	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-    //	 */
-    //	@Override
-    //	public <TYPE extends OriginalSourceBase> Pager<TYPE> list(Class<TYPE> type,
-    //			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-    //			List<String> propertyPaths) {
-    //		logger.warn("Not yet implemented");
-    //		return null;
-    //	}
-
 
     @Transactional(readOnly = false)
     @Override
@@ -393,8 +375,6 @@ public class CommonServiceImpl
         genericDao.createFullSampleData();
     }
 
-
-
     @Override
     public <S extends CdmBase> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
         return genericDao.list(type, limit, start, orderHints, propertyPaths);
@@ -423,7 +403,6 @@ public class CommonServiceImpl
         return genericDao.saveOrUpdate(newInstance);
     }
 
-
     @Override
     @Transactional(readOnly = false)
     public <T extends CdmBase> Map<UUID,T> save(Collection<T> newInstances) {
@@ -450,5 +429,4 @@ public class CommonServiceImpl
     public List<UUID> listUuid(Class<? extends CdmBase> clazz) {
         return genericDao.listUuid(clazz);
     }
-
 }

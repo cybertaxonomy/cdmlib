@@ -19,6 +19,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -107,6 +108,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     public List<UuidAndTitleCache<Reference>> getUuidAndTitle(Set<UUID> uuids, ReferenceType refType) {
         List<Reference> result = getReferenceListForUuids(uuids, refType);
         List<UuidAndTitleCache<Reference>> list = new ArrayList<>();
+
         for(Reference object : result){
                 list.add(new UuidAndTitleCache<Reference>(type, object.getUuid(), object.getId(), object.getTitleCache()));
         }
@@ -404,6 +406,15 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
         query.setParameter("pattern", pattern);
         return getUuidAndAbbrevTitleCache(query);
 
+    }
+
+    @Override
+    public List<Reference> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Set<String> params = new HashSet<>();
+        params.add("titleCache");
+        params.add("abbrevTitleCache");
+
+        return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
 }

@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.format.occurrences;
 
+import eu.etaxonomy.cdm.format.AbstractCdmFormatter;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 
 /**
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public class SequenceFormatter extends AbstractCdmFormatter {
 
@@ -29,5 +29,4 @@ public class SequenceFormatter extends AbstractCdmFormatter {
             formatKeyMap.put(FormatKey.SEQUENCE_DNA_MARKER, sequence.getDnaMarker().getLabel());
         }
     }
-
 }

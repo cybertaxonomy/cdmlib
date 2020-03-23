@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -159,5 +160,8 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @throws MergeException if anything else goes wrong during merge
 	 */
 	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
+
+
+    public List<AgentBase> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<AgentBase> config);
 
 }

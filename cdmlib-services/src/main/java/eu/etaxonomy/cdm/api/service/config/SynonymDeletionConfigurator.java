@@ -17,10 +17,11 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
  *
  * @author k.luther
  * @since 09.11.2011
- *
  */
 public class SynonymDeletionConfigurator extends TaxonBaseDeletionConfigurator{
-	private boolean newHomotypicGroupIfNeeded = true;
+    private static final long serialVersionUID = 6899789097652652387L;
+
+    private boolean newHomotypicGroupIfNeeded = true;
 
 	public boolean isNewHomotypicGroupIfNeeded() {
 		return newHomotypicGroupIfNeeded;
@@ -29,8 +30,4 @@ public class SynonymDeletionConfigurator extends TaxonBaseDeletionConfigurator{
 	public void setNewHomotypicGroupIfNeeded(boolean newHomotypicGroupIfNeeded) {
 		this.newHomotypicGroupIfNeeded = newHomotypicGroupIfNeeded;
 	}
-
-
-
-
 }

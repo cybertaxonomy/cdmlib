@@ -56,9 +56,13 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.data.FullCoverageDataGenerator;
 import eu.etaxonomy.cdm.hibernate.DOIUserType;
+import eu.etaxonomy.cdm.hibernate.EnumSetUserType;
 import eu.etaxonomy.cdm.hibernate.EnumUserType;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.OrcidUserType;
 import eu.etaxonomy.cdm.hibernate.PartialUserType;
+import eu.etaxonomy.cdm.hibernate.SeverityUserType;
+import eu.etaxonomy.cdm.hibernate.ShiftUserType;
 import eu.etaxonomy.cdm.hibernate.URIUserType;
 import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.hibernate.WSDLDefinitionUserType;
@@ -458,7 +462,11 @@ public class CdmGenericDaoImpl
 				URIUserType.class,
 				EnumType.class,
 				EnumUserType.class,
-				DOIUserType.class
+				DOIUserType.class,
+				OrcidUserType.class,
+				ShiftUserType.class,
+				EnumSetUserType.class,
+				SeverityUserType.class
 				};
 		Set<String> classNames = new HashSet<>();
 		for (Class<?> clazz: classes){
@@ -475,8 +483,11 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-	public List<CdmBase> getHqlResult(String hqlQuery){
+	public List<CdmBase> getHqlResult(String hqlQuery, Object[] params){
 		Query query = getSession().createQuery(hqlQuery);
+		for(int i = 0; i<params.length; i++){
+		    query.setParameter(String.valueOf(i), params[i]);  //for some reason using int, not String, throws exceptions, this seems to be a hibernate bug
+		}
 		@SuppressWarnings("unchecked")
         List<CdmBase> result = query.list();
 		return result;
@@ -562,7 +573,7 @@ public class CdmGenericDaoImpl
 
 		getSession().flush();
 		try {
-			List<T> result = new ArrayList<T>();
+			List<T> result = new ArrayList<>();
 			if(objectToMatch == null){
 				return result;
 			}
@@ -578,8 +589,10 @@ public class CdmGenericDaoImpl
 		}
 	}
 
-	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategyEqual matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
-		List<T> result = new ArrayList<T>();
+	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,
+	        IMatchStrategyEqual matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+
+	    List<T> result = new ArrayList<>();
 		Session session = getSession();
 		Class<?> matchClass = objectToMatch.getClass();
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
@@ -602,16 +615,6 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/**
-	 * @param <T>
-	 * @param objectToMatch
-	 * @param matchStrategy
-	 * @param classMetaData
-	 * @param criteria
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws MatchException
-	 */
 	private <T> boolean makeCriteria(T objectToMatch,
 			IMatchStrategyEqual matchStrategy, ClassMetadata classMetaData,
 			Criteria criteria) throws IllegalAccessException, MatchException {

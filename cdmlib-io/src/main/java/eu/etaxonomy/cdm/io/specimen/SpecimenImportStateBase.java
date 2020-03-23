@@ -8,9 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.specimen;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.transaction.TransactionStatus;
 
@@ -28,6 +32,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
@@ -74,6 +79,10 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private HashMap<String,FieldUnit> fieldUnits = new HashMap<String, FieldUnit>();
 
     MapWrapper<TeamOrPersonBase<?>> personStore;
+    private Map<String, Reference> importReferences = new HashMap<>();
+    private URI actualAccessPoint;
+    private Set<URI> allAccesPoints = new HashSet<>();
+
 
 
     /* -----Getter/Setter ---*/
@@ -237,6 +246,27 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.derivedUnitBase = derivedUnitBase;
     }
 
+
+    public URI getActualAccessPoint() {
+        return actualAccessPoint;
+    }
+
+
+    public Set<URI> getAllAccesPoint() {
+        return allAccesPoints;
+    }
+
+    /**
+     * @param actualAccesPoint the actualAccesPoint to set
+     */
+    public void addActualAccesPoint(URI actualAccesPoint) {
+        this.allAccesPoints.add(actualAccesPoint);
+    }
+    public void setActualAccessPoint(URI actualAccessPoint) {
+        this.addActualAccesPoint(actualAccessPoint);
+        this.actualAccessPoint = actualAccessPoint;
+    }
+
     /**
      * @return the report
      */
@@ -271,6 +301,34 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     public void reset() {
         getDataHolder().reset();
        // setDerivedUnitBase(null);
+    }
+
+    public Reference getImportReference(URI accessPoint){
+        if (accessPoint == null){
+            return null;
+        }
+        if (importReferences == null){
+            importReferences = new HashMap();
+        }
+        if (this.importReferences.containsKey(accessPoint.toString())){
+            return this.importReferences.get(accessPoint.toString());
+        }else{
+            Reference ref = ReferenceFactory.newGeneric();
+            ref.setUri(accessPoint);
+            ref.setTitle(accessPoint.toString());
+            this.importReferences.put(accessPoint.toString(), ref);
+            return ref;
+        }
+
+    }
+
+    /**
+     * @param ref
+     */
+    public void addImportReference(Reference ref) {
+        if (ref.getUri() != null){
+            this.importReferences.put(ref.getUri().toString(), ref);
+        }
     }
 
 }

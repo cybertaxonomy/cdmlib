@@ -13,7 +13,6 @@ import java.util.TreeSet;
  *
  * @author a.mueller
  * @since 14/02/2012
- *
  */
 public class HTMLTagRules {
 
@@ -41,7 +40,7 @@ public class HTMLTagRules {
 	}
 
 	public SortedSet<String> getRule(TagEnum type){
-		SortedSet<String> result = new TreeSet<String>();
+		SortedSet<String> result = new TreeSet<>();
 		for (TagRule rule : rules){
 			if (rule.type.equals(type)){
 				result.add(rule.htmlTag);

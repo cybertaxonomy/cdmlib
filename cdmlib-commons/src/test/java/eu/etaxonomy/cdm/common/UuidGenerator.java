@@ -13,21 +13,17 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 /**
- *
  * @author a.mueller
  */
 public class UuidGenerator {
 	private static final Logger logger = Logger.getLogger(UuidGenerator.class);
 
-	/**
-	 * @param args
-	 */
+	private static int n = 100;
+
 	public static void main(String[] args) {
 		if (logger.isDebugEnabled()){logger.debug("create UUIDs");}
-		for (int i = 0; i < 100; i++){
+		for (int i = 0; i < n; i++){
 			System.out.println(UUID.randomUUID());
 		}
-
 	}
-
 }

@@ -55,11 +55,14 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
+
 /**
- * @author a.mueller
+ * Tests for {@link NonViralNameParserImpl}.
  *
+ * @author a.mueller
  */
 public class NonViralNameParserImplTest {
+
     private static final NomenclaturalCode ICNAFP = NomenclaturalCode.ICNAFP;
     private static final NomenclaturalCode ICZN = NomenclaturalCode.ICZN;
 
@@ -1548,7 +1551,7 @@ public class NonViralNameParserImplTest {
         String strBookSection2 = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz, ed. 2, 2: 288. 1905-1907";
         String strBookSection2NoComma = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz ed. 2, 2: 288. 1905-1907";
         INonViralName nameBookSection2 =
-            parser.parseReferencedName(strBookSection2, null, null);
+              parser.parseReferencedName(strBookSection2, null, null);
         assertFalse(nameBookSection2.hasProblem());
         nameBookSection2.setFullTitleCache(null, false);
         assertEquals(strBookSection2NoComma.replace(" ed.", ", ed."), nameBookSection2.getFullTitleCache());

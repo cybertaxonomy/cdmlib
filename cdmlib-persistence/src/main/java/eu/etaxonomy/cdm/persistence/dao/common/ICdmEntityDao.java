@@ -476,4 +476,20 @@ public interface ICdmEntityDao<T extends CdmBase> {
     public <S extends T> List<S> findByParam(Class<S> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
+    /**
+     * @param clazz
+     * @param params
+     * @param queryString
+     * @param matchmode
+     * @param criterion
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public <S extends T> List<S> findByParam(Class<S> clazz, Set<String> params, String queryString, MatchMode matchmode,
+            List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
+
 }

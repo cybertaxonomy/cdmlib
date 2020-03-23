@@ -304,19 +304,10 @@ public abstract class NameCacheStrategyBase
         return result;
     }
 
-    /**
-     * @param tags
-     * @return
-     */
     protected String createString(List<TaggedText> tags) {
         return TaggedCacheHelper.createString(tags);
     }
 
-    /**
-     * @param tags
-     * @param htmlTagRules
-     * @return
-     */
     protected String createString(List<TaggedText> tags, HTMLTagRules htmlTagRules) {
         return TaggedCacheHelper.createString(tags, htmlTagRules);
     }

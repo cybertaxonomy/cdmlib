@@ -62,10 +62,6 @@ public class TaxonRelationshipFormatterTest {
     private Person toSecAuthor;
     private List<Language> languages;
 
-
-    /**
-     * @throws java.lang.Exception
-     */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         if (Language.DEFAULT() == null){
@@ -73,9 +69,6 @@ public class TaxonRelationshipFormatterTest {
         }
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

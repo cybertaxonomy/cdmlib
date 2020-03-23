@@ -104,7 +104,7 @@ public class ScratchpadsService {
 						for (int j = 0; j < ILLEGAL_CHARACTERS.length; j++) {
 
 							char ch = '_';
-							websiteName.replace(ILLEGAL_CHARACTERS[j], ch);
+							websiteName = websiteName.replace(ILLEGAL_CHARACTERS[j], ch);
 						}
 
 						websiteName = websiteName.substring(0, websiteName.length());

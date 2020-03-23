@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.12.0</version>
+  <version>5.13.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -41,7 +41,7 @@
     <httpcomponents.version>4.5.1</httpcomponents.version>
     <doxia.version>1.6</doxia.version>
     <poi.version>3.13</poi.version>
-    <jackson.version>2.6.5</jackson.version>
+    <jackson.version>2.10.2</jackson.version>
 	<commons-logging.version>1.2</commons-logging.version>
 	<slf4j.version>1.7.13</slf4j.version>
 	<jaxb.version>2.2.11</jaxb.version>
@@ -225,40 +225,8 @@
       </snapshots>   -->
       <id>jboss-repository</id>
       <name>JBoss Repository</name>
-      <url>http://repository.jboss.com</url>
+      <url>https://repository.jboss.org</url>
     </repository>
-    <!-- codehaus mule repository needed for yourkit -->
- <!--   <repository>
-      <id>CodehausMuleRepository</id>
-      <url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
-    </repository>    -->
-    <!-- current spring source repositories -->
- <!--   <repository>
-      <id>SpringSource Enterprise Bundle Repository - External Bundle Milestones</id>
-      <url>http://repository.springsource.com/maven/bundles/milestone</url>
-    </repository> 
-    <repository>
-      <id>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</id>
-      <url>http://repository.springsource.com/maven/bundles/release</url>
-    </repository>
-    <repository>
-      <id>SpringSource Enterprise Bundle Repository - External Bundle Releases</id>
-      <url>http://repository.springsource.com/maven/bundles/external</url>
-    </repository>   -->
-    <!-- for ikey-plus -->
- <!--   <repository>
-      <id>itextpdf.com</id>
-      <name>Maven Repository for iText</name>
-      <url>http://maven.itextpdf.com/</url>
-    </repository>  -->
-    <!-- for jena snapshot -->
- <!--   <repository>
-      <id>apache</id>
-      <name>Apache Repository for Snapshots</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </repository> -->
-
-
   </repositories>
   <!-- **** PLUGINS **** -->
   <build>
@@ -976,11 +944,18 @@
         <version>2.4</version>
         <classifier>jdk15</classifier>
       </dependency>
+      <!-- media  -->
       <dependency>
         <groupId>org.devlib.schmidt</groupId>
         <artifactId>imageinfo</artifactId>
         <version>1.9</version>
       </dependency>
+       <dependency>
+        <groupId>de.digitalcollections.iiif</groupId>
+        <artifactId>iiif-apis</artifactId>
+        <version>0.3.7</version>
+      </dependency>
+      <!--         -->
       <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>

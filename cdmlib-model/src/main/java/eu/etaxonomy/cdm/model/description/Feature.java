@@ -104,6 +104,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Feature extends DefinedTermBase<Feature> {
+
 	private static final long serialVersionUID = 6754598791831848704L;
 	private static final Logger logger = Logger.getLogger(Feature.class);
 

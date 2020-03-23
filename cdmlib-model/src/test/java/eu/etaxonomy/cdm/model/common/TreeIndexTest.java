@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +17,6 @@ import org.junit.Test;
 /**
  * @author a.mueller
  * @since 12.09.2018
- *
  */
 public class TreeIndexTest {
 
@@ -68,6 +69,16 @@ public class TreeIndexTest {
     public void testIsTree() {
         Assert.assertFalse("Index should not be tree root", indexTree.isTreeRoot());
         Assert.assertTrue("Index should be tree", indexTree.isTree());
+    }
+
+    @Test
+    public void testParentNodeIds() {
+        TreeIndex myIndex = TreeIndex.NewInstance("#t1#222#33#444#515#");
+        List<Integer> nodeIds = myIndex.parentNodeIds(false);
+        Assert.assertEquals("Last index should be 515", (Integer)515, nodeIds.get(nodeIds.size()-1));
+        List<String> nodeIdsStr = myIndex.parentNodeIds(true, true);
+        Assert.assertEquals("1st index should be 't1'", "t1", nodeIdsStr.get(0));
+        Assert.assertEquals("3rd index should be '33'", "33", nodeIdsStr.get(2));
     }
 
 }

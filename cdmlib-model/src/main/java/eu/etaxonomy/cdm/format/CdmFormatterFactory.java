@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.format;
 
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
-import eu.etaxonomy.cdm.format.occurrences.DefaultCdmFormatter;
 import eu.etaxonomy.cdm.format.occurrences.DerivedUnitFormatter;
 import eu.etaxonomy.cdm.format.occurrences.FieldUnitFormatter;
 import eu.etaxonomy.cdm.format.occurrences.MediaSpecimenFormatter;
@@ -28,7 +27,6 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
  *
  * @author pplitzner
  * @since Nov 30, 2015
- *
  */
 public class CdmFormatterFactory {
 
@@ -46,7 +44,6 @@ public class CdmFormatterFactory {
 	 */
 	public static ICdmFormatter getFormatter(Object object,
 			FormatKey... formatKeys) {
-		ICdmFormatter formatter = null;
 		if (object instanceof CdmBase) {
 			CdmBase cdmBase = (CdmBase) object;
 			if (cdmBase.isInstanceOf(Sequence.class)) {
@@ -65,10 +62,7 @@ public class CdmFormatterFactory {
 				return new FieldUnitFormatter(object, formatKeys);
 			}
 		}
-		if (formatter == null) {
-			formatter = new DefaultCdmFormatter(object, formatKeys);
-		}
-		return formatter;
+		return new DefaultCdmFormatter(object, formatKeys);
 	}
 
 	/**

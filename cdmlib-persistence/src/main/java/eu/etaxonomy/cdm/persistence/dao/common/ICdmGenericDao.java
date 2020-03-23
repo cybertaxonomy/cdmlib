@@ -183,12 +183,12 @@ public interface ICdmGenericDao {
 	/**
 	 * Returns the result of an hql query
 	 * TODO implement parameters
-	 * @deprecated this is not clean implementation as it is hibernate related.
 	 * @param hqlQuery
 	 * @return
+	 * @deprecated this is not clean implementation as it is hibernate related.
 	 */
 	@Deprecated
-	public List getHqlResult(String hqlQuery) throws UnsupportedOperationException;
+	public List getHqlResult(String hqlQuery, Object[] params) throws UnsupportedOperationException;
 
 	/**
 	 * TODO remove as this is Hibernate specific.

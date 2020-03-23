@@ -178,4 +178,6 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      */
     public TaxonDescription findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid);
 
+    public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid);
+
 }

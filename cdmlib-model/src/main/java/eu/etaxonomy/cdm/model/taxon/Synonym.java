@@ -142,11 +142,6 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 	public Taxon getAcceptedTaxon() {
 		return this.acceptedTaxon;
 	}
-
-
-    /**
-     * @param acceptedTaxon the acceptedTaxon to set
-     */
     protected void setAcceptedTaxon(Taxon acceptedTaxon) {
         if (acceptedTaxon == null){
             Taxon oldTaxon = this.acceptedTaxon;
@@ -165,12 +160,10 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
     public SynonymType getType() {
         return type;
     }
-
     public void setType(SynonymType type) {
         this.type = type;
         checkHomotypic();
     }
-
 
 //***************** METHODS **************************/
 	/**

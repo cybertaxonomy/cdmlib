@@ -1258,7 +1258,7 @@ public class TaxonServiceImpl
 
     @Override
     public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalTaxonNames(List<UUID> sourceRefUuids, List<String> propertyPaths) {
-        return this.dao.findIdenticalNamesNew(sourceRefUuids, propertyPaths);
+        return this.dao.findIdenticalNames(sourceRefUuids, propertyPaths);
     }
 
 

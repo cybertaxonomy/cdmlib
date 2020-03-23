@@ -172,6 +172,7 @@ public class Abcd206XMLFieldGetter {
         String preferredFlag = null;
         String identifierStr = null;
         String dateStr = null;
+        String modifierStr = null;
         //TODO: add the identifier!!
 //        abcd:Identification>
 //        <abcd:Result>
@@ -203,8 +204,15 @@ public class Abcd206XMLFieldGetter {
                         for (int k = 0; k < results.getLength(); k++) {
                             if (results.item(k).getNodeName().equals(prefix + "TaxonIdentified")) {
                                 tmpName = this.getScientificName(results.item(k));
+                                if (tmpName.contains("cf.")){
+                                    modifierStr = "cf.";
+                                    tmpName = tmpName.replace("cf.", "");
+                                }
+                                if (tmpName.contains("aff.")){
+                                    modifierStr = "aff.";
+                                    tmpName = tmpName.replace("aff.", "");
+                                }
                                  logger.info("TMP NAME " + tmpName);
-
                             }
                         }
                       } else if (identifications.item(m).getNodeName().equals(prefix + "PreferredFlag")) {
@@ -234,9 +242,9 @@ public class Abcd206XMLFieldGetter {
                 }
                 if (StringUtils.isNoneBlank(dataHolder.getNomenclatureCode())) {
                     // logger.info("TMP NAME P" + tmpName);
-                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dataHolder.getNomenclatureCode(), identifierStr, dateStr));
+                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag, dataHolder.getNomenclatureCode(), identifierStr, dateStr, modifierStr));
                 } else {
-                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag,identifierStr, dateStr));
+                    dataHolder.getIdentificationList().add(new Identification(tmpName, preferredFlag,identifierStr, dateStr, modifierStr));
                 }
             }
         }

@@ -613,6 +613,40 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     }
 
     @Override
+    public List<TaxonName> findByFullTitle(String queryString,
+            MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+
+        Criteria crit = getSession().createCriteria(type);
+        if (matchmode == null){
+            matchmode = MatchMode.LIKE;
+        }
+        if (matchmode == MatchMode.EXACT) {
+            crit.add(Restrictions.eq("fullTitleCache", matchmode.queryStringFrom(queryString)));
+        } else {
+            crit.add(Restrictions.ilike("fullTitleCache", matchmode.queryStringFrom(queryString)));
+        }
+        if(criteria != null){
+            for (Criterion criterion : criteria) {
+                crit.add(criterion);
+            }
+        }
+        crit.addOrder(Order.asc("fullTitleCache"));
+
+        if(pageSize != null) {
+            crit.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                crit.setFirstResult(pageNumber * pageSize);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        List<TaxonName> results = crit.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+    @Override
     public List<TaxonName> findByTitle(String queryString,
             MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
@@ -784,6 +818,11 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     @Override
     public long countByName(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
         return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
+    }
+
+    @Override
+    public long countByFullTitle(Class<TaxonName> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
+        return super.countByParam(clazz, "fullTitleCache", queryString, matchmode, criteria);
     }
 
     @Override

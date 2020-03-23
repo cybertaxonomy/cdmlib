@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.excel.common;
 
-
 import java.net.URI;
 
 import org.apache.log4j.Logger;
@@ -34,18 +33,10 @@ public abstract class ExcelImportConfiguratorBase
 
 	private String worksheetName = null;
 
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	protected ExcelImportConfiguratorBase(URI uri, ICdmDataSource destination) {
 		this(uri, destination, defaultTransformer);
 	}
 
-	/**
-	 * @param url
-	 * @param destination
-	 */
 	protected ExcelImportConfiguratorBase(URI uri, ICdmDataSource destination, IInputTransformer transformer) {
 		super(transformer);
 		setSource(uri);

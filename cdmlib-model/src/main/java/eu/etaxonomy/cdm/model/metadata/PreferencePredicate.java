@@ -88,10 +88,12 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     //distribution editor
     DistributionEditorActivated(UUID.fromString("733e9bce-4394-4fae-97d3-1b7dfc48ee3c"), "Distribution Editor Is activated", "distribution.editor.activated",  Boolean.TRUE),
     AreasSortedInDistributionEditor(UUID.fromString("513d7de9-fec4-432c-b4dd-75f9f6e74ad0"), "Distribution Editor: Areas sorted in Distribution Editor", "distribution.editor.areas.sortedInDistributionEditor", TermOrder.IdInVoc),  //unsure about correct default value, please decide
+    StatusSortedInDistributionEditor(UUID.fromString("83e9ddb7-e498-4e00-bfdc-69c68f3ad5eb"), "Distribution Editor: Status sorted in Distribution Editor", "distribution.editor.areas.sortedStatusInDistributionEditor", TermOrder.IdInVoc),  //unsure about correct default value, please decide
     //the following 4 should be replaced by termLabelPreferenceEnum , enum should contain label, abbrevLabel, idInVoc, symbol1, symbol2, ...
     DisplayOfStatus(UUID.fromString("1ee6b945-0a81-4f05-b867-f9d105882249"), "Distribution Editor: Display of Status", "distribution.editor.status.display", TermDisplayEnum.Title),
     DisplayOfStatusInCombo(UUID.fromString("a8ff1763-987f-4935-aaba-910f3a870d07"), "Distribution Editor: Display of Status", "distribution.editor.status.combo_display", TermComboEnum.TermDisplayPlusTitle),
     DisplayOfAreasInDistributionEditor(UUID.fromString("7b671bba-1b7f-4cb9-bbac-c914518a4bf8"), "Distribution Editor: Display of Areas", "distribution.editor.areas.displayAreas",  TermDisplayEnum.Title),
+    NumberOfVisibleStatusInDropDown(UUID.fromString("5e5ed585-2212-4d07-bbaf-c5e19a61dace"), "Distribution Editor: Number of visible status in drop down", "distribution.editor.status.numberVisibleStatus",  10),
     OwnDescriptionForDistributionEditor(UUID.fromString("38282571-049c-473e-bec3-bde6f65f796a"), "Distribution Editor: Create distribution editor TaxonDescription", "distribution.editor.distributionOwnDescription",  Boolean.FALSE),
     AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "distribution.area.terms", null),  //default: all/no filter
 
@@ -141,9 +143,9 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     NameTypeDesignationStatus(UUID.fromString("6091668a-9bcf-4c79-8c53-7e4b98de1ccb"), "Name Type Designation Status", "name.nameTypeDesignationStatus", null),
     SortRanksHierarchichally(UUID.fromString("073c34f3-5e20-4dcd-a12b-ca7336f37fb5"), "Sort Ranks Hierarchically", "name.sortRankHierarchically", true),
     //Language
-    DefaultLanguage(UUID.fromString("0817d7f3-e88c-4064-be09-bc7adf5c2bd7"), "Default Language", "defaultLanguage", Language.ENGLISH()),
-    AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "AvailableLanguages", null),
-    MultiLanguageTextEditing(UUID.fromString("373f38ae-981d-492c-a01c-71134034208d"), "Multi Language Text Editing", "MultiLanguageTextEditing", Boolean.FALSE),
+    DefaultLanguage(UUID.fromString("0817d7f3-e88c-4064-be09-bc7adf5c2bd7"), "Default Language", "languages.defaultLanguage", Language.ENGLISH()),
+    AvailableLanguages(UUID.fromString("b6851dcb-4138-4a9c-ad56-a3b16f6ee69d"), "Available Languages", "languages.availableLanguages", null),
+    MultiLanguageTextEditing(UUID.fromString("373f38ae-981d-492c-a01c-71134034208d"), "Multi Language Text Editing", "languages.multiLanguageTextEditing", Boolean.FALSE),
 
     //Search
     ShowIdInSelectionDialog(UUID.fromString("2b2dbafe-186e-4411-aca0-74348c0946b7"), "Show Id In Selection Dialog", "search.selectionDialog.showId", Boolean.TRUE),
