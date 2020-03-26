@@ -74,6 +74,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 	public TaxonNodeDaoHibernateImpl() {
 		super(TaxonNode.class);
 	}
+	
 	@Override
 	public UUID delete(TaxonNode persistentObject, boolean deleteChildren){
 		Taxon taxon = persistentObject.getTaxon();
@@ -117,7 +118,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		}
 
 		UUID result = super.delete(persistentObject);
-
 		return result;
 	}
 
@@ -138,7 +138,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         @SuppressWarnings("unchecked")
         List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
 
-       return result;
+        return result;
 	}
 
     @Override
@@ -283,7 +283,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), null,
     		       includeUnpublished, pageSize, pageIndex, propertyPaths);
     	}
-
     }
 
     @Override
@@ -299,11 +298,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 			        node.getTaxon(), classification, null, includeUnpublished);
 		}
 	}
-    /**
-     * @param node
-     * @param includeUnpublished
-     * @return
-     */
+
     private Criteria childrenOfCriteria(TaxonNode node, boolean includeUnpublished) {
         Criteria crit = getSession().createCriteria(TaxonNode.class);
         crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
