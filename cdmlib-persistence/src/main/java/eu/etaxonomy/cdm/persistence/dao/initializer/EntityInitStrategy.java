@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +33,12 @@ public class EntityInitStrategy {
     public EntityInitStrategy(List<String> propertyPaths){
         if(propertyPaths != null){
             this.propertyPaths.addAll(propertyPaths);
+        }
+    }
+
+    public EntityInitStrategy(String ... propertyPaths){
+        if(propertyPaths != null){
+            this.propertyPaths.addAll(Arrays.asList(propertyPaths));
         }
     }
 

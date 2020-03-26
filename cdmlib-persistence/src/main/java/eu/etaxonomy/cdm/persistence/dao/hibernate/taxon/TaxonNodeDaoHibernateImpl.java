@@ -51,6 +51,8 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -198,30 +200,36 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "SELECT tn.uuid, tn.id, t.titleCache, rank "
+
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + " tn.uuid, tn.id, t.titleCache, rank "
+                + ") "
                 + " FROM TaxonNode tn "
         		+ "   INNER JOIN tn.taxon AS t "
         		+ "   INNER JOIN tn.classification AS cls "
-        		+ "   INNER JOIN t.name AS name "
-        		+ "   LEFT OUTER JOIN name.rank AS rank "
+                + "   INNER JOIN t.name AS name "
+        		+ "   LEFT OUTER JOIN name.rank AS rank"
         		+ " WHERE t.titleCache LIKE :pattern ";
         if(classificationUuid != null){
         	queryString += "AND cls.uuid = :classificationUuid";
         }
         Query query =  getSession().createQuery(queryString);
 
-        query.setParameter("pattern", pattern.toLowerCase()+"%");
+        query.setParameter("pattern", pattern.toLowerCase().replace("*", "%") + "%");
         if(classificationUuid != null){
             query.setParameter("classificationUuid", classificationUuid);
         }
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
-        Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
-
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+        if(logger.isTraceEnabled()){
+            logger.trace("number of matches:" + result.size());
+            result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
+        }
         List<UuidAndTitleCache<TaxonNode>> list = new ArrayList<>();
-        for(Object[] object : result){
-            list.add(new UuidAndTitleCache<TaxonNode>((UUID) object[0],(Integer) object[1], (String) object[2]));
+        for(SortableTaxonNodeQueryResult stnqr : result){
+            list.add(new UuidAndTitleCache<TaxonNode>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
         }
         return list;
     }
@@ -994,7 +1002,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         List<TaxonNodeDto> list = new ArrayList<>();
         for(Object[] object : result){
-            list.add(new TaxonNodeDto((UUID) object[0],(Integer) object[1], (String) object[2]));
+            list.add(new TaxonNodeDto((UUID) object[0], (Integer) object[1], (String) object[2]));
         }
         return list;
     }
