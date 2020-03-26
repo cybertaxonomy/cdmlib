@@ -60,13 +60,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.UuidAndTitleCacheTaxonComparator;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
@@ -1948,7 +1949,9 @@ public class TaxonDaoHibernateImpl
         Query query = null;
         if (pattern != null){
             query = session.createQuery(
-                  " SELECT tb.uuid, tb.id, tb.titleCache, tb.name.rank "
+                    "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                  + " tb.uuid, tb.id, tb.titleCache, tb.name.rank "
+                  + ") "
                   + " FROM TaxonBase as tb "
                   + " WHERE tb.titleCache LIKE :pattern");
             pattern = pattern.replace("*", "%");
@@ -1971,16 +1974,13 @@ public class TaxonDaoHibernateImpl
     protected List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Query query){
         List<UuidAndTitleCache<TaxonBase>> list = new ArrayList<>();
 
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<SortableTaxonNodeQueryResult> result = query.list();
         if (!result.isEmpty()){
-            if (result.iterator().next().length == 4){
-                Collections.sort(result, new UuidAndTitleCacheTaxonComparator());
-            }
+            Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         }
 
-        for(Object[] object : result){
-            list.add(new UuidAndTitleCache<TaxonBase>((UUID) object[0],(Integer) object[1], (String) object[2]));
+        for(SortableTaxonNodeQueryResult stnqr : result){
+            list.add(new UuidAndTitleCache<TaxonBase>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
         }
         return list;
     }

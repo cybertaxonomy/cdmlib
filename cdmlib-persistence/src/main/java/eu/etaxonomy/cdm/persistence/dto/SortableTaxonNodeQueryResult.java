@@ -34,7 +34,6 @@ public class SortableTaxonNodeQueryResult {
      */
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
             Rank nameRank) {
-        super();
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.taxonTitleCache = taxonTitleCache;
@@ -42,6 +41,11 @@ public class SortableTaxonNodeQueryResult {
             this.nameRank = nameRank;
         }
     }
+
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
+        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null);
+    }
+
     public UUID getTaxonNodeUuid() {
         return taxonNodeUuid;
     }

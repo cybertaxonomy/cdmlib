@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -696,9 +697,11 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
         Session session = getSession();
         Query query = session.createQuery(
-                " SELECT uuid, id, titleCache "
-                        + " FROM " + clazz.getSimpleName()
-                        + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
+                "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + " uuid, id, titleCache "
+                + ") "
+                + " FROM " + clazz.getSimpleName()
+                + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
         if(pattern!=null){
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
