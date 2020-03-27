@@ -16,13 +16,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
 /**
  * @author k.luther
  * @since 06.12.2017
- *
  */
 public class SortableTaxonNodeQueryResultComparator implements Serializable, Comparator<SortableTaxonNodeQueryResult>{
 
-
     private static final long serialVersionUID = 6000794425983318091L;
-
 
     @Override
     public int compare(SortableTaxonNodeQueryResult o1, SortableTaxonNodeQueryResult o2) {
@@ -64,6 +61,5 @@ public class SortableTaxonNodeQueryResultComparator implements Serializable, Com
             return 1;
         }
         return 0;
-        }
-
+    }
 }

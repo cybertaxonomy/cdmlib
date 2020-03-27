@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Qualifier("taxonNodeDaoHibernateImpl")
 public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		implements ITaxonNodeDao {
-	@SuppressWarnings("unused")
+
 	private static final Logger logger = Logger.getLogger(TaxonNodeDaoHibernateImpl.class);
 
 	@Autowired
