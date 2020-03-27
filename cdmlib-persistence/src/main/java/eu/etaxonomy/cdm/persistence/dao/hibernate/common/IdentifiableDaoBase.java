@@ -87,21 +87,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         return results;
     }
 
-    /**
-     * FIXME candidate for removal
-     * @deprecated use {@link #findTitleCache(Class, String, Integer, Integer, List, MatchMode)} instead (or other methods)
-     */
-    @Override
-    @Deprecated
-    public List<T> findByTitleAndClass(String queryString, Class<T> clazz) {
-        checkNotInPriorView("IdentifiableDaoBase.findByTitleAndClass(String queryString, Class<T> clazz)");
-        Criteria crit = getSession().createCriteria(clazz);
-        crit.add(Restrictions.ilike("titleCache", queryString));
-        @SuppressWarnings("unchecked")
-        List<T> results = crit.list();
-        return results;
-    }
-
     @Override
     public List<String> findTitleCache(Class<? extends T> clazz, String queryString, 
     		Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
