@@ -606,7 +606,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
         checkNotInPriorView("IdentifiableDaoBase.findByMarker(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
         if (markerType == null){
-            return new ArrayList<Object[]>();
+            return new ArrayList<>();
         }
 
         Class<?> clazzParam = clazz == null ? type : clazz;
@@ -639,7 +639,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         List<Object[]> results = query.list();
         //initialize
         if (includeEntity){
-            List<S> entities = new ArrayList<S>();
+            List<S> entities = new ArrayList<>();
             for (Object[] result : results){
             	@SuppressWarnings("unchecked")
 				S entity = (S)result[2];
@@ -654,7 +654,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     public List<UuidAndTitleCache<T>> getUuidAndTitleCacheByMarker(Integer limit, String pattern, MarkerType markerType){
 
         if (markerType == null){
-            return new ArrayList<UuidAndTitleCache<T>>();
+            return new ArrayList<>();
         }
 
         String queryString = "SELECT c.uuid, c.titleCache FROM %s as c " +
@@ -682,7 +682,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         List<Object[]> results = query.list();
         List<UuidAndTitleCache<T>> uuidAndTitleCacheResult = new ArrayList<>();
         for (Object[] result:results){
-            uuidAndTitleCacheResult.add(new UuidAndTitleCache<T>((UUID)result[0], (String)result[1]));
+            uuidAndTitleCacheResult.add(new UuidAndTitleCache<>((UUID)result[0], (String)result[1]));
         }
 
         return uuidAndTitleCacheResult;
@@ -738,7 +738,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 		List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[2]));
+            list.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
         }
         return list;
     }
