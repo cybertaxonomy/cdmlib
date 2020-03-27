@@ -139,16 +139,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 	}
 
 	@Override
-    public List<DefinedTermBase> findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz) {
-		checkNotInPriorView("DefinedTermDaoImpl.findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz)");
-		Session session = getSession();
-		Criteria crit = session.createCriteria(clazz);
-		crit.add(Restrictions.ilike("persistentTitleCache", queryString));
-		List<DefinedTermBase> results = crit.list();
-		return results;
-	}
-
-	@Override
     public List<DefinedTermBase> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria) {
 		//FIXME is query parametrised?
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, List<Criterion> criteria)");
