@@ -1200,7 +1200,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        TaxonDescription taxonDescription = null;
 	        Set<TaxonDescription> descriptions= taxon.getDescriptions();
-	       if (!descriptions.isEmpty()){ taxonDescription = descriptions.iterator().next();}
+	       if (!descriptions.isEmpty() && state.getConfig().isReuseExistingDescriptiveGroups()){ taxonDescription = descriptions.iterator().next();}
 
 //	            for (TaxonDescription description : descriptions){
 //	                Set<IdentifiableSource> sources =  new HashSet<>();
