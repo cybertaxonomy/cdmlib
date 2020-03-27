@@ -86,6 +86,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "name.status.type.representations",
             "sources.$",
             "sources.cdmSource.target",
+            "taxon.name"
     }));
 
     protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
