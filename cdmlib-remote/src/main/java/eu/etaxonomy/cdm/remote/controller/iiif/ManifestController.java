@@ -135,9 +135,9 @@ public class ManifestController {
                 @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
                 @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
                 @RequestParam(value = "includeTaxonDescriptions", required = false) Boolean  includeTaxonDescriptions,
-                @RequestParam(value = "includeOccurrences", required = false) Boolean  includeOccurrences,
-                @RequestParam(value = "includeTaxonNameDescriptions", required = false) Boolean  includeTaxonNameDescriptions,
-                @RequestParam(value = "includeTaxonomicChildren", required = false) Boolean  includeTaxonomicChildren,
+                @RequestParam(value = "includeOccurrences", required = false, defaultValue = "false") Boolean  includeOccurrences,
+                @RequestParam(value = "includeTaxonNameDescriptions", required = false, defaultValue = "false") Boolean  includeTaxonNameDescriptions,
+                @RequestParam(value = "includeTaxonomicChildren", required = false, defaultValue = "false") Boolean  includeTaxonomicChildren,
                 HttpServletRequest request, HttpServletResponse response) throws IOException {
 
             logger.info("doGetMedia() " + AbstractController.requestPathAndQuery(request));
@@ -272,6 +272,10 @@ public class ManifestController {
          boolean hasDiversLicenses = false;
          String firstLicensesString = null;
 
+         if(manifest.getSequences() == null){
+             // nothing to do, skip!
+             return;
+         }
 
         for (Sequence sequence : manifest.getSequences()) {
             for (Canvas canvas : sequence.getCanvases()) {
@@ -500,7 +504,7 @@ public class ManifestController {
                     if(right.getText() != null){
                         copyRightText = right.getText();
                         //  sanitize potential '(c)' away
-                        copyRightText.replace("(c)", "").trim();
+                        copyRightText = copyRightText.replace("(c)", "").trim();
                     }
                     if(right.getAgent() != null){
                         // may only apply to RightsType.accessRights
