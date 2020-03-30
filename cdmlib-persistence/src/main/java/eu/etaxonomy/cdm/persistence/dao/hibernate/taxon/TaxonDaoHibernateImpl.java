@@ -1960,7 +1960,9 @@ public class TaxonDaoHibernateImpl
             query.setParameter("pattern", pattern);
         } else {
             query = session.createQuery(
-                    " SELECT tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank "
+                    " SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                    +" tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank "
+                    + ") "
                   + " FROM TaxonBase AS tb");
         }
         if (limit != null){
