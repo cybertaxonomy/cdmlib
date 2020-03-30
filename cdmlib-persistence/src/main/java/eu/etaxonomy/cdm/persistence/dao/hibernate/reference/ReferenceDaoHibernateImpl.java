@@ -401,9 +401,11 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
         if (limit != null){
            query.setMaxResults(limit);
         }
-        pattern = pattern.replace("*", "%");
-        pattern = pattern.replace("?", "_");
-        query.setParameter("pattern", pattern);
+        if(pattern != null){
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            query.setParameter("pattern", pattern);
+        }
         return getUuidAndAbbrevTitleCache(query);
 
     }

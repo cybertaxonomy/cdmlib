@@ -88,7 +88,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     @Override
-    public List<String> findTitleCache(Class<? extends T> clazz, String queryString, 
+    public List<String> findTitleCache(Class<? extends T> clazz, String queryString,
     		Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 
         Query query = prepareFindTitleCache(clazz, queryString, pageSize,
@@ -394,7 +394,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     public List<T> search(Class<? extends T> clazz, String queryString,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths)");
         QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
-        
+
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
 
@@ -707,7 +707,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
 
-        @SuppressWarnings("unchecked")
 		List<Object[]> result = query.list();
 
         for(Object[] object : result){
@@ -719,11 +718,11 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
 
-        @SuppressWarnings("unchecked")
-		List<Object[]> result = query.list();
 
-        for(Object[] object : result){
-            list.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
+		List<SortableTaxonNodeQueryResult> result = query.list();
+
+        for(SortableTaxonNodeQueryResult stnqr : result){
+            list.add(new UuidAndTitleCache<>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
         }
         return list;
     }
