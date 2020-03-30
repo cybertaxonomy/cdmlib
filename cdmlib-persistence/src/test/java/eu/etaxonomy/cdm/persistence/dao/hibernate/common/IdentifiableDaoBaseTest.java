@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -160,6 +161,11 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
         assertNotNull(result);
     }
 
+    @Test
+    public void testGetUuidAndTitleCache() {
+        List<UuidAndTitleCache<TaxonBase>> result = identifiableDao.getUuidAndTitleCache(TaxonBase.class, 10, "Lore*");
+        assertEquals(1, result.size());
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
