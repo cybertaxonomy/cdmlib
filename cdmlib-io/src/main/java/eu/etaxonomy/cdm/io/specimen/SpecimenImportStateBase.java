@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.transaction.TransactionStatus;
 
@@ -59,7 +60,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private Classification defaultClassification = null;
     private Reference ref = null;
 
-    private TaxonDescription descriptionGroup = null;
+    private HashMap<UUID, TaxonDescription> descriptionsPerTaxon = new HashMap();
     private DerivedUnit derivedUnitBase;
 
     private SpecimenImportReport report;
@@ -230,12 +231,12 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.ref = ref;
     }
 
-    public TaxonDescription getDescriptionGroup() {
-        return descriptionGroup;
+    public TaxonDescription getDescriptionPerTaxon(UUID taxonUUID) {
+        return descriptionsPerTaxon.get(taxonUUID);
     }
 
-    public void setDescriptionGroup(TaxonDescription descriptionGroup) {
-        this.descriptionGroup = descriptionGroup;
+    public void setDescriptionGroup(TaxonDescription description) {
+        this.descriptionsPerTaxon.put(description.getTaxon().getUuid(), description);
     }
 
     public DerivedUnit getDerivedUnitBase() {
