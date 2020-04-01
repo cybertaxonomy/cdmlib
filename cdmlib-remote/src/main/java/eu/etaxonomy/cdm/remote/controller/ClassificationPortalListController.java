@@ -194,7 +194,10 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         Rank rank = findRank(rankUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-
+        if(classification == null){
+            HttpStatusMessage.UUID_INVALID.send(response, "Classification uuid does not exist.");
+            return null;
+        }
         try {
             List<TaxonNode> result = service.loadTreeBranchToTaxon(taxon, classification, subtree, rank, includeUnpublished, NODE_INIT_STRATEGY);
             return result;
