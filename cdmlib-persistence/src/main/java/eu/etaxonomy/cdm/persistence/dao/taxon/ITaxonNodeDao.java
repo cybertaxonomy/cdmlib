@@ -166,11 +166,12 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished);
 
     long count(Class<? extends TaxonNode> type, List<Restriction<?>> restrictions, boolean includePublished);
-    /**
-     * @param classification
-     * @param rank
-     * @return
-     */
+
+	public List<TaxonNodeDto> getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonName name);
 
 	public List<TaxonNodeDto> getParentTaxonNodeDtoForRank( Classification classification, Rank rank, TaxonBase<?> taxonBase);
+
+    public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
+
+
 }

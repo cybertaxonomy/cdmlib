@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import javassist.util.proxy.Proxy;
@@ -365,9 +366,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
     @Test
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
-    public final void testGetTaxonNodeUuidAndTitleCacheWithoutRank(){
+    public final void testGetTaxonNodeDtoWithoutRank(){
 
-        List<UuidAndTitleCache<TaxonNode>> result = taxonNodeDao.getUuidAndTitleCache(null, "", null); // cant use "*" here since this is not supported by the method under test
+        List<TaxonNodeDto> result = taxonNodeDao.getTaxonNodeDto(null, "", null); // cant use "*" here since this is not supported by the method under test
         assertNotNull(result);
         assertEquals(4, result.size());
         assertEquals("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7", result.get(0).getUuid().toString()); // Acherontia(Fabricius, 1798) rank: Genus
