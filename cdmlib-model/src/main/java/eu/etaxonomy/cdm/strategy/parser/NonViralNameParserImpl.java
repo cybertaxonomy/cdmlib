@@ -1048,10 +1048,6 @@ public class NonViralNameParserImpl
 		}
 	}
 
-	/**
-     * @param string
-     * @return
-     */
     private String normalizeSpNov(String epi) {
         if (spNovPattern.matcher(epi).matches()){
             epi = epi.replace(".", ". ").replace("\\s+", " ").trim();
@@ -1059,11 +1055,6 @@ public class NonViralNameParserImpl
         return epi;
     }
 
-    /**
-     * @param givenName
-     * @param secondNameString
-     * @return
-     */
     private String extendSecondHybridPart(INonViralName givenName, String secondNameString) {
         //first letter of genus given
         if (secondNameString.matches("^" + abbrevHybridGenus + ".*")){
