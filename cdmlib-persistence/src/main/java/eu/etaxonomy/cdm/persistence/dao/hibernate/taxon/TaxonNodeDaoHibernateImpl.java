@@ -989,11 +989,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         if(classificationUuid != null){
             queryString += "AND cls.uuid = :classificationUuid";
         }
+
         Query query =  getSession().createQuery(queryString);
 
         query.setParameter("pattern", pattern.toLowerCase()+"%");
-        query.setParameter("classificationUuid", classificationUuid);
-
+        if(classificationUuid != null){
+            query.setParameter("classificationUuid", classificationUuid);
+        }
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
