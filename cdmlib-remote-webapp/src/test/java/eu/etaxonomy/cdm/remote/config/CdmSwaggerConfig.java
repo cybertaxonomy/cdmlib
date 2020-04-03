@@ -23,13 +23,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
+import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
+import eu.etaxonomy.cdm.model.CdmTypeScanner;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
-import eu.etaxonomy.cdm.model.CdmTypeScanner;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * <h3>NOTE:</h3>
@@ -64,6 +64,7 @@ public class CdmSwaggerConfig {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
+           .enableUrlTemplating(true)
            .groupName(SwaggerGroupsConfig.GENERIC_REST_API.groupName())
                .select()
                .paths(not(
@@ -105,6 +106,7 @@ public class CdmSwaggerConfig {
        logger.debug("swaggerSpringMvcPlugin");
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
+           .enableUrlTemplating(true)
            .groupName(SwaggerGroupsConfig.WEB_PORTAL_SERVICES.groupName())
                .select()
                .paths(regex("/portal/.*"))
@@ -121,6 +123,7 @@ public class CdmSwaggerConfig {
    public Docket swaggerPluginNameCatalogue(){
        configureModelConverters();
        return new Docket(DocumentationType.SWAGGER_2)
+           .enableUrlTemplating(true)
            .groupName(SwaggerGroupsConfig.CATALOGUE_SERVICES.groupName())
                .select()
                .paths(or(regex("/name_catalogue.*"),regex("/occurrence_catalogue.*")))
