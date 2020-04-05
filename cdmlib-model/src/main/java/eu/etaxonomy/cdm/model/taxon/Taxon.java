@@ -284,6 +284,7 @@ public class Taxon
         descriptions.add(description);
 
     }
+
     /**
      * Removes one element from the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions} assigned
      * to <i>this</i> (accepted/correct) taxon. Due to bidirectionality the content of
@@ -303,7 +304,6 @@ public class Taxon
         ReflectionUtils.setField(field, description, null);
         descriptions.remove(description);
     }
-
 
     public void removeDescription(TaxonDescription description, boolean removeElements){
     	if (removeElements){
@@ -439,7 +439,6 @@ public class Taxon
         }
         return null;
     }
-
 
     /**
      * Returns the set of all {@link Synonym synonyms}
@@ -626,7 +625,6 @@ public class Taxon
         }
     }
 
-
     @Override
     @Deprecated //for inner use by RelationshipBase only
     public void addRelationship(RelationshipBase rel){
@@ -657,6 +655,7 @@ public class Taxon
     public TaxonRelationship addTaxonRelation(Taxon toTaxon, TaxonRelationshipType type, Reference citation, String microcitation) {
         return new TaxonRelationship(this, toTaxon, type, citation, microcitation);
     }
+
     /**
      * Creates a new {@link TaxonRelationship taxon relationship} (with {@link TaxonRelationshipType taxon relationship type}
      * "misapplied name for") instance where <i>this</i> taxon plays the target role
@@ -922,7 +921,6 @@ public class Taxon
         return this.getSynonyms().size() > 0;
     }
 
-
     /**
      * Returns the boolean value indicating whether <i>this</i> taxon is at least
      * involved in one {@link #getTaxonRelations() taxon relationship} between
@@ -1021,9 +1019,6 @@ public class Taxon
         }
         return taxa;
     }
-
-
-
 
     /**
      * Returns the set of pro parte or partial synonym relationships in which this taxon
@@ -1182,6 +1177,7 @@ public class Taxon
     public Synonym addSynonymName(TaxonName synonymName, SynonymType synonymType){
         return addSynonymName(synonymName, null, null, synonymType);
     }
+
     /**
      * Creates a new {@link Synonym synonym} to <code>this</code> {@link Taxon taxon}) using the
      * given {@link TaxonName synonym name} and with the given
@@ -1583,9 +1579,6 @@ public class Taxon
     }
 
     /**
-     * @param comparator
-     * @return
-     *
      * @see     #getSynonymsGroups()
      */
     @Transient
@@ -1602,9 +1595,6 @@ public class Taxon
     }
 
     /**
-     * @param comparator
-     * @return
-     *
      * @see     #getSynonymsGroups()
      */
     @Transient
@@ -1620,9 +1610,6 @@ public class Taxon
     }
 
     /**
-     * @param comparator
-     * @return
-     *
      * @see     #getSynonymsGroups()
      */
     @Transient
@@ -1637,9 +1624,7 @@ public class Taxon
         sortBySimpleTitleCacheComparator(result);
         return result;
     }
-    /**
-     * @param result
-     */
+
     private void sortBySimpleTitleCacheComparator(List<Taxon> result) {
 
         Comparator<Taxon> taxonComparator = new Comparator<Taxon>(){
@@ -1659,11 +1644,9 @@ public class Taxon
                 return o1.getTitleCache().compareTo(o2.getTitleCache());
 
             }
-
         };
         Collections.sort(result, taxonComparator);
     }
-
 
     /**
      * Returns the image gallery description. If no image gallery exists, a new one is created using the
@@ -1713,7 +1696,6 @@ public class Taxon
         }
         return result;
     }
-    //*********************** CLONE ********************************************************/
 
 
     /**
@@ -1760,7 +1742,6 @@ public class Taxon
             TaxonDescription newDescription = (TaxonDescription)description.clone();
             result.addDescription(newDescription);
         }
-
 
         result.taxonNodes = new HashSet<>();
 
