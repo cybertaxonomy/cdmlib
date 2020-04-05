@@ -51,10 +51,12 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -1697,6 +1699,32 @@ public class Taxon
         return result;
     }
 
+    public void clearDescriptions() {
+        this.descriptions = new HashSet<>();
+    }
+
+    /**
+     * Compiles all description items attached to this taxon having the given feature
+     * and being of the given class. If feature or clazz is null no according filter
+     * is applied.
+     */
+    public <T extends DescriptionElementBase> Set<T> getDescriptionItems(Feature feature, Class<T> clazz) {
+        Set<T> result = new HashSet<>();
+        Set<TaxonDescription> descriptions = this.getDescriptions();
+        for (TaxonDescription description : descriptions) {
+            for (DescriptionElementBase deb : description.getElements()) {
+                if (clazz == null || deb.isInstanceOf(clazz)) {
+                    if (feature == null || feature.equals(deb.getFeature())) {
+                        T matchingDeb = CdmBase.deproxy(deb, clazz);
+                        result.add(matchingDeb);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    //*********************** CLONE ********************************************************/
 
     /**
      * Clones <i>this</i> taxon. This is a shortcut that enables to create
@@ -1752,12 +1780,5 @@ public class Taxon
         }*/
 
         return result;
-
     }
-
-    public void clearDescriptions() {
-		this.descriptions = new HashSet<>();
-	}
-
-
 }
