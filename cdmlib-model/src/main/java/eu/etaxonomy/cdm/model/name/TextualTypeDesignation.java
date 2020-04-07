@@ -192,7 +192,6 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
         }
     }
 
-
     /**
      * Flag indicating if this textual type designation is a citation (e.g. original citation).
      * This may have influence on the correct formatting of type designations.
