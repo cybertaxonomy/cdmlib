@@ -509,7 +509,6 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("Unexpected title cache.", "auct.", generic1.getTitleCache());
     }
 
-
     @Test
     public void testGenericGetInRef(){
         generic1.setTitle("auct.");

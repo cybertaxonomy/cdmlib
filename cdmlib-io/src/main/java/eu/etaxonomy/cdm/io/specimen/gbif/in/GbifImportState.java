@@ -268,10 +268,10 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
     }
 
 
-    @Override
-    public TaxonDescription getDescriptionGroup() {
-        return descriptionGroup;
-    }
+//    @Override
+//    public TaxonDescription getDescriptionGroup() {
+//        return descriptionGroup;
+//    }
 
 
     @Override

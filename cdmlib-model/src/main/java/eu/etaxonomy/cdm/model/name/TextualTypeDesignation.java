@@ -185,9 +185,12 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
         return getText().get(language);
     }
     public String getText(Language language){
-        return getText().get(language).getText();
+        if (getText().get(language) != null){
+            return getText().get(language).getText();
+        }else {
+            return null;
+        }
     }
-
 
     /**
      * Flag indicating if this textual type designation is a citation (e.g. original citation).

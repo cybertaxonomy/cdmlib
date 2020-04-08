@@ -57,7 +57,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return a list of UuidAndTitleCache objects that represent children of the
      * parent
      */
-    //public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(TaxonNodeDto parent);
+    public List<TaxonNodeDto> listChildNodesAsUuidAndTitleCache(TaxonNodeDto parent);
 
     /**
      * Retrieves the parent node of the {@link TaxonNode} represented by the given {@link UuidAndTitleCache}.
@@ -73,7 +73,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classificationUuid if specified only nodes of this classification are retrieved
      * @return a list of matches
      */
-    public List<UuidAndTitleCache<TaxonNode>> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
+    public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths);
@@ -173,6 +173,5 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
 
-    public List<UuidAndTitleCache<TaxonNode>> listChildNodesAsUuidAndTitleCache(UuidAndTitleCache<TaxonNode> parent);
 
 }

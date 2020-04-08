@@ -42,10 +42,10 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-
 
 public class IdentifiableDaoBase<T extends IdentifiableEntity>
         extends AnnotatableDaoImpl<T>
@@ -56,8 +56,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
     protected String defaultField = "titleCache_tokenized";
     protected Class<? extends T> indexedClasses[];
-
-
 
     public IdentifiableDaoBase(Class<T> type) {
         super(type);
@@ -82,29 +80,16 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, CdmBase sessionObject)");
         Criteria crit = session.createCriteria(type);
         crit.add(Restrictions.ilike("titleCache", queryString));
-        List<T> results = crit.list();
+        @SuppressWarnings("unchecked")
+		List<T> results = crit.list();
         List<String> propertyPaths = null;
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
-    /**
-     * FIXME candidate for removal
-     * @deprecated use {@link #findTitleCache(Class, String, Integer, Integer, List, MatchMode)} instead (or other methods)
-     */
     @Override
-    @Deprecated
-    public List<T> findByTitleAndClass(String queryString, Class<T> clazz) {
-        checkNotInPriorView("IdentifiableDaoBase.findByTitleAndClass(String queryString, Class<T> clazz)");
-        Criteria crit = getSession().createCriteria(clazz);
-        crit.add(Restrictions.ilike("titleCache", queryString));
-        @SuppressWarnings("unchecked")
-        List<T> results = crit.list();
-        return results;
-    }
-
-    @Override
-    public List<String> findTitleCache(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
+    public List<String> findTitleCache(Class<? extends T> clazz, String queryString,
+    		Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, MatchMode matchMode){
 
         Query query = prepareFindTitleCache(clazz, queryString, pageSize,
                 pageNumber, matchMode, false);
@@ -284,7 +269,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
             criteria.add(Restrictions.eq("lsid.revision", lsid.getRevision()));
         }
 
-        T object = (T)criteria.uniqueResult();
+        @SuppressWarnings("unchecked")
+		T object = (T)criteria.uniqueResult();
         if(object != null) {
             return object;
         } else {
@@ -300,16 +286,17 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
             query.addOrder(AuditEntity.revisionNumber().asc());
             query.setMaxResults(1);
             query.setFirstResult(0);
-            List<Object[]> objs = query.getResultList();
+            @SuppressWarnings("unchecked")
+			List<Object[]> objs = query.getResultList();
             if(objs.isEmpty()) {
                 return null;
             } else {
-                return (T)objs.get(0)[0];
+                @SuppressWarnings("unchecked")
+				T result = (T)objs.get(0)[0];
+                return result;
             }
         }
     }
-
-
 
     @SuppressWarnings("deprecation")
     @Override
@@ -387,7 +374,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     @Override
     public void purgeIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-        for(Class clazz : indexedClasses) {
+        for(Class<?> clazz : indexedClasses) {
             fullTextSession.purgeAll(clazz); // remove all objects of type t from indexes
         }
         fullTextSession.flushToIndexes();
@@ -407,7 +394,6 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     public List<T> search(Class<? extends T> clazz, String queryString,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
         checkNotInPriorView("IdentifiableDaoBase.search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths)");
         QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
-        List<T> results = new ArrayList<T>();
 
         try {
             org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -432,7 +418,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 }
             }
 
-            List<T> result = fullTextQuery.list();
+            @SuppressWarnings("unchecked")
+			List<T> result = fullTextQuery.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
             return result;
 
@@ -553,45 +540,48 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         //paging
         setPagingParameter(query, pageSize, pageNumber);
 
-        List<Object[]> results = query.list();
+        @SuppressWarnings("unchecked")
+		List<Object[]> results = query.list();
         //initialize
         if (includeEntity){
-        	List<S> entities = new ArrayList<S>();
+        	List<S> entities = new ArrayList<>();
         	for (Object[] result : results){
-        		entities.add((S)result[2]);
+        		@SuppressWarnings("unchecked")
+				S entity = (S)result[2];
+        		entities.add(entity);
         	}
         	defaultBeanInitializer.initializeAll(entities, propertyPaths);
         }
         return results;
 	}
 
-	   @Override
-	    public <S extends T> long countByMarker(Class<S> clazz, MarkerType markerType,
-	            Boolean markerValue) {
-	        checkNotInPriorView("IdentifiableDaoBase.countByMarker(T clazz, MarkerType markerType, Boolean markerValue)");
+    @Override
+    public <S extends T> long countByMarker(Class<S> clazz, MarkerType markerType,
+            Boolean markerValue) {
+        checkNotInPriorView("IdentifiableDaoBase.countByMarker(T clazz, MarkerType markerType, Boolean markerValue)");
 
-	        if (markerType == null){
-	            return 0;
-	        }
-	        Class<?> clazzParam = clazz == null ? type : clazz;
-	        String queryString = "SELECT count(*) FROM " + clazzParam.getSimpleName() + " as c " +
-	                    "INNER JOIN c.markers as mks " +
-	                    "WHERE (1=1) ";
+        if (markerType == null){
+            return 0;
+        }
+        Class<?> clazzParam = clazz == null ? type : clazz;
+        String queryString = "SELECT count(*) FROM " + clazzParam.getSimpleName() + " as c " +
+                    "INNER JOIN c.markers as mks " +
+                    "WHERE (1=1) ";
 
-	        if (markerValue != null){
-	            queryString += " AND mks.flag = :flag";
-	        }
-            queryString += " AND mks.markerType = :type";
+        if (markerValue != null){
+            queryString += " AND mks.flag = :flag";
+        }
+        queryString += " AND mks.markerType = :type";
 
-	        Query query = getSession().createQuery(queryString);
-            query.setEntity("type", markerType);
-	        if (markerValue != null){
-	            query.setBoolean("flag", markerValue);
-	        }
+        Query query = getSession().createQuery(queryString);
+        query.setEntity("type", markerType);
+        if (markerValue != null){
+            query.setBoolean("flag", markerValue);
+        }
 
-	        Long c = (Long)query.uniqueResult();
-	        return c;
-	    }
+        Long c = (Long)query.uniqueResult();
+        return c;
+    }
 
 	@Override
     public <S extends T> List<Object[]> findByMarker(
@@ -601,7 +591,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
 
         checkNotInPriorView("IdentifiableDaoBase.findByMarker(T clazz, String identifier, DefinedTerm identifierType, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
         if (markerType == null){
-            return new ArrayList<Object[]>();
+            return new ArrayList<>();
         }
 
         Class<?> clazzParam = clazz == null ? type : clazz;
@@ -634,9 +624,11 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         List<Object[]> results = query.list();
         //initialize
         if (includeEntity){
-            List<S> entities = new ArrayList<S>();
+            List<S> entities = new ArrayList<>();
             for (Object[] result : results){
-                entities.add((S)result[2]);
+            	@SuppressWarnings("unchecked")
+				S entity = (S)result[2];
+        		entities.add(entity);
             }
             defaultBeanInitializer.initializeAll(entities, propertyPaths);
         }
@@ -647,7 +639,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     public List<UuidAndTitleCache<T>> getUuidAndTitleCacheByMarker(Integer limit, String pattern, MarkerType markerType){
 
         if (markerType == null){
-            return new ArrayList<UuidAndTitleCache<T>>();
+            return new ArrayList<>();
         }
 
         String queryString = "SELECT c.uuid, c.titleCache FROM %s as c " +
@@ -655,16 +647,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 " WHERE (1=1) ";
         queryString = String.format(queryString, type.getSimpleName());
 
-
         queryString += " AND mks.markerType = :type";
         if (pattern != null){
             queryString += " AND c.titleCache like :pattern";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             pattern = pattern + "%";
-
         }
-
 
         Query query = getSession().createQuery(queryString);
         if (pattern != null){
@@ -674,16 +663,14 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         query.setEntity("type", markerType);
         query.setMaxResults(limit);
 
-
         @SuppressWarnings("unchecked")
         List<Object[]> results = query.list();
         List<UuidAndTitleCache<T>> uuidAndTitleCacheResult = new ArrayList<>();
         for (Object[] result:results){
-            uuidAndTitleCacheResult.add(new UuidAndTitleCache<T>((UUID)result[0], (String)result[1]));
+            uuidAndTitleCacheResult.add(new UuidAndTitleCache<>((UUID)result[0], (String)result[1]));
         }
 
         return uuidAndTitleCacheResult;
-
     }
 
     @Override
@@ -691,14 +678,15 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         return getUuidAndTitleCache(type, limit, pattern);
     }
 
-
     @Override
     public <S extends T> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, Integer limit, String pattern){
         Session session = getSession();
         Query query = session.createQuery(
-                " SELECT uuid, id, titleCache "
-                        + " FROM " + clazz.getSimpleName()
-                        + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
+                "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + " uuid, id, titleCache "
+                + ") "
+                + " FROM " + clazz.getSimpleName()
+                + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
         if(pattern!=null){
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
@@ -711,16 +699,15 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         return getUuidAndTitleCache(query);
     }
 
-
     @Override
     public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
         return getUuidAndTitleCache(type, null, null);
     }
 
     protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
-        List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
+        List<UuidAndTitleCache<E>> list = new ArrayList<>();
 
-        List<Object[]> result = query.list();
+		List<Object[]> result = query.list();
 
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2]));
@@ -729,12 +716,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
-        List<UuidAndTitleCache<E>> list = new ArrayList<UuidAndTitleCache<E>>();
+        List<UuidAndTitleCache<E>> list = new ArrayList<>();
 
-        List<Object[]> result = query.list();
 
-        for(Object[] object : result){
-            list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[2]));
+		List<SortableTaxonNodeQueryResult> result = query.list();
+
+        for(SortableTaxonNodeQueryResult stnqr : result){
+            list.add(new UuidAndTitleCache<>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
         }
         return list;
     }

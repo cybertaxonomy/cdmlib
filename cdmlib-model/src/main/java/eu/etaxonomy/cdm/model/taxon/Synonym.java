@@ -104,8 +104,8 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
      * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
      *
      * @param  TaxonName    the taxon name used
-     * @param  sec              the reference using the taxon name
-     * @see                     #Synonym(TaxonName, Reference)
+     * @param  sec          the reference using the taxon name
+     * @see  #Synonym(TaxonName, Reference)
      */
     public static Synonym NewInstance(TaxonName taxonName, Reference sec){
         Synonym result = new Synonym(taxonName, sec, null);

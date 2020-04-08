@@ -71,11 +71,9 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-
 /**
  * @author a.kohlbecker
  * @since 29.05.2008
- * @version 1.0
  */
 @Repository
 public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> implements IDefinedTermDao{
@@ -113,17 +111,14 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 	/**
 	 * Searches by Label
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String)
 	 */
 	@Override
     public List<DefinedTermBase> findByTitle(String queryString) {
 		return findByTitle(queryString, null);
 	}
 
-
 	/**
 	 * Searches by Label
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	@Override
     public List<DefinedTermBase> findByTitle(String queryString, CdmBase sessionObject) {
@@ -134,18 +129,10 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		}
 		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
 		query.setParameter("label", queryString);
-		return query.list();
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		List<DefinedTermBase> result = query.list();
+		return result;
 
-	}
-
-	@Override
-    public List<DefinedTermBase> findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz) {
-		checkNotInPriorView("DefinedTermDaoImpl.findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz)");
-		Session session = getSession();
-		Criteria crit = session.createCriteria(clazz);
-		crit.add(Restrictions.ilike("persistentTitleCache", queryString));
-		List<DefinedTermBase> results = crit.list();
-		return results;
 	}
 
 	@Override
@@ -160,7 +147,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		List<DefinedTermBase> results = crit.list();
 		return results;
 	}
-
 
 	@Override
     public Country getCountryByIso(String iso3166) {
@@ -642,7 +628,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return result;
     }
 
-
     @Override
     public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
         Session session = getSession();
@@ -683,7 +668,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         if (vocs != null &&!vocs.isEmpty()){
             crit.createAlias("namedArea.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
-            for (TermVocabulary voc: vocs){
+            for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());
                 or.add(criterion);
             }
@@ -694,7 +679,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         if (limit == null){
             limit = 1;
         }
-        int firstItem = (pageNumber - 1) * limit;
+//        int firstItem = (pageNumber - 1) * limit;
 
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
@@ -705,8 +690,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
     @Override
     public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField abbrevType){
-        Session session = getSession();
-
+        
         Criteria crit = getSession().createCriteria(type, "namedArea");
         if (!StringUtils.isBlank(pattern)){
             if (matchmode == MatchMode.EXACT) {
@@ -723,7 +707,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         if (vocs != null &&!vocs.isEmpty()){
             crit.createAlias("namedArea.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
-            for (TermVocabulary voc: vocs){
+            for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());
                 or.add(criterion);
             }
@@ -734,7 +718,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         if (limit == null){
             limit = 1;
         }
-        int firstItem = (pageNumber - 1) * limit;
+//        int firstItem = (pageNumber - 1) * limit;
 
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
@@ -763,8 +747,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
             query.setParameterList("vocs", vocs);
         }
 
-
-        @SuppressWarnings("unchecked")
         Long result = (Long) query.uniqueResult();
         return result;
     }
@@ -798,7 +780,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
     }
-
 
     @Override
     public Collection<TermDto> findByTitleAsDto(String title, TermType termType) {
@@ -863,21 +844,16 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return list;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern) {
 
         return listNamedArea(vocs, 0, limit, pattern, MatchMode.BEGINNING);
-
     }
 
     @Override
     public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type) {
 
         return listNamedAreaByAbbrev(vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
-
     }
 
     @Override
@@ -889,7 +865,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
                 + "where t.uuid = :featureUuid";
         Query supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString);
         supportedCategoriesQuery.setParameter("featureUuid", featureUuid);
-        List<UUID> supportedCategories = supportedCategoriesQuery.list();
+        @SuppressWarnings("unchecked")
+		List<UUID> supportedCategories = supportedCategoriesQuery.list();
         if(supportedCategories.isEmpty()){
             return list;
         }

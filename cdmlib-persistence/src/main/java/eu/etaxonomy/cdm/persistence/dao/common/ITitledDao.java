@@ -18,51 +18,16 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 public interface ITitledDao<T extends CdmBase> {
 
-	/**
-	 * @param queryString
-	 * @return
-	 */
 	public List<T> findByTitle(String queryString);
 
-	/**
-	 * @param queryString
-	 * @param sessionObject
-	 * @return
-	 */
 	public List<T> findByTitle(String queryString, CdmBase sessionObject);
 
-	public List<T> findByTitleAndClass(String queryString, Class<T> clazz);
-
-	/**
-	 * @param queryString
-	 * @param matchAnywhere
-	 * @param page
-	 * @param pagesize
-	 * @param criteria TODO
-	 * @return
-	 */
-	public List<T> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria);
-
-	/**
-	 * @param queryString
-	 * @return
-	 */
 	public long countByTitle(String queryString);
 
-	/**
-	 * @param queryString
-	 * @param sessionObject
-	 * @return
-	 */
 	public long countByTitle(String queryString, CdmBase sessionObject);
 
-	/**
-	 * @param queryString
-	 * @param matchAnywhere
-	 * @param page
-	 * @param pagesize
-	 * @param criteria TODO
-	 * @return
-	 */
 	public long countByTitle(String queryString, MatchMode matchMode, List<Criterion> criteria);
+
+	public List<T> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria);
+
 }

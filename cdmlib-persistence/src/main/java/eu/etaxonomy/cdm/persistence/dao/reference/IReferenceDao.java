@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
- *
  */
 public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<Reference> {
 

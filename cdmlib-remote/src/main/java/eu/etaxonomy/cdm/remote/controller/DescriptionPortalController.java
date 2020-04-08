@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -29,9 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -46,10 +43,8 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 import io.swagger.annotations.Api;
 
 /**
- *
  * @author a.kohlbecker
  * @since Jun 25, 2013
- *
  */
 @Controller
 @Api("portal_description")
@@ -86,6 +81,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "name.status.type.representations",
             "sources.$",
             "sources.cdmSource.target",
+            "taxon.name"
     }));
 
     protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -106,14 +102,6 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     @Autowired
     private ITermService termService;
 
-    @Autowired
-    private IVocabularyService vocabularyService ;
-
-
-    @Autowired
-    private IEditGeoService geoService;
-
-
     public DescriptionPortalController() {
         super();
         setInitializationStrategy(DESCRIPTION_INIT_STRATEGY.getPropertyPaths());
@@ -128,9 +116,6 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<MarkerType>(termService));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IDescriptionService service) {
@@ -141,7 +126,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     public Pager<Annotation> getAnnotations(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
         logger.info("getAnnotations() - " + requestPathAndQuery(request) );
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());

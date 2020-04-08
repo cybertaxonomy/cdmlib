@@ -78,6 +78,13 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             "elements.media",
     });
 
+    private static final EntityInitStrategy NOMREF_INIT_STRATEGY = new EntityInitStrategy(
+            "nomenclaturalReference.authorship.$",
+            "nomenclaturalReference.inReference.authorship.$",
+            "nomenclaturalReference.inReference.inReference.authorship.$",
+            "nomenclaturalReference.inReference.inReference.inReference.authorship.$"
+            );
+
     private static EntityInitStrategy nameRelationsInitStrategy = null;
 
     /**
@@ -85,7 +92,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
      */
     public static EntityInitStrategy getNameRelationsInitStrategy() {
         if(nameRelationsInitStrategy == null){
-            nameRelationsInitStrategy = extendNameRelationsInitStrategies(NameController.NAME_RELATIONS_INIT_STRATEGY.getPropertyPaths());
+            nameRelationsInitStrategy = extendNameRelationsInitStrategies(NameController.NAME_RELATIONS_INIT_STRATEGY.getPropertyPaths(), true);
         }
         return nameRelationsInitStrategy;
     }
@@ -99,7 +106,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             return pathProperties;
         }
 
-        EntityInitStrategy initStrategy = extendNameRelationsInitStrategies(pathProperties);
+        EntityInitStrategy initStrategy = extendNameRelationsInitStrategies(pathProperties, false);
 
         return initStrategy.getPropertyPaths();
     }
@@ -108,22 +115,30 @@ public class NamePortalController extends BaseController<TaxonName, INameService
      * @param pathProperties
      * @return
      */
-    static EntityInitStrategy extendNameRelationsInitStrategies(List<String> pathProperties) {
+    static EntityInitStrategy extendNameRelationsInitStrategies(List<String> pathProperties, boolean addNomrefInitStrategy) {
+
         EntityInitStrategy initStrategy = new EntityInitStrategy(pathProperties);
 
+        EntityInitStrategy nameRelInitExtendet = TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY;
+
+        if(addNomrefInitStrategy){
+            nameRelInitExtendet.extend("toName", NOMREF_INIT_STRATEGY.getPropertyPaths(), false);
+            nameRelInitExtendet.extend("fromName", NOMREF_INIT_STRATEGY.getPropertyPaths(), false);
+        }
+
         if(pathProperties.contains("nameRelations")){
-            // nameRelations is a transient property!
+            // nameRelations is a transient property! replace it by relationsFromThisName and relationsToThisName
             initStrategy.getPropertyPaths().remove("nameRelations");
-            initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
-            initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
+            initStrategy.extend("relationsFromThisName", nameRelInitExtendet.getPropertyPaths(), true);
+            initStrategy.extend("relationsToThisName", nameRelInitExtendet.getPropertyPaths(), true);
         } else {
             if(pathProperties.contains("relationsFromThisName")){
                 initStrategy.getPropertyPaths().remove("relationsFromThisName");
-                initStrategy.extend("relationsFromThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
+                initStrategy.extend("relationsFromThisName", nameRelInitExtendet.getPropertyPaths(), true);
             }
             if(pathProperties.contains("relationsToThisName")){
                 initStrategy.getPropertyPaths().remove("relationsToThisName");
-                initStrategy.extend("relationsToThisName", TaxonPortalController.NAMERELATIONSHIP_INIT_STRATEGY.getPropertyPaths(), true);
+                initStrategy.extend("relationsToThisName", nameRelInitExtendet.getPropertyPaths(), true);
             }
         }
         return initStrategy;

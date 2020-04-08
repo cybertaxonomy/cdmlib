@@ -1200,20 +1200,14 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        TaxonDescription taxonDescription = null;
 	        Set<TaxonDescription> descriptions= taxon.getDescriptions();
-	       if (!descriptions.isEmpty()){ taxonDescription = descriptions.iterator().next();}
+	        if (state.getDescriptionPerTaxon(taxon.getUuid()) != null){
+	            taxonDescription = state.getDescriptionPerTaxon(taxon.getUuid());
+	        }
+	       if (taxonDescription == null && !descriptions.isEmpty() && state.getConfig().isReuseExistingDescriptiveGroups()){
+	           taxonDescription = descriptions.iterator().next();
+	       }
 
-//	            for (TaxonDescription description : descriptions){
-//	                Set<IdentifiableSource> sources =  new HashSet<>();
-//	                sources.addAll(description.getTaxon().getSources());
-//	                sources.addAll(description.getSources());
-//	                for (IdentifiableSource source:sources){
-//	                    if(state.getRef().equals(source.getCitation())) {
-//	                        taxonDescription = description;
-//	                    }
-//	                }
-//	            }
-	      //  }
-	        if (taxonDescription == null){
+	       if (taxonDescription == null){
 	            taxonDescription = TaxonDescription.NewInstance(taxon, false);
 	            if(sourceNotLinkedToElement(taxonDescription,state.getRef(),null)) {
 	                taxonDescription.addSource(OriginalSourceType.Import, null, null, state.getRef(), null);
@@ -1240,119 +1234,34 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        addToSourceMap(sourceMap, osbSet);
 
-//	        if (((Abcd206ImportConfigurator) state.getConfig()).isInteractWithUser()){
-//	            List<OriginalSourceBase<?>> res = null;
-//	            if(!state.isDescriptionSourcesSet()){
-//	                res = sui.askForSource(sourceMap, "the description group ("+taxon+")",
-//	                        "The current reference is "+state.getRef().getTitleCache(),getReferenceService(), state.getDataHolder().docSources);
-//	                state.setDescriptionRefs(res);
-//	                state.setDescriptionSourcesSet(true);
-//	            }
-//	            else{
-//	                res=state.getDescriptionRefs();
-//	            }
-//	            if(res !=null) {
-//	                for (OriginalSourceBase<?> sour:res){
-//	                    if(sour.isInstanceOf(IdentifiableSource.class)){
-//	                        try {
-//	                            if(sourceNotLinkedToElement(taxonDescription,sour)) {
-//	                                taxonDescription.addSource((IdentifiableSource)sour.clone());
-//	                            }
-//	                        } catch (CloneNotSupportedException e) {
-//	                            logger.warn("no cloning?");
-//	                        }
-//	                    }else{
-//	                        if(sourceNotLinkedToElement(taxonDescription,sour)) {
-//	                            taxonDescription.addSource(OriginalSourceType.Import,null, null, sour.getCitation(),sour.getCitationMicroReference());
-//	                        }
-//	                    }
-//	                }
-//	            }
-//	        }
-//	        else {
-	            if(sourceNotLinkedToElement(taxonDescription,state.getRef(),null)) {
-	                taxonDescription.addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
-	            }
-//	        }
+
+            if(sourceNotLinkedToElement(taxonDescription,state.getRef(),null)) {
+                taxonDescription.addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
+            }
+
 	        state.setDescriptionGroup(taxonDescription);
 
 	        IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
 	        Feature feature = makeFeature(state.getDerivedUnitBase());
 	        indAssociation.setAssociatedSpecimenOrObservation(state.getDerivedUnitBase());
 	        indAssociation.setFeature(feature);
-//
-//	        if (((Abcd206ImportConfigurator) state.getConfig()).isInteractWithUser()){
-//	            sourceMap = new HashMap<String, OriginalSourceBase<?>>();
-//
-//	            issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
-//	            issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
-//
-//	            osbSet = new HashSet<OriginalSourceBase>();
-//	            if(issTmp2!=null) {
-//	                osbSet.addAll(issTmp2);
-//	            }
-//	            if(issTmp!=null) {
-//	                osbSet.addAll(issTmp);
-//	            }
-//
-//
-//	            addToSourceMap(sourceMap, osbSet);
-//
-//	            List<OriginalSourceBase<?>> sources =null;
-//	            if(!state.isAssociationSourcesSet()) {
-//	                sources = sui.askForSource(sourceMap,  "descriptive element (association) ",taxon.toString(),
-//	                        getReferenceService(),state.getDataHolder().getDocSources());
-//	                state.setAssociationRefs(sources);
-//	                state.setAssociationSourcesSet(true);
-//	            }
-//	            else{
-//	                sources=state.getAssociationRefs();
-//	            }
-//	            if(sources !=null) {
-//	                for (OriginalSourceBase<?> source: sources) {
-//	                    if(source !=null) {
-//	                        if(source.isInstanceOf(DescriptionElementSource.class)){
-//	                            try {
-//	                                if(sourceNotLinkedToElement(indAssociation,source)) {
-//	                                    indAssociation.addSource((DescriptionElementSource)source.clone());
-//	                                }
-//	                            } catch (CloneNotSupportedException e) {
-//	                                logger.warn("clone forbidden?");
-//	                            }
-//	                        }else{
-//	                            if(sourceNotLinkedToElement(indAssociation,source)) {
-//	                                indAssociation.addSource(OriginalSourceType.Import,null, null, source.getCitation(),source.getCitationMicroReference());
-//	                            }
-//	                            try {
-//	                                if(sourceNotLinkedToElement(state.getDerivedUnitBase(), source)) {
-//	                                    state.getDerivedUnitBase().addSource((IdentifiableSource) source.clone());
-//	                                }
-//	                            } catch (CloneNotSupportedException e) {
-//	                                // TODO Auto-generated catch block
-//	                                e.printStackTrace();
-//	                            }
-//	                        }
-//
-//	                    }
-//	                }
-//	            }
-//	        }else {
-	            if(sourceNotLinkedToElement(indAssociation,state.getImportReference(state.getActualAccessPoint()),null)) {
-	                indAssociation.addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
-	            }
-	            if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
-	                state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
-	            }
-	            for (Reference citation : determinationEvent.getReferences()) {
-	                if(sourceNotLinkedToElement(indAssociation,citation,null))
-	                {
-	                    indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
-	                }
-	                if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
-	                    state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
-	                }
-	            }
-	   //     }
+
+            if(sourceNotLinkedToElement(indAssociation,state.getImportReference(state.getActualAccessPoint()),null)) {
+                indAssociation.addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
+            }
+            if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
+                state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
+            }
+            for (Reference citation : determinationEvent.getReferences()) {
+                if(sourceNotLinkedToElement(indAssociation,citation,null))
+                {
+                    indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
+                }
+                if(sourceNotLinkedToElement(state.getDerivedUnitBase(), state.getImportReference(state.getActualAccessPoint()),null)) {
+                    state.getDerivedUnitBase().addSource(OriginalSourceType.Import,null, null, state.getImportReference(state.getActualAccessPoint()), null);
+                }
+            }
+
 
 	        taxonDescription.addElement(indAssociation);
 

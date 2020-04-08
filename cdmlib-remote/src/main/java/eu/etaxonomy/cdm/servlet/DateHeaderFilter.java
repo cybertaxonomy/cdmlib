@@ -20,6 +20,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 /**
  * Adds a "Date" Header to the http response formatted as RFC_1123_DATE_TIME.
  *
@@ -49,7 +51,12 @@ public class DateHeaderFilter implements Filter {
         OffsetDateTime dateTime = OffsetDateTime.now();
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         httpServletResponse.setHeader("Date", dateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME));
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass()).warn("Can not add data header.", e);
+            // no point adding a timestamp, just ignore any exception
+        }
 
     }
 

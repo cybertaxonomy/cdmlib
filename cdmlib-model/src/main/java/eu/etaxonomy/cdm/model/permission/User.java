@@ -92,14 +92,7 @@ public class User extends CdmBase implements UserDetails {
     }
 
     public static User NewInstance(String personTitle, String username, String pwd){
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(pwd);
-
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(true);
+        User user = NewInstance(username, pwd);
         Person userPerson = Person.NewTitledInstance(personTitle);
         user.setPerson(userPerson);
 

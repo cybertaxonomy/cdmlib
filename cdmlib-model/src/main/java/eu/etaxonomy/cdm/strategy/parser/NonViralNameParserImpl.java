@@ -121,6 +121,9 @@ public class NonViralNameParserImpl
 			case ICZN:
 				result = TaxonNameFactory.NewZoologicalInstance(rank);
 				break;
+			case Fungi:
+				result = TaxonNameFactory.NewFungusInstance(rank);
+				break;
 			case ICNCP:
 				logger.warn("ICNCP parsing not yet implemented");
 				result = TaxonNameFactory.NewCultivarInstance(rank);
@@ -131,6 +134,10 @@ public class NonViralNameParserImpl
 				break;
 			case ICVCN:
 				logger.error("Viral name is not a NonViralName !!");
+				break;
+			case NonViral:
+				logger.warn("NonViral parsing not yet implemented");
+				result = TaxonNameFactory.NewNonViralInstance(rank);
 				break;
 			default:
 				// FIXME Unreachable code
@@ -1041,10 +1048,6 @@ public class NonViralNameParserImpl
 		}
 	}
 
-	/**
-     * @param string
-     * @return
-     */
     private String normalizeSpNov(String epi) {
         if (spNovPattern.matcher(epi).matches()){
             epi = epi.replace(".", ". ").replace("\\s+", " ").trim();
@@ -1052,11 +1055,6 @@ public class NonViralNameParserImpl
         return epi;
     }
 
-    /**
-     * @param givenName
-     * @param secondNameString
-     * @return
-     */
     private String extendSecondHybridPart(INonViralName givenName, String secondNameString) {
         //first letter of genus given
         if (secondNameString.matches("^" + abbrevHybridGenus + ".*")){

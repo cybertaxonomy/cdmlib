@@ -133,7 +133,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     Stage(UUID.fromString("01ed3f58-c07a-43fd-84e8-7e7cba4e462e"), "Stages", "facts.stages", null),
     ShowModifier(UUID.fromString("a3367065-d580-4d30-8d28-ce06fdc6a033"),"Show Modifiers", "facts.modifier.show", Boolean.TRUE),
     ShowModifierFreeText(UUID.fromString("53d8e5eb-b659-45a1-b093-5f4b285028e3"),"Show Modifier Freetext", "facts.modifier.showFreeText", Boolean.TRUE),
-
+    NamedAreaWithIdInVoc(UUID.fromString("edb0d2df-474b-4fac-b32b-8a0416ed39f8"),"Show Id In Vocabulary in Textfield", "facts.namedArea.showIdInVocabulary", Boolean.FALSE),
     //Names
     AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),
     AvailableNomenclaturalStatus(UUID.fromString("fd36dc63-fd98-4d86-9a11-edced6773bd3"), "Available Nomenclatural Status", "name.nomenclaturalStatus", null),
