@@ -1304,7 +1304,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         taxonService.saveOrUpdate(pinus);
         classificationService.saveOrUpdate(checklist);
 
-
         setComplete();
         endTransaction();
 
@@ -1320,6 +1319,4 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
             },
             fileNameAppendix, true );
     }
-
-
 }
