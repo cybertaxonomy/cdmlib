@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -54,7 +55,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  * @author n.hoffmann
@@ -1230,8 +1230,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
         node2 = taxonNodeService.find(node2Uuid);
         TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
-        rollback();
-        startNewTransaction();
         taxonNodeService.saveNewTaxonNode(newTaxonNode);
     }
 
