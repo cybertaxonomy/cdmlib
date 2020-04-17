@@ -32,6 +32,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
@@ -52,6 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 /**
  * @author n.hoffmann
@@ -69,6 +72,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@SpringBeanByType
 	private IReferenceService referenceService;
+
+	@SpringBeanByType
+	private IAgentService agentService;
 
 	@SpringBeanByType
 	private ITermService termService;
@@ -98,7 +104,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
 	private static final UUID rootNodeUuid = UUID.fromString("324a1a77-689c-44be-8e65-347d835f4111");
-
+	private static final UUID person1uuid = UUID.fromString("fe660517-8d8e-4dac-8bbb-4fb8f4f4a72e");
 
 	private Taxon t1;
 	private Taxon t2;
@@ -1211,6 +1217,26 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         assertEquals(classificationRootNodeDto.getUuid(), commonParentNodeDto.getUuid());
     }
 
+    @Test
+    @DataSet
+    @Ignore //test for #8857 which is not yet solved
+    public void testSaveNewTaxonNode(){
+        //make the sec reference persistent
+        Person secAndNameAuthor = (Person)agentService.find(person1uuid);
+        Reference sec = ReferenceFactory.newBook();
+        sec.setAuthorship(secAndNameAuthor);
+        referenceService.save(sec);
+        commitAndStartNewTransaction();
+
+        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        taxonName.setCombinationAuthorship(secAndNameAuthor);
+        Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
+        node2 = taxonNodeService.find(node2Uuid);
+        TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
+        rollback();
+        startNewTransaction();
+        taxonNodeService.saveNewTaxonNode(newTaxonNode);
+    }
 
     @Override
 //    @Test

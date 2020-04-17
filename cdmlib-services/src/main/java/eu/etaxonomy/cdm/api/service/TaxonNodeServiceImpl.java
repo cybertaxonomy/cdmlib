@@ -893,6 +893,7 @@ public class TaxonNodeServiceImpl
             return result;
         }
 
+        //TODO can't we work with clone method here?
         child.setUnplaced(newTaxonNode.isUnplaced());
         child.setExcluded(newTaxonNode.isExcluded());
         child.setDoubtful(newTaxonNode.isDoubtful());
