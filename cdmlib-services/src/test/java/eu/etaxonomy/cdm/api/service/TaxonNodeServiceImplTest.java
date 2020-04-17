@@ -119,9 +119,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     private TaxonNode node4;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 	}
