@@ -1002,9 +1002,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     }
 
-    /**
-     *
-     */
     private void assertStartingStateForSetPublish() {
         Assert.assertTrue(taxonService.find(1).isPublish());
         Assert.assertTrue(taxonService.find(2).isPublish());
