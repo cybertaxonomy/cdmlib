@@ -1213,7 +1213,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSet
-    @Ignore //test for #8857 which is not yet solved
+    @Ignore //test for #8857 which is not yet solved; see also #testSaveNewTaxonNodeReference()
     public void testSaveNewTaxonNode(){
         //make the sec reference persistent
         Person secAndNameAuthor = (Person)agentService.find(person1uuid);
@@ -1224,6 +1224,21 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
         TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         taxonName.setCombinationAuthorship(secAndNameAuthor);
+        Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
+        node2 = taxonNodeService.find(node2Uuid);
+        TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
+        taxonNodeService.saveNewTaxonNode(newTaxonNode);
+    }
+
+    @Test
+    @DataSet
+    @Ignore //test for #8857 which is not yet solved, same as #testSaveNewTaxonNode() but with reference as duplicate
+    public void testSaveNewTaxonNodeReference(){
+        Reference sec = referenceService.find(referenceUuid);
+        commitAndStartNewTransaction();
+
+        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        taxonName.setNomenclaturalReference(sec);
         Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
         node2 = taxonNodeService.find(node2Uuid);
         TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
