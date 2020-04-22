@@ -107,18 +107,25 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
     }
 
-    @Bean
-    @DependsOn({"requestMappingHandlerAdapter"})
-    public XmlViewResolver getOaiXmlViewResolver() {
-        XmlViewResolver resolver = new XmlViewResolver();
-      resolver.setOrder(1);
-      resolver.setLocation(new ServletContextResource(servletContext,"/WEB-INF/oai-views.xml"));
-      resolver.setCache(XML_VIEW_CACHING);
-      return resolver;
-    }
+	@Bean
+	@DependsOn({ "requestMappingHandlerAdapter" })
+	public XmlViewResolver getOaiXmlViewResolver() {
+		XmlViewResolver resolver = new XmlViewResolver();
+		resolver.setOrder(1);
+		resolver.setLocation(new ServletContextResource(servletContext, "/WEB-INF/oai-views.xml"));
+		resolver.setCache(XML_VIEW_CACHING);
+		return resolver;
+	}
 
-
-
+	@Bean
+	@DependsOn({ "requestMappingHandlerAdapter" })
+	public XmlViewResolver kmlXmlViewResolver() {
+		XmlViewResolver resolver = new PatternViewResolver();
+		resolver.setOrder(1);
+		resolver.setLocation(new ServletContextResource(servletContext, "/WEB-INF/kml-views.xml"));
+		resolver.setCache(XML_VIEW_CACHING);
+		return resolver;
+	}
 
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration#addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry)

@@ -24,13 +24,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -80,6 +84,7 @@ import io.swagger.annotations.Api;
  * @since 18.06.2009
  *
  */
+
 @Controller
 @Api(value="mapServiceParameters")
 @RequestMapping(value = { "ext/edit/mapServiceParameters/" })
@@ -194,7 +199,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      * @throws IOException TODO write controller method documentation
      */
     @RequestMapping(value = { "taxonOccurrencesFor/{uuid}" }, method = RequestMethod.GET)
-    public ModelAndView doGetOccurrenceMapUriParams(
+    public OccurrenceServiceRequestParameterDto doGetOccurrenceMapUriParams(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
             @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
@@ -203,27 +208,34 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             HttpServletResponse response)
             throws IOException {
 
-        Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
-        ModelAndView mv = new ModelAndView();
 
-        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
+        Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
+
+        List<SpecimenOrObservationBase> specimensOrObersvations = occurencesForTaxon(uuid, relationshipUuids,
+				relationshipInversUuids, maxDepth, response);
+
+        OccurrenceServiceRequestParameterDto dto = geoservice.getOccurrenceServiceRequestParameters(specimensOrObersvations,
+                specimenOrObservationTypeColors );
+   
+        return dto;
+    }
+    
+	private List<SpecimenOrObservationBase> occurencesForTaxon(UUID taxonUuid, UuidList relationshipUuids,
+			UuidList relationshipInversUuids, Integer maxDepth, HttpServletResponse response) throws IOException {
+		Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
                 relationshipUuids, relationshipInversUuids, termService);
 
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, (List<String>)null);
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
                 null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
-
-        OccurrenceServiceRequestParameterDto dto = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations,
-                specimenOrObservationTypeColors );
-        mv.addObject(dto);
-        return mv;
-    }
+		return specimensOrObersvations;
+	}
 
     /**
      * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
