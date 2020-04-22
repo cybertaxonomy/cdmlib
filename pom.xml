@@ -47,6 +47,7 @@
 	<jaxb.version>2.2.11</jaxb.version>
 	<cglib.version>3.2.0</cglib.version>
 	<aspectj.version>1.8.8</aspectj.version>
+	<geotools.version>23.0</geotools.version>
     <javadoc.opts>-Xdoclint:none</javadoc.opts>
   </properties>
   
@@ -226,6 +227,10 @@
       <id>jboss-repository</id>
       <name>JBoss Repository</name>
       <url>https://repository.jboss.org</url>
+    </repository>
+    <repository>
+    	<id>OSGeo Repository</id>
+    	<url>https://repo.osgeo.org/repository/release/</url>
     </repository>
   </repositories>
   <!-- **** PLUGINS **** -->
@@ -1520,6 +1525,32 @@
         <artifactId>redmine-java-api</artifactId>
         <version>3.1.0</version>
       </dependency>
+      <!-- GIS/KML -->
+	<dependency>
+	    <groupId>de.micromata.jak</groupId>
+	    <artifactId>JavaAPIforKml</artifactId>
+	    <version>2.2.1</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-opengis</artifactId>
+	    <version>${geotools.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-referencing</artifactId>
+	    <version>${geotools.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-epsg-wkt</artifactId>
+	    <version>${geotools.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-main</artifactId>
+	    <version>23.0</version>
+	</dependency>
     </dependencies>    
   </dependencyManagement>
 </project>
