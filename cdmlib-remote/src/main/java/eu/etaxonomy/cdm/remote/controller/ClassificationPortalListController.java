@@ -145,15 +145,15 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             value = {"{treeUuid}/siblingsOf/{taxonUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNode> getSiblingsOfTaxon(
-            @PathVariable("treeUuid") UUID treeUuid,
+            @PathVariable("treeUuid") UUID classificationUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            @SuppressWarnings("unused") HttpServletResponse response) {
         logger.info("getSiblingsOfTaxon() " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;
         //FIXME return pager
-        List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, treeUuid, includeUnpublished, null, null, NODE_INIT_STRATEGY);
+        List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, classificationUuid, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         return childs;
 
     }
@@ -180,7 +180,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             value = {"{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNode> getPathFromTaxonToRank(
-            @PathVariable("treeUuid") UUID treeUuid,
+            @PathVariable("treeUuid") UUID classificationUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @PathVariable("rankUuid") UUID rankUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
@@ -190,7 +190,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 
-        Classification classification = service.find(treeUuid);
+        Classification classification = service.find(classificationUuid);
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         Rank rank = findRank(rankUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);

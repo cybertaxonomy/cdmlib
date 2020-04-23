@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -35,7 +34,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 18.12.2019
  */
-@Ignore  //ignore ignored because it currently sometimes influences other tests due to test data
 public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest {
 
     private static final UUID uuidTermTree = UUID.fromString("dd24b972-3364-4902-a345-310b8c771e00");

@@ -371,6 +371,9 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             sourceRef = ReferenceFactory.newGeneric();
             String title = state.getConfig().getSourceNameString();
             sourceRef.setTitle(title);
+            if (uuid != null){
+                sourceRef.setUuid(uuid);
+            }
             state.getConfig().setSourceReference(sourceRef);
         }
         state.setSourceReference(sourceRef);

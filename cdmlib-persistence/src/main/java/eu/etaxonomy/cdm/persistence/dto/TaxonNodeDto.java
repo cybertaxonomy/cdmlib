@@ -11,11 +11,14 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
+import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -202,6 +205,17 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     public String getNameTitleCache(){
         return getTitleCache();
+    }
+
+    /**
+     * Preliminary implementation. May not be exactly match
+     * the real name cache.
+     */
+    public String getNameCache(){
+        List<TaggedText> nameCacheTags = taggedTitle.stream()
+                .filter(t->t.getType().isNameCachePart())
+                .collect(Collectors.toList());
+        return TaggedCacheHelper.createString(nameCacheTags, new HTMLTagRules());
     }
 
     @Override

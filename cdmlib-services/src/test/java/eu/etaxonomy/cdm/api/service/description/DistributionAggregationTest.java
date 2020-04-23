@@ -74,7 +74,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since Feb 26, 2013
  */
-@Ignore   //preliminary ignore as it does not always work (depending on other tests)
+//@Ignore   //preliminary ignore as it does not always work (depending on other tests)
 public class DistributionAggregationTest extends CdmTransactionalIntegrationTest {
 
     private static Logger logger = Logger.getLogger(DistributionAggregationTest.class);
@@ -217,19 +217,19 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 .filter(db->db.getStatus().equals(endemic)&&db.getArea().equals(yug)).count());
 
         //TODO decide if absent status should aggregate along rank, originally they were not ignored
-//        Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
-//        assertEquals(1, lapsana_communis.getDescriptions().size());
-//        TaxonDescription description = lapsana_communis.getDescriptions().iterator().next();
-//        assertEquals(1, description.getElements().size());
-//        int numExpectedFound = 0;
-//        for (DescriptionElementBase element : description.getElements()){
-//            Distribution distribution = (Distribution)element;
-//            if(distribution.getArea().equals(yug_ko)){
-//                numExpectedFound++;
-//                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), distribution.getStatus());
-//            }
-//        }
-//        assertEquals("YUG-KO should have been found before", numExpectedFound, 1);
+        Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
+        assertEquals(1, lapsana_communis.getDescriptions().size());
+        TaxonDescription description = lapsana_communis.getDescriptions().iterator().next();
+        assertEquals(1, description.getElements().size());
+        int numExpectedFound = 0;
+        for (DescriptionElementBase element : description.getElements()){
+            Distribution distribution = (Distribution)element;
+            if(distribution.getArea().equals(yug_ko)){
+                numExpectedFound++;
+                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.INTRODUCED_FORMERLY_INTRODUCED(), distribution.getStatus());
+            }
+        }
+        assertEquals("YUG-KO should have been found before", numExpectedFound, 1);
     }
 
     @Test
