@@ -762,7 +762,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @return
 	 */
 	//TODO javadoc. this term was added for Flore du Gabon
-	//FIXME probably needs to be removed, or replaced by BerlinModelTransformer.uuidNomStatusCombIned
 	public static final NomenclaturalStatusType COMB_NOV(){
 		return getTermByUuid(uuidCombNov);
 	}

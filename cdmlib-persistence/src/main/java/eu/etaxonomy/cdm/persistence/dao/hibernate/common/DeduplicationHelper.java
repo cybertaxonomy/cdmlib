@@ -111,7 +111,7 @@ public class DeduplicationHelper {
 				deleteSet = mergeStrategy.invoke(mergable1, mergable2, cloneSet);
 				//session.saveOrUpdate(mergable1);
 
-				session.flush();
+				//session.flush();
 				//((IMergable)cdmBase1).mergeInto(cdmBase2, DefaultMergeStrategy.NewInstance(cdmBase1.getClass()));
 			}else{
 				//TODO should we better use clazz2 here?

@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.strategy.cache;
 
-import eu.etaxonomy.cdm.model.name.TaxonName;
+
 
 /**
  * Tag types for atomised taxon name strings and atomised reference citation strings.
@@ -145,15 +145,5 @@ public enum TagEnum {
 	public boolean isHybridSign(){
 		return this == hybridSign;
 	}
-
-	/**
-	 * @return <code>true</code> if the tag is usually used in the pure name part
-	 * of a {@link TaxonName}. This does not include author information. It is still
-	 * unclear if {@link #isAppendedPhrase()} should be part. Currently it is.
-	 * {@link #isSeparator()} is also unclear, currently it is not.
-	 */
-	public boolean isNameCachePart() {
-        return isName()||isRank()||isHybridSign()||isAppendedPhrase();
-    }
 
 }
