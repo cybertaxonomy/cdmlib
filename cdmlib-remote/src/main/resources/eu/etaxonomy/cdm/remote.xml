@@ -48,19 +48,19 @@
     </property>
   </bean>
   
-<!--    <bean id="kmlMarshaller" name="kmlMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller"> -->
-<!--     <property name="classesToBeBound"> -->
-<!--       <list> -->
-<!--         <value>de.micromata.opengis.kml.v_2_2_0.Kml</value> -->
-<!--       </list> -->
-<!--     </property> -->
-<!--    	<property name="checkForXmlRootElement" value="false" /> -->
-<!--    	<property name="marshallerProperties"> -->
-<!--       <map> -->
-<!--         <entry key="jaxb.formatted.output"><value type="java.lang.Boolean">true</value></entry> -->
-<!--       </map> -->
-<!--     </property> -->
-<!--    </bean> -->
+   <bean id="kmlMarshaller" name="kmlMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <property name="classesToBeBound">
+      <list>
+        <value>de.micromata.opengis.kml.v_2_2_0.Kml</value>
+      </list>
+    </property>
+   	<property name="checkForXmlRootElement" value="false" />
+   	<property name="marshallerProperties">
+      <map>
+        <entry key="jaxb.formatted.output"><value type="java.lang.Boolean">true</value></entry>
+      </map>
+    </property>
+   </bean>
 
   <bean id="dozerMapper" class="eu.etaxonomy.cdm.remote.dto.assembler.DozerBeanMapperFactoryBean">
     <property name="mappingFiles">
