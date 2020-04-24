@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * Class for updating term representations.
  * @author a.mueller
  * @since 27.09.2011
- *
  */
 public class TermRepresentationUpdater
             extends SchemaUpdaterStepBase {
@@ -31,15 +30,24 @@ public class TermRepresentationUpdater
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermRepresentationUpdater.class);
 
-	public static final TermRepresentationUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
-		return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label, abbrev, uuidLanguage, false, false);
+	public static final TermRepresentationUpdater NewInstance(List<ISchemaUpdaterStep> stepList,
+	        String stepName, UUID uuidTerm, String description,  String label, String abbrev,
+	        UUID uuidLanguage){
+		return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
+		        abbrev, uuidLanguage, false, false);
 	}
-    public static final TermRepresentationUpdater NewInstanceWithTitleCache(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
-        return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label, abbrev, uuidLanguage, false, true);
+    public static final TermRepresentationUpdater NewInstanceWithTitleCache(List<ISchemaUpdaterStep> stepList,
+            String stepName, UUID uuidTerm, String description,  String label, String abbrev,
+            UUID uuidLanguage){
+        return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
+                abbrev, uuidLanguage, false, true);
     }
 
-	public static final TermRepresentationUpdater NewReverseInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description,  String label, String abbrev, UUID uuidLanguage){
-		return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label, abbrev, uuidLanguage, true, false);
+	public static final TermRepresentationUpdater NewReverseInstance(List<ISchemaUpdaterStep> stepList,
+	        String stepName, UUID uuidTerm, String description,  String label, String abbrev,
+	        UUID uuidLanguage){
+		return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
+		        abbrev, uuidLanguage, true, false);
 	}
 
 	private UUID uuidTerm ;
