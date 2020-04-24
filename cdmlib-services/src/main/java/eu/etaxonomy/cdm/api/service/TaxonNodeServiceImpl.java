@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
@@ -35,7 +36,9 @@ import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
+import eu.etaxonomy.cdm.api.service.dto.CreateTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTOComparator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
@@ -76,9 +79,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author n.hoffmann
@@ -808,13 +813,23 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, Taxon newTaxon, Reference ref, String microref){
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, UUID refUuid, String microref, boolean unplaced, boolean doubtful, boolean excluded, Map<Language,LanguageString> excludedNote){
         UpdateResult result = new UpdateResult();
-        if (newTaxon.getName().getId() != 0){
-            TaxonName name = nameService.load(newTaxon.getName().getUuid());
-            newTaxon.setName(name);
+        TaxonName name = null;
+        if (taxonDto.getNameUuid() != null){
+            name = nameService.load(taxonDto.getNameUuid());
+
         }else{
-            for (HybridRelationship rel : newTaxon.getName().getHybridChildRelations()){
+            NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
+            name = (TaxonName) nonViralNameParser.parseFullName(taxonDto.getTaxonNameString());
+        }
+        Reference sec = null;
+        if (taxonDto.getSecUuid() != null ){
+            sec = referenceService.load(taxonDto.getSecUuid());
+
+        }
+        if (!name.isPersited()){
+            for (HybridRelationship rel : name.getHybridChildRelations()){
                 if (!rel.getHybridName().isPersited()) {
                     nameService.save(rel.getHybridName());
                 }
@@ -823,13 +838,25 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
-        UUID taxonUUID = taxonService.saveOrUpdate(newTaxon);
-        newTaxon = (Taxon) taxonService.load(taxonUUID);
 
-        TaxonNode parent = dao.load(parentNodeUuid);
-        TaxonNode child = null;
-        try{
-            child = parent.addChildTaxon(newTaxon,ref, microref);
+       Taxon newTaxon = Taxon.NewInstance(name, sec);
+       UUID taxonResult = taxonService.saveOrUpdate(newTaxon);
+       newTaxon = (Taxon) taxonService.load(taxonResult);
+
+       TaxonNode parent = dao.load(parentNodeUuid);
+       TaxonNode child = null;
+       Reference ref = null;
+       if (refUuid != null){
+           ref = referenceService.load(refUuid);
+       }
+
+       try{
+           child = parent.addChildTaxon(newTaxon, ref, microref);
+           child.setDoubtful(doubtful);
+           child.setExcluded(excluded);
+           child.setUnplaced(unplaced);
+           child.getExcludedNote().putAll(excludedNote);
+//            child = parent.addChildTaxon((Taxon)taxonResult.getMergedEntity() ,ref, microref);
         }catch(Exception e){
             result.addException(e);
             result.setError();
@@ -853,7 +880,6 @@ public class TaxonNodeServiceImpl
 
         if (newTaxonNode.getTaxon().isPersited()){
             taxon = (Taxon)taxonService.load(newTaxonNode.getTaxon().getUuid());
-            //newTaxonNode.setTaxon(taxon);
         }else if (newTaxonNode.getTaxon().getName().isPersited()){
             TaxonName name = nameService.load(newTaxonNode.getTaxon().getName().getUuid());
             taxon = newTaxonNode.getTaxon();
@@ -879,8 +905,9 @@ public class TaxonNodeServiceImpl
             taxon.setSec(sec);
         }
         if (!taxon.isPersited()){
-            UUID taxonUUID = taxonService.saveOrUpdate(taxon);
-            taxon = (Taxon) taxonService.load(taxonUUID);
+            MergeResult<TaxonBase> mergeResult = taxonService.merge(taxon, true);
+            taxon = (Taxon) mergeResult.getMergedEntity();
+
         }
 
         TaxonNode parent = dao.load(parentUuid);
@@ -905,8 +932,8 @@ public class TaxonNodeServiceImpl
         }
 
         newTaxonNode = null;
-        dao.saveOrUpdate(child);
-
+        MergeResult<TaxonNode> mergeNode = dao.merge(child,true);
+        child = mergeNode.getMergedEntity();
         result.addUpdatedObject(child.getParent());
         result.setCdmEntity(child);
         return result;
@@ -914,7 +941,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, Reference ref, String microref){
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref){
         UpdateResult result = new UpdateResult();
         TaxonNode parent = dao.load(parentNodeUuid);
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);
@@ -1155,14 +1182,14 @@ public class TaxonNodeServiceImpl
             }
             if (node.getTaxon() != null && hasPermission){
                 try{
-                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
+                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node);
                     result.add(dto);
                 }catch(Exception e){
                     logger.error(e.getMessage(), e);
                 }
             }
         }
-
+        result.sort(new TaxonDistributionDTOComparator());
         return result;
     }
 
