@@ -840,8 +840,8 @@ public class TaxonNodeServiceImpl
         }
 
        Taxon newTaxon = Taxon.NewInstance(name, sec);
-       UUID taxonResult = taxonService.saveOrUpdate(newTaxon);
-       newTaxon = (Taxon) taxonService.load(taxonResult);
+//       UUID taxonUuid = taxonService.saveOrUpdate(newTaxon);
+//       newTaxon = (Taxon) taxonService.load(taxonUuid);
 
        TaxonNode parent = dao.load(parentNodeUuid);
        TaxonNode child = null;
@@ -856,7 +856,7 @@ public class TaxonNodeServiceImpl
            child.setExcluded(excluded);
            child.setUnplaced(unplaced);
            child.getExcludedNote().putAll(excludedNote);
-//            child = parent.addChildTaxon((Taxon)taxonResult.getMergedEntity() ,ref, microref);
+
         }catch(Exception e){
             result.addException(e);
             result.setError();
