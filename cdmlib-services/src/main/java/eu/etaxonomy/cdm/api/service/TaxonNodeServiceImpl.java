@@ -1182,7 +1182,7 @@ public class TaxonNodeServiceImpl
             }
             if (node.getTaxon() != null && hasPermission){
                 try{
-                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node);
+                    TaxonDistributionDTO dto = new TaxonDistributionDTO(node.getTaxon());
                     result.add(dto);
                 }catch(Exception e){
                     logger.error(e.getMessage(), e);
