@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.ext.geo.kml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +57,9 @@ public class KMLDocumentBuilder {
 	private final static Logger logger = Logger.getLogger(KMLDocumentBuilder.class);
 
 	private Set<SpecimenOrObservationBase> occSet = new HashSet<>();
+	
+	private Map<FieldUnit, Set<SpecimenOrObservationBase>> fieldUnitMap = new HashMap<>();
+	private Map<FieldUnit, Set<SpecimenOrObservationType>> fieldUnitRecordBases = new HashMap<>();
 
 	private Map<String, Style> styles = new HashMap<>();
 
@@ -74,15 +76,10 @@ public class KMLDocumentBuilder {
 		List<Feature> documentFeatures = new ArrayList<>();
 
 		for (SpecimenOrObservationBase sob : occSet) {
-			if (sob instanceof FieldUnit) {
-				GatheringEvent gatherEvent = ((FieldUnit) sob).getGatheringEvent();
-				if (gatherEvent != null && isValidPoint(gatherEvent.getExactLocation())) {
-					createFieldUnitPlacemarks(documentFeatures, sob, gatherEvent, LocationType.FIELD_UNIT, sob.getKindOfUnit());
-				}
-			}
-			if (sob instanceof DerivedUnit) {
-				walkDerivationPath((DerivedUnit) sob, (DerivedUnit) sob, documentFeatures, null);
-			}
+			mapFieldUnit(sob, null, null);
+		}
+		for (FieldUnit fu : fieldUnitMap.keySet()) {
+			createFieldUnitPlacemarks(documentFeatures, fu);
 		}
 
 		Document doc = kml.createAndSetDocument();
@@ -96,6 +93,7 @@ public class KMLDocumentBuilder {
 	 * @param documentFeatures
 	 * @param kindOfUnit
 	 */
+	/*
 	private void walkDerivationPath(DerivedUnit derivedUnit, DerivedUnit unitOfInterest, List<Feature> documentFeatures,
 			DefinedTerm kindOfUnit) {
 
@@ -121,19 +119,52 @@ public class KMLDocumentBuilder {
 			}
 		}
 	}
+	*/
+	
+	private void mapFieldUnit(SpecimenOrObservationBase unitOfInterest, SpecimenOrObservationBase original, Set<SpecimenOrObservationType> recordBases) {
+		
+		if(original == null) {
+			original = unitOfInterest;
+		}
+		
+		if (original instanceof FieldUnit) {
+			FieldUnit fu = (FieldUnit)original;
+			if(!fieldUnitMap.containsKey(fu)) {
+				fieldUnitMap.put(fu, new HashSet<>());
+			}
+			fieldUnitMap.get(fu).add(unitOfInterest);
+			if(!fieldUnitRecordBases.containsKey(fu)) {
+				fieldUnitRecordBases.put(fu, new HashSet<>());
+			}
+			fieldUnitRecordBases.get(fu).addAll(recordBases);
+		} else if (original instanceof DerivedUnit) {
+			if(recordBases == null) {
+				recordBases = new HashSet<>();
+			}
+			Set<SpecimenOrObservationBase> originals = ((DerivedUnit)original).getOriginals();
+			if (originals != null) {
+				for (SpecimenOrObservationBase parentOriginal : originals) {
+					mapFieldUnit(original, parentOriginal, recordBases);
+				}
+			}
+		}
+	}
 
 	/**
 	 * @param documentFeatures
-	 * @param sob
+	 * @param fieldUnit
 	 * @param gatherEvent
 	 */
-	private void createFieldUnitPlacemarks(List<Feature> documentFeatures, SpecimenOrObservationBase sob,
-			GatheringEvent gatherEvent, LocationType locationType, DefinedTerm kindOfUnit) {
-		Placemark mapMarker = fieldUnitLocationMarker(gatherEvent.getExactLocation(),
-				gatherEvent.getAbsoluteElevation(), locationType, kindOfUnit);
-		documentFeatures.add(mapMarker);
-		addExtendedData(mapMarker, sob, gatherEvent);
-		errorRadiusPlacemark(gatherEvent.getExactLocation()).ifPresent(pm -> documentFeatures.add(pm));
+	private void createFieldUnitPlacemarks(List<Feature> documentFeatures, FieldUnit fieldUnit) {
+		
+		GatheringEvent gatherEvent = fieldUnit.getGatheringEvent();
+		if (gatherEvent != null && isValidPoint(gatherEvent.getExactLocation())) {
+			Placemark mapMarker = fieldUnitLocationMarker(gatherEvent.getExactLocation(),
+					gatherEvent.getAbsoluteElevation(), fieldUnitRecordBases.get(fieldUnit));
+			documentFeatures.add(mapMarker);
+			addExtendedData(mapMarker, fieldUnit, gatherEvent);
+			errorRadiusPlacemark(gatherEvent.getExactLocation()).ifPresent(pm -> documentFeatures.add(pm));
+		}
 	}
 
 
@@ -141,11 +172,10 @@ public class KMLDocumentBuilder {
 	 * @param exactLocation
 	 * @param altitude
 	 * @param locationType
-	 * @param kindOfUnit
+	 * @param recordBases
 	 * @return
 	 */
-	private Placemark fieldUnitLocationMarker(Point exactLocation, Integer altitude, LocationType locationType,
-			DefinedTerm kindOfUnit) {
+	private Placemark fieldUnitLocationMarker(Point exactLocation, Integer altitude, Set<SpecimenOrObservationType> recordBases) {
 
 		Placemark mapMarker = KmlFactory.createPlacemark();
 		de.micromata.opengis.kml.v_2_2_0.Point point = KmlFactory.createPoint();
@@ -158,7 +188,7 @@ public class KMLDocumentBuilder {
 					.asList(KmlFactory.createCoordinate(exactLocation.getLongitude(), exactLocation.getLatitude())));
 		}
 		mapMarker.setGeometry(point);
-		mapMarker.setStyleUrl(styleURL(locationType, kindOfUnit));
+		mapMarker.setStyleUrl(styleURL(recordBases));
 
 		return mapMarker;
 	}
@@ -229,33 +259,33 @@ public class KMLDocumentBuilder {
 		return lineString;
 	}
 	
-	private void addExtendedData(Placemark mapMarker, SpecimenOrObservationBase sob, GatheringEvent gatherEvent) {
+	private void addExtendedData(Placemark mapMarker, FieldUnit fieldUnit, GatheringEvent gatherEvent) {
 		
-		String name = "";
-		if(sob.getRecordBasis() != null) {
-			name = sob.getRecordBasis().name();
-		} else {
-			name = SpecimenOrObservationType.Unknown.name();
-		}
-		String titleCache = sob.getTitleCache();
+		String name = fieldUnit.toString();
+		String titleCache = fieldUnit.getTitleCache();
 		String locationString = null;
 		if(gatherEvent.getExactLocation() != null) {
 			locationString = gatherEvent.getExactLocation().toSexagesimalString(false,  true);
 			titleCache = titleCache.replace(locationString + ", ", "");
 		}
-		String description = "<p class=\"title-cache\">" + titleCache 
-				+ " <a class=\"specimen-link\" href=\"${specimen-link-base-url}/" + sob.getUuid() + "\">${specimen-link-text}</a>"
-				+ "</p>";
+		String description = "<p class=\"title-cache\">" + titleCache;
 		if(locationString != null) {
 			// see https://www.mediawiki.org/wiki/GeoHack
-			description += "<p class=\"exact-location\"><a target=\"geohack\" href=\"https://tools.wmflabs.org/geohack/en/" + 
-		gatherEvent.getExactLocation().getLatitude() + ";" + gatherEvent.getExactLocation().getLongitude() +"?pagename=" + name + "\">" + locationString + "</a></p>";
+			description += "<br/><a class=\"exact-location\" target=\"geohack\" href=\"https://tools.wmflabs.org/geohack/en/" + 
+					gatherEvent.getExactLocation().getLatitude() + ";" + gatherEvent.getExactLocation().getLongitude() +"?pagename=" + name + "\">" + locationString + "</a>";
 		}
+		description += "</p>";
+		description += "<figure><figcaption>Specimens and observations:</figcaption><ul>";
+		for(SpecimenOrObservationBase sob : fieldUnitMap.get(fieldUnit)) {
+			SpecimenOrObservationType type = sob.getRecordBasis() != null ? sob.getRecordBasis() : SpecimenOrObservationType.Unknown;
+			description += "<li><a class=\"occurrence-link occurrence-link-" + sob.getUuid() + " \" href=\"${occurrence-link-base-url}/" + sob.getUuid() + "\">" + type.name() + "</a></li>";
+		}	
+		description += "</ul></figure>";
 		// mapMarker.setName(name);
 		mapMarker.setDescription(description);
 		
 		ExtendedData extendedData = mapMarker.createAndSetExtendedData();
-		extendedData.createAndAddData(sob.getTitleCache()).setName("titleCache");
+		extendedData.createAndAddData(fieldUnit.getTitleCache()).setName("titleCache");
 		if(mapMarker.getGeometry() != null && mapMarker.getGeometry() instanceof de.micromata.opengis.kml.v_2_2_0.Point) {
 			extendedData.createAndAddData(((de.micromata.opengis.kml.v_2_2_0.Point)mapMarker.getGeometry()).getCoordinates().toString()).setName("Location");
 		}
@@ -263,14 +293,9 @@ public class KMLDocumentBuilder {
 	}
 
 
-	private String styleURL(LocationType locationType, DefinedTerm kindOfUnit) {
-		String key = "";
-		if (locationType != null) {
-			key += locationType.name();
-		}
-		if (kindOfUnit != null) {
-			key += kindOfUnit.getUuid();
-		}
+	private String styleURL(Set<SpecimenOrObservationType> recordBases) {
+		String key = "DEFAULT";
+		// TODO determine key and style on base of the recordBases
 		if (!styles.containsKey(key)) {
 			Style style = KmlFactory.createStyle().withIconStyle(MapMarkerIcons.red_blank.asIconStyle());
 			style.setId(key);
@@ -317,9 +342,5 @@ public class KMLDocumentBuilder {
 			return false;
 		}
 		return true;
-	}
-
-	public enum LocationType {
-		FIELD_UNIT, DERIVED_UNIT;
 	}
 }
