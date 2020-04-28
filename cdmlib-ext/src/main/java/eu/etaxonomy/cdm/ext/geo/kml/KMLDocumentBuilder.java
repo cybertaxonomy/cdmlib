@@ -126,6 +126,9 @@ public class KMLDocumentBuilder {
 		if(original == null) {
 			original = unitOfInterest;
 		}
+		if(recordBases == null) {
+			recordBases = new HashSet<>();
+		}
 		
 		if (original instanceof FieldUnit) {
 			FieldUnit fu = (FieldUnit)original;
@@ -138,9 +141,6 @@ public class KMLDocumentBuilder {
 			}
 			fieldUnitRecordBases.get(fu).addAll(recordBases);
 		} else if (original instanceof DerivedUnit) {
-			if(recordBases == null) {
-				recordBases = new HashSet<>();
-			}
 			Set<SpecimenOrObservationBase> originals = ((DerivedUnit)original).getOriginals();
 			if (originals != null) {
 				for (SpecimenOrObservationBase parentOriginal : originals) {
