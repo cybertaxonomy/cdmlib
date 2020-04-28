@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.Float2BigDecimalTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -69,6 +70,16 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         uuidLanguage = Language.uuidEnglish;
         TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName,
                 uuidTerm, label, label, null, uuidLanguage);
+
+        //#8978
+        stepName = "make statistical measurment value BigDecimal";
+        tableName = "StatisticalMeasurementValue";
+        columnName = "value";
+        String scaleColumnName = "value_scale";
+        int newPrecision = 18;
+        int newScale = 9;
+//        ColumnTypeChanger.NewFloat2BigDecimalInstance(stepList, stepName, tableName, columnName, scaleColumnName, newPrecision, newScale, INCLUDE_AUDIT);
+        Float2BigDecimalTypeChanger.NewInstance(stepList, stepName, tableName, columnName, scaleColumnName, newPrecision, newScale, INCLUDE_AUDIT);
 
         return stepList;
     }

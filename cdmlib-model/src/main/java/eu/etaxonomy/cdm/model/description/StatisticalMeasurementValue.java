@@ -10,13 +10,16 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,6 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Columns;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -61,8 +66,11 @@ public class StatisticalMeasurementValue
 	private static final long serialVersionUID = -3576311887760351982L;
 	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 
-	@XmlElement(name = "Value")
-	private float value;
+    @XmlElement(name = "Value")
+    @Columns(columns={@Column(name="value", precision = 18, scale = 9), @Column(name="value_scale")})
+    @Type(type="bigDecimalUserType")
+    @NotNull  //#8978 the old float value also could not be null and a value without value does not make sense, but do we want to have a default?
+    private BigDecimal value;
 
 	@XmlElementWrapper(name = "Modifiers")
 	@XmlElement(name = "Modifier")
@@ -85,29 +93,26 @@ public class StatisticalMeasurementValue
     @IndexedEmbedded(depth=1)
 	private QuantitativeData quantitativeData;
 
+// ***************** FACTORY ****************************/
 
+    public static StatisticalMeasurementValue NewInstance(){
+        return new StatisticalMeasurementValue();
+    }
+
+    public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, BigDecimal value){
+        StatisticalMeasurementValue result = new StatisticalMeasurementValue();
+        result.setValue(value);
+        result.setType(type);
+        return result;
+    }
+
+// ******************* CONSTRUCTOR *************************/
 
 	protected StatisticalMeasurementValue(){
 		super();
 	}
 
-	/**
-	 * Creates a new empty statistical measurement value instance.
-	 */
-	public static StatisticalMeasurementValue NewInstance(){
-		return new StatisticalMeasurementValue();
-	}
-
-
-	/**
-	 * Creates a new empty statistical measurement value instance.
-	 */
-	public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, float value){
-		StatisticalMeasurementValue result = new StatisticalMeasurementValue();
-		result.setValue(value);
-		result.setType(type);
-		return result;
-	}
+// ***************** GETTER / SETTER **************************/
 
 
 	/**
@@ -130,13 +135,13 @@ public class StatisticalMeasurementValue
 	 * corresponding to the {@link QuantitativeData quantitative data} <i>this</i>
 	 * statistical measurement value belongs to.
 	 */
-	public float getValue(){
+	public BigDecimal getValue(){
 		return this.value;
 	}
 	/**
 	 * @see	#getValue()
 	 */
-	public void setValue(float value){
+	public void setValue(BigDecimal value){
 		this.value = value;
 	}
 

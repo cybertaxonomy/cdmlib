@@ -31,44 +31,55 @@ public class ColumnTypeChanger
 	private final String columnName;
 	private final Datatype newColumnType;
 	private final Integer newSize;
+	private final Integer newScale;
 	private final Object defaultValue;
 	private final boolean isNotNull;
 	private final String referencedTable;
+	private final boolean isBigDecimal;
+	private String secondColumnName;
 
 
 	public static final ColumnTypeChanger NewStringSizeInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, int newSize, boolean includeAudTable){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, newSize, includeAudTable, null, false, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, newSize, null, includeAudTable, null, false, null, false, null);
 	}
 
 	public static final ColumnTypeChanger NewClobInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, boolean includeAudTable){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.CLOB, null, includeAudTable, null, false, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.CLOB, null, null, includeAudTable, null, false, null, false, null);
 	}
 
 	public static final ColumnTypeChanger NewInt2DoubleInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, boolean includeAudTable){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.DOUBLE, null, includeAudTable, null, false, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.DOUBLE, null, null, includeAudTable, null, false, null, false, null);
 	}
 
 	public static final ColumnTypeChanger NewInt2StringInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, int size, boolean includeAudTable, Integer defaultValue, boolean notNull){
-		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, includeAudTable, defaultValue, notNull, null);
+		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, null, includeAudTable, defaultValue, notNull, null, false, null);
 	}
 
 	public static final ColumnTypeChanger NewChangeAllowNullOnIntChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, boolean includeAudTable){
-	    return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.INTEGER, null, includeAudTable, null, false, null);
+	    return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.INTEGER, null, null, includeAudTable, null, false, null, false, null);
 	}
 
     public static final ColumnTypeChanger NewChangeAllowNullOnStringChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Integer size, boolean includeAudTable){
-        return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, includeAudTable, null, false, null);
+        return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, null, includeAudTable, null, false, null, false, null);
     }
 
+    public static final ColumnTypeChanger NewFloat2BigDecimalInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, String newSecondColumnName, int newPrecision, int newScale, boolean includeAudTable){
+        return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.BIGDECIMAL, newPrecision, newScale, includeAudTable, null, false, null, true, newSecondColumnName);
+    }
 
-	protected ColumnTypeChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Datatype newColumnType, Integer size, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
-		super(stepList, stepName, tableName, includeAudTable);
+	protected ColumnTypeChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Datatype newColumnType, Integer size, Integer scale,
+	        boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable, boolean isBigDecimal, String secondColumnName) {
+
+	    super(stepList, stepName, tableName, includeAudTable);
 		this.columnName = columnName;
 		this.newColumnType = newColumnType;
 		this.newSize = size;
 		this.defaultValue = defaultValue;
 		this.isNotNull = notNull;
 		this.referencedTable = referencedTable;
+		this.newScale = scale;
+		this.isBigDecimal = isBigDecimal;
+		this.secondColumnName = secondColumnName;
 	}
 
     @Override
@@ -139,7 +150,7 @@ public class ColumnTypeChanger
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize);
+		String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize, newScale);
 
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			//MySQL allows both syntaxes
@@ -191,7 +202,7 @@ public class ColumnTypeChanger
         //
         boolean includeAuditing = false;
         String colNameChanged = this.columnName + _OLDXXX;
-        String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize);
+        String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize, newScale);
 
         //change old column name
         //note data type is not relevant for ColumnNameChanger with Postgres
@@ -202,7 +213,7 @@ public class ColumnTypeChanger
         //create new column
 //        step = ColumnAdder.NewStringInstance(this.stepName + " - Add new column", tableName, this.columnName, includeAuditing);
         Object defaultValue = null;
-        step = new ColumnAdder(null, this.stepName + " - Add new column", tableName, this.columnName, newColumnType, newSize, includeAuditing, defaultValue, false, null);
+        step = new ColumnAdder(null, this.stepName + " - Add new column", tableName, this.columnName, newColumnType, newSize, null, includeAuditing, defaultValue, false, null);
         step.invoke(datasource, monitor, caseType, result);
 
         //move data
@@ -224,8 +235,8 @@ public class ColumnTypeChanger
         step.invoke(datasource, monitor, caseType, result);
     }
 
-	private String getDatabaseColumnType(ICdmDataSource datasource, Datatype columnType, Integer size) {
-		return columnType.format(datasource, size);
+	private String getDatabaseColumnType(ICdmDataSource datasource, Datatype columnType, Integer size, Integer scale) {
+		return columnType.format(datasource, size, scale);
 	}
 
 	public String getReferencedTable() {

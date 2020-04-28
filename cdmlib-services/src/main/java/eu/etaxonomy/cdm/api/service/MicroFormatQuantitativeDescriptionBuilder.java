@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,8 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 	private String spanEnd = "</span>";
 
 	@Override
-	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit, List<Language> languages){
+	protected TextData doBuild(Map<StatisticalMeasure,BigDecimal> measures, MeasurementUnit mUnit,
+	        List<Language> languages){
 		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
 		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
 

@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.strategy.generate;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -54,9 +55,9 @@ public class PolytomousKeyGeneratorTest {
     private static final boolean debug = true;
 
     private static final String GT_3 = " > 3.0";
-    private static final String GT_3_5 = " > 3.5";
+//    private static final String GT_3_5 = " > 3.5";
     private static final String LESS_3 = " < 3.0";
-    private static final String LESS_3_5 = " < 3.5";
+//    private static final String LESS_3_5 = " < 3.5";
 
 	private static final boolean QUANTITATIVE = true;
 	private static final boolean CATEGORICAL = false;
@@ -195,15 +196,15 @@ public class PolytomousKeyGeneratorTest {
 
 		//*************************/
 
-		qtd31 = QuantitativeData.NewExactValueInstance(featureLength, 0.0f, 3.0f);
+		qtd31 = QuantitativeData.NewExactValueInstance(featureLength, new BigDecimal("0.0"), new BigDecimal("3.0"));
 //        qtd31 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
-		qtd32 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
-		qtd33 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
-		qtd34 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
-		qtd35 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
-		qtd36 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
-		qtd37 = QuantitativeData.NewMinMaxInstance(featureLength, 6, 9);
-		qtd38 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
+		qtd32 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("0.0"), new BigDecimal("3.0"));
+		qtd33 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("6.0"), new BigDecimal("9.0"));
+		qtd34 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("6.0"), new BigDecimal("9.0"));
+		qtd35 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("0.0"), new BigDecimal("3.0"));
+		qtd36 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("0.0"), new BigDecimal("3.0"));
+		qtd37 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("6.0"), new BigDecimal("9.0"));
+		qtd38 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("0.0"), new BigDecimal("3.0"));
 
 		//*************************/
 

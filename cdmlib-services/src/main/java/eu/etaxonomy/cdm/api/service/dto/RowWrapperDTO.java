@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -117,15 +118,15 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     private String generateQuantitativeDataString(QuantitativeData quantitativeData) {
         String displayData;
         displayData = "";
-        Float min = quantitativeData.getMin();
-        Float max = quantitativeData.getMax();
+        BigDecimal min = quantitativeData.getMin();
+        BigDecimal max = quantitativeData.getMax();
         if(min!=null||max!=null){
             displayData += "["+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+"] ";
         }
-        displayData += quantitativeData.getStatisticalValues().stream().
-        filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-        .map(exact->Float.toString(exact.getValue()))
-        .collect(Collectors.joining(", "));
+        displayData += quantitativeData.getStatisticalValues().stream()
+                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+                .map(exact->exact.getValue().toString())
+                .collect(Collectors.joining(", "));
         if (quantitativeData.getUnit() != null){
             displayData += " "+ quantitativeData.getUnit().getIdInVocabulary();
         }
@@ -174,7 +175,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 texts.forEach(text->{
                     String string = text;
                     try {
-                        float exactValue = Float.parseFloat(string);
+                        BigDecimal exactValue = new BigDecimal(string);
                         quantitativeData.addStatisticalValue(StatisticalMeasurementValue.NewInstance(measure, exactValue));
                     } catch (NumberFormatException e) {
                     }

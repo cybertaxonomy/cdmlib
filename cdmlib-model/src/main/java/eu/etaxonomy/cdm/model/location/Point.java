@@ -62,7 +62,7 @@ public class Point implements Cloneable, Serializable {
     private static final long serialVersionUID = 531030660792800636L;
     private static final Logger logger = Logger.getLogger(Point.class);
 
-    //TODO was Float but H2 threw errors
+    //TODO was Float but H2 threw errors, maybe we should also use BigDecimal for exactness, see #8978
     @XmlElement(name = "Longitude")
     @Longitude(of="point")
     @NotNull(groups = Level2.class)

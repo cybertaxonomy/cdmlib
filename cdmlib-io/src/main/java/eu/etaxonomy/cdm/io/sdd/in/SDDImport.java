@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.sdd.in;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -1362,7 +1363,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 				if (value.contains(",")) {
 					value = value.replace(',', '.');
 				}
-				Float v = Float.parseFloat(value);
+				BigDecimal v = new BigDecimal(value);
 				//Float v = new Float(0);
 				StatisticalMeasure t = null;
 				if (type.equals("Min")) {

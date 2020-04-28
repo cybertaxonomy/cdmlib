@@ -23,8 +23,10 @@ public enum Datatype {
     VARCHAR("varchar"),
     DATETIME("datetime"),
     DOUBLE("double"),
+    FLOAT("float"),
     TINYINTEGER("tinyint"),
-    BIT("bit")
+    BIT("bit"),
+    BIGDECIMAL("decimal"),
     ;
 
     private String defaultStr;
@@ -34,14 +36,19 @@ public enum Datatype {
     }
 
     public String format(ICdmDataSource datasource, Integer size) {
+        return format(datasource, size, null);
+    }
+
+    public String format(ICdmDataSource datasource, Integer size, Integer scale) {
         String result = defaultStr;
         DatabaseTypeEnum dbType = datasource.getDatabaseType();
         //nvarchar
         if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){  //TODO use PostgeSQL82 Dialect infos
             result = result.replace("nvarchar", "varchar");
-            result = result.replace("double", "float8");
-            result = result.replace("bit", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.BIT));
-            result = result.replace("datetime", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TIMESTAMP));
+            result = result.replace("float", dbType.getHibernateDialect().getTypeName(Types.FLOAT));
+            result = result.replace("double", dbType.getHibernateDialect().getTypeName(Types.DOUBLE));
+            result = result.replace("bit", dbType.getHibernateDialect().getTypeName(Types.BIT));
+            result = result.replace("datetime", dbType.getHibernateDialect().getTypeName(Types.TIMESTAMP));
             result = result.replace("tinyint", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TINYINT));
         }
         //CLOB
@@ -58,6 +65,8 @@ public enum Datatype {
             }
         }else if (this == VARCHAR){
             result = result + "(" + size + ")";
+        }else if (this == BIGDECIMAL){
+            result = result + "(" + size + "," + scale + ")";
         }
         return result;
     }

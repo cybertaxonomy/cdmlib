@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.strategy.generate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -260,7 +262,7 @@ public class PolytomousKeyGenerator {
 	        logger.warn("Only 1 or no taxon covered. This should currently only be possible on top level and is not yet handled. ");
 		}else {
 			// this map stores the thresholds giving the best dichotomy of taxa for the corresponding feature supporting quantitative data
-			Map<Feature,Float> quantitativeFeaturesThresholds = new HashMap<>();
+			Map<Feature,BigDecimal> quantitativeFeaturesThresholds = new HashMap<>();
 			// the scores of the different features are calculated, the thresholds in the same time
 			if (config.isDebug()){
 			    System.out.println("Feature left: " + featuresLeft + ", taxa: " + taxaCovered);
@@ -319,18 +321,18 @@ public class PolytomousKeyGenerator {
             }else if (feature.isSupportsQuantitativeData()){
                 Iterator<KeyTaxon> it = candidates.iterator();
                 while (it.hasNext()){
-                    float min = Float.MAX_VALUE;
-                    Float max = Float.MIN_VALUE;
+                    BigDecimal min = BigDecimalUtil.MAX_BIGDECIMAL;
+                    BigDecimal max = BigDecimalUtil.MIN_BIGDECIMAL;
                     Set<QuantitativeData> qds = it.next().quantitativeData.get(feature);
                     qds = qds == null? new HashSet<>(): qds;
                     for (QuantitativeData qd : qds){
-                        Float qdMin = qd.getOverallMin();
+                        BigDecimal qdMin = qd.getOverallMin();
                         if(qdMin != null){
-                            min = Math.min(min, qdMin);
+                            min = min.min(qdMin);
                         }
-                        Float qdMax = qd.getOverallMax();
+                        BigDecimal qdMax = qd.getOverallMax();
                         if(qdMax != null){
-                            max = Math.max(max, qdMax);
+                            max = max.max(qdMax);
                         }
                     }
                     boolean staysCandidate = true;
@@ -338,8 +340,8 @@ public class PolytomousKeyGenerator {
                         Set<QuantitativeData> tqds = taxon.quantitativeData.get(feature);
                         tqds = tqds == null? new HashSet<>(): tqds;
                         for (QuantitativeData qd : tqds){
-                            staysCandidate &= qd.getOverallMin() == null || qd.getOverallMin() >= min;
-                            staysCandidate &= qd.getOverallMax() == null || qd.getOverallMax() <= max;
+                            staysCandidate &= qd.getOverallMin() == null || qd.getOverallMin().compareTo(min) >= 0;
+                            staysCandidate &= qd.getOverallMax() == null || qd.getOverallMax().compareTo(max) <= 0;
                         }
                         if (!staysCandidate){
                             break;
@@ -674,11 +676,11 @@ public class PolytomousKeyGenerator {
     }
 
     private void handleQuantitativeData(PolytomousKeyNode parent, List<Feature> featuresLeft,
-            Set<KeyTaxon> taxaCovered, Map<Feature, Float> quantitativeFeaturesThresholds,
+            Set<KeyTaxon> taxaCovered, Map<Feature, BigDecimal> quantitativeFeaturesThresholds,
             Feature winnerFeature, Map<Feature, Set<State>> featureStatesFilter) {
 
         // first, get the threshold
-        float threshold = quantitativeFeaturesThresholds.get(winnerFeature);
+        BigDecimal threshold = quantitativeFeaturesThresholds.get(winnerFeature);
         //TODO unit not seems to be used yet
         StringBuilder unit = new StringBuilder();
         // then determine which taxa are before and which are after this threshold (dichotomy)
@@ -699,7 +701,7 @@ public class PolytomousKeyGenerator {
      * TODO if the quantitative feature has dependent features they are not yet handled
      */
     private void handleQuantitativeBranch(PolytomousKeyNode parent, List<Feature> featuresLeft,
-            int parentTaxaCoveredSize, Feature winnerFeature, float threshold, StringBuilder unit,
+            int parentTaxaCoveredSize, Feature winnerFeature, BigDecimal threshold, StringBuilder unit,
             List<Set<KeyTaxon>> quantitativeStates, Map<Feature, Set<State>> featureStatesFilter,
             int brunchNum) {
 
@@ -732,7 +734,7 @@ public class PolytomousKeyGenerator {
     }
 
     private Feature computeScores(List<Feature> featuresLeft, Set<KeyTaxon> taxaCovered,
-            Map<Feature, Float> quantitativeFeaturesThresholds, Map<Feature, Set<State>> featureStatesFilter) {
+            Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<State>> featureStatesFilter) {
 
         Map<Feature,Float> scoreMap = featureScores(featuresLeft, taxaCovered, quantitativeFeaturesThresholds, featureStatesFilter);
         dependenciesScores(scoreMap, featuresLeft, taxaCovered, quantitativeFeaturesThresholds, featureStatesFilter);
@@ -753,7 +755,7 @@ public class PolytomousKeyGenerator {
 	 * "onlyApplicableIf" or "InapplicableIf", the feature it depends can be chosen in order to build a better key.
 	 */
 	private void dependenciesScores(Map<Feature,Float> scoreMap, List<Feature> featuresLeft,
-	        Set<KeyTaxon> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds, Map<Feature, Set<State>> featureStatesFilter){
+	        Set<KeyTaxon> coveredTaxa, Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<State>> featureStatesFilter){
 
 	    //TODO maybe we need to do this recursive?
 
@@ -1022,7 +1024,7 @@ public class PolytomousKeyGenerator {
 	 * This function fills the map of features (keys) with their respecting scores (values)
 	 */
 	private Map<Feature,Float> featureScores(List<Feature> featuresLeft, Set<KeyTaxon> coveredTaxa,
-	        Map<Feature,Float> quantitativeFeaturesThresholds, Map<Feature, Set<State>> featureStatesFilter){
+	        Map<Feature,BigDecimal> quantitativeFeaturesThresholds, Map<Feature, Set<State>> featureStatesFilter){
 
 		Map<Feature,Float> scoreMap = new HashMap<>();
 		for (Feature feature : featuresLeft){
@@ -1042,7 +1044,7 @@ public class PolytomousKeyGenerator {
 	 * It returns two Sets of {@link KeyTaxon}, one with the taxa under this threshold (taxaBefore) and another one
 	 * with the taxa over (taxaAfter).
 	 */
-	private List<Set<KeyTaxon>> determineQuantitativeStates (Float threshold, Feature feature,
+	private List<Set<KeyTaxon>> determineQuantitativeStates (BigDecimal threshold, Feature feature,
 	        Set<KeyTaxon> taxa, StringBuilder unit){
 
 	    List<Set<KeyTaxon>> list = new ArrayList<>();
@@ -1060,12 +1062,12 @@ public class PolytomousKeyGenerator {
                     StatisticalMeasure type = smv.getType();
                     //TODO DONT FORGET sample size, MEAN etc
                     if (type.isMax() || type.isTypicalUpperBoundary() || type.isAverage() || type.isExactValue()) {
-                        if (smv.getValue()>threshold){
+                        if (smv.getValue().compareTo(threshold) > 0){
                             taxaAfter.add(td);
                         }
                     }
                     if (type.isMin() || type.isTypicalLowerBoundary() || type.isAverage() || type.isExactValue()) {
-                        if (smv.getValue()<=threshold){
+                        if (smv.getValue().compareTo(threshold) <= 0){
                             taxaBefore.add(td);
                         }
                     }
@@ -1078,30 +1080,31 @@ public class PolytomousKeyGenerator {
 	/**
 	 * This function returns the score of a quantitative feature.
 	 */
-	private float quantitativeFeatureScore(Feature feature, Set<KeyTaxon> coveredTaxa, Map<Feature,Float> quantitativeFeaturesThresholds){
+	private float quantitativeFeatureScore(Feature feature, Set<KeyTaxon> coveredTaxa,
+	        Map<Feature,BigDecimal> quantitativeFeaturesThresholds){
 
-	    List<Float> allValues = new ArrayList<>();
+	    List<BigDecimal> allValues = new ArrayList<>();
 		for (KeyTaxon td : coveredTaxa){
 		    for (QuantitativeData qd : td.getQuantitativeData(feature)){
 		        computeAllValues(allValues, qd);
 		    }
 		}
 		int i,j;
-		float threshold=0;
-		float bestThreshold=0;
-		int difference=allValues.size();
+		BigDecimal threshold = BigDecimal.ZERO;
+		BigDecimal bestThreshold = BigDecimal.ZERO;
+		int difference = allValues.size();
 		int differenceMin = difference;
-		int bestTaxaBefore=0;
-		int bestTaxaAfter=0;
-		for (i=0;i<allValues.size()/2;i++) {
+		int bestTaxaBefore = 0;
+		int bestTaxaAfter = 0;
+		for (i=0; i<allValues.size()/2; i++) {
 			threshold = allValues.get(i*2+1);
 			int taxaBefore=0;
 			int taxaAfter=0;
 			for (j=0;j<allValues.size()/2;j++) {
-				if (allValues.get(j*2+1)<=threshold){
+				if (allValues.get(j*2+1).compareTo(threshold) <= 0){
 					taxaBefore++;
 				}
-				if (allValues.get(j*2)>threshold){
+				if (allValues.get(j*2).compareTo(threshold) > 0){
 					taxaAfter++;
 				}
 			}
@@ -1121,26 +1124,26 @@ public class PolytomousKeyGenerator {
 		return defaultQuantitativeScore;
 	}
 
-    private void computeAllValues(List<Float> allValues, QuantitativeData qd) {
+    private void computeAllValues(List<BigDecimal> allValues, QuantitativeData qd) {
         Set<StatisticalMeasurementValue> values = qd.getStatisticalValues();
-        Float lowerboundary=null;
-        Float upperboundary=null;
+        BigDecimal lowerboundary = null;
+        BigDecimal upperboundary = null;
         for (StatisticalMeasurementValue smv : values){
         	StatisticalMeasure type = smv.getType();
-        	float value = smv.getValue();
+        	BigDecimal value = smv.getValue();
         	// DONT FORGET sample size, MEAN etc
         	if(type.isMin() || type.isTypicalLowerBoundary() || type.isAverage() || type.isExactValue()){
         	    if (lowerboundary == null){
         	        lowerboundary = value;
         	    }else{
-        	        lowerboundary = Math.min(lowerboundary, value);
+        	        lowerboundary = lowerboundary.min(value);
         	    }
         	}
         	if(type.isMax() || type.isTypicalUpperBoundary() || type.isAverage() || type.isExactValue()){
                 if (upperboundary == null){
                     upperboundary = value;
                 }else{
-                    upperboundary = Math.max(upperboundary, value);
+                    upperboundary = upperboundary.max(value);
                 }
             }
 

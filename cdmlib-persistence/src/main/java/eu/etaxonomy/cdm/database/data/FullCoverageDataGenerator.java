@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.database.data;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -330,7 +331,9 @@ public class FullCoverageDataGenerator {
 		MeasurementUnit measurementUnit = MeasurementUnit.NewInstance("Measurement Unit", "munit", null);
 		cdmBases.add(measurementUnit);
 		quantitativeData.setUnit(measurementUnit);
-		StatisticalMeasurementValue statisticalMeasurementValue = quantitativeData.setAverage((float)22.9 , null);
+		quantitativeData.setUuid(UUID.fromString("920fce5e-4913-4a3f-89bf-1611f5081869"));
+		StatisticalMeasurementValue statisticalMeasurementValue = quantitativeData.setAverage(
+		        new BigDecimal("22.9215"), null);
 		handleAnnotatableEntity(quantitativeData);
 		handleIdentifiableEntity(measurementUnit);
 		DefinedTerm valueModifier = DefinedTerm.NewModifierInstance("about", "about", null);

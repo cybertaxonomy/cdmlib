@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1015,7 +1016,7 @@ public class SDDDocumentBuilder {
 		} else {
 			measure.setAttribute("type", label);
 		}
-		float value = statisticalValue.getValue();
+		BigDecimal value = statisticalValue.getValue();
 		measure.setAttribute("value", String.valueOf(value));
 		element.appendChild(measure);
 	}

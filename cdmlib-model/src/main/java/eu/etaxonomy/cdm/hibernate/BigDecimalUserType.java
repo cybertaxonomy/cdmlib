@@ -10,19 +10,34 @@ import java.sql.Types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 
 /**
- * This software is public domain and carries NO WARRANTY.
+ * Hibernate {@link UserType} for BigDecimal with correct handling for scale.
+ * Correct means that a BigDecimal with scale 2 will be stored and reloaded
+ * with scale 2 even if the defined scale in the database has a higher scale defined.
  *
- * Patches, bug reports and feature requests welcome:
+ * E.g. "1.32" is persisted as exactly this BigDecimal even if scale of the column is
+ * defined with scale = 4. The default {@link BigDecimalType} stores and reloads it
+ * as 1.3200 which is a difference when handling e.g. measurement values as it looses the
+ * information about the exactness of the data.<BR><BR>
  *
- * https://bitbucket.org/ratkins/bigdecimalusertype/
+ * Usage example with annotations (with type already declared in according package-info.java):<BR>
+ *
+ * <BR>@Columns(columns={@Column(name="xxx", precision = 18, scale = 9), @Column(name="xxx_scale")})
+ * <BR>@Type(type="bigDecimalUserType")
+ * <BR><BR>
+ *
+ * This class has been originally copied and adapted from
+ * https://bitbucket.org/ratkins/bigdecimalusertype/src/default/<BR><BR>
  */
 public class BigDecimalUserType implements UserType {
 
-	private static final int[] SQL_TYPES = new int[] {Types.DECIMAL, Types.INTEGER};
+	private static final int[] SQL_TYPES = new int[] {
+	        Types.NUMERIC, //for some reason Types.Decimal does not exist at least in MySQL Dialect
+	        Types.INTEGER};
 
 	@Override
 	public Object assemble(Serializable arg0, Object arg1) throws HibernateException {

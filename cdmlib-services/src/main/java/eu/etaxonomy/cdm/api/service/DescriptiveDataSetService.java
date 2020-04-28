@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -660,15 +661,15 @@ public class DescriptiveDataSetService
 
         private DescriptionElementBase element;
         private Set<UUID> stateUuids = new HashSet<>();
-        private Set<Float> avgs = new HashSet<>();
-        private Set<Float> exacts = new HashSet<>();
-        private Set<Float> maxs = new HashSet<>();
-        private Set<Float> mins = new HashSet<>();
-        private Set<Float> sampleSizes = new HashSet<>();
-        private Set<Float> standardDevs = new HashSet<>();
-        private Set<Float> lowerBounds = new HashSet<>();
-        private Set<Float> upperBounds = new HashSet<>();
-        private Set<Float> variances = new HashSet<>();
+        private Set<BigDecimal> avgs = new HashSet<>();
+        private Set<BigDecimal> exacts = new HashSet<>();
+        private Set<BigDecimal> maxs = new HashSet<>();
+        private Set<BigDecimal> mins = new HashSet<>();
+        private Set<BigDecimal> sampleSizes = new HashSet<>();
+        private Set<BigDecimal> standardDevs = new HashSet<>();
+        private Set<BigDecimal> lowerBounds = new HashSet<>();
+        private Set<BigDecimal> upperBounds = new HashSet<>();
+        private Set<BigDecimal> variances = new HashSet<>();
 
         public DescriptionElementCompareWrapper(DescriptionElementBase element) {
             this.element = element;

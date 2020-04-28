@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.description;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,15 +43,15 @@ public class QuantitativeDataTest {
 
         StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
         statisticalValue.setType(StatisticalMeasure.AVERAGE() );
-        statisticalValue.setValue((float) 23.8);
+        statisticalValue.setValue(new BigDecimal("23.8"));
         quantData.addStatisticalValue(statisticalValue);
     }
 
     @Test
     public void testClone(){
         QuantitativeData clone = (QuantitativeData) quantData.clone();
-        float cloneValue = clone.getStatisticalValues().iterator().next().getValue();
-        float origValue = quantData.getStatisticalValues().iterator().next().getValue();
+        BigDecimal cloneValue = clone.getStatisticalValues().iterator().next().getValue();
+        BigDecimal origValue = quantData.getStatisticalValues().iterator().next().getValue();
         assertTrue(origValue == cloneValue);
         assertNotSame(clone.getStatisticalValues().iterator().next(), quantData.getStatisticalValues().iterator().next());
     }
