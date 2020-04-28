@@ -14,9 +14,9 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 
 public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitativeDescriptionBuilder {
-	
+
 	private String spanEnd = "</span>";
-	
+
 	@Override
 	protected TextData doBuild(Map<StatisticalMeasure,Float> measures, MeasurementUnit mUnit, List<Language> languages){
 		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
@@ -35,12 +35,12 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 		String lowerbvalue = null;
 		boolean upperb = false;
 		String upperbvalue = null;
-		
+
 		String unit = "(unknown unit)";
 		if ((mUnit!=null)&&(mUnit.getLabel()!=null)){
 			unit = spanClass("unit") + mUnit.getLabel() + spanEnd;
 		}
-		
+
 		// the different linking words are taken from NaturalLanguageTerm.class (should this be changed ?)
 		NaturalLanguageTerm nltFrom = NaturalLanguageTerm.FROM();
 		String from = nltFrom.getPreferredRepresentation(languages).getLabel();
@@ -55,7 +55,7 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 		NaturalLanguageTerm nltMore_Or_Less = NaturalLanguageTerm.MORE_OR_LESS();
 		String more_Or_Less = nltMore_Or_Less.getPreferredRepresentation(languages).getLabel();
 		String space = " "; // should "space" be considered as a linking word and thus be stored in NaturalLanguageTerm.class ?
-		
+
 		// the booleans and floats are updated according to the presence or absence of values
 			if (measures.containsKey(StatisticalMeasure.AVERAGE())) {
 				average = true;
@@ -76,9 +76,9 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 				upperb = true;
 				upperbvalue = spanClass("measurement") + measures.get(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) + spanEnd;
 			}
-			
+
 			QuantitativeDescription.append(spanClass("state"));
-		// depending on the different associations of values, a sentence is built	
+		// depending on the different associations of values, a sentence is built
 		if (max && min) {
 			QuantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
 		}
@@ -115,24 +115,26 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 		QuantitativeDescription.append(spanEnd);
 		textData.putText(languages.get(0), QuantitativeDescription.toString()); // which language should be put here ?
 		textData.setFormat(TextFormat.NewInstance(null, "HTML",null )); // the data format is set (not yet real HTML)
-		
+
 		return textData;
 	}
-	
+
 	protected String buildFeature(Feature feature, boolean doItBetter){
-		if (feature==null || feature.getLabel()==null) return "";
-		else {
+		if (feature==null || feature.getLabel()==null) {
+            return "";
+        } else {
 			if (doItBetter) {
 				String betterString = StringUtils.substringBefore(feature.getLabel(), "<");
 				return StringUtils.removeEnd(betterString, " ");
-			}
-			else	return feature.getLabel();
+			} else {
+                return feature.getLabel();
+            }
 		}
 	}
-	
+
 	private String spanClass(String classString){
 		return("<span class=\""+classString+"\">");
 	}
 
-	
+
 }

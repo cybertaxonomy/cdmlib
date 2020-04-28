@@ -436,9 +436,7 @@ public class StructuredDescriptionAggregation
         return exactValues;
     }
 
-
     private static boolean hasSameState(StateData sd1, StateData sd2) {
         return sd2.getState().getUuid().equals(sd1.getState().getUuid());
     }
-
 }

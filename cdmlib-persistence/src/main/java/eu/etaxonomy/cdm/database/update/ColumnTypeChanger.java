@@ -111,6 +111,7 @@ public class ColumnTypeChanger
 		}
 	}
 
+
     protected void changeType(String tableName, ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result)
             throws DatabaseTypeNotSupportedException, SQLException {

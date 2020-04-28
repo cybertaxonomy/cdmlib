@@ -190,15 +190,9 @@ public class FullCoverageDataGenerator {
 		}
 	}
 
-
-	/**
-     * @param cdmBases
-     */
     private void createUserAuthority(List<CdmBase> cdmBases) {
         // TODO Auto-generated method stub
-
     }
-
 
     private void createSupplemental(List<CdmBase> cdmBases)  {
 

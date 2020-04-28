@@ -28,15 +28,11 @@ public enum Datatype {
     ;
 
     private String defaultStr;
+
     private Datatype(String strType){
         this.defaultStr = strType;
     }
 
-    /**
-     * @param datasource
-     * @param size
-     * @return
-     */
     public String format(ICdmDataSource datasource, Integer size) {
         String result = defaultStr;
         DatabaseTypeEnum dbType = datasource.getDatabaseType();

@@ -84,14 +84,8 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		return getLanguageId(Language.uuidEnglish, datasource, monitor, caseType);
 	}
 
-	/**
-	 * @param uuidLanguage
-	 * @param datasource
-	 * @param monitor
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType) throws SQLException {
 
 		ResultSet rs;
 		Integer langId = null;
@@ -107,9 +101,6 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		return langId;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<>();

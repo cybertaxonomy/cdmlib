@@ -214,9 +214,6 @@
         @MetaValue(value = "TaxonRelationship", targetEntity = TaxonRelationship.class),
         @MetaValue(value = "NameTypeDesignation", targetEntity = NameTypeDesignation.class),
         @MetaValue(value = "SpecimenTypeDesignation", targetEntity = SpecimenTypeDesignation.class),
-
-
-
 })
 package eu.etaxonomy.cdm.model.common;
 

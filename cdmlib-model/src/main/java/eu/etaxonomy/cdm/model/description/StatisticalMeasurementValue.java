@@ -87,10 +87,6 @@ public class StatisticalMeasurementValue
 
 
 
-    /**
-	 * Class constructor: creates a new empty statistical measurement value
-	 * instance.
-	 */
 	protected StatisticalMeasurementValue(){
 		super();
 	}
@@ -144,7 +140,6 @@ public class StatisticalMeasurementValue
 		this.value = value;
 	}
 
-
     /**
      * Returns the {@link QuantitativeData quantitative data} <i>this</i>
      * statistical measurement value belongs too.
@@ -158,7 +153,6 @@ public class StatisticalMeasurementValue
     protected void setQuantitativeData(QuantitativeData quantitativeData) {
         this.quantitativeData = quantitativeData;
     }
-
 
 	/**
 	 * Returns the set of terms of {@link TermType type} Modifier used to qualify the validity
@@ -193,7 +187,6 @@ public class StatisticalMeasurementValue
     public void removeModifier(DefinedTerm modifier) {
 		this.modifiers.remove(modifier);
 	}
-
 
 //*********************************** CLONE *****************************************/
 

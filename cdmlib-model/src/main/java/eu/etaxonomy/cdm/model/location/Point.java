@@ -74,7 +74,7 @@ public class Point implements Cloneable, Serializable {
     private Double latitude;
 
     /**
-     * Error radius in Meters
+     * Error radius in meters
      */
     @XmlElement(name = "ErrorRadius")
     @Field
@@ -90,18 +90,10 @@ public class Point implements Cloneable, Serializable {
 
 //******************** FACTORY METHODS ****************************
 
-    /**
-     * Factory method
-     * @return
-     */
     public static Point NewInstance(){
         return new Point();
     }
 
-    /**
-     * Factory method
-     * @return
-     */
     public static Point NewInstance(Double longitude, Double latitude, ReferenceSystem referenceSystem, Integer errorRadius){
         Point result = new Point();
         result.setLongitude(longitude);
@@ -113,9 +105,6 @@ public class Point implements Cloneable, Serializable {
 
 // ******************** CONSTRUCTOR ***************************
 
-    /**
-     * Constructor
-     */
     public Point() {
     }
 

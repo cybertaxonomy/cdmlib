@@ -109,9 +109,6 @@ public class MultilanguageText
 		return result;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public LanguageString put(Language language, String text) {
         LanguageString languageString = new LanguageString(text, language);

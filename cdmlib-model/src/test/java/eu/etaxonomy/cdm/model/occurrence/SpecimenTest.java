@@ -53,7 +53,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  * @since 28.10.2008
  */
 public class SpecimenTest {
-	private static final Logger logger = Logger.getLogger(SpecimenTest.class);
+
+    private static final Logger logger = Logger.getLogger(SpecimenTest.class);
 
 	private DerivedUnit specimen;
 
@@ -62,9 +63,6 @@ public class SpecimenTest {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.occurrence.Specimen#NewInstance()}.
-	 */
 	@Test
 	public void testNewInstance() {
 		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -111,7 +109,6 @@ public class SpecimenTest {
 		Assert.assertTrue("Specimen should still contain description2", specimen.getDescriptions().contains(desc2));
 		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
 
-
 		//change specimen of a given description
 		DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
 		Assert.assertNotNull("Specimen should exist.", specimen2);
@@ -157,10 +154,7 @@ public class SpecimenTest {
 		Assert.assertFalse("Specimen should still no longer contain description2", specimen.getDescriptions().contains(desc2));
 		Assert.assertFalse("Specimen should still no longer contain description3", specimen.getDescriptions().contains(desc3));
 		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
-
-
 	}
-
 
 	@Test
 	public void testBidirectionalTypeDesignation(){

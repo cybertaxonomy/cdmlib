@@ -74,7 +74,7 @@ public class PolytomousKeyGeneratorTest {
 	private State yes;
 	private State no;
 
-	Classification classification;
+	private Classification classification;
 
 	private Taxon taxonGenus;
 	private Taxon taxon1;
@@ -535,7 +535,7 @@ public class PolytomousKeyGeneratorTest {
     }
 
     @Test
-    public void testTaxonomicHierarchy() throws CloneNotSupportedException {
+    public void testTaxonomicHierarchy() {
 
         tdGenus.getElements().clear();
         tdGenus.addElements(mergeTaxDescriptions(td1, td2, td3, td4));
@@ -704,7 +704,6 @@ public class PolytomousKeyGeneratorTest {
         Assert.assertEquals(statement, label(node));
         Assert.assertTrue(node.getChildren().isEmpty());
         Assert.assertEquals(taxon, node.getTaxon());
-
     }
 
     private void assertSingleTaxon(PolytomousKeyNode node, Taxon taxon, State state) {
@@ -720,7 +719,7 @@ public class PolytomousKeyGeneratorTest {
         Assert.assertEquals(label, label(node));
         Assert.assertNull(node.getFeature());
         Assert.assertNull(node.getTaxon());
-        Assert.assertTrue(node.getChildren().size()>1);
+        Assert.assertTrue(node.getChildren().size() > 1);
         for (PolytomousKeyNode child : node.getChildren()){
             Assert.assertTrue(Arrays.asList(taxa).contains(child.getTaxon()));
             Assert.assertNull(child.getStatement());
@@ -755,21 +754,10 @@ public class PolytomousKeyGeneratorTest {
         return result;
     }
 
-    /**
-     * @param blueNode
-     * @return
-     */
     private Object label(PolytomousKeyNode node) {
         return node.getStatement()== null?"no statement":node.getStatement().getLabelText(Language.DEFAULT());
     }
 
-
-    /**
-     * @param taxon12
-     * @param string
-     * @param uuidTd1
-     * @return
-     */
     private TaxonDescription createTaxonDescription(Taxon taxon, String title, UUID uuid) {
         TaxonDescription result = TaxonDescription.NewInstance(taxon);
         result.setTitleCache(title, true);

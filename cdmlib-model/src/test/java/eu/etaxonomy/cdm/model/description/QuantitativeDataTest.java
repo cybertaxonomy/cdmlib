@@ -35,9 +35,6 @@ public class QuantitativeDataTest {
         }
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         quantData = QuantitativeData.NewInstance();
@@ -46,9 +43,7 @@ public class QuantitativeDataTest {
         statisticalValue.setType(StatisticalMeasure.AVERAGE() );
         statisticalValue.setValue((float) 23.8);
         quantData.addStatisticalValue(statisticalValue);
-
     }
-
 
     @Test
     public void testClone(){
@@ -57,7 +52,6 @@ public class QuantitativeDataTest {
         float origValue = quantData.getStatisticalValues().iterator().next().getValue();
         assertTrue(origValue == cloneValue);
         assertNotSame(clone.getStatisticalValues().iterator().next(), quantData.getStatisticalValues().iterator().next());
-
     }
 
 }
