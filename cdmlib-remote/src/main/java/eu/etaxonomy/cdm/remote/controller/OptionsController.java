@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
-@Controller
+// @Controller
 public class OptionsController {
 
 	@RequestMapping(
