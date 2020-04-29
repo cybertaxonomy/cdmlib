@@ -455,13 +455,13 @@
           <execution>
             <id>enforce</id>
             <configuration>
-              <fail>false</fail>
+              <fail>true</fail>
               <skip>false</skip>
               <rules>
-                <dependencyConvergence/>
-<!-- 				<requireMavenVersion> -->
-<!--                   <version>[3.6.0,)</version> -->
-<!--                 </requireMavenVersion> -->
+                <dependencyConvergence/>                
+				<requireMavenVersion> disabled since it the plugin fails with an NPE
+                  <version>[3.6.0,)</version>
+                </requireMavenVersion>
               </rules>
             </configuration>
             <goals>
