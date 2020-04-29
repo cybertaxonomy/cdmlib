@@ -497,6 +497,19 @@ public class NameServiceImpl
     public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths){
         return typeDesignationDao.load(uuid, propertyPaths);
     }
+    
+    @Override
+    public List<TypeDesignationBase<?>> loadTypeDesignations(List<UUID> uuids, List<String> propertyPaths){
+    	if(uuids == null) {
+            return null;
+        }
+
+        List<TypeDesignationBase<?>> entities = new ArrayList<>();
+        for(UUID uuid : uuids) {
+            entities.add(uuid == null ? null : typeDesignationDao.load(uuid, propertyPaths));
+        }
+        return entities;
+    }
 
     /**
      * FIXME Candidate for harmonization

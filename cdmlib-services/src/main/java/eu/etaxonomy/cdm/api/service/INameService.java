@@ -140,6 +140,8 @@ public interface INameService
     public TypeDesignationBase<?> loadTypeDesignation(int id, List<String> propertyPaths);
 
     public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths);
+    
+    public List<TypeDesignationBase<?>> loadTypeDesignations(List<UUID> uuids, List<String> propertyPaths);
 
 	/**
 	 * Returns all NonViralNames with a name cache that matches the given string
