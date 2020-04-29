@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
+import eu.etaxonomy.cdm.remote.controller.OptionsController;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
@@ -94,6 +97,20 @@ public class KmlController extends BaseController<TaxonBase, ITaxonService> {
     @Override
     public void setService(ITaxonService service) {
         this.service = service;
+    }
+    
+    /**
+     * TODO This controller method replaces the general {@link OptionsController} which has been disabled temporarily.
+     * The {@link OptionsController} was causing problems in some situations by blocking POST requests to other controllers.
+     * This mainly happened in the taxeditor project where the integration test could not be run due to the cdm remote instance which
+     * did not allow POST requests to the /remoting-public/user.service  
+     */
+    @RequestMapping(
+            value = "/**",
+            method = RequestMethod.OPTIONS
+    )
+    public ResponseEntity options() {
+        return new ResponseEntity(HttpStatus.OK);
     }
     
     /**
