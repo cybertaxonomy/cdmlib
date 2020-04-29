@@ -1051,6 +1051,13 @@
       	<version>2.3</version>
       </dependency>
       <dependency>
+        <!-- only for version management org.apache.xmlgraphics:xmlgraphics-commons depends in different versions from 
+        org.docx4j:docx4j:6.0.1 and org.apache.xmlgraphics:fop:1.1 -->
+      	<groupId>org.apache.xmlgraphics</groupId>
+      	<artifactId>xmlgraphics-commons</artifactId>
+      	<version>2.3</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.sanselan</groupId>
         <artifactId>sanselan</artifactId>
         <version>0.97-incubator</version>
