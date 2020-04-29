@@ -459,9 +459,9 @@
               <skip>false</skip>
               <rules>
                 <dependencyConvergence/>
-				<requireMavenVersion>
-                  <version>[3.6.0,)</version>
-                </requireMavenVersion>
+<!-- 				<requireMavenVersion> -->
+<!--                   <version>[3.6.0,)</version> -->
+<!--                 </requireMavenVersion> -->
               </rules>
             </configuration>
             <goals>
