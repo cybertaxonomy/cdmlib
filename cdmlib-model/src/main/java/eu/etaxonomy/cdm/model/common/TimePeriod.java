@@ -189,6 +189,52 @@ public class TimePeriod implements Cloneable, Serializable {
         }
     }
 
+    /**
+     * Transforms a {@link Date} into a <code>Partial</code>.
+     */
+    public static Partial dateToPartial(Date date){
+        //TODO conversion untested, implemented according to http://www.roseindia.net/java/java-conversion/datetocalender.shtml
+        if (date != null){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return calendarToPartial(cal);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Transforms an Integer into a <code>Partial</code> with the Integer value
+     * being the year of the Partial.
+     */
+    public static Partial yearToPartial(Integer year){
+        if (year != null){
+            return new Partial().with(YEAR_TYPE, year);
+        }else{
+            return null;
+        }
+    }
+    public static Partial monthToPartial(Integer month){
+        if (month != null){
+            return new Partial().with(MONTH_TYPE, month);
+        }else{
+            return null;
+        }
+    }
+    public static Partial monthAndDayToPartial(Integer month, Integer day){
+        if (month != null || day != null){
+            Partial result = new Partial();
+            if (month != null){
+                result = result.with(MONTH_TYPE, month);
+            }
+            if (day != null){
+                result = result.with(DAY_TYPE, day);
+            }
+            return result;
+        }else{
+            return null;
+        }
+    }
 
     public static Integer getPartialValue(Partial partial, DateTimeFieldType type){
         if (partial == null || ! partial.isSupported(type)){
@@ -530,6 +576,23 @@ public class TimePeriod implements Cloneable, Serializable {
         if (! CdmUtils.nullSafeEqual(thisVerbatimDate, thatVerbatimDate)){
             return false;
         }
+        //see comment in ExtendedTimePeriod#equals
+        Partial thisExtremeStart = (this instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)this).getExtremeStart():null;
+        Partial thatExtremeStart = (obj instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)obj).getExtremeStart():null;
+        if (! CdmUtils.nullSafeEqual(thisExtremeStart, thatExtremeStart)){
+            return false;
+        }
+
+        Partial thisExtremeEnd = (this instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)this).getExtremeEnd():null;
+        Partial thatExtremeEnd = (obj instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)obj).getExtremeEnd():null;
+        if (! CdmUtils.nullSafeEqual(thisExtremeEnd, thatExtremeEnd)){
+            return false;
+        }
+
         return true;
     }
 
