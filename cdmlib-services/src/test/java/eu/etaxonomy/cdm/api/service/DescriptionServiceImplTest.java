@@ -41,10 +41,9 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.babadshanjan
  * @since 09.02.2009
- * @version 1.0
  */
-
 public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest {
+
     @SuppressWarnings("unused")
     private static Logger logger = Logger.getLogger(DescriptionServiceImplTest.class);
 
@@ -53,8 +52,6 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
 
     @SpringBeanByType
     private ITermService termService;
-
-
 
     @Test
     public void testGetDefaultFeatureVocabulary() {

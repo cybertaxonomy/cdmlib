@@ -49,64 +49,35 @@ public class VerbatimTimePeriod extends TimePeriod {
 
  // ********************** FACTORY METHODS **************************/
 
-     /**
-      * Factory method
-      * @return
-      */
      public static final VerbatimTimePeriod NewVerbatimInstance(){
          return new VerbatimTimePeriod();
      }
 
      /**
       * Factory method a date representing the current date and time
-      * @return
       */
      public static final VerbatimTimePeriod NewVerbatimNowInstance(){
          return NewVerbatimInstance(Calendar.getInstance());
      }
 
-
-     /**
-      * Factory method
-      * @return
-      */
      public static final VerbatimTimePeriod NewVerbatimInstance(Partial startDate){
-         return new VerbatimTimePeriod(startDate);
+         return new VerbatimTimePeriod(startDate, null, null);
      }
 
-
-     /**
-      * Factory method
-      * @return
-      */
      public static final VerbatimTimePeriod NewVerbatimInstance(Partial startDate, Partial endDate){
-         return new VerbatimTimePeriod(startDate, endDate);
+         return new VerbatimTimePeriod(startDate, endDate, null);
      }
 
+     public static final VerbatimTimePeriod NewVerbatimInstance(Partial startDate, Partial endDate, String verbatimDate){
+         return new VerbatimTimePeriod(startDate, endDate, verbatimDate);
+     }
 
-     /**
-      * Factory method
-      * @return
-      */
      public static final VerbatimTimePeriod NewVerbatimInstance(Integer year){
-         Integer endYear = null;
-         return NewVerbatimInstance(year, endYear);
+         return NewVerbatimInstance(year, (Integer)null);
      }
 
-     /**
-      * Factory method
-      * @return
-      */
      public static final VerbatimTimePeriod NewVerbatimInstance(Integer startYear, Integer endYear){
-         Partial startDate = null;
-         Partial endDate = null;
-         if (startYear != null){
-             startDate = new Partial().with(YEAR_TYPE, startYear);
-         }
-         if (endYear != null){
-             endDate = new Partial().with(YEAR_TYPE, endYear);
-         }
-         return new VerbatimTimePeriod(startDate, endDate);
+         return new VerbatimTimePeriod(yearToPartial(startYear), yearToPartial(endYear), null);
      }
 
      /**
@@ -131,70 +102,32 @@ public class VerbatimTimePeriod extends TimePeriod {
       * @return
       */
      public static final VerbatimTimePeriod NewVerbatimInstance(Calendar startCalendar, Calendar endCalendar){
-         Partial startDate = null;
-         Partial endDate = null;
-         if (startCalendar != null){
-             startDate = calendarToPartial(startCalendar);
-         }
-         if (endCalendar != null){
-             endDate = calendarToPartial(endCalendar);
-         }
-         return new VerbatimTimePeriod(startDate, endDate);
+         return new VerbatimTimePeriod(calendarToPartial(startCalendar), calendarToPartial(endCalendar), null);
      }
 
      /**
       * Factory method to create a TimePeriod from a starting and an ending <code>Date</code>
-      * @return TimePeriod
+      * @return VerbatimTimePeriod
       */
      public static final VerbatimTimePeriod NewVerbatimInstance(Date startDate, Date endDate){
-         //TODO conversion untested, implemented according to http://www.roseindia.net/java/java-conversion/datetocalender.shtml
-         Calendar calStart = null;
-         Calendar calEnd = null;
-         if (startDate != null){
-             calStart = Calendar.getInstance();
-             calStart.setTime(startDate);
-         }
-         if (endDate != null){
-             calEnd = Calendar.getInstance();
-             calEnd.setTime(endDate);
-         }
-         return NewVerbatimInstance(calStart, calEnd);
+         return NewVerbatimInstance(dateToPartial(startDate), dateToPartial(endDate));
      }
-
 
      /**
       * Factory method to create a TimePeriod from a starting and an ending <code>ReadableInstant</code>(e.g. <code>DateTime</code>)
       * @return
       */
      public static final VerbatimTimePeriod NewVerbatimInstance(ReadableInstant startInstant, ReadableInstant endInstant){
-         Partial startDate = null;
-         Partial endDate = null;
-         if (startInstant != null){
-             startDate = readableInstantToPartial(startInstant);
-         }
-         if (endInstant != null){
-             endDate = readableInstantToPartial(endInstant);
-         }
-         return new VerbatimTimePeriod(startDate, endDate);
+         return new VerbatimTimePeriod(readableInstantToPartial(startInstant), readableInstantToPartial(endInstant), null);
      }
-
 
 //*********************** CONSTRUCTOR *********************************/
 
-    /**
-     * Constructor
-     */
     protected VerbatimTimePeriod() {
         super();
     }
-    public VerbatimTimePeriod(Partial startDate) {
-        super(startDate);
-    }
-    public VerbatimTimePeriod(Partial startDate, Partial endDate) {
-        super(startDate, endDate);
-    }
-    public VerbatimTimePeriod(Partial startDate, Partial endDate, String verbatimDate) {
-        super(startDate, endDate);
+    private VerbatimTimePeriod(Partial startDate, Partial endDate, String verbatimDate) {
+        super(startDate, endDate, null);
         this.verbatimDate = verbatimDate;
     }
 
@@ -207,14 +140,12 @@ public class VerbatimTimePeriod extends TimePeriod {
         this.verbatimDate = verbatimDate;
     }
 
-
-
-
 // ************************************ TRANSIENT **************************/
 
     @Override
     /**
-     * True, if there is no start date and no end date and no freetext representation exists.
+     * True, if there is no start date, no end date, no freetext representation
+     * and no verbatimDate.
      * @return
      */
     @Transient
@@ -263,7 +194,7 @@ public class VerbatimTimePeriod extends TimePeriod {
 //*********** CLONE **********************************/
 
     @Override
-    public Object clone()  {
+    public VerbatimTimePeriod clone()  {
             VerbatimTimePeriod result = (VerbatimTimePeriod)super.clone();
             result.setVerbatimDate(this.verbatimDate);
             return result;

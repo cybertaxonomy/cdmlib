@@ -56,7 +56,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class CommonTaxonName extends DescriptionElementBase implements Cloneable {
+public class CommonTaxonName extends DescriptionElementBase {
+
     private static final long serialVersionUID = 2643808051976643339L;
     private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 

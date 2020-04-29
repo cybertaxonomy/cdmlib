@@ -45,9 +45,6 @@ public class VerbatimTimePeriodTest {
     private static final Integer month = 1;
     private static final Integer day = 5;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         onlyStartYear = VerbatimTimePeriod.NewVerbatimInstance(1922);
