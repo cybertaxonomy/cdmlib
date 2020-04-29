@@ -447,8 +447,31 @@
           </dependency>
         </dependencies>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M2</version>
+        <executions>
+          <execution>
+            <id>enforce</id>
+            <configuration>
+              <fail>false</fail>
+              <skip>false</skip>
+              <rules>
+                <dependencyConvergence/>
+				<requireMavenVersion>
+                  <version>[3.6.0,)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+            <goals>
+              <goal>enforce</goal>
+              <!-- Binds by default to the lifecycle phase: validate -->
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
-    <!-- -->
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
