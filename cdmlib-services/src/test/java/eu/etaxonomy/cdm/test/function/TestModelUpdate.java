@@ -9,7 +9,10 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -20,6 +23,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
+import eu.etaxonomy.cdm.model.description.TemporalData;
 
 /**
  * This class is meant for functional testing of model changes. It is not meant
@@ -31,7 +35,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
  * 2. Save old schema databases
  * 3. Run with VALIDATE
  *
- *
  * @author a.mueller
  * @since 22.05.2015
  * @see CdmUpdater
@@ -42,11 +45,10 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm511" : "cdm512");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm511" : "cdm515");
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
  		try {
@@ -76,8 +78,12 @@ public class TestModelUpdate {
     		    System.out.println("fillData");
     		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
+    		    TransactionStatus tx = appCtr.startTransaction(true);
+    		    TemporalData td = (TemporalData)appCtr.getDescriptionService().getDescriptionElementByUuid(
+    		            UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
+    		    System.out.println(td.getPeriod());
+                appCtr.commitTransaction(tx);
     		}
-
 
     		appCtr.close();
  		}catch (Exception e) {
@@ -85,7 +91,6 @@ public class TestModelUpdate {
  		}
  		System.out.println("Ready");
 	}
-
 
     private CdmDataSource getDatasource(DatabaseTypeEnum dbType, String database) {
         String server = "localhost";

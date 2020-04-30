@@ -158,12 +158,9 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * depend on general parameter than concrete data values.
  *
  * @author a.mueller
- * @since 3013-12-02
- *
- *
+ * @since 2013-12-02
  */
 public class FullCoverageDataGenerator {
-
 
 	public void fillWithData(Session session){
 		List<CdmBase> cdmBases = new ArrayList<>();
@@ -236,7 +233,6 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(authority);
 
 		cdmBases.add(ref);
-
 	}
 
 	private void createAgents(List<CdmBase> cdmBases) {
@@ -316,7 +312,6 @@ public class FullCoverageDataGenerator {
 		stateData.addModifier(DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(categoricalData);
 
-
 		State nextState = State.NewInstance();
 		cdmBases.add(nextState);
 		StateData stateData2 = StateData.NewInstance(nextState);
@@ -352,9 +347,11 @@ public class FullCoverageDataGenerator {
 		leaveLength.addRecommendedMeasurementUnit(measurementUnit);
 		leaveLength.addRecommendedStatisticalMeasure(StatisticalMeasure.AVERAGE());
 
+		//CommonTaxonName
 		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance("common name", Language.ENGLISH(), Country.UNITEDSTATESOFAMERICA());
 		handleAnnotatableEntity(commonTaxonName);
 
+		//TextData
 		TextData textData = TextData.NewInstance(Feature.DIAGNOSIS());
 		Language eng = Language.ENGLISH();
 		textData.putText(eng, "My text data");
@@ -372,16 +369,18 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(format);
 		handleAnnotatableEntity(format);
 
+		//IndividualsAssociation
 		DerivedUnit specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 		IndividualsAssociation indAssoc = IndividualsAssociation.NewInstance(specimen);
 		indAssoc.putDescription(Language.ENGLISH(), "description for individuals association");
 		handleAnnotatableEntity(indAssoc);
 
-
+		//TaxonInteraction
 		TaxonInteraction taxonInteraction = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
 		taxonInteraction.putDescription(Language.ENGLISH(), "interaction description");
 		handleAnnotatableEntity(taxonInteraction);
 
+		//Distribution
 		NamedArea inCountryArea = NamedArea.NewInstance("My area in a country", "my area", "ma");
 		inCountryArea.addCountry(Country.TURKEYREPUBLICOF());
 		cdmBases.add(inCountryArea);
