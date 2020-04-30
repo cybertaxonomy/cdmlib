@@ -577,6 +577,8 @@ public abstract class DescriptionElementBase
             result.modifiers.add(modifier);
         }
 
+        result.setTimeperiod(timeperiod == null? null:timeperiod.clone());
+
         //no changes to: feature
         return result;
     }
