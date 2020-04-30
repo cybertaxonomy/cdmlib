@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -63,6 +64,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -386,10 +388,19 @@ public class FullCoverageDataGenerator {
 		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceAbsenceTerm.CULTIVATED());
 		handleAnnotatableEntity(distribution);
 
+		//TemporalData
+		Feature floweringSeason = Feature.NewInstance("Flowering season", "flowering season", "l.l.");
+        cdmBases.add(floweringSeason);
+        //TODO supportsTemporalData
+        TemporalData temporalData = TemporalData.NewInstance(ExtendedTimePeriod.NewExtendedMonthInstance(5, 8, 4, 9));
+        temporalData.getPeriod().setFreeText("My temporal text");
+        handleAnnotatableEntity(temporalData);
+        temporalData.setUuid(UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
+
 		Taxon taxon = getTaxon();
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
 		taxonDescription.addElements(categoricalData, quantitativeData,
-				textData, commonTaxonName, taxonInteraction, indAssoc, distribution);
+				textData, commonTaxonName, taxonInteraction, indAssoc, distribution, temporalData);
 
 		DerivedUnit describedSpecimenOrObservation = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
 		taxonDescription.setDescribedSpecimenOrObservation(describedSpecimenOrObservation);

@@ -118,6 +118,7 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.description.TaxonDescription"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TaxonInteraction"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TaxonNameDescription"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.TemporalData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TextData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.TextFormat"/>
       <mapping class="eu.etaxonomy.cdm.model.description.DescriptiveDataSet"/>

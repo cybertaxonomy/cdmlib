@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.Float2BigDecimalTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -80,6 +81,24 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         int newScale = 9;
 //        ColumnTypeChanger.NewFloat2BigDecimalInstance(stepList, stepName, tableName, columnName, scaleColumnName, newPrecision, newScale, INCLUDE_AUDIT);
         Float2BigDecimalTypeChanger.NewInstance(stepList, stepName, tableName, columnName, scaleColumnName, newPrecision, newScale, INCLUDE_AUDIT);
+
+        //#8802
+        tableName = "DescriptionElementBase";
+        stepName = "add period_start to DescriptionElementBase";
+        newColumnName = "period_start";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepName = "add period_endt to DescriptionElementBase";
+        newColumnName = "period_end";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepName = "add period_extremestart to DescriptionElementBase";
+        newColumnName = "period_extremestart";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepName = "add period_extremeend to DescriptionElementBase";
+        newColumnName = "period_extremeend";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+        stepName = "add period_freetext to DescriptionElementBase";
+        newColumnName = "period_freetext";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
         return stepList;
     }
