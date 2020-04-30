@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
@@ -304,15 +305,20 @@ public class ExtendedTimePeriod extends TimePeriod {
      */
       @Override
       public String toString(){
-         String result = super.toString();
-         DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
-         if (extremeStart != null){
-             result = "(" + extremeStart.toString(formatter) +"-)" + result;
+         if (StringUtils.isNotBlank(this.getFreeText())){
+             return this.getFreeText();
+         }else{
+             String result = super.getTimePeriod();
+             DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
+             if (extremeStart != null){
+                 result = "(" + extremeStart.toString(formatter) +"-)" + result;
+             }
+             if (getExtremeEnd() != null){
+                 result += "(-" + getExtremeEnd().toString(formatter)+")";
+             }
+             return result;
+
          }
-         if (getExtremeEnd() != null){
-             result += "(-" + getExtremeEnd().toString(formatter)+")";
-         }
-         return result;
     }
 
 //*********** CLONE **********************************/

@@ -344,7 +344,6 @@ public class ExtendedTimePeriodTest {
         Integer endYear2 = 1800;
         ExtendedTimePeriod tp1 = ExtendedTimePeriod.NewExtendedYearInstance(startYear,endYear,startYear2,endYear2);
 
-
         assertNotNull(tp1);
         Assert.assertEquals("(1787-)1788-1799(-1800)", tp1.toString());
         tp1.setStartDay(startDay);
@@ -356,6 +355,9 @@ public class ExtendedTimePeriodTest {
         tp1.setExtremeEndDay(endDay2);
         tp1.setExtremeEndMonth(endMonth2);
         Assert.assertEquals("(24.5.1787-)25.6.1788-21.12.1799(-20.11.1800)", tp1.toString()); //date formatting may change in future
+
+        tp1.setFreeText("My extended period");
+        Assert.assertEquals("My extended period", tp1.toString());
     }
 
 
