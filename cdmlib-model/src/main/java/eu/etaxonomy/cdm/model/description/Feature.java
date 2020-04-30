@@ -196,6 +196,7 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
     private static final UUID uuidNotes = UUID.fromString("b5780b45-6439-4f3c-9818-d89d26d36eb2");
     public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
+    private static final UUID uuidFloweringSeason = UUID.fromString("03710cb5-606e-444a-a3e6-594268e3cc47");
 
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
@@ -1017,6 +1018,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature LIFEFORM(){
         return getTermByUuid(uuidLifeform);
     }
+
+	public static final Feature FLOWERING_SEASON(){
+	    return getTermByUuid(uuidFloweringSeason);
+	}
 
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
