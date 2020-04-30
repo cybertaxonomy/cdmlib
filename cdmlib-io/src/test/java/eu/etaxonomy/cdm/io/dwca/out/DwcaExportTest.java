@@ -283,7 +283,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         System.out.println(descriptionStr);
 
         //   quantitative data
-        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1-1.3 [n=2.0]\",\"Chromosome Numbers\"";
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1-1.3 [n=2]\",\"Chromosome Numbers\"";
         Assert.assertTrue(descriptionStr.contains(expected));
         //   textdata
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"My Description\",\"Description\",,\"eng\",,,,,";
