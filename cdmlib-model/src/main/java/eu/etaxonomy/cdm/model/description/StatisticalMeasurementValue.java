@@ -54,7 +54,10 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
-public class StatisticalMeasurementValue extends VersionableEntity implements IModifiable, Cloneable{
+public class StatisticalMeasurementValue
+         extends VersionableEntity
+         implements IModifiable{
+
 	private static final long serialVersionUID = -3576311887760351982L;
 	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 
