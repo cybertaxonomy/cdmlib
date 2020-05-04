@@ -317,8 +317,10 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
    }
 
    @RequestMapping(value = { "classificationRootNode" }, method = RequestMethod.GET)
-   public ModelAndView getClassificationRootNode(@PathVariable("uuid") UUID uuid, HttpServletRequest request,
-           HttpServletResponse response) throws IOException {
+   public ModelAndView getClassificationRootNode(
+           @PathVariable("uuid") UUID uuid,
+           @SuppressWarnings("unused") HttpServletRequest request,
+           @SuppressWarnings("unused") HttpServletResponse response) {
 
        ModelAndView mv = new ModelAndView();
        mv.addObject(service.getRootNode(uuid));
