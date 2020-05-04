@@ -388,10 +388,9 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(distribution);
 
 		//TemporalData
-		Feature floweringSeason = Feature.NewInstance("Flowering season", "flowering season", "l.l.");
-        cdmBases.add(floweringSeason);
-        //TODO supportsTemporalData
+		Feature floweringSeason = Feature.FLOWERING_SEASON();
         TemporalData temporalData = TemporalData.NewInstance(ExtendedTimePeriod.NewExtendedMonthInstance(5, 8, 4, 9));
+        temporalData.setFeature(floweringSeason);
         temporalData.getPeriod().setFreeText("My temporal text");
         handleAnnotatableEntity(temporalData);
         temporalData.setUuid(UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));

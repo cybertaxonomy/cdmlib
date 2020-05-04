@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,8 +25,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -36,8 +39,11 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -81,22 +87,26 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
-		"kindOf",
-		"generalizationOf",
-		"partOf",
-		"includes",
-	    "supportsTextData",
-	    "supportsQuantitativeData",
-	    "supportsDistribution",
-	    "supportsIndividualAssociation",
-	    "supportsTaxonInteraction",
-	    "supportsCommonTaxonName",
-	    "supportsCategoricalData",
-	    "recommendedModifierEnumeration",
-	    "recommendedStatisticalMeasures",
-	    "supportedCategoricalEnumerations",
-	    "recommendedMeasurementUnits",
-	    "inverseRepresentations"
+    "kindOf",
+    "generalizationOf",
+    "partOf",
+    "includes",
+    "availableForTaxon",
+    "availableForTaxonName",
+    "availableForOccurrence",
+    "supportsTextData",
+    "supportsQuantitativeData",
+    "supportsDistribution",
+    "supportsIndividualAssociation",
+    "supportsTaxonInteraction",
+    "supportsCommonTaxonName",
+    "supportsCategoricalData",
+    "supportsTemporalData",
+	"recommendedModifierEnumeration",
+	"recommendedStatisticalMeasures",
+	"supportedCategoricalEnumerations",
+	"recommendedMeasurementUnits",
+	"inverseRepresentations"
 })
 @XmlRootElement(name = "Feature")
 @Entity
@@ -110,21 +120,20 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	protected static Map<UUID, Feature> termMap = null;
 
-	private boolean supportsTextData = true;   //by default text data should be always supported
+    @XmlAttribute(name ="availableFor")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
+        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.common.CdmClass")}
+    )
+    private EnumSet<CdmClass> availableFor = EnumSet.noneOf(CdmClass.class);
 
-	private boolean supportsQuantitativeData;
+    @XmlAttribute(name ="supportedDataTypes")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
+        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.common.CdmClass")}
+    )
+    private EnumSet<CdmClass> supportedDataTypes = EnumSet.of(CdmClass.TEXT_DATA);  //by default TextData should always be supported
 
-	private boolean supportsDistribution;
-
-	private boolean supportsIndividualAssociation;
-
-	private boolean supportsTaxonInteraction;
-
-	private boolean supportsCategoricalData;
-
-	private boolean supportsCommonTaxonName;
-
-//	private EnumSet supportedClasses = EnumSet<Enum<E>>.of(null);
 
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -227,6 +236,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		return new Feature(description, label, labelAbbrev);
 	}
 
+// ********************** CONSTRUCTOR ************************/
 
     //for hibernate use only
     @Deprecated
@@ -258,6 +268,50 @@ public class Feature extends DefinedTermBase<Feature> {
 
 
 	/**
+     * If this feature is available for {@link TaxonDescription taxon descriptions}.
+     */
+    @XmlElement(name = "SupportsTaxon")
+    public boolean isAvailableForTaxon() {
+        return availableFor.contains(CdmClass.TAXON_NAME);
+    }
+    /**
+     * @see #isSupportsTaxon()
+     */
+    public void setSupportsTaxon(boolean availableForTaxon) {
+        setAvailableFor(CdmClass.TAXON, availableForTaxon);
+    }
+
+
+    /**
+     * If this feature is available for {@link NameDescription name descriptions}.
+     */
+    @XmlElement(name = "AvailableForTaxonName")
+    public boolean isAvailableForTaxonName() {
+        return supportedDataTypes.contains(CdmClass.TAXON_NAME);
+    }
+    /**
+     * @see #isAvailableForTaxon()
+     */
+    public void setAvailableForTaxonName(boolean availableForTaxonName) {
+        setAvailableFor(CdmClass.TAXON_NAME, availableForTaxonName);
+    }
+
+    /**
+     * If this feature is available for {@link SpecimenDescription specimen descriptions}.
+     */
+    @XmlElement(name = "AvailableForOccurrence")
+    public boolean isAvailableForOccurrence() {
+        return availableFor.contains(CdmClass.OCCURRENCE);
+    }
+    /**
+     * @see #isAvailableForOccurrence()
+     */
+    public void setAvailableForOccurrence(boolean availableForOccurrence) {
+        setAvailableFor(CdmClass.OCCURRENCE, availableForOccurrence);
+    }
+
+
+	/**
 	 * Returns the boolean value of the flag indicating whether <i>this</i>
 	 * feature can be described with {@link QuantitativeData quantitative data} (true)
 	 * or not (false). If this flag is set <i>this</i> feature can only apply to
@@ -267,14 +321,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@XmlElement(name = "SupportsQuantitativeData")
 	public boolean isSupportsQuantitativeData() {
-		return supportsQuantitativeData;
+	    return supportedDataTypes.contains(CdmClass.QUANTITATIVE_DATA);
 	}
 
 	/**
 	 * @see	#isSupportsQuantitativeData()
 	 */
 	public void setSupportsQuantitativeData(boolean supportsQuantitativeData) {
-		this.supportsQuantitativeData = supportsQuantitativeData;
+        setSupportedClass(CdmClass.QUANTITATIVE_DATA, supportsQuantitativeData);
 	}
 
 	/**
@@ -286,14 +340,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@XmlElement(name = "SupportsTextData")
 	public boolean isSupportsTextData() {
-		return supportsTextData;
+	    return supportedDataTypes.contains(CdmClass.TEXT_DATA);
 	}
 
 	/**
 	 * @see	#isSupportsTextData()
 	 */
 	public void setSupportsTextData(boolean supportsTextData) {
-		this.supportsTextData = supportsTextData;
+        setSupportedClass(CdmClass.TEXT_DATA, supportsTextData);
 	}
 
 	/**
@@ -306,14 +360,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@XmlElement(name = "SupportsDistribution")
 	public boolean isSupportsDistribution() {
-		return supportsDistribution;
+	      return supportedDataTypes.contains(CdmClass.DISTRIBUTION);
 	}
 
 	/**
 	 * @see	#isSupportsDistribution()
 	 */
 	public void setSupportsDistribution(boolean supportsDistribution) {
-		this.supportsDistribution = supportsDistribution;
+        setSupportedClass(CdmClass.DISTRIBUTION, supportsDistribution);
 	}
 
 	/**
@@ -325,7 +379,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@XmlElement(name = "SupportsIndividualAssociation")
 	public boolean isSupportsIndividualAssociation() {
-		return supportsIndividualAssociation;
+	      return supportedDataTypes.contains(CdmClass.INDIVIDUALS_ASSOCIATION);
 	}
 
 	/**
@@ -333,7 +387,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	public void setSupportsIndividualAssociation(
 			boolean supportsIndividualAssociation) {
-		this.supportsIndividualAssociation = supportsIndividualAssociation;
+        setSupportedClass(CdmClass.INDIVIDUALS_ASSOCIATION, supportsIndividualAssociation);
 	}
 
 	/**
@@ -345,14 +399,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@XmlElement(name = "SupportsTaxonInteraction")
 	public boolean isSupportsTaxonInteraction() {
-		return supportsTaxonInteraction;
+	      return supportedDataTypes.contains(CdmClass.TAXON_INTERACTION);
 	}
 
 	/**
 	 * @see	#isSupportsTaxonInteraction()
 	 */
 	public void setSupportsTaxonInteraction(boolean supportsTaxonInteraction) {
-		this.supportsTaxonInteraction = supportsTaxonInteraction;
+        setSupportedClass(CdmClass.TAXON_INTERACTION, supportsTaxonInteraction);
 	}
 
 	/**
@@ -365,14 +419,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@XmlElement(name = "SupportsCommonTaxonName")
 	public boolean isSupportsCommonTaxonName() {
-		return supportsCommonTaxonName;
+	      return supportedDataTypes.contains(CdmClass.COMMON_TAXON_NAME);
 	}
 
 	/**
 	 * @see	#isSupportsTaxonInteraction()
 	 */
 	public void setSupportsCommonTaxonName(boolean supportsCommonTaxonName) {
-		this.supportsCommonTaxonName = supportsCommonTaxonName;
+        setSupportedClass(CdmClass.COMMON_TAXON_NAME, supportsCommonTaxonName);
 	}
 
 	/**
@@ -384,18 +438,62 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@XmlElement(name = "SupportsCategoricalData")
 	public boolean isSupportsCategoricalData() {
-		return supportsCategoricalData;
+		return supportedDataTypes.contains(CdmClass.CATEGORICAL_DATA);
 	}
 
 	/**
 	 * @see	#supportsCategoricalData()
 	 */
 	public void setSupportsCategoricalData(boolean supportsCategoricalData) {
-		this.supportsCategoricalData = supportsCategoricalData;
+        setSupportedClass(CdmClass.CATEGORICAL_DATA, supportsCategoricalData);
 	}
 
-
 	/**
+     * Returns the boolean value of the flag indicating whether <i>this</i>
+     * feature can be described with {@link TemporalData temporalData}
+     * (true) or not (false).
+     *
+     * @return  the boolean value of the supportsTemporalData flag
+     */
+    @XmlElement(name = "SupportsTemporalData")
+    public boolean isSupportsTemporalData() {
+          return supportedDataTypes.contains(CdmClass.TEMPORAL_DATA);
+    }
+
+    /**
+     * @see #isSupportsTemporalData()
+     */
+    public void setSupportsTemporalData(boolean supportsTemporalData) {
+        setSupportedClass(CdmClass.TEMPORAL_DATA, supportsTemporalData);
+    }
+
+    /**
+     * Sets the value for supported classes
+     * @param cdmClass the supported class
+     * @param value the value if it is supported (<code>true</code>) or not (<code>false</code>)
+     */
+    private void setSupportedClass(CdmClass cdmClass, boolean value) {
+        if (value){
+            this.supportedDataTypes.add(cdmClass);
+        }else{
+            this.supportedDataTypes.remove(cdmClass);
+        }
+    }
+
+    /**
+     * Sets the value for supported classes
+     * @param cdmClass the supported class
+     * @param value the value if it is supported (<code>true</code>) or not (<code>false</code>)
+     */
+    private void setAvailableFor(CdmClass cdmClass, boolean value) {
+        if (value){
+            this.availableFor.add(cdmClass);
+        }else{
+            this.availableFor.remove(cdmClass);
+        }
+    }
+
+    /**
 	 * Returns the set of {@link TermVocabulary term vocabularies} containing the
 	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
 	 * with <i>this</i> feature.
@@ -664,16 +762,19 @@ public class Feature extends DefinedTermBase<Feature> {
 	        Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 		String text = csvLine.get(4);
-		if (text != null && text.length() >= 6){
+		if (text != null && text.length() == 8){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);}
 			if ("1".equals(text.substring(1, 2))){newInstance.setSupportsQuantitativeData(true);}
 			if ("1".equals(text.substring(2, 3))){newInstance.setSupportsDistribution(true);}
 			if ("1".equals(text.substring(3, 4))){newInstance.setSupportsIndividualAssociation(true);}
 			if ("1".equals(text.substring(4, 5))){newInstance.setSupportsTaxonInteraction(true);}
 			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);}
-			if (text.length() > 6 && "1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);}
-			//there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
+			if ("1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);}
+			if ("1".equals(text.substring(7, 8))){newInstance.setSupportsTemporalData(true);}
+            //there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
 			newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
+		}else{
+		    throw new IllegalStateException("Supported XXX must exist for all 8 subclasses");
 		}
 		return newInstance;
 	}

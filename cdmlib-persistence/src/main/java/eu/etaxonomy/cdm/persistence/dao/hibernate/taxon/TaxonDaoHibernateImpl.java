@@ -618,10 +618,10 @@ public class TaxonDaoHibernateImpl
         	what += (doCount ? " count(t)": " t");
         }
         String hql= what + " from Taxon t " +
-        "join t.descriptions d "+
-        "join d.descriptionElements e " +
-        "join e.feature f " +
-        "where f.supportsCommonTaxonName = true and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
+            "join t.descriptions d "+
+            "join d.descriptionElements e " +
+//            "join e.feature f " +
+            "where e.class = 'CommonTaxonName' and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
 
         Query query = getSession().createQuery(hql);
 
@@ -1517,7 +1517,7 @@ public class TaxonDaoHibernateImpl
         String doSubtreeForConceptRelationsWhere = subtree == null? "":" AND tn2.treeIndex like :treeIndexLike";
 
         String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
-        String doCommonNamesRestrictionWhere = " (f.supportsCommonTaxonName = true and com.name "+matchMode.getMatchOperator()+" :queryString )";
+        String doCommonNamesRestrictionWhere = " (com.class = 'CommonTaxonName' and com.name "+matchMode.getMatchOperator()+" :queryString )";
 
         String doSearchFieldWhere = "%s." + searchField + " " + matchMode.getMatchOperator() + " :queryString";
 
