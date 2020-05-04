@@ -32,10 +32,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class SDDImportTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
-    SDDImport sddImport;
+    private SDDImport sddImport;
 
     @SpringBeanByType
-    INameService nameService;
+    private INameService nameService;
 
     private SDDImportConfigurator configurator;
 

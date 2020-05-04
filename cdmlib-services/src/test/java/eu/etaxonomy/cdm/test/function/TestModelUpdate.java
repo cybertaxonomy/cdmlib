@@ -45,7 +45,7 @@ public class TestModelUpdate {
 
 
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm511" : "cdm515");
@@ -78,9 +78,11 @@ public class TestModelUpdate {
     		    System.out.println("fillData");
     		    appCtr.getCommonService().createFullSampleData();
     		    appCtr.getNameService().list(null, null, null, null, null);
-    		    TransactionStatus tx = appCtr.startTransaction(true);
+    		    TransactionStatus tx = appCtr.startTransaction(false);
     		    TemporalData td = (TemporalData)appCtr.getDescriptionService().getDescriptionElementByUuid(
     		            UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
+    		    td.getFeature().setSupportsCategoricalData(true);
+    		    appCtr.getTermService().saveOrUpdate(td.getFeature());
     		    System.out.println(td.getPeriod());
                 appCtr.commitTransaction(tx);
     		}

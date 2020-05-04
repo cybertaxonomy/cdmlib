@@ -61,7 +61,6 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
     	this.clazz = c;
     }
 
-
 	@Override
 	@SuppressWarnings("unchecked")
 	public void setParameterValues(Properties parameters) {
@@ -98,10 +97,6 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
 		}
 	}
 
-    /**
-     * @param val
-     * @return
-     */
     public static <E extends Enum<E>> IKeyTerm getTerm(Class<E> clazz, String val) {
         // TermType
         if (clazz.equals(TermType.class)){

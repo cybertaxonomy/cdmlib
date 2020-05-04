@@ -137,7 +137,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Before
     public void setUp() {
 
-
         previousAuditEvent = new AuditEvent();
         previousAuditEvent.setRevisionNumber(1025);
         previousAuditEvent.setUuid(UUID.fromString("a680fab4-365e-4765-b49e-768f2ee30cda"));

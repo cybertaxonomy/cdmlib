@@ -611,9 +611,9 @@ public class TaxonDaoHibernateImpl
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber,
             boolean doCount, boolean returnIdAndTitle){
 
-        String what = "select distinct";
+        String what = "SELECT DISTINCT";
         if (returnIdAndTitle){
-        	what += " t.uuid, t.id, t.titleCache, \'taxon\', case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+        	what += " t.uuid, t.id, t.titleCache, \'taxon\', CASE WHEN t.taxonNodes IS EMPTY AND t.relationsFromThisTaxon IS EMPTY AND t.relationsToThisTaxon IS EMPTY THEN true ELSE false END ";
         }else {
         	what += (doCount ? " count(t)": " t");
         }
@@ -696,7 +696,6 @@ public class TaxonDaoHibernateImpl
         taxonBase = (TaxonBase)getSession().merge(taxonBase);
 
         taxonBase.removeSources();
-
 
         if (taxonBase instanceof Taxon){ // is Taxon
             Taxon taxon = ((Taxon)taxonBase);
@@ -1655,7 +1654,7 @@ public class TaxonDaoHibernateImpl
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = (Object[]) resultArray.get(i);
-            	returnResult.add(new UuidAndTitleCache<Taxon>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
+            	returnResult.add(new UuidAndTitleCache<>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
             }
             return returnResult;
         }else{

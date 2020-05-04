@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
@@ -143,10 +144,10 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlElement(name = "isDefault")
     private boolean isDefault;
 
-    @XmlAttribute(name ="Operations")
+    @XmlAttribute(name ="types")
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.description.DescriptionType")}
+        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.description.DescriptionType")}
     )
     private EnumSet<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
 
