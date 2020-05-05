@@ -99,6 +99,13 @@ public class StatisticalMeasurementValue
         return new StatisticalMeasurementValue();
     }
 
+    public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, Integer value){
+        StatisticalMeasurementValue result = new StatisticalMeasurementValue();
+        result.setValue(new BigDecimal(value));
+        result.setType(type);
+        return result;
+    }
+
     public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, BigDecimal value){
         StatisticalMeasurementValue result = new StatisticalMeasurementValue();
         result.setValue(value);
