@@ -428,6 +428,30 @@ public class DescriptiveDataSetService
     }
 
     @Override
+    @Transactional(readOnly = false)
+    public DeleteResult delete(UUID datasetUuid){
+        DescriptiveDataSet dataSet = dao.load(datasetUuid);
+        DeleteResult result = new DeleteResult();
+        if (!dataSet.getDescriptions().isEmpty()){
+            Set<DescriptionBase> descriptions = new HashSet();;
+            for (DescriptionBase desc: dataSet.getDescriptions()){
+                descriptions.add(desc);
+            }
+            DeleteResult descriptionResult;
+            for (DescriptionBase desc: descriptions){
+                dataSet.removeDescription(desc);
+                descriptionResult = descriptionService.deleteDescription(desc);
+                result.includeResult(descriptionResult);
+            }
+
+
+        }
+        dao.delete(dataSet);
+        result.addDeletedObject(dataSet);
+        return result;
+    }
+
+    @Override
     @Transactional(readOnly=false)
     public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType){
         DescriptiveDataSet dataSet = load(dataSetUuid);
@@ -732,6 +756,8 @@ public class DescriptiveDataSetService
         private DescriptiveDataSetService getOuterType() {
             return DescriptiveDataSetService.this;
         }
+
+
 
     }
 
