@@ -38,8 +38,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * Whereas the direction of the relation can be valid for the direct (everted) and also for the inverted {@link Direction} direction.
  * This directional validity is defined by {@link RelationshipTermBase#isSymmetric()}
  *
- *
- *
  * @author m.doering
  * @author a.kohlbecker (Documentation)
  */

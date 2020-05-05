@@ -113,6 +113,7 @@ public class StatisticalMeasurementValue
 		return result;
 	}
 
+
 	/**
 	 * Returns the type of {@link StatisticalMeasure statistical measure} used in
 	 * <i>this</i> statistical measurement value.
