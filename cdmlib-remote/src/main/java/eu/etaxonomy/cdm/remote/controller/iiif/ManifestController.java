@@ -85,7 +85,7 @@ import io.swagger.annotations.Api;
 @RestController
 @CrossOrigin(origins = "*")
 @Api("iiif")
-@RequestMapping(value = {"/iiif"})
+@RequestMapping(value = {"/iiif"}, produces = "application/json; charset=utf-8")
 public class ManifestController {
 
     /**
