@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.diff.StringsComparator;
 import org.apache.log4j.Logger;
 import org.geotools.feature.SchemaException;
 import org.locationtech.jts.geom.Coordinate;
@@ -87,39 +89,6 @@ public class KMLDocumentBuilder {
 		doc.getStyleSelector().addAll(styles.values());
 		return kml;
 	}
-	
-	/**
-	 * @param derivedUnit
-	 * @param documentFeatures
-	 * @param kindOfUnit
-	 */
-	/*
-	private void walkDerivationPath(DerivedUnit derivedUnit, DerivedUnit unitOfInterest, List<Feature> documentFeatures,
-			DefinedTerm kindOfUnit) {
-
-		if (kindOfUnit == null) {
-			if (derivedUnit.getKindOfUnit() != null) {
-				kindOfUnit = derivedUnit.getKindOfUnit();
-			} else {
-				kindOfUnit = KIND_OF_UNIT_UNSET;
-			}
-		}
-
-		Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
-		if (originals != null) {
-			for (SpecimenOrObservationBase<?> original : originals) {
-				if (original instanceof FieldUnit) {
-					GatheringEvent gatherEvent = ((FieldUnit) original).getGatheringEvent();
-					if (gatherEvent != null && isValidPoint(gatherEvent.getExactLocation())) {
-						createFieldUnitPlacemarks(documentFeatures, unitOfInterest, gatherEvent, LocationType.DERIVED_UNIT, kindOfUnit);
-					}
-				} else {
-					walkDerivationPath((DerivedUnit) original, unitOfInterest, documentFeatures, kindOfUnit);
-				}
-			}
-		}
-	}
-	*/
 	
 	private void mapFieldUnit(SpecimenOrObservationBase unitOfInterest, SpecimenOrObservationBase original, Set<SpecimenOrObservationType> recordBases) {
 		
@@ -278,7 +247,14 @@ public class KMLDocumentBuilder {
 		description += "<figure><figcaption>Specimens and observations:</figcaption><ul>";
 		for(SpecimenOrObservationBase sob : fieldUnitMap.get(fieldUnit)) {
 			SpecimenOrObservationType type = sob.getRecordBasis() != null ? sob.getRecordBasis() : SpecimenOrObservationType.Unknown;
-			description += "<li><a class=\"occurrence-link occurrence-link-" + sob.getUuid() + " \" href=\"${occurrence-link-base-url}/" + sob.getUuid() + "\">" + type.name() + "</a></li>";
+			String unitTitle = type.name();
+			if(sob instanceof DerivedUnit) {
+				DerivedUnit du = ((DerivedUnit)sob);
+				if(StringUtils.isNotBlank(du.getMostSignificantIdentifier())){
+					unitTitle += ": " + du.getMostSignificantIdentifier();
+				}
+			}
+			description += "<li><a class=\"occurrence-link occurrence-link-" + sob.getUuid() + " \" href=\"${occurrence-link-base-url}/" + sob.getUuid() + "\">" + unitTitle + "</a></li>";
 		}	
 		description += "</ul></figure>";
 		// mapMarker.setName(name);
