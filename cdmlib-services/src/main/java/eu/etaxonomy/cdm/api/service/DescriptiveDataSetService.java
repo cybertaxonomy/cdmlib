@@ -402,51 +402,87 @@ public class DescriptiveDataSetService
             result.setError();
         }
         else{
-            boolean success = dataSet.removeDescription(descriptionBase);
-            result.addDeletedObject(descriptionBase);
-            // remove taxon description with IndividualsAssociation from data set
-            if(descriptionBase instanceof SpecimenDescription){
-                @SuppressWarnings("cast")
-                Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
-                        .stream()
-                        .flatMap(desc->desc.getElements().stream())// put all description element in one stream
-                        .filter(element->element instanceof IndividualsAssociation)
-                        .map(ia->(IndividualsAssociation)ia)
-                        .collect(Collectors.toSet());
-                Classification classification = dataSet.getTaxonSubtreeFilter().iterator().next().getClassification();
-                for (IndividualsAssociation individualsAssociation : associations) {
-                    if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(descriptionBase.getDescribedSpecimenOrObservation())){
-                        dataSet.removeDescription(individualsAssociation.getInDescription());
-                        result.addDeletedObject(individualsAssociation.getInDescription());
-                    }
-                }
-            }
-            result.addUpdatedObject(dataSet);
-            result.setStatus(success?Status.OK:Status.ERROR);
+            removeDescriptionFromDataSet(result, dataSet, descriptionBase);
         }
         return result;
     }
 
+
+    @Override
+    @Transactional(readOnly=false)
+    public DeleteResult removeDescriptions(List<UUID> descriptionUuids, UUID descriptiveDataSetUuid) {
+        DeleteResult result = new DeleteResult();
+        DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
+        List<DescriptionBase> descriptions = descriptionService.load(descriptionUuids, null);
+        if(dataSet==null || descriptions==null){
+            result.setError();
+        }
+        else{
+            for (DescriptionBase description: descriptions){
+                removeDescriptionFromDataSet(result, dataSet, description);
+            }
+
+
+        }
+        return result;
+    }
+
+    /**
+     * @param result
+     * @param dataSet
+     * @param description
+     */
+    private void removeDescriptionFromDataSet(DeleteResult result, DescriptiveDataSet dataSet,
+            DescriptionBase description) {
+        boolean success = dataSet.removeDescription(description);
+        result.addDeletedObject(description);// remove taxon description with IndividualsAssociation from data set
+        if(description instanceof SpecimenDescription){
+            @SuppressWarnings("cast")
+            Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
+                    .stream()
+                    .flatMap(desc->desc.getElements().stream())// put all description element in one stream
+                    .filter(element->element instanceof IndividualsAssociation)
+                    .map(ia->(IndividualsAssociation)ia)
+                    .collect(Collectors.toSet());
+            Classification classification = dataSet.getTaxonSubtreeFilter().iterator().next().getClassification();
+            for (IndividualsAssociation individualsAssociation : associations) {
+                if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(description.getDescribedSpecimenOrObservation())){
+                    dataSet.removeDescription(individualsAssociation.getInDescription());
+                    result.addDeletedObject(individualsAssociation.getInDescription());
+                }
+            }
+        }
+        result.addUpdatedObject(dataSet);
+        result.setStatus(success?Status.OK:Status.ERROR);
+    }
+
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult delete(UUID datasetUuid){
+    public DeleteResult delete(UUID datasetUuid, IProgressMonitor monitor){
         DescriptiveDataSet dataSet = dao.load(datasetUuid);
+        monitor.beginTask("Delete Descriptive Dataset", dataSet.getDescriptions().size() +1);
+
         DeleteResult result = new DeleteResult();
+        DeleteResult descriptionResult = new DeleteResult();
         if (!dataSet.getDescriptions().isEmpty()){
             Set<DescriptionBase> descriptions = new HashSet();;
             for (DescriptionBase desc: dataSet.getDescriptions()){
                 descriptions.add(desc);
             }
-            DeleteResult descriptionResult;
+            monitor.subTask("Delete descriptions");
             for (DescriptionBase desc: descriptions){
                 dataSet.removeDescription(desc);
-                descriptionResult = descriptionService.deleteDescription(desc);
-                result.includeResult(descriptionResult);
+                descriptionResult.includeResult(descriptionService.deleteDescription(desc));
+                monitor.worked(1);
             }
 
 
         }
-        dao.delete(dataSet);
+        UUID uuid = dao.delete(dataSet);
+        monitor.worked(1);
+        monitor.done();
+        result.includeResult(descriptionResult);
+        result.setStatus(Status.OK);
         result.addDeletedObject(dataSet);
         return result;
     }

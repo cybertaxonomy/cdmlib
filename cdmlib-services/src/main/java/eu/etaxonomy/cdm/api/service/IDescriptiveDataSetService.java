@@ -180,4 +180,18 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
     public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid);
 
+    /**
+     * @param datasetUuid
+     * @param monitor
+     * @return
+     */
+    DeleteResult delete(UUID datasetUuid, IProgressMonitor monitor);
+
+    /**
+     * @param descriptionUuid
+     * @param descriptiveDataSetUuid
+     * @return
+     */
+    DeleteResult removeDescriptions(List<UUID> descriptionUuids, UUID descriptiveDataSetUuid);
+
 }
