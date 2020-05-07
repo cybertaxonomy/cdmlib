@@ -68,4 +68,11 @@ public interface ILongRunningTasksService {
 
     public UUID monitLongRunningTask(SortIndexUpdaterConfigurator configurator);
 
+    /**
+     * Monitored invocation of {@link IDescriptiveDataSetService#delete(DescriptiveDataSetUUID, IProgressMonitor)}
+     * @param datasetUuid
+     * @return
+     */
+    public UUID deleteDescriptiveDataset(UUID datasetUuid);
+
 }
