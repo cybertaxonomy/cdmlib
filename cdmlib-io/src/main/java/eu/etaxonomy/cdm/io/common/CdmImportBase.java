@@ -903,6 +903,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return presenceTerm;
 	}
 
+    /**
+     * Retrieves the language for the given uuid. If language does not exist
+     * <code>null</code> is returned.
+     */
+    protected Language getLanguage(STATE state, UUID uuid){
+        return getLanguage(state, uuid, null, null, null, null);
+    }
+
 	/**
 	 * Returns a language for a given uuid by first ...
 	 * @param state
@@ -924,7 +932,10 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (language == null){
 			language = (Language)getTermService().find(uuid);
 			if (language == null){
-				language = Language.NewInstance(text, label, labelAbbrev);
+				if (text == null && label == null && labelAbbrev == null){
+				    return null;
+				}
+			    language = Language.NewInstance(text, label, labelAbbrev);
 
 				language.setUuid(uuid);
 				if (voc == null){

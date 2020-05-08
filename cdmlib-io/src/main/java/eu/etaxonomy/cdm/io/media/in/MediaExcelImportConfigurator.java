@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.io.media.in;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
@@ -28,8 +28,8 @@ public class MediaExcelImportConfigurator
     private static final long serialVersionUID = -6403743396163163359L;
 
     private List<URI> baseUrls = new ArrayList<>();
-    private Language descriptionLanguage;
-    private Language titleLanguage;
+    private UUID descriptionLanguageUuid;
+    private UUID titleLanguageUuid;
 
     private boolean readMediaData = true;
     private MediaTitleEnum mediaTitle = MediaTitleEnum.NAME_TITLE_CACHE;
@@ -49,54 +49,40 @@ public class MediaExcelImportConfigurator
         FILE_NAME    //use file name
     }
 
-    /**
-     * @param uri
-     * @param destination
-     * @param transformer
-     */
     private MediaExcelImportConfigurator(URI uri, ICdmDataSource destination, IInputTransformer transformer) {
         super(uri, destination, transformer);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @SuppressWarnings("unchecked")
     @Override
     public MediaExcelImportState getNewState() {
         return new MediaExcelImportState(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @SuppressWarnings("unchecked")
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
                 MediaExcelImport.class,
         };
-
     }
 
-    /**
-     * @return
-     */
     public List<URI> getBaseUrls() {
         return baseUrls ;
     }
 
+    public UUID getDescriptionLanguageUuid() {
+        return this.descriptionLanguageUuid;
+    }
+    public void setDescriptionLanguage(UUID descriptionLanguageUuid) {
+        this.descriptionLanguageUuid = descriptionLanguageUuid;
+    }
 
-    public Language getDescriptionLanguage() {
-        return this.descriptionLanguage;
+    public UUID getTitleLanguageUuid() {
+        return titleLanguageUuid;
     }
-    public void setDescriptionLanguage(Language descriptionLanguage) {
-        this.descriptionLanguage = descriptionLanguage;
-    }
-
-    public Language getTitleLanguage() {
-        return titleLanguage;
-    }
-    public void setTitleLanguage(Language titleLanguage) {
-        this.titleLanguage = titleLanguage;
+    public void setTitleLanguageUuid(UUID titleLanguageUuid) {
+        this.titleLanguageUuid = titleLanguageUuid;
     }
 
     public boolean isReadMediaData() {
@@ -112,6 +98,4 @@ public class MediaExcelImportConfigurator
     public void setMediaTitle(MediaTitleEnum mediaTitle) {
         this.mediaTitle = mediaTitle;
     }
-
-
 }

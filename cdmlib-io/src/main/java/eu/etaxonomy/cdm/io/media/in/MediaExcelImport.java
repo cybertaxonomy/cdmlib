@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,7 +94,9 @@ public class MediaExcelImport
         //description
         String description = record.get(COL_DESCRIPTION);
         if (isNotBlank(description)){
-            Language descriptionLanguage = state.getConfig().getDescriptionLanguage();
+
+            UUID descriptionLanguageUuid = state.getConfig().getDescriptionLanguageUuid();
+            Language descriptionLanguage = getLanguage(state, descriptionLanguageUuid);
             descriptionLanguage = descriptionLanguage == null? Language.UNKNOWN_LANGUAGE(): descriptionLanguage;
             media.putDescription(descriptionLanguage, description);
         }
@@ -104,7 +107,8 @@ public class MediaExcelImport
             title = makeTitle(state, taxon, line);
         }
         if (isNotBlank(title)){
-            Language titleLanguage = state.getConfig().getTitleLanguage();
+            UUID titleLanguageUuid = state.getConfig().getTitleLanguageUuid();
+            Language titleLanguage = getLanguage(state, titleLanguageUuid);
             titleLanguage = titleLanguage == null? Language.UNKNOWN_LANGUAGE(): titleLanguage;
             media.putTitle(titleLanguage, title);
         }
@@ -324,7 +328,7 @@ public class MediaExcelImport
 
         }
 
-        Person result = (Person)getDeduplicationHelper(state).getExistingAuthor(null, person);
+        Person result = getDeduplicationHelper(state).getExistingAuthor(null, person);
         return result;
     }
 
