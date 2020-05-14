@@ -1779,6 +1779,21 @@ public class NonViralNameParserImplTest {
     }
 
     @Test
+    public final void testRussian(){
+        String parseStr = "Cortusa turkestanica Losinsk. in Тр. Бот. инст. Aкад. наук СССР, сер. 1, 3: 239. 1936";
+        INonViralName name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("Reference should be parsable", nomRef.isProtectedTitleCache());
+
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "239");
+        //TODO series should be parsed and handled better
+        assertEquals("Тр. Бот. инст. Aкад. наук СССР, сер. 1,", nomRef.getInJournal().getAbbrevTitle());
+//        assertEquals("сер. 1", nomRef.getSeriesPart());
+    }
+
+    @Test
     public final void testDetails(){
         //s.p.
         String parseStr = "Xiphion filifolium var. latifolium Baker, Gard. Chron. 1876: s.p.. 1876";
