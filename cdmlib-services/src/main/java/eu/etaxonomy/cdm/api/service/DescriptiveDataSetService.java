@@ -146,7 +146,9 @@ public class DescriptiveDataSetService
         if(filteredNodes.isEmpty()){
             return Collections.EMPTY_SET;
         }
-        return occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
+        Collection<SpecimenNodeWrapper> result = occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
+
+        return result;
     }
 
     @Override
@@ -234,11 +236,11 @@ public class DescriptiveDataSetService
         DescriptiveDataSet dataSet = load(datasetUuid);
         result.setCdmEntity(dataSet);
 
-        List<UUID> taxonUuids = wrappers.stream().map(wrapper->wrapper.getTaxonNode().getTaxon().getUuid()).collect(Collectors.toList());
+        List<UUID> taxonUuids = wrappers.stream().map(wrapper->wrapper.getTaxonNode().getTaxonUuid()).collect(Collectors.toList());
         List<TaxonBase> taxa = taxonService.load(taxonUuids, Arrays.asList(new String[]{"descriptions"}));
 
         for (SpecimenNodeWrapper wrapper : wrappers) {
-            Optional<TaxonBase> findAny = taxa.stream().filter(taxon->taxon.getUuid().equals(wrapper.getTaxonNode().getTaxon().getUuid())).findAny();
+            Optional<TaxonBase> findAny = taxa.stream().filter(taxon->taxon.getUuid().equals(wrapper.getTaxonNode().getTaxonUuid())).findAny();
             if(!findAny.isPresent()){
                 result.addException(new IllegalArgumentException("Could not create wrapper for "+wrapper.getUuidAndTitleCache().getTitleCache()));
                 continue;
@@ -323,7 +325,8 @@ public class DescriptiveDataSetService
             country = fieldUnit.getGatheringEvent().getCountry();
         }
         //get default taxon description
-        TaxonDescription defaultTaxonDescription = findDefaultDescription(description.getUuid(), descriptiveDataSet.getUuid());
+//        TaxonDescription defaultTaxonDescription = findDefaultDescription(description.getUuid(), descriptiveDataSet.getUuid());
+        TaxonDescription defaultTaxonDescription = recurseDefaultDescription(taxonNode, descriptiveDataSet);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
         SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(description, new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
@@ -335,6 +338,12 @@ public class DescriptiveDataSetService
     public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, UUID descriptiveDataSetUuid){
         return createSpecimenRowWrapper(description, null, descriptiveDataSetUuid);
 	}
+
+    @Override
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid){
+        SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
+        return createSpecimenRowWrapper(SpecimenDescription.NewInstance(specimen), taxonNodeUuid, descriptiveDataSetUuid);
+    }
 
     @Override
     @Transactional(readOnly = false)
@@ -505,7 +514,7 @@ public class DescriptiveDataSetService
             }
         });
         dataSet.addDescription(newTaxonDescription);
-
+        saveOrUpdate(dataSet);
         return createTaxonRowWrapper(newTaxonDescription.getUuid(), dataSet.getUuid());
     }
 

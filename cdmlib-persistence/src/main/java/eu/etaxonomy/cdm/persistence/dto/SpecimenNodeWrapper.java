@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author pplitzner
@@ -24,26 +23,26 @@ public class SpecimenNodeWrapper implements Serializable{
 
     private static final long serialVersionUID = -7137923139085928830L;
 
-    private UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache;
+    private UuidAndTitleCache<SpecimenOrObservationBase> specimenUuidAndTitleCache;
     private SpecimenOrObservationType type;
-    private TaxonNode taxonNode;
+    private TaxonNodeDto taxonNode;
     private UUID taxonDescriptionUuid;
 
     public SpecimenNodeWrapper(UuidAndTitleCache<SpecimenOrObservationBase> uuidAndTitleCache,
             SpecimenOrObservationType type,
-            TaxonNode taxonNode) {
+            TaxonNodeDto taxonNode) {
         super();
-        this.uuidAndTitleCache = uuidAndTitleCache;
+        this.specimenUuidAndTitleCache = uuidAndTitleCache;
         this.type = type;
         this.taxonNode = taxonNode;
     }
     public UuidAndTitleCache<SpecimenOrObservationBase> getUuidAndTitleCache() {
-        return uuidAndTitleCache;
+        return specimenUuidAndTitleCache;
     }
     public SpecimenOrObservationType getType() {
         return type;
     }
-    public TaxonNode getTaxonNode() {
+    public TaxonNodeDto getTaxonNode() {
         return taxonNode;
     }
     public UUID getTaxonDescriptionUuid() {
@@ -57,8 +56,8 @@ public class SpecimenNodeWrapper implements Serializable{
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((taxonNode == null) ? 0 : taxonNode.hashCode());
-        result = prime * result + ((uuidAndTitleCache == null) ? 0 : uuidAndTitleCache.getUuid().hashCode());
+//        result = prime * result + ((taxonNode == null) ? 0 : taxonNode.hashCode());
+        result = prime * result + ((specimenUuidAndTitleCache == null) ? 0 : specimenUuidAndTitleCache.getUuid().hashCode());
         return result;
     }
 
@@ -74,18 +73,18 @@ public class SpecimenNodeWrapper implements Serializable{
             return false;
         }
         SpecimenNodeWrapper other = (SpecimenNodeWrapper) obj;
-        if (taxonNode == null) {
-            if (other.taxonNode != null) {
+//        if (taxonNode == null) {
+//            if (other.taxonNode != null) {
+//                return false;
+//            }
+//        } else if (!taxonNode.equals(other.taxonNode)) {
+//            return false;
+//        }
+        if (specimenUuidAndTitleCache == null) {
+            if (other.specimenUuidAndTitleCache != null) {
                 return false;
             }
-        } else if (!taxonNode.equals(other.taxonNode)) {
-            return false;
-        }
-        if (uuidAndTitleCache == null) {
-            if (other.uuidAndTitleCache != null) {
-                return false;
-            }
-        } else if (!uuidAndTitleCache.getUuid().equals(other.uuidAndTitleCache.getUuid())) {
+        } else if (!specimenUuidAndTitleCache.getUuid().equals(other.specimenUuidAndTitleCache.getUuid())) {
             return false;
         }
         return true;

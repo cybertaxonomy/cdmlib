@@ -118,9 +118,21 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             excluded = taxonNode.isExcluded();
             doubtful = taxonNode.isDoubtful();
             treeIndex = taxonNode.treeIndex();
-            parentUUID = taxonNode.getParent() == null? null:taxonNode.getParent().getUuid();
+            try{
+                TaxonNode parent = taxonNode.getParent();
+                parentUUID = parent == null? null:parent.getUuid();
+            }catch(Exception e){
+                parentUUID = null;
+            }
+
             sortIndex = taxonNode.getSortIndex();
-            classificationUUID = taxonNode.getClassification().getUuid();
+            try{
+                classificationUUID = taxonNode.getClassification().getUuid();
+
+            }catch(Exception e){
+                classificationUUID = null;
+            }
+
         }
         status = TaxonStatus.Accepted;
     }

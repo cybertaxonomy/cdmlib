@@ -79,7 +79,7 @@ public abstract class DerivateDTO extends TypedEntityReference{
     public static DerivateDTO newInstance(SpecimenOrObservationBase sob){
         DerivateDTO derivateDto;
         if (sob.isInstanceOf(FieldUnit.class)){
-            derivateDto = FieldUnitDTO.newInstance(sob);
+            derivateDto = new FieldUnitDTO((FieldUnit)sob);
         } else if (sob instanceof DnaSample){
             derivateDto = new DNASampleDTO((DnaSample)sob);
         } else {

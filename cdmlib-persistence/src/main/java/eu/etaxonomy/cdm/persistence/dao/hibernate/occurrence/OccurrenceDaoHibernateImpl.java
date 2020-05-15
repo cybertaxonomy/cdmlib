@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -552,7 +553,7 @@ public class OccurrenceDaoHibernateImpl
                             (Integer) object[1],
                             (String) object[2]),
                     (SpecimenOrObservationType)object[3],
-                    (TaxonNode)object[4]);
+                    new TaxonNodeDto((TaxonNode)object[4]));
             if(object.length>5) {
                 wrapper.setTaxonDescriptionUuid((UUID)object[5]);
             }
@@ -638,12 +639,15 @@ public class OccurrenceDaoHibernateImpl
     public Collection<SpecimenNodeWrapper> listUuidAndTitleCacheByAssociatedTaxon(List<UUID> taxonNodeUuids,
             Integer limit, Integer start){
 
-        Collection<SpecimenNodeWrapper> wrappers = new HashSet<>();
-        wrappers.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
-        wrappers.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
-        wrappers.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start));
-        wrappers.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));
+        Set<SpecimenNodeWrapper> testSet = new HashSet();
 
+        testSet.addAll(queryIndividualAssociatedSpecimen(taxonNodeUuids, limit, start));
+        testSet.addAll(queryTaxonDeterminations(taxonNodeUuids, limit, start));
+        testSet.addAll(queryTaxonNameDeterminations(taxonNodeUuids, limit, start));
+        testSet.addAll(queryTypeSpecimen(taxonNodeUuids, limit, start));
+
+        Collection<SpecimenNodeWrapper> wrappers = new HashSet<>();
+        wrappers.addAll(testSet);
         return wrappers;
     }
 
@@ -737,7 +741,9 @@ public class OccurrenceDaoHibernateImpl
         for(HomotypicalGroup homotypicalGroup :  associatedTaxon.getHomotypicSynonymyGroups()) {
             List<SpecimenTypeDesignation> byHomotypicalGroup = homotypicalGroupDao.getTypeDesignations(homotypicalGroup, SpecimenTypeDesignation.class, null, null, 0, null);
             for (SpecimenTypeDesignation specimenTypeDesignation : byHomotypicalGroup) {
-                setOfAllIds.add(specimenTypeDesignation.getTypeSpecimen().getId());
+                if (specimenTypeDesignation.getTypeSpecimen() != null){
+                    setOfAllIds.add(specimenTypeDesignation.getTypeSpecimen().getId());
+                }
             }
         }
 
