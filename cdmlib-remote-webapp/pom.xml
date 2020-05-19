@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>cdmlib-parent</artifactId>
@@ -7,14 +9,14 @@
     <version>5.15.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
-  <groupId>eu.etaxonomy</groupId>
-  <artifactId>cdmlib-remote-webapp</artifactId>  
+  <artifactId>cdmlib-remote-webapp</artifactId>
   <name>CDM Remote Webapp</name>
   <packaging>war</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- by default 
+      no further args by now, see profiles for alternative run configurations -->
   </properties>
 
   <profiles>
@@ -40,22 +42,100 @@
         </repository>
       </repositories>
     </profile>
+    <!-- ========================= PROFILE : db-create ========================= -->
+    <profile>
+      <id>db-create</id>
+      <activation>
+        <property>
+          <name>db-create</name>
+        </property>
+      </activation>
+      <properties>
+        <integrationTest.jvmArgs.cdm.datasource>h2_cdm_blank</integrationTest.jvmArgs.cdm.datasource>
+        <integrationTest.jvmArgs.cdm.forceSchemaCreate>true</integrationTest.jvmArgs.cdm.forceSchemaCreate>
+        <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j.properties</integrationTest.log4j.configuration>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.16</version>
+            <configuration>
+              <forkCount>3</forkCount>
+              <reuseForks>true</reuseForks>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <includes>
+                    <include>**/ForceSchemaCreateIT.java</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- ========================= DEFAULT-PROFILE : db-use ========================= -->
+     <profile>
+      <id>db-use</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>db-use</name>
+        </property>
+      </activation>
+      <properties>
+        <integrationTest.jvmArgs.cdm.datasource>h2_cdmTest</integrationTest.jvmArgs.cdm.datasource>
+        <integrationTest.jvmArgs.cdm.forceSchemaCreate>false</integrationTest.jvmArgs.cdm.forceSchemaCreate>
+        <integrationTest.log4j.configuration>${project.build.directory}/target/test-classes/log4j.properties</integrationTest.log4j.configuration>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.16</version>
+            <configuration>
+              <forkCount>3</forkCount>
+              <reuseForks>true</reuseForks>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <systemPropertyVariables>
+                    <cdm.datasource>h2_cdmTest</cdm.datasource>
+                  </systemPropertyVariables>
+                  <excludes>
+                    <exclude>**/ForceSchemaCreateIT.java</exclude>
+                  </excludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
-
   <dependencies>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-remote</artifactId>
       <exclusions>
-        <!-- 
-            exclude all jdbc drivers from the war. 
-            Jdbc drivers must only be added to {APPLICATION_CONTAINER}/lib
-            see http://dev.e-taxonomy.eu/trac/ticket/4955 
-            and http://stackoverflow.com/questions/6981564/why-must-the-jdbc-driver-be-put-in-tomcat-home-lib-folder
-         -->
+        <!-- exclude all jdbc drivers from the war. Jdbc drivers must only 
+          be added to {APPLICATION_CONTAINER}/lib see http://dev.e-taxonomy.eu/trac/ticket/4955 
+          and http://stackoverflow.com/questions/6981564/why-must-the-jdbc-driver-be-put-in-tomcat-home-lib-folder -->
         <exclusion>
-            <groupId>eu.etaxonomy</groupId>
-            <artifactId>cdmlib-db</artifactId>
+          <groupId>eu.etaxonomy</groupId>
+          <artifactId>cdmlib-db</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -64,12 +144,12 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-test</artifactId>      
-        <scope>test</scope>
+      <groupId>eu.etaxonomy</groupId>
+      <artifactId>cdmlib-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <!-- TODO this is also offered by cdmlib-remote, can it be removed?
+      <!-- TODO this is also offered by cdmlib-remote, can it be removed? 
         What does provided mean? -->
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -81,15 +161,13 @@
       <artifactId>xmlunit</artifactId>
     </dependency>
     <!-- JsonView -->
-    <!-- 
-     -->
+    <!-- -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
     </dependency>
 
-    <!-- XmlView 
-    -->
+    <!-- XmlView -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
@@ -121,10 +199,8 @@
       <artifactId>springfox-swagger2</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- 
-        dependencies for springfox-swagger2, added explicitly to pin the version
-        these dependencies are also required by the cdmlib!  
-    -->
+    <!-- dependencies for springfox-swagger2, added explicitly to pin the 
+      version these dependencies are also required by the cdmlib! -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
@@ -138,7 +214,7 @@
       <artifactId>jackson-annotations</artifactId>
     </dependency>
     <!-- END of dependencies for swagger-springmvc, added explicitely -->
-    
+
     <!-- testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -152,13 +228,13 @@
       <artifactId>hibernate-c3p0</artifactId>
       <scope>test</scope>
     </dependency>
-<!--     <dependency> -->
-<!--         <groupId>com.mchange</groupId> -->
-<!--         <artifactId>c3p0</artifactId> -->
-<!--         <scope>test</scope> -->
-<!--     </dependency> -->
-      <!-- Profiling -->
-      <dependency>
+    <!-- <dependency> -->
+    <!-- <groupId>com.mchange</groupId> -->
+    <!-- <artifactId>c3p0</artifactId> -->
+    <!-- <scope>test</scope> -->
+    <!-- </dependency> -->
+    <!-- Profiling -->
+    <dependency>
       <groupId>com.yourkit</groupId>
       <artifactId>yjp-controller-api-redist</artifactId>
       <scope>test</scope>
@@ -170,7 +246,7 @@
       <resource>
         <!-- replace the place holders like ${...} in datasources.xml -->
         <filtering>true</filtering>
-		<directory>src/test/resources</directory>
+        <directory>src/test/resources</directory>
         <targetPath>../test-classes</targetPath>
         <includes>
           <include>datasources.xml</include>
@@ -193,18 +269,29 @@
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>2.16</version>
-        <configuration>
-          <forkCount>3</forkCount>
-          <reuseForks>true</reuseForks>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
+        <!-- configuration per maven profile -->
+        
+<!--         <configuration> -->
+<!--           <forkCount>3</forkCount> -->
+<!--           <reuseForks>true</reuseForks> -->
+<!--         </configuration> -->
+<!--         <executions> -->
+<!--           <execution> -->
+<!--             <id>default</id> -->
+<!--             <goals> -->
+<!--               <goal>integration-test</goal> -->
+<!--               <goal>verify</goal> -->
+<!--             </goals> -->
+<!--             <configuration> -->
+<!--               <systemPropertyVariables> -->
+<!--                 <cdm.datasource>h2_cdmTest</cdm.datasource> -->
+<!--               </systemPropertyVariables> -->
+<!--               <excludes> -->
+<!--                 <exclude>**/ForceSchemaCreateIT.java</exclude> -->
+<!--               </excludes> -->
+<!--             </configuration> -->
+<!--           </execution> -->
+<!--         </executions> -->
       </plugin>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
@@ -215,41 +302,49 @@
           <stopPort>9199</stopPort>
           <scanIntervalSeconds>10</scanIntervalSeconds>
           <useTestScope>true</useTestScope>
-          <!-- 
-                jvmArgs will only be used when running mvn jetty:run-forked 
-          -->
-          <jvmArgs>-Xmx2000M -Dcdm.datasource=h2_cdmTest -Duser.home=${basedir}/target/target/ -Dcdm.beanDefinitionFile=${project.build.directory}/test-classes/datasources.xml -Dspring.profiles.active=remoting</jvmArgs>
+          <!-- jvmArgs will only be used when running mvn jetty:run-forked -->
+          <jvmArgs>-Xmx2000M 
+            -Dcdm.datasource=${integrationTest.jvmArgs.cdm.datasource}
+            -Duser.home=${basedir}/target/target/
+            -Dcdm.beanDefinitionFile=${project.build.directory}/test-classes/datasources.xml
+            -Dspring.profiles.active=remoting
+            -Dcdm.forceSchemaCreate=${integrationTest.jvmArgs.cdm.forceSchemaCreate}
+            -Dlog4j.configuration=${integrationTest.jvmArgs.log4j.configuration}
+            -Dorg.eclipse.jetty.annotations.AnnotationParser.LEVEL=OFF
+           </jvmArgs>
           <jettyXml>${basedir}/src/test/resources/etc/jetty/jetty.xml,${basedir}/src/test/resources/etc/jetty/jetty-http.xml</jettyXml>
           <!-- <jettyXml>./src/test/resources/etc/jetty/jetty.xml,./src/test/resources/etc/jetty/jetty-http.xml,./src/test/resources/etc/jetty/jetty-ssl.xml,./src/test/resources/etc/jetty/jetty-https.xml</jettyXml> -->
           <systemProperties>
             <force>true</force>
             <systemProperty>
               <name>cdm.datasource</name>
-              <value>h2_cdmTest</value>
+              <value>${integrationTest.jvmArgs.cdm.datasource}</value>
             </systemProperty>
             <systemProperty>
-              <!-- 
-                The lucene index should be placed into the target folder,
-                so user.home needs to be set to this folder.
-                user.home needs to be overriden since it already 
-                exists, thus the force option is turned on above 
-              -->
+              <!-- The lucene index should be placed into the target folder, 
+                so user.home needs to be set to this folder. user.home needs to be overridden 
+                since it already exists, thus the force option is turned on above -->
               <name>user.home</name>
               <value>${basedir}/target/</value>
-            </systemProperty>            
+            </systemProperty>
             <systemProperty>
-              <!-- datasources.xml is prepared by <plugins><resources>..</resources>
-                above -->
+              <!-- datasources.xml is prepared by <plugins><resources>..</resources> above -->
               <name>cdm.beanDefinitionFile</name>
               <value>${project.build.directory}/test-classes/datasources.xml</value>
             </systemProperty>
             <systemProperty>
-                <!--
-                    start with swagger profile so that the swagger doc 
-                    can be generated 
-                 -->
-                <name>spring.profiles.active</name>
-                <value>swagger</value>
+                <name>cdm.forceSchemaCreate</name>
+                <value>${integrationTest.jvmArgs.cdm.forceSchemaCreate}</value>
+            </systemProperty>
+            <systemProperty>
+              <!-- start with swagger profile so that the swagger doc can 
+                be generated -->
+              <name>spring.profiles.active</name>
+              <value>swagger</value>
+            </systemProperty>
+            <systemProperty>
+                <name>log4j.configuration</name>
+                <value>${integrationTest.jvmArgs.log4j.configuration}</value>
             </systemProperty>
           </systemProperties>
         </configuration>
@@ -273,33 +368,38 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+            <dependency>
+                    <groupId>org.apache.taglibs</groupId>
+                    <artifactId>taglibs-standard-impl</artifactId>
+                    <version>1.2.5</version>
+            </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.6</version>
         <executions>
-            <execution>
-                <!-- 
-                    The war must be created after running the integration-tests,
-                    since the SwaggerGroupsIT test populates the classes/api-docs-static/
-                    folder with static swagger doc files. The are otherwise not packed
-                     into the war file.
-                  -->
-                <phase>verify</phase>
-                <goals>
-                  <goal>war</goal>
-                </goals>
-            </execution>
+          <execution>
+            <!-- The war must be created after running the integration-tests, 
+              since the SwaggerGroupsIT test populates the classes/api-docs-static/ folder 
+              with static swagger doc files. The are otherwise not packed into the war 
+              file. -->
+            <phase>verify</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
         </executions>
       </plugin>
-	  <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>2.7</version>
-            <configuration>
-                <escapeWindowsPaths>false</escapeWindowsPaths>
-            </configuration>
-        </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <escapeWindowsPaths>false</escapeWindowsPaths>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

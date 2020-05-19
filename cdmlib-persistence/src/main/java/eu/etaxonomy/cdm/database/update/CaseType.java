@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import eu.etaxonomy.cdm.database.CdmDatabaseException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
@@ -67,7 +68,7 @@ public enum CaseType {
 				try {
 					datasource.executeQuery(sql+ "cdmmetadata");
 				} catch (SQLException e2) {
-					throw new RuntimeException("Case type (camel, upper, lower) of the database could be defined. Maybe the CdmMetaData table is missing in the datasource", e2);
+					throw new CdmDatabaseException("Case type (camel, upper, lower) of the database could be defined. Maybe the CdmMetaData table is missing in the datasource", e2);
 				}
 				return CaseType.LowerCase;
 			}
