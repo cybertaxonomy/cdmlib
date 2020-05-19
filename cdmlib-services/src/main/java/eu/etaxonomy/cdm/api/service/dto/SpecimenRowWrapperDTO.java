@@ -27,44 +27,50 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     private static final long serialVersionUID = 5198447592554976471L;
 
     private TaxonRowWrapperDTO defaultDescription;
-    private UuidAndTitleCache<SpecimenOrObservationBase> specimen;
+    private DerivateDTO specimen;
     private UuidAndTitleCache<FieldUnit> fieldUnit;
     private SpecimenOrObservationType type;
     private String identifier;
     private NamedArea country;
 
-    public SpecimenRowWrapperDTO(SpecimenDescription description, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
+    public SpecimenRowWrapperDTO(DescriptionBaseDto description, SpecimenOrObservationType type, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
                 NamedArea country) {
         super(description, taxonNode);
-        this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
+        if (fieldUnit != null){
+            this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
+        }
         this.identifier = identifier;
         this.country = country;
-        this.specimen = new UuidAndTitleCache<>(description.getDescribedSpecimenOrObservation().getUuid(), description.getDescribedSpecimenOrObservation().getId(), description.getDescribedSpecimenOrObservation().getTitleCache()) ;
-        this.type = description.getDescribedSpecimenOrObservation().getRecordBasis();
+        this.specimen = description.getSpecimenDto();
+        this.type = type;
     }
 
 
     public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
             NamedArea country) {
-        super(SpecimenDescription.NewInstance(specimen), taxonNode);
-        this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
+        super(new DescriptionBaseDto(specimen), taxonNode);
+        if (fieldUnit != null){
+            this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
+        }
         this.identifier = identifier;
         this.country = country;
-        this.specimen = new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache());
+        this.specimen = DerivateDTO.newInstance(specimen);
         this.type = specimen.getRecordBasis();
     }
 
-    public SpecimenRowWrapperDTO(UuidAndTitleCache<SpecimenOrObservationBase> specimen, SpecimenOrObservationType type, TaxonNodeDto taxonNode, UuidAndTitleCache<FieldUnit> fieldUnit, String identifier,
+    public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, UuidAndTitleCache<FieldUnit> fieldUnit, String identifier,
             NamedArea country) {
-    super(SpecimenDescription.NewInstance(), taxonNode);
-    this.fieldUnit = fieldUnit;
+    super(new DescriptionBaseDto(specimen), taxonNode);
+    if (fieldUnit != null){
+        this.fieldUnit = fieldUnit;
+    }
     this.identifier = identifier;
     this.country = country;
-    this.specimen = specimen;
-    this.type = type;
+    this.specimen = DerivateDTO.newInstance(specimen);
+    this.type = specimen.getRecordBasis();
 
 }
-    public UuidAndTitleCache<SpecimenOrObservationBase> getSpecimen() {
+    public DerivateDTO getSpecimen() {
         return specimen;
     }
 

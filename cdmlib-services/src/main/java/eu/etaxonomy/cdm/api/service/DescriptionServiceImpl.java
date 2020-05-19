@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -471,7 +472,7 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements, boolean returnTransientEntity) {
         List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
-        List<Distribution> toDelete = new ArrayList<>();
+
         for(TaxonDistributionDTO obj : descriptionElements) {
             Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
             List<DescriptionBase> list = new ArrayList(obj.getDescriptionsWrapper().getDescriptions());
@@ -483,6 +484,20 @@ public class DescriptionServiceImpl
                 mergedObjects.add(dao.merge(desc, returnTransientEntity));
             }
 
+
+        }
+
+        return mergedObjects;
+    }
+//
+    @Override
+    @Transactional(readOnly = false)
+    public List<MergeResult<DescriptionBase>> mergeDescriptions(Collection<DescriptionBaseDto> descriptions, boolean returnTransientEntity) {
+        List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
+
+        for(DescriptionBaseDto descDto : descriptions) {
+            DescriptionBase description = descDto.getDescription();
+            mergedObjects.add(dao.merge(description, returnTransientEntity));
 
         }
 

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -221,12 +222,18 @@ public class DescriptiveDataSetService
         Optional<TaxonNode> first = descriptiveDataSet.getTaxonSubtreeFilter().stream()
                 .filter(node->node.getClassification()!=null).findFirst();
         Optional<Classification> classificationOptional = first.map(node->node.getClassification());
+        Set<DescriptionBaseDto> descriptions = new HashSet<>();
         if(classificationOptional.isPresent()){
             classification = classificationOptional.get();
             Taxon taxon = (Taxon) taxonService.load(description.getTaxon().getId(), Arrays.asList("taxonNodes", "taxonNodes.classification"));
             taxonNode = taxon.getTaxonNode(classification);
+            for (DescriptionBase desc: taxon.getDescriptions()){
+                descriptions.add(new DescriptionBaseDto(desc));
+            }
         }
-        return new TaxonRowWrapperDTO(description, new TaxonNodeDto(taxonNode));
+
+
+        return new TaxonRowWrapperDTO(new DescriptionBaseDto(description), new TaxonNodeDto(taxonNode), descriptions);
     }
 
     @Override
@@ -275,11 +282,14 @@ public class DescriptiveDataSetService
                 continue;
             }
             //add specimen description to data set
-            rowWrapper.getDescription().addDescriptiveDataSet(dataSet);
+
+            specimenDescription = (SpecimenDescription) descriptionService.load(rowWrapper.getDescription().getDescription().getUuid());
+
+            specimenDescription.addDescriptiveDataSet(dataSet);
             //add taxon description with IndividualsAssociation to the specimen to data set
             taxonDescription.addDescriptiveDataSet(dataSet);
 
-            result.addUpdatedObject(rowWrapper.getDescription());
+            result.addUpdatedObject(specimenDescription);
             result.addUpdatedObject(taxonDescription);
         }
         saveOrUpdate(dataSet);
@@ -290,7 +300,7 @@ public class DescriptiveDataSetService
             UUID datasetUuid) {
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid);
         DescriptiveDataSet descriptiveDataSet = load(datasetUuid);
-        SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
+        SpecimenOrObservationBase specimen = HibernateProxyHelper.deproxy(description.getDescribedSpecimenOrObservation(), SpecimenOrObservationBase.class);
         //supplemental information
         if(taxonNode==null){
             taxonNode = findTaxonNodeForDescription(description, descriptiveDataSet);
@@ -309,12 +319,14 @@ public class DescriptiveDataSetService
                         "gatheringEvent",
                         "gatheringEvent.country"
                 }));
-        if(fieldUnits.size()!=1){
+        if(fieldUnits.size()>1){
             logger.error("More than one or no field unit found for specimen"); //$NON-NLS-1$
             return null;
         }
         else{
-            fieldUnit = fieldUnits.iterator().next();
+            if (fieldUnits != null && fieldUnits.size()>0){
+                fieldUnit = fieldUnits.iterator().next();
+            }
         }
         //get identifier
         if(HibernateProxyHelper.isInstanceOf(specimen, DerivedUnit.class)){
@@ -329,7 +341,8 @@ public class DescriptiveDataSetService
         TaxonDescription defaultTaxonDescription = recurseDefaultDescription(taxonNode, descriptiveDataSet);
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
-        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(description, new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
+//                use description not specimen for specimenRow
+        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(new DescriptionBaseDto(description), specimen.getRecordBasis(), new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
         specimenRowWrapperDTO.setDefaultDescription(taxonRowWrapper);
         return specimenRowWrapperDTO;
     }

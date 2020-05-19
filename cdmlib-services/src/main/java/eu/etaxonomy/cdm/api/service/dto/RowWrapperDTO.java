@@ -43,19 +43,19 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     private static final long serialVersionUID = -7817164423660563673L;
 
-    protected T description;
+    protected DescriptionBaseDto description;
 
     private TaxonNodeDto taxonNode;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
     private Map<Feature, Collection<String>> featureToDisplayDataMap;
 
-    public RowWrapperDTO(T description, TaxonNodeDto taxonNode) {
+    public RowWrapperDTO(DescriptionBaseDto specimenDescription, TaxonNodeDto taxonNode) {
         this.taxonNode = taxonNode;
         this.featureToElementMap = new HashMap<>();
         this.featureToDisplayDataMap = new HashMap<>();
-        this.description = description;
+        this.description = specimenDescription;
 
-        Set<DescriptionElementBase> elements = description.getElements();
+        Set<DescriptionElementBase> elements = specimenDescription.getDescription().getElements();
         for (DescriptionElementBase descriptionElementBase : elements) {
             if(hasData(descriptionElementBase)){
                 Feature feature = descriptionElementBase.getFeature();
@@ -70,19 +70,19 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     public QuantitativeData addQuantitativeData(Feature feature){
         QuantitativeData data = QuantitativeData.NewInstance(feature);
-        description.addElement(data);
+        description.getDescription().addElement(data);
         featureToElementMap.put(feature, data);
         return data;
     }
 
     public CategoricalData addCategoricalData(Feature feature){
         CategoricalData data = CategoricalData.NewInstance(feature);
-        description.addElement(data);
+        description.getDescription().addElement(data);
         featureToElementMap.put(feature, data);
         return data;
     }
 
-    public T getDescription() {
+    public DescriptionBaseDto getDescription() {
         return description;
     }
 
@@ -155,7 +155,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         featureToElementMap.remove(feature);
         featureToDisplayDataMap.remove(feature);
         if(descriptionElementBase!=null){
-            description.removeElement(descriptionElementBase);
+            description.getDescription().removeElement(descriptionElementBase);
         }
     }
 
