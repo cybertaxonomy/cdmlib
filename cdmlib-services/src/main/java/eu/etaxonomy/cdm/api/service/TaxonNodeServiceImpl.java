@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
 import eu.etaxonomy.cdm.api.service.dto.CreateTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
-import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTOComparator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
