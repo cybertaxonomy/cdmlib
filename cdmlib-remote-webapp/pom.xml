@@ -43,6 +43,10 @@
       </repositories>
     </profile>
     <!-- ========================= PROFILE : db-create ========================= -->
+    <!--  How to execute from parent project:
+        1.) mvn package -DskipTests 
+        2.) mvn integration-test -pl cdmlib-remote-webapp -Pdb-create
+    -->
     <profile>
       <id>db-create</id>
       <activation>
