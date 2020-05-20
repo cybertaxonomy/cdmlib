@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -473,6 +475,20 @@ public class DescriptiveDataSetService
                     result.addDeletedObject(individualsAssociation.getInDescription());
                 }
             }
+        }
+        if (description instanceof TaxonDescription){
+            UUID taxonUuid = ((TaxonDescription)description).getTaxon().getUuid();
+            DeleteResult isDeletable = descriptionService.isDeletable(description.getUuid());
+            for (CdmBase relatedCdmBase: isDeletable.getRelatedObjects()){
+                if (relatedCdmBase instanceof CdmLinkSource){
+                    CdmLinkSource linkSource = (CdmLinkSource)relatedCdmBase;
+                    if (linkSource.getTarget().equals(this)){
+
+                    }
+                }
+            }
+            DeleteResult deleteResult = descriptionService.deleteDescription(description);
+            result.includeResult(deleteResult);
         }
         result.addUpdatedObject(dataSet);
         result.setStatus(success?Status.OK:Status.ERROR);

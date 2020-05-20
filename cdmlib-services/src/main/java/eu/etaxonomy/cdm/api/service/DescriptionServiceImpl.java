@@ -57,6 +57,8 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -497,7 +499,11 @@ public class DescriptionServiceImpl
 
         for(DescriptionBaseDto descDto : descriptions) {
             DescriptionBase description = descDto.getDescription();
-            mergedObjects.add(dao.merge(description, returnTransientEntity));
+            try{
+                mergedObjects.add(dao.merge(description, returnTransientEntity));
+            }catch(Exception e){
+                e.printStackTrace();
+            }
 
         }
 
@@ -530,7 +536,15 @@ public class DescriptionServiceImpl
         //avoid lazy init exception
 
         deleteResult = isDeletable(description.getUuid());
-        if (deleteResult.isOk()){
+        if (deleteResult.getRelatedObjects() != null && deleteResult.getRelatedObjects().size() == 1){
+            Iterator<CdmBase> relObjects = deleteResult.getRelatedObjects().iterator();
+            CdmBase next = relObjects.next();
+            if (next instanceof CdmLinkSource){
+                CdmLinkSource source = (CdmLinkSource)next;
+                ICdmTarget target = source.getTarget();
+            }
+        }
+        if (deleteResult.isOk() ){
         	if (description instanceof TaxonDescription){
         		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
         		Taxon tax = taxDescription.getTaxon();

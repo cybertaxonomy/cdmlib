@@ -353,7 +353,7 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 	 */
 	public boolean removeDescription(DescriptionBase description) {
 		boolean result = this.descriptions.remove(description);
-		if (description.getDescriptiveDataSets().contains(this)){
+		if (description.getDescriptiveDataSets() != null && description.getDescriptiveDataSets().contains(this)){
 			description.removeDescriptiveDataSet(this);
 		}
 		return result;
