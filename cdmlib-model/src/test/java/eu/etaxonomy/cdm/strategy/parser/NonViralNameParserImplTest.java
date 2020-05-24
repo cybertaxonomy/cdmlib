@@ -1778,6 +1778,24 @@ public class NonViralNameParserImplTest {
 
     }
 
+
+    @Test
+    public final void testSeries(){
+        //TODO should work also for the original string:  #9014
+//        String parseStr = "Mazus pumilus (Burm.f.) Steenis in Nova Guinea, n.s., 9: 31. 1958";
+        String parseStr = "Mazus pumilus (Burm.f.) Steenis in Nova Guinea Bla, n.s., 9: 31. 1958";
+        INonViralName name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("Reference should be parsable", nomRef.isProtectedTitleCache());
+
+        assertEquals(ReferenceType.Article, nomRef.getType());
+        assertEquals(name.getNomenclaturalMicroReference(), "31");
+        //TODO series should be parsed and handled better
+        assertEquals("Nova Guinea Bla, n.s.,", nomRef.getInJournal().getAbbrevTitle());
+//        assertEquals("n.s.", nomRef.getSeriesPart());
+    }
+
     @Test
     public final void testRussian(){
         String parseStr = "Cortusa turkestanica Losinsk. in Тр. Бот. инст. Aкад. наук СССР, сер. 1, 3: 239. 1936";
@@ -1988,6 +2006,18 @@ public class NonViralNameParserImplTest {
         //maybe we remove ed. for this case in future
         assertEquals("ed. 3B",nomRef.getInReference().getEdition());
         assertEquals("10", nomRef.getInReference().getVolume());
+        assertEquals(parseStr, name.getFullTitleCache());
+
+        //ed. 15 bis
+        parseStr = "Solanum persicum Willd. ex Roem. & Schult., Syst. Veg., ed. 15 bis, 4: 662. 1819";
+        name = parser.parseReferencedName(parseStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        nomRef = name.getNomenclaturalReference();
+        Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
+        assertEquals(ReferenceType.Book, nomRef.getType());
+        //maybe we remove ed. for this case in future
+        assertEquals("ed. 15 bis",nomRef.getEdition());
+        assertEquals("4", nomRef.getVolume());
         assertEquals(parseStr, name.getFullTitleCache());
 
 

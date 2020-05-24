@@ -212,7 +212,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     public static String pEdition = nr2;
 
     protected static String pVolPart = volumeSeparator +  volume;
-    protected static String pEditionPart = "(" + editionSeparator +  pEdition +"[A-Z]?|,\\s*(jubilee|nouv\\.) ed\\.)";
+    protected static String pEditionPart = "(" + editionSeparator +  pEdition +"([A-Z]|\\s*bis)?|,\\s*(jubilee|nouv\\.) ed\\.)";
     protected static String pEditionVolPart = pEditionPart + fWs + "," + volumeSeparator + volume;
     protected static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
 
