@@ -49,7 +49,6 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
     public static final boolean INCLUDE_UNPUBLISHED = DaoBase.INCLUDE_UNPUBLISHED;
 
     protected CdmIoBase() {
-        super();
         this.ioName = this.getClass().getSimpleName();
     }
 
@@ -124,8 +123,9 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 //     * flush the current session
 //     */
 //    //TODO move into super class CdmApplicationDefaultConfiguration#flush() ?
-//    public void flush() {
-//        sessionFactory.getCurrentSession().flush();
+//    public void flush(TransactionStatus txStatus) {
+//        super.getTransactionManager().getTransaction(txStatus.f).flush();
+////        sessionFactory.getCurrentSession().flush();
 //    }
 
     @Override
