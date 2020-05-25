@@ -269,14 +269,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	/**
      * If this feature is available for {@link TaxonDescription taxon descriptions}.
      */
-    @XmlElement(name = "SupportsTaxon")
+    @XmlElement(name = "AvailableForTaxon")
     public boolean isAvailableForTaxon() {
         return availableFor.contains(CdmClass.TAXON_NAME);
     }
     /**
-     * @see #isSupportsTaxon()
+     * @see #isAvailableForTaxon()
      */
-    public void setSupportsTaxon(boolean availableForTaxon) {
+    public void setAvailableForTaxon(boolean availableForTaxon) {
         setAvailableFor(CdmClass.TAXON, availableForTaxon);
     }
 
@@ -760,6 +760,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, TermType termType,
 	        @SuppressWarnings("rawtypes") Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
+
+		//supported datatypes
 		String text = csvLine.get(4);
 		if (text != null && text.length() == 8){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);}
@@ -770,11 +772,22 @@ public class Feature extends DefinedTermBase<Feature> {
 			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);}
 			if ("1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);}
 			if ("1".equals(text.substring(7, 8))){newInstance.setSupportsTemporalData(true);}
-            //there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
-			newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
 		}else{
 		    throw new IllegalStateException("Supported XXX must exist for all 8 subclasses");
 		}
+
+		//availableFor
+        text = csvLine.get(5);
+        if (text != null && text.length() == 3){
+            if ("1".equals(text.substring(0, 1))){newInstance.setAvailableForTaxon(true);}
+            if ("1".equals(text.substring(1, 2))){newInstance.setAvailableForOccurrence(true);}
+            if ("1".equals(text.substring(2, 3))){newInstance.setAvailableForTaxonName(true);}
+        }else{
+            throw new IllegalStateException("AvailableFor XXX must exist for all 3 classes");
+        }
+
+        //abbrev label - there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
+        newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
 		return newInstance;
 	}
 
