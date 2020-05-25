@@ -45,10 +45,8 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -116,7 +114,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class Feature extends DefinedTermBase<Feature> {
 
 	private static final long serialVersionUID = 6754598791831848704L;
-	private static final Logger logger = Logger.getLogger(Feature.class);
+	@SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(Feature.class);
 
 	protected static Map<UUID, Feature> termMap = null;
 
@@ -759,7 +758,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@Override
 	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, TermType termType,
-	        Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+	        @SuppressWarnings("rawtypes") Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 		String text = csvLine.get(4);
 		if (text != null && text.length() == 8){
@@ -855,7 +854,6 @@ public class Feature extends DefinedTermBase<Feature> {
 		return getTermByUuid(uuidHabitat);
 	}
 
-
 	/**
 	 * Returns the "habitat & ecology" feature. This feature only applies
 	 * to {@link SpecimenDescription specimen descriptions} or to {@link TaxonDescription taxon descriptions}.<BR>
@@ -886,7 +884,6 @@ public class Feature extends DefinedTermBase<Feature> {
 		return getTermByUuid(uuidChromosomeNumber);
 	}
 
-
 	/**
 	 * Returns the "key" feature. This feature is the "upper" feature generalizing
 	 * all features being used within an identification key.
@@ -894,7 +891,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature KEY(){
 		return getTermByUuid(uuidKey);
 	}
-
 
 	/**
 	 * Returns the "materials_examined" feature. This feature can only be described
@@ -937,7 +933,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature DIAGNOSIS(){
 		return getTermByUuid(uuidDiagnosis);
 	}
-
 
 	/**
 	 * Returns the "introduction" feature. This feature can only be described
@@ -997,12 +992,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature ANATOMY(){
 		return getTermByUuid(uuidAnatomy);
 	}
+
 	/**
 	 * Returns the "hostplant" feature.
 	 */
 	public static final Feature HOSTPLANT(){
 		return getTermByUuid(uuidHostPlant);
 	}
+
 	/**
 	 * Returns the "pathogen agent" feature.
 	 */
@@ -1032,7 +1029,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature ADDITIONAL_PUBLICATION(){
 		return getTermByUuid(uuidAdditionalPublication);
 	}
-
 
 	/**
 	 * Returns the "uses" feature. This feature only applies
@@ -1065,14 +1061,12 @@ public class Feature extends DefinedTermBase<Feature> {
 		return getTermByUuid(uuidConservation);
 	}
 
-
 	/**
 	 * Returns the "cultivation" feature.
 	 */
 	public static final Feature CULTIVATION(){
 		return getTermByUuid(uuidCultivation);
 	}
-
 
 	/**
 	 * Returns the "image" feature.
@@ -1123,24 +1117,24 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature FLOWERING_SEASON(){
 	    return getTermByUuid(uuidFloweringSeason);
 	}
-
-	/**
-	 * Returns the "hybrid_parent" feature. This feature can only be used
-	 * by {@link TaxonInteraction taxon interactions}.<BR>
-	 * <P>
-	 * Note: It must be distinguished between hybrid relationships as
-	 * relevant nomenclatural relationships between {@link BotanicalName plant names}
-	 * on the one side and the biological relation between two {@link Taxon taxa}
-	 * as it is here the case on the other one.
-	 *
-	 * @see	#isSupportsTaxonInteraction()
-	 * @see	HybridRelationshipType
-	 */
-	public static final Feature HYBRID_PARENT(){
-		//TODO
-		logger.warn("HYBRID_PARENT not yet implemented");
-		return null;
-	}
+//
+//	/**
+//	 * Returns the "hybrid_parent" feature. This feature can only be used
+//	 * by {@link TaxonInteraction taxon interactions}.<BR>
+//	 * <P>
+//	 * Note: It must be distinguished between hybrid relationships as
+//	 * relevant nomenclatural relationships between {@link BotanicalName plant names}
+//	 * on the one side and the biological relation between two {@link Taxon taxa}
+//	 * as it is here the case on the other one.
+//	 *
+//	 * @see	#isSupportsTaxonInteraction()
+//	 * @see	HybridRelationshipType
+//	 */
+//	public static final Feature HYBRID_PARENT(){
+//		//TODO
+//		logger.warn("HYBRID_PARENT not yet implemented");
+//		return null;
+//	}
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {

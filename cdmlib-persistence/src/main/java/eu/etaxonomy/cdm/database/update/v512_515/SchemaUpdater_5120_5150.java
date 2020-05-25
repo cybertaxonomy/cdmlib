@@ -112,5 +112,4 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
 	public ISchemaUpdater getNextUpdater() {
 		return null;
 	}
-
 }
