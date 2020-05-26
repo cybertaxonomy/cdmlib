@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -199,7 +200,8 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, UUID refUuid, String microref, boolean unplaced, boolean doubtful, boolean excluded, Map<Language,LanguageString> excludedNote);
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, UUID refUuid, String microref,
+            TaxonNodeStatus status, Map<Language,LanguageString> statusNote);
 
     public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);
 

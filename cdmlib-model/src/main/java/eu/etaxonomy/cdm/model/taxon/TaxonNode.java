@@ -21,7 +21,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
@@ -42,6 +41,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
@@ -50,6 +51,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -86,7 +88,8 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "countChildren",
     "agentRelations",
     "synonymToBeUsed",
-    "excludedNote"
+    "status",
+    "statusNote"
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
@@ -172,29 +175,40 @@ public class TaxonNode
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
-    @XmlAttribute(name= "unplaced")
-    private boolean unplaced = false;
-    public boolean isUnplaced() {return unplaced;}
-    public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
+//    private boolean unplaced = false;
+    public boolean isUnplaced() {return hasStatus(TaxonNodeStatus.UNPLACED);}
+//    @Deprecated
+//    public void setUnplaced(boolean unplaced) {setStatus(TaxonNodeStatus.UNPLACED, unplaced);}
 
     //#8281 indicates a preliminary placement
-    @XmlAttribute(name= "doubtful")
-    private boolean doubtful = false;
-    public boolean isDoubtful() {return doubtful;}
-    public void setDoubtful(boolean doubtful) {this.doubtful = doubtful;}
+//    private boolean doubtful = false;
+    public boolean isDoubtful() {return hasStatus(TaxonNodeStatus.DOUBTFUL);}
+//    @Deprecated
+//    public void setDoubtful(boolean doubtful) {setStatus(TaxonNodeStatus.DOUBTFUL, doubtful);}
 
-    @XmlAttribute(name= "excluded")
-    private boolean excluded = false;
-    public boolean isExcluded() {return excluded;}
-    public void setExcluded(boolean excluded) {this.excluded = excluded;}
+//    private boolean excluded = false;
+    public boolean isExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
+//    @Deprecated
+//    public void setExcluded(boolean excluded) {setStatus(TaxonNodeStatus.EXCLUDED, excluded);}
 
-    @XmlElement(name = "excludedNote")
+    /**
+     * The {@link TaxonNodeStatus status} of this taxon node.
+     */
+    @XmlAttribute(name ="TaxonNodeStatus")
+    @Column(name="status", length=10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus")}
+    )
+    @Audited
+    private TaxonNodeStatus status;
+
+    @XmlElement(name = "statusNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @MapKeyJoinColumn(name="excludedNote_mapkey_id")
-    @JoinTable(name = "TaxonNode_ExcludedNote")  //to make possible to add also unplacedNote
+//    @MapKeyJoinColumn(name="statusNote_mapkey_id")
+    @JoinTable(name = "TaxonNode_StatusNote")  //to make possible to add also unplacedNote
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private Map<Language,LanguageString> excludedNote = new HashMap<>();
+    private Map<Language,LanguageString> statusNote = new HashMap<>();
 
 //	private Taxon originalConcept;
 //	//or
@@ -340,28 +354,35 @@ public class TaxonNode
 //        this.treeIndex = parent.treeIndex() +
     }
 
-    // *************** Excluded Note ***************
+    public TaxonNodeStatus getStatus() {
+        return status;
+    }
+    public void setStatus(TaxonNodeStatus status) {
+        this.status = status;
+    }
+
+// *************** Status Note ***************
 
     /**
      * Returns the {@link MultilanguageText multi-language text} to add a note to the
-     * excluded flag. The different {@link LanguageString language strings}
+     * status. The different {@link LanguageString language strings}
      * contained in the multi-language text should all have the same meaning.
-     * @see #getExcludedNote()
-     * @see #putExcludedNote(Language, String)
+     * @see #getStatusNote(Language)
+     * @see #putStatusNote(Language, String)
      */
-    public Map<Language,LanguageString> getExcludedNote(){
-        return this.excludedNote;
+    public Map<Language,LanguageString> getStatusNote(){
+        return this.statusNote;
     }
 
     /**
-     * Returns the excluded note string in the given {@link Language language}
+     * Returns the status note string in the given {@link Language language}
      *
      * @param language  the language in which the description string looked for is formulated
-     * @see             #getExcludedNote()
-     * @see             #putExcludedNote(Language, String)
+     * @see             #getStatusNote()
+     * @see             #putStatusNote(Language, String)
      */
-    public String getExcludedNote(Language language){
-        LanguageString languageString = excludedNote.get(language);
+    public String getStatusNote(Language language){
+        LanguageString languageString = statusNote.get(language);
         if (languageString == null){
             return null;
         }else{
@@ -372,43 +393,43 @@ public class TaxonNode
     /**
      * Adds a translated {@link LanguageString text in a particular language}
      * to the {@link MultilanguageText multilanguage text} used to add a note to
-     * the {@link #isExcluded() excluded} flag.
+     * the {@link #getStatus() status}.
      *
-     * @param excludedNote   the language string adding a note to the excluded flag
+     * @param statusNote   the language string adding a note to the status
      *                      in a particular language
-     * @see                 #getExcludedNote()
-     * @see                 #putExcludedNote(String, Language)
+     * @see                 #getStatusNote()
+     * @see                 #putStatusNote(String, Language)
      */
-    public void putExcludedNote(LanguageString excludedNote){
-        this.excludedNote.put(excludedNote.getLanguage(), excludedNote);
+    public void putStatusNote(LanguageString statusNote){
+        this.statusNote.put(statusNote.getLanguage(), statusNote);
     }
     /**
      * Creates a {@link LanguageString language string} based on the given text string
      * and the given {@link Language language} and adds it to the {@link MultilanguageText
-     * multi-language text} used to annotate the excluded flag.
+     * multi-language text} used to annotate the status.
      *
-     * @param text      the string annotating the excluded flag
+     * @param text      the string annotating the status
      *                  in a particular language
      * @param language  the language in which the text string is formulated
-     * @see             #getExcludedNote()
-     * @see             #putExcludedNote(LanguageString)
-     * @see             #removeExcludedNote(Language)
+     * @see             #getStatusNote()
+     * @see             #putStatusNote(LanguageString)
+     * @see             #removeStatusNote(Language)
      */
-    public void putExcludedNote(Language language, String text){
-        this.excludedNote.put(language, LanguageString.NewInstance(text, language));
+    public void putStatusNote(Language language, String text){
+        this.statusNote.put(language, LanguageString.NewInstance(text, language));
     }
 
     /**
      * Removes from the {@link MultilanguageText multilanguage text} used to annotate
-     * the excluded flag the one {@link LanguageString language string}
+     * the status the one {@link LanguageString language string}
      * with the given {@link Language language}.
      *
      * @param  lang the language in which the language string to be removed
      *       has been formulated
-     * @see         #getExcludedNote()
+     * @see         #getStatusNote()
      */
-    public void removeExcludedNote(Language lang){
-        this.excludedNote.remove(lang);
+    public void removeStatusNote(Language lang){
+        this.statusNote.remove(lang);
     }
 
 // ****************** Agent Relations ****************************/
@@ -1018,7 +1039,16 @@ public class TaxonNode
         }
     }
 
-
+    private void setStatus(TaxonNodeStatus status, boolean value) {
+        if (value){
+            this.status = status;
+        }else if (this.status != null && this.status.equals(status)){
+            this.status = null;
+        }
+    }
+    private boolean hasStatus(TaxonNodeStatus status) {
+        return CdmUtils.nullSafeEqual(this.status, status);
+    }
 
 //*********************** CLONE ********************************************************/
     /**
@@ -1047,10 +1077,10 @@ public class TaxonNode
                 result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
             }
 
-            //excludedNote
-            result.excludedNote = new HashMap<>();
-            for(Language lang : this.excludedNote.keySet()){
-                result.excludedNote.put(lang, this.excludedNote.get(lang));
+            //statusNote
+            result.statusNote = new HashMap<>();
+            for(Language lang : this.statusNote.keySet()){
+                result.statusNote.put(lang, this.statusNote.get(lang));
             }
 
 

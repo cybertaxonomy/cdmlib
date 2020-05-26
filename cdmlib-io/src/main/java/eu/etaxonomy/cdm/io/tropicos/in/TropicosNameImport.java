@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -349,7 +350,7 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             if (parentNode != null){
                 TaxonNode newNode = parentNode.addChildTaxon(taxon, null, null);
                 if (state.getConfig().isUnplaced()){
-                    newNode.setUnplaced(true);
+                    newNode.setStatus(TaxonNodeStatus.UNPLACED);
                 }
             }
             addSourceReference(state, taxon);

@@ -136,6 +136,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -694,7 +695,7 @@ public class FullCoverageDataGenerator {
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
-		node.putExcludedNote(Language.DEFAULT(), "Excluded note");
+		node.putStatusNote(Language.DEFAULT(), "Status note");
 		DefinedTerm agentRelationType = DefinedTerm.NewTaxonNodeAgentRelationTypeInstance(null, "agentRelation", "ar");
 		Person agent = Person.NewTitledInstance("Related agent");
 		TaxonNodeAgentRelation agentRelation = node.addAgentRelation(agentRelationType, agent);
@@ -702,8 +703,7 @@ public class FullCoverageDataGenerator {
 
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
-	    node.setUnplaced(true);
-	    node.setExcluded(true);
+	    node.setStatus(TaxonNodeStatus.EXCLUDED);
 
 		cdmBases.add(taxon);
 		cdmBases.add(concept);

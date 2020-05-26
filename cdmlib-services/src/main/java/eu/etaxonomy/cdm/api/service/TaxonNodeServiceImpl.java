@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -812,7 +813,8 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, UUID refUuid, String microref, boolean unplaced, boolean doubtful, boolean excluded, Map<Language,LanguageString> excludedNote){
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, UUID refUuid, String microref,
+            TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
         UpdateResult result = new UpdateResult();
         TaxonName name = null;
         if (taxonDto.getNameUuid() != null){
@@ -851,10 +853,8 @@ public class TaxonNodeServiceImpl
 
        try{
            child = parent.addChildTaxon(newTaxon, ref, microref);
-           child.setDoubtful(doubtful);
-           child.setExcluded(excluded);
-           child.setUnplaced(unplaced);
-           child.getExcludedNote().putAll(excludedNote);
+           child.setStatus(status);
+           child.getStatusNote().putAll(statusNote);
 
         }catch(Exception e){
             result.addException(e);
@@ -920,14 +920,12 @@ public class TaxonNodeServiceImpl
         }
 
         //TODO can't we work with clone method here?
-        child.setUnplaced(newTaxonNode.isUnplaced());
-        child.setExcluded(newTaxonNode.isExcluded());
-        child.setDoubtful(newTaxonNode.isDoubtful());
+        child.setStatus(newTaxonNode.getStatus());
         for (TaxonNodeAgentRelation agentRel :newTaxonNode.getAgentRelations()){
             child.addAgentRelation(agentRel.getType(), agentRel.getAgent());
         }
-        for (Entry<Language, LanguageString> entry: newTaxonNode.getExcludedNote().entrySet()){
-            child.putExcludedNote(entry.getKey(), entry.getValue().getText());
+        for (Entry<Language, LanguageString> entry: newTaxonNode.getStatusNote().entrySet()){
+            child.putStatusNote(entry.getKey(), entry.getValue().getText());
         }
 
         newTaxonNode = null;

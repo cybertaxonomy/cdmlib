@@ -344,18 +344,18 @@ public class CdmLightClassificationExport
 
                     csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = taxon.isPublish() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
-                    Map<Language, LanguageString> notesMap = taxonNode.getExcludedNote();
-                    String excludedNotes = "";
+                    Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
+                    String statusNotes = "";
                     if (!notesMap.isEmpty() && notesMap.size() == 1) {
-                        excludedNotes = notesMap.values().iterator().next().getText();
+                        statusNotes = notesMap.values().iterator().next().getText();
                     } else if (!notesMap.isEmpty()) {
-                        excludedNotes = notesMap.get(Language.getDefaultLanguage()) != null
+                        statusNotes = notesMap.get(Language.getDefaultLanguage()) != null
                                 ? notesMap.get(Language.getDefaultLanguage()).getText() : null;
-                        if (excludedNotes == null) {
-                            excludedNotes = notesMap.values().iterator().next().getText();
+                        if (statusNotes == null) {
+                            statusNotes = notesMap.values().iterator().next().getText();
                         }
                     }
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOTES)] = excludedNotes;
+                    csvLine[table.getIndex(CdmLightExportTable.STATUS_NOTES)] = statusNotes;
 
                     csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
                     state.getProcessor().put(table, taxon, csvLine);

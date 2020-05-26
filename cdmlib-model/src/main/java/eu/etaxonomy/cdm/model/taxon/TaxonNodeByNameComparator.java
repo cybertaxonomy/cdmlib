@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -107,34 +108,18 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
      */
     protected int compareNodes(TaxonNode node1, TaxonNode node2) {
 
+        TaxonNodeStatus status1 = node1.getStatus();
+        TaxonNodeStatus status2 = node2.getStatus();
 
-        boolean node1Excluded = node1.isExcluded();
-        boolean node2Excluded = node2.isExcluded();
-        boolean node1Unplaced = node1.isUnplaced();
-        boolean node2Unplaced = node2.isUnplaced();
-
-      //They should both be put to the end (first unplaced then excluded)
-        if (node2Excluded && !node1Excluded){
-            return -1;
-        }
-        if (node2Unplaced && !(node1Unplaced || node1Excluded)){
-            return -1;
-        }
-
-        if (node1Excluded && !node2Excluded){
+        if (CdmUtils.nullSafeEqual(status1, status2)){
+            return 0;
+        }else if (status1 == null){
             return 1;
-        }
-        if (node1Unplaced && !(node2Unplaced || node2Excluded)){
-            return 1;
-        }
-
-        if (node1Unplaced && node2Excluded){
+        }else if (status2 == null){
             return -1;
+        }else {
+            return status1.compareTo(status2);
         }
-        if (node2Unplaced && node1Excluded){
-            return 1;
-        }
-        return 0;
     }
 
 

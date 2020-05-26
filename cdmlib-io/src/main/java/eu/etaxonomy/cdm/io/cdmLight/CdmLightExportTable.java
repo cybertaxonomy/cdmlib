@@ -53,7 +53,7 @@ public enum CdmLightExportTable {
     protected static final String UNPLACED = "Unplaced";
     protected static final String EXCLUDED = "Excluded";
     protected static final String PUBLISHED = "Published";
-    protected static final String EXCLUDED_NOTES = "ExcludedNotes";
+    protected static final String STATUS_NOTES = "StatusNotes";
 
     //pro parte / misapplied
     protected static final String SYN_SEC_REFERENCE_FK = "SynSecReference_Fk";
@@ -327,7 +327,7 @@ public enum CdmLightExportTable {
         };
     }
     final static String[] taxonColumns(){
-        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, EXCLUDED_NOTES, PUBLISHED, UNPLACED};
+        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, STATUS_NOTES, PUBLISHED, UNPLACED};
     }
     final static String[] synonymColumns(){
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SYN_SEC_REFERENCE_FK, SYN_SEC_REFERENCE, SEC_REFERENCE_FK, SEC_REFERENCE,

@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 
@@ -138,6 +139,10 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
             return PermissionClass.getByKey(val);
         }else if (clazz.equals(CRUD.class)){
             return CRUD.getByKey(val);
+        //TaxonNodeStatus
+        }else if (clazz.equals(TaxonNodeStatus.class)){
+            return TaxonNodeStatus.getByKey(val);
+        //DescriptionType
         }else if (clazz.equals(DescriptionType.class)){
             return DescriptionType.getByKey(val);
         }else if (clazz.equals(CdmClass.class)){

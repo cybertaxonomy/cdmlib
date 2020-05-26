@@ -16,11 +16,13 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.Float2BigDecimalTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v511_512.SchemaUpdater_5112_5120;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -101,6 +103,44 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         newColumnName = "period_freetext";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
+        //#9005
+        stepName = "Rename excludedNote -> statusNote(1)";
+        String oldTableName = "TaxonNode_ExcludedNote";
+        String newTableName = "TaxonNode_StatusNote";
+        TableNameChanger.NewInstance(stepList, stepName, oldTableName, newTableName, INCLUDE_AUDIT);
+
+        stepName = "Rename excludedNote -> statusNote(2)";
+        tableName = "TaxonNode_StatusNote";
+        String oldColumnName = "excludedNote_id";
+        newColumnName = "statusNote_id";
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+
+        stepName = "Rename excludedNote -> statusNote(3)";
+        tableName = "TaxonNode_StatusNote";
+        oldColumnName = "excludedNote_mapkey_id";
+        newColumnName = "statusNote_KEY";
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+
+        stepName = "Add TaxonNode.status column";
+        tableName = "TaxonNode";
+        columnName = "status";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, columnName, 10, INCLUDE_AUDIT);
+
+        stepName = "Set TaxonNode.status";
+        tableName = "TaxonNode";
+        String sql = "UPDATE @@TaxonNode@@ SET status = 'DOU' WHERE doubtful = @TRUE@";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
+        stepName = "Set TaxonNode.status";
+        tableName = "TaxonNode";
+        sql = "UPDATE @@TaxonNode@@ SET status = 'UNP' WHERE unplaced = @TRUE@";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
+        stepName = "Set TaxonNode.status";
+        tableName = "TaxonNode";
+        sql = "UPDATE @@TaxonNode@@ SET status = 'EXC' WHERE excluded = @TRUE@";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
         //#9027
         stepName = "add availableFor column to DefinedTermBase(Feature)";
         tableName = "DefinedTermBase";
@@ -109,7 +149,7 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
 
         stepName = "Set availableFor default value for features";
         tableName = "DefinedTermBase";
-        String sql = "UPDATE @@DefinedTermBase@@ "
+        sql = "UPDATE @@DefinedTermBase@@ "
                 + " SET availableFor = '#TAX#' "
                 + " WHERE DTYPE = 'Feature'";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
@@ -162,6 +202,8 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         updateSupportDataType(stepList, "supportsTaxonInteraction", "TIN");
         updateSupportDataType(stepList, "supportsCategoricalData", "CDA");
         updateSupportDataType(stepList, "supportsQuantitativeData", "QDA");
+
+
 
         return stepList;
     }
