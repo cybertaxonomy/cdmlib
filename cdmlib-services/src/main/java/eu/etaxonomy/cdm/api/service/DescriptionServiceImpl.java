@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -494,11 +495,35 @@ public class DescriptionServiceImpl
 //
     @Override
     @Transactional(readOnly = false)
-    public List<MergeResult<DescriptionBase>> mergeDescriptions(Collection<DescriptionBaseDto> descriptions, boolean returnTransientEntity) {
+    public List<MergeResult<DescriptionBase>> mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid, boolean returnTransientEntity) {
         List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
+
+        DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
+        Set<DescriptionBase> descriptionsOfDataSet = dataSet.getDescriptions();
+        HashMap<UUID, DescriptionBase> descriptionSpecimenMap = new HashMap();
+
+        for (DescriptionBase descriptionBase: descriptionsOfDataSet){
+            if (descriptionBase.getDescribedSpecimenOrObservation() != null){
+                descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), descriptionBase);
+            }
+        }
 
         for(DescriptionBaseDto descDto : descriptions) {
             DescriptionBase description = descDto.getDescription();
+            UUID specimenUuid = descDto.getSpecimenDto().getUuid();
+            if (descriptionSpecimenMap.get(specimenUuid) != null && !descriptionSpecimenMap.get(specimenUuid).equals(description)){
+                Set<DescriptionElementBase> elements = new HashSet();
+                for (Object element: description.getElements()){
+                    elements.add((DescriptionElementBase)element);
+                }
+                DescriptionBase desc = descriptionSpecimenMap.get(specimenUuid);
+//                description.setDescribedSpecimenOrObservation(null);
+                for (DescriptionElementBase element: elements){
+                    desc.addElement(element);
+                }
+                descriptionSpecimenMap.put(specimenUuid, desc);
+                description = desc;
+            }
             try{
                 mergedObjects.add(dao.merge(description, returnTransientEntity));
             }catch(Exception e){
