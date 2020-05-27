@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <HIBERNATE_SEQUENCES SEQUENCE_NAME="AgentBase" NEXT_VAL="3676"/>
   <HIBERNATE_SEQUENCES SEQUENCE_NAME="Annotation" NEXT_VAL="3006"/>
   <HIBERNATE_SEQUENCES SEQUENCE_NAME="CdmMetaData" NEXT_VAL="3003"/>

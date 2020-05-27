@@ -70,7 +70,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 public class SecurityTest extends AbstractSecurityTestBase{
 
-
     private static final Logger logger = Logger.getLogger(SecurityTest.class);
 
     @SpringBeanByType

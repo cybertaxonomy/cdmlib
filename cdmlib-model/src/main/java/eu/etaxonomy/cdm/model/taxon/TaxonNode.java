@@ -102,7 +102,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonNode
             extends AnnotatableEntity
-            implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
+            implements ITaxonTreeNode, ITreeNode<TaxonNode>{
 
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
@@ -115,7 +115,6 @@ public class TaxonNode
     @ContainedIn
     private Taxon taxon;
 
-
     @XmlElement(name = "parent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -123,12 +122,10 @@ public class TaxonNode
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonNode parent;
 
-
     @XmlElement(name = "treeIndex")
     @Column(length=255)
     @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
     private String treeIndex;
-
 
     @XmlElement(name = "classification")
     @XmlIDREF
@@ -267,7 +264,6 @@ public class TaxonNode
     	 sortIndex = i;
 	}
 
-
     public Taxon getTaxon() {
         return taxon;
     }
@@ -278,7 +274,6 @@ public class TaxonNode
         }
     }
 
-
     @Override
     public List<TaxonNode> getChildNodes() {
         return childNodes;
@@ -286,7 +281,6 @@ public class TaxonNode
 	protected void setChildNodes(List<TaxonNode> childNodes) {
 		this.childNodes = childNodes;
 	}
-
 
     public Classification getClassification() {
         return classification;
@@ -302,7 +296,6 @@ public class TaxonNode
         this.classification = classification;
     }
 
-
     @Override
     public String getMicroReference() {
         return microReferenceForParentChildRelation;
@@ -310,7 +303,6 @@ public class TaxonNode
     public void setMicroReference(String microReference) {
         this.microReferenceForParentChildRelation = microReference;
     }
-
 
     @Override
     public Reference getReference() {
@@ -332,7 +324,6 @@ public class TaxonNode
     protected void setCountChildren(int countChildren) {
         this.countChildren = countChildren;
     }
-
 
     //parent
     @Override
@@ -460,7 +451,6 @@ public class TaxonNode
         this.synonymToBeUsed = synonymToBeUsed;
     }
 
-
     //treeindex
     @Override
     public String treeIndex() {
@@ -480,15 +470,12 @@ public class TaxonNode
         return treeIndex + "*";
     }
 
-
-
 //************************ METHODS **************************/
 
    @Override
     public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
         return addChildTaxon(taxon, this.childNodes.size(), citation, microCitation);
     }
-
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
@@ -1022,9 +1009,6 @@ public class TaxonNode
         return (taxon!= null);
     }
 
-    /**
-     * @return
-     */
     @Transient
     public Rank getNullSafeRank() {
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;

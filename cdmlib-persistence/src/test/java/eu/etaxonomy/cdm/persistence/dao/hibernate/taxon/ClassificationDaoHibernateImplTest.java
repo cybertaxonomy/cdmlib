@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
-
     @SpringBeanByType
     private ITaxonDao taxonDao;
     @SpringBeanByType

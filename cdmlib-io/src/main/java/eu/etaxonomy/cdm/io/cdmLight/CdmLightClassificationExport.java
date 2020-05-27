@@ -362,7 +362,7 @@ public class CdmLightClassificationExport
                     handleDescriptions(state, taxon);
                 } catch (Exception e) {
                     state.getResult().addException(e,
-                            "An unexpected problem occurred when trying to export " + "taxon with id " + taxon.getId());
+                            "An unexpected problem occurred when trying to export taxon with id " + taxon.getId());
                     state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 }
             }

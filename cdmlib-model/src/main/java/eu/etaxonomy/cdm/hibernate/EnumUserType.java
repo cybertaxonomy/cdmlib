@@ -49,8 +49,11 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author a.mueller
  * @since 15-07-2013
  */
-public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implements UserType, ParameterizedType {
-	private static final long serialVersionUID = 4641078915907621907L;
+public class EnumUserType<E extends Enum<E>>
+        extends AbstractUserType
+        implements UserType, ParameterizedType {
+
+    private static final long serialVersionUID = 4641078915907621907L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnumUserType.class);
 
@@ -135,8 +138,10 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
         //ExternalLinkType
         }else if (clazz.equals(ExternalLinkType.class)){
             return ExternalLinkType.getByKey(val);
+        //PermissionClass
         }else if (clazz.equals(PermissionClass.class)){
             return PermissionClass.getByKey(val);
+        //CRUD
         }else if (clazz.equals(CRUD.class)){
             return CRUD.getByKey(val);
         //TaxonNodeStatus
@@ -145,6 +150,7 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
         //DescriptionType
         }else if (clazz.equals(DescriptionType.class)){
             return DescriptionType.getByKey(val);
+        //CdmClass
         }else if (clazz.equals(CdmClass.class)){
             return CdmClass.getByKey(val);
         }else{

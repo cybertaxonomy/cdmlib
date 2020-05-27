@@ -26,7 +26,6 @@ import net.sf.json.processors.JsonBeanProcessor;
 @Deprecated
 public class TaxonNodeDtoBeanProcessor implements JsonBeanProcessor {
 
-
     @Override
     public JSONObject processBean(Object bean, JsonConfig jsonConfig) {
 

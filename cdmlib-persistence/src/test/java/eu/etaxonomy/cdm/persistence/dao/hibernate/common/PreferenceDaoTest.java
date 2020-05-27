@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
- *
  */
 public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
 
@@ -121,7 +120,7 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="eu.etaxonomy.cdm.persistence.dao.hibernate.common.PreferenceDaoTest.testFindTaxonNodeString.xml")
+    @DataSet(value="PreferenceDaoTest.testFindTaxonNodeString.xml")
     public void testFindTaxonNodeString() {
         Classification classification = classificationDao.findByUuid(uuidClassification);
         TaxonNode genusNode = classification.getRootNode().getChildNodes().get(0);
@@ -161,7 +160,6 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
         speciesNode.addChildTaxon(taxonSubSpecies, null, null);
 
         classificationDao.save(classification);
-
 
         // 2. end the transaction so that all data is actually written to the db
         setComplete();

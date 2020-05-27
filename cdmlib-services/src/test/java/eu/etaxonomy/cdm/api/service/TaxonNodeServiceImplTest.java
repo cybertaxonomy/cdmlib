@@ -63,7 +63,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 //@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
-
 	@SpringBeanByType
 	private ITaxonNodeService taxonNodeService;
 
