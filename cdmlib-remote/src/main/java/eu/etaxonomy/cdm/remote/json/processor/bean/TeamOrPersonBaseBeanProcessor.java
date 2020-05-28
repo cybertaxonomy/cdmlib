@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
 /**
  * @author a.kohlbecker
@@ -37,6 +37,7 @@ public class TeamOrPersonBaseBeanProcessor extends AbstractBeanProcessor<TeamOrP
     public JSONObject processBeanSecondStep(TeamOrPersonBase bean, JSONObject json,
             JsonConfig jsonConfig) {
         json.element("titleCache", bean.getTitleCache());
+        json.element("nomenclaturalTitle", bean.getNomenclaturalTitle());
         return json;
     }
 
