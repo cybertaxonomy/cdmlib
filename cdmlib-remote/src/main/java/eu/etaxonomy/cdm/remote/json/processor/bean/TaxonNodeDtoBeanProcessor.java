@@ -11,7 +11,10 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.remote.l10n.EnumTerm_L10n;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -35,24 +38,32 @@ public class TaxonNodeDtoBeanProcessor implements JsonBeanProcessor {
         json.element("uuid", node.getUuid(), jsonConfig);
         json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
         //json.element("classificationUuid", node.getClassification().getUuid(), jsonConfig);
-        if(node.getTaxon() != null){
-            json.element("titleCache", node.getTaxon().getName().getTitleCache(), jsonConfig);
-            List<TaggedText> taggedTitle = node.getTaxon().getName().getTaggedName();
+        json.element("doubtful", node.isDoubtful());
+        json.element("unplaced", node.isUnplaced());
+        json.element("excluded", node.isExcluded());
+        if(node.getStatus() != null) {
+            json.element("status", node.getStatus());
+            json.element("status_symbol", node.getStatus().getSymbol());
+            EnumTerm_L10n<TaxonNodeStatus> status_L10n = new EnumTerm_L10n<TaxonNodeStatus>(node.getStatus());
+            json.element("status_message_L10n", status_L10n.localizedMessage());
+        }
+
+        Taxon taxon = node.getTaxon();
+        if(taxon != null){
+            json.element("titleCache", taxon.getName().getTitleCache(), jsonConfig);
+            List<TaggedText> taggedTitle = taxon.getName().getTaggedName();
             json.element("taggedTitle", taggedTitle, jsonConfig);
-            json.element("taxonUuid", node.getTaxon().getUuid(), jsonConfig);
+            json.element("taxonUuid", taxon.getUuid(), jsonConfig);
             //Sec can be null (web services can return null for sec)
             //comparation made for avoiding view exceptions
-            if (node.getTaxon().getSec() == null){
+            if (taxon.getSec() == null){
                 json.element("secUuid", "null");
             }else{
-                json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
+                json.element("secUuid", taxon.getSec().getUuid(), jsonConfig);
             }
-            json.element("doubtful", node.isDoubtful());
-            json.element("unplaced", node.isUnplaced());
-            json.element("excluded", node.isExcluded());
             String ranklabel = null;
-            if(node.getTaxon().getName().getRank() != null){
-                ranklabel = node.getTaxon().getName().getRank().getLabel();
+            if(taxon.getName().getRank() != null){
+                ranklabel = taxon.getName().getRank().getLabel();
             }
             json.element("rankLabel", ranklabel, jsonConfig);
         }
