@@ -29,21 +29,21 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
      * The placement of the taxon is doubtful or preliminary.
      */
     @XmlEnumValue("Doubtful")
-    DOUBTFUL(UUID.fromString("022ebae2-a020-4a8d-8ee1-886d98d3a4db"), "Doubtful", "DOU", null),
+    DOUBTFUL(UUID.fromString("022ebae2-a020-4a8d-8ee1-886d98d3a4db"), "Doubtful", "DOU", "?", null),
 
     //1
     /**
      * The taxon is not placed to the correct place (yet). Instead it is  placed here.
      */
     @XmlEnumValue("Unplaced")
-    UNPLACED(UUID.fromString("92809dee-8b3f-4fd5-a915-638d7c86b351"), "Unplaced", "UNP", null),
+    UNPLACED(UUID.fromString("92809dee-8b3f-4fd5-a915-638d7c86b351"), "Unplaced", "UNP", "??", null),
 
     //2
     /**
      * The taxon for some reason is excluded from the treatment this {@link TaxonNode} belongs too.
      */
     @XmlEnumValue("Excluded")
-    EXCLUDED(UUID.fromString("23d259b6-2d7e-4df6-8745-0e24fbe63187"), "Excluded", "EXC", null)
+    EXCLUDED(UUID.fromString("23d259b6-2d7e-4df6-8745-0e24fbe63187"), "Excluded", "EXC", Character.toString((char)248), null)
     ;
 
 // **************** END ENUM **********************/
@@ -51,12 +51,15 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonNodeStatus.class);
 
-    private TaxonNodeStatus(UUID uuid, String defaultString, String key){
-        this(uuid, defaultString, key, null);
+    private String symbol;
+
+    private TaxonNodeStatus(UUID uuid, String defaultString, String key, String symbol){
+        this(uuid, defaultString, key, symbol, null);
     }
 
-    private TaxonNodeStatus(UUID uuid, String defaultString, String key, TaxonNodeStatus parent){
+    private TaxonNodeStatus(UUID uuid, String defaultString, String key, String symbol, TaxonNodeStatus parent){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
+        this.symbol = symbol;
     }
 
 
@@ -95,5 +98,11 @@ public enum TaxonNodeStatus implements IEnumTerm<TaxonNodeStatus>{
 
     public static TaxonNodeStatus getByKey(String key){return delegateVoc.getByKey(key);}
     public static TaxonNodeStatus getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+
+//**************** symbol **********************/
+
+    public String getSymbol(){
+        return symbol;
+    }
 
 }
