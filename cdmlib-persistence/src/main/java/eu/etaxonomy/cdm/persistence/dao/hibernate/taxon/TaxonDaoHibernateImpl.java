@@ -1492,6 +1492,11 @@ public class TaxonDaoHibernateImpl
 
         String doTaxonNameJoin = " JOIN t.name n ";
 
+        String doSynonymSubSelect =
+                  " FROM Synonym s "
+                + " JOIN s.name sn "
+                + " LEFT JOIN s.acceptedTaxon ";
+
         String doSynonymNameJoin =
                    " JOIN t.synonyms s "
                  + " JOIN s.name sn";
@@ -1547,7 +1552,7 @@ public class TaxonDaoHibernateImpl
                     taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin +
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " + String.format(doSearchFieldWhere, "n");
-                    synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
+                    synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) +  //we could also use default synonym handling here as a taxon node filter requires an accepted taxon (#9047)
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " + String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect =String.format(doTaxonSubSelect, "t" )+ doCommonNamesJoin +
@@ -1581,7 +1586,7 @@ public class TaxonDaoHibernateImpl
                     taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
                             " WHERE " +  String.format(doSearchFieldWhere, "n") +
                                  doTreeWhere + doSubtreeWhere;
-                    synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
+                    synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) + //we could also use default synonym handling here as a taxon node filter requires an accepted taxon (#9047)
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " +  String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect= String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
@@ -1610,7 +1615,7 @@ public class TaxonDaoHibernateImpl
                         " AND " + doRelationshipTypeComparison;
                 taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
                         " WHERE " +  String.format(doSearchFieldWhere, "n");
-                synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
+                synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) +
                         " WHERE " +  String.format(doSearchFieldWhere, "sn");
                 commonNameSubselect = String.format(doTaxonSubSelect, "t" ) +doCommonNamesJoin +
                         " WHERE "+  doCommonNamesRestrictionWhere;

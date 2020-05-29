@@ -250,10 +250,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
                 null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("There should be 3 Taxa", 3, results.size());
 
-        //one synonym has no accepted taxon
+        //now even the orphaned synonym is found (#9047)
         results = taxonDao.getTaxaByName(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, "A*", null, subtree, MatchMode.BEGINNING,
                 null, includeUnpublished, null, null, null, null);
-        Assert.assertEquals("There should be 11 Taxa",11, results.size());
+        Assert.assertEquals("There should be 12 Taxa",12, results.size());
 
         //two accepted taxa in classification and 1 misapplied name with accepted name in classification
         results = taxonDao.getTaxaByName(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, "R*", classification, subtree, MatchMode.BEGINNING,
@@ -367,8 +367,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity", 8, results.size());
 
-        //TODO: test the search for misapplied names
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, "Orphaned", null, subtree, MatchMode.BEGINNING, null, null);
+        assertNotNull("getTaxaByName should return a List", results);
+        assertEquals("Results list should contain one entity, the orphaned synonym", 1, results.size());
 
+        //TODO: test the search for misapplied names
     }
 
 
@@ -494,13 +497,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         results = taxonDao.findByNameTitleCache(noTaxa, doSynonyms, includeUnpublished, "*Atropo", null, subtree, MatchMode.ANYWHERE, null,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
-        assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+        assertEquals("expected to find two taxa but found "+results.size(), 3, results.size());
 
         // 4. searching for Synonyms
         results = taxonDao.findByNameTitleCache(noTaxa, doSynonyms, includeUnpublished, "Atropo", null, subtree, MatchMode.BEGINNING, null,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
-        assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+        assertEquals("expected to find two taxa but found "+results.size(), 3, results.size());
 
         // 5. searching for a Synonyms and Taxa
         //   attache a synonym first
@@ -538,11 +541,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", null,subtree,
                 MatchMode.BEGINNING, null, includeUnpublished, null, null, null, null);
-        Assert.assertEquals("2 synonyms and 1 pro parte synonym should be returned.", 3, taxa.size());
+        Assert.assertEquals("3 synonyms (1 orphaned) and 1 pro parte synonym should be returned.", 4, taxa.size());
         assertTrue("Pro parte should exist", existsInCollection(taxa, acherontiaLachesis));
         assertTrue("Normal synonym should exist", existsInCollection(taxa, atroposAgassiz));
         assertTrue("2. normal synonym should exist", existsInCollection(taxa, atroposOken));
-        //TODO shouldn't we also find orphaned synonyms (without accepted taxon) like Atropos Leach?
 
         taxa = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", null,subtree,
                 MatchMode.BEGINNING, null, NO_UNPUBLISHED, null, null, null, null);
