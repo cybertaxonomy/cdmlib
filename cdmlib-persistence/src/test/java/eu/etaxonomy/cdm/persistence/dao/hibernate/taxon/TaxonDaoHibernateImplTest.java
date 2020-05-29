@@ -328,9 +328,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 1 Taxa", 1, results.size());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}.
-     */
     @Test
     @DataSet
     public void testGetTaxaByNameForEditor() {
@@ -339,7 +336,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assert sec != null : "sec must exist";
 
         @SuppressWarnings("rawtypes")
-        List<UuidAndTitleCache<? extends IdentifiableEntity>> results = taxonDao.getTaxaByNameForEditor(
+        List<UuidAndTitleCache<? extends IdentifiableEntity>> results;
+
+        results = taxonDao.getTaxaByNameForEditor(
                 doTaxa, doSynonyms, noMisapplied, noCommonNames, false, includeUnpublished, "Acher", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertFalse("The list should not be empty", results.isEmpty());
@@ -365,7 +364,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
-        assertEquals("Results list should contain one entity", 8, results.size());
+        assertEquals("Results list should contain 8 entities", 8, results.size());
 
         results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, "Orphaned", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
@@ -373,7 +372,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         //TODO: test the search for misapplied names
     }
-
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)}
@@ -485,13 +483,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<TaxonBase> results = taxonDao.findByNameTitleCache(doTaxa, noSynonyms, includeUnpublished, "Rethera Rothschild & Jordan, 1903", null, subtree, MatchMode.EXACT, namedAreas,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
-        assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+        assertEquals("expected to find two taxa but found "+results.size(), 2, results.size());
 
         // 2. searching for a taxon (Rethera) contained in a specific classification
         results = taxonDao.findByNameTitleCache(doTaxa, noSynonyms, includeUnpublished, "Rethera Rothschild & Jordan, 1903", classification, subtree, MatchMode.EXACT, namedAreas,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
-        assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
+        assertEquals("expected to find one taxon but found "+results.size(), 1, results.size());
 
         // 3. searching for Synonyms
         results = taxonDao.findByNameTitleCache(noTaxa, doSynonyms, includeUnpublished, "*Atropo", null, subtree, MatchMode.ANYWHERE, null,
@@ -515,7 +513,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         results = taxonDao.findByNameTitleCache(doTaxa, doSynonyms, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, namedAreas,
                 null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
-        assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
+        assertEquals("expected to find 8 taxa but found "+results.size(), 8, results.size());
     }
 
     @Test
@@ -539,7 +537,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     public void testGetTaxaByNameProParteSynonym(){
         TaxonNode subtree = null;
         @SuppressWarnings("rawtypes")
-        List<TaxonBase> taxa = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", null,subtree,
+        List<TaxonBase> taxa = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "A", null, subtree,
                 MatchMode.BEGINNING, null, includeUnpublished, null, null, null, null);
         Assert.assertEquals("3 synonyms (1 orphaned) and 1 pro parte synonym should be returned.", 4, taxa.size());
         assertTrue("Pro parte should exist", existsInCollection(taxa, acherontiaLachesis));
