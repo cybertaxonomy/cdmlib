@@ -11,10 +11,10 @@ package eu.etaxonomy.cdm.io.media.in;
 import java.util.UUID;
 
 /**
- * Data holder class for Media taxon imports
+ * Data holder class for Media import for taxa.
+ *
  * @author a.mueller
  * @since 02.11.2017
- *
  */
 public class MediaExcelImportRow {
     private UUID taxonUuid;

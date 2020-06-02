@@ -65,17 +65,11 @@ public class MediaExcelImport
 
     private ImportDeduplicationHelper<MediaExcelImportState> deduplicationHelper;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void analyzeRecord(Map<String, String> record, MediaExcelImportState state) {
         // do nothing
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void firstPass(MediaExcelImportState state) {
         Map<String, String> record = state.getOriginalRecord();
@@ -175,14 +169,6 @@ public class MediaExcelImport
         textData.addMedia(media);
     }
 
-
-
-    /**
-     * @param state
-     * @param taxon
-     * @param line
-     * @return
-     */
     private String makeTitle(MediaExcelImportState state, Taxon taxon, String line) {
         MediaTitleEnum mediaTitleType = state.getConfig().getMediaTitle();
         if (mediaTitleType == null || mediaTitleType == MediaTitleEnum.NONE){
@@ -217,10 +203,6 @@ public class MediaExcelImport
         }
     }
 
-    /**
-     * @param start
-     * @return
-     */
     private DateTime toDateTime(MediaExcelImportState state, Partial partial, String dateStr, String line) {
         if (partial == null){
             return null;
@@ -240,12 +222,6 @@ public class MediaExcelImport
         }
     }
 
-    /**
-     * @param state
-     * @param uri
-     * @param media
-     * @param line
-     */
     private void handleUri(MediaExcelImportState state, URI uri, Media media, String line) {
             ImageInfo imageInfo = null;
             try {
@@ -269,10 +245,6 @@ public class MediaExcelImport
             media.addRepresentation(representation);
     }
 
-    /**
-     * @param state
-     * @return
-     */
     private List<URI> getUrls(MediaExcelImportState state, String line) {
         List<URI> list = new ArrayList<>();
         Map<String, String> record = state.getOriginalRecord();
@@ -293,10 +265,6 @@ public class MediaExcelImport
         return list;
     }
 
-    /**
-     * @param state
-     * @return
-     */
     private ImportDeduplicationHelper<MediaExcelImportState> getDeduplicationHelper(MediaExcelImportState state) {
         if (this.deduplicationHelper == null){
             this.deduplicationHelper = ImportDeduplicationHelper.NewInstance(this, state);
@@ -332,18 +300,11 @@ public class MediaExcelImport
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void secondPass(MediaExcelImportState state) {
-        // TODO Auto-generated method stub
-
+        //not in use
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isIgnore(MediaExcelImportState state) {
         return false;
