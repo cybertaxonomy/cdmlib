@@ -510,18 +510,25 @@ public class DescriptionServiceImpl
 
         for(DescriptionBaseDto descDto : descriptions) {
             DescriptionBase description = descDto.getDescription();
-            UUID specimenUuid = descDto.getSpecimenDto().getUuid();
-            if (descriptionSpecimenMap.get(specimenUuid) != null && !descriptionSpecimenMap.get(specimenUuid).equals(description)){
+            UUID describedObjectUuid = null;
+            if (description instanceof SpecimenDescription){
+                describedObjectUuid = descDto.getSpecimenDto().getUuid();
+            }else if (description instanceof TaxonDescription){
+                describedObjectUuid = descDto.getTaxonDto().getUuid();
+            }else if (description instanceof TaxonNameDescription){
+                describedObjectUuid = descDto.getNameDto().getUuid();
+            }
+            if (descriptionSpecimenMap.get(describedObjectUuid) != null && !descriptionSpecimenMap.get(describedObjectUuid).equals(description)){
                 Set<DescriptionElementBase> elements = new HashSet();
                 for (Object element: description.getElements()){
                     elements.add((DescriptionElementBase)element);
                 }
-                DescriptionBase desc = descriptionSpecimenMap.get(specimenUuid);
+                DescriptionBase desc = descriptionSpecimenMap.get(describedObjectUuid);
 //                description.setDescribedSpecimenOrObservation(null);
                 for (DescriptionElementBase element: elements){
                     desc.addElement(element);
                 }
-                descriptionSpecimenMap.put(specimenUuid, desc);
+                descriptionSpecimenMap.put(describedObjectUuid, desc);
                 description = desc;
             }
             try{
