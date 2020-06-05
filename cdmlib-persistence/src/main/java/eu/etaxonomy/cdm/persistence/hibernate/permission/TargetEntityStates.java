@@ -18,15 +18,15 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @since Jul 6, 2018
- *
  */
 public class TargetEntityStates {
 
-    CdmBase entity;
-    Object[] currentState;
-    Object[] previousState;
-    String[] propertyNames;
-    Type[] types;
+    private CdmBase entity;
+    private Object[] currentState;
+    private Object[] previousState;
+    private String[] propertyNames;
+    private Type[] types;
+
     /**
      * @param entity
      * @param currentState
@@ -34,8 +34,8 @@ public class TargetEntityStates {
      * @param propertyNames
      * @param types
      */
-    public TargetEntityStates(CdmBase entity, Object[] currentState, Object[] previousState, String[] propertyNames,
-            Type[] types) {
+    public TargetEntityStates(CdmBase entity, Object[] currentState, Object[] previousState,
+            String[] propertyNames, Type[] types) {
 
         this.entity = entity;
         this.currentState = currentState;
@@ -49,9 +49,6 @@ public class TargetEntityStates {
         this.entity = entity;
     }
 
-    /**
-     * @return the entity
-     */
     public CdmBase getEntity() {
         return entity;
     }

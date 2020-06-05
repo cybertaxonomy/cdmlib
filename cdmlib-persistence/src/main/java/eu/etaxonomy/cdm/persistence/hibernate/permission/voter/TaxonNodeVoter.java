@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 /**
  * @author andreas kohlbecker
  * @since Sep 4, 2012
- *
  */
 public class TaxonNodeVoter extends CdmPermissionVoter {
 
@@ -33,7 +32,6 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
     public Class<? extends CdmBase> getResponsibilityClass() {
         return TaxonNode.class;
     }
-
 
     @Override
     protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
@@ -47,11 +45,6 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
         return null;
     }
 
-    /**
-     * @param targetUuid
-     * @param node
-     * @return
-     */
     private boolean findTargetUuidInParentNodes(UUID targetUuid, TaxonNode node){
         if (targetUuid.equals(node.getUuid())) {
             return true;
@@ -64,9 +57,6 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isOrpahn(CdmBase object) {
         if(object instanceof TaxonNode){

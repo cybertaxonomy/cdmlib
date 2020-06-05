@@ -14,21 +14,14 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.kohlbecker
  * @since Feb 24, 2014
- *
  */
 public class ReferenceVoter extends CdmPermissionVoter {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#getResponsibilityClass()
-     */
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {
         return Reference.class;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isOrpahn(CdmBase object) {
         // References must never be considered orphan. So the must not be deleted without explicit DELETE permission

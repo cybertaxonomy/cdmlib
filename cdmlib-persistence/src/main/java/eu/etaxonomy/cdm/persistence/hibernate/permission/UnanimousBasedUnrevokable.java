@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author a.kohlbecker
  * @since Oct 11, 2013
- *
  */
 public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
 
@@ -86,16 +85,13 @@ public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
             switch (result) {
             case AccessDecisionVoter.ACCESS_GRANTED:
                 grant++;
-
                 break;
 
             case AccessDecisionVoter.ACCESS_DENIED:
                 throw new AccessDeniedException(messages.getMessage("AbstractAccessDecisionManager.accessDenied",
                         "Access is denied"));
-
             default:
                 abstain++;
-
                 break;
             }
         }
@@ -108,5 +104,4 @@ public class UnanimousBasedUnrevokable extends AbstractAccessDecisionManager {
         // To get this far, every AccessDecisionVoter abstained
         checkAllowIfAllAbstainDecisions();
     }
-
 }

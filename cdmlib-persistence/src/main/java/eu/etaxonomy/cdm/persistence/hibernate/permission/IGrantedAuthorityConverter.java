@@ -13,7 +13,6 @@ import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 /**
  * @author a.kohlbecker
  * @since Oct 15, 2012
- *
  */
 public interface IGrantedAuthorityConverter {
 
@@ -22,5 +21,4 @@ public interface IGrantedAuthorityConverter {
      * @throws CdmAuthorityParsingException
      */
     public abstract GrantedAuthorityImpl asNewGrantedAuthority() throws CdmAuthorityParsingException;
-
 }

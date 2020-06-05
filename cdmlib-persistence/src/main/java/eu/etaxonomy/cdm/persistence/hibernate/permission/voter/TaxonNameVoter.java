@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 /**
  * @author a.kohlbecker
  * @since Feb 24, 2014
- *
  */
 public class TaxonNameVoter extends CdmPermissionVoter {
 
@@ -28,5 +27,4 @@ public class TaxonNameVoter extends CdmPermissionVoter {
         // taxon names never are orphan
         return false;
     }
-
 }

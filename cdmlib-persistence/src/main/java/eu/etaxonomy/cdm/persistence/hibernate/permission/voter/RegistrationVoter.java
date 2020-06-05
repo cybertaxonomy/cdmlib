@@ -21,29 +21,19 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 /**
  * @author a.kohlbecker
  * @since Feb 24, 2014
- *
  */
 public class RegistrationVoter extends CdmPermissionVoter {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#getResponsibilityClass()
-     */
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {
         return Registration.class;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isOrpahn(CdmBase object) {
         return ((Registration)object).getTypeDesignations().size() > 0 && ((Registration)object).getName() == null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Integer furtherVotingDescisions(CdmAuthority cdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes, ValidationResult vr) {
 
@@ -56,7 +46,6 @@ public class RegistrationVoter extends CdmPermissionVoter {
                 status = targetEntityStates.previousPropertyState("status", RegistrationStatus.class);
             } else {
                 status = ((Registration)targetEntityStates.getEntity()).getStatus();
-
             }
             vr.isPropertyMatch = cdmAuthority.getProperty().contains(status.name());
             logger.debug("property is matching");
@@ -79,7 +68,4 @@ public class RegistrationVoter extends CdmPermissionVoter {
 
         return ACCESS_ABSTAIN; // ignore my further vote
     }
-
-
-
 }

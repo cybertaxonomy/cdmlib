@@ -26,21 +26,14 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
  *
  * @author a.kohlbecker
  * @since Feb 24, 2014
- *
  */
 public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#getResponsibilityClass()
-     */
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {
         return SpecimenOrObservationBase.class;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#furtherVotingDescisions(org.springframework.security.core.Authentication, java.lang.Object, java.util.Collection, eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter.ValidationResult)
-     */
     @Override
     protected Integer furtherVotingDescisions(CdmAuthority CdmAuthority, TargetEntityStates targetEntityStates, Collection<ConfigAttribute> attributes,
             ValidationResult validationResult) {
@@ -54,11 +47,6 @@ public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
         return null;
     }
 
-    /**
-     * @param targetUuid
-     * @param sob
-     * @return
-     */
     private boolean propagateGrantsFromOriginal(UUID targetUuid, SpecimenOrObservationBase<?>  sob){
 
         if (targetUuid.equals(sob.getUuid())) {
@@ -75,9 +63,6 @@ public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isOrpahn(CdmBase object) {
         // we always return true here to allow deleting the reference

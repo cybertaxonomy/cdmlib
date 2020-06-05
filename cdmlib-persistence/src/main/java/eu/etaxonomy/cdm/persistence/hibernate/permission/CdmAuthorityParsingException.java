@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 /**
  * @author a.kohlbecker
  * @since 18.10.2017
- *
  */
 public class CdmAuthorityParsingException extends Exception {
 
@@ -20,5 +19,4 @@ public class CdmAuthorityParsingException extends Exception {
     public CdmAuthorityParsingException(String authority){
         super(authority);
     }
-
 }

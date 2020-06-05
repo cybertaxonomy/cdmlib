@@ -16,7 +16,6 @@ public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTr
      * @return
      */
     public static RuntimeException findSecurityRuntimeException(Throwable exception) {
-
         return SecurityExceptionUtils.findSecurityRuntimeException(exception);
     }
 
@@ -32,5 +31,4 @@ public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTr
     public static <T extends Throwable> T  findThrowableOfTypeIn(Class<T> clazz, Throwable exception) {
         return SecurityExceptionUtils.findThrowableOfTypeIn(clazz, exception);
     }
-
 }

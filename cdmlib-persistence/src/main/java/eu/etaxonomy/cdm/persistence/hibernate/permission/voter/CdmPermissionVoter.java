@@ -29,15 +29,12 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
  *
  * @author andreas kohlbecker
  * @since Sep 4, 2012
- *
  */
 public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetEntityStates> {
 
-    /**
-     *
-     */
-    private static final EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
     public static final Logger logger = Logger.getLogger(CdmPermissionVoter.class);
+
+    private static final EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
 
     @Override
     public boolean supports(ConfigAttribute attribute) {
@@ -57,7 +54,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
      * Sets the Cdm type, or super type this Voter is responsible for.
      */
     abstract public Class<? extends CdmBase> getResponsibilityClass();
-
 
     protected boolean isResponsibleFor(Object securedObject) {
         return getResponsibilityClass().isAssignableFrom(securedObject.getClass());
@@ -159,7 +155,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
                     }
                 }
 
-
                 //
                 // ask subclasses for further voting decisions
                 // subclasses will cast votes for specific Cdm Types
@@ -183,7 +178,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
                             default: /* nothing to do */
                     }
                 }
-
             } // END Authorities loop
         } // END attributes loop
 
@@ -249,7 +243,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
         }
     }
 
-
     /**
      * Holds various flags with validation results.
      * Is used to pass this information from
@@ -279,8 +272,6 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <TargetE
                     + "isUuidMatch: " + Boolean.toString(isUuidMatch) + ", "
                     + "isPermissionMatch: " + Boolean.toString(isPermissionMatch) + ", "
                     + "isPropertyMatch: " + Boolean.toString(isPropertyMatch);
-
         }
     }
-
 }

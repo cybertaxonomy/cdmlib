@@ -23,9 +23,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.Operation;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated
@@ -270,11 +270,6 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         return false;
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
@@ -285,9 +280,6 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
                 .toHashCode();
     }
 
-    /**
-     * @return
-     */
     protected String operationsToString() {
         String[] opsstr = new String[operation.size()];
         int i = 0;
@@ -325,6 +317,4 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         GrantedAuthorityImpl grantedAuthority = GrantedAuthorityImpl.NewInstance(getAuthority());
         return grantedAuthority;
     }
-
-
 }

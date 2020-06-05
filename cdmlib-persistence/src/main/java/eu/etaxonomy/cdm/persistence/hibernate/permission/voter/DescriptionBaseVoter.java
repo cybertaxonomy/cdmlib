@@ -13,9 +13,6 @@ public class DescriptionBaseVoter extends CdmPermissionVoter {
         return DescriptionBase.class;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isOrpahn(CdmBase object) {
         if(object instanceof TaxonDescription){

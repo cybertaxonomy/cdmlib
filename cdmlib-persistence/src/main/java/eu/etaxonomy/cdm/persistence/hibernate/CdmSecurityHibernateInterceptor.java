@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
 /**
  * @author k.luther
  * @author a.kohlbecker
- *
  */
 @Component
 public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {

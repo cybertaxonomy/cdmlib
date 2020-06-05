@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.UUID;
 
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
@@ -14,8 +15,6 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IGrantedAuthorityDao;
  *
  * @author a.kohlbecker
  * @since Oct 5, 2012
- *
- *
  */
 public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
 

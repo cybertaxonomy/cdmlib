@@ -16,21 +16,14 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @since Feb 24, 2014
- *
  */
 public class TeamOrPersonBaseVoter extends CdmPermissionVoter {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#getResponsibilityClass()
-     */
     @Override
     public Class<? extends CdmBase> getResponsibilityClass() {
         return TeamOrPersonBase.class;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
-     */
     @Override
     public boolean isOrpahn(CdmBase object) {
         if(object instanceof Person){

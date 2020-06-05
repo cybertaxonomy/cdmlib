@@ -26,8 +26,8 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.Operation;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 
 /**
  * @author k.luther
@@ -64,7 +64,6 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
-
         EnumSet<CRUD> requiredOperation = null;
 
         TargetEntityStates cdmEntitiyStates;
@@ -90,23 +89,11 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
     }
 
-    /**
-     * @param authentication
-     * @param targetDomainObject
-     * @param requiredOperation
-     * @return
-     */
     @Override
     public boolean hasPermission(Authentication authentication, CdmBase targetEntity, EnumSet<CRUD> requiredOperation) {
         return hasPermission(authentication, new TargetEntityStates(targetEntity), requiredOperation);
     }
 
-    /**
-     * @param authentication
-     * @param targetDomainObject
-     * @param requiredOperation
-     * @return
-     */
     @Override
     public boolean hasPermission(Authentication authentication, TargetEntityStates targetEntityStates, EnumSet<CRUD> requiredOperation) {
 
@@ -124,7 +111,6 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
             return true;
         }
     }
-
 
     @Override
     public <T extends CdmBase> boolean hasPermission(Authentication authentication, Class<T> targetDomainObjectClass,
@@ -154,11 +140,6 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         return evalPermission(authentication, evalPermission, new TargetEntityStates(instance));
     }
 
-    /**
-     * @param authentication
-     * @param permission
-     * @param targteDomainObjText
-     */
     protected void logUserAndRequirement(Authentication authentication, String permissions, String targteDomainObjText) {
         StringBuilder grantedAuthoritiesTxt = new StringBuilder();
         for(GrantedAuthority ga : authentication.getAuthorities()){
@@ -174,10 +155,6 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
                 + "  Permission: " + permissions);
     }
 
-    /**
-     * @param permission
-     * @return
-     */
     protected EnumSet<CRUD> operationFrom(Object permission) {
         EnumSet<CRUD> requiredOperation;
         // FIXME refactor into Operation ======
@@ -191,23 +168,11 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         return requiredOperation;
     }
 
-    /**
-     * @param targetEntity
-     * @param requiredOperation
-     * @return
-     */
     private CdmAuthority authorityRequiredFor(CdmBase targetEntity, EnumSet<CRUD> requiredOperation) {
         CdmAuthority evalPermission = new CdmAuthority(targetEntity, requiredOperation);
         return evalPermission;
     }
 
-
-    /**
-     * @param authorities
-     * @param evalPermission
-     * @param targetDomainObject
-     * @return
-     */
     private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission, TargetEntityStates targetEntityStates){
 
         //if user has administrator rights return true;
@@ -233,9 +198,6 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
         return true;
     }
 
-    /**
-     * @param authentication
-     */
     @Override
     public boolean hasOneOfRoles(Authentication authentication, Role ... roles) {
         for (GrantedAuthority authority: authentication.getAuthorities()){
