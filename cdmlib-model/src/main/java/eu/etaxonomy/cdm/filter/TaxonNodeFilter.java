@@ -135,52 +135,40 @@ public class TaxonNodeFilter implements Serializable{
 
 // ************************ CONSTRUCTOR *******************/
 
-    public TaxonNodeFilter(){
+    private TaxonNodeFilter(){
         reset();
     }
-
-    /**
-     * Constructor for a given subtree represented by a {@link TaxonNode}
-     */
-    public TaxonNodeFilter(TaxonNode node){
-        reset();
-        LogicFilter<TaxonNode> filter = new LogicFilter<>(node);
-        subtrees.add(filter);
-    }
-
-    public TaxonNodeFilter(Rank rankMin, Rank rankMax){
-        reset();
-        if(rankMin!=null){
-            this.rankMin = new LogicFilter<>(rankMin);
-        }
-        if(rankMax!=null){
-            this.rankMax = new LogicFilter<>(rankMax);
-        }
-    }
-
-    public TaxonNodeFilter(Classification classification){
-        reset();
-        LogicFilter<Classification> filter = new LogicFilter<>(classification);
-        classifications.add(filter);
-    }
+//
+//    /**
+//     * Constructor for a given subtree represented by a {@link TaxonNode}
+//     */
+//    public TaxonNodeFilter(TaxonNode node){
+//        reset();
+//        LogicFilter<TaxonNode> filter = new LogicFilter<>(node);
+//        subtrees.add(filter);
+//    }
+//
+//    private TaxonNodeFilter(Rank rankMin, Rank rankMax){
+//        reset();
+//        if(rankMin!=null){
+//            this.rankMin = new LogicFilter<>(rankMin);
+//        }
+//        if(rankMax!=null){
+//            this.rankMax = new LogicFilter<>(rankMax);
+//        }
+//    }
+//
+//    public TaxonNodeFilter(Classification classification){
+//        reset();
+//        LogicFilter<Classification> filter = new LogicFilter<>(classification);
+//        classifications.add(filter);
+//    }
 
     public TaxonNodeFilter(NamedArea area){
         reset();
         LogicFilter<NamedArea> filter = new LogicFilter<>(area);
         areaFilter.add(filter);
     }
-
-    public TaxonNodeFilter(Taxon taxon){
-        reset();
-        LogicFilter<Taxon> filter = new LogicFilter<>(taxon);
-        taxa.add(filter);
-    }
-
-//    public <T extends CdmBase> TaxonNodeFilter(Class<T> clazz, UUID uuid){
-//        reset();
-//        LogicFilter<T> filter = new LogicFilter<T>(clazz, uuid);
-//        classifications.add(filter);
-//    }
 
 // ********************** reset *****************************/
 

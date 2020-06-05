@@ -28,7 +28,7 @@ public  class Cdm2CdmImportConfigurator
 
     private static IInputTransformer myTransformer = null;
 
-    private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
+    private TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance();
     private ITaxonNodeOutStreamPartitioner partitioner;
     private boolean concurrent = false;
 
