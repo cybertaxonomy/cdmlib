@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVo
 /**
  * @author a.kohlbecker
  * @since Feb 2, 2017
- *
  */
 public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
 
@@ -55,7 +54,6 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 new TargetEntityStates(TaxonDescription.NewInstance()),
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
-
     }
 
     @Test
@@ -68,7 +66,6 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 new TargetEntityStates(TaxonDescription.NewInstance()),
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
-
     }
 
     @Test
@@ -81,7 +78,6 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 new TargetEntityStates(TaxonDescription.NewInstance()),
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
-
     }
 
     /**
@@ -132,6 +128,4 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
-
-
 }

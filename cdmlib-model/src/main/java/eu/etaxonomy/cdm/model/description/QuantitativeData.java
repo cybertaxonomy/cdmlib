@@ -173,9 +173,7 @@ public class QuantitativeData
 		super(feature);
 	}
 
-
 // ******************************** GETTER /SETTER *******************************/
-
 
 	/**
 	 * Returns the set of {@link StatisticalMeasurementValue statistical measurement values} describing

@@ -68,8 +68,10 @@ import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCach
 @XmlRootElement(name = "DescriptiveDataSet")
 @Entity
 @Audited
-public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDefaultCacheStrategy> {
-	private static final long serialVersionUID = 3256448866757415686L;
+public class DescriptiveDataSet
+        extends IdentifiableEntity<DescriptiveDataSetDefaultCacheStrategy> {
+
+    private static final long serialVersionUID = 3256448866757415686L;
 	private static final Logger logger = Logger.getLogger(DescriptiveDataSet.class);
 
 	@XmlElementWrapper(name = "Representations")

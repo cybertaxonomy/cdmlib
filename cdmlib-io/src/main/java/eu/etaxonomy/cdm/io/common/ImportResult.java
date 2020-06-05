@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author cmathew
  * @since 5 Aug 2015
- *
  */
 public class ImportResult extends IoResultBase implements Serializable {
     private static final long serialVersionUID = -7299667532720042100L;
@@ -75,10 +74,6 @@ public class ImportResult extends IoResultBase implements Serializable {
         return state == ImportResultState.SUCCESS || state == ImportResultState.SUCCESS_WITH_WARNING;
     }
 
-    /**
-     * @param success
-     * @param successTaraxacum
-     */
     public void merge(ImportResult otherResult) {
         mergeMap(this.deletedRecords, otherResult.deletedRecords);
         mergeMap(this.updatedRecords, otherResult.updatedRecords);
@@ -86,10 +81,6 @@ public class ImportResult extends IoResultBase implements Serializable {
         this.reports.addAll(otherResult.reports);
     }
 
-    /**
-     * @param thisMap
-     * @param otherMap
-     */
     private void mergeMap(Map<String, Integer> thisMap, Map<String, Integer> otherMap) {
         for (String key: otherMap.keySet()){
             int existing = thisMap.get(key)== null ? 0 : thisMap.get(key);
@@ -100,6 +91,7 @@ public class ImportResult extends IoResultBase implements Serializable {
     public List<byte[]> getReports() {
         return reports;
     }
+
     /**
      * @param reports the reports to set
      */
@@ -123,10 +115,6 @@ public class ImportResult extends IoResultBase implements Serializable {
         return clone(updatedRecords);
     }
 
-    /**
-     * @param updatedRecords2
-     * @return
-     */
     private Map<String, Integer> clone(Map<String, Integer> records) {
         Map<String, Integer> result = new HashMap<>(records.size());
         for (String clazz : records.keySet()){
@@ -189,9 +177,6 @@ public class ImportResult extends IoResultBase implements Serializable {
         this.addDeletedRecord(CdmBase.deproxy(deletedRecord).getClass().getSimpleName());
     }
 
-    /**
-     *
-     */
     @Override
     public StringBuffer createReport() {
         StringBuffer report = super.createReport();
@@ -201,11 +186,6 @@ public class ImportResult extends IoResultBase implements Serializable {
         return report;
     }
 
-    /**
-     * @param report
-     * @param string
-     * @param newRecords2
-     */
     private void addEditedReport(StringBuffer report, String label, Map<String, Integer> records) {
         if (!records.isEmpty()){
             report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));
@@ -214,5 +194,4 @@ public class ImportResult extends IoResultBase implements Serializable {
             }
         }
     }
-
 }

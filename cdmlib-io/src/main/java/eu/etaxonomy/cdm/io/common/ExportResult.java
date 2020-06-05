@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.common.IoResultBase;
 /**
  * @author cmathew
  * @since 31 Jul 2015
- *
  */
 public class ExportResult extends IoResultBase implements Serializable {
 
@@ -31,8 +30,6 @@ public class ExportResult extends IoResultBase implements Serializable {
 
 
 // **************************** FACTORY ****************************************/
-
-
 
     public static ExportResult NewInstance(ExportResultType type){
         return new ExportResult(type);
