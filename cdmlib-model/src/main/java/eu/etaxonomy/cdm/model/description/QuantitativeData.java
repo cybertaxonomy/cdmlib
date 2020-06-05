@@ -138,10 +138,14 @@ public class QuantitativeData
      */
     public static QuantitativeData NewMinMaxInstance(Feature feature, BigDecimal min, BigDecimal max){
         QuantitativeData result = new QuantitativeData(feature);
-        StatisticalMeasurementValue minValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(),min);
-        result.addStatisticalValue(minValue);
-        StatisticalMeasurementValue maxValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
-        result.addStatisticalValue(maxValue);
+        if (min != null){
+            StatisticalMeasurementValue minValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(),min);
+            result.addStatisticalValue(minValue);
+        }
+        if (max != null){
+            StatisticalMeasurementValue maxValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
+            result.addStatisticalValue(maxValue);
+        }
         return result;
     }
 
