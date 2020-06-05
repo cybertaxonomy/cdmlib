@@ -5,9 +5,12 @@ import org.springframework.security.access.AccessDeniedException;
 /**
  * This utility class helps finding security related exceptions in Throwables
  *
+ * Note: This class is more or less a clone of the same named class in cdmlib-persistence.
+ * Any changes in either of these classes should be also done in the other class.
+ * In future theses classes should be merged. But this requires a change in dependencies.
+ *
  * @author a.kohlbecker
  * @since Feb 11, 2014
- *
  */
 public class SecurityExceptionUtils {
 
@@ -17,6 +20,7 @@ public class SecurityExceptionUtils {
 
     static {
         try {
+            //PermissionDeniedException is not available here yet, therefore we use Class.forName
             permissionDeniedExceptionClass = Class.forName("eu.etaxonomy.cdm.database.PermissionDeniedException");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException ("PermissionDeniedException class could not be found. Propably it moved to another folder", e);
