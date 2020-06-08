@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.persistence.hibernate.permission;
+package eu.etaxonomy.cdm.persistence.permission;
 
 import java.util.UUID;
 

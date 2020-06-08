@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
+package eu.etaxonomy.cdm.persistence.permission.voter;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -8,8 +8,8 @@ import org.springframework.security.access.ConfigAttribute;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
 
 public class DescriptionElementVoter extends CdmPermissionVoter {
 

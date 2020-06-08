@@ -32,9 +32,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.Operation;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.Role;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
 
 /**
  * @author k.luther
@@ -101,7 +101,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             return true;
         }
         // evaluate throws EvaluationFailedException
-        TargetEntityStates cdmEntityStates = new TargetEntityStates((CdmBase)entity, state, null, propertyNames, type);
+        TargetEntityStates cdmEntityStates = new TargetEntityStates((CdmBase)entity, state, null, propertyNames);
         checkPermissions(cdmEntityStates, Operation.CREATE);
         logger.debug("permission check suceeded - object creation granted");
         return true;
@@ -118,13 +118,12 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
 
-
         Set<String> excludes = exculdeMap.get(baseType(cdmEntity));
         excludes.addAll(unprotectedCacheFields(currentState, previousState, propertyNames));
         if (isModified(currentState, previousState, propertyNames, excludes)) {
             // evaluate throws EvaluationFailedException
             //if(cdmEntity.getCreated())
-            TargetEntityStates cdmEntityStates = new TargetEntityStates(cdmEntity, currentState, previousState, propertyNames, types);
+            TargetEntityStates cdmEntityStates = new TargetEntityStates(cdmEntity, currentState, previousState, propertyNames);
             checkPermissions(cdmEntityStates, Operation.UPDATE);
             logger.debug("Operation.UPDATE permission check suceeded - object update granted");
 
@@ -173,7 +172,6 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         return basetype == null ? CdmBase.class : basetype;
     }
 
-
     @Override
     public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 
@@ -182,7 +180,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         }
         CdmBase cdmEntity = (CdmBase) entity;
         // evaluate throws EvaluationFailedException
-        TargetEntityStates cdmEntityStates = new TargetEntityStates(cdmEntity, state, null, propertyNames, types);
+        TargetEntityStates cdmEntityStates = new TargetEntityStates(cdmEntity, state, null, propertyNames);
         checkPermissions(cdmEntityStates, Operation.DELETE);
         logger.debug("permission check suceeded - object update granted");
         return;

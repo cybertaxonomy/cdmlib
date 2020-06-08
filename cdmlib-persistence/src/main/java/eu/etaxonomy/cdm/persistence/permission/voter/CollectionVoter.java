@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
+package eu.etaxonomy.cdm.persistence.permission.voter;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;

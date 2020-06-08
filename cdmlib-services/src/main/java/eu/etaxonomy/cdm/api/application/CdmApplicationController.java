@@ -82,7 +82,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
 /**
  * @author a.mueller

@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
+package eu.etaxonomy.cdm.persistence.permission.voter;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -20,9 +20,9 @@ import org.springframework.security.core.GrantedAuthority;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthorityParsingException;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
 
 /**
  * The <code>CdmPermissionVoter</code> provides access control votes for {@link CdmBase} objects.

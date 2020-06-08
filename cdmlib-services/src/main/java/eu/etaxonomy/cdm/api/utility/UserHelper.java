@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.ICdmEntityUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 
 /**
  * UserHelper interface.

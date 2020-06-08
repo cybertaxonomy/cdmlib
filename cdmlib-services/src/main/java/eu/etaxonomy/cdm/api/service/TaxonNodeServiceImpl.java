@@ -81,7 +81,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 

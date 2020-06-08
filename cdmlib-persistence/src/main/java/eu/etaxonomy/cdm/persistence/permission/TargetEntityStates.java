@@ -6,12 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.persistence.hibernate.permission;
+package eu.etaxonomy.cdm.persistence.permission;
 
 import java.util.Objects;
 
 import org.hibernate.PropertyNotFoundException;
-import org.hibernate.type.Type;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -25,7 +24,6 @@ public class TargetEntityStates {
     private Object[] currentState;
     private Object[] previousState;
     private String[] propertyNames;
-    private Type[] types;
 
     /**
      * @param entity
@@ -35,13 +33,12 @@ public class TargetEntityStates {
      * @param types
      */
     public TargetEntityStates(CdmBase entity, Object[] currentState, Object[] previousState,
-            String[] propertyNames, Type[] types) {
+            String[] propertyNames) {
 
         this.entity = entity;
         this.currentState = currentState;
         this.previousState = previousState;
         this.propertyNames = propertyNames;
-        this.types = types;
     }
 
 

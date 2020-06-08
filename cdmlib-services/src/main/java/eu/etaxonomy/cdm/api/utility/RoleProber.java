@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.utility;
 
 import org.springframework.security.core.Authentication;
 
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
+import eu.etaxonomy.cdm.persistence.permission.Role;
 
 /**
  * @author a.kohlbecker

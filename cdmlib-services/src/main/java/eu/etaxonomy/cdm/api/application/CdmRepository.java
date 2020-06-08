@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
 /**
  * This class actually is the central access point to all cdm api services and thus to all the

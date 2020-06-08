@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.Operation;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
+import eu.etaxonomy.cdm.persistence.permission.Role;
 
 /**
  * @author andreas

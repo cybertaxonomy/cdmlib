@@ -19,10 +19,10 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthorityParsingException;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.Operation;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthorityParsingException;
 
 /**
  * @author c.mathew
@@ -43,7 +43,7 @@ public class CdmAuthorityTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.hibernate.permission#getAuthority()}.
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.permission#getAuthority()}.
 	 * @throws CdmAuthorityParsingException
 	 */
 	@Test

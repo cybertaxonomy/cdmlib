@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
+package eu.etaxonomy.cdm.persistence.permission.voter;
 
 import java.util.Collection;
 import java.util.Set;
@@ -18,8 +18,8 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
 
 /**
  * see  https://dev.e-taxonomy.eu/redmine/issues/7018

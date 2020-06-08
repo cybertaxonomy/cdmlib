@@ -53,8 +53,8 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
 /**
  * @author a.mueller
