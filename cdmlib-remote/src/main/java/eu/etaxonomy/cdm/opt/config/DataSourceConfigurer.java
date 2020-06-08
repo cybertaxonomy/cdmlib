@@ -101,13 +101,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     private ConfigFileUtil configFileUtil;
 
     /**
-     * key for the spring environment to the datasource bean id aka instance name
-     * @deprecated use CdmConfigurationKeys.CDM_DATA_SOURCE_ID instead
-     */
-    @Deprecated
-    public static final String CDM_DATA_SOURCE_ID = CdmConfigurationKeys.CDM_DATA_SOURCE_ID;
-
-    /**
      * Attribute to configure the name of the data source as set as bean name in the datasources.xml.
      * This name usually is used as the prefix for the webapplication root path.
      * <br>
@@ -202,7 +195,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
         MutablePropertySources sources = env.getPropertySources();
         Properties props = new Properties();
-        props.setProperty(CDM_DATA_SOURCE_ID, dataSourceId);
+        props.setProperty(CdmConfigurationKeys.CDM_DATA_SOURCE_ID, dataSourceId);
         sources.addFirst(new PropertiesPropertySource("cdm-datasource",  props));
 
         if(!isForceSchemaCreate()) {
