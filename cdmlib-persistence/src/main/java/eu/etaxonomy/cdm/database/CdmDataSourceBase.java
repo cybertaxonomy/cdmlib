@@ -158,7 +158,7 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
     }
 
 	@Override
-	public  String getDbSchemaVersion() throws CdmSourceException  {
+	public String getDbSchemaVersion() throws CdmSourceException  {
 		try {
 			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
 		} catch (SQLException e) {

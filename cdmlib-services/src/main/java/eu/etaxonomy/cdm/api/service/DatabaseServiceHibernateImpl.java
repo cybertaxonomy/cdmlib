@@ -134,11 +134,11 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	public  String getDbSchemaVersion() throws CdmSourceException  {
 		try {
 			return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
-		} catch (SQLException e1) {
+		} catch (SQLException e) {
 		    try {
 	            return (String)getSingleValue(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
-	        } catch (SQLException e) {
-	            throw new CdmSourceException(e.getMessage());
+	        } catch (SQLException e1) {
+	            throw new CdmSourceException(e1.getMessage());
 	        }
 		}
 	}

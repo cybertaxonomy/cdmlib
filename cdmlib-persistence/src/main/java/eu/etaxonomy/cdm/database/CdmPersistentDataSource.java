@@ -41,15 +41,16 @@ import eu.etaxonomy.cdm.config.ICdmPersistentSource;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
-
 /**
- * class to access an CdmDataSource
+ * Class to access a CdmDataSource which is stored in datasources.xml
  */
-public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPersistentSource {
-	private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
+public class CdmPersistentDataSource
+        extends CdmDataSourceBase
+        implements ICdmPersistentSource {
+
+    private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
-
 
 	private String beanName;
 
@@ -62,12 +63,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 
 	private List<Attribute> cdmSourceAttributes;
 
-
 	/**
 	 * The Datasource class that Spring will use to set up the connection to the database
 	 */
 	private static String dataSourceClassName = ComboPooledDataSource.class.getName();
-
 
 	/**
 	 * Returns the default CdmDataSource
@@ -77,7 +76,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	public final static CdmPersistentDataSource NewDefaultInstance() throws DataSourceNotFoundException {
 		return NewInstance("default");
 	}
-
 
 	/**
 	 * Returns the default CdmDataSource
@@ -157,13 +155,11 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		return database;
 	}
 
-
 	@Override
 	public void setDatabase(String database) {
 		this.database = database;
 		//update url string
 		cdmSourceProperties.put(CdmSourceProperties.URL.toString(), getDatabaseType().getConnectionString(this));
-
 	}
 
 	@Override
@@ -181,11 +177,11 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			cdmSourceProperties.put(CdmSourceProperties.URL.toString(), getDatabaseType().getConnectionString(this));
 		}
 	}
+
 	@Override
 	public String getFilePath() {
 		return getCdmSourceProperty(CdmSourceProperties.FILEPATH);
 	}
-
 
 	@Override
 	public H2Mode getMode() {
@@ -195,7 +191,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	@Override
 	public void setMode(H2Mode h2Mode) {
 		cdmSourceProperties.put(CdmSourceProperties.MODE.toString(), h2Mode.name());
-
 	}
 
 	@Override
@@ -206,7 +201,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	@Override
 	public void setUsername(String username) {
 		cdmSourceProperties.put(CdmSourceProperties.USERNAME.toString(), username);
-
 	}
 
 	@Override
@@ -217,7 +211,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	@Override
 	public void setPassword(String password) {
 		cdmSourceProperties.put(CdmSourceProperties.PASSWORD.toString(), password);
-
 	}
 
 	@Override
@@ -226,7 +219,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.byDriverClass(strDriverClass);
 		return dbType;
 	}
-
 
 	public String getCdmSourceProperty(CdmSourceProperties property){
 		return cdmSourceProperties.getProperty(property.toString(),null);
@@ -275,21 +267,12 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		return bd;
 	}
 
-	/**
-	 * @param hbm2dll
-	 * @param showSql
-	 * @return
-	 */
 	@Override
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
 		HibernateConfiguration hibernateConfig = HibernateConfiguration.NewDefaultInstance();
         return getHibernatePropertiesBean(hbm2dll, hibernateConfig);
 	}
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Deprecated
     public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql,
@@ -299,9 +282,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
         return this.getHibernatePropertiesBean(hbm2dll, hibernateConfig);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
             HibernateConfiguration hibernateConfig) {
@@ -322,9 +302,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 
 		return makeHibernatePropertiesBean(getDatabaseType(), hbm2dll, showSql, formatSql, registerAuditing,
 		        registerSearchListener, cacheProviderClass);
-
 	}
-
 
 	/**
 	 * Tests existing of the datsource in the according config  file.
@@ -451,7 +429,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		}
 	}
 
-
 	/**
 	 * Saves a datasource to the datasource config file. If strDataSourceName differs a new dataSource
 	 * will be created in config file. Use update() of real update functionality.
@@ -484,7 +461,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 					null, null, null, null,
 					dataSource.getFilePath(),
 					dataSource.getMode()
-					);
+				);
 		}else{
 
 			Class<? extends DataSource> dataSourceClass;
@@ -521,7 +498,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		}
 	}
 
-
 	/**
 	 * Returns a list of all datasources stored in the datasource config file
 	 * @return all existing data sources
@@ -546,7 +522,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		}
 		return dataSources;
 	}
-
 
 	@Override
 	public boolean equals(Object obj){

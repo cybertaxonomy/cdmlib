@@ -388,7 +388,7 @@
           <execution>
             <!-- The war must be created after running the integration-tests, 
               since the SwaggerGroupsIT test populates the classes/api-docs-static/ folder 
-              with static swagger doc files. The are otherwise not packed into the war 
+              with static swagger doc files. They are otherwise not packed into the war 
               file. -->
             <phase>verify</phase>
             <goals>

@@ -15,7 +15,8 @@ import eu.etaxonomy.cdm.model.term.IKeyTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 public enum CdmMetaDataPropertyName implements IKeyTerm{
-	DB_SCHEMA_VERSION("Schema Version","SCHEMA_VERSION", 0),
+
+    DB_SCHEMA_VERSION("Schema Version","SCHEMA_VERSION", 0),
 	TERMS_VERSION("Term Version","TERM_VERSION", 1),
 	DB_CREATE_DATE("Created","CREATED", 2),
 	DB_CREATE_NOTE("Create Note","CREATE_NOTE", 3),
@@ -55,27 +56,16 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
                 this.oldPropertyId);
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getKey() {
         return key;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getMessage() {
         return getMessage(Language.DEFAULT());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getMessage(Language language) {
         //TODO i18n
@@ -90,6 +80,4 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
         }
         return null;
     }
-
-
 }

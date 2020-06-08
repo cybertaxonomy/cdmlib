@@ -53,8 +53,8 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 /**
  * The <code>DataSourceConfigurer</code> can be used as a replacement for a xml configuration in the application context.
  * <p>
- * The id of the loaded data source bean aka the <b>cdm instance name</b> is put into the <b>Spring environment</b> from where it can be retrieved using the
- * key {@link CDM_DATA_SOURCE_ID}.
+ * The id of the loaded data source bean aka the <b>cdm instance name</b> is put into the <b>Spring environment</b> from
+ * where it can be retrieved using the key {@link CDM_DATA_SOURCE_ID}.
  * <p>
  * Enter the following in your application context configuration in order to enable the <code>DataSourceConfigurer</code>:
  *
@@ -84,7 +84,6 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
  *
  * @author a.kohlbecker
  * @since 04.02.2011
- *
  */
 @Configuration
 // cdmlib-remote.properties is used by developers to define the datasource bean to use from
@@ -120,6 +119,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      *
      */
     protected static final String ATTRIBUTE_DATASOURCE_NAME = "cdm.datasource";
+
     /**
      * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code>
      */
@@ -132,7 +132,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     public static final String ATTRIBUTE_FORCE_SCHEMA_UPDATE = "cdm.forceSchemaUpdate";
 
     /**
-     * <b>WARNING!!!!!!!!!!!!!!!</b> Using this option will will the existing data base followed by database creation.
+     * <b>WARNING!!!!!!!!!!!!!!!</b> Using this option will delete the existing data base followed by database creation.
      * <p>
      * Force a schema creation when the cdmlib-remote-webapp instance is starting up. Will set the hibernate property
      * {@code hibernate.hbm2ddl.auto} to {@code create}
@@ -177,8 +177,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         Properties hibernateProperties = webApplicationContext.getBean("jndiHibernateProperties", Properties.class);
         return hibernateProperties;
     }
-
-
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -255,9 +253,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
                     logger.error(cde.getMessage());
                     // throw cde; // TODO: No exception was thrown here before. Is this correct behavior or
                 }
-
-
-
             } catch (SQLException e) {
                 CdmDatabaseException re = new CdmDatabaseException("Unable to connect or to retrieve version info from data source " + dataSource.toString() , e);
                 addErrorMessageToServletContextAttributes(re.getMessage());
