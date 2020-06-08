@@ -35,20 +35,20 @@
     <!--
       ============================== SECURITY ==============================
     -->
-    <bean id="accessDecisionManager" class="eu.etaxonomy.cdm.persistence.hibernate.permission.UnanimousBasedUnrevokable">
+    <bean id="accessDecisionManager" class="eu.etaxonomy.cdm.persistence.permission.UnanimousBasedUnrevokable">
         <constructor-arg>
             <list>
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.GrantAlwaysVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNodeVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonBaseVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNameVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.ReferenceVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CollectionVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TeamOrPersonBaseVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.RegistrationVoter" />
-                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.SpecimenOrObservationBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.GrantAlwaysVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.TaxonNodeVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.TaxonBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.DescriptionBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.DescriptionElementVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.TaxonNameVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.ReferenceVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.CollectionVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.TeamOrPersonBaseVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.RegistrationVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.permission.voter.SpecimenOrObservationBaseVoter" />
             </list>
         </constructor-arg>
     </bean>
@@ -56,7 +56,7 @@
     <!--
         CdmPermissionEvaluator.hasPermissions() evaluates the CdmPermissions like TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
     -->
-    <bean id="cdmPermissionEvaluator" class="eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator">
+    <bean id="cdmPermissionEvaluator" class="eu.etaxonomy.cdm.persistence.permission.CdmPermissionEvaluator">
         <property name="accessDecisionManager" ref="accessDecisionManager" />
     </bean>
 
