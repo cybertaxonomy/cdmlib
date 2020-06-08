@@ -1,4 +1,12 @@
-package eu.etaxonomy.cdm.api.service;
+/**
+* Copyright (C) 2015 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +22,10 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 
+/**
+ * @author m.venin
+ * @since 2010
+ */
 public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitativeDescriptionBuilder {
 
 	private String spanEnd = "</span>";
@@ -59,27 +71,27 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 		String space = " "; // should "space" be considered as a linking word and thus be stored in NaturalLanguageTerm.class ?
 
 		// the booleans and floats are updated according to the presence or absence of values
-			if (measures.containsKey(StatisticalMeasure.AVERAGE())) {
-				average = true;
-				averagevalue = spanClass("measurement") + measures.get(StatisticalMeasure.AVERAGE()) + spanEnd;
-			} else if(measures.containsKey(StatisticalMeasure.STANDARD_DEVIATION())) {
-				sd = true;
-				sdvalue = spanClass("measurement") + measures.get(StatisticalMeasure.STANDARD_DEVIATION()) + spanEnd;
-			} else if (measures.containsKey(StatisticalMeasure.MIN())) {
-				min = true;
-				minvalue = spanClass("measurement") + measures.get(StatisticalMeasure.MIN()) + spanEnd;
-			} else if (measures.containsKey(StatisticalMeasure.MAX())) {
-				max = true;
-				maxvalue = spanClass("measurement") + measures.get(StatisticalMeasure.MAX()) + spanEnd;
-			} else if (measures.containsKey(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY())) {
-				lowerb = true;
-				lowerbvalue = spanClass("measurement") + measures.get(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) + spanEnd;
-			} else if (measures.containsKey(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY())) {
-				upperb = true;
-				upperbvalue = spanClass("measurement") + measures.get(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) + spanEnd;
-			}
+		if (measures.containsKey(StatisticalMeasure.AVERAGE())) {
+			average = true;
+			averagevalue = spanClass("measurement") + measures.get(StatisticalMeasure.AVERAGE()) + spanEnd;
+		} else if(measures.containsKey(StatisticalMeasure.STANDARD_DEVIATION())) {
+			sd = true;
+			sdvalue = spanClass("measurement") + measures.get(StatisticalMeasure.STANDARD_DEVIATION()) + spanEnd;
+		} else if (measures.containsKey(StatisticalMeasure.MIN())) {
+			min = true;
+			minvalue = spanClass("measurement") + measures.get(StatisticalMeasure.MIN()) + spanEnd;
+		} else if (measures.containsKey(StatisticalMeasure.MAX())) {
+			max = true;
+			maxvalue = spanClass("measurement") + measures.get(StatisticalMeasure.MAX()) + spanEnd;
+		} else if (measures.containsKey(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY())) {
+			lowerb = true;
+			lowerbvalue = spanClass("measurement") + measures.get(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY()) + spanEnd;
+		} else if (measures.containsKey(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY())) {
+			upperb = true;
+			upperbvalue = spanClass("measurement") + measures.get(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY()) + spanEnd;
+		}
 
-			QuantitativeDescription.append(spanClass("state"));
+		QuantitativeDescription.append(spanClass("state"));
 		// depending on the different associations of values, a sentence is built
 		if (max && min) {
 			QuantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
@@ -137,6 +149,4 @@ public class MicroFormatQuantitativeDescriptionBuilder extends AbstractQuantitat
 	private String spanClass(String classString){
 		return("<span class=\""+classString+"\">");
 	}
-
-
 }

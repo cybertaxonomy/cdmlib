@@ -72,6 +72,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.format.CdmFormatterFactory;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
+import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;
+import eu.etaxonomy.cdm.format.description.DefaultQuantitativeDescriptionBuilder;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;

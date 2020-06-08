@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.format.description;
 
 import java.util.List;
 
@@ -12,7 +12,6 @@ import eu.etaxonomy.cdm.model.term.Representation;
  * Abstract class that defines the basic element for constructing natural language descriptions.
  *
  * @author m.venin
- *
  */
 public abstract class DescriptionBuilder<T extends DescriptionElementBase> {
 

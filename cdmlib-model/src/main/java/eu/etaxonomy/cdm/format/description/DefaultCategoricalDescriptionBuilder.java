@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.format.description;
 
 import java.util.Iterator;
 import java.util.List;

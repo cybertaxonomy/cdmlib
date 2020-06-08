@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -128,7 +128,6 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 		}
 		if (exact) {
             QuantitativeDescription.append(space + exactvalue + space + unit );
-
         }
 		textData.putText(languages.get(0), QuantitativeDescription.toString()); // which language should be put here ?
 		textData.setFormat(TextFormat.NewInstance(null, "Text",null ));
