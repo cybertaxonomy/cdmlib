@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 @XmlRootElement(name = "Authority")
 @Table(name="Authority"
    //for some reason this does not work, see comment #8464#note-6
-   ,uniqueConstraints=@UniqueConstraint(columnNames={"property","permissionClass","targetUuid","operations"})
+ //  ,uniqueConstraints=@UniqueConstraint(columnNames={"property","permissionClass","targetUuid","operations"})
 )
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)

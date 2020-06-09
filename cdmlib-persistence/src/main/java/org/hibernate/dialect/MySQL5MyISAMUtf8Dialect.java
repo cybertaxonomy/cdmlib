@@ -11,6 +11,9 @@ package org.hibernate.dialect;
 
 import java.sql.Types;
 
+import org.hibernate.mapping.Index;
+import org.hibernate.tool.schema.spi.Exporter;
+
 
 
 /**
@@ -19,6 +22,9 @@ import java.sql.Types;
  *  /TODO licence
  */
 public class MySQL5MyISAMUtf8Dialect extends MySQL5Dialect {
+
+    private MySqlIsamIndexExporter mySqlIsamIndexExporter = new MySqlIsamIndexExporter( this );
+
 
 	public MySQL5MyISAMUtf8Dialect(){
 		super();
@@ -30,8 +36,13 @@ public class MySQL5MyISAMUtf8Dialect extends MySQL5Dialect {
 	public String getTableTypeString() {
         return " ENGINE=MYISAM DEFAULT CHARSET=utf8";
     }
-    
-    
+
+    @Override
+    public Exporter<Index> getIndexExporter() {
+        return mySqlIsamIndexExporter;
+    }
+
+
 	// compare org.hibernate.dialect.MySQLMyISAMDialect
     @Override
 	public boolean dropConstraints() {
