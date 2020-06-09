@@ -84,14 +84,6 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
             upperb=false;
         }
 
-		String exactvalue = getValue(measures, StatisticalMeasure.EXACT_VALUE());
-        if (exactvalue!=null) {
-            exact=true;
-        } else {
-            exact=false;
-        }
-
-
 		// depending on the different associations of values, a sentence is built
 		if (max && min) {
 			QuantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
@@ -126,9 +118,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 				QuantitativeDescription.append("("+ more_Or_Less + space + sdvalue + ")");
 			}
 		}
-		if (exact) {
-            QuantitativeDescription.append(space + exactvalue + space + unit );
-        }
+
 		textData.putText(languages.get(0), QuantitativeDescription.toString()); // which language should be put here ?
 		textData.setFormat(TextFormat.NewInstance(null, "Text",null ));
 
