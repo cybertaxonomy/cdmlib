@@ -49,7 +49,7 @@ public class QuantitativeDataFormatter
         String exactValueStr = "";
         for(BigDecimal exactValue : quantData.getExactValues()){
             if (exactValue != null){
-                exactValueStr += CdmUtils.concat(";", exactValueStr, String.valueOf(exactValue));
+                exactValueStr = CdmUtils.concat(";", exactValueStr, String.valueOf(exactValue));
             }
         }
         if (isNotBlank(minMax)){
