@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
- * Provides metadata information corresponding ti the underlying CDM Datasource.
+ * Provides metadata information corresponding to the underlying CDM Datasource.
  *
  * @author cmathew
  * @since 20 Nov 2015

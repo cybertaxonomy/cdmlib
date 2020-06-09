@@ -98,7 +98,6 @@ public class CdmAuthority extends AuthorityBase {
         this.targetUuid = targetUuid;
     }
 
-
     // ********************** GETTER / SETTER **************************/
 
     public PermissionClass getPermissionClass() {
