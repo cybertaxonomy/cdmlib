@@ -58,14 +58,8 @@ public interface ICdmDataSource
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
 	        HibernateConfiguration hibernateConfig);
 
-	/**
-	 * @return
-	 */
 	public String getFilePath();
 
-	/**
-	 * @return
-	 */
 	public H2Mode getMode();
 
 	public String getUsername();
