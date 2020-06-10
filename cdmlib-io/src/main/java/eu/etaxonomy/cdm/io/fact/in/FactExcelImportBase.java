@@ -35,7 +35,6 @@ public abstract class FactExcelImportBase<STATE extends FactExcelImportStateBase
 
     @Override
     protected void firstPass(STATE state) {
-        Map<String, String> record = state.getOriginalRecord();
         String line = "row " + state.getCurrentLine() + ": ";
         String linePure = "row " + state.getCurrentLine();
         System.out.println(linePure);

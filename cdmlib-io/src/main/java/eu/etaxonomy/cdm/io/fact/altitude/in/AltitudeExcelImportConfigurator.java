@@ -14,6 +14,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.fact.in.FactExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * @author a.mueller
@@ -67,4 +68,24 @@ public class AltitudeExcelImportConfigurator
         this.featureUuid = featureUuid;
     }
 
+    @Override
+    public NomenclaturalCode getNomenclaturalCode() {
+        NomenclaturalCode result = super.getNomenclaturalCode();
+        if (result == null){
+            result = NomenclaturalCode.ICNAFP;
+        }
+        return result;
+    }
+
+    public void setMinColumnLabel(String label) {
+        putLabelReplacement(AltitudeExcelImport.COL_ALTITUDE_MIN, label);
+    }
+
+    public void setMaxColumnLabel(String label) {
+        putLabelReplacement(AltitudeExcelImport.COL_ALTITUDE_MAX, label);
+    }
+
+    public void setRowToNeglect(int row){
+
+    }
 }

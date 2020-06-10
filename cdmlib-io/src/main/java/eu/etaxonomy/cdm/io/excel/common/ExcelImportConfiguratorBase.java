@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.excel.common;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -32,6 +34,8 @@ public abstract class ExcelImportConfiguratorBase
 	private boolean deduplicateAuthors = false;
 
 	private String worksheetName = null;
+
+	private Map<String,String> labelReplacements = new HashMap<>();
 
 	protected ExcelImportConfiguratorBase(URI uri, ICdmDataSource destination) {
 		this(uri, destination, defaultTransformer);
@@ -83,5 +87,18 @@ public abstract class ExcelImportConfiguratorBase
     }
     public void setWorksheetName(String worksheetName) {
         this.worksheetName = worksheetName;
+    }
+
+    public String replaceColumnLabel(String label) {
+        String result = labelReplacements.get(label);
+        if (result == null){
+            return label;
+        }else{
+            return result;
+        }
+    }
+
+    protected void putLabelReplacement(String defaultLabel, String newLabel) {
+        labelReplacements.put(defaultLabel, newLabel);
     }
 }

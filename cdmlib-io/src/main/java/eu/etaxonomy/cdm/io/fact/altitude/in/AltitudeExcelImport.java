@@ -32,27 +32,34 @@ public class AltitudeExcelImport
 
     private static final long serialVersionUID = 8264900898340386516L;
 
-    private static final String COL_ALTITUDE_MIN = "Altitude min";
-    private static final String COL_ALTITUDE_MAX = "Altitude max";
-
+    protected static final String COL_ALTITUDE_MIN = "Altitude min";
+    protected static final String COL_ALTITUDE_MAX = "Altitude max";
 
     @Override
     protected void doFirstPass(AltitudeExcelImportState state, Taxon taxon,
             String line, String linePure){
 
         if (taxon == null){
-            return;
+//            return;
+            taxon = Taxon.NewInstance(null, null);
         }
-
         UUID uuid = Feature.uuidAltitude;
         String featureLabel = "Altitude";
-        Feature feature = getFeature(state, uuid, featureLabel, featureLabel, null, null);
+        Feature feature = getFeature(state, uuid);
+        if (feature == null){
+            feature = getFeature(state, uuid, featureLabel, featureLabel, null, null);
+        }
 
         String minStr = getValue(state, COL_ALTITUDE_MIN);
         String maxStr = getValue(state, COL_ALTITUDE_MAX);
 
-        BigDecimal min = new BigDecimal(minStr);
-        BigDecimal max = new BigDecimal(maxStr);
+        BigDecimal min = getBigDecimal(state, minStr);
+        BigDecimal max = getBigDecimal(state, maxStr);
+        if(min == null && max == null){
+            state.addError("No minimum and no maximum exists. Record not imported.");
+            return;
+        }
+        QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature, min, max);
 
         //source
         String id = null;
@@ -60,12 +67,23 @@ public class AltitudeExcelImport
         Reference reference = getSourceReference(state);
 
 
-        QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature, min, max);
-
         TaxonDescription taxonDescription = this.getTaxonDescription(taxon, reference, !IMAGE_GALLERY, true);
         taxonDescription.addElement(qd);
         qd.addImportSource(id, idNamespace, reference, linePure);
 
+    }
+
+    private BigDecimal getBigDecimal(AltitudeExcelImportState state, String numberStr) {
+        if(isBlank(numberStr)){
+            return null;
+        }
+        try {
+            BigDecimal result = new BigDecimal(numberStr);
+            return result;
+        } catch (Exception e) {
+            state.getResult().addException(e, "Number text not recognized as number (BigDecimal)", getClass().getName()+"getBigDecimal()", "row " + state.getCurrentLine());
+            return null;
+        }
     }
 
     @Override

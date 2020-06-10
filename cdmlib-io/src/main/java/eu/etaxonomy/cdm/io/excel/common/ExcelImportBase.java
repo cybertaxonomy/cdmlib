@@ -250,6 +250,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
     }
 
     protected String getValue(STATE state, String key){
+        key = state.getConfig().replaceColumnLabel(key);
         return getValue(state.getOriginalRecord(), key);
     }
 
