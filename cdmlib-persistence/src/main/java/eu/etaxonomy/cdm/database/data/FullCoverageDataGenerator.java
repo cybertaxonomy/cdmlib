@@ -77,6 +77,7 @@ import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaMetaData;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -549,6 +550,8 @@ public class FullCoverageDataGenerator {
 		media.setArtist(artist);
 		cdmBases.add(media);
 		cdmBases.add(artist);
+
+		MediaMetaData.NewInstance(imageFile, "Key", "Value");
 	}
 
 

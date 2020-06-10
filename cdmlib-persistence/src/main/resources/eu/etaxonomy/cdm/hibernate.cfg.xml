@@ -125,6 +125,7 @@
       <mapping class="eu.etaxonomy.cdm.model.media.ExternalLink"/>
       <mapping class="eu.etaxonomy.cdm.model.media.ImageFile"/>
       <mapping class="eu.etaxonomy.cdm.model.media.Media"/>
+      <mapping class="eu.etaxonomy.cdm.model.media.MediaMetaData"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentation"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentationPart"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MovieFile"/>

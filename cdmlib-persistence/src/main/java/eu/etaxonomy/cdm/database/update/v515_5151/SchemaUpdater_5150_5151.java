@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v512_515.SchemaUpdater_5120_5150;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -97,7 +98,13 @@ public class SchemaUpdater_5150_5151 extends SchemaUpdaterBase {
         columnName = "doubtful";
         ColumnRemover.NewInstance(stepList, stepName, tableName, columnName, INCLUDE_AUDIT);
 
-
+        //#9009
+        stepName = "Create MediaMetaData table";
+        tableName = "MediaMetaData";
+        String[] columnNames = new String[]{"pairkey","pairvalue","mediarepresentation_id"};
+        String[] columnTypes = new String[]{"string_255","string_255","int"};
+        String[] referencedTables = new String[]{null,null,"MediaRepresentationPart"};
+        TableCreator.NewAuditedCdmBaseInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables);
 
         return stepList;
     }

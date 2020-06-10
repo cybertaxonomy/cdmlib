@@ -10,14 +10,18 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -69,6 +73,12 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private MediaRepresentation mediaRepresentation;
 
+    @XmlElementWrapper(name = "MediaMetaDatas")
+    @XmlElement(name = "MediaMetaData")
+    @OneToMany (mappedBy="mediaRepresentation", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+	private Set<MediaMetaData> mediaMetaData = new HashSet<>();
+
 
 // *************** FACTORY METHOD *********************************/
 
@@ -76,7 +86,6 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		MediaRepresentationPart result = new MediaRepresentationPart(uri, size);
 		return result;
 	}
-
 
 	protected MediaRepresentationPart() {
 		super();
@@ -118,6 +127,21 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	public void setSize(Integer size) {
 		this.size = size;
 	}
+
+	public void addMediaMetaData(MediaMetaData metaData){
+	    this.mediaMetaData.add(metaData);
+	    if(metaData.getMediaRepresentation() != this){
+	        metaData.setMediaRepresentation(this);
+	    }
+    }
+
+    public void removeMediaMetaData(MediaMetaData metaData){
+        this.mediaMetaData.remove(metaData);
+        if(metaData.getMediaRepresentation() == this){
+            metaData.setMediaRepresentation(null);
+        }
+    }
+
 
 //************************* CLONE **************************/
 
