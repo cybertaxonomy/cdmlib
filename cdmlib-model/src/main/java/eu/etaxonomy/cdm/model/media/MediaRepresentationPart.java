@@ -46,11 +46,12 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlType(name = "MediaRepresentationPart", propOrder = {
 		"uri",
         "size",
-        "mediaRepresentation"
+        "mediaRepresentation",
+        "mediaMetaData"
   })
 @Entity
 @Audited
-public class MediaRepresentationPart extends VersionableEntity implements Cloneable{
+public class MediaRepresentationPart extends VersionableEntity {
 	private static final long serialVersionUID = -1674422508643785796L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
@@ -128,12 +129,23 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		this.size = size;
 	}
 
+	//metadata
+
+
 	public void addMediaMetaData(MediaMetaData metaData){
 	    this.mediaMetaData.add(metaData);
 	    if(metaData.getMediaRepresentation() != this){
 	        metaData.setMediaRepresentation(this);
 	    }
     }
+
+    public Set<MediaMetaData> getMediaMetaData() {
+        return mediaMetaData;
+    }
+
+//    public void setMediaMetaData(Set<MediaMetaData> mediaMetaData) {
+//        this.mediaMetaData = mediaMetaData;
+//    }
 
     public void removeMediaMetaData(MediaMetaData metaData){
         this.mediaMetaData.remove(metaData);
@@ -151,6 +163,10 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 
 		//media representation
 		result.setMediaRepresentation(null);
+
+		for (MediaMetaData metaData : this.getMediaMetaData()) {
+		    result.addMediaMetaData(metaData.clone());
+		}
 
 		//no changes to: size, uri
 		return result;

@@ -44,14 +44,14 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MediaMetaData", propOrder = {
-    "mediaRepresentationPart",
+    "mediaRepresentation",
     "key",
     "value"
  })
 @Entity
 @Audited  //necessary because otherwise mapping from MediaRepresentationPart to MediaMetaData is not possible
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MediaMetaData extends CdmBase {
+public class MediaMetaData extends CdmBase implements Cloneable {
 
     private static final long serialVersionUID = -2523716526037575324L;
 
@@ -115,11 +115,22 @@ public class MediaMetaData extends CdmBase {
         this.value = value;
     }
 
+// ************************* clone ************************/
+
+    @Override
+    public MediaMetaData clone() throws CloneNotSupportedException {
+        MediaMetaData result = (MediaMetaData)super.clone();
+
+        //need to change mediaRepresentation?
+
+        //no change: key, value
+        return result;
+    }
+
 // ************************** toString ************************/
 
     @Override
     public String toString() {
         return "MediaMetaData [" + key + "=" + value + "]";
     }
-
 }
