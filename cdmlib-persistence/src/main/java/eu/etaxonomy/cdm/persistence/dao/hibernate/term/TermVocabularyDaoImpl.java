@@ -347,22 +347,41 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes) {
-        Set<TermType> termTypeWithSubType = new HashSet<>(termTypes);
+        Set<TermType> termTypeWithSubType = new HashSet<>();
+        if (! (termTypes.isEmpty() || (termTypes.size() == 1 && termTypes.iterator().next() == null))){
+            termTypeWithSubType = new HashSet<>(termTypes);
+        }
+
         if(includeSubtypes){
-            for (TermType termType : termTypes) {
-                termTypeWithSubType.addAll(termType.getGeneralizationOf(true));
+            if (!termTypes.isEmpty()){
+                for (TermType termType : termTypes) {
+                    if (termType != null){
+                        termTypeWithSubType.addAll(termType.getGeneralizationOf(true));
+                    }
+                }
             }
         }
         String queryString = ""
                 + "select v.uuid, v.termType, r "
                 + "from TermVocabulary as v LEFT JOIN v.representations AS r "
-                + "where v.termType in (:termTypes) "
+
                 ;
-        if (pattern != null){
-            queryString += "AND v.titleCache like :pattern";
+
+        if (!termTypeWithSubType.isEmpty()){
+            queryString += "where v.termType in (:termTypes) ";
+            if (pattern != null){
+                queryString += "AND v.titleCache like :pattern";
+            }
+        }else{
+            if (pattern != null){
+                queryString += "WHERE v.titleCache like :pattern";
+            }
         }
+
         Query query =  getSession().createQuery(queryString);
-        query.setParameterList("termTypes", termTypeWithSubType);
+        if (!termTypeWithSubType.isEmpty()){
+            query.setParameterList("termTypes", termTypeWithSubType);
+        }
         if (pattern != null){
             pattern = pattern.replace("*", "%");
             pattern = "%"+pattern+"%";
