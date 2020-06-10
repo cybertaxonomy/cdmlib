@@ -77,13 +77,12 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
                 uuidTerm, label, label, null, uuidLanguage);
 
         //#8978
-        stepName = "make statistical measurment value BigDecimal";
+        stepName = "make statistical measurement value BigDecimal";
         tableName = "StatisticalMeasurementValue";
         columnName = "value";
         String scaleColumnName = "value_scale";
         int newPrecision = 18;
         int newScale = 9;
-//        ColumnTypeChanger.NewFloat2BigDecimalInstance(stepList, stepName, tableName, columnName, scaleColumnName, newPrecision, newScale, INCLUDE_AUDIT);
         Float2BigDecimalTypeChanger.NewInstance(stepList, stepName, tableName, columnName, scaleColumnName, newPrecision, newScale, INCLUDE_AUDIT);
 
         //#8802
@@ -91,7 +90,7 @@ public class SchemaUpdater_5120_5150 extends SchemaUpdaterBase {
         stepName = "add period_start to DescriptionElementBase";
         newColumnName = "period_start";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
-        stepName = "add period_endt to DescriptionElementBase";
+        stepName = "add period_end to DescriptionElementBase";
         newColumnName = "period_end";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
         stepName = "add period_extremestart to DescriptionElementBase";

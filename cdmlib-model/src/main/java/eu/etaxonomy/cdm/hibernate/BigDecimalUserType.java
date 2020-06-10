@@ -72,27 +72,19 @@ public class BigDecimalUserType implements UserType {
 	@Override
 	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
 		BigDecimal bigDecimal = (BigDecimal) StandardBasicTypes.BIG_DECIMAL.nullSafeGet(rs, names, session, owner);
-
-//		BigDecimal bigDecimal = rs.getBigDecimal(names[0]);
 		if (bigDecimal == null) {
 			return null;
 		}
 		return bigDecimal.setScale(rs.getInt(names[1]), BigDecimal.ROUND_HALF_UP);
 	}
 
-
 	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
 		if (value == null) {
 			StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, null, index, session);
 			StandardBasicTypes.INTEGER.nullSafeSet(st, null, index, session);
-
-//			st.setNull(index, Types.DECIMAL);
-//			st.setNull(index + 1, Types.INTEGER);
 		} else {
 			BigDecimal bdec = (BigDecimal)value;
-//			st.setBigDecimal(index, bdec);
-//			st.setInt(index + 1, bdec.scale());
 			StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, bdec, index, session);
 			StandardBasicTypes.INTEGER.nullSafeSet(st, bdec.scale(), index + 1, session);
 		}

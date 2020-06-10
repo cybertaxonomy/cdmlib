@@ -40,12 +40,12 @@ import eu.etaxonomy.cdm.model.description.TemporalData;
  * @see CdmUpdater
  */
 public class TestModelUpdate {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TestModelUpdate.class);
 
-
 	private void testSelectedDb(){
-		DbSchemaValidation schema = DbSchemaValidation.CREATE;
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm511" : "cdm515");
@@ -232,8 +232,8 @@ public class TestModelUpdate {
     }
 
 	public static void  main(String[] args) {
-		TestModelUpdate cc = new TestModelUpdate();
-    	cc.test();
+	    TestModelUpdate cc = new TestModelUpdate();
+		cc.test();
     	System.exit(0);
 	}
 
