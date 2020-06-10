@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 17.10.2018
- *
  */
 public class MatchStrategyFactory {
 
@@ -37,7 +36,6 @@ public class MatchStrategyFactory {
         } catch (MatchException e) {
             throw new RuntimeException("Exception when creating parsed person match strategy.", e);
         }
-
     }
 
     public static IParsedMatchStrategy NewParsedTeamInstance(){
@@ -67,7 +65,6 @@ public class MatchStrategyFactory {
             throw new RuntimeException("Exception when creating parsed author match strategy.", e);
         }
     }
-
 
     public static IParsedMatchStrategy NewParsedBookInstance(){
         IParsedMatchStrategy parsedBookMatchStrategy = NewParsedInstance(Reference.class);
@@ -117,7 +114,6 @@ public class MatchStrategyFactory {
         }
     }
 
-
     public static IParsedMatchStrategy NewParsedArticleInstance(){ //or should it better be Section (in Journal)
         try {
             IParsedMatchStrategy articleMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(Reference.class);
@@ -142,7 +138,6 @@ public class MatchStrategyFactory {
             throw new RuntimeException("Problems when creating parsed article match strategy.");
         }
     }
-
 
     public static IParsedMatchStrategy NewParsedJournalInstance(){
         IParsedMatchStrategy parsedJournalMatchStrategy = NewParsedInstance(Reference.class);
@@ -180,8 +175,6 @@ public class MatchStrategyFactory {
         IParsedMatchStrategy refStrat = ParsedReferenceMatchStrategy.INSTANCE();
         return refStrat;
     }
-
-
 
     //  public static IMatchStrategy NewParsedNameInstance(){
     //      IMatchStrategy result = new DefaultMatchStrategy(TaxonName.class);

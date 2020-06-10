@@ -33,8 +33,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * modes for the same property path in short cut methods like {@link #getMatching()}
  * or {@link #getMatchMode(String)}. Are these needed at all?
  *
- *
- *
  * @author a.mueller
  * @since 15.10.2018
  */
@@ -87,10 +85,6 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         updateMatching();
     }
 
-    /**
-     * @throws MatchException
-     *
-     */
     private void updateMatching() throws MatchException {
         for (IMatchStrategy strategy : strategies.values()){
             matching = new Matching();
@@ -123,9 +117,6 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         return uuid;
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
 //    @Override
 //    public MatchMode getMatchMode(String propertyName) {
 //        //Copied from DefaultMatchStrategy
@@ -154,7 +145,7 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
 
     /**
      * {@inheritDoc}
-     * * @deprecated deprecated in this class, use {@link #setMatchMode(String, MatchMode, IMatchStrategyEqual)}
+     * @deprecated deprecated in this class, use {@link #setMatchMode(String, MatchMode, IMatchStrategyEqual)}
      * instead.
      */
     @Deprecated
@@ -177,7 +168,6 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         }
      }
 
-
     /**
      * {@inheritDoc}
      * @throws MatchException
@@ -186,9 +176,6 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         getBestMatchingStrategy(clazz).setMatchMode(propertyName, matchMode, matchStrategy);
     }
 
-    /**
-     * @param clazz
-     */
     private IMatchStrategy getBestMatchingStrategy(Class<? extends T> clazz) {
         IMatchStrategy result = strategies.get(clazz);
         //TODO use subclass hierarchie
@@ -198,14 +185,10 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <S extends IMatchable> MatchResult invoke(S matchFirst, S matchSecond) throws MatchException {
         return invoke(matchFirst, matchSecond, false);
     }
-
 
     @Override
     public <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond, boolean failAll)
@@ -228,20 +211,13 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
             matchResult.addClass(clazz);
         }
 
-
         strategy.invoke(matchFirst, matchSecond, matchResult, failAll);
     }
 
-    /**
-     * @return
-     */
     private IMatchStrategy getBaseClassStrategy() {
         return strategies.get(baseClass);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Matching getMatching() {
         //preliminary not yet implemented
@@ -254,18 +230,12 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
 //        return baseClass;
 //    }
 //
-//    /**
-//     * {@inheritDoc}
-//     */
 //    @Override
 //    public Set<String> getMatchFieldPropertyNames() {
 //        //preliminary not implemented. Simply aggregate, or change signature to xxx(clazz), or .. ?
 //        throw new RuntimeException("getMatchFieldPropertyNames not yet implemented in " + getClass().getName());
 //    }
 //
-//    /**
-//     * {@inheritDoc}
-//     */
 //    @Override
 //    public void setDefaultMatchMode(MatchMode defaultMatchMode) {
 //        for (IMatchStrategy matchStrategy : strategies.values()){
@@ -273,9 +243,6 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
 //        }
 //    }
 //
-//    /**
-//     * {@inheritDoc}
-//     */
 //    @Override
 //    public void setDefaultCollectionMatchMode(MatchMode defaultCollectionMatchMode) {
 //        for (IMatchStrategy matchStrategy : strategies.values()){
@@ -283,9 +250,6 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
 //        }
 //    }
 //
-//    /**
-//     * {@inheritDoc}
-//     */
 //    @Override
 //    public void setDefaultMatchMatchMode(MatchMode defaultMatchMatchMode) {
 //        for (IMatchStrategy matchStrategy : strategies.values()){

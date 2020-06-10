@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 /**
  * @author a.mueller
  * @since 20.10.2018
- *
  */
 public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
 
@@ -32,26 +31,17 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
         return instance;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMatchMode(String propertyName, MatchMode matchMode) throws MatchException {
         setMatchMode(propertyName, matchMode, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMatchMode(String propertyName, MatchMode matchMode, IMatchStrategy matchStrategy)
             throws MatchException {
         throw new MatchException("ParsedReferenceMatchStrategy is immutable");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Matching getMatching() {
         //why does it not throw MatchException?
@@ -65,9 +55,6 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
     //TODO no generic reference yet
     private IMatchStrategy genericStrategy = MatchStrategyFactory.NewDefaultInstance(Reference.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IMatchable> MatchResult invoke(T fullInstance, T parsedInstance) throws MatchException {
         return invoke(fullInstance, parsedInstance, false);
@@ -81,10 +68,6 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
         return matchResult;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IMatchable> void invoke(T fullInstance, T parsedInstance, MatchResult matchResult,
             boolean failAll)
@@ -119,7 +102,5 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
             }
             return;
         }
-
     }
-
 }
