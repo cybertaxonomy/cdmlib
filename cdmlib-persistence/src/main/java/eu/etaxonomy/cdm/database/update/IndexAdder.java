@@ -70,6 +70,9 @@ public class IndexAdder extends SchemaUpdaterStepBase {
 			if(constraintName.length()>64){
 			    //MySQL has problems with index names > 64,  https://stackoverflow.com/questions/28615903/error-1059-identifier-name-too-long-on-foreign-key-constraints-from-existing-ta
 			    constraintName = constraintName.replace("Base", "");
+			    if(constraintName.length()>64){
+	                constraintName = constraintName.replace("OrObservation", "");
+	            }
 			}
 		    String updateQuery = getCreateQuery(datasource, caseType, tableName, constraintName, columnName);
 			datasource.executeUpdate(updateQuery);

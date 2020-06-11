@@ -123,12 +123,25 @@ public class ExternalLink extends VersionableEntity{
 	    return new ExternalLink(type, uri, descMap, size);
 	}
 
+    public static ExternalLink NewInstance(ExternalLinkType type, URI uri, String description, Language language, Integer size){
+        Map<Language, LanguageString> descMap = new HashMap<>();
+        if (language == null){
+            language = Language.UNKNOWN_LANGUAGE();
+        }
+        descMap.put(language, LanguageString.NewInstance(description, language));
+        return new ExternalLink(type, uri, descMap, size);
+    }
+
     public static ExternalLink NewWebSiteInstance(URI uri){
         return NewInstance(ExternalLinkType.WebSite, uri, (String)null, null);
     }
 
     public static ExternalLink NewWebSiteInstance(URI uri, Map<Language,LanguageString> description, Integer size){
         return NewInstance(ExternalLinkType.WebSite, uri, description, size);
+    }
+
+    public static ExternalLink NewWebSiteInstance(URI uri, String description, Language language){
+        return NewInstance(ExternalLinkType.WebSite, uri, description, language, null);
     }
 
 

@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v511_512.SchemaUpdater_5112_5120;
-import eu.etaxonomy.cdm.database.update.v515_5151.SchemaUpdater_5150_5151;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 

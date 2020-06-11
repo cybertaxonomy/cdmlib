@@ -971,6 +971,9 @@ public class FullCoverageDataGenerator {
 		Identifier<?> identifier = identifiableEntity.addIdentifier("ident23", DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(identifier);
 
+	    //Links
+        identifiableEntity.addLinkWebsite(URI.create("http://a.bc.de"), "Description", Language.ENGLISH());
+
 		//Rights
 		Rights rights = Rights.NewInstance("right", Language.ENGLISH());
 		rights.setUri(URI.create("http://rights.abc.de"));
