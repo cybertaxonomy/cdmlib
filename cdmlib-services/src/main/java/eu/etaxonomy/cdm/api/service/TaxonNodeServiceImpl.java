@@ -854,7 +854,9 @@ public class TaxonNodeServiceImpl
        try{
            child = parent.addChildTaxon(newTaxon, ref, microref);
            child.setStatus(status);
-           child.getStatusNote().putAll(statusNote);
+           if (statusNote != null){
+               child.getStatusNote().putAll(statusNote);
+           }
 
         }catch(Exception e){
             result.addException(e);
