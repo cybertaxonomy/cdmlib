@@ -1129,6 +1129,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             }
                         }
                     }
+                    return fieldUnitDTO;
                 } else {
                     cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
                 }
