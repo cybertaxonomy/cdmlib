@@ -52,7 +52,7 @@ public class TermDto extends AbstractTermDto{
     private Collection<UUID> media = null;
     private NamedAreaLevel level = null;
 
-    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
+    protected TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
         this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null);
     }
