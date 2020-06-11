@@ -461,6 +461,9 @@ public class DescriptiveDataSetService
      */
     private void removeDescriptionFromDataSet(DeleteResult result, DescriptiveDataSet dataSet,
             DescriptionBase description) {
+        if (description == null){
+            return;
+        }
         boolean success = dataSet.removeDescription(description);
         result.addDeletedObject(description);// remove taxon description with IndividualsAssociation from data set
         if(description instanceof SpecimenDescription){
