@@ -1099,8 +1099,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
         if(derivative != null){
             derivedUnitDTO = DerivateDTO.newInstance(derivative);
+            if (derivative instanceof FieldUnit){
+                fieldUnitDTO = new FieldUnitDTO((FieldUnit)derivative);
+                return fieldUnitDTO;
+            }
             while(true){
-                Set<DerivateDTO> originals = originalDTOs(derivedUnitUuid);
+
+                Set<DerivateDTO> originals = originalDTOs(derivedUnitDTO.getUuid());
 
                 if(originals.isEmpty()){
                     break;
@@ -1129,7 +1134,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             }
                         }
                     }
-                    return fieldUnitDTO;
+
                 } else {
                     cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
                 }
