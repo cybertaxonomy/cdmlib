@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -45,14 +46,21 @@ public class SchemaUpdater_5151_5152 extends SchemaUpdaterBase {
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
 //
-//		String stepName;
-//		String tableName;
-//		String columnName;
+		String stepName;
+		String tableName;
+		String newColumnName;
+		String referencedTable;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 		addExternalLinkTables(stepList);
 
+		//#9067
+		stepName = "Add link to Media";
+		tableName = "Media";
+		newColumnName = "link_id";
+		referencedTable = "ExternalLink";
+		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
         return stepList;
     }

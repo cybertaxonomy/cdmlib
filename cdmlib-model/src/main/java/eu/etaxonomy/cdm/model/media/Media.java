@@ -76,7 +76,8 @@ import eu.etaxonomy.cdm.validation.Level2;
     "mediaCreated",
     "description",
     "representations",
-    "artist"
+    "artist",
+    "link"
 })
 @XmlRootElement(name = "Media")
 @Entity
@@ -140,6 +141,14 @@ public class Media
     @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private AgentBase<?> artist;
+
+    @XmlElement(name = "Link")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private ExternalLink link;
 
 //************************* FACTORY METHODS *******************************/
 
@@ -225,6 +234,13 @@ public class Media
     }
     public void setArtist(AgentBase artist){
         this.artist = artist;
+    }
+
+    public ExternalLink getLink() {
+        return link;
+    }
+    public void setLink(ExternalLink link) {
+        this.link = link;
     }
 
 //************************ title / title cache *********************************
@@ -372,6 +388,9 @@ public class Media
         for (MediaRepresentation mediaRepresentation: this.representations){
             result.representations.add((MediaRepresentation)mediaRepresentation.clone());
         }
+
+        result.link = this.link != null ? this.link.clone(): null;
+
         //no changes to: artist
         return result;
     }
