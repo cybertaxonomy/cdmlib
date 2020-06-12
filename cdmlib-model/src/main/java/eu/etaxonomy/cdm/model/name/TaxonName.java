@@ -2276,15 +2276,7 @@ public class TaxonName
 
     //#6581
     private void checkNullSource() {
-        if (this.nomenclaturalSource == null){
-            return;
-        }else if (this.nomenclaturalSource.getCitation() != null
-           || this.nomenclaturalSource.getCitationMicroReference() != null
-           || this.nomenclaturalSource.getNameUsedInSource() != null
-           || isBlank(this.nomenclaturalSource.getOriginalNameString())){
-            //TODO what about supplemental data?
-                return;
-        }else{
+        if (this.nomenclaturalSource != null && this.nomenclaturalSource.isEmpty()){
             this.nomenclaturalSource = null;
         }
     }
