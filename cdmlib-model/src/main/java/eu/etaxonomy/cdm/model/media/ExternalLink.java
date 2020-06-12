@@ -253,7 +253,7 @@ public class ExternalLink extends VersionableEntity{
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public ExternalLink clone() {
 
         try {
             ExternalLink result = (ExternalLink)super.clone();

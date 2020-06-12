@@ -220,7 +220,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		Set<ExternalLink> links = new HashSet<>();
 		result.setLinks(links);
 		for(ExternalLink link : this.links){
-		    result.addLink((ExternalLink)link.clone());
+		    result.addLink(link.clone());
 		}
 
 		if (this.cdmSource != null){

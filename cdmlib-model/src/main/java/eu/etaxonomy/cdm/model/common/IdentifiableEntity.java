@@ -151,7 +151,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -705,7 +705,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         //Links
         result.links = new HashSet<>();
         for(ExternalLink link : getLinks()) {
-            ExternalLink newLink = (ExternalLink)link.clone();
+            ExternalLink newLink = link.clone();
             result.addLink(newLink);
         }
 

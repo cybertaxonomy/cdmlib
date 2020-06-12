@@ -43,8 +43,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "ReferencedEntityBase")
 @MappedSuperclass
 @Audited
-public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
-	private static final long serialVersionUID = -5614669050360359126L;
+public abstract class ReferencedEntityBase
+        extends AnnotatableEntity
+        implements IReferencedEntity {
+
+    private static final long serialVersionUID = -5614669050360359126L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferencedEntityBase.class);
 
