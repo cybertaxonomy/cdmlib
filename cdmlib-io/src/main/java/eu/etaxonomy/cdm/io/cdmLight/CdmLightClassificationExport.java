@@ -358,6 +358,7 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.STATUS_NOTES)] = statusNotes;
 
                     csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isDoubtful() ? "1" : "0";
                     state.getProcessor().put(table, taxon, csvLine);
                     handleDescriptions(state, taxon);
                 } catch (Exception e) {
@@ -1110,7 +1111,7 @@ public class CdmLightClassificationExport
             for (TypeDesignationBase<?> typeDesignation : name.getTypeDesignations()) {
                 if (typeDesignation.isInstanceOf(TextualTypeDesignation.class)) {
 
-                    if (((TextualTypeDesignation) typeDesignation).isVerbatim()  ){
+                    if (((TextualTypeDesignation) typeDesignation).isVerbatim() ){
                         Set<IdentifiableSource> sources =  typeDesignation.getSources();
                         boolean isProtologue = false;
                         if (sources != null && !sources.isEmpty()){
@@ -1196,6 +1197,7 @@ public class CdmLightClassificationExport
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred when handling synonym " + cdmBaseStr(name) + ": " + e.getMessage());
+
             e.printStackTrace();
         }
     }
