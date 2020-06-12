@@ -52,7 +52,7 @@ public enum CdmLightExportTable {
     protected static final String SORT_INDEX = "SortIndex";
     protected static final String UNPLACED = "Unplaced";
     protected static final String EXCLUDED = "Excluded";
-    protected static final String DOUBTFUL = "Placement Doubtful";
+    protected static final String DOUBTFUL = "PlacementDoubtful";
     protected static final String PUBLISHED = "Published";
     protected static final String STATUS_NOTES = "StatusNotes";
 
