@@ -117,6 +117,14 @@ public abstract class VersionableEntity
 	    return super.equals(obj);
 	}
 
+// **************** EMPTY ************************/
+
+    protected boolean isEmpty(){
+       return super.isEmpty()
+               //nothing to do
+           ;
+    }
+
 //********************** CLONE *****************************************/
 
 	/**

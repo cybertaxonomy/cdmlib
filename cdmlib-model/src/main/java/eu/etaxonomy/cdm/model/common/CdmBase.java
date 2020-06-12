@@ -523,7 +523,11 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         return StringUtils.isNotBlank(str);
     }
 
+// **************** EMPTY ************************/
 
+    protected boolean isEmpty(){
+       return true;
+    }
 
 //********************** CLONE *****************************************/
 

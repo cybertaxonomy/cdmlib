@@ -107,6 +107,17 @@ public abstract class ReferencedEntityBase
 		this.citation = citation;
 	}
 
+// **************** EMPTY ************************/
+
+    @Override
+    protected boolean isEmpty(){
+       return super.isEmpty()
+            && this.getCitation() == null
+            && this.getCitationMicroReference() == null
+            && isBlank(this.getOriginalNameString())
+           ;
+    }
+
 //****************** CLONE ************************************************/
 
 	@Override

@@ -110,7 +110,7 @@ public class IdentifiableSource
 // ****************** CONSTRUCTOR ********************************/
 
 	//for hibernate only
-	private IdentifiableSource() {
+	protected IdentifiableSource() {
 	}
 
 	private IdentifiableSource(OriginalSourceType type) {
@@ -119,6 +119,11 @@ public class IdentifiableSource
 
 // ********************** GETTER /SETTER *****************************/
 
+	@Override
+    public boolean isEmpty(){
+	    //nothing to do
+	    return super.isEmpty();
+	}
 
 //*********************************** CLONE *********************************************************/
 

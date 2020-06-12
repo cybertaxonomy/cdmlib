@@ -231,6 +231,18 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		return result;
 	}
 
+// **************** EMPTY ************************/
+
+	@Override
+    public boolean isEmpty(){
+	   return super.isEmpty()
+	        && isBlank(this.getIdInSource())
+	        && isBlank(this.getIdNamespace())
+	        && this.links.isEmpty()
+	        && this.cdmSource != null
+	        && this.type == null
+           ;
+	}
 
 //************************ toString ***************************************/
 	@Override
