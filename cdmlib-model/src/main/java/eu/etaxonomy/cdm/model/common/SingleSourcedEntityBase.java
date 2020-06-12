@@ -26,6 +26,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.reference.Reference;
+
 /**
  * Abstract class for all objects that may have a reference
  * @author m.doering
@@ -61,7 +63,12 @@ public abstract class SingleSourcedEntityBase
 		super();
 	}
 
-	public SingleSourcedEntityBase(IdentifiableSource source) {
+    protected SingleSourcedEntityBase(Reference citation, String citationMicroReference,
+            String originalNameString) {
+        super(citation, citationMicroReference, originalNameString);
+    }
+
+	protected SingleSourcedEntityBase(IdentifiableSource source) {
 		this.source = source;
 	}
 
