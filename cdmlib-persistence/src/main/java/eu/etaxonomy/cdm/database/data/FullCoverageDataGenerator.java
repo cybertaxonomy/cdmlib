@@ -661,12 +661,10 @@ public class FullCoverageDataGenerator {
 		dnaQuality.setRatioOfAbsorbance260_280(3.9);
 		dnaSample.setDnaQuality(dnaQuality);
 
-
 		//Phylogenetic Tree
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
 		handleIdentifiableEntity(phyloTree);
-
 
 		cdmBases.add(dnaSample);
 		cdmBases.add(phyloTree);
