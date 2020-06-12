@@ -34,9 +34,11 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
@@ -59,11 +61,13 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -83,8 +87,9 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "treeIndex",
     "sortIndex",
     "childNodes",
-    "referenceForParentChildRelation",
-    "microReferenceForParentChildRelation",
+    "source",
+//    "referenceForParentChildRelation",
+//    "microReferenceForParentChildRelation",
     "countChildren",
     "agentRelations",
     "synonymToBeUsed",
@@ -151,14 +156,24 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/trac/ticket/4200
     private Integer sortIndex = -1;
 
-	@XmlElement(name = "reference")
+    //the source for this placement
+    @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private IdentifiableSource source;
+
+//    @XmlElement(name = "reference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+    @XmlTransient
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Reference referenceForParentChildRelation;
 
-    @XmlElement(name = "microReference")
+//    @XmlElement(name = "microReference")
+    @XmlTransient
     private String microReferenceForParentChildRelation;
 
     @XmlElement(name = "countChildren")
@@ -296,21 +311,50 @@ public class TaxonNode
         this.classification = classification;
     }
 
+//************************* SOURCE *********************/
+
     @Override
+    @XmlTransient
     public String getMicroReference() {
-        return microReferenceForParentChildRelation;
+        return source == null ? null : this.source.getCitationMicroReference();
     }
     public void setMicroReference(String microReference) {
-        this.microReferenceForParentChildRelation = microReference;
+        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+        checkNullSource();
     }
 
     @Override
+    @XmlTransient
     public Reference getReference() {
-        return referenceForParentChildRelation;
+        return (this.source == null) ? null : source.getCitation();
     }
+
     public void setReference(Reference reference) {
-        this.referenceForParentChildRelation = reference;
+        getSource(true).setCitation(reference);
+        checkNullSource();
     }
+
+    public IdentifiableSource getSource() {
+        return source;
+    }
+    public void setSource(IdentifiableSource source) {
+        this.source = source;
+    }
+
+    private void checkNullSource() {
+        if (this.source != null && this.source.isEmpty()){
+            this.source = null;
+        }
+    }
+
+    private IdentifiableSource getSource(boolean createIfNotExist){
+        if (this.source == null && createIfNotExist){
+            this.source = IdentifiableSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+        }
+        return source;
+    }
+
+//************************************************************/
 
     //countChildren
     public int getCountChildren() {

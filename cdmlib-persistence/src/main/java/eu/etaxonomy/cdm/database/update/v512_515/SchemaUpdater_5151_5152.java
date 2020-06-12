@@ -62,6 +62,13 @@ public class SchemaUpdater_5151_5152 extends SchemaUpdaterBase {
 		referencedTable = "ExternalLink";
 		ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
+        //9004
+        stepName = "Add source to TaxonNode";
+        tableName = "TaxonNode";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
         return stepList;
     }
 
