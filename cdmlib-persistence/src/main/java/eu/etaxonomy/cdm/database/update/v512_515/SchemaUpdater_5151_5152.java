@@ -69,6 +69,8 @@ public class SchemaUpdater_5151_5152 extends SchemaUpdaterBase {
         referencedTable = "OriginalSourceBase";
         ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
+        Reference2SourceMover.NewInstance(stepList, tableName, "referenceForParentChildRelation_id", "microReferenceForParentChildRelation", "source_id");
+
         //6581
         stepName = "Add source to Classification";
         tableName = "Classification";

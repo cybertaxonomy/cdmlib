@@ -101,6 +101,29 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		return langId;
 	}
 
+    /**
+     * Returns the smallest next free id, if includeAudit is <code>true</code> the audit table is also considered in computation
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    protected int getMaxId1(ICdmDataSource datasource, String tableName, boolean includeAudit, IProgressMonitor monitor, CaseType caseType,
+            SchemaUpdateResult result) throws SQLException {
+        String sql = "SELECT max(id) FROM " +caseType.transformTo(tableName);
+        Integer maxId = Integer.valueOf(datasource.getSingleValue(sql).toString());
+        if (maxId == null){
+            maxId = 0;
+        }
+        Integer maxIdAud = -1;
+        if(includeAudit){
+            sql = "SELECT max(id) FROM " +caseType.transformTo(tableName + "_AUD");
+            maxIdAud = Integer.valueOf(datasource.getSingleValue(sql).toString());
+            if (maxIdAud == null){
+                maxIdAud = 0;
+            }
+        }
+        return Math.max(maxId, maxIdAud) + 1;
+    }
+
 	@Override
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<>();
@@ -110,8 +133,6 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	public boolean isIgnoreErrors() {
 		return ignoreErrors;
 	}
-
-
 	@Override
 	public void setIgnoreErrors(boolean ignoreErrors) {
 		this.ignoreErrors = ignoreErrors;
@@ -126,6 +147,10 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	protected String getNowString() {
 		return DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
 	}
+
+    protected String nullSafeParam(String param) {
+        return param == null ? "NULL" : "'" + param + "'";
+    }
 
 	@Override
 	public String toString(){

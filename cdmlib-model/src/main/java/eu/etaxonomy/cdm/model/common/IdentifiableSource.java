@@ -121,10 +121,14 @@ public class IdentifiableSource
 
 	@Override
     public boolean isEmpty(){
-	    //nothing to do
-	    return super.isEmpty();
+	    return this.isEmpty(false);
 	}
 
+	@Override
+    public boolean isEmpty(boolean excludeType){
+        //nothing to do
+	    return super.isEmpty(excludeType);
+	}
 //*********************************** CLONE *********************************************************/
 
 

@@ -111,9 +111,8 @@ public abstract class ReferencedEntityBase
     protected boolean isEmpty(){
        return super.isEmpty()
             && this.getCitation() == null
-            && this.getCitationMicroReference() == null
-            && isBlank(this.getOriginalNameString())
-           ;
+            && isBlank(this.getCitationMicroReference())
+            && isBlank(this.getOriginalNameString());
     }
 
 //****************** CLONE ************************************************/
