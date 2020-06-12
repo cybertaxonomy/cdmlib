@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -377,7 +378,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected NomenclaturalStatus handlePersistedNomenclaturalStatus(NomenclaturalStatus status) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        NomenclaturalStatus result = handlePersisted((ReferencedEntityBase)status);
+        NomenclaturalStatus result = handlePersisted((SingleSourcedEntityBase)status);
         //complete
         result.setType(detache(result.getType()));
         return result;
@@ -861,6 +862,13 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
+    protected <T extends SingleSourcedEntityBase> T  handlePersisted(SingleSourcedEntityBase referencedEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        T result = handlePersisted((AnnotatableEntity)referencedEntity);
+        //complete
+        result.setCitation(detache(result.getCitation()));
+        return result;
+    }
+
     protected <T extends DescriptionBase> T  handlePersisted(DescriptionBase descriptionBase) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         T result = handlePersisted((IdentifiableEntity)descriptionBase);
         //complete
@@ -885,7 +893,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected <T extends RelationshipBase> T  handlePersisted(RelationshipBase relBase) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((ReferencedEntityBase)relBase);
+        T result = handlePersisted((SingleSourcedEntityBase)relBase);
         return result;
     }
 

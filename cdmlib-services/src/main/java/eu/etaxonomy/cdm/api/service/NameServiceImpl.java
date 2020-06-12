@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -83,7 +82,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -119,9 +117,6 @@ public class NameServiceImpl
     protected ICollectionService collectionService;
     @Autowired
     protected ITaxonService taxonService;
-    @Autowired
-    @Qualifier("refEntDao")
-    protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
     @Autowired
     @Qualifier("sourcedEntityDao")
     protected ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
@@ -497,7 +492,7 @@ public class NameServiceImpl
     public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths){
         return typeDesignationDao.load(uuid, propertyPaths);
     }
-    
+
     @Override
     public List<TypeDesignationBase<?>> loadTypeDesignations(List<UUID> uuids, List<String> propertyPaths){
     	if(uuids == null) {

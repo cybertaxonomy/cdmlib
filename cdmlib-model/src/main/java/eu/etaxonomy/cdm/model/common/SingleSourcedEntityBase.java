@@ -35,45 +35,57 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReferencedEntityBase", propOrder = {
+@XmlType(name = "SingleSourcedEntityBase", propOrder = {
+    "source",
     "originalNameString",
     "citation",
     "citationMicroReference"
 })
-@XmlRootElement(name = "ReferencedEntityBase")
+@XmlRootElement(name = "SingleSourcedEntityBase")
 @MappedSuperclass
 @Audited
-public abstract class ReferencedEntityBase
+public abstract class SingleSourcedEntityBase
         extends AnnotatableEntity
         implements IReferencedEntity {
 
-    private static final long serialVersionUID = -5614669050360359126L;
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ReferencedEntityBase.class);
+    static final long serialVersionUID = 2035568689268762760L;
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(SingleSourcedEntityBase.class);
 
 	@XmlElement(name = "Citation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+	@Deprecated
 	private Reference citation;
 
 	//Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
     //publication. {if the citationMicroReference exists then there must be also a reference}
     @XmlElement(name = "CitationMicroReference")
-	private String citationMicroReference;
+    @Deprecated
+    private String citationMicroReference;
 
     @XmlElement(name = "OriginalNameString")
-	private String originalNameString;
+    @Deprecated
+    private String originalNameString;
+
+    //the source for this single sourced entity
+    @XmlElement(name = "source")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private IdentifiableSource source;
 
 // ************ CONSTRUCTOR ********************************************/
 
 	//for hibernate use only
-    protected ReferencedEntityBase() {
+    protected SingleSourcedEntityBase() {
 		super();
 	}
 
-	public ReferencedEntityBase(Reference citation, String citationMicroReference,
+	public SingleSourcedEntityBase(Reference citation, String citationMicroReference,
 			String originalNameString) {
 		this.citationMicroReference = citationMicroReference;
 		this.originalNameString = originalNameString;
@@ -120,7 +132,7 @@ public abstract class ReferencedEntityBase
 
 	@Override
 	public Object clone() throws CloneNotSupportedException{
-		ReferencedEntityBase result = (ReferencedEntityBase)super.clone();
+		SingleSourcedEntityBase result = (SingleSourcedEntityBase)super.clone();
 
 		//no changes to: citation, citationMicroReference, originalNameString
 		return result;
@@ -134,7 +146,7 @@ public abstract class ReferencedEntityBase
 	 * Uses a content based compare strategy which avoids bean initialization. This is achieved by
 	 * comparing the cdm entity ids.
 	 */
-	public boolean equalsByShallowCompare(ReferencedEntityBase other) {
+	public boolean equalsByShallowCompare(SingleSourcedEntityBase other) {
 
 	    int thisCitationId = -1;
 	    int otherCitationId = -1;

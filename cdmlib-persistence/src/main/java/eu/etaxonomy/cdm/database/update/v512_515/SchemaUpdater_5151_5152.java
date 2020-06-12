@@ -69,6 +69,48 @@ public class SchemaUpdater_5151_5152 extends SchemaUpdaterBase {
         referencedTable = "OriginalSourceBase";
         ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
+        //6581
+        stepName = "Add source to Classification";
+        tableName = "Classification";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
+        //6581
+        stepName = "Add source to NomenclaturalStatus";
+        tableName = "NomenclaturalStatus";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
+        //6581
+        stepName = "Add source to TypeDesignationBase";
+        tableName = "TypeDesignationBase";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
+        //6581
+        stepName = "Add source to TaxonRelationship";
+        tableName = "TaxonRelationship";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
+        //6581
+        stepName = "Add source to NameRelationship";
+        tableName = "NameRelationship";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
+        //6581
+        stepName = "Add source to HybridRelationship";
+        tableName = "HybridRelationship";
+        newColumnName = "source_id";
+        referencedTable = "OriginalSourceBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
         return stepList;
     }
 

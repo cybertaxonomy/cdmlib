@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
     "typifiedNames",
     "citation",
     "citationMicroReference",
+    "source",
     "registrations",
 })
 @XmlSeeAlso({
@@ -105,6 +106,14 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     //Details of the lectotype reference.
     @XmlElement(name = "CitationMicroReference")
     private String citationMicroReference;
+
+    //the source for the lectotypification (or similar)
+    @XmlElement(name = "source")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private IdentifiableSource source;
 
     @XmlElementWrapper(name = "TypifiedNames")
     @XmlElement(name = "TypifiedName")

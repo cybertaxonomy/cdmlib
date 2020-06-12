@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
@@ -67,6 +68,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "rootNode",
     "reference",
     "microReference",
+    "source",
     "timeperiod",
     "geoScopes"
 })
@@ -76,7 +78,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
 public class Classification
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Classification>>
-            implements IReferencedEntity, ITaxonTreeNode, Cloneable{
+            implements IReferencedEntity, ITaxonTreeNode{
+
     private static final long serialVersionUID = -753804821474209635L;
     private static final Logger logger = Logger.getLogger(Classification.class);
 
@@ -126,6 +129,14 @@ public class Classification
 //	@Field(name="text", store=Store.YES)
 //    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     private Map<Language,LanguageString> description = new HashMap<>();
+
+    //the source for this single classification
+    @XmlElement(name = "source")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private IdentifiableSource source;
 
 
 //	/**
