@@ -133,7 +133,7 @@ public class IdentifiableSource
 
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public IdentifiableSource clone() throws CloneNotSupportedException{
 		IdentifiableSource result = (IdentifiableSource)super.clone();
 
 		//no changes
