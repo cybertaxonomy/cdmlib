@@ -108,23 +108,28 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
      */
     protected int getMaxId1(ICdmDataSource datasource, String tableName, boolean includeAudit, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult result) throws SQLException {
+
         String sql = "SELECT max(id) FROM " +caseType.transformTo(tableName);
-        Integer maxId = Integer.valueOf(datasource.getSingleValue(sql).toString());
-        if (maxId == null){
-            maxId = 0;
-        }
+        Integer maxId = getInteger(datasource, sql, 0);
+
         Integer maxIdAud = -1;
         if(includeAudit){
             sql = "SELECT max(id) FROM " +caseType.transformTo(tableName + "_AUD");
-            maxIdAud = Integer.valueOf(datasource.getSingleValue(sql).toString());
-            if (maxIdAud == null){
-                maxIdAud = 0;
-            }
+            maxIdAud = getInteger(datasource, sql, 0);
         }
         return Math.max(maxId, maxIdAud) + 1;
     }
 
-	@Override
+    private Integer getInteger(ICdmDataSource datasource, String sql, int nullReplace) throws SQLException {
+        Object value = datasource.getSingleValue(sql);
+        if (value == null){
+            return nullReplace;
+        }else{
+            return Integer.valueOf(value.toString());
+        }
+    }
+
+    @Override
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<>();
 	}

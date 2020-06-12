@@ -73,7 +73,6 @@ public class Reference2SourceMover  extends SchemaUpdaterStepBase {
         String sql = "SELECT * "
                 + " FROM "+caseType.transformTo(tableName)+" t "
                 + " WHERE t."+this.citationsIdAttr+" IS NOT NULL OR t."+this.detailAttr+" IS NOT NULL ";
-        System.out.println(sql);
 
         ResultSet rs = datasource.executeQuery(sql);
         while(rs.next()){
@@ -84,15 +83,12 @@ public class Reference2SourceMover  extends SchemaUpdaterStepBase {
 
             sql = "INSERT INTO @@OriginalSourceBase@@ (DTYPE, sourceType, uuid, id, citation_id, citationMicroReference, createdBy_id, created)"
                + " VALUES ('IdentifiableSource', 'PTS','"+UUID.randomUUID()+"'," + id + ", " + citationId + "," + nullSafeParam(detail) + "," + createdById + ",'" + this.getNowString() + "')";
-            System.out.println(sql);
             datasource.executeUpdate(caseType.replaceTableNames(sql));
 
             sql = "UPDATE " + caseType.transformTo(tableName)
                     + " SET " + sourceAttr + " = " + id
                     + " WHERE id = " + tnId;
             id++;
-
-            System.out.println(sql);
 
             datasource.executeUpdate(caseType.replaceTableNames(sql));
 
