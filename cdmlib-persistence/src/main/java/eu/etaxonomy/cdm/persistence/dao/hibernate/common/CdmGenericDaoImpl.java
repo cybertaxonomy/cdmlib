@@ -55,6 +55,7 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.data.FullCoverageDataGenerator;
+import eu.etaxonomy.cdm.hibernate.BigDecimalUserType;
 import eu.etaxonomy.cdm.hibernate.DOIUserType;
 import eu.etaxonomy.cdm.hibernate.EnumSetUserType;
 import eu.etaxonomy.cdm.hibernate.EnumUserType;
@@ -466,7 +467,8 @@ public class CdmGenericDaoImpl
 				OrcidUserType.class,
 				ShiftUserType.class,
 				EnumSetUserType.class,
-				SeverityUserType.class
+				SeverityUserType.class,
+				BigDecimalUserType.class,
 				};
 		Set<String> classNames = new HashSet<>();
 		for (Class<?> clazz: classes){
