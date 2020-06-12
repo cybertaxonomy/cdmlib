@@ -350,8 +350,6 @@ public class TaxonName
     @IndexedEmbedded
     private DescriptionElementSource nomenclaturalSource;
 
-
-
     @XmlElementWrapper(name = "Registrations")
     @XmlElement(name = "Registration")
     @XmlIDREF
@@ -2225,6 +2223,7 @@ public class TaxonName
         this.rank = rank;
     }
 
+//*************** nom ref/source *******************/
 
     @Override
     public Reference getNomenclaturalReference(){
@@ -2269,9 +2268,39 @@ public class TaxonName
 //        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
 //        checkNullSource();
     }
+
     @Override
     public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
         setNomenclaturalReference(CdmBase.deproxy(nomenclaturalReference, Reference.class));
+    }
+
+    /**
+     * Returns the details string of the {@link #getNomenclaturalReference() nomenclatural reference} assigned
+     * to <i>this</i> taxon name. The details describe the exact localisation within
+     * the publication used as nomenclature reference. These are mostly
+     * (implicitly) pages but can also be figures or tables or any other
+     * element of a publication. A nomenclatural micro reference (details)
+     * requires the existence of a nomenclatural reference.
+     */
+    //Details of the nomenclatural reference (protologue).
+    @Override
+    public String getNomenclaturalMicroReference(){
+        //#6581
+        return this.nomenclaturalMicroReference;
+//        if (this.nomenclaturalSource == null){
+//            return null;
+//        }
+//        return this.nomenclaturalSource.getCitationMicroReference();
+    }
+    /**
+     * @see  #getNomenclaturalMicroReference()
+     */
+    @Override
+    public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
+        //#6581
+        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
+//        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+//        checkNullSource();
     }
 
     //#6581
@@ -2306,35 +2335,6 @@ public class TaxonName
     @Override
     public void setAppendedPhrase(String appendedPhrase){
         this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
-    }
-
-    /**
-     * Returns the details string of the {@link #getNomenclaturalReference() nomenclatural reference} assigned
-     * to <i>this</i> taxon name. The details describe the exact localisation within
-     * the publication used as nomenclature reference. These are mostly
-     * (implicitly) pages but can also be figures or tables or any other
-     * element of a publication. A nomenclatural micro reference (details)
-     * requires the existence of a nomenclatural reference.
-     */
-    //Details of the nomenclatural reference (protologue).
-    @Override
-    public String getNomenclaturalMicroReference(){
-        //#6581
-        return this.nomenclaturalMicroReference;
-//        if (this.nomenclaturalSource == null){
-//            return null;
-//        }
-//        return this.nomenclaturalSource.getCitationMicroReference();
-    }
-    /**
-     * @see  #getNomenclaturalMicroReference()
-     */
-    @Override
-    public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        //#6581
-        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
-//        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
-//        checkNullSource();
     }
 
     @Override
