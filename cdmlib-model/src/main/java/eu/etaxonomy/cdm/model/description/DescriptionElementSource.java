@@ -167,13 +167,13 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 // **************** EMPTY ************************/
 
     @Override
-    public boolean isEmpty(){
-       return this.isEmpty(false);
+    public boolean checkEmpty(){
+       return this.checkEmpty(false);
     }
 
     @Override
-    public boolean isEmpty(boolean excludeType){
-        return super.isEmpty(excludeType)
+    public boolean checkEmpty(boolean excludeType){
+        return super.checkEmpty(excludeType)
             && this.nameUsedInSource == null;
     }
 

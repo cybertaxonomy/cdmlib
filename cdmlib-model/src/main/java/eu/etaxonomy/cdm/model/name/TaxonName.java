@@ -2305,7 +2305,7 @@ public class TaxonName
 
     //#6581
     private void checkNullSource() {
-        if (this.nomenclaturalSource != null && this.nomenclaturalSource.isEmpty()){
+        if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty()){
             this.nomenclaturalSource = null;
         }
     }

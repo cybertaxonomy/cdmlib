@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -176,9 +175,8 @@ public abstract class AnnotatableEntity
 // **************** EMPTY ************************/
 
     @Override
-    @XmlTransient
-    protected boolean isEmpty(){
-       return super.isEmpty()
+    protected boolean checkEmpty(){
+       return super.checkEmpty()
             && this.annotations.isEmpty()
             && this.markers.isEmpty()
            ;

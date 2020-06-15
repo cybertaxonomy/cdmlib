@@ -341,7 +341,7 @@ public class TaxonNode
     }
 
     private void checkNullSource() {
-        if (this.source != null && this.source.isEmpty(true)){
+        if (this.source != null && this.source.checkEmpty(true)){
             this.source = null;
         }
     }

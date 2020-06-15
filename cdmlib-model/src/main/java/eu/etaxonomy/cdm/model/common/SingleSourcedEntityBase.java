@@ -79,8 +79,8 @@ public abstract class SingleSourcedEntityBase
 // **************** EMPTY ************************/
 
     @Override
-    protected boolean isEmpty(){
-       return super.isEmpty()
+    protected boolean checkEmpty(){
+       return super.checkEmpty()
             && this.source == null
            ;
     }

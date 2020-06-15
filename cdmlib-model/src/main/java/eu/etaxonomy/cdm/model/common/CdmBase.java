@@ -525,8 +525,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
 // **************** EMPTY ************************/
 
-    @XmlTransient
-    protected boolean isEmpty(){
+    protected boolean checkEmpty(){
        return true;
     }
 

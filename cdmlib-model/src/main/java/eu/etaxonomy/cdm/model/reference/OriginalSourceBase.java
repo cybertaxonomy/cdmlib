@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
@@ -235,13 +234,12 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 // **************** EMPTY ************************/
 
     @Override
-    @XmlTransient
-    public boolean isEmpty(){
-        return isEmpty(false);
+    protected boolean checkEmpty(){
+        return checkEmpty(false);
     }
 
-    public boolean isEmpty(boolean excludeType){
-	   return super.isEmpty()
+    public boolean checkEmpty(boolean excludeType){
+	   return super.checkEmpty()
 	        && isBlank(this.getIdInSource())
 	        && isBlank(this.getIdNamespace())
 	        && this.links.isEmpty()
