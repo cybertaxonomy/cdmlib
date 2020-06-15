@@ -354,6 +354,9 @@ public class DescriptiveDataSet
 	 * @see     		  	DescriptiveDataSet#removeDescription(DescriptionBase)
 	 */
 	public boolean removeDescription(DescriptionBase description) {
+	    if (description == null){
+	        return false;
+	    }
 		boolean result = this.descriptions.remove(description);
 		if (description.getDescriptiveDataSets() != null && description.getDescriptiveDataSets().contains(this)){
 			description.removeDescriptiveDataSet(this);

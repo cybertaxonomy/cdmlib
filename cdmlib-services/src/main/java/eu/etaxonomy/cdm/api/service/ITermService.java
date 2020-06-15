@@ -263,7 +263,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param lang
      * @return
      */
-    List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit,
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit,
             String pattern, Language lang, NamedAreaSearchField type);
 
     /**
@@ -271,7 +271,13 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param uuidList
      * @return
      */
-    Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
+    public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
+
+
+    public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);
+
+
+    public Collection<TermDto> findFeatureByTitleAsDto(String title);
 
 
 }

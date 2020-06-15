@@ -286,7 +286,7 @@ public class Feature extends DefinedTermBase<Feature> {
      */
     @XmlElement(name = "AvailableForTaxonName")
     public boolean isAvailableForTaxonName() {
-        return supportedDataTypes.contains(CdmClass.TAXON_NAME);
+        return availableFor.contains(CdmClass.TAXON_NAME);
     }
     /**
      * @see #isAvailableForTaxon()
