@@ -32,10 +32,8 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import io.swagger.annotations.Api;
 
 /**
- *
  * @author a.kohlbecker
  * @since Jun 13, 2016
- *
  */
 @Controller
 @Api("taxonNode")
@@ -50,14 +48,6 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
         this.service = service;
     }
 
-
-    /**
-     *
-     * @param uuid
-     * @param response
-     * @return
-     * @throws IOException
-     */
     @RequestMapping(
             value = {"parent"},
             method = RequestMethod.GET)
@@ -65,7 +55,7 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response
-            ) throws IOException {
+            ) {
 
         logger.info("doGetParent() " + requestPathAndQuery(request));
         return service.parentDto(uuid);

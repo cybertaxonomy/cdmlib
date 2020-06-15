@@ -56,7 +56,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
 @Qualifier("descriptionDaoImpl")
-public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> implements IDescriptionDao{
+public class DescriptionDaoImpl
+            extends IdentifiableDaoBase<DescriptionBase>
+            implements IDescriptionDao{
 
     private static final Logger logger = Logger.getLogger(DescriptionDaoImpl.class);
 
@@ -252,6 +254,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             criteria.add(Restrictions.and(typeCriteria.toArray(new Criterion[]{})));
         }
     }
+
     /**
      * @param markerTypes
      * @param criteria
