@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
@@ -108,6 +109,7 @@ public abstract class ReferencedEntityBase
 // **************** EMPTY ************************/
 
     @Override
+    @XmlTransient
     protected boolean isEmpty(){
        return super.isEmpty()
             && this.getCitation() == null

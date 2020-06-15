@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -120,6 +121,7 @@ public class IdentifiableSource
 // ********************** GETTER /SETTER *****************************/
 
 	@Override
+	@XmlTransient
     public boolean isEmpty(){
 	    return this.isEmpty(false);
 	}

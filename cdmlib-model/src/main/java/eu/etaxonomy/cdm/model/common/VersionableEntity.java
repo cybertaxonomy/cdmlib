@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -119,6 +120,8 @@ public abstract class VersionableEntity
 
 // **************** EMPTY ************************/
 
+	@Override
+    @XmlTransient
     protected boolean isEmpty(){
        return super.isEmpty()
                //nothing to do
