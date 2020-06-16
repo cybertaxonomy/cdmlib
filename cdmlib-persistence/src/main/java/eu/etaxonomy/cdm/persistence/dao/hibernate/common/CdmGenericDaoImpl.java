@@ -27,13 +27,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.sql.JoinType;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -610,7 +610,7 @@ public class CdmGenericDaoImpl
 				if (matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
 					result.add(matchCandidate);
 				}else{
-					logger.warn("Match candidate did not match: " + matchCandidate);
+					logger.info("Match candidate did not match: " + matchCandidate);
 				}
 			}
 		}
@@ -675,15 +675,6 @@ public class CdmGenericDaoImpl
 		return noMatch;
 	}
 
-	/**
-	 * @param criteria
-	 * @param fieldMatcher
-	 * @param propertyName
-	 * @param value
-	 * @param matchMode
-	 * @throws MatchException
-	 * @throws IllegalAccessException
-	 */
 	private void matchComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher, String propertyName, Object value,
 			List<MatchMode> matchModes) throws MatchException, IllegalAccessException {
@@ -702,7 +693,7 @@ public class CdmGenericDaoImpl
 			for (String fieldName : fields.keySet()){
 				String restrictionPath = propertyName +"."+fieldName;
 				Object componentValue = fields.get(fieldName).get(value);
-				//TODO diffentiate matchMode
+				//TODO differentiate matchMode
 				createCriterion(criteria, restrictionPath, componentValue, matchModes);
 			}
 		}
@@ -727,9 +718,9 @@ public class CdmGenericDaoImpl
 				if (propertyType.isCollectionType()){
 					//TODO collection not yet handled for match
 				}else{
-					int joinType = CriteriaSpecification.INNER_JOIN;
+					JoinType joinType = JoinType.INNER_JOIN;
 					if (! requiresSecondValue(matchModes,value)){
-						joinType = CriteriaSpecification.LEFT_JOIN;
+						joinType = JoinType.LEFT_OUTER_JOIN;
 					}
 					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
 					Class matchClass = value.getClass();
