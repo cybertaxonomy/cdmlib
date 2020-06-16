@@ -83,7 +83,6 @@ import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author n.hoffmann
@@ -823,8 +822,8 @@ public class TaxonNodeServiceImpl
             name = nameService.load(taxonDto.getNameUuid());
 
         }else{
-            NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
-            name = (TaxonName) nonViralNameParser.parseFullName(taxonDto.getTaxonNameString());
+            name = nameService.parseName(taxonDto.getTaxonNameString(),
+                    taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
         }
         Reference sec = null;
         if (taxonDto.getSecUuid() != null ){
