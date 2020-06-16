@@ -1126,13 +1126,13 @@ public class NameServiceImpl
 
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfSynonymy(Integer limit, UUID taxonUuid) {
-        List<String> propertyPaths = new ArrayList();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("synonyms.name.*");
-        TaxonBase taxonBase = taxonService.load(taxonUuid, propertyPaths);
+        TaxonBase<?> taxonBase = taxonService.load(taxonUuid, propertyPaths);
         if (taxonBase instanceof Taxon){
             Taxon taxon = (Taxon)taxonBase;
             Set<TaxonName> names = taxon.getSynonymNames();
-            List<UuidAndTitleCache> uuidAndTitleCacheList = new ArrayList();
+            List<UuidAndTitleCache> uuidAndTitleCacheList = new ArrayList<>();
             UuidAndTitleCache<TaxonName> uuidAndTitleCache;
             for (TaxonName name: names){
                 uuidAndTitleCache = new UuidAndTitleCache<TaxonName>(TaxonName.class, name.getUuid(), name.getId(), name.getTitleCache());

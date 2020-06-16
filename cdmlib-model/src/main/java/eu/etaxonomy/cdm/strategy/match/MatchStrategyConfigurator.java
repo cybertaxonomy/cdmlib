@@ -40,12 +40,7 @@ public class MatchStrategyConfigurator {
             return null;
         }
     }
-	/**
-	 * <p>NonViralNameMatchStrategy</p>
-	 *
-	 * @throws eu.etaxonomy.cdm.strategy.match.MatchException if any.
-	 * @return a {@link eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual} object.
-	 */
+
 	public static IMatchStrategyEqual NonViralNameMatchStrategy() throws MatchException{
 		return getDefaultNonViralNameMatchStrategy();// PreferencesUtil.getMatchStrategy(NonViralName.class);
 	}

@@ -19,96 +19,75 @@ public class CreateTaxonDTO implements Serializable{
 
     private static final long serialVersionUID = 9183429250677087219L;
 
-    UUID nameUuid;
-    UUID secUuid;
-    String secMicroReference;
-    boolean isDoubtful;
-    String appendedPhrase;
-    boolean isPublish;
+    //uuid to a persisted name
+    private UUID nameUuid;
+    //name string if no persisted name is used
+    private String taxonNameString;
 
-    String taxonNameString;
+    private UUID secUuid;
+    private String secMicroReference;
+    private boolean isDoubtful;
+    private String appendedPhrase;
+    private boolean isPublish;
 
-    public CreateTaxonDTO(UUID nameUuid, UUID secUuid, String secMicroRef, boolean isDoubtful, String appendedPhrase, boolean isPublish, String taxonNameString){
+    public CreateTaxonDTO(UUID nameUuid, UUID secUuid, String secMicroRef, boolean isDoubtful,
+            String appendedPhrase, boolean isPublish, String taxonNameString){
         this.nameUuid = nameUuid;
         this.secUuid = secUuid;
         this.secMicroReference = secMicroRef;
         this.isDoubtful = isDoubtful;
         this.appendedPhrase= appendedPhrase;
         this.isPublish = isPublish;
-
         this.taxonNameString = taxonNameString;
     }
-
 
     public UUID getNameUuid() {
         return nameUuid;
     }
-
-
     public void setNameUuid(UUID nameUuid) {
         this.nameUuid = nameUuid;
     }
 
-
     public UUID getSecUuid() {
         return secUuid;
     }
-
-
     public void setSecUuid(UUID secUuid) {
         this.secUuid = secUuid;
     }
 
-
     public String getSecMicroReference() {
         return secMicroReference;
     }
-
-
     public void setSecMicroReference(String secMicroReference) {
         this.secMicroReference = secMicroReference;
     }
 
-
     public boolean isDoubtful() {
         return isDoubtful;
     }
-
-
     public void setDoubtful(boolean isDoubtful) {
         this.isDoubtful = isDoubtful;
     }
 
-
     public String getAppendedPhrase() {
         return appendedPhrase;
     }
-
-
     public void setAppendedPhrase(String appendedPhrase) {
         this.appendedPhrase = appendedPhrase;
     }
 
-
     public boolean isPublish() {
         return isPublish;
     }
-
-
     public void setPublish(boolean isPublish) {
         this.isPublish = isPublish;
     }
-
 
     public String getTaxonNameString() {
         return taxonNameString;
     }
 
-
     public void setTaxonNameString(String taxonNameString) {
         this.taxonNameString = taxonNameString;
     }
-
-
-
 }

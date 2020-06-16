@@ -813,8 +813,10 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, UUID refUuid, String microref,
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto,
+            UUID refUuid, String microref,
             TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
+
         UpdateResult result = new UpdateResult();
         TaxonName name = null;
         if (taxonDto.getNameUuid() != null){
@@ -827,7 +829,6 @@ public class TaxonNodeServiceImpl
         Reference sec = null;
         if (taxonDto.getSecUuid() != null ){
             sec = referenceService.load(taxonDto.getSecUuid());
-
         }
         if (!name.isPersited()){
             for (HybridRelationship rel : name.getHybridChildRelations()){
@@ -952,9 +953,7 @@ public class TaxonNodeServiceImpl
             result.setError();
             return result;
         }
-//        child = dao.save(child);
 
-//        dao.saveOrUpdate(child);
         result.addUpdatedObject(parent);
         if (child != null){
             result.setCdmEntity(child);
