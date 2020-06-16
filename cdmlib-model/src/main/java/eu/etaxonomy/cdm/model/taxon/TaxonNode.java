@@ -315,6 +315,7 @@ public class TaxonNode
 //************************* SOURCE *********************/
 
     @Override
+    @Transient
     public String getMicroReference() {
         return source == null ? null : this.source.getCitationMicroReference();
     }
@@ -324,6 +325,7 @@ public class TaxonNode
     }
 
     @Override
+    @Transient
     public Reference getReference() {
         return (this.source == null) ? null : source.getCitation();
     }
@@ -332,7 +334,6 @@ public class TaxonNode
         checkNullSource();
     }
 
-    @XmlTransient
     public IdentifiableSource getSource() {
         return source;
     }
