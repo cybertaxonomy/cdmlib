@@ -22,9 +22,8 @@ public interface IParsedMatchStrategy extends IMatchStrategy{
     public static MatchMode DEFAULT_PARSED_MATCH_MATCH_MODE = MatchMode.MATCH_OR_SECOND_NULL;
 
 
-
 	/**
-	 * {@inheritDoc} Invokes the match check.
+	 * {@inheritDoc}
 	 *
 	 * @param <T>
 	 * @param fullInstance The more complete instance

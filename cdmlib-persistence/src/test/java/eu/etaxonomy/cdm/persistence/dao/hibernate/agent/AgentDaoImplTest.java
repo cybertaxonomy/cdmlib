@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.agent;
 
 import static org.junit.Assert.assertEquals;
@@ -40,11 +39,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-
 public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 
 //    private static final String[] TABLE_NAMES = new String[] {"AGENTBASE", "AGENTBASE_AUD", "AGENTBASE_AGENTBASE", "AGENTBASE_AGENTBASE_AUD", "INSTITUTIONALMEMBERSHIP", "INSTITUTIONALMEMBERSHIP_AUD"};
-
 
     @SpringBeanByType
     private IAgentDao agentDao;
@@ -165,7 +162,6 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
     public void testDelete() throws Exception {
         Person person = (Person)agentDao.findByUuid(personUuid);
         agentDao.delete(person);
-
 
         person =(Person)agentDao.findByUuid(personUuid);
         Assert.assertNull(person);

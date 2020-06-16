@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.strategy.match;
 /**
  * @author a.mueller
  * @since 20.10.2018
- *
  */
 public interface IMatchStrategy {
 
@@ -42,7 +41,7 @@ public interface IMatchStrategy {
 
     /**
      * Invokes the match check.
-     * If two objects match this method returns true, false otherwise
+     * If two objects match this method returns <code>true</code>, <code>false</code> otherwise
      * @param <T>
      * @param mergeFirst
      * @param mergeSecond
@@ -52,14 +51,6 @@ public interface IMatchStrategy {
 
     public  <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond, boolean failAll) throws MatchException;
 
-
-    /**
-     * @param matchFirst
-     * @param matchSecond
-     * @param matchResult
-     * @param failAll
-     * @throws MatchException
-     */
     <T extends IMatchable> void invoke(T matchFirst, T matchSecond, MatchResult matchResult, boolean failAll) throws MatchException;
 
     /**
