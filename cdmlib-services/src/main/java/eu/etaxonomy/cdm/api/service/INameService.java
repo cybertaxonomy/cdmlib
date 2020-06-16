@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -620,6 +621,21 @@ public interface INameService
     public List<TaxonName> findByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
             List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
+
+
+    /**
+     * Parses a name string and returns a parsed name. If deduplicate is <code>true</code>
+     * the parsed parts like nomenclatural reference and authors are deduplicated against the
+     * database.
+     *
+     * @param taxonNameString
+     * @param code the nomenclatural code to use
+     * @param preferredRank the preferred rank to use if rank is not clearly defined by the taxon name
+     * @param doDeduplicate if <code>true</code> the name parts are deduplicated against the database,
+     *      but the name itself is NOT deduplicated (this may change in future)
+     * @return
+     */
+    public TaxonName parseName(String taxonNameString, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate);
 
 
 }

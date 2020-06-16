@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -79,6 +81,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -97,6 +100,10 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
@@ -130,6 +137,9 @@ public class NameServiceImpl
     private ICdmGenericDao genericDao;
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
+    @Autowired
+    protected ICommonService commonService;
+
     @Autowired
     // @Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;
@@ -1142,6 +1152,75 @@ public class NameServiceImpl
         return null;
     }
 
+    @Override
+    public TaxonName parseName(String taxonNameString, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate) {
+        NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
+        TaxonName name = nonViralNameParser.parseReferencedName(taxonNameString, code, preferredRank);
+        if(doDeduplicate) {
+            try {
+                //references
+                if (name.getNomenclaturalReference()!= null){
+                    IParsedMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance();
+                    Reference nomRef = name.getNomenclaturalReference();
+                    List<Reference> matchingReferences = commonService.findMatching(nomRef, referenceMatcher);
+                    if(matchingReferences.size() >= 1){
+                        Reference duplicate = findBestMatching(nomRef, matchingReferences, referenceMatcher);
+                        name.setNomenclaturalReference(duplicate);
+                    }else if (nomRef.getInReference() != null){
+                        List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), referenceMatcher);
+                        if(matchingInReferences.size() >= 1){
+                            Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
+                            name.setNomenclaturalReference(duplicate);
+                        }
+                    }
+                }
+                //authors
+                IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
+                if (name.getCombinationAuthorship()!= null){
+                    TeamOrPersonBase<?> author = name.getCombinationAuthorship();
+                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
+                    if(matchingAuthors.size() >= 1){
+                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
+                        name.setCombinationAuthorship(duplicate);
+                    }
+                    //TODO nomRef author
+                }
+                if (name.getExCombinationAuthorship()!= null){
+                    TeamOrPersonBase<?> author = name.getExCombinationAuthorship();
+                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
+                    if(matchingAuthors.size() >= 1){
+                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
+                        name.setExCombinationAuthorship(duplicate);
+                    }
+                }
+                if (name.getBasionymAuthorship()!= null){
+                    TeamOrPersonBase<?> author = name.getBasionymAuthorship();
+                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
+                    if(matchingAuthors.size() >= 1){
+                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
+                        name.setBasionymAuthorship(duplicate);
+                    }
+                }
+                if (name.getExBasionymAuthorship()!= null){
+                    TeamOrPersonBase<?> author = name.getExBasionymAuthorship();
+                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
+                    if(matchingAuthors.size() >= 1){
+                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
+                        name.setExBasionymAuthorship(duplicate);
+                    }
+                }
+            } catch (MatchException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return name;
+    }
 
+    private <M extends IMatchable> M findBestMatching(M matchable, List<M> matchingList,
+            IParsedMatchStrategy referenceMatcher) {
+        // FIXME TODO resolve multiple duplications. Use first match for a start
+        M bestMatching = matchingList.iterator().next();
+        return bestMatching;
+    }
 
 }

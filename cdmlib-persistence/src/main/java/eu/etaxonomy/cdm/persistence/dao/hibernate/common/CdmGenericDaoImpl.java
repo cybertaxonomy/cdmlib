@@ -74,6 +74,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -568,10 +569,9 @@ public class CdmGenericDaoImpl
         }
     }
 
-
 	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
-			IMatchStrategyEqual matchStrategy) throws MatchException {
+			IMatchStrategy matchStrategy) throws MatchException {
 
 		getSession().flush();
 		try {
@@ -592,7 +592,7 @@ public class CdmGenericDaoImpl
 	}
 
 	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,
-	        IMatchStrategyEqual matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+	        IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
 
 	    List<T> result = new ArrayList<>();
 		Session session = getSession();
@@ -618,7 +618,7 @@ public class CdmGenericDaoImpl
 	}
 
 	private <T> boolean makeCriteria(T objectToMatch,
-			IMatchStrategyEqual matchStrategy, ClassMetadata classMetaData,
+			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
 			Criteria criteria) throws IllegalAccessException, MatchException {
 		Matching matching = matchStrategy.getMatching();
 		boolean noMatch = false;

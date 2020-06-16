@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
+
 /**
  * @author k.luther
  * @since Apr 23, 2020
@@ -23,6 +26,8 @@ public class CreateTaxonDTO implements Serializable{
     private UUID nameUuid;
     //name string if no persisted name is used
     private String taxonNameString;
+    private NomenclaturalCode nomenclaturalCode;
+    private Rank preferredRank;
 
     private UUID secUuid;
     private String secMicroReference;
@@ -31,7 +36,8 @@ public class CreateTaxonDTO implements Serializable{
     private boolean isPublish;
 
     public CreateTaxonDTO(UUID nameUuid, UUID secUuid, String secMicroRef, boolean isDoubtful,
-            String appendedPhrase, boolean isPublish, String taxonNameString){
+            String appendedPhrase, boolean isPublish, String taxonNameString,
+            NomenclaturalCode nomenclaturalCode, Rank preferredRank){
         this.nameUuid = nameUuid;
         this.secUuid = secUuid;
         this.secMicroReference = secMicroRef;
@@ -39,6 +45,8 @@ public class CreateTaxonDTO implements Serializable{
         this.appendedPhrase= appendedPhrase;
         this.isPublish = isPublish;
         this.taxonNameString = taxonNameString;
+        this.nomenclaturalCode = nomenclaturalCode;
+        this.preferredRank = preferredRank;
     }
 
     public UUID getNameUuid() {
@@ -89,5 +97,13 @@ public class CreateTaxonDTO implements Serializable{
 
     public void setTaxonNameString(String taxonNameString) {
         this.taxonNameString = taxonNameString;
+    }
+
+    public NomenclaturalCode getCode() {
+        return nomenclaturalCode;
+    }
+
+    public Rank getPreferredRank() {
+        return preferredRank;
     }
 }
