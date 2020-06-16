@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 public enum AggregationMode implements IKeyTerm{
         WithinTaxon("INTAX", "Within taxon", true, true),
-        ToParent("TOPAR", "From child to parent taxon", true, true);
+        ToParent("TOPAR", "From children to this taxon", true, true);
 //        public boolean isByRank() {
 //           return this==byRanks || this == byAreasAndRanks;
 //        }
