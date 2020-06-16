@@ -116,9 +116,6 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         this.service = service;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);

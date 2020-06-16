@@ -77,16 +77,6 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
         return dto;
     }
 
-    /**
-     *
-     * @param uuid
-     * @param pageIndex
-     * @param pageSize
-     * @param sortMode
-     * @param response
-     * @return
-     * @throws IOException
-     */
     @RequestMapping(
             value = {"childNodes"},
             method = RequestMethod.GET)
