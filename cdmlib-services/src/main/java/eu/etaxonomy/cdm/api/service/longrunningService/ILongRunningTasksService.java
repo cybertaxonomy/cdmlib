@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
+import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
@@ -71,8 +72,9 @@ public interface ILongRunningTasksService {
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#delete(DescriptiveDataSetUUID, IProgressMonitor)}
      * @param datasetUuid
+     * @param config
      * @return
      */
-    public UUID deleteDescriptiveDataset(UUID datasetUuid);
+    public UUID deleteDescriptiveDataset(UUID datasetUuid, DeleteDescriptiveDataSetConfigurator config);
 
 }

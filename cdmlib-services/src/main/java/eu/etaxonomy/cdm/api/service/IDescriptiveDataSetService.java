@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -193,7 +194,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param monitor
      * @return
      */
-    DeleteResult delete(UUID datasetUuid, IProgressMonitor monitor);
+    DeleteResult delete(UUID datasetUuid, DeleteDescriptiveDataSetConfigurator config, IProgressMonitor monitor);
 
     /**
      * @param descriptionUuid

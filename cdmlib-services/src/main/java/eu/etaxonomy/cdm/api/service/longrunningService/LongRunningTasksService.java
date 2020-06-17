@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.IProgressMonitorService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.CacheUpdaterConfigurator;
+import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
@@ -148,11 +149,11 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     }
 
     @Override
-    public UUID deleteDescriptiveDataset(UUID datasetUuid){
+    public UUID deleteDescriptiveDataset(UUID datasetUuid, DeleteDescriptiveDataSetConfigurator config){
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                UpdateResult updateResult = descriptiveDataSetService.delete(datasetUuid,  monitor);
+                UpdateResult updateResult = descriptiveDataSetService.delete(datasetUuid, config, monitor);
                 for(Exception e : updateResult.getExceptions()) {
                     monitor.addReport(e.getMessage());
                 }

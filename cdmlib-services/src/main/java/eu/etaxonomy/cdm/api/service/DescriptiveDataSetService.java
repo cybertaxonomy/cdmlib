@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
+import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
@@ -31,7 +32,6 @@ import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;
 import eu.etaxonomy.cdm.format.description.DefaultQuantitativeDescriptionBuilder;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -502,7 +502,7 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult delete(UUID datasetUuid, IProgressMonitor monitor){
+    public DeleteResult delete(UUID datasetUuid, DeleteDescriptiveDataSetConfigurator config,  IProgressMonitor monitor){
         DescriptiveDataSet dataSet = dao.load(datasetUuid);
         monitor.beginTask("Delete Descriptive Dataset", dataSet.getDescriptions().size() +1);
 
@@ -516,8 +516,19 @@ public class DescriptiveDataSetService
             monitor.subTask("Delete descriptions");
             for (DescriptionBase desc: descriptions){
                 dataSet.removeDescription(desc);
-                descriptionResult.includeResult(descriptionService.deleteDescription(desc));
-                monitor.worked(1);
+                if (desc instanceof SpecimenDescription && config.isDeleteAllSpecimenDescriptions()){
+                    descriptionResult.includeResult(descriptionService.deleteDescription(desc));
+                }else if (desc instanceof TaxonDescription){
+                    if( desc.getTypes().contains(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION) && config.isDeleteAllDefaultDescriptions()){
+                        descriptionResult.includeResult(descriptionService.deleteDescription(desc));
+                    }else if (desc.getTypes().contains(DescriptionType.SECONDARY_DATA) && config.isDeleteAllLiteratureDescriptions()){
+                        descriptionResult.includeResult(descriptionService.deleteDescription(desc));
+                    }else if (desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC) && config.isDeleteAllAggregatedDescriptions()){
+                        descriptionResult.includeResult(descriptionService.deleteDescription(desc));
+                    }
+
+                }
+
             }
 
 
@@ -650,7 +661,7 @@ public class DescriptiveDataSetService
         if(addDatasetSource){
             dataSet.getSources().forEach(source->{
                 try {
-                    newDesription.addSource((IdentifiableSource) source.clone());
+                    newDesription.addSource(source.clone());
                 } catch (CloneNotSupportedException e) {
                     //nothing
                 }
