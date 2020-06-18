@@ -30,4 +30,5 @@ public interface IParsedMatchStrategy extends IMatchStrategy{
 	@Override
     public <T extends IMatchable> MatchResult invoke(T fullInstance, T parsedInstance) throws MatchException;
 
+
 }

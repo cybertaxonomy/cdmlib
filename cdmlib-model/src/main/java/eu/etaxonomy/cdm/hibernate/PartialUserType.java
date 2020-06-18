@@ -114,10 +114,6 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
         return result;
 	}
 
-	/**
-     * @param p
-     * @return
-     */
     private static boolean timeExists(Partial partial) {
         return partial.isSupported(DateTimeFieldType.hourOfDay()) ||
                 partial.isSupported(DateTimeFieldType.minuteOfHour());

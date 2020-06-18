@@ -62,13 +62,6 @@ public enum MatchMode {
 		}
 	}
 
-
-
-	/**
-     * @param obj1
-     * @param obj2
-     * @return
-     */
     private MatchResult matchCache(Object obj1, Object obj2, String fieldName) {
         if (StringUtils.isBlank((String)obj1)){
             return MatchResult.NewInstance(fieldName, this,obj1, obj2);
@@ -77,15 +70,6 @@ public enum MatchMode {
         }
     }
 
-
-
-    /**
-	 * @param obj1
-	 * @param obj2
-	 * @param matchStrategy
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatchRequired(Object obj1, Object obj2, IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null || obj2 == null ){
 			return MatchResult.NewInstance(fieldName, this, obj1, obj2);
@@ -100,13 +84,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatchOrOneNull(Object obj1, Object obj2,
 	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null || obj2 == null ){
@@ -116,12 +93,6 @@ public enum MatchMode {
 		}
 	}
 
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatchOrSecondNull(Object obj1, Object obj2,
 	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj2 == null ){
@@ -131,14 +102,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @param matchStrategy
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatch(Object obj1, Object obj2,
 	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null && obj2 == null ){
@@ -148,21 +111,10 @@ public enum MatchMode {
 		}
 	}
 
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesIgnore(Object obj1, Object obj2) {
 		return MatchResult.SUCCESS();
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqualRequired(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null || obj2 == null){
 		    return MatchResult.NewInstance(fieldName, this, obj1, obj2);
@@ -173,12 +125,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqualOrOneNull(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null || obj2 == null){
 			return MatchResult.SUCCESS();
@@ -187,12 +133,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqualOrSecondNull(Object obj1, Object obj2, String fieldName) {
 		if (obj2 == null){
 			return MatchResult.SUCCESS();
@@ -201,12 +141,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqual(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null && obj2 == null){
 			return MatchResult.SUCCESS();
@@ -254,7 +188,6 @@ public enum MatchMode {
 		}else{
 			return ! allowsExactlyOneNull() ;
 		}
-
 	}
 
 	/**

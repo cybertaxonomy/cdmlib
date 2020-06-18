@@ -42,16 +42,16 @@ public interface IMatchStrategy {
     /**
      * Invokes the match check.
      * If two objects match this method returns <code>true</code>, <code>false</code> otherwise
-     * @param <T>
+     * @param <S>
      * @param mergeFirst
      * @param mergeSecond
      * @throws MatchException
      */
-    public <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond) throws MatchException;
+    public <S extends IMatchable> MatchResult invoke(S matchFirst, S matchSecond) throws MatchException;
 
-    public  <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond, boolean failAll) throws MatchException;
+    public  <S extends IMatchable> MatchResult invoke(S matchFirst, S matchSecond, boolean failAll) throws MatchException;
 
-    <T extends IMatchable> void invoke(T matchFirst, T matchSecond, MatchResult matchResult, boolean failAll) throws MatchException;
+    public <S extends IMatchable> void invoke(S matchFirst, S matchSecond, MatchResult matchResult, boolean failAll) throws MatchException;
 
     /**
      * Returns the Matching of this match strategy

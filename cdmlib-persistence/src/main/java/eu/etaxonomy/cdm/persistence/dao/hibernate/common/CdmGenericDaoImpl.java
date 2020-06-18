@@ -109,7 +109,7 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
+    public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
         Session session = super.getSession();
 
       Criteria criteria = session.createCriteria(clazz);
@@ -124,7 +124,7 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public long getCountByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
+    public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase){
         Session session = super.getSession();
         Query query = session.createQuery("SELECT count(this) "
                 + "FROM "+ clazz.getSimpleName() + " this "
@@ -136,8 +136,10 @@ public class CdmGenericDaoImpl
     }
 
 	@Override
-	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item, Integer limit){
-		Session session = super.getSession();
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class<?> itemClass,
+	        Class<?> clazz, String propertyName, CdmBase item, Integer limit){
+
+	    Session session = super.getSession();
 		String thisClassStr = itemClass.getSimpleName();
 		String otherClassStr = clazz.getSimpleName();
 		String queryStr = " SELECT other FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
@@ -152,7 +154,7 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public long getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName,
+    public long getCountWithItemInCollection(Class<?> itemClass, Class<?> clazz, String propertyName,
             CdmBase item){
         Session session = super.getSession();
         String thisClassStr = itemClass.getSimpleName();
@@ -723,7 +725,8 @@ public class CdmGenericDaoImpl
 						joinType = JoinType.LEFT_OUTER_JOIN;
 					}
 					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
-					Class matchClass = value.getClass();
+					@SuppressWarnings("rawtypes")
+                    Class matchClass = value.getClass();
 					if (IMatchable.class.isAssignableFrom(matchClass)){
 						IMatchStrategyEqual valueMatchStrategy = DefaultMatchStrategy.NewInstance(matchClass);
 						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());;
@@ -742,13 +745,6 @@ public class CdmGenericDaoImpl
 		return noMatch;
 	}
 
-	/**
-	 * @param criteria
-	 * @param propertyName
-	 * @param value
-	 * @param matchMode
-	 * @throws MatchException
-	 */
 	private void createCriterion(Criteria criteria, String propertyName,
 			Object value, List<MatchMode> matchModes) throws MatchException {
 		Criterion finalRestriction = null;
@@ -765,12 +761,6 @@ public class CdmGenericDaoImpl
 		criteria.add(finalRestriction);
 	}
 
-	/**
-	 * @param matchModes
-	 * @param value
-	 * @return
-	 * @throws MatchException
-	 */
 	private boolean requiresSecondNull(List<MatchMode> matchModes, Object value) throws MatchException {
 		boolean result = true;
 		for (MatchMode matchMode: matchModes){
@@ -779,13 +769,7 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/**
-	 * @param matchModes
-	 * @param value
-	 * @return
-	 * @throws MatchException
-	 */
-	private boolean requiresSecondValue(List<MatchMode> matchModes, Object value) throws MatchException {
+	private boolean requiresSecondValue(List<MatchMode> matchModes, Object value) {
 		boolean result = true;
 		for (MatchMode matchMode: matchModes){
 			result &= matchMode.requiresSecondValue(value);
@@ -793,13 +777,7 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/**
-	 * @param matchModes
-	 * @param value
-	 * @return
-	 * @throws MatchException
-	 */
-	private boolean isRequired(List<MatchMode> matchModes) throws MatchException {
+	private boolean isRequired(List<MatchMode> matchModes) {
 		boolean result = true;
 		for (MatchMode matchMode: matchModes){
 			result &= matchMode.isRequired();
@@ -808,7 +786,7 @@ public class CdmGenericDaoImpl
 	}
 
 	/**
-	 * Returns true if at least one match mode is of typ MATCH_XXX
+	 * Returns true if at least one match mode is of type MATCH_XXX
 	 * @param matchModes
 	 * @param value
 	 * @return

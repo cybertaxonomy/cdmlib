@@ -51,8 +51,11 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
  * @author a.mueller
  * @since 06.08.2009
  */
-public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategyEqual, IParsedMatchStrategy {
-	private static final long serialVersionUID = 5045874493910155162L;
+public class DefaultMatchStrategy
+            extends StrategyBase
+            implements IMatchStrategyEqual, IParsedMatchStrategy {
+
+    private static final long serialVersionUID = 5045874493910155162L;
 	private static final Logger logger = Logger.getLogger(DefaultMatchStrategy.class);
 
 	final static UUID uuid = UUID.fromString("69467b70-07ec-43a6-b779-3ec8d013837b");
@@ -84,9 +87,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		initMapping();
 	}
 
-	/**
-	 * @return the merge class
-	 */
     public Class<? extends IMatchable> getMatchClass() {
 		return matchClass;
 	}
@@ -169,9 +169,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return;
 	}
 
-	/**
-	 * @param class1
-	 */
 	private void initializeSubclass(Class<? extends IMatchable> instanceClass) {
 		Map<String, Field> subClassFields = CdmUtils.getAllFields(instanceClass, matchClass, false, false, true, false);
 		for (Field field: subClassFields.values()){
@@ -179,14 +176,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		}
 	}
 
-	/**
-	 * @param <T>
-	 * @param matchFirst
-	 * @param matchSecond
-	 * @param result
-	 * @return
-	 * @throws MatchException
-	 */
 	private <T extends IMatchable> void invokeChecked(T matchFirst, T matchSecond,
 			MatchResult result, boolean failAll) throws MatchException {
 		//matchFirst != matchSecond != null
@@ -211,16 +200,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return;
 	}
 
-    /**
-     * @param matchFirst
-     * @param matchSecond
-     * @param result
-     * @param replaceMatchers
-     * @param cacheMatcher
-     * @return
-     * @throws IllegalAccessException
-     * @throws MatchException
-     */
     protected <T extends IMatchable> void matchSingleCache(T matchFirst, T matchSecond,
             MatchResult result,
             Map<String, List<MatchMode>> replaceMatchers, CacheMatcher cacheMatcher, boolean failAll)
@@ -258,15 +237,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
         return;
     }
 
-    /**
-     * @param matchFirst
-     * @param matchSecond
-     * @param result
-     * @param replaceMatchers
-     * @param fieldMatcher
-     * @return
-     * @throws Exception
-     */
     protected <T extends IMatchable> void matchSingleField(T matchFirst, T matchSecond,
             MatchResult matchResult,
             Map<String, List<MatchMode>> replaceMatchers, FieldMatcher fieldMatcher,
@@ -318,10 +288,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
         return;
     }
 
-	/**
-	 * @throws Exception
-	 *
-	 */
 	private <T extends IMatchable> MatchResult matchPrimitiveField(T matchFirst, T matchSecond,
 	        FieldMatcher fieldMatcher, List<MatchMode> replaceModeList, boolean failAll) throws Exception {
 
@@ -375,16 +341,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return fieldResult;
 	}
 
-
-	/**
-     * @param fieldResult
-     * @param replaceModeList
-	 * @param fieldMatcher
-	 * @param value2
-	 * @param value1
-     * @return
-	 * @throws MatchException
-     */
     private MatchResult makeReplaceModeMatching(MatchResult fieldResult,
             List<MatchMode> replaceModeList, Object value1, Object value2, FieldMatcher fieldMatcher, boolean failAll) throws MatchException {
 
@@ -401,10 +357,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
         return fieldResult;
     }
 
-    /**
-	 * @param object
-	 * @return
-	 */
 	private Object checkEmpty(Object object) {
 		if (object instanceof String){
 			if (StringUtils.isBlank((String)object)){
@@ -434,14 +386,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return HibernateProxyHelper.deproxy(object);
 	}
 
-	/**
-	 * @param value1
-	 * @param matchStrategy
-	 * @param fieldMatcher
-	 * @return
-	 * @throws MatchException
-	 */
-	private void matchSet(Collection value1, Collection value2,
+	private void matchSet(Collection<?> value1, Collection<?> value2,
 	        IMatchStrategy matchStrategy, MatchResult matchResult,
 	        FieldMatcher fieldMatcher, boolean failAll)
             throws MatchException {
@@ -467,14 +412,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return;
 	}
 
-	/**
-	 * @param value1
-	 * @param matchStrategy
-	 * @param fieldMatcher
-	 * @return
-	 * @throws MatchException
-	 */
-	private void matchList(Collection value1, Collection value2,
+	private void matchList(Collection<?> value1, Collection<?> value2,
 	        IMatchStrategy matchStrategy, MatchResult matchResult,
 	        FieldMatcher fieldMatcher, boolean failAll)
 	        throws MatchException {
@@ -503,10 +441,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return;
 	}
 
-	/**
-     * @param list1
-     * @return
-     */
     private Object listSize(List<IMatchable> list) {
         return list == null? 0 :list.size();
     }
@@ -544,10 +478,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		}
 	}
 
-
-	/**
-	 *
-	 */
 	private void initMapping() {
 	    preInitMapping();
 		boolean includeStatic = false;
@@ -560,9 +490,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		}
 	}
 
-	/**
-     *
-     */
     protected void preInitMapping() {}
 
     /**
