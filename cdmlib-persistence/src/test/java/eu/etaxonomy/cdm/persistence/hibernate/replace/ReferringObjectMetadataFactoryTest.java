@@ -53,9 +53,6 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 
 	private UUID person3;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		institution1 = UUID.fromString("18679846-7343-4e5f-b14e-5eb56b967989");
@@ -87,7 +84,7 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 	}
 
 	@Test
-	 @DataSets({
+	@DataSets({
 	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
 	        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
 	        @DataSet(value="ReferringObjectMetadataFactoryTest.xml")
