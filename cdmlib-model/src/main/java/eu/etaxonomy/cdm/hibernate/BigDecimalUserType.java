@@ -82,7 +82,7 @@ public class BigDecimalUserType implements UserType {
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
 		if (value == null) {
 			StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, null, index, session);
-			StandardBasicTypes.INTEGER.nullSafeSet(st, null, index, session);
+			StandardBasicTypes.INTEGER.nullSafeSet(st, null, index+1, session);
 		} else {
 			BigDecimal bdec = (BigDecimal)value;
 			StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, bdec, index, session);
