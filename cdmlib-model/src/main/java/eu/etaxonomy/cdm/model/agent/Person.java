@@ -31,7 +31,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.hibernate.search.OrcidBridge;
@@ -367,7 +366,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	public TimePeriod getLifespan(){
 		if(lifespan == null) {
-			this.lifespan = TimePeriod.NewInstance(new Partial(), new Partial());
+			this.lifespan = TimePeriod.NewInstance();
 		}
 		return this.lifespan;
 	}
@@ -375,10 +374,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLifespan()
 	 */
 	public void setLifespan(TimePeriod lifespan){
-		if (lifespan == null){
-			this.lifespan = TimePeriod.NewInstance(new Partial(), new Partial());
-		}
-		this.lifespan = lifespan;
+		this.lifespan = lifespan != null? lifespan : TimePeriod.NewInstance();
 	}
 
 
