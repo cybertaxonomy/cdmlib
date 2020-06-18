@@ -154,7 +154,7 @@ public class AgentServiceImpl
 			if (base instanceof Team){
 				Team baseTeam = (Team) base;
 				List<Person> members = baseTeam.getTeamMembers();
-				List<Person> temp = new ArrayList<Person>();
+				List<Person> temp = new ArrayList<>();
 				for (Person member:members){
 					temp.add(member);
 				}
