@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -622,7 +621,8 @@ public class CdmGenericDaoImpl
 	private <T> boolean makeCriteria(T objectToMatch,
 			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
 			Criteria criteria) throws IllegalAccessException, MatchException {
-		Matching matching = matchStrategy.getMatching();
+
+	    Matching matching = matchStrategy.getMatching((IMatchable)objectToMatch);
 		boolean noMatch = false;
 		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
@@ -681,11 +681,11 @@ public class CdmGenericDaoImpl
 			FieldMatcher fieldMatcher, String propertyName, Object value,
 			List<MatchMode> matchModes) throws MatchException, IllegalAccessException {
 		if (value == null){
-			boolean requiresSecondNull = requiresSecondNull(matchModes, value);
+			boolean requiresSecondNull = requiresSecondNull(matchModes, null);
 			if (requiresSecondNull){
 				criteria.add(Restrictions.isNull(propertyName));
 			}else{
-				//TODO
+				//this should not happen, should be handled as ignore before
 				logger.warn("Component type not yet implemented for (null) value: " + propertyName);
 				throw new MatchException("Component type not yet fully implemented for (null) value. Property: " + propertyName);
 			}
@@ -701,7 +701,7 @@ public class CdmGenericDaoImpl
 		}
 	}
 
-	private boolean matchNonComponentType(Criteria criteria,
+    private boolean matchNonComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher,
 			String propertyName,
 			Object value,
@@ -728,8 +728,8 @@ public class CdmGenericDaoImpl
 					@SuppressWarnings("rawtypes")
                     Class matchClass = value.getClass();
 					if (IMatchable.class.isAssignableFrom(matchClass)){
-						IMatchStrategyEqual valueMatchStrategy = DefaultMatchStrategy.NewInstance(matchClass);
-						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());;
+						IMatchStrategy valueMatchStrategy = fieldMatcher.getMatchStrategy() != null? fieldMatcher.getMatchStrategy() : DefaultMatchStrategy.NewInstance(matchClass);
+						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria);
 					}else{
 						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");

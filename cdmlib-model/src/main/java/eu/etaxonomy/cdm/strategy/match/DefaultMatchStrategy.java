@@ -64,10 +64,9 @@ public class DefaultMatchStrategy
 		return new DefaultMatchStrategy(matchClazz);
 	}
 
-    protected MatchMode defaultMatchMode = IMatchStrategyEqual.DEFAULT_MATCH_MODE;
-    protected MatchMode defaultCollectionMatchMode = IMatchStrategyEqual.DEFAULT_COLLECTION_MATCH_MODE;
-    protected MatchMode defaultMatchMatchMode = IMatchStrategyEqual.DEFAULT_MATCH_MATCH_MODE;
-
+    protected MatchMode defaultMatchMode = IMatchStrategy.DEFAULT_MATCH_MODE;
+    protected MatchMode defaultCollectionMatchMode = IMatchStrategy.DEFAULT_COLLECTION_MATCH_MODE;
+    protected MatchMode defaultMatchMatchMode = IMatchStrategy.DEFAULT_MATCH_MATCH_MODE;
 
 	//for some reason this does not work, always has null
 //    private MatchMode defaultMatchMode = IMatchStrategy.defaultMatchMode;
@@ -100,6 +99,11 @@ public class DefaultMatchStrategy
     public Matching getMatching() {
 		return matching;
 	}
+
+    @Override
+    public Matching getMatching(IMatchable instance) {
+        return getMatching();
+    }
 
 	@Override
     public void setMatchMode(String propertyName, MatchMode matchMode)

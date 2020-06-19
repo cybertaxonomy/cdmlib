@@ -59,4 +59,7 @@ public interface IMatchStrategy {
      */
     public Matching getMatching();
 
+    public Matching getMatching(IMatchable instance);
+
+
 }

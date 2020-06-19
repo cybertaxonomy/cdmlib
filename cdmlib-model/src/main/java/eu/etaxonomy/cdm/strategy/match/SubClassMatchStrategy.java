@@ -224,6 +224,18 @@ public class SubClassMatchStrategy<T extends IMatchable> extends StrategyBase
         throw new RuntimeException("getMatching not yet implemented in " + getClass().getName());
     }
 
+
+    @Override
+    public Matching getMatching(IMatchable instance) {
+        IMatchStrategy strategy = this.strategies.get(instance.getClass());
+        if (strategy != null){
+            return strategy.getMatching(instance);
+        }else{
+            //TODO maybe this.strategies.get is not enough, better we should check for each entry if instance.getClass() is instance of the class supported by the strategy
+            return getMatching();
+        }
+    }
+
 //    public Class getMatchClass() {
 //        //TODO or always return Set<Class>?
 //        //TODO needed at all?

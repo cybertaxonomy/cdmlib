@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
 @MappedSuperclass
-public class TimePeriod implements Cloneable, Serializable {
+public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
 
     private static final long serialVersionUID = 3405969418194981401L;
     private static final Logger logger = Logger.getLogger(TimePeriod.class);
@@ -369,7 +369,7 @@ public class TimePeriod implements Cloneable, Serializable {
      */
     @Transient
     public boolean isEmpty(){
-        if (StringUtils.isBlank(this.getFreeText()) && start == null  && end == null ){
+        if (StringUtils.isBlank(this.getFreeText()) && isEmpty(start) && isEmpty(end)){
             return true;
         }else{
             return false;
@@ -547,7 +547,23 @@ public class TimePeriod implements Cloneable, Serializable {
         return result;
     }
 
+
+    @Override
+    public boolean checkEmpty() {
+        //TODO unify isEmpty && checkEmpty
+        return isEmpty();
+    }
+
+    protected boolean isBlank(String str) {
+        return StringUtils.isBlank(str);
+    }
+
+    protected boolean isEmpty(Partial partial) {
+        return partial == null? true : partial.getFields().length == 0;
+    }
+
 //*********** EQUALS **********************************/
+
 
     @Override
     public boolean equals(Object obj) {

@@ -100,6 +100,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -1160,14 +1161,14 @@ public class NameServiceImpl
             try {
                 //references
                 if (name.getNomenclaturalReference()!= null){
-                    IParsedMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance();
                     Reference nomRef = name.getNomenclaturalReference();
+                    IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
                     List<Reference> matchingReferences = commonService.findMatching(nomRef, referenceMatcher);
                     if(matchingReferences.size() >= 1){
                         Reference duplicate = findBestMatching(nomRef, matchingReferences, referenceMatcher);
                         name.setNomenclaturalReference(duplicate);
                     }else if (nomRef.getInReference() != null){
-                        List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), referenceMatcher);
+                        List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), MatchStrategyFactory.NewParsedReferenceInstance(nomRef.getInReference()));
                         if(matchingInReferences.size() >= 1){
                             Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
                             name.setNomenclaturalReference(duplicate);
@@ -1217,7 +1218,7 @@ public class NameServiceImpl
     }
 
     private <M extends IMatchable> M findBestMatching(M matchable, List<M> matchingList,
-            IParsedMatchStrategy referenceMatcher) {
+            IMatchStrategy referenceMatcher) {
         // FIXME TODO resolve multiple duplications. Use first match for a start
         M bestMatching = matchingList.iterator().next();
         return bestMatching;

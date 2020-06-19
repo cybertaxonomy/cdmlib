@@ -34,7 +34,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 public class IdentifiableSource
-        extends OriginalSourceBase<IdentifiableEntity<?>>{
+        extends OriginalSourceBase<IdentifiableEntity<?>>
+        implements ICheckEmpty{
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")

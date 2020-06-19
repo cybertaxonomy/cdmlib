@@ -201,7 +201,7 @@ public class ExtendedTimePeriod extends TimePeriod {
     @Transient
     public boolean isEmpty(){
         boolean result = super.isEmpty();
-        if (result == true && extremeStart == null  && extremeEnd == null ){
+        if (result == true && isEmpty(extremeStart) && isEmpty(extremeEnd)){
             return true;
         }else{
             return false;

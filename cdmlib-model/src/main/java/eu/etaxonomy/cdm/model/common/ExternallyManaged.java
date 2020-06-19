@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 })
 @XmlRootElement(name = "ExternallyManaged")
 @Embeddable
-public class ExternallyManaged implements Cloneable, Serializable{
+public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
 
     private static final long serialVersionUID = -2254347420863435872L;
 
@@ -92,6 +93,14 @@ public class ExternallyManaged implements Cloneable, Serializable{
     @NotNull
     private ExternallyManagedImport importMethod;
 
+//************************* **********************/
+
+    @Override
+    public boolean checkEmpty() {
+        return authorityType == null && StringUtils.isBlank(externalId)
+                && externalLink == null && importMethod == null && lastRetrieved == null;
+    }
+
 // ************************ CLONE ***********************/
 
     @Override
@@ -100,4 +109,5 @@ public class ExternallyManaged implements Cloneable, Serializable{
 
         return result;
     }
+
 }
