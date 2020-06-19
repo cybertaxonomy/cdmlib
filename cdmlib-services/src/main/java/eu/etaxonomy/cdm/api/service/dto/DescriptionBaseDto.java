@@ -52,6 +52,7 @@ public class DescriptionBaseDto implements Serializable{
     }
 
     public DescriptionBaseDto(SpecimenOrObservationBase specimen, Set<DescriptiveDataSet> dataSets, boolean isDefault, boolean isImageGallery ){
+
         description = SpecimenDescription.NewInstance(specimen);
 
         specimenDto = DerivateDTO.newInstance(specimen);

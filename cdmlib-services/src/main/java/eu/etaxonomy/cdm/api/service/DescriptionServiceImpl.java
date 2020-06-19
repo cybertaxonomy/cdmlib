@@ -526,6 +526,7 @@ public class DescriptionServiceImpl
                 }
                 DescriptionBase desc = descriptionSpecimenMap.get(describedObjectUuid);
 //                description.setDescribedSpecimenOrObservation(null);
+
                 for (DescriptionElementBase element: elements){
                     desc.addElement(element);
                 }
@@ -575,6 +576,8 @@ public class DescriptionServiceImpl
             if (next instanceof CdmLinkSource){
                 CdmLinkSource source = (CdmLinkSource)next;
                 ICdmTarget target = source.getTarget();
+
+
             }
         }
         if (deleteResult.isOk() ){

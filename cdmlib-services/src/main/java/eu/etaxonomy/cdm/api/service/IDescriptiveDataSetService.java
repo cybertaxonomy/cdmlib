@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
+import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -153,14 +154,6 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
 
     /**
-     * Removes the description specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
-     * @param descriptionUuid the UUID of the description to delete
-     * @param descriptiveDataSetUuid the UUID of the data set to delete
-     * @return the result of the operation
-     */
-    public DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid);
-
-    /**
      * Loads all taxon nodes that match the filter set defined in the
      * {@link DescriptiveDataSet} given.
      * @param the data set which defined the taxon node filter
@@ -197,10 +190,21 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     DeleteResult delete(UUID datasetUuid, DeleteDescriptiveDataSetConfigurator config, IProgressMonitor monitor);
 
     /**
+     * Removes the descriptions specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
      * @param descriptionUuid
      * @param descriptiveDataSetUuid
      * @return
      */
-    DeleteResult removeDescriptions(List<UUID> descriptionUuids, UUID descriptiveDataSetUuid);
+    DeleteResult removeDescriptions(List<UUID> descriptionUuids, UUID descriptiveDataSetUuid, RemoveDescriptionsFromDescriptiveDataSetConfigurator config);
+
+    /**
+     * Removes the description specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
+     * @param descriptionUuid
+     * @param descriptiveDataSetUuid
+     * @param config
+     * @return
+     */
+    DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid,
+            RemoveDescriptionsFromDescriptiveDataSetConfigurator config);
 
 }

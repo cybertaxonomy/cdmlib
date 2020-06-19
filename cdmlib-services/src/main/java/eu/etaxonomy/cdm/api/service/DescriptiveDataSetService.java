@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
@@ -359,8 +360,10 @@ public class DescriptiveDataSetService
 
     @Override
     public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid){
+
         SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
-        return createSpecimenRowWrapper(SpecimenDescription.NewInstance(specimen), taxonNodeUuid, descriptiveDataSetUuid);
+        SpecimenDescription specimenDescription = findSpecimenDescription(descriptiveDataSetUuid, specimenUuid, true);
+        return createSpecimenRowWrapper(specimenDescription, taxonNodeUuid, descriptiveDataSetUuid);
     }
 
     @Override
@@ -421,7 +424,7 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid) {
+    public DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid, RemoveDescriptionsFromDescriptiveDataSetConfigurator config) {
         DeleteResult result = new DeleteResult();
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         DescriptionBase descriptionBase = descriptionService.load(descriptionUuid);
@@ -429,7 +432,7 @@ public class DescriptiveDataSetService
             result.setError();
         }
         else{
-            removeDescriptionFromDataSet(result, dataSet, descriptionBase);
+            removeDescriptionFromDataSet(result, dataSet, descriptionBase, config);
         }
         return result;
     }
@@ -437,7 +440,7 @@ public class DescriptiveDataSetService
 
     @Override
     @Transactional(readOnly=false)
-    public DeleteResult removeDescriptions(List<UUID> descriptionUuids, UUID descriptiveDataSetUuid) {
+    public DeleteResult removeDescriptions(List<UUID> descriptionUuids, UUID descriptiveDataSetUuid, RemoveDescriptionsFromDescriptiveDataSetConfigurator config) {
         DeleteResult result = new DeleteResult();
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
         List<DescriptionBase> descriptions = descriptionService.load(descriptionUuids, null);
@@ -446,7 +449,7 @@ public class DescriptiveDataSetService
         }
         else{
             for (DescriptionBase description: descriptions){
-                removeDescriptionFromDataSet(result, dataSet, description);
+                removeDescriptionFromDataSet(result, dataSet, description, config);
             }
 
 
@@ -460,7 +463,7 @@ public class DescriptiveDataSetService
      * @param description
      */
     private void removeDescriptionFromDataSet(DeleteResult result, DescriptiveDataSet dataSet,
-            DescriptionBase description) {
+            DescriptionBase description, RemoveDescriptionsFromDescriptiveDataSetConfigurator config) {
         if (description == null){
             return;
         }
@@ -478,7 +481,7 @@ public class DescriptiveDataSetService
             for (IndividualsAssociation individualsAssociation : associations) {
                 if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(description.getDescribedSpecimenOrObservation())){
                     dataSet.removeDescription(individualsAssociation.getInDescription());
-                    result.addDeletedObject(individualsAssociation.getInDescription());
+                    result.addUpdatedObject(individualsAssociation.getInDescription());
                 }
             }
         }
@@ -493,6 +496,10 @@ public class DescriptiveDataSetService
                     }
                 }
             }
+
+
+        }
+        if (!config.isOnlyRemoveDescriptionsFromDataSet()){
             DeleteResult deleteResult = descriptionService.deleteDescription(description);
             result.includeResult(deleteResult);
         }
