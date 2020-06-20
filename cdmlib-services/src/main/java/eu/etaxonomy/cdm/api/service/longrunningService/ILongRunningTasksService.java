@@ -19,9 +19,9 @@ import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
-import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 
 /**
  * @author cmathew
@@ -50,7 +50,7 @@ public interface ILongRunningTasksService {
      * @param datasetUuid the target dataset
      * @return the uuid of the monitor
      */
-    public UUID addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid);
+    public UUID addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrapper, UUID datasetUuid);
 
     /**
      * Monitored invocation of {@link IDescriptiveDataSetService#generatePolytomousKey(UUID, UUID))}

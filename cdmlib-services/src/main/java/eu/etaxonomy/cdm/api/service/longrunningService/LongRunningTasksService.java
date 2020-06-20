@@ -31,12 +31,12 @@ import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.util.CacheUpdater;
 import eu.etaxonomy.cdm.api.service.util.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
-import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 
 /**
  * @author k.luther
@@ -110,7 +110,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
 
 
     @Override
-    public UUID addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid){
+    public UUID addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrapper, UUID datasetUuid){
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {

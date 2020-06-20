@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -87,7 +88,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param datasetUuid the target dataset
      * @return the result of the operation
      */
-    public UpdateResult addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid);
+    public UpdateResult addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrapper, UUID datasetUuid);
 
     /**
      * Creates a specimen row wrapper object for the given description
@@ -134,7 +135,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * will be added to the description <b>if</b> a new one is created
      * @return either the found specimen description or a newly created one
      */
-    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid, boolean addDatasetSource);
+    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimenUuid, boolean addDatasetSource);
 
     /**
      * Returns all states for all supportedCategoricalEnumeration of this categorical feature
