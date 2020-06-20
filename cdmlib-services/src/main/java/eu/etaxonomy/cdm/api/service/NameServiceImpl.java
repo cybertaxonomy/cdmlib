@@ -74,6 +74,7 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -1154,15 +1155,22 @@ public class NameServiceImpl
     }
 
     @Override
-    public TaxonName parseName(String taxonNameString, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate) {
+    public TaxonName parseName(String stringToBeParsed, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate) {
+        TaxonName name = TaxonNameFactory.NewNameInstance(code, preferredRank);
+        return parseName(name, stringToBeParsed, preferredRank, true, doDeduplicate);
+    }
+
+    @Override
+    public TaxonName parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate){
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
-        TaxonName name = nonViralNameParser.parseReferencedName(taxonNameString, code, preferredRank);
+        nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
+        TaxonName name = nameToBeFilled;
         if(doDeduplicate) {
             try {
 //                Level sqlLogLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
 //                Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
                 //references
-                if (name.getNomenclaturalReference()!= null){
+                if (name.getNomenclaturalReference()!= null && !name.getNomenclaturalReference().isPersited()){
                     Reference nomRef = name.getNomenclaturalReference();
                     IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
                     List<Reference> matchingReferences = commonService.findMatching(nomRef, referenceMatcher);
@@ -1173,13 +1181,13 @@ public class NameServiceImpl
                         List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), MatchStrategyFactory.NewParsedReferenceInstance(nomRef.getInReference()));
                         if(matchingInReferences.size() >= 1){
                             Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
-                            name.setNomenclaturalReference(duplicate);
+                            nomRef.setInReference(duplicate);
                         }
                     }
                 }
                 //authors
                 IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
-                if (name.getCombinationAuthorship()!= null){
+                if (name.getCombinationAuthorship()!= null && !name.getCombinationAuthorship().isPersited()){
                     TeamOrPersonBase<?> author = name.getCombinationAuthorship();
                     List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
                     if(matchingAuthors.size() >= 1){
@@ -1188,7 +1196,7 @@ public class NameServiceImpl
                     }
                     //TODO nomRef author
                 }
-                if (name.getExCombinationAuthorship()!= null){
+                if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersited()){
                     TeamOrPersonBase<?> author = name.getExCombinationAuthorship();
                     List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
                     if(matchingAuthors.size() >= 1){
@@ -1196,7 +1204,7 @@ public class NameServiceImpl
                         name.setExCombinationAuthorship(duplicate);
                     }
                 }
-                if (name.getBasionymAuthorship()!= null){
+                if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersited()){
                     TeamOrPersonBase<?> author = name.getBasionymAuthorship();
                     List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
                     if(matchingAuthors.size() >= 1){
@@ -1204,7 +1212,7 @@ public class NameServiceImpl
                         name.setBasionymAuthorship(duplicate);
                     }
                 }
-                if (name.getExBasionymAuthorship()!= null){
+                if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersited()){
                     TeamOrPersonBase<?> author = name.getExBasionymAuthorship();
                     List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
                     if(matchingAuthors.size() >= 1){
