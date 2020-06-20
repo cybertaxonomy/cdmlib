@@ -637,5 +637,6 @@ public interface INameService
      */
     public TaxonName parseName(String taxonNameString, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate);
 
+    public TaxonName parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate);
 
 }
