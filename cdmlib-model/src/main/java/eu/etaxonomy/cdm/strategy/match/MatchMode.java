@@ -177,7 +177,7 @@ public enum MatchMode {
 	public boolean isIgnore(Object first){
 		if (this == IGNORE){
 			return true;
-		}else if (isNullOrEmpty(first) && (isXOrOneNull())){
+		}else if (isNullOrEmpty(first) && (isXOrOneNull() || isXOrFirstNull()) ){
 				return true;
 		}else{
 			return false;
@@ -209,7 +209,7 @@ public enum MatchMode {
 	}
 
 	/**
-	 * Returns true if a null value is required for retrieveing
+	 * Returns true if a null value is required for retrieving
 	 * matching objects
 	 * @param first
 	 * @return
@@ -221,7 +221,7 @@ public enum MatchMode {
 		}else if (isRequired()){
 			throw new MatchException("MatchMode " + this + " does not allow (null)");
 		}else{
-			return ! isXOrOneNull();
+			return ! isXOrOneNull() && ! isXOrFirstNull();
 		}
 	}
 
@@ -268,5 +268,12 @@ public enum MatchMode {
 	 */
 	public boolean isXOrOneNull(){
 		return (this == EQUAL_OR_ONE_NULL) || (this == MATCH_OR_ONE_NULL);
+	}
+
+	/**
+     * Returns <code>true</code>, if this match mode is of type XXX_OR_FIRST_NULL
+     */
+	public boolean  isXOrFirstNull(){
+	    return (this == EQUAL_OR_FIRST_NULL) || (this == MATCH_OR_FIRST_NULL);
 	}
 }
