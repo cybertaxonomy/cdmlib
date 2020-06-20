@@ -1159,6 +1159,8 @@ public class NameServiceImpl
         TaxonName name = nonViralNameParser.parseReferencedName(taxonNameString, code, preferredRank);
         if(doDeduplicate) {
             try {
+//                Level sqlLogLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
+//                Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
                 //references
                 if (name.getNomenclaturalReference()!= null){
                     Reference nomRef = name.getNomenclaturalReference();
@@ -1210,12 +1212,14 @@ public class NameServiceImpl
                         name.setExBasionymAuthorship(duplicate);
                     }
                 }
+//                Logger.getLogger("org.hibernate.SQL").setLevel(sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
         }
         return name;
     }
+
 
     private <M extends IMatchable> M findBestMatching(M matchable, List<M> matchingList,
             IMatchStrategy referenceMatcher) {
