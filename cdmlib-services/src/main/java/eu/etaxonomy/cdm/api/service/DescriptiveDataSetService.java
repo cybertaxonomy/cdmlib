@@ -369,7 +369,7 @@ public class DescriptiveDataSetService
     @Override
     public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid){
 
-        SpecimenOrObservationBase specimen = occurrenceService.load(specimenUuid);
+        SpecimenOrObservationBase<?> specimen = occurrenceService.load(specimenUuid);
         SpecimenDescription specimenDescription = findSpecimenDescription(descriptiveDataSetUuid, specimen, true);
         return createSpecimenRowWrapper(specimenDescription, taxonNodeUuid, descriptiveDataSetUuid);
     }
