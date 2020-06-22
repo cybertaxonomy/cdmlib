@@ -49,6 +49,17 @@ public class EntityInitStrategy {
      * @param extensions
      * @param basePathIsCollection
      */
+    public EntityInitStrategy extend(String basePath, EntityInitStrategy extensions, boolean basePathIsCollection){
+        return extend(basePath, extensions.getPropertyPaths(), basePathIsCollection);
+    }
+
+    /**
+     * Extends the property base bath by all property definitions in the <code>extensions</code>.
+     *
+     * @param basePath can be NUll or empty to just append the extensions to the init strategies.
+     * @param extensions
+     * @param basePathIsCollection
+     */
     public EntityInitStrategy extend(String basePath, List<String> extensions, boolean basePathIsCollection){
         for(String appendix : extensions){
             if(basePathIsCollection && (appendix.startsWith("$") || appendix.startsWith("*"))){

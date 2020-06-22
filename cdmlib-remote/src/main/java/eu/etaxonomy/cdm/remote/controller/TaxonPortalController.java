@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -116,8 +117,7 @@ public class TaxonPortalController extends TaxonController{
             "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "name.rank.representations",
-            "name.status.type.representations",
-
+            "name.status.type.representations"
 //            "descriptions" // TODO remove
 
             }));
@@ -216,6 +216,12 @@ public class TaxonPortalController extends TaxonController{
             "childNodes.taxon",
     }));
 
+    protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+            "taxonNodes.classification",
+            "taxonNodes.statusNote.*",
+            "acceptedTaxon.taxonNodes.classification",
+    }));
+
     private static final String termTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 
 
@@ -276,7 +282,7 @@ public class TaxonPortalController extends TaxonController{
         }
         ModelAndView mv = new ModelAndView();
 
-        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, TAXONNODE_INIT_STRATEGY);
+        Taxon taxon = getCdmBaseInstance(Taxon.class, taxonUuid, response, getTaxonNodeInitStrategy().getPropertyPaths());
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, taxonNodeService, response);
         taxon = checkExistsSubtreeAndAccess(taxon, subtree, NO_UNPUBLISHED, response);
 
@@ -334,6 +340,11 @@ public class TaxonPortalController extends TaxonController{
     @Override
     protected List<String> getTaxonDescriptionElementInitStrategy() {
         return DESCRIPTION_ELEMENT_INIT_STRATEGY.getPropertyPaths();
+    }
+
+    @Override
+    protected  EntityInitStrategy getTaxonNodeInitStrategy() {
+        return TAXONNODE_INIT_STRATEGY;
     }
 
     /**

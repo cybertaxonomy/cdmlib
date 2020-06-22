@@ -97,9 +97,10 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     @Autowired
     private ITermService termService;
 
-    protected static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String []{
-            "taxonNodes.classification","acceptedTaxon.taxonNodes.classification"
-    });
+    protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+            "taxonNodes.classification",
+            "acceptedTaxon.taxonNodes.classification"
+    }));
 
     public TaxonController(){
         super();
@@ -140,7 +141,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         }
         //TODO do we want to allow Synonyms at all? Maybe needs initialization
         EntityInitStrategy initStrategy = new EntityInitStrategy(getInitializationStrategy());
-        initStrategy.extend(null, TAXONNODE_INIT_STRATEGY, false);
+        initStrategy.extend(null, getTaxonNodeInitStrategy(), false);
         TaxonBase<?> taxonBase = getCdmBaseInstance(uuid, response, initStrategy.getPropertyPaths());
         //TODO we should move subtree check down to service or persistence
         TaxonNode subtree = getSubtreeOrError(subtreeUuid, nodeService, response);
@@ -249,7 +250,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         if (subtreeUuid != null){
             taxonBase = doGet(taxonUuid, subtreeUuid, request, response);
         }else{
-            taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, TAXONNODE_INIT_STRATEGY);
+            taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, getTaxonNodeInitStrategy().getPropertyPaths());
         }
         if(taxonBase instanceof Taxon){
             return ((Taxon)taxonBase).getTaxonNodes();
@@ -257,6 +258,10 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
         }
+    }
+
+    protected  EntityInitStrategy getTaxonNodeInitStrategy() {
+        return TAXONNODE_INIT_STRATEGY;
     }
 
     /**
