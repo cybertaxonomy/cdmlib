@@ -536,6 +536,13 @@ public class DescriptionServiceImpl
             try{
                 mergeResult = dao.merge(description, true);
                 result.addUpdatedObject( mergeResult.getMergedEntity());
+//                if (description instanceof SpecimenDescription){
+//                    result.addUpdatedObject(mergeResult.getMergedEntity().getDescribedSpecimenOrObservation());
+//                }else if (description instanceof TaxonDescription){
+//                    result.addUpdatedObject(((TaxonDescription)mergeResult.getMergedEntity()).getTaxon());
+//                }else if (description instanceof TaxonNameDescription){
+//                    result.addUpdatedObject(((TaxonNameDescription)mergeResult.getMergedEntity()).getTaxonName());
+//                }
             }catch(Exception e){
                 e.printStackTrace();
             }
