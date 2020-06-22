@@ -635,8 +635,8 @@ public interface INameService
      *      but the name itself is NOT deduplicated (this may change in future)
      * @return
      */
-    public TaxonName parseName(String taxonNameString, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate);
+    public UpdateResult parseName(String taxonNameString, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate);
 
-    public TaxonName parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate);
+    public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate);
 
 }

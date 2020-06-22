@@ -1155,13 +1155,14 @@ public class NameServiceImpl
     }
 
     @Override
-    public TaxonName parseName(String stringToBeParsed, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate) {
+    public UpdateResult parseName(String stringToBeParsed, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate) {
         TaxonName name = TaxonNameFactory.NewNameInstance(code, preferredRank);
         return parseName(name, stringToBeParsed, preferredRank, true, doDeduplicate);
     }
 
     @Override
-    public TaxonName parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate){
+    public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate){
+        UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
         nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
         TaxonName name = nameToBeFilled;
@@ -1225,7 +1226,8 @@ public class NameServiceImpl
                 throw new RuntimeException(e);
             }
         }
-        return name;
+        result.setCdmEntity(name);
+        return result;
     }
 
 

@@ -822,8 +822,10 @@ public class TaxonNodeServiceImpl
             name = nameService.load(taxonDto.getNameUuid());
 
         }else{
-            name = nameService.parseName(taxonDto.getTaxonNameString(),
+            UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
                     taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
+            result.addUpdatedObjects(tmpResult.getUpdatedObjects());
+            name = (TaxonName)tmpResult.getCdmEntity();
         }
         Reference sec = null;
         if (taxonDto.getSecUuid() != null ){
