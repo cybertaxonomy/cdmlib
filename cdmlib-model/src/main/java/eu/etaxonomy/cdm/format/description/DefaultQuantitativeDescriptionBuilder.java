@@ -20,7 +20,7 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 
 	@Override
 	protected TextData doBuild(Map<StatisticalMeasure,BigDecimal> measures, MeasurementUnit mUnit, List<Language> languages){
-		StringBuilder QuantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
+		StringBuilder quantitativeDescription = new StringBuilder(); // this StringBuilder is used to concatenate the different words of the description before saving it in the TextData
 		TextData textData = TextData.NewInstance(); // TextData that will contain the description and the language corresponding
 		// booleans indicating whether a kind of value is present or not and the float that will eventually hold the value
 
@@ -86,36 +86,36 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 
 		// depending on the different associations of values, a sentence is built
 		if (max && min) {
-			QuantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
+			quantitativeDescription.append(space + from + space + minvalue + space + to + space + maxvalue + space + unit);
 		}
 		else if (min) {
-			QuantitativeDescription.append(space + from + space + minvalue + space + unit);
+			quantitativeDescription.append(space + from + space + minvalue + space + unit);
 		}
 		else if (max) {
-			QuantitativeDescription.append(space + up_To + space + maxvalue + space + unit);
+			quantitativeDescription.append(space + up_To + space + maxvalue + space + unit);
 		}
 		if ((max||min)&&(lowerb||upperb)) {
-			QuantitativeDescription.append(separator); // merge with below ?
+			quantitativeDescription.append(separator); // merge with below ?
 		}
 		if ((lowerb||upperb)&&(min||max)) {
-			QuantitativeDescription.append(space + most_Frequently);
+			quantitativeDescription.append(space + most_Frequently);
 		}
 		if (upperb && lowerb) {
-			QuantitativeDescription.append(space + from + space + lowerbvalue + space + to + space + upperbvalue + space + unit);
+			quantitativeDescription.append(space + from + space + lowerbvalue + space + to + space + upperbvalue + space + unit);
 		}
 		else if (lowerb) {
-			QuantitativeDescription.append(space + from + space + lowerbvalue + space + unit);
+			quantitativeDescription.append(space + from + space + lowerbvalue + space + unit);
 		}
 		else if (upperb) {
-			QuantitativeDescription.append(space + up_To + space + upperbvalue + space + unit);
+			quantitativeDescription.append(space + up_To + space + upperbvalue + space + unit);
 		}
 		if (((max||min)&&(average))||((lowerb||upperb)&&(average))) {
-			QuantitativeDescription.append(separator);
+			quantitativeDescription.append(separator);
 		}
 		if (average) {
-			QuantitativeDescription.append(space + averagevalue + space + unit + space + on_Average);
+			quantitativeDescription.append(space + averagevalue + space + unit + space + on_Average);
 			if (sd) {
-				QuantitativeDescription.append("("+ more_Or_Less + space + sdvalue + ")");
+				quantitativeDescription.append("("+ more_Or_Less + space + sdvalue + ")");
 			}
 		}
 
