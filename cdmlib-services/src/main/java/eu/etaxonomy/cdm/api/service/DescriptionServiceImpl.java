@@ -496,9 +496,9 @@ public class DescriptionServiceImpl
 //
     @Override
     @Transactional(readOnly = false)
-    public List<MergeResult<DescriptionBase>> mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid, boolean returnTransientEntity) {
-        List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
-
+    public UpdateResult mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid) {
+//        List<<DescriptionBase>> mergedObjects = new ArrayList();
+        UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
         Set<DescriptionBase> descriptionsOfDataSet = dataSet.getDescriptions();
         HashMap<UUID, DescriptionBase> descriptionSpecimenMap = new HashMap();
@@ -508,7 +508,7 @@ public class DescriptionServiceImpl
                 descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), descriptionBase);
             }
         }
-
+        MergeResult<DescriptionBase> mergeResult = null;
         for(DescriptionBaseDto descDto : descriptions) {
             DescriptionBase description = descDto.getDescription();
             UUID describedObjectUuid = null;
@@ -534,14 +534,15 @@ public class DescriptionServiceImpl
                 description = desc;
             }
             try{
-                mergedObjects.add(dao.merge(description, returnTransientEntity));
+                mergeResult = dao.merge(description, true);
+                result.addUpdatedObject( mergeResult.getMergedEntity());
             }catch(Exception e){
                 e.printStackTrace();
             }
 
         }
 
-        return mergedObjects;
+        return result;
     }
 
     /**

@@ -626,8 +626,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param returnTransientEntity
      * @return
      */
-    public List<MergeResult<DescriptionBase>> mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid,
-            boolean returnTransientEntity);
+    public UpdateResult mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid);
 
 
     /**
