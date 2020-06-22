@@ -82,7 +82,7 @@ public class Reference2SourceMover  extends SchemaUpdaterStepBase {
             String detail = rs.getString(detailAttr);
 
             sql = "INSERT INTO @@OriginalSourceBase@@ (DTYPE, sourceType, uuid, id, citation_id, citationMicroReference, createdBy_id, created)"
-               + " VALUES ('IdentifiableSource', 'PTS','"+UUID.randomUUID()+"'," + id + ", " + citationId + "," + nullSafeParam(detail) + "," + createdById + ",'" + this.getNowString() + "')";
+               + " VALUES ('DescriptionElementSource', 'PTS','"+UUID.randomUUID()+"'," + id + ", " + citationId + "," + nullSafeParam(detail) + "," + createdById + ",'" + this.getNowString() + "')";
             datasource.executeUpdate(caseType.replaceTableNames(sql));
 
             sql = "UPDATE " + caseType.transformTo(tableName)

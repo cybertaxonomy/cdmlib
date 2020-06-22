@@ -62,10 +62,10 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -163,7 +163,7 @@ public class TaxonNode
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
-    private IdentifiableSource source;
+    private DescriptionElementSource source;
 
 //    @XmlElement(name = "reference")
 //    @XmlIDREF
@@ -334,10 +334,10 @@ public class TaxonNode
         checkNullSource();
     }
 
-    public IdentifiableSource getSource() {
+    public DescriptionElementSource getSource() {
         return source;
     }
-    public void setSource(IdentifiableSource source) {
+    public void setSource(DescriptionElementSource source) {
         this.source = source;
     }
 
@@ -347,9 +347,9 @@ public class TaxonNode
         }
     }
 
-    private IdentifiableSource getSource(boolean createIfNotExist){
+    private DescriptionElementSource getSource(boolean createIfNotExist){
         if (this.source == null && createIfNotExist){
-            this.source = IdentifiableSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
         }
         return source;
     }
