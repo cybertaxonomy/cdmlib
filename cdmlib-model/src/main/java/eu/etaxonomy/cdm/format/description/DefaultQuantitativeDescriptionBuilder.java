@@ -9,7 +9,6 @@ import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.description.TextFormat;
 
 /**
  * @author m.venin
@@ -119,8 +118,8 @@ public class DefaultQuantitativeDescriptionBuilder extends AbstractQuantitativeD
 			}
 		}
 
-		textData.putText(languages.get(0), QuantitativeDescription.toString()); // which language should be put here ?
-		textData.setFormat(TextFormat.NewInstance(null, "Text",null ));
+		textData.putText((languages == null || languages.isEmpty())? Language.DEFAULT() : languages.get(0), quantitativeDescription.toString()); // which language should we put here ?
+//		textData.setFormat(TextFormat.NewInstance(null, "Text",null ));
 
 		return textData;
 	}

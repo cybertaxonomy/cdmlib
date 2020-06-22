@@ -663,11 +663,11 @@ public class DescriptiveDataSetService
                 clone = descriptionElementBase.clone(newDesription);
                 clone.getSources().forEach(source -> {
                     if(descriptionElementBase instanceof CategoricalData){
-                        TextData label = new DefaultCategoricalDescriptionBuilder().build((CategoricalData) descriptionElementBase, null);
+                        TextData label = new DefaultCategoricalDescriptionBuilder().build((CategoricalData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
                         source.setOriginalNameString(label.getText(Language.DEFAULT()));
                     }
                     else if(descriptionElementBase instanceof QuantitativeData){
-                        TextData label = new DefaultQuantitativeDescriptionBuilder().build((QuantitativeData) descriptionElementBase, null);
+                        TextData label = new DefaultQuantitativeDescriptionBuilder().build((QuantitativeData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
                         source.setOriginalNameString(label.getText(Language.DEFAULT()));
                     }
                 });
