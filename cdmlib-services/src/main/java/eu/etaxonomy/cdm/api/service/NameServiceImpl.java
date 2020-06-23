@@ -54,6 +54,8 @@ import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -1170,6 +1172,9 @@ public class NameServiceImpl
             try {
 //                Level sqlLogLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
 //                Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
+
+                TeamOrPersonBase<?> author = name.getCombinationAuthorship();
                 //references
                 if (name.getNomenclaturalReference()!= null && !name.getNomenclaturalReference().isPersited()){
                     Reference nomRef = name.getNomenclaturalReference();
@@ -1184,44 +1189,32 @@ public class NameServiceImpl
                             Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
                             nomRef.setInReference(duplicate);
                         }
+                        author = deduplicateAuthor(nomRef.getAuthorship());
+                        nomRef.setAuthorship(author);
                     }
                 }
+                Reference nomRef = name.getNomenclaturalReference();
                 //authors
                 IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
                 if (name.getCombinationAuthorship()!= null && !name.getCombinationAuthorship().isPersited()){
-                    TeamOrPersonBase<?> author = name.getCombinationAuthorship();
-                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
-                    if(matchingAuthors.size() >= 1){
-                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
-                        name.setCombinationAuthorship(duplicate);
+                    //use same nom.ref. author if possible (should always be possible if nom.ref. exists)
+                    if (nomRef != null && nomRef.getAuthorship() != null){
+                        if(authorMatcher.invoke(name.getCombinationAuthorship(), nomRef.getAuthorship()).isSuccessful()){
+                            name.setCombinationAuthorship(nomRef.getAuthorship());
+                        }
                     }
-                    //TODO nomRef author
+                    name.setCombinationAuthorship(deduplicateAuthor(name.getCombinationAuthorship()));
                 }
                 if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersited()){
-                    TeamOrPersonBase<?> author = name.getExCombinationAuthorship();
-                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
-                    if(matchingAuthors.size() >= 1){
-                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
-                        name.setExCombinationAuthorship(duplicate);
-                    }
+                    name.setExCombinationAuthorship(deduplicateAuthor(name.getExCombinationAuthorship()));
                 }
                 if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersited()){
-                    TeamOrPersonBase<?> author = name.getBasionymAuthorship();
-                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
-                    if(matchingAuthors.size() >= 1){
-                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
-                        name.setBasionymAuthorship(duplicate);
-                    }
+                    name.setBasionymAuthorship(deduplicateAuthor(name.getBasionymAuthorship()));
                 }
                 if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersited()){
-                    TeamOrPersonBase<?> author = name.getExBasionymAuthorship();
-                    List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(author, authorMatcher);
-                    if(matchingAuthors.size() >= 1){
-                        TeamOrPersonBase<?> duplicate = findBestMatching(author, matchingAuthors, authorMatcher);
-                        name.setExBasionymAuthorship(duplicate);
-                    }
+                    name.setExBasionymAuthorship(deduplicateAuthor(name.getExBasionymAuthorship()));
                 }
-//                Logger.getLogger("org.hibernate.SQL").setLevel(sqlLogLevel);
+//              Logger.getLogger("org.hibernate.SQL").setLevel(sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
             }
@@ -1230,10 +1223,42 @@ public class NameServiceImpl
         return result;
     }
 
+    private TeamOrPersonBase<?> deduplicateAuthor(TeamOrPersonBase<?> authorship) throws MatchException {
+        if (authorship == null){
+            return null;
+        }
+        IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
+        List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(authorship, authorMatcher);
+        if(matchingAuthors.size() >= 1){
+            TeamOrPersonBase<?> duplicate = findBestMatching(authorship, matchingAuthors, authorMatcher);
+            return duplicate;
+        }else{
+            if (authorship instanceof Team){
+                deduplicateTeam((Team)authorship);
+            }
+            return authorship;
+        }
+    }
+
+    private void deduplicateTeam(Team team) throws MatchException {
+        List<Person> members = team.getTeamMembers();
+        IParsedMatchStrategy personMatcher = MatchStrategyFactory.NewParsedPersonInstance();
+        for (int i =0; i< members.size(); i++){
+            Person person = CdmBase.deproxy(members.get(i));
+            List<Person> matchingPersons = commonService.findMatching(person, personMatcher);
+            if (matchingPersons.size() > 0){
+                person = findBestMatching(person, matchingPersons, personMatcher);
+                members.set(i, person);
+            }
+        }
+    }
 
     private <M extends IMatchable> M findBestMatching(M matchable, List<M> matchingList,
             IMatchStrategy referenceMatcher) {
         // FIXME TODO resolve multiple duplications. Use first match for a start
+        if(matchingList.isEmpty()){
+            return null;
+        }
         M bestMatching = matchingList.iterator().next();
         return bestMatching;
     }
