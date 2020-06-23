@@ -1163,7 +1163,8 @@ public class NameServiceImpl
     }
 
     @Override
-    public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate){
+    public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
+            boolean doEmpty, boolean doDeduplicate){
         UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
         nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
@@ -1173,8 +1174,6 @@ public class NameServiceImpl
 //                Level sqlLogLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
 //                Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
-
-                TeamOrPersonBase<?> author = name.getCombinationAuthorship();
                 //references
                 if (name.getNomenclaturalReference()!= null && !name.getNomenclaturalReference().isPersited()){
                     Reference nomRef = name.getNomenclaturalReference();
@@ -1183,13 +1182,15 @@ public class NameServiceImpl
                     if(matchingReferences.size() >= 1){
                         Reference duplicate = findBestMatching(nomRef, matchingReferences, referenceMatcher);
                         name.setNomenclaturalReference(duplicate);
-                    }else if (nomRef.getInReference() != null){
-                        List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), MatchStrategyFactory.NewParsedReferenceInstance(nomRef.getInReference()));
-                        if(matchingInReferences.size() >= 1){
-                            Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
-                            nomRef.setInReference(duplicate);
+                    }else{
+                        if (nomRef.getInReference() != null){
+                            List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), MatchStrategyFactory.NewParsedReferenceInstance(nomRef.getInReference()));
+                            if(matchingInReferences.size() >= 1){
+                                Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
+                                nomRef.setInReference(duplicate);
+                            }
                         }
-                        author = deduplicateAuthor(nomRef.getAuthorship());
+                        TeamOrPersonBase<?> author = deduplicateAuthor(nomRef.getAuthorship());
                         nomRef.setAuthorship(author);
                     }
                 }
