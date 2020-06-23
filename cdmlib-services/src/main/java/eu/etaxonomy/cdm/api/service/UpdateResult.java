@@ -90,7 +90,6 @@ public class UpdateResult implements Serializable{
 
     /**
      * The highest exception that occurred during delete (if any).
-     * @return
      */
     public Collection<Exception> getExceptions() {
         return exceptions;
@@ -231,9 +230,7 @@ public class UpdateResult implements Serializable{
     }
     public void setCdmEntity(CdmBase cdmBase) {
         this.cdmEntity = cdmBase;
-
     }
-
 
     public CdmBase getCdmEntity(){
         return cdmEntity;
@@ -249,7 +246,4 @@ public class UpdateResult implements Serializable{
     public void addUnChangedObject(CdmBase unchangedObject) {
         this.unchangedObjects.add(unchangedObject);
     }
-
-
-
 }

@@ -58,9 +58,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
 @MappedSuperclass
-public class TimePeriod implements Cloneable, Serializable {
+public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
+
     private static final long serialVersionUID = 3405969418194981401L;
     private static final Logger logger = Logger.getLogger(TimePeriod.class);
+
     public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
     public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
     public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
@@ -92,59 +94,26 @@ public class TimePeriod implements Cloneable, Serializable {
 
 // ********************** FACTORY METHODS **************************/
 
-    /**
-     * Factory method
-     * @return
-     */
     public static final TimePeriod NewInstance(){
         return new TimePeriod();
     }
 
-
-    /**
-     * Factory method
-     * @return
-     */
     public static final TimePeriod NewInstance(Partial startDate){
-        return new TimePeriod(startDate);
+        return new TimePeriod(startDate, null, null);
     }
 
-
-    /**
-     * Factory method
-     * @return
-     */
     public static final TimePeriod NewInstance(Partial startDate, Partial endDate){
-        return new TimePeriod(startDate, endDate);
+        return new TimePeriod(startDate, endDate, null);
     }
 
-
-    /**
-     * Factory method
-     * @return
-     */
     public static final TimePeriod NewInstance(Integer year){
         Integer endYear = null;
         return NewInstance(year, endYear);
     }
 
-    /**
-     * Factory method
-     * @return
-     */
     public static final TimePeriod NewInstance(Integer startYear, Integer endYear){
-        Partial startDate = null;
-        Partial endDate = null;
-        if (startYear != null){
-            startDate = new Partial().with(YEAR_TYPE, startYear);
-        }
-        if (endYear != null){
-            endDate = new Partial().with(YEAR_TYPE, endYear);
-        }
-        return new TimePeriod(startDate, endDate);
+        return new TimePeriod(yearToPartial(startYear), yearToPartial(endYear), null);
     }
-
-
 
     /**
      * Factory method to create a TimePeriod from a <code>Calendar</code>. The Calendar is stored as the starting instant.
@@ -168,15 +137,7 @@ public class TimePeriod implements Cloneable, Serializable {
      * @return
      */
     public static final TimePeriod NewInstance(Calendar startCalendar, Calendar endCalendar){
-        Partial startDate = null;
-        Partial endDate = null;
-        if (startCalendar != null){
-            startDate = calendarToPartial(startCalendar);
-        }
-        if (endCalendar != null){
-            endDate = calendarToPartial(endCalendar);
-        }
-        return new TimePeriod(startDate, endDate);
+        return new TimePeriod(calendarToPartial(startCalendar), calendarToPartial(endCalendar), null);
     }
 
     /**
@@ -184,38 +145,18 @@ public class TimePeriod implements Cloneable, Serializable {
      * @return TimePeriod
      */
     public static final TimePeriod NewInstance(Date startDate, Date endDate){
-        //TODO conversion untested, implemented according to http://www.roseindia.net/java/java-conversion/datetocalender.shtml
-        Calendar calStart = null;
-        Calendar calEnd = null;
-        if (startDate != null){
-            calStart = Calendar.getInstance();
-            calStart.setTime(startDate);
-        }
-        if (endDate != null){
-            calEnd = Calendar.getInstance();
-            calEnd.setTime(endDate);
-        }
-        return NewInstance(calStart, calEnd);
+        return NewInstance(dateToPartial(startDate), dateToPartial(endDate));
     }
-
 
     /**
      * Factory method to create a TimePeriod from a starting and an ending <code>ReadableInstant</code>(e.g. <code>DateTime</code>)
      * @return
      */
     public static final TimePeriod NewInstance(ReadableInstant startInstant, ReadableInstant endInstant){
-        Partial startDate = null;
-        Partial endDate = null;
-        if (startInstant != null){
-            startDate = readableInstantToPartial(startInstant);
-        }
-        if (endInstant != null){
-            endDate = readableInstantToPartial(endInstant);
-        }
-        return new TimePeriod(startDate, endDate);
+        return new TimePeriod(readableInstantToPartial(startInstant), readableInstantToPartial(endInstant), null);
     }
 
-//****************** CONVERTERS ******************/
+//****************** PARTIAL CONVERTERS ******************/
 
     /**
      * Transforms a {@link Calendar} into a <code>Partial</code>
@@ -223,25 +164,77 @@ public class TimePeriod implements Cloneable, Serializable {
      * @return
      */
     public static Partial calendarToPartial(Calendar calendar){
-        LocalDate ld = new LocalDate(calendar);
-        Partial partial = new Partial(ld);
-        return partial;
+        if (calendar == null){
+            return null;
+        }else{
+            LocalDate ld = new LocalDate(calendar);
+            Partial partial = new Partial(ld);
+            return partial;
+        }
     }
 
     /**
      * Transforms a {@link ReadableInstant} into a <code>Partial</code>
-     * @param calendar
-     * @return
      */
     public static Partial readableInstantToPartial(ReadableInstant readableInstant){
-        DateTime dt = readableInstant.toInstant().toDateTime();
-        LocalDate ld = dt.toLocalDate();
-        int hour = dt.hourOfDay().get();
-        int minute = dt.minuteOfHour().get();
-        Partial partial = new Partial(ld).with(HOUR_TYPE, hour).with(MINUTE_TYPE, minute);
-        return partial;
+        if (readableInstant == null){
+            return null;
+        }else{
+            DateTime dt = readableInstant.toInstant().toDateTime();
+            LocalDate ld = dt.toLocalDate();
+            int hour = dt.hourOfDay().get();
+            int minute = dt.minuteOfHour().get();
+            Partial partial = new Partial(ld).with(HOUR_TYPE, hour).with(MINUTE_TYPE, minute);
+            return partial;
+        }
     }
 
+    /**
+     * Transforms a {@link Date} into a <code>Partial</code>.
+     */
+    public static Partial dateToPartial(Date date){
+        //TODO conversion untested, implemented according to http://www.roseindia.net/java/java-conversion/datetocalender.shtml
+        if (date != null){
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return calendarToPartial(cal);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Transforms an Integer into a <code>Partial</code> with the Integer value
+     * being the year of the Partial.
+     */
+    public static Partial yearToPartial(Integer year){
+        if (year != null){
+            return new Partial().with(YEAR_TYPE, year);
+        }else{
+            return null;
+        }
+    }
+    public static Partial monthToPartial(Integer month){
+        if (month != null){
+            return new Partial().with(MONTH_TYPE, month);
+        }else{
+            return null;
+        }
+    }
+    public static Partial monthAndDayToPartial(Integer month, Integer day){
+        if (month != null || day != null){
+            Partial result = new Partial();
+            if (month != null){
+                result = result.with(MONTH_TYPE, month);
+            }
+            if (day != null){
+                result = result.with(DAY_TYPE, day);
+            }
+            return result;
+        }else{
+            return null;
+        }
+    }
 
     public static Integer getPartialValue(Partial partial, DateTimeFieldType type){
         if (partial == null || ! partial.isSupported(type)){
@@ -251,8 +244,7 @@ public class TimePeriod implements Cloneable, Serializable {
         }
     }
 
-
-//****************** CONVERTERS ******************/
+//****************** TIME PERIOD CONVERTERS ******************/
 
     public static TimePeriod fromVerbatim(VerbatimTimePeriod verbatimTimePeriod){
         if (verbatimTimePeriod == null){
@@ -281,22 +273,15 @@ public class TimePeriod implements Cloneable, Serializable {
         return toVerbatim(this);
     }
 
-
-
 //*********************** CONSTRUCTOR *********************************/
 
-    /**
-     * Constructor
-     */
     protected TimePeriod() {
         super();
     }
-    public TimePeriod(Partial startDate) {
-        start=startDate;
-    }
-    public TimePeriod(Partial startDate, Partial endDate) {
-        start = startDate;
-        end = endDate;
+    protected TimePeriod(Partial startDate, Partial endDate, String freeText) {
+        this.start = startDate;
+        this.end = endDate;
+        this.freeText = freeText;
     }
 
 //******************* GETTER / SETTER ************************************/
@@ -332,8 +317,6 @@ public class TimePeriod implements Cloneable, Serializable {
     public String getFreeText() {
         return freeText;
     }
-
-
     /**
      * Use {@link #parseSingleDate(String)} for public use.
      * @param freeText the freeText to set
@@ -341,7 +324,6 @@ public class TimePeriod implements Cloneable, Serializable {
     public void setFreeText(String freeText) {
         this.freeText = freeText;
     }
-
 
     /**
      * Returns the continued flag (internally stored as a constant
@@ -365,7 +347,6 @@ public class TimePeriod implements Cloneable, Serializable {
         }
     }
 
-
 //******************* Transient METHODS ************************************/
 
     /**
@@ -384,18 +365,16 @@ public class TimePeriod implements Cloneable, Serializable {
     }
 
     /**
-     * True, if there is no start date and no end date and no freetext representation exists.
-     * @return
+     * True, if there is no start date, no end date and no freetext representation.
      */
     @Transient
     public boolean isEmpty(){
-        if (StringUtils.isBlank(this.getFreeText()) && start == null  && end == null ){
+        if (StringUtils.isBlank(this.getFreeText()) && isEmpty(start) && isEmpty(end)){
             return true;
         }else{
             return false;
         }
     }
-
 
     @Transient
     public Integer getStartYear(){
@@ -451,19 +430,6 @@ public class TimePeriod implements Cloneable, Serializable {
         return setEndField(day, DAY_TYPE);
     }
 
-    public static Partial setPartialField(Partial partial, Integer value, DateTimeFieldType type)
-            throws IndexOutOfBoundsException{
-        if (partial == null){
-            partial = new Partial();
-        }
-        if (value == null){
-            return partial.without(type);
-        }else{
-            checkFieldValues(value, type, partial);
-            return partial.with(type, value);
-        }
-    }
-
     @Transient
     private TimePeriod setStartField(Integer value, DateTimeFieldType type)
             throws IndexOutOfBoundsException{
@@ -477,6 +443,20 @@ public class TimePeriod implements Cloneable, Serializable {
         end = setPartialField(getEnd(), value, type);
         return this;
     }
+
+    public static Partial setPartialField(Partial partial, Integer value, DateTimeFieldType type)
+            throws IndexOutOfBoundsException{
+        if (partial == null){
+            partial = new Partial();
+        }
+        if (value == null){
+            return partial.without(type);
+        }else{
+            checkFieldValues(value, type, partial);
+            return partial.with(type, value);
+        }
+    }
+
 
 // ******************************** internal methods *******************************/
 
@@ -511,7 +491,6 @@ public class TimePeriod implements Cloneable, Serializable {
             throw new IndexOutOfBoundsException("Value must be between 1 and " +  max);
         }
     }
-
 
 //**************************** to String ****************************************
 
@@ -568,7 +547,23 @@ public class TimePeriod implements Cloneable, Serializable {
         return result;
     }
 
+
+    @Override
+    public boolean checkEmpty() {
+        //TODO unify isEmpty && checkEmpty
+        return isEmpty();
+    }
+
+    protected boolean isBlank(String str) {
+        return StringUtils.isBlank(str);
+    }
+
+    protected boolean isEmpty(Partial partial) {
+        return partial == null? true : partial.getFields().length == 0;
+    }
+
 //*********** EQUALS **********************************/
+
 
     @Override
     public boolean equals(Object obj) {
@@ -589,7 +584,7 @@ public class TimePeriod implements Cloneable, Serializable {
         if (! CdmUtils.nullSafeEqual(this.freeText, that.freeText)){
             return false;
         }
-        //see comment in verbatimTimePeriod#equals
+        //see comment in VerbatimTimePeriod#equals
         String thisVerbatimDate = (this instanceof VerbatimTimePeriod)?
                 ((VerbatimTimePeriod)this).getVerbatimDate():null;
         String thatVerbatimDate = (obj instanceof VerbatimTimePeriod)?
@@ -597,6 +592,23 @@ public class TimePeriod implements Cloneable, Serializable {
         if (! CdmUtils.nullSafeEqual(thisVerbatimDate, thatVerbatimDate)){
             return false;
         }
+        //see comment in ExtendedTimePeriod#equals
+        Partial thisExtremeStart = (this instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)this).getExtremeStart():null;
+        Partial thatExtremeStart = (obj instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)obj).getExtremeStart():null;
+        if (! CdmUtils.nullSafeEqual(thisExtremeStart, thatExtremeStart)){
+            return false;
+        }
+
+        Partial thisExtremeEnd = (this instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)this).getExtremeEnd():null;
+        Partial thatExtremeEnd = (obj instanceof ExtendedTimePeriod)?
+                ((ExtendedTimePeriod)obj).getExtremeEnd():null;
+        if (! CdmUtils.nullSafeEqual(thisExtremeEnd, thatExtremeEnd)){
+            return false;
+        }
+
         return true;
     }
 
@@ -610,11 +622,10 @@ public class TimePeriod implements Cloneable, Serializable {
         return hashCode;
     }
 
-
 //*********** CLONE **********************************/
 
     @Override
-    public Object clone()  {
+    public TimePeriod clone()  {
         try {
             TimePeriod result = (TimePeriod)super.clone();
             copyCloned(this, result);
@@ -625,10 +636,6 @@ public class TimePeriod implements Cloneable, Serializable {
         }
     }
 
-
-    /**
-     * @param result
-     */
     protected static void copyCloned(TimePeriod origin, TimePeriod target) {
         target.setStart(origin.start);   //DateTime is immutable
         target.setEnd(origin.end);

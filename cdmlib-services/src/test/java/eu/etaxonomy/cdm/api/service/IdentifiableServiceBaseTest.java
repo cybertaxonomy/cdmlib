@@ -53,9 +53,9 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 @Transactional(TransactionMode.DISABLED)
 public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IdentifiableServiceBaseTest.class);
 
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(IdentifiableServiceBaseTest.class);
 
 	@SpringBeanByType
 	private INameService nameService;

@@ -133,7 +133,6 @@ public final class DOI implements java.io.Serializable{
 			doi = matcher.replaceFirst("").trim();
 		}
 
-
 		//replace URI prefix
 		if (doi.startsWith(HTTP_DOI_ORG)){
 			doi = doi.replaceFirst(HTTP_DOI_ORG, "");
@@ -145,14 +144,11 @@ public final class DOI implements java.io.Serializable{
             doi = doi.replaceFirst(OLD_DOI_ORG, "");
         }
 
-
-
 		//handle URN prefix
 		if (doi.startsWith("urn:doi:")){
 			doi = doi.replaceFirst("urn:doi:","");
 			isUrn = true;
 		}
-
 
 		//now we should have the pure doi
 		if (doi.length() > MAX_LENGTH){

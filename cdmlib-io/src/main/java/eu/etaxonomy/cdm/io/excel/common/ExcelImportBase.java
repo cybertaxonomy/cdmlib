@@ -249,6 +249,10 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
         }
     }
 
+    protected String getValue(STATE state, String key){
+        key = state.getConfig().replaceColumnLabel(key);
+        return getValue(state.getOriginalRecord(), key);
+    }
 
     /**
      * Returns the taxon for the given CDM uuid. If no taxon exists for the given id
@@ -271,7 +275,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             String colNameCache, String colNameTitleCache, String colTaxonTitleCache,
             Class<T> clazz, String line) {
 
-        Map<String, String> record = state.getOriginalRecord();
+        Map<String, String> record = getRecord(state);
         String strUuidTaxon = record.get(colTaxonUuid);
         if (strUuidTaxon != null){
             UUID uuidTaxon;
@@ -303,6 +307,11 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
             state.getResult().addWarning(message, null, line);
             return null;
         }
+    }
+
+    protected Map<String, String> getRecord(STATE state) {
+        Map<String, String> record = state.getOriginalRecord();
+        return record;
     }
 
 

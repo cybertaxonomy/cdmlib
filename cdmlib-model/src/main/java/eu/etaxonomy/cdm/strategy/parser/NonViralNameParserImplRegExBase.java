@@ -193,7 +193,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static int authorSeparatorMaxPosition = 3;  //author may have a maximum of 2 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013]"+oWs+"|\\.?" + oWs + "&(?!\\s*al\\.)" + oWs + ")";
-    protected static String pSeriesPart = ",?" + fWs + "([sS][e\u00E9]r("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|(Pt|Sect)\\.\\s*\\d{1,2}),?";  //Pt. (Part) and Sect. (Section) currently handled as series part, which is part of title, may be handled different later
+    protected static String pSeriesPart = ",?" + fWs + "(([sS][e\u00E9]r|сер)("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|(Pt|Sect)\\.\\s*\\d{1,2}),?";  //Pt. (Part) and Sect. (Section) currently handled as series part, which is part of title, may be handled different later
 
     protected static String authorPrefix = "(Da(lla)?|Van|La|De)" + oWs; //should not include words allowed in first part of reference title
     protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|[-\u2013]"+word+")?"; //word with optional apostrophe in between
@@ -212,7 +212,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     public static String pEdition = nr2;
 
     protected static String pVolPart = volumeSeparator +  volume;
-    protected static String pEditionPart = "(" + editionSeparator +  pEdition +"[A-Z]?|,\\s*(jubilee|nouv\\.) ed\\.)";
+    protected static String pEditionPart = "(" + editionSeparator +  pEdition +"([A-Z]|\\s*bis)?|,\\s*(jubilee|nouv\\.) ed\\.)";
     protected static String pEditionVolPart = pEditionPart + fWs + "," + volumeSeparator + volume;
     protected static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
 

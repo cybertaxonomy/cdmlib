@@ -49,7 +49,7 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
 			throws HibernateException, SQLException {
 		String partial = (String)StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 		Partial result = new Partial();
-		if (partial == null) {
+		if (partial == null || "00000000".equals(partial) || "0000000000000".equals(partial)) {
 			return null;
 		}else if (partial.length() != 8 &&  partial.length() != 13){
 		    throw new HibernateException("Format for Partial not supported. Length mus be 8 or 13: " + partial);
@@ -79,13 +79,17 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
         if (minute != null){
             result = result.with(DateTimeFieldType.minuteOfHour(), minute);
         }
-		return result;
+        return isEmptyOrNull(result)? null:result;
 	}
 
-	@Override
+    private boolean isEmptyOrNull(Partial partial) {
+        return partial == null ? true : partial.getValues().length == 0;
+    }
+
+    @Override
 	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index,
 			SessionImplementor session) throws HibernateException, SQLException {
-		if (value == null){
+		if (isEmptyOrNull((Partial)value)){
 			StandardBasicTypes.STRING.nullSafeSet(preparedStatement, null, index, session);
 		}else {
 			Partial p = ((Partial) value);
@@ -114,10 +118,6 @@ public class PartialUserType extends AbstractUserType implements UserType /* ext
         return result;
 	}
 
-	/**
-     * @param p
-     * @return
-     */
     private static boolean timeExists(Partial partial) {
         return partial.isSupported(DateTimeFieldType.hourOfDay()) ||
                 partial.isSupported(DateTimeFieldType.minuteOfHour());

@@ -156,7 +156,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book.setTitle("Book.title");
         book.setAuthorship(authorship);
         book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
-        book.setDatePublished(new VerbatimTimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
+        book.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(new Partial(DateTimeFieldType.year(), 1800)));
         book.setEdition("1st Edition");
         book.setEditor("Editor");
         book.setIsbn("isbn");
@@ -174,7 +174,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setTitle("BookSection.title");
         bookSection.setAuthorship(authorship);
         bookSection.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
-        bookSection.setDatePublished(new VerbatimTimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
+        bookSection.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(new Partial(DateTimeFieldType.year(), 1800)));
         bookSection.setReferenceAbstract("referenceAbstract");
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());

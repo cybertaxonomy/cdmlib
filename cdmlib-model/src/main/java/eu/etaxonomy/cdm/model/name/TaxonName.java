@@ -350,8 +350,6 @@ public class TaxonName
     @IndexedEmbedded
     private DescriptionElementSource nomenclaturalSource;
 
-
-
     @XmlElementWrapper(name = "Registrations")
     @XmlElement(name = "Registration")
     @XmlIDREF
@@ -2225,6 +2223,7 @@ public class TaxonName
         this.rank = rank;
     }
 
+//*************** nom ref/source *******************/
 
     @Override
     public Reference getNomenclaturalReference(){
@@ -2269,51 +2268,10 @@ public class TaxonName
 //        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
 //        checkNullSource();
     }
+
     @Override
     public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
         setNomenclaturalReference(CdmBase.deproxy(nomenclaturalReference, Reference.class));
-    }
-
-    //#6581
-    private void checkNullSource() {
-        if (this.nomenclaturalSource == null){
-            return;
-        }else if (this.nomenclaturalSource.getCitation() != null
-           || this.nomenclaturalSource.getCitationMicroReference() != null
-           || this.nomenclaturalSource.getNameUsedInSource() != null
-           || isBlank(this.nomenclaturalSource.getOriginalNameString())){
-            //TODO what about supplemental data?
-                return;
-        }else{
-            this.nomenclaturalSource = null;
-        }
-    }
-
-
-    @Override
-    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
-        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
-            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
-        }
-        this.nomenclaturalSource = nomenclaturalSource;
-    }
-
-    /**
-     * Returns the appended phrase string assigned to <i>this</i> taxon name.
-     * The appended phrase is a non-atomised addition to a name. It is
-     * not ruled by a nomenclatural code.
-     */
-    @Override
-    public String getAppendedPhrase(){
-        return this.appendedPhrase;
-    }
-
-    /**
-     * @see  #getAppendedPhrase()
-     */
-    @Override
-    public void setAppendedPhrase(String appendedPhrase){
-        this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
     }
 
     /**
@@ -2343,6 +2301,40 @@ public class TaxonName
         this.nomenclaturalMicroReference = nomenclaturalMicroReference;
 //        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
 //        checkNullSource();
+    }
+
+    //#6581
+    private void checkNullSource() {
+        if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty()){
+            this.nomenclaturalSource = null;
+        }
+    }
+
+
+    @Override
+    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
+        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+        }
+        this.nomenclaturalSource = nomenclaturalSource;
+    }
+
+    /**
+     * Returns the appended phrase string assigned to <i>this</i> taxon name.
+     * The appended phrase is a non-atomised addition to a name. It is
+     * not ruled by a nomenclatural code.
+     */
+    @Override
+    public String getAppendedPhrase(){
+        return this.appendedPhrase;
+    }
+
+    /**
+     * @see  #getAppendedPhrase()
+     */
+    @Override
+    public void setAppendedPhrase(String appendedPhrase){
+        this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
     }
 
     @Override

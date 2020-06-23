@@ -164,6 +164,18 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		this.nameUsedInSource = nameUsedInSource;
 	}
 
+// **************** EMPTY ************************/
+
+    @Override
+    public boolean checkEmpty(){
+       return this.checkEmpty(false);
+    }
+
+    @Override
+    public boolean checkEmpty(boolean excludeType){
+        return super.checkEmpty(excludeType)
+            && this.nameUsedInSource == null;
+    }
 
 //*********************************** CLONE *********************************************************/
 

@@ -35,6 +35,10 @@ public class ColumnNameChanger
 		return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.INTEGER, null);
 	}
 
+    public static ColumnNameChanger NewFloatInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
+        return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.FLOAT, null);
+    }
+
 	public static ColumnNameChanger NewClobInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String oldColumnName,
 	        String newColumnName, boolean includeAudTable){
 		return new ColumnNameChanger(stepList, stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.CLOB, null);

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.format.description;
 
+import java.math.BigDecimal;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
@@ -33,8 +35,8 @@ public class QuantitativeDataFormatter
         String result = "";
 
         //values
-        Float min = quantData.getMin();
-        Float max = quantData.getMax();
+        BigDecimal min = quantData.getMin();
+        BigDecimal max = quantData.getMax();
         String minMax = "";
         if (min != null){
             minMax = String.valueOf(min);
@@ -45,9 +47,9 @@ public class QuantitativeDataFormatter
             minMax = "<" + String.valueOf(max);
         }
         String exactValueStr = "";
-        for(Float exactValue : quantData.getExactValues()){
+        for(BigDecimal exactValue : quantData.getExactValues()){
             if (exactValue != null){
-                exactValueStr += CdmUtils.concat(";", exactValueStr, String.valueOf(exactValue));
+                exactValueStr = CdmUtils.concat(";", exactValueStr, String.valueOf(exactValue));
             }
         }
         if (isNotBlank(minMax)){
@@ -66,7 +68,7 @@ public class QuantitativeDataFormatter
         result = CdmUtils.concat(" ", result, unitStr);
 
         //bracket
-        Float n = quantData.getSampleSize();
+        BigDecimal n = quantData.getSampleSize();
         String size = (n == null) ? "" : "n="+String.valueOf(n);
         String strBracket = isNotBlank(size) ? "[" + size + "]" : "";
 

@@ -22,9 +22,9 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.SpecimenOrObservationBaseVoter;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.voter.SpecimenOrObservationBaseVoter;
 
 /**
  * @author a.kohlbecker

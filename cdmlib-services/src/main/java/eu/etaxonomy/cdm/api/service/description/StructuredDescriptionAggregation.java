@@ -8,7 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.description;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -340,20 +343,21 @@ public class StructuredDescriptionAggregation
 
     private QuantitativeData aggregateSingleQuantitativeData(QuantitativeData sourceQd){
         QuantitativeData aggQD = QuantitativeData.NewInstance(sourceQd.getFeature());
-        Set<Float> exactValues = sourceQd.getExactValues();
+        Set<BigDecimal> exactValues = sourceQd.getExactValues();
         if(!exactValues.isEmpty()){
+            Comparator<BigDecimal> comp = Comparator.naturalOrder();
             // qd is not already aggregated
-            float exactValueSampleSize = exactValues.size();
-            float exactValueMin = new Float(exactValues.stream().mapToDouble(value->(double)value).min().getAsDouble());
-            float exactValueMax = new Float(exactValues.stream().mapToDouble(value->(double)value).max().getAsDouble());
-            float exactValueAvg = new Float(exactValues.stream().mapToDouble(value->(double)value).average().getAsDouble());
+            int exactValueSampleSize = exactValues.size();
+            BigDecimal exactValueMin = exactValues.stream().min(comp).get();
+            BigDecimal exactValueMax = exactValues.stream().max(comp).get();
+            BigDecimal exactValueAvg = BigDecimalUtil.average(exactValues);
             //TODO also check for typical boundary data
             if(sourceQd.getMin() == null && sourceQd.getMax() == null){
-                aggQD.setSampleSize(exactValueSampleSize, null);
+                aggQD.setSampleSize(new BigDecimal(exactValueSampleSize), null);
                 aggQD.setAverage(exactValueAvg, null);
             }
-            aggQD.setMinimum(sourceQd.getMin() == null ? exactValueMin: Math.min(sourceQd.getMin(), exactValueMin), null);
-            aggQD.setMaximum(sourceQd.getMax() == null ? exactValueMax: Math.min(sourceQd.getMax(), exactValueMax), null);
+            aggQD.setMinimum(sourceQd.getMin() == null ? exactValueMin: sourceQd.getMin().min(exactValueMin), null);
+            aggQD.setMaximum(sourceQd.getMax() == null ? exactValueMax: sourceQd.getMax().max(exactValueMax), null);
         }
         else{
             // qd has only min, max, ... but no exact values
@@ -366,9 +370,9 @@ public class StructuredDescriptionAggregation
     private QuantitativeData handleMissingValues(QuantitativeData qd) {
         qd = handleMissingMinOrMax(qd);
         if (qd != null && qd.getAverage() == null){
-            Float n = qd.getSampleSize();
+            BigDecimal n = qd.getSampleSize();
             if(n != null && !n.equals(0f)){
-                qd.setAverage((qd.getMax()+qd.getMin())/n, null);
+                qd.setAverage((qd.getMax().add(qd.getMin())).divide(n), null);
             }
         }
         return qd;
@@ -383,7 +387,7 @@ public class StructuredDescriptionAggregation
             MissingMaximumMode missingMaxMode) {
         if(aggQD.getMin() == null && aggQD.getMax() != null){
             if (missingMinMode == MissingMinimumMode.MinToZero) {
-                aggQD.setMinimum(0f, null);
+                aggQD.setMinimum(BigDecimal.valueOf(0f), null);
             }else if (missingMinMode == MissingMinimumMode.MinToMax){
                 aggQD.setMinimum(aggQD.getMax(), null);
             }else if (missingMinMode == MissingMinimumMode.SkipRecord){
@@ -404,22 +408,22 @@ public class StructuredDescriptionAggregation
 
         newQd = aggregateSingleQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a cleear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
 
-        Float min = null;
-        Float max = null;
-        Float average = null;
-        Float sampleSize = null;
+        BigDecimal min = null;
+        BigDecimal max = null;
+        BigDecimal average = null;
+        BigDecimal sampleSize = null;
         newQd = handleMissingValues(newQd);
         if (newQd == null){
             return aggQd;
         }
-        min = Math.min(aggQd.getMin(), newQd.getMin());
-        max = Math.max(aggQd.getMax(), newQd.getMax());
-        if (newQd.getSampleSize()!= null && aggQd.getSampleSize() != null){
-            sampleSize = newQd.getSampleSize()+aggQd.getSampleSize();
+        min = aggQd.getMin().min(newQd.getMin());
+        max = aggQd.getMax().max(newQd.getMax());
+        if (newQd.getSampleSize() != null && aggQd.getSampleSize() != null){
+            sampleSize = newQd.getSampleSize().add(aggQd.getSampleSize());
         }
         if (sampleSize != null && !sampleSize.equals(0f) && aggQd.getAverage() != null && newQd.getAverage() != null){
-            float totalSum = aggQd.getAverage()*aggQd.getSampleSize() + newQd.getAverage() * newQd.getSampleSize();
-            average = new Float(totalSum/sampleSize);
+            BigDecimal totalSum = aggQd.getAverage().multiply(aggQd.getSampleSize()).add(newQd.getAverage().multiply(newQd.getSampleSize()));
+            average = totalSum.divide(sampleSize);
         }
         aggQd.setMinimum(min, null);
         aggQd.setMaximum(max, null);
@@ -428,17 +432,15 @@ public class StructuredDescriptionAggregation
         return aggQd;
     }
 
-    private static List<Float> getExactValues(QuantitativeData qd) {
-        List<Float> exactValues = qd.getStatisticalValues().stream()
+    private static List<BigDecimal> getExactValues(QuantitativeData qd) {
+        List<BigDecimal> exactValues = qd.getStatisticalValues().stream()
                 .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
                 .map(exact->exact.getValue())
                 .collect(Collectors.toList());
         return exactValues;
     }
 
-
     private static boolean hasSameState(StateData sd1, StateData sd2) {
         return sd2.getState().getUuid().equals(sd1.getState().getUuid());
     }
-
 }

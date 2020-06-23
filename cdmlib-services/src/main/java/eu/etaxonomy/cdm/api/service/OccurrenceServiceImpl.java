@@ -72,6 +72,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.format.CdmFormatterFactory;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
+import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;
+import eu.etaxonomy.cdm.format.description.DefaultQuantitativeDescriptionBuilder;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -1097,8 +1099,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
         if(derivative != null){
             derivedUnitDTO = DerivateDTO.newInstance(derivative);
+            if (derivative instanceof FieldUnit){
+                fieldUnitDTO = new FieldUnitDTO((FieldUnit)derivative);
+                return fieldUnitDTO;
+            }
             while(true){
-                Set<DerivateDTO> originals = originalDTOs(derivedUnitUuid);
+
+                Set<DerivateDTO> originals = originalDTOs(derivedUnitDTO.getUuid());
 
                 if(originals.isEmpty()){
                     break;
@@ -1127,6 +1134,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                             }
                         }
                     }
+
                 } else {
                     cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
                 }

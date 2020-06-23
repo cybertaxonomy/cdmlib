@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -690,7 +691,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
     @Override
     public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField abbrevType){
-        
+
         Criteria crit = getSession().createCriteria(type, "namedArea");
         if (!StringUtils.isBlank(pattern)){
             if (matchmode == MatchMode.EXACT) {
@@ -754,7 +755,13 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     @Override
     public Collection<TermDto> getIncludesAsDto(
             TermDto parentTerm) {
-        String queryString = TermDto.getTermDtoSelect()
+        String queryString;
+        if (parentTerm.getTermType().equals(TermType.NamedArea)){
+            queryString = TermDto.getTermDtoSelectNamedArea();
+        }else{
+            queryString = TermDto.getTermDtoSelect();
+        }
+        queryString = queryString
                 + "where a.partOf.uuid = :parentUuid";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("parentUuid", parentTerm.getUuid());
@@ -769,8 +776,13 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     @Override
     public Collection<TermDto> getKindOfsAsDto(
             TermDto parentTerm) {
-        String queryString = TermDto.getTermDtoSelect()
-                + "where a.kindOf.uuid = :parentUuid";
+        String queryString;
+        if (parentTerm.getTermType().equals(TermType.NamedArea)){
+            queryString = TermDto.getTermDtoSelectNamedArea();
+        }else{
+            queryString = TermDto.getTermDtoSelect();
+        }
+        queryString = queryString + "where a.kindOf.uuid = :parentUuid";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("parentUuid", parentTerm.getUuid());
 
@@ -901,6 +913,45 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         List<Object[]> result = query.list();
 
         list = TermDto.termDtoListFrom(result);
+        return list;
+    }
+
+    @Override
+    public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList) {
+        List<TermDto> list = new ArrayList<>();
+        if (uuidList == null || uuidList.isEmpty()){
+            return null;
+        }
+
+        String queryString = FeatureDto.getTermDtoSelect()
+                + "where a.uuid in :uuidList "
+                + "order by a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameterList("uuidList", uuidList);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        list = FeatureDto.termDtoListFrom(result);
+        return list;
+    }
+
+    @Override
+    public Collection<TermDto> findFeatureByTitleAsDto(String pattern) {
+        String queryString = FeatureDto.getTermDtoSelect()
+                + " where a.titleCache like :title "
+                +  " and a.termType = :termType ";
+
+        pattern = pattern.replace("*", "%");
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("title", "%"+pattern+"%");
+        query.setParameter("termType", TermType.Feature);
+
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = FeatureDto.termDtoListFrom(result);
         return list;
     }
 

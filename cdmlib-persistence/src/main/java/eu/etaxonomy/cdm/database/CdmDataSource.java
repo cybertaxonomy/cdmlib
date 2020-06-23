@@ -28,7 +28,8 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
  * @author a.mueller
  */
 public class CdmDataSource extends CdmDataSourceBase {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDataSource.class);
 
 	private DatabaseTypeEnum dbType;
@@ -58,7 +59,6 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return new CdmDataSource(dbType, server, database, port, username, password, null, null);
 	}
 
-
 	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password ){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null);
 	}
@@ -74,9 +74,11 @@ public class CdmDataSource extends CdmDataSourceBase {
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password){
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null);
 	}
+
     static public CdmDataSource  NewSqlServer2008Instance(String server, String database, int port, String username, String password){
         return new CdmDataSource(DatabaseTypeEnum.SqlServer2008, server, database, port, username, password, null, null);
     }
+
     static public CdmDataSource  NewSqlServer2012Instance(String server, String database, int port, String username, String password){
         return new CdmDataSource(DatabaseTypeEnum.SqlServer2012, server, database, port, username, password, null, null);
     }
@@ -276,7 +278,6 @@ public class CdmDataSource extends CdmDataSourceBase {
 	@Override
 	public void setMode(H2Mode h2Mode) {
 		this.mode = h2Mode;
-
 	}
 
 	@Override
@@ -298,7 +299,6 @@ public class CdmDataSource extends CdmDataSourceBase {
 	@Override
 	public void setUsername(String username) {
 		this.username = username;
-
 	}
 
 //********************* TO STRING() **********************/

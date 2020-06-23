@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import io.swagger.annotations.Api;
-
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -30,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.lsid.LSIDMetadataService;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
+import io.swagger.annotations.Api;
 
 /**
  * Controller which accepts requests for the metadata representation of an object
@@ -39,7 +38,7 @@ import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
  * @author Ben Szekely (<a href="mailto:bhszekel@us.ibm.com">bhszekel@us.ibm.com</a>)
  * @see com.ibm.lsid.server.servlet.MetadataServlet
  */
-@Controller
+@Controller(value = "lsidMetadataController")
 @Api(value="lsid_authority_metadata",
 description="Controller which accepts incoming requests to the LSIDMetadataService.")
 public class MetadataController {

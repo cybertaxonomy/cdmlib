@@ -160,7 +160,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         List<UUID> listUuid;
 
         //UUID
-        filter = new TaxonNodeFilter(classification);
+        filter = TaxonNodeFilter.NewClassificationInstance(classification);
         filter.setOrder(TaxonNodeFilter.ORDER.TREEINDEX);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
@@ -252,36 +252,36 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     })
     public void testListUuidsByRank() {
         String message = "wrong number of nodes filtered";
-        TaxonNodeFilter filter = new TaxonNodeFilter();
+        TaxonNodeFilter filter = TaxonNodeFilter.NewInstance();
         List<UUID> listUuid = filterDao.listUuids(filter);
         assertEquals(message, 5, listUuid.size());  //test start condition without rank filter
 
-        filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.GENUS());
+        filter = TaxonNodeFilter.NewRankInstance(Rank.SPECIES(), Rank.GENUS());
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 2, listUuid.size());
         Assert.assertTrue(listUuid.contains(node1.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
 
-        filter = new TaxonNodeFilter(Rank.SPECIES(), Rank.KINGDOM());
+        filter = TaxonNodeFilter.NewRankInstance(Rank.SPECIES(), Rank.KINGDOM());
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 3, listUuid.size());
         Assert.assertTrue(listUuid.contains(node1.getUuid()));
         Assert.assertTrue(listUuid.contains(node2.getUuid()));
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
 
-        filter = new TaxonNodeFilter(Rank.FAMILY(), Rank.FAMILY());
+        filter = TaxonNodeFilter.NewRankInstance(Rank.FAMILY(), Rank.FAMILY());
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node2.getUuid()));
 
-        filter = new TaxonNodeFilter(Rank.VARIETY(), Rank.SPECIES());
+        filter = TaxonNodeFilter.NewRankInstance(Rank.VARIETY(), Rank.SPECIES());
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 3, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
         Assert.assertTrue(listUuid.contains(node4.getUuid()));
         Assert.assertTrue(listUuid.contains(node5.getUuid()));
 
-        filter = new TaxonNodeFilter(Rank.KINGDOM(), Rank.ORDER());
+        filter = TaxonNodeFilter.NewRankInstance(Rank.KINGDOM(), Rank.ORDER());
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 0, listUuid.size());
 
@@ -291,7 +291,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         listUuid = filterDao.listUuids(filter);
         assertEquals("Reseting the rank filters should work", 5, listUuid.size());
 
-        filter = new TaxonNodeFilter(Rank.KINGDOM(), Rank.ORDER());
+        filter = TaxonNodeFilter.NewRankInstance(Rank.KINGDOM(), Rank.ORDER());
         UUID nullUuid = null;
         filter.setRankMax(nullUuid).setRankMin(nullUuid);
         listUuid = filterDao.listUuids(filter);
@@ -301,7 +301,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @Test
     public void testListUuidsBySubtree() {
         Classification classification = classificationDao.findByUuid(classification1.getUuid());
-        TaxonNodeFilter filter = new TaxonNodeFilter(node1);
+        TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(node1);
         List<UUID> listUuid = filterDao.listUuids(filter);
 //      List<TaxonNode> children = taxonNodeDao.listChildrenOf(node1, null, null, null, true);
         Assert.assertEquals("All 4 children should be returned", 4, listUuid.size());
@@ -309,7 +309,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertFalse(listUuid.contains(node2.getUuid()));
         Assert.assertFalse(listUuid.contains(classification.getRootNode().getUuid()));
 
-        filter = new TaxonNodeFilter(classification.getRootNode());
+        filter = TaxonNodeFilter.NewSubtreeInstance(classification.getRootNode());
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
@@ -317,7 +317,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 6 children including root node should be returned", 6, listUuid.size());
 
-        filter = new TaxonNodeFilter(node3);
+        filter = TaxonNodeFilter.NewSubtreeInstance(node3);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 3 children should be returned", 3, listUuid.size());
 
@@ -326,7 +326,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertEquals("All 3 children and node 2 should be returned", 4, listUuid.size());
         Assert.assertTrue(listUuid.contains(node2.getUuid()));
 
-        filter = new TaxonNodeFilter(node1).notSubtree(node4);
+        filter = TaxonNodeFilter.NewSubtreeInstance(node1).notSubtree(node4);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("Node and 2 children but not node4 should be returned", 3, listUuid.size());
         Assert.assertFalse(listUuid.contains(node4.getUuid()));
@@ -346,7 +346,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @Test
     public void testIncludeUnpublished(){
         Classification classification = classificationDao.findByUuid(classification1.getUuid());
-        TaxonNodeFilter filter = new TaxonNodeFilter(classification.getRootNode());
+        TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(classification.getRootNode());
         List<UUID> listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
@@ -368,7 +368,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         TaxonNodeFilter filter;
         List<UUID> listUuid;
 
-        filter = new TaxonNodeFilter(classification);
+        filter = TaxonNodeFilter.NewClassificationInstance(classification);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, listUuid.size());
 
@@ -438,7 +438,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @Test
     public void testListUuidsCombined() {
         Classification classification = classificationDao.findByUuid(classification1.getUuid());
-        TaxonNodeFilter filter = new TaxonNodeFilter(node1);
+        TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(node1);
         List<UUID> listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 4 children should be returned", 4, listUuid.size());
 
@@ -455,7 +455,7 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertEquals("1 node should remain", 1, listUuid.size());
 
         //New
-        filter = new TaxonNodeFilter(node1);  //4 children, see above
+        filter = TaxonNodeFilter.NewSubtreeInstance(node1);  //4 children, see above
         filter.orClassification(classification.getUuid());//4 children, see above
 
         filter.setRankMax(Rank.uuidSpecies);
@@ -481,21 +481,18 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
     @Test
     public void testCountBySubtree() {
         Classification classification = classificationDao.findByUuid(classification1.getUuid());
-        TaxonNodeFilter filter = new TaxonNodeFilter(node1);
+        TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(node1);
         long n = filterDao.count(filter);
         Assert.assertEquals("All 4 children should be returned", 4, n);
 
-        filter = new TaxonNodeFilter(classification.getRootNode());
+        filter = TaxonNodeFilter.NewSubtreeInstance(classification.getRootNode());
         n = filterDao.count(filter);
         Assert.assertEquals("All 5 children but not root node should be returned", 5, n);
 
         filter.setIncludeRootNodes(true);
         n = filterDao.count(filter);
         Assert.assertEquals("All 6 children including root node should be returned", 6, n);
-
     }
-
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

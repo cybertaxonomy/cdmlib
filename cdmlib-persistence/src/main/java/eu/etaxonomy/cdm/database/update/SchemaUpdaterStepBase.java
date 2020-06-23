@@ -84,14 +84,8 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		return getLanguageId(Language.uuidEnglish, datasource, monitor, caseType);
 	}
 
-	/**
-	 * @param uuidLanguage
-	 * @param datasource
-	 * @param monitor
-	 * @return
-	 * @throws SQLException
-	 */
-	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource,
+	        IProgressMonitor monitor, CaseType caseType) throws SQLException {
 
 		ResultSet rs;
 		Integer langId = null;
@@ -107,10 +101,35 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 		return langId;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * Returns the smallest next free id, if includeAudit is <code>true</code> the audit table is also considered in computation
+     * @throws NumberFormatException
+     * @throws SQLException
+     */
+    protected int getMaxId1(ICdmDataSource datasource, String tableName, boolean includeAudit, IProgressMonitor monitor, CaseType caseType,
+            SchemaUpdateResult result) throws SQLException {
+
+        String sql = "SELECT max(id) FROM " +caseType.transformTo(tableName);
+        Integer maxId = getInteger(datasource, sql, 0);
+
+        Integer maxIdAud = -1;
+        if(includeAudit){
+            sql = "SELECT max(id) FROM " +caseType.transformTo(tableName + "_AUD");
+            maxIdAud = getInteger(datasource, sql, 0);
+        }
+        return Math.max(maxId, maxIdAud) + 1;
+    }
+
+    private Integer getInteger(ICdmDataSource datasource, String sql, int nullReplace) throws SQLException {
+        Object value = datasource.getSingleValue(sql);
+        if (value == null){
+            return nullReplace;
+        }else{
+            return Integer.valueOf(value.toString());
+        }
+    }
+
+    @Override
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<>();
 	}
@@ -119,8 +138,6 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	public boolean isIgnoreErrors() {
 		return ignoreErrors;
 	}
-
-
 	@Override
 	public void setIgnoreErrors(boolean ignoreErrors) {
 		this.ignoreErrors = ignoreErrors;
@@ -135,6 +152,10 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	protected String getNowString() {
 		return DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
 	}
+
+    protected String nullSafeParam(String param) {
+        return param == null ? "NULL" : "'" + param + "'";
+    }
 
 	@Override
 	public String toString(){

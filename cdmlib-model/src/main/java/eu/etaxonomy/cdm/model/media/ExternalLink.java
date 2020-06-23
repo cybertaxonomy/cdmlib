@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -49,9 +50,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  *
  * @author a.mueller
  * @date 09.06.2017
- *
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExternalLink", propOrder = {
     "uri",
@@ -61,7 +60,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "ExternalLink")
 @Entity
 @Audited
-public class ExternalLink extends VersionableEntity implements Cloneable{
+public class ExternalLink extends VersionableEntity{
 
     private static final long serialVersionUID = -5008959652949778843L;
 
@@ -74,7 +73,7 @@ public class ExternalLink extends VersionableEntity implements Cloneable{
     @Column(name="linkType", length=10)
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.media.ExternalLinkType")}
+        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.media.ExternalLinkType")}
     )
     @Audited
     private ExternalLinkType linkType = ExternalLinkType.Unknown;
@@ -124,12 +123,25 @@ public class ExternalLink extends VersionableEntity implements Cloneable{
 	    return new ExternalLink(type, uri, descMap, size);
 	}
 
+    public static ExternalLink NewInstance(ExternalLinkType type, URI uri, String description, Language language, Integer size){
+        Map<Language, LanguageString> descMap = new HashMap<>();
+        if (language == null){
+            language = Language.UNKNOWN_LANGUAGE();
+        }
+        descMap.put(language, LanguageString.NewInstance(description, language));
+        return new ExternalLink(type, uri, descMap, size);
+    }
+
     public static ExternalLink NewWebSiteInstance(URI uri){
         return NewInstance(ExternalLinkType.WebSite, uri, (String)null, null);
     }
 
     public static ExternalLink NewWebSiteInstance(URI uri, Map<Language,LanguageString> description, Integer size){
         return NewInstance(ExternalLinkType.WebSite, uri, description, size);
+    }
+
+    public static ExternalLink NewWebSiteInstance(URI uri, String description, Language language){
+        return NewInstance(ExternalLinkType.WebSite, uri, description, language, null);
     }
 
 
@@ -241,7 +253,7 @@ public class ExternalLink extends VersionableEntity implements Cloneable{
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public ExternalLink clone() {
 
         try {
             ExternalLink result = (ExternalLink)super.clone();

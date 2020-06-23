@@ -220,7 +220,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		Set<ExternalLink> links = new HashSet<>();
 		result.setLinks(links);
 		for(ExternalLink link : this.links){
-		    result.addLink((ExternalLink)link.clone());
+		    result.addLink(link.clone());
 		}
 
 		if (this.cdmSource != null){
@@ -231,6 +231,22 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		return result;
 	}
 
+// **************** EMPTY ************************/
+
+    @Override
+    protected boolean checkEmpty(){
+        return checkEmpty(false);
+    }
+
+    public boolean checkEmpty(boolean excludeType){
+	   return super.checkEmpty()
+	        && isBlank(this.getIdInSource())
+	        && isBlank(this.getIdNamespace())
+	        && this.links.isEmpty()
+	        && this.cdmSource == null
+	        && (excludeType || this.type == null)
+           ;
+	}
 
 //************************ toString ***************************************/
 	@Override

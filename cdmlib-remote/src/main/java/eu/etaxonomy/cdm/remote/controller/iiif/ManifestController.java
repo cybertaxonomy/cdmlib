@@ -85,7 +85,7 @@ import io.swagger.annotations.Api;
 @RestController
 @CrossOrigin(origins = "*")
 @Api("iiif")
-@RequestMapping(value = {"/iiif"})
+@RequestMapping(value = {"/iiif"}, produces = "application/json; charset=utf-8")
 public class ManifestController {
 
     /**
@@ -428,8 +428,8 @@ public class ManifestController {
                         }
                     }
                 } catch (IOException | HttpException e) {
-                    logger.error(e);
-                    metadata.add(new MetadataEntry(prefix + " Error:", "Problem while loading image metadata"));
+                    logger.error("Problem while loading image metadata", e);
+                    metadata.add(new MetadataEntry(prefix + " Error:", "Problem while loading image metadata <br/><small>(" + e.getLocalizedMessage() + ")</small>"));
                 }
             }
         }

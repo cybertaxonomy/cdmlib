@@ -25,6 +25,7 @@ import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
 import eu.etaxonomy.cdm.model.common.AuthorityType;
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 
@@ -47,8 +49,11 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author a.mueller
  * @since 15-07-2013
  */
-public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implements UserType, ParameterizedType {
-	private static final long serialVersionUID = 4641078915907621907L;
+public class EnumUserType<E extends Enum<E>>
+        extends AbstractUserType
+        implements UserType, ParameterizedType {
+
+    private static final long serialVersionUID = 4641078915907621907L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnumUserType.class);
 
@@ -59,7 +64,6 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
     public EnumUserType(Class<E> c) {
     	this.clazz = c;
     }
-
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -97,10 +101,6 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
 		}
 	}
 
-    /**
-     * @param val
-     * @return
-     */
     public static <E extends Enum<E>> IKeyTerm getTerm(Class<E> clazz, String val) {
         // TermType
         if (clazz.equals(TermType.class)){
@@ -138,12 +138,21 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
         //ExternalLinkType
         }else if (clazz.equals(ExternalLinkType.class)){
             return ExternalLinkType.getByKey(val);
+        //PermissionClass
         }else if (clazz.equals(PermissionClass.class)){
             return PermissionClass.getByKey(val);
+        //CRUD
         }else if (clazz.equals(CRUD.class)){
             return CRUD.getByKey(val);
+        //TaxonNodeStatus
+        }else if (clazz.equals(TaxonNodeStatus.class)){
+            return TaxonNodeStatus.getByKey(val);
+        //DescriptionType
         }else if (clazz.equals(DescriptionType.class)){
             return DescriptionType.getByKey(val);
+        //CdmClass
+        }else if (clazz.equals(CdmClass.class)){
+            return CdmClass.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

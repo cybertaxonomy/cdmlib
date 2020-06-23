@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -113,7 +112,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         super.initBinder(binder);
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
         binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
-        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<MarkerType>(termService));
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
     }
 
     @Autowired

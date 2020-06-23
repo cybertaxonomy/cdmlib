@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -56,7 +57,7 @@ public class CdmAuthority extends AuthorityBase {
     @XmlAttribute(name ="PermissionClass")
 //    @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
+        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
     )
     private PermissionClass permissionClass;
 
@@ -66,7 +67,7 @@ public class CdmAuthority extends AuthorityBase {
     @XmlAttribute(name ="Operations")
     @NotNull  //an empty operations set will result in "#"
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.CRUD")}
+        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.permission.CRUD")}
     )
     private EnumSet<CRUD> operations = EnumSet.noneOf(CRUD.class);
 
@@ -96,7 +97,6 @@ public class CdmAuthority extends AuthorityBase {
         this.operations = operations;
         this.targetUuid = targetUuid;
     }
-
 
     // ********************** GETTER / SETTER **************************/
 

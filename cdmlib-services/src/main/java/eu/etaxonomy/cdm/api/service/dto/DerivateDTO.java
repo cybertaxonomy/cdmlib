@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -31,14 +32,14 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 
 /**
  * @author pplitzner
  * @since Mar 27, 2015
  */
-public abstract class DerivateDTO extends TypedEntityReference{
+public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservationBase>{
 
     private static final long serialVersionUID = -7597690654462090732L;
 
@@ -79,17 +80,17 @@ public abstract class DerivateDTO extends TypedEntityReference{
     public static DerivateDTO newInstance(SpecimenOrObservationBase sob){
         DerivateDTO derivateDto;
         if (sob.isInstanceOf(FieldUnit.class)){
-            derivateDto = FieldUnitDTO.newInstance(sob);
+            derivateDto = new FieldUnitDTO(HibernateProxyHelper.deproxy(sob, FieldUnit.class));
         } else if (sob instanceof DnaSample){
-            derivateDto = new DNASampleDTO((DnaSample)sob);
+            derivateDto = new DNASampleDTO(HibernateProxyHelper.deproxy(sob, DnaSample.class));
         } else {
-            derivateDto = new PreservedSpecimenDTO((DerivedUnit)sob);
+            derivateDto = new PreservedSpecimenDTO(HibernateProxyHelper.deproxy(sob, DerivedUnit.class));
         }
         return derivateDto;
     }
 
     public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
-        super(specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
+        super(specimenOrObservation.getUuid(), specimenOrObservation.getId(), specimenOrObservation.getTitleCache());
         addMedia(specimenOrObservation);
         if (specimenOrObservation.getKindOfUnit() != null){
             setKindOfUnit(specimenOrObservation.getKindOfUnit().getTitleCache());
@@ -103,9 +104,10 @@ public abstract class DerivateDTO extends TypedEntityReference{
 
 
     }
-    public String getTitleCache() {
-        return getLabel();
-    }
+//    @Override
+//    public String getTitleCache() {
+//        return getLabel();
+//    }
 
 
     public String getListLabel() {

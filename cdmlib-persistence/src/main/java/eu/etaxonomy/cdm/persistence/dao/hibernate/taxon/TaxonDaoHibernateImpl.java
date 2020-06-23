@@ -611,17 +611,17 @@ public class TaxonDaoHibernateImpl
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber,
             boolean doCount, boolean returnIdAndTitle){
 
-        String what = "select distinct";
+        String what = "SELECT DISTINCT";
         if (returnIdAndTitle){
-        	what += " t.uuid, t.id, t.titleCache, \'taxon\', case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+        	what += " t.uuid, t.id, t.titleCache, \'taxon\', CASE WHEN t.taxonNodes IS EMPTY AND t.relationsFromThisTaxon IS EMPTY AND t.relationsToThisTaxon IS EMPTY THEN true ELSE false END ";
         }else {
         	what += (doCount ? " count(t)": " t");
         }
         String hql= what + " from Taxon t " +
-        "join t.descriptions d "+
-        "join d.descriptionElements e " +
-        "join e.feature f " +
-        "where f.supportsCommonTaxonName = true and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
+            "join t.descriptions d "+
+            "join d.descriptionElements e " +
+//            "join e.feature f " +
+            "where e.class = 'CommonTaxonName' and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
 
         Query query = getSession().createQuery(hql);
 
@@ -696,7 +696,6 @@ public class TaxonDaoHibernateImpl
         taxonBase = (TaxonBase)getSession().merge(taxonBase);
 
         taxonBase.removeSources();
-
 
         if (taxonBase instanceof Taxon){ // is Taxon
             Taxon taxon = ((Taxon)taxonBase);
@@ -1493,6 +1492,11 @@ public class TaxonDaoHibernateImpl
 
         String doTaxonNameJoin = " JOIN t.name n ";
 
+        String doSynonymSubSelect =
+                  " FROM Synonym s "
+                + " JOIN s.name sn "
+                + " LEFT JOIN s.acceptedTaxon ";
+
         String doSynonymNameJoin =
                    " JOIN t.synonyms s "
                  + " JOIN s.name sn";
@@ -1517,7 +1521,7 @@ public class TaxonDaoHibernateImpl
         String doSubtreeForConceptRelationsWhere = subtree == null? "":" AND tn2.treeIndex like :treeIndexLike";
 
         String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
-        String doCommonNamesRestrictionWhere = " (f.supportsCommonTaxonName = true and com.name "+matchMode.getMatchOperator()+" :queryString )";
+        String doCommonNamesRestrictionWhere = " (com.class = 'CommonTaxonName' and com.name "+matchMode.getMatchOperator()+" :queryString )";
 
         String doSearchFieldWhere = "%s." + searchField + " " + matchMode.getMatchOperator() + " :queryString";
 
@@ -1548,7 +1552,7 @@ public class TaxonDaoHibernateImpl
                     taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin +
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " + String.format(doSearchFieldWhere, "n");
-                    synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
+                    synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) +  //we could also use default synonym handling here as a taxon node filter requires an accepted taxon (#9047)
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " + String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect =String.format(doTaxonSubSelect, "t" )+ doCommonNamesJoin +
@@ -1582,7 +1586,7 @@ public class TaxonDaoHibernateImpl
                     taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
                             " WHERE " +  String.format(doSearchFieldWhere, "n") +
                                  doTreeWhere + doSubtreeWhere;
-                    synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
+                    synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) + //we could also use default synonym handling here as a taxon node filter requires an accepted taxon (#9047)
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " +  String.format(doSearchFieldWhere, "sn");
                     commonNameSubselect= String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
@@ -1611,7 +1615,7 @@ public class TaxonDaoHibernateImpl
                         " AND " + doRelationshipTypeComparison;
                 taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
                         " WHERE " +  String.format(doSearchFieldWhere, "n");
-                synonymSubselect = String.format(doTaxonSubSelect, "s" ) + doSynonymNameJoin +
+                synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) +
                         " WHERE " +  String.format(doSearchFieldWhere, "sn");
                 commonNameSubselect = String.format(doTaxonSubSelect, "t" ) +doCommonNamesJoin +
                         " WHERE "+  doCommonNamesRestrictionWhere;
@@ -1655,7 +1659,7 @@ public class TaxonDaoHibernateImpl
             Object[] result;
             for(int i = 0; i<resultArray.size();i++){
             	result = (Object[]) resultArray.get(i);
-            	returnResult.add(new UuidAndTitleCache<Taxon>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
+            	returnResult.add(new UuidAndTitleCache<>(Taxon.class, (UUID) result[0],(Integer)result[1], (String)result[2], new Boolean(result[4].toString()), null));
             }
             return returnResult;
         }else{

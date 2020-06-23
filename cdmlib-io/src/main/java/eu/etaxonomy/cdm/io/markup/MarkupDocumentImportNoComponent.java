@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
 
 /**
@@ -221,7 +222,9 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		Classification tree = makeTree(state, dataLocation);
 		if (lastTaxon == null) {
 			node = tree.addChildTaxon(taxon, null, null);
-			node.setExcluded(excluded);
+			if (excluded){
+			    node.setStatus(TaxonNodeStatus.EXCLUDED);
+			}
 			return node;
 		}
 		Rank thisRank = taxon.getName().getRank();
@@ -274,7 +277,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		}
 		if (excluded){
 		    if (node != null){
-		        node.setExcluded(excluded);
+		        node.setStatus(TaxonNodeStatus.EXCLUDED);
 		    }else{
 		        fireWarningEvent("Taxon is excluded but no taxon node can be created", makeLocationStr(dataLocation), 4);
 		    }

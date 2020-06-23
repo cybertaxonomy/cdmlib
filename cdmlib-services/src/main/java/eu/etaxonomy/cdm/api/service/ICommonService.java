@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyConfigurator;
@@ -117,7 +117,7 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @param mergeStrategy
 	 * @throws MergeException
 	 */
-	public <T extends IMergable> void   merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException;
+	public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException;
 
     /**
      * Merges mergeSecond into mergeFirst. All references to mergeSecond will be replaced by references
@@ -150,17 +150,11 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 * @return
 	 * @throws MatchException
 	 */
-	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategyEqual matchStrategy) throws MatchException;
+	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
 
 
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, MatchStrategyConfigurator.MatchStrategy strategy) throws MatchException;
 
-
-    /**
-     * @param clazz
-     * @param id
-     * @return
-     */
     public <T extends CdmBase> T findWithUpdate(Class<T> clazz, int id);
 
 	/**
@@ -384,15 +378,8 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
      */
     public <T extends IMergable> void merge(UUID mergeFirstUuid, UUID mergeSecondUuid, Class<? extends CdmBase> clazz) throws MergeException;
 
-    /**
-     * @param referencedCdmBase
-     * @return
-     */
     public long getReferencingObjectsCount(CdmBase referencedCdmBase);
 
-    /**
-     * @param clazz
-     */
     public List<UUID> listUuid(Class<? extends CdmBase> clazz);
 
 

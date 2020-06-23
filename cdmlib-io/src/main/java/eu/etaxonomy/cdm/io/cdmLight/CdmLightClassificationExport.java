@@ -344,25 +344,26 @@ public class CdmLightClassificationExport
 
                     csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = taxon.isPublish() ? "1" : "0";
                     csvLine[table.getIndex(CdmLightExportTable.EXCLUDED)] = taxonNode.isExcluded() ? "1" : "0";
-                    Map<Language, LanguageString> notesMap = taxonNode.getExcludedNote();
-                    String excludedNotes = "";
+                    Map<Language, LanguageString> notesMap = taxonNode.getStatusNote();
+                    String statusNotes = "";
                     if (!notesMap.isEmpty() && notesMap.size() == 1) {
-                        excludedNotes = notesMap.values().iterator().next().getText();
+                        statusNotes = notesMap.values().iterator().next().getText();
                     } else if (!notesMap.isEmpty()) {
-                        excludedNotes = notesMap.get(Language.getDefaultLanguage()) != null
+                        statusNotes = notesMap.get(Language.getDefaultLanguage()) != null
                                 ? notesMap.get(Language.getDefaultLanguage()).getText() : null;
-                        if (excludedNotes == null) {
-                            excludedNotes = notesMap.values().iterator().next().getText();
+                        if (statusNotes == null) {
+                            statusNotes = notesMap.values().iterator().next().getText();
                         }
                     }
-                    csvLine[table.getIndex(CdmLightExportTable.EXCLUDED_NOTES)] = excludedNotes;
+                    csvLine[table.getIndex(CdmLightExportTable.STATUS_NOTES)] = statusNotes;
 
                     csvLine[table.getIndex(CdmLightExportTable.UNPLACED)] = taxonNode.isUnplaced() ? "1" : "0";
+                    csvLine[table.getIndex(CdmLightExportTable.DOUBTFUL)] = taxonNode.isDoubtful() ? "1" : "0";
                     state.getProcessor().put(table, taxon, csvLine);
                     handleDescriptions(state, taxon);
                 } catch (Exception e) {
                     state.getResult().addException(e,
-                            "An unexpected problem occurred when trying to export " + "taxon with id " + taxon.getId());
+                            "An unexpected problem occurred when trying to export taxon with id " + taxon.getId());
                     state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 }
             }
@@ -1110,7 +1111,7 @@ public class CdmLightClassificationExport
             for (TypeDesignationBase<?> typeDesignation : name.getTypeDesignations()) {
                 if (typeDesignation.isInstanceOf(TextualTypeDesignation.class)) {
 
-                    if (((TextualTypeDesignation) typeDesignation).isVerbatim()  ){
+                    if (((TextualTypeDesignation) typeDesignation).isVerbatim() ){
                         Set<IdentifiableSource> sources =  typeDesignation.getSources();
                         boolean isProtologue = false;
                         if (sources != null && !sources.isEmpty()){
@@ -1196,6 +1197,7 @@ public class CdmLightClassificationExport
         } catch (Exception e) {
             state.getResult().addException(e,
                     "An unexpected error occurred when handling synonym " + cdmBaseStr(name) + ": " + e.getMessage());
+
             e.printStackTrace();
         }
     }

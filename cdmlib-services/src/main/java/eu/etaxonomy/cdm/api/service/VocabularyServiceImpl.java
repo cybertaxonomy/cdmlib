@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -169,6 +170,11 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
         return dao.findVocabularyDtoByTermTypes(termTypes, includeSubtypes);
+    }
+
+    @Override
+    public List<TermVocabularyDto> findFeatureVocabularyDtoByTermTypes(Set<CdmClass> availableFor) {
+        return dao.findVocabularyDtoByAvailableFor(availableFor);
     }
 
     @Override

@@ -36,7 +36,10 @@ import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -181,6 +184,17 @@ public class AbcdGgbnParser {
                         }
                         else{
                             dnaMarker = DefinedTerm.NewDnaMarkerInstance(amplificationMarker, amplificationMarker, amplificationMarker);
+                            List<TermVocabulary<DefinedTermBase>> vocs = cdmAppController.getVocabularyService().findByTermType(TermType.DnaMarker, null);
+                            TermVocabulary<DefinedTermBase> voc = null;
+
+                            if (vocs == null || vocs.size() == 0 ){
+                                voc = TermVocabulary.NewInstance(TermType.DnaMarker);
+                                voc.setLabel("Dna Marker");
+                                cdmAppController.getVocabularyService().saveOrUpdate(voc);
+                            }else{
+                                voc = vocs.get(0);
+                            }
+                            voc.addTerm(dnaMarker);
                             cdmAppController.getTermService().saveOrUpdate(dnaMarker);
                         }
                         amplification.setDnaMarker(dnaMarker);

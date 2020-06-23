@@ -61,7 +61,11 @@ public class TaxonNodeFilter implements Serializable{
         }
     }
 
-    //********************** FACTORY ***************************/
+//************************ FACTORY ***************************/
+
+    public static TaxonNodeFilter NewInstance(){
+        return NewInstance(null, null, null, null, null, null, null);
+    }
 
     public static TaxonNodeFilter NewTaxonNodeInstance(UUID taxonNodeUuid){
         return new TaxonNodeFilter().orTaxonNode(taxonNodeUuid);
@@ -76,7 +80,6 @@ public class TaxonNodeFilter implements Serializable{
     public static TaxonNodeFilter NewClassificationInstance(Classification classification){
         return new TaxonNodeFilter().orClassification(classification);
     }
-
 
     public static TaxonNodeFilter NewSubtreeInstance(UUID subtreeUuid){
         return new TaxonNodeFilter().orSubtree(subtreeUuid);
@@ -97,10 +100,12 @@ public class TaxonNodeFilter implements Serializable{
         return new TaxonNodeFilter().setRankMin(rankMin).setRankMax(rankMax);
     }
 
-    public static TaxonNodeFilter NewInstance(){
-        return NewInstance(null, null, null, null, null, null, null);
+    public static TaxonNodeFilter NewAreaInstance(NamedArea area){
+        return new TaxonNodeFilter().orArea(area);
     }
-
+    public static TaxonNodeFilter NewAreaInstance(UUID areaUuid){
+        return new TaxonNodeFilter().orArea(areaUuid);
+    }
 
     public static TaxonNodeFilter NewInstance(Collection<UUID> classificationUuids,
             Collection<UUID> subtreeUuids, Collection<UUID> taxonNodeUuids,
@@ -130,38 +135,12 @@ public class TaxonNodeFilter implements Serializable{
             result.orArea(uuid);
         }
         return result;
-
     }
 
 // ************************ CONSTRUCTOR *******************/
 
-    public TaxonNodeFilter(){
+    private TaxonNodeFilter(){
         reset();
-    }
-
-    /**
-     * Constructor for a given subtree represented by a {@link TaxonNode}
-     */
-    public TaxonNodeFilter(TaxonNode node){
-        reset();
-        LogicFilter<TaxonNode> filter = new LogicFilter<>(node);
-        subtrees.add(filter);
-    }
-
-    public TaxonNodeFilter(Rank rankMin, Rank rankMax){
-        reset();
-        if(rankMin!=null){
-            this.rankMin = new LogicFilter<>(rankMin);
-        }
-        if(rankMax!=null){
-            this.rankMax = new LogicFilter<>(rankMax);
-        }
-    }
-
-    public TaxonNodeFilter(Classification classification){
-        reset();
-        LogicFilter<Classification> filter = new LogicFilter<>(classification);
-        classifications.add(filter);
     }
 
     public TaxonNodeFilter(NamedArea area){
@@ -169,18 +148,6 @@ public class TaxonNodeFilter implements Serializable{
         LogicFilter<NamedArea> filter = new LogicFilter<>(area);
         areaFilter.add(filter);
     }
-
-    public TaxonNodeFilter(Taxon taxon){
-        reset();
-        LogicFilter<Taxon> filter = new LogicFilter<>(taxon);
-        taxa.add(filter);
-    }
-
-//    public <T extends CdmBase> TaxonNodeFilter(Class<T> clazz, UUID uuid){
-//        reset();
-//        LogicFilter<T> filter = new LogicFilter<T>(clazz, uuid);
-//        classifications.add(filter);
-//    }
 
 // ********************** reset *****************************/
 

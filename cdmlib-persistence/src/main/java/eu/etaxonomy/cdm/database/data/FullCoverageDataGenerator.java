@@ -1,8 +1,14 @@
 /**
- *
- */
+* Copyright (C) 2020 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.database.data;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -62,6 +69,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -74,6 +82,7 @@ import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaMetaData;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -133,6 +142,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -155,12 +165,9 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * depend on general parameter than concrete data values.
  *
  * @author a.mueller
- * @since 3013-12-02
- *
- *
+ * @since 2013-12-02
  */
 public class FullCoverageDataGenerator {
-
 
 	public void fillWithData(Session session){
 		List<CdmBase> cdmBases = new ArrayList<>();
@@ -190,15 +197,9 @@ public class FullCoverageDataGenerator {
 		}
 	}
 
-
-	/**
-     * @param cdmBases
-     */
     private void createUserAuthority(List<CdmBase> cdmBases) {
         // TODO Auto-generated method stub
-
     }
-
 
     private void createSupplemental(List<CdmBase> cdmBases)  {
 
@@ -239,7 +240,6 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(authority);
 
 		cdmBases.add(ref);
-
 	}
 
 	private void createAgents(List<CdmBase> cdmBases) {
@@ -319,7 +319,6 @@ public class FullCoverageDataGenerator {
 		stateData.addModifier(DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(categoricalData);
 
-
 		State nextState = State.NewInstance();
 		cdmBases.add(nextState);
 		StateData stateData2 = StateData.NewInstance(nextState);
@@ -336,7 +335,9 @@ public class FullCoverageDataGenerator {
 		MeasurementUnit measurementUnit = MeasurementUnit.NewInstance("Measurement Unit", "munit", null);
 		cdmBases.add(measurementUnit);
 		quantitativeData.setUnit(measurementUnit);
-		StatisticalMeasurementValue statisticalMeasurementValue = quantitativeData.setAverage((float)22.9 , null);
+		quantitativeData.setUuid(UUID.fromString("920fce5e-4913-4a3f-89bf-1611f5081869"));
+		StatisticalMeasurementValue statisticalMeasurementValue = quantitativeData.setAverage(
+		        new BigDecimal("22.9215"), null);
 		handleAnnotatableEntity(quantitativeData);
 		handleIdentifiableEntity(measurementUnit);
 		DefinedTerm valueModifier = DefinedTerm.NewModifierInstance("about", "about", null);
@@ -353,9 +354,11 @@ public class FullCoverageDataGenerator {
 		leaveLength.addRecommendedMeasurementUnit(measurementUnit);
 		leaveLength.addRecommendedStatisticalMeasure(StatisticalMeasure.AVERAGE());
 
+		//CommonTaxonName
 		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance("common name", Language.ENGLISH(), Country.UNITEDSTATESOFAMERICA());
 		handleAnnotatableEntity(commonTaxonName);
 
+		//TextData
 		TextData textData = TextData.NewInstance(Feature.DIAGNOSIS());
 		Language eng = Language.ENGLISH();
 		textData.putText(eng, "My text data");
@@ -373,26 +376,36 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(format);
 		handleAnnotatableEntity(format);
 
+		//IndividualsAssociation
 		DerivedUnit specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 		IndividualsAssociation indAssoc = IndividualsAssociation.NewInstance(specimen);
 		indAssoc.putDescription(Language.ENGLISH(), "description for individuals association");
 		handleAnnotatableEntity(indAssoc);
 
-
+		//TaxonInteraction
 		TaxonInteraction taxonInteraction = TaxonInteraction.NewInstance(Feature.HOSTPLANT());
 		taxonInteraction.putDescription(Language.ENGLISH(), "interaction description");
 		handleAnnotatableEntity(taxonInteraction);
 
+		//Distribution
 		NamedArea inCountryArea = NamedArea.NewInstance("My area in a country", "my area", "ma");
 		inCountryArea.addCountry(Country.TURKEYREPUBLICOF());
 		cdmBases.add(inCountryArea);
 		Distribution distribution = Distribution.NewInstance(inCountryArea, PresenceAbsenceTerm.CULTIVATED());
 		handleAnnotatableEntity(distribution);
 
+		//TemporalData
+		Feature floweringSeason = Feature.FLOWERING_SEASON();
+        TemporalData temporalData = TemporalData.NewInstance(ExtendedTimePeriod.NewExtendedMonthInstance(5, 8, 4, 9));
+        temporalData.setFeature(floweringSeason);
+        temporalData.getPeriod().setFreeText("My temporal text");
+        handleAnnotatableEntity(temporalData);
+        temporalData.setUuid(UUID.fromString("9a1c91c0-fc58-4310-94cb-8c26115985d3"));
+
 		Taxon taxon = getTaxon();
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
 		taxonDescription.addElements(categoricalData, quantitativeData,
-				textData, commonTaxonName, taxonInteraction, indAssoc, distribution);
+				textData, commonTaxonName, taxonInteraction, indAssoc, distribution, temporalData);
 
 		DerivedUnit describedSpecimenOrObservation = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
 		taxonDescription.setDescribedSpecimenOrObservation(describedSpecimenOrObservation);
@@ -542,6 +555,8 @@ public class FullCoverageDataGenerator {
 		media.setArtist(artist);
 		cdmBases.add(media);
 		cdmBases.add(artist);
+
+		MediaMetaData.NewInstance(imageFile, "Key", "Value");
 	}
 
 
@@ -646,12 +661,10 @@ public class FullCoverageDataGenerator {
 		dnaQuality.setRatioOfAbsorbance260_280(3.9);
 		dnaSample.setDnaQuality(dnaQuality);
 
-
 		//Phylogenetic Tree
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
 		handleIdentifiableEntity(phyloTree);
-
 
 		cdmBases.add(dnaSample);
 		cdmBases.add(phyloTree);
@@ -688,7 +701,7 @@ public class FullCoverageDataGenerator {
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
-		node.putExcludedNote(Language.DEFAULT(), "Excluded note");
+		node.putStatusNote(Language.DEFAULT(), "Status note");
 		DefinedTerm agentRelationType = DefinedTerm.NewTaxonNodeAgentRelationTypeInstance(null, "agentRelation", "ar");
 		Person agent = Person.NewTitledInstance("Related agent");
 		TaxonNodeAgentRelation agentRelation = node.addAgentRelation(agentRelationType, agent);
@@ -696,8 +709,7 @@ public class FullCoverageDataGenerator {
 
 		Taxon childTaxon = Taxon.NewInstance(synName, sec);
 		node.addChildTaxon(childTaxon, sec, "44");
-	    node.setUnplaced(true);
-	    node.setExcluded(true);
+	    node.setStatus(TaxonNodeStatus.EXCLUDED);
 
 		cdmBases.add(taxon);
 		cdmBases.add(concept);
@@ -956,6 +968,9 @@ public class FullCoverageDataGenerator {
 		//Identifier
 		Identifier<?> identifier = identifiableEntity.addIdentifier("ident23", DefinedTerm.SEX_FEMALE());
 		handleAnnotatableEntity(identifier);
+
+	    //Links
+        identifiableEntity.addLinkWebsite(URI.create("http://a.bc.de"), "Description", Language.ENGLISH());
 
 		//Rights
 		Rights rights = Rights.NewInstance("right", Language.ENGLISH());

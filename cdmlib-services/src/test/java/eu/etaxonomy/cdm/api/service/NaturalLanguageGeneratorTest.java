@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -73,7 +74,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 		MeasurementUnit munit = MeasurementUnit.NewInstance(null, "mm", null);
 		StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance();
 		smv.setType(StatisticalMeasure.AVERAGE());
-		smv.setValue(12);
+		smv.setValue(new BigDecimal(12));
 		qd.addStatisticalValue(smv);
 		qd.setUnit(munit);
 		qd.setFeature(qFeature);

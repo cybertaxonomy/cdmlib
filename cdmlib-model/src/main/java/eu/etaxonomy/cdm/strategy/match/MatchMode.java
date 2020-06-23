@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.strategy.match;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.ICheckEmpty;
+
 
 /**
  * Enumeration for matching modes.
@@ -22,11 +24,13 @@ public enum MatchMode {
 	EQUAL_REQUIRED,  //parameters must be equal and not null
 	EQUAL,			 //parameters must be equal or both null
 	EQUAL_OR_ONE_NULL,   //parameters must be equal or at least one parameter is null
-	EQUAL_OR_SECOND_NULL,
+	EQUAL_OR_FIRST_NULL, //parameters must be equal or first may be null
+    EQUAL_OR_SECOND_NULL,
 	IGNORE,			//matches always
 	MATCH_REQUIRED,
 	MATCH_OR_ONE_NULL,
-	MATCH_OR_SECOND_NULL,
+	MATCH_OR_FIRST_NULL,
+    MATCH_OR_SECOND_NULL,
 	MATCH,//matches if parameter match (parameters must implement IMatchable)
 	CACHE
 	;
@@ -45,6 +49,8 @@ public enum MatchMode {
 			return matchesEqualOrOneNull(obj1, obj2, fieldName);
 		}else if (this == EQUAL_OR_SECOND_NULL){
 			return matchesEqualOrSecondNull(obj1, obj2, fieldName);
+	     }else if (this == EQUAL_OR_FIRST_NULL){
+	            return matchesEqualOrSecondNull(obj2, obj1, fieldName);
 		}else if(this == IGNORE){
 			return matchesIgnore(obj1, obj2);
 		}else if(this == MATCH){
@@ -55,6 +61,8 @@ public enum MatchMode {
 			return matchesMatchOrOneNull(obj1, obj2, matchStrategy, fieldName, failAll);
 		}else if(this == MATCH_OR_SECOND_NULL){
 			return matchesMatchOrSecondNull(obj1, obj2, matchStrategy, fieldName, failAll);
+        }else if(this == MATCH_OR_FIRST_NULL){
+            return matchesMatchOrSecondNull(obj2, obj1, matchStrategy, fieldName, failAll);
 		}else if(this == CACHE){
 			return matchCache(obj1, obj2, fieldName);
 		}else {
@@ -62,13 +70,6 @@ public enum MatchMode {
 		}
 	}
 
-
-
-	/**
-     * @param obj1
-     * @param obj2
-     * @return
-     */
     private MatchResult matchCache(Object obj1, Object obj2, String fieldName) {
         if (StringUtils.isBlank((String)obj1)){
             return MatchResult.NewInstance(fieldName, this,obj1, obj2);
@@ -77,15 +78,6 @@ public enum MatchMode {
         }
     }
 
-
-
-    /**
-	 * @param obj1
-	 * @param obj2
-	 * @param matchStrategy
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatchRequired(Object obj1, Object obj2, IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null || obj2 == null ){
 			return MatchResult.NewInstance(fieldName, this, obj1, obj2);
@@ -100,13 +92,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatchOrOneNull(Object obj1, Object obj2,
 	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null || obj2 == null ){
@@ -116,12 +101,6 @@ public enum MatchMode {
 		}
 	}
 
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatchOrSecondNull(Object obj1, Object obj2,
 	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj2 == null ){
@@ -131,14 +110,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @param matchStrategy
-	 * @return
-	 * @throws MatchException
-	 */
 	private MatchResult matchesMatch(Object obj1, Object obj2,
 	        IMatchStrategy matchStrategy, String fieldName, boolean failAll) throws MatchException {
 		if (obj1 == null && obj2 == null ){
@@ -148,21 +119,10 @@ public enum MatchMode {
 		}
 	}
 
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesIgnore(Object obj1, Object obj2) {
 		return MatchResult.SUCCESS();
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqualRequired(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null || obj2 == null){
 		    return MatchResult.NewInstance(fieldName, this, obj1, obj2);
@@ -173,12 +133,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqualOrOneNull(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null || obj2 == null){
 			return MatchResult.SUCCESS();
@@ -187,12 +141,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqualOrSecondNull(Object obj1, Object obj2, String fieldName) {
 		if (obj2 == null){
 			return MatchResult.SUCCESS();
@@ -201,12 +149,6 @@ public enum MatchMode {
 		}
 	}
 
-
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @return
-	 */
 	private MatchResult matchesEqual(Object obj1, Object obj2, String fieldName) {
 		if (obj1 == null && obj2 == null){
 			return MatchResult.SUCCESS();
@@ -235,12 +177,22 @@ public enum MatchMode {
 	public boolean isIgnore(Object first){
 		if (this == IGNORE){
 			return true;
-		}else if (first == null && (isXOrOneNull())){
+		}else if (isNullOrEmpty(first) && (isXOrOneNull() || isXOrFirstNull()) ){
 				return true;
 		}else{
 			return false;
 		}
 	}
+
+    private boolean isNullOrEmpty(Object value) {
+        if (value == null){
+            return true;
+        }else if(value instanceof ICheckEmpty){
+            return ((ICheckEmpty)value).checkEmpty();
+        }else{
+            return false;
+        }
+    }
 
 	/**
 	 * Returns true if a non-null value is required for finding
@@ -254,11 +206,10 @@ public enum MatchMode {
 		}else{
 			return ! allowsExactlyOneNull() ;
 		}
-
 	}
 
 	/**
-	 * Returns true if a null value is required for retrieveing
+	 * Returns true if a null value is required for retrieving
 	 * matching objects
 	 * @param first
 	 * @return
@@ -270,7 +221,7 @@ public enum MatchMode {
 		}else if (isRequired()){
 			throw new MatchException("MatchMode " + this + " does not allow (null)");
 		}else{
-			return ! isXOrOneNull();
+			return ! isXOrOneNull() && ! isXOrFirstNull();
 		}
 	}
 
@@ -289,17 +240,17 @@ public enum MatchMode {
 	private boolean allowsExactlyOneNull(){
 		return (isXOrOneNull() ||
 				(this == EQUAL_OR_SECOND_NULL)|| (this == MATCH_OR_SECOND_NULL) ||
+				(this == EQUAL_OR_FIRST_NULL) || (this == MATCH_OR_FIRST_NULL) ||
 				(this == IGNORE));
 	}
 
 	/**
 	 * Returns true, if this match mode is of type MATCHXXX
-	 * @return
 	 */
 	public boolean isMatch(){
 		return ((this == MATCH_REQUIRED) || (this == MATCH_OR_ONE_NULL) ||
 				(this == MATCH)|| (this == MATCH_OR_SECOND_NULL) ||
-				(this == MATCH_OR_ONE_NULL));
+				(this == MATCH_OR_FIRST_NULL));
 	}
 
 	/**
@@ -309,15 +260,20 @@ public enum MatchMode {
 	public boolean isEqual(){
 		return ((this == EQUAL_REQUIRED) || (this == EQUAL_OR_ONE_NULL) ||
 				(this == EQUAL)|| (this == EQUAL_OR_SECOND_NULL) ||
-				(this == EQUAL_OR_ONE_NULL));
+				(this == EQUAL_OR_FIRST_NULL));
 	}
 
 	/**
-	 * Returns true, if this match mode is of type XXX_OR_ONE_NULL
-	 * @return
+	 * Returns <code>true</code>, if this match mode is of type XXX_OR_ONE_NULL
 	 */
 	public boolean isXOrOneNull(){
 		return (this == EQUAL_OR_ONE_NULL) || (this == MATCH_OR_ONE_NULL);
+	}
 
+	/**
+     * Returns <code>true</code>, if this match mode is of type XXX_OR_FIRST_NULL
+     */
+	public boolean  isXOrFirstNull(){
+	    return (this == EQUAL_OR_FIRST_NULL) || (this == MATCH_OR_FIRST_NULL);
 	}
 }

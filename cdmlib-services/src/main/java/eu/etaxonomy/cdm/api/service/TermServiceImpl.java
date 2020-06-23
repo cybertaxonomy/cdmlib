@@ -645,6 +645,16 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
         return dao.findByUUIDsAsDto(uuidList);
     }
 
+    @Override
+    public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList){
+        return dao.findFeatureByUUIDsAsDto(uuidList);
+    }
+
+    @Override
+    public Collection<TermDto> findFeatureByTitleAsDto(String title){
+        return dao.findFeatureByTitleAsDto(title);
+    }
+
 
     public enum TermMovePosition{
         BEFORE,

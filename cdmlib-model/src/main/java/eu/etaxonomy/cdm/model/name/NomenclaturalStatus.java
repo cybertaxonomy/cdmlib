@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -43,7 +43,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 })
 @Entity
 @Audited
-public class NomenclaturalStatus extends ReferencedEntityBase implements IRuleConsidered{
+public class NomenclaturalStatus
+        extends SingleSourcedEntityBase
+        implements IRuleConsidered{
 
 	private static final long serialVersionUID = -2451270405173131900L;
 	static Logger logger = Logger.getLogger(NomenclaturalStatus.class);
@@ -58,6 +60,7 @@ public class NomenclaturalStatus extends ReferencedEntityBase implements IRuleCo
     @ManyToOne(fetch = FetchType.LAZY)
 	private NomenclaturalStatusType type;
 
+// ************************** FACTORY *********************************/
 
 	/**
 	 * Creates a new nomenclatural status instance with a given
@@ -83,7 +86,6 @@ public class NomenclaturalStatus extends ReferencedEntityBase implements IRuleCo
 		status.setCitationMicroReference(microCitation);
 		return status;
 	}
-
 
 // ************************ CONSTRUCTOR *************************/
 

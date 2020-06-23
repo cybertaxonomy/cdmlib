@@ -6,10 +6,7 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.strategy.match;
-
-
 
 /**
  * @author a.mueller
@@ -22,9 +19,8 @@ public interface IParsedMatchStrategy extends IMatchStrategy{
     public static MatchMode DEFAULT_PARSED_MATCH_MATCH_MODE = MatchMode.MATCH_OR_SECOND_NULL;
 
 
-
 	/**
-	 * {@inheritDoc} Invokes the match check.
+	 * {@inheritDoc}
 	 *
 	 * @param <T>
 	 * @param fullInstance The more complete instance
@@ -33,5 +29,6 @@ public interface IParsedMatchStrategy extends IMatchStrategy{
 	 */
 	@Override
     public <T extends IMatchable> MatchResult invoke(T fullInstance, T parsedInstance) throws MatchException;
+
 
 }

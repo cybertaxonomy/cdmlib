@@ -42,6 +42,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
@@ -154,7 +155,8 @@ public class Reference
 	@Column(name="refType")
 	@NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    	parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
+    	parameters = {@Parameter(name  = "enumClass",
+    	value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
     )
 	@Audited
 	protected ReferenceType type;

@@ -21,8 +21,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
@@ -35,13 +35,17 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
@@ -50,6 +54,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -60,8 +65,10 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -81,12 +88,14 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "treeIndex",
     "sortIndex",
     "childNodes",
-    "referenceForParentChildRelation",
-    "microReferenceForParentChildRelation",
+    "source",
+//    "referenceForParentChildRelation",
+//    "microReferenceForParentChildRelation",
     "countChildren",
     "agentRelations",
     "synonymToBeUsed",
-    "excludedNote"
+    "status",
+    "statusNote"
 })
 @XmlRootElement(name = "TaxonNode")
 @Entity
@@ -99,7 +108,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonNode
             extends AnnotatableEntity
-            implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
+            implements ITaxonTreeNode, ITreeNode<TaxonNode>{
 
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
@@ -112,7 +121,6 @@ public class TaxonNode
     @ContainedIn
     private Taxon taxon;
 
-
     @XmlElement(name = "parent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -120,12 +128,10 @@ public class TaxonNode
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonNode parent;
 
-
     @XmlElement(name = "treeIndex")
     @Column(length=255)
     @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
     private String treeIndex;
-
 
     @XmlElement(name = "classification")
     @XmlIDREF
@@ -151,14 +157,24 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/trac/ticket/4200
     private Integer sortIndex = -1;
 
-	@XmlElement(name = "reference")
+    //the source for this placement
+    @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
+    private DescriptionElementSource source;
+
+//    @XmlElement(name = "reference")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+    @XmlTransient
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private Reference referenceForParentChildRelation;
 
-    @XmlElement(name = "microReference")
+//    @XmlElement(name = "microReference")
+    @XmlTransient
     private String microReferenceForParentChildRelation;
 
     @XmlElement(name = "countChildren")
@@ -172,29 +188,40 @@ public class TaxonNode
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
-    @XmlAttribute(name= "unplaced")
-    private boolean unplaced = false;
-    public boolean isUnplaced() {return unplaced;}
-    public void setUnplaced(boolean unplaced) {this.unplaced = unplaced;}
+//    private boolean unplaced = false;
+    public boolean isUnplaced() {return hasStatus(TaxonNodeStatus.UNPLACED);}
+//    @Deprecated
+//    public void setUnplaced(boolean unplaced) {setStatus(TaxonNodeStatus.UNPLACED, unplaced);}
 
     //#8281 indicates a preliminary placement
-    @XmlAttribute(name= "doubtful")
-    private boolean doubtful = false;
-    public boolean isDoubtful() {return doubtful;}
-    public void setDoubtful(boolean doubtful) {this.doubtful = doubtful;}
+//    private boolean doubtful = false;
+    public boolean isDoubtful() {return hasStatus(TaxonNodeStatus.DOUBTFUL);}
+//    @Deprecated
+//    public void setDoubtful(boolean doubtful) {setStatus(TaxonNodeStatus.DOUBTFUL, doubtful);}
 
-    @XmlAttribute(name= "excluded")
-    private boolean excluded = false;
-    public boolean isExcluded() {return excluded;}
-    public void setExcluded(boolean excluded) {this.excluded = excluded;}
+//    private boolean excluded = false;
+    public boolean isExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
+//    @Deprecated
+//    public void setExcluded(boolean excluded) {setStatus(TaxonNodeStatus.EXCLUDED, excluded);}
 
-    @XmlElement(name = "excludedNote")
+    /**
+     * The {@link TaxonNodeStatus status} of this taxon node.
+     */
+    @XmlAttribute(name ="TaxonNodeStatus")
+    @Column(name="status", length=10)
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus")}
+    )
+    @Audited
+    private TaxonNodeStatus status;
+
+    @XmlElement(name = "statusNote")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-    @MapKeyJoinColumn(name="excludedNote_mapkey_id")
-    @JoinTable(name = "TaxonNode_ExcludedNote")  //to make possible to add also unplacedNote
+//    @MapKeyJoinColumn(name="statusNote_mapkey_id")
+    @JoinTable(name = "TaxonNode_StatusNote")  //to make possible to add also unplacedNote
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private Map<Language,LanguageString> excludedNote = new HashMap<>();
+    private Map<Language,LanguageString> statusNote = new HashMap<>();
 
 //	private Taxon originalConcept;
 //	//or
@@ -253,7 +280,6 @@ public class TaxonNode
     	 sortIndex = i;
 	}
 
-
     public Taxon getTaxon() {
         return taxon;
     }
@@ -264,7 +290,6 @@ public class TaxonNode
         }
     }
 
-
     @Override
     public List<TaxonNode> getChildNodes() {
         return childNodes;
@@ -272,7 +297,6 @@ public class TaxonNode
 	protected void setChildNodes(List<TaxonNode> childNodes) {
 		this.childNodes = childNodes;
 	}
-
 
     public Classification getClassification() {
         return classification;
@@ -288,23 +312,49 @@ public class TaxonNode
         this.classification = classification;
     }
 
+//************************* SOURCE *********************/
 
     @Override
+    @Transient
     public String getMicroReference() {
-        return microReferenceForParentChildRelation;
+        return source == null ? null : this.source.getCitationMicroReference();
     }
     public void setMicroReference(String microReference) {
-        this.microReferenceForParentChildRelation = microReference;
+        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+        checkNullSource();
     }
-
 
     @Override
+    @Transient
     public Reference getReference() {
-        return referenceForParentChildRelation;
+        return (this.source == null) ? null : source.getCitation();
     }
     public void setReference(Reference reference) {
-        this.referenceForParentChildRelation = reference;
+        getSource(true).setCitation(reference);
+        checkNullSource();
     }
+
+    public DescriptionElementSource getSource() {
+        return source;
+    }
+    public void setSource(DescriptionElementSource source) {
+        this.source = source;
+    }
+
+    private void checkNullSource() {
+        if (this.source != null && this.source.checkEmpty(true)){
+            this.source = null;
+        }
+    }
+
+    private DescriptionElementSource getSource(boolean createIfNotExist){
+        if (this.source == null && createIfNotExist){
+            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+        }
+        return source;
+    }
+
+//************************************************************/
 
     //countChildren
     public int getCountChildren() {
@@ -318,7 +368,6 @@ public class TaxonNode
     protected void setCountChildren(int countChildren) {
         this.countChildren = countChildren;
     }
-
 
     //parent
     @Override
@@ -340,28 +389,35 @@ public class TaxonNode
 //        this.treeIndex = parent.treeIndex() +
     }
 
-    // *************** Excluded Note ***************
+    public TaxonNodeStatus getStatus() {
+        return status;
+    }
+    public void setStatus(TaxonNodeStatus status) {
+        this.status = status;
+    }
+
+// *************** Status Note ***************
 
     /**
      * Returns the {@link MultilanguageText multi-language text} to add a note to the
-     * excluded flag. The different {@link LanguageString language strings}
+     * status. The different {@link LanguageString language strings}
      * contained in the multi-language text should all have the same meaning.
-     * @see #getExcludedNote()
-     * @see #putExcludedNote(Language, String)
+     * @see #getStatusNote(Language)
+     * @see #putStatusNote(Language, String)
      */
-    public Map<Language,LanguageString> getExcludedNote(){
-        return this.excludedNote;
+    public Map<Language,LanguageString> getStatusNote(){
+        return this.statusNote;
     }
 
     /**
-     * Returns the excluded note string in the given {@link Language language}
+     * Returns the status note string in the given {@link Language language}
      *
      * @param language  the language in which the description string looked for is formulated
-     * @see             #getExcludedNote()
-     * @see             #putExcludedNote(Language, String)
+     * @see             #getStatusNote()
+     * @see             #putStatusNote(Language, String)
      */
-    public String getExcludedNote(Language language){
-        LanguageString languageString = excludedNote.get(language);
+    public String getStatusNote(Language language){
+        LanguageString languageString = statusNote.get(language);
         if (languageString == null){
             return null;
         }else{
@@ -372,43 +428,43 @@ public class TaxonNode
     /**
      * Adds a translated {@link LanguageString text in a particular language}
      * to the {@link MultilanguageText multilanguage text} used to add a note to
-     * the {@link #isExcluded() excluded} flag.
+     * the {@link #getStatus() status}.
      *
-     * @param excludedNote   the language string adding a note to the excluded flag
+     * @param statusNote   the language string adding a note to the status
      *                      in a particular language
-     * @see                 #getExcludedNote()
-     * @see                 #putExcludedNote(String, Language)
+     * @see                 #getStatusNote()
+     * @see                 #putStatusNote(String, Language)
      */
-    public void putExcludedNote(LanguageString excludedNote){
-        this.excludedNote.put(excludedNote.getLanguage(), excludedNote);
+    public void putStatusNote(LanguageString statusNote){
+        this.statusNote.put(statusNote.getLanguage(), statusNote);
     }
     /**
      * Creates a {@link LanguageString language string} based on the given text string
      * and the given {@link Language language} and adds it to the {@link MultilanguageText
-     * multi-language text} used to annotate the excluded flag.
+     * multi-language text} used to annotate the status.
      *
-     * @param text      the string annotating the excluded flag
+     * @param text      the string annotating the status
      *                  in a particular language
      * @param language  the language in which the text string is formulated
-     * @see             #getExcludedNote()
-     * @see             #putExcludedNote(LanguageString)
-     * @see             #removeExcludedNote(Language)
+     * @see             #getStatusNote()
+     * @see             #putStatusNote(LanguageString)
+     * @see             #removeStatusNote(Language)
      */
-    public void putExcludedNote(Language language, String text){
-        this.excludedNote.put(language, LanguageString.NewInstance(text, language));
+    public void putStatusNote(Language language, String text){
+        this.statusNote.put(language, LanguageString.NewInstance(text, language));
     }
 
     /**
      * Removes from the {@link MultilanguageText multilanguage text} used to annotate
-     * the excluded flag the one {@link LanguageString language string}
+     * the status the one {@link LanguageString language string}
      * with the given {@link Language language}.
      *
      * @param  lang the language in which the language string to be removed
      *       has been formulated
-     * @see         #getExcludedNote()
+     * @see         #getStatusNote()
      */
-    public void removeExcludedNote(Language lang){
-        this.excludedNote.remove(lang);
+    public void removeStatusNote(Language lang){
+        this.statusNote.remove(lang);
     }
 
 // ****************** Agent Relations ****************************/
@@ -439,7 +495,6 @@ public class TaxonNode
         this.synonymToBeUsed = synonymToBeUsed;
     }
 
-
     //treeindex
     @Override
     public String treeIndex() {
@@ -459,15 +514,12 @@ public class TaxonNode
         return treeIndex + "*";
     }
 
-
-
 //************************ METHODS **************************/
 
    @Override
     public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
         return addChildTaxon(taxon, this.childNodes.size(), citation, microCitation);
     }
-
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
@@ -1001,9 +1053,6 @@ public class TaxonNode
         return (taxon!= null);
     }
 
-    /**
-     * @return
-     */
     @Transient
     public Rank getNullSafeRank() {
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
@@ -1018,7 +1067,16 @@ public class TaxonNode
         }
     }
 
-
+    private void setStatus(TaxonNodeStatus status, boolean value) {
+        if (value){
+            this.status = status;
+        }else if (this.status != null && this.status.equals(status)){
+            this.status = null;
+        }
+    }
+    private boolean hasStatus(TaxonNodeStatus status) {
+        return CdmUtils.nullSafeEqual(this.status, status);
+    }
 
 //*********************** CLONE ********************************************************/
     /**
@@ -1047,10 +1105,10 @@ public class TaxonNode
                 result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
             }
 
-            //excludedNote
-            result.excludedNote = new HashMap<>();
-            for(Language lang : this.excludedNote.keySet()){
-                result.excludedNote.put(lang, this.excludedNote.get(lang));
+            //statusNote
+            result.statusNote = new HashMap<>();
+            for(Language lang : this.statusNote.keySet()){
+                result.statusNote.put(lang, this.statusNote.get(lang));
             }
 
 

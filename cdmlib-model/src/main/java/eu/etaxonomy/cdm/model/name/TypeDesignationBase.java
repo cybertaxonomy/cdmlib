@@ -18,6 +18,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlElement;
@@ -64,6 +65,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
     "typifiedNames",
     "citation",
     "citationMicroReference",
+    "source",
     "registrations",
 })
 @XmlSeeAlso({
@@ -105,6 +107,14 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     //Details of the lectotype reference.
     @XmlElement(name = "CitationMicroReference")
     private String citationMicroReference;
+
+    //the source for the lectotypification (or similar)
+    @XmlElement(name = "source")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private IdentifiableSource source;
 
     @XmlElementWrapper(name = "TypifiedNames")
     @XmlElement(name = "TypifiedName")

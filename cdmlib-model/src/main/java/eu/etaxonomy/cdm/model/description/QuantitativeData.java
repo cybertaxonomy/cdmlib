@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -35,6 +36,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -72,9 +74,10 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
-public class QuantitativeData extends DescriptionElementBase implements Cloneable {
-	private static final long serialVersionUID = -2755806455420051488L;
+public class QuantitativeData
+        extends DescriptionElementBase {
 
+	private static final long serialVersionUID = -2755806455420051488L;
 	private static final Logger logger = Logger.getLogger(QuantitativeData.class);
 
 	@XmlElement(name = "MeasurementUnit")
@@ -133,21 +136,25 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
     /**
      * Creates a new quantitative data instance of type feature with defined min and may value.
      */
-    public static QuantitativeData NewMinMaxInstance(Feature feature, float min, float max){
+    public static QuantitativeData NewMinMaxInstance(Feature feature, BigDecimal min, BigDecimal max){
         QuantitativeData result = new QuantitativeData(feature);
-        StatisticalMeasurementValue minValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(),min);
-        result.addStatisticalValue(minValue);
-        StatisticalMeasurementValue maxValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
-        result.addStatisticalValue(maxValue);
+        if (min != null){
+            StatisticalMeasurementValue minValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(),min);
+            result.addStatisticalValue(minValue);
+        }
+        if (max != null){
+            StatisticalMeasurementValue maxValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
+            result.addStatisticalValue(maxValue);
+        }
         return result;
     }
 
     /**
      * Creates a new quantitative data instance of type feature with defined exact value.
      */
-    public static QuantitativeData NewExactValueInstance(Feature feature, float... exactValues){
+    public static QuantitativeData NewExactValueInstance(Feature feature, BigDecimal... exactValues){
         QuantitativeData result = new QuantitativeData(feature);
-        for (float exactVal : exactValues){
+        for (BigDecimal exactVal : exactValues){
             StatisticalMeasurementValue exactValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.EXACT_VALUE(), exactVal);
             result.addStatisticalValue(exactValue);
         }
@@ -170,9 +177,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		super(feature);
 	}
 
-
 // ******************************** GETTER /SETTER *******************************/
-
 
 	/**
 	 * Returns the set of {@link StatisticalMeasurementValue statistical measurement values} describing
@@ -232,25 +237,25 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 // ******************************** TRANSIENT METHODS *******************************/
 
     @Transient
-    public Float getOverallMin(){
-        float result = Float.MAX_VALUE;
+    public BigDecimal getOverallMin(){
+        BigDecimal result = BigDecimalUtil.MAX_BIGDECIMAL;
         for (StatisticalMeasurementValue value : statisticalValues){
             if (withRangeValue(value)){
-                result = Math.min(result, value.getValue());;
+                result = result.min(value.getValue());
             }
         }
-        return (result == Float.MAX_VALUE)? null: result;
+        return (result == BigDecimalUtil.MAX_BIGDECIMAL)? null: result;
     }
 
     @Transient
-    public Float getOverallMax(){
-        float result = Float.MIN_VALUE;
+    public BigDecimal getOverallMax(){
+        BigDecimal result = BigDecimalUtil.MIN_BIGDECIMAL;
         for (StatisticalMeasurementValue value : statisticalValues){
             if (withRangeValue(value)){
-                result = Math.max(result, value.getValue());;
+                result = result.max(value.getValue());
             }
         }
-        return (result == Float.MIN_VALUE)? null: result;
+        return (result == BigDecimalUtil.MIN_BIGDECIMAL)? null: result;
     }
 
     private boolean withRangeValue(StatisticalMeasurementValue value) {
@@ -270,7 +275,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * statistical measurement value instance exists.
 	 */
 	@Transient
-	public Float getMin(){
+	public BigDecimal getMin(){
 		return getSpecificStatisticalValue(StatisticalMeasure.MIN());
 	}
 
@@ -281,7 +286,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * statistical measurement value instance exists.
 	 */
 	@Transient
-	public Float getMax(){
+	public BigDecimal getMax(){
 		return getSpecificStatisticalValue(StatisticalMeasure.MAX());
 	}
 
@@ -292,12 +297,12 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * Returns <code>null</code> if no such statistical measurement value instance exists.
 	 */
 	@Transient
-	public Float getTypicalLowerBoundary(){
+	public BigDecimal getTypicalLowerBoundary(){
 		return getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
 	}
 
 	@Transient
-    public Set<Float> getExactValues(){
+    public Set<BigDecimal> getExactValues(){
         return getSpecificStatisticalValues(StatisticalMeasure.EXACT_VALUE());
     }
 
@@ -308,7 +313,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * Returns <code>null</code> if no such statistical measurement value instance exists.
 	 */
 	@Transient
-	public Float getAverage(){
+	public BigDecimal getAverage(){
 		return getSpecificStatisticalValue(StatisticalMeasure.AVERAGE());
 	}
 
@@ -319,7 +324,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * Returns <code>null</code> if no such statistical measurement value instance exists.
 	 */
 	@Transient
-	public Float getStandardDeviation(){
+	public BigDecimal getStandardDeviation(){
 		return getSpecificStatisticalValue(StatisticalMeasure.STANDARD_DEVIATION());
 	}
 
@@ -330,7 +335,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * Returns <code>null</code> if no such statistical measurement value instance exists.
 	 */
 	@Transient
-	public Float getSampleSize(){
+	public BigDecimal getSampleSize(){
 		return getSpecificStatisticalValue(StatisticalMeasure.SAMPLE_SIZE());
 	}
 
@@ -341,7 +346,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * Returns <code>null</code> if no such statistical measurement value instance exists.
 	 */
 	@Transient
-	public Float getTypicalUpperBoundary(){
+	public BigDecimal getTypicalUpperBoundary(){
 		return getSpecificStatisticalValue(StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
 	}
 
@@ -352,8 +357,8 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @param type
 	 * @return the value
 	 */
-	public Float getSpecificStatisticalValue(StatisticalMeasure type){
-		Float result = null;
+	public BigDecimal getSpecificStatisticalValue(StatisticalMeasure type){
+	    BigDecimal result = null;
 		for (StatisticalMeasurementValue value : statisticalValues){
 			if (type.equals(value.getType())){
 				result = value.getValue();
@@ -363,8 +368,8 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 		return result;
 	}
 
-    public Set<Float> getSpecificStatisticalValues(StatisticalMeasure type){
-        Set<Float> result = new HashSet<>();
+    public Set<BigDecimal> getSpecificStatisticalValues(StatisticalMeasure type){
+        Set<BigDecimal> result = new HashSet<>();
         for (StatisticalMeasurementValue value : statisticalValues){
             if (type.equals(value.getType())){
                 result.add(value.getValue());
@@ -383,7 +388,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setMinimum(Float value, Set<DefinedTerm> modifiers){
+	public StatisticalMeasurementValue setMinimum(BigDecimal value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.MIN());
 	}
 
@@ -397,7 +402,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setMaximum(Float value, Set<DefinedTerm> modifiers){
+	public StatisticalMeasurementValue setMaximum(BigDecimal value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.MAX());
 	}
 
@@ -411,10 +416,9 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setAverage(Float value, Set<DefinedTerm> modifiers){
+	public StatisticalMeasurementValue setAverage(BigDecimal value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.AVERAGE());
 	}
-
 
 	/**
 	 * Sets the statistical value for the standard deviation.
@@ -425,7 +429,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setStandardDeviation(Float value, Set<DefinedTerm> modifiers){
+	public StatisticalMeasurementValue setStandardDeviation(BigDecimal value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.STANDARD_DEVIATION());
 	}
 
@@ -438,7 +442,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setSampleSize(Float value, Set<DefinedTerm> modifiers){
+	public StatisticalMeasurementValue setSampleSize(BigDecimal value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.SAMPLE_SIZE());
 	}
 
@@ -452,7 +456,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setTypicalLowerBoundary(Float value, Set<DefinedTerm> modifiers){
+	public StatisticalMeasurementValue setTypicalLowerBoundary(BigDecimal value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
 	}
 
@@ -466,7 +470,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setTypicalUpperBoundary(Float value, Set<DefinedTerm> modifiers){
+	public StatisticalMeasurementValue setTypicalUpperBoundary(BigDecimal value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
 	}
 
@@ -478,7 +482,8 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @param value
 	 * @return the newValue
 	 */
-	public StatisticalMeasurementValue setSpecificStatisticalValue(Float value, Set<DefinedTerm> modifiers, StatisticalMeasure type){
+	public StatisticalMeasurementValue setSpecificStatisticalValue(BigDecimal value,
+	        Set<DefinedTerm> modifiers, StatisticalMeasure type){
 
 	    StatisticalMeasurementValue result = null;
 		StatisticalMeasurementValue existingSmValue = null;

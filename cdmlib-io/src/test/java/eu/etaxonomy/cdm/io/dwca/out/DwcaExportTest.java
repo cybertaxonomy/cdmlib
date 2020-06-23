@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -282,7 +283,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         System.out.println(descriptionStr);
 
         //   quantitative data
-        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1-1.3 [n=2.0]\",\"Chromosome Numbers\"";
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"0.1-1.3 [n=2]\",\"Chromosome Numbers\"";
         Assert.assertTrue(descriptionStr.contains(expected));
         //   textdata
         expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"My Description\",\"Description\",,\"eng\",,,,,";
@@ -448,8 +449,8 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         description.addElement(catData);
 
         //QuantitativeData
-        QuantitativeData quantData = QuantitativeData.NewMinMaxInstance(Feature.CHROMOSOME_NUMBER(), 0.1f, 1.3f);
-        quantData.setSampleSize(2f, null);
+        QuantitativeData quantData = QuantitativeData.NewMinMaxInstance(Feature.CHROMOSOME_NUMBER(), new BigDecimal("0.1"), new BigDecimal("1.3"));
+        quantData.setSampleSize(new BigDecimal("2"), null);
         setUuid(quantData,"011264eb-d3d4-44be-86f3-e6f69a21f36b");
         description.addElement(quantData);
 

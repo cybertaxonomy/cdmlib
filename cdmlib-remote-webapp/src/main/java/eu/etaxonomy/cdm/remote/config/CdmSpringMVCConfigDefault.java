@@ -17,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 /**
  * @author a.kohlbecker
  * @since Feb 22, 2016
- *
  */
 //@EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly
 @Profile("!swagger")

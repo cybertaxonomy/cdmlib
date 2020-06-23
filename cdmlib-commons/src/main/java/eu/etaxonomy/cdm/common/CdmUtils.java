@@ -32,7 +32,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
- *
  * @author a.mueller
  * @author a.kohlbecker
  */
@@ -43,7 +42,6 @@ public class CdmUtils {
     static private boolean urlIsJarOrBundle(URL url){
         return url.getProtocol().startsWith("jar") || url.getProtocol().startsWith("bundleresource");
     }
-
 
     /**
      * Returns the an InputStream for a read-only source
@@ -69,8 +67,6 @@ public class CdmUtils {
         InputStreamReader inputStreamReader = new InputStreamReader(urlStream, "UTF8");
         return inputStreamReader;
     }
-
-
 
     /**
      * Returns the file name for the file in which 'clazz' is to be found (helps finding according libraries)
@@ -116,7 +112,6 @@ public class CdmUtils {
     static public String NzTrim(String value){
         return (value == null ? "" : value);
     }
-
 
     /**
      * Returns value if value is not <code>null</code>. Returns empty string if value is <code>null</code>.
@@ -172,7 +167,6 @@ public class CdmUtils {
         return (str == null || str.trim().equals("")? null : str);
     }
 
-
     /**
      * Concatenates an array of strings using the defined separator.<BR>
      * <code>Null</code> values are interpreted as empty strings.<BR>
@@ -216,7 +210,6 @@ public class CdmUtils {
         return concat(separator, strings);
     }
 
-
 	/**
 	 * Returns <code>preferred</code> if not blank, else returns <code>alternative</code>.
 	 * If reverse is <code>true</code> computation is
@@ -240,7 +233,6 @@ public class CdmUtils {
 		return result;
 	}
 
-
     /** Returns a version of the input where all contiguous
      * whitespace characters are replaced with a single
      * space. Line terminators are treated like whitespace.
@@ -257,7 +249,6 @@ public class CdmUtils {
         return matcher.replaceAll(replaceStr);
     }
 
-
     /** Builds a list of strings by splitting an input string
      * with delimiters whitespace, comma, or semicolon
      * @param value
@@ -271,7 +262,6 @@ public class CdmUtils {
         }
         return resultList;
     }
-
 
     static public boolean urlExists(String strUrl, boolean withWarning){
         try {
@@ -288,7 +278,7 @@ public class CdmUtils {
             }
         } catch (IOException e) {
             //
-        };
+        }
         return false;
     }
 
@@ -314,7 +304,6 @@ public class CdmUtils {
         } catch (NumberFormatException e) {
             return false;
         }
-
     }
 
     /**
@@ -334,7 +323,6 @@ public class CdmUtils {
                 return false;
             }
         }
-
     }
 
     /**
@@ -396,7 +384,6 @@ public class CdmUtils {
         return (obj1.equals(obj2));
     }
 
-
     /**
      * Compares 2 strings with defined values for <code>null</code>
      * @param str1
@@ -427,7 +414,6 @@ public class CdmUtils {
         return isNotBlank(string);
     }
 
-
     /**
      * Computes all fields recursively
      * @param clazz
@@ -447,14 +433,13 @@ public class CdmUtils {
             }
 
             //include superclass fields
-            Class superclass = clazz.getSuperclass();
+            Class<?> superclass = clazz.getSuperclass();
             if (superclass != null){
                 result.putAll(getAllFields(superclass, highestClass, includeStatic, includeTransient, makeAccessible, includeHighestClass));
             }
         }
         return result;
     }
-
 
     /**
      * Returns true, if field has an annotation of type javax.persistence.Annotation
@@ -532,7 +517,6 @@ public class CdmUtils {
         }
     }
 
-
     /**
      * Checks if all strings given provide are {@link #isBlank(String) blank}.
      * Returns <code>true</code> if strs is null or empty
@@ -575,6 +559,4 @@ public class CdmUtils {
         }
         return -1;
     }
-
-
 }

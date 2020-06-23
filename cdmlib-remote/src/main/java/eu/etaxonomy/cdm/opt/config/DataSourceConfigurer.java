@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.naming.NamingException;
@@ -42,6 +43,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.api.config.CdmConfigurationKeys;
 import eu.etaxonomy.cdm.config.ConfigFileUtil;
+import eu.etaxonomy.cdm.database.CdmDatabaseException;
 import eu.etaxonomy.cdm.database.WrappedCdmDataSource;
 import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
@@ -51,8 +53,8 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 /**
  * The <code>DataSourceConfigurer</code> can be used as a replacement for a xml configuration in the application context.
  * <p>
- * The id of the loaded data source bean aka the <b>cdm instance name</b> is put into the <b>Spring environment</b> from where it can be retrieved using the
- * key {@link CDM_DATA_SOURCE_ID}.
+ * The id of the loaded data source bean aka the <b>cdm instance name</b> is put into the <b>Spring environment</b> from
+ * where it can be retrieved using the key {@link CDM_DATA_SOURCE_ID}.
  * <p>
  * Enter the following in your application context configuration in order to enable the <code>DataSourceConfigurer</code>:
  *
@@ -82,7 +84,6 @@ import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
  *
  * @author a.kohlbecker
  * @since 04.02.2011
- *
  */
 @Configuration
 // cdmlib-remote.properties is used by developers to define the datasource bean to use from
@@ -100,13 +101,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     private ConfigFileUtil configFileUtil;
 
     /**
-     * key for the spring environment to the datasource bean id aka instance name
-     * @deprecated use CdmConfigurationKeys.CDM_DATA_SOURCE_ID instead
-     */
-    @Deprecated
-    public static final String CDM_DATA_SOURCE_ID = CdmConfigurationKeys.CDM_DATA_SOURCE_ID;
-
-    /**
      * Attribute to configure the name of the data source as set as bean name in the datasources.xml.
      * This name usually is used as the prefix for the webapplication root path.
      * <br>
@@ -118,6 +112,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      *
      */
     protected static final String ATTRIBUTE_DATASOURCE_NAME = "cdm.datasource";
+
     /**
      * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code>
      */
@@ -128,6 +123,20 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes.ATTRIBUTE_FORCE_SCHEMA_UPDATE</code>
      */
     public static final String ATTRIBUTE_FORCE_SCHEMA_UPDATE = "cdm.forceSchemaUpdate";
+
+    /**
+     * <b>WARNING!!!!!!!!!!!!!!!</b> Using this option will delete the existing data base followed by database creation.
+     * <p>
+     * Force a schema creation when the cdmlib-remote-webapp instance is starting up. Will set the hibernate property
+     * {@code hibernate.hbm2ddl.auto} to {@code create}
+     * <p>
+     * This option will inactivate {@link #ATTRIBUTE_FORCE_SCHEMA_UPDATE} even if this is set.
+     * <p>
+     * This attribute has no equivalent in <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code> and never must
+     * have any since this setting this attribute for any database listed for a server is far too dangerous. It must only
+     * be possible to set this option per data base individually.
+     */
+    public static final String ATTRIBUTE_FORCE_SCHEMA_CREATE = "cdm.forceSchemaCreate";
 
     private static String beanDefinitionFile = null;
 
@@ -162,8 +171,6 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         return hibernateProperties;
     }
 
-
-
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public DataSource dataSource() {
@@ -188,78 +195,84 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
         MutablePropertySources sources = env.getPropertySources();
         Properties props = new Properties();
-        props.setProperty(CDM_DATA_SOURCE_ID, dataSourceId);
+        props.setProperty(CdmConfigurationKeys.CDM_DATA_SOURCE_ID, dataSourceId);
         sources.addFirst(new PropertiesPropertySource("cdm-datasource",  props));
 
-        // validate correct schema version
-        Connection connection  = null;
-        try {
-
-            connection = dataSource.getConnection();
-            String metadataTableName = "CdmMetaData";
-            if(inferHibernateDialectName(dataSource).equals(H2CorrectedDialect.class.getName())){
-                metadataTableName = metadataTableName.toUpperCase();
-            }
-            ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
-            if(tables.first()){
-                ResultSet resultSet;
-                try {
-                    resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
-                } catch (Exception e) {
+        if(!isForceSchemaCreate()) {
+            // validate correct schema version
+            Connection connection  = null;
+            try {
+                connection = dataSource.getConnection();
+                String metadataTableName = "CdmMetaData";
+                if(inferHibernateDialectName(dataSource).equals(H2CorrectedDialect.class.getName())){
+                    metadataTableName = metadataTableName.toUpperCase();
+                }
+                ResultSet tables = connection.getMetaData().getTables(connection.getCatalog(), null, metadataTableName, null);
+                if(tables.first()){
+                    ResultSet resultSet;
                     try {
-                        resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
-                    } catch (Exception e1) {
-                        throw e1;
+                        resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+                    } catch (Exception e) {
+                        try {
+                            resultSet = connection.createStatement().executeQuery(CdmMetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQueryOld());
+                        } catch (Exception e1) {
+                            throw e1;
+                        }
+                    }
+                    String version = null;
+                    if(resultSet.next()){
+                        version = resultSet.getString(1);
+                    } else {
+                        CdmDatabaseException cde = new CdmDatabaseException("Unable to retrieve version info from data source " + dataSource.toString()
+                        + " -  the database may have been corrupted or is not a cdm database");
+                        addErrorMessageToServletContextAttributes(cde.getMessage());
+                        throw cde;
+                    }
+
+                    connection.close();
+
+                    if(!CdmMetaData.isDbSchemaVersionCompatible(version)){
+                        /*
+                         * any exception thrown here would be nested into a spring
+                         * BeanException which can not be caught in the servlet
+                         * container, so we post the information into the
+                         * ServletContext
+                         */
+                        String errorMessage = "Incompatible version [" + (beanName != null ? beanName : jndiName) + "] expected version: " + CdmMetaData.getDbSchemaVersion() + ",  data base version  " + version;
+                        addErrorMessageToServletContextAttributes(errorMessage);
+                    }
+                } else {
+                    CdmDatabaseException cde = new CdmDatabaseException("database " + dataSource.toString() + " is empty or not a cdm database");
+                    logger.error(cde.getMessage());
+                    // throw cde; // TODO: No exception was thrown here before. Is this correct behavior or
+                }
+            } catch (SQLException e) {
+                CdmDatabaseException re = new CdmDatabaseException("Unable to connect or to retrieve version info from data source " + dataSource.toString() , e);
+                addErrorMessageToServletContextAttributes(re.getMessage());
+                throw re;
+            } finally {
+                if(connection != null){
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        // IGNORE //
                     }
                 }
-                String version = null;
-                if(resultSet.next()){
-                    version = resultSet.getString(1);
-                } else {
-                    throw new RuntimeException("Unable to retrieve version info from data source " + dataSource.toString());
-                }
-
-                connection.close();
-
-                if(!CdmMetaData.isDbSchemaVersionCompatible(version)){
-                    /*
-                     * any exception thrown here would be nested into a spring
-                     * BeanException which can not be caught in the servlet
-                     * container, so we post the information into the
-                     * ServletContext
-                     */
-                    String errorMessage = "Incompatible version [" + (beanName != null ? beanName : jndiName) + "] expected version: " + CdmMetaData.getDbSchemaVersion() + ",  data base version  " + version;
-                    addErrorMessageToServletContextAttributes(errorMessage);
-                }
-            } else {
-//            	throw new RuntimeException("database " + dataSource.toString() + " is empty or not a cdm database");
-                logger.error("database " + dataSource.toString() + " is empty or not a cdm database");
-            }
-
-
-        } catch (SQLException e) {
-            RuntimeException re =   new RuntimeException("Unable to connect or to retrieve version info from data source " + dataSource.toString() , e);
-            addErrorMessageToServletContextAttributes(re.getMessage());
-            throw re;
-        } finally {
-            if(connection != null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    // IGNORE //
-                }
-            }
-        }
+            } // END // validate correct schema version
+        } // END !isForceSchemaCreate()
 
 
         String forceSchemaUpdate = findProperty(ATTRIBUTE_FORCE_SCHEMA_UPDATE, false);
         if(forceSchemaUpdate != null){
-            logger.info("Update of data source requested by property '" + ATTRIBUTE_FORCE_SCHEMA_UPDATE + "'");
-
-            CdmUpdater updater = CdmUpdater.NewInstance();
-            WrappedCdmDataSource cdmDataSource = new WrappedCdmDataSource(dataSource);
-            updater.updateToCurrentVersion(cdmDataSource, null);
-            cdmDataSource.closeOpenConnections();
+            if(!isForceSchemaCreate()) {
+                logger.info("Update of data source requested by property '" + ATTRIBUTE_FORCE_SCHEMA_UPDATE + "'");
+                CdmUpdater updater = CdmUpdater.NewInstance();
+                WrappedCdmDataSource cdmDataSource = new WrappedCdmDataSource(dataSource);
+                updater.updateToCurrentVersion(cdmDataSource, null);
+                cdmDataSource.closeOpenConnections();
+            } else {
+                logger.info("Update of data source requested by property '" + ATTRIBUTE_FORCE_SCHEMA_UPDATE + "' but overwritten by " + ATTRIBUTE_FORCE_SCHEMA_CREATE);
+            }
         }
 
         return dataSource;
@@ -358,8 +371,17 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
                 searchPath +
                 "/index/".replace("/", File.separator) +
                 findProperty(ATTRIBUTE_DATASOURCE_NAME, true));
+        if(isForceSchemaCreate()) {
+            props.setProperty("hibernate.hbm2ddl.auto", "create");
+        }
         logger.debug("hibernateProperties: " + props.toString());
         return props;
+    }
+
+    private boolean isForceSchemaCreate() {
+        String propVal = findProperty(ATTRIBUTE_FORCE_SCHEMA_CREATE, false);
+        logger.debug("System property " + ATTRIBUTE_FORCE_SCHEMA_CREATE +  " = " + Objects.toString(propVal, "[NULL]"));
+        return propVal != null && !(propVal.toLowerCase().equals("false") || propVal.equals("0"));
     }
 
     /**

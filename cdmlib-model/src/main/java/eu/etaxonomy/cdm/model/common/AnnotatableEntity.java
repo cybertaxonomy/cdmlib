@@ -172,8 +172,17 @@ public abstract class AnnotatableEntity
 	     new EntityCollectionSetterAdapter<AnnotatableEntity, Annotation>(AnnotatableEntity.class, Annotation.class, "annotations").setCollection(this, annotations);
     }
 
-//********************** CLONE *****************************************/
+// **************** EMPTY ************************/
 
+    @Override
+    protected boolean checkEmpty(){
+       return super.checkEmpty()
+            && this.annotations.isEmpty()
+            && this.markers.isEmpty()
+           ;
+    }
+
+//********************** CLONE *****************************************/
 
 	@Override
 	public Object clone() throws CloneNotSupportedException{

@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = {"/portal/agent/{uuid}"})
 public class AgentPortalController extends AgentController {
 
-    private static final List<String> TEAM_OR_PERSON_BASE_INIT_STRATEGY = Arrays.asList(new String[]{
+    public static final List<String> TEAM_OR_PERSON_BASE_INIT_STRATEGY = Arrays.asList(new String[]{
             // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
             // which is using join fetches
             // AgentBase
@@ -56,9 +56,7 @@ public class AgentPortalController extends AgentController {
         return TAXONNODEAGENTRELATIONS_INIT_STRATEGY;
     }
 
-    /**
-    *
-    */
+
    public AgentPortalController() {
        super();
        setInitializationStrategy(TEAM_OR_PERSON_BASE_INIT_STRATEGY);

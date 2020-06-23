@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.14.0</version>
+    <version>5.15.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -12,9 +12,6 @@
   <artifactId>cdmlib-ext</artifactId>
   <name>CDM External</name>
   <description>EDIT CDM library external services. Module for handling requests to non CDM library services like the EDIT geoservice.</description>
-  <properties>
-    <ogc-schemas.version>2.6.1</ogc-schemas.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
@@ -50,11 +47,52 @@
       <groupId>com.taskadapter</groupId>
       <artifactId>redmine-java-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.jvnet.ogc</groupId>
-      <artifactId>kml-v_2_2_0</artifactId>
-      <version>${ogc-schemas.version}</version>
-    </dependency>
-  </dependencies>
+    <!-- GIS/KML -->
+	<dependency>
+	    <groupId>de.micromata.jak</groupId>
+	    <artifactId>JavaAPIforKml</artifactId>
+        <exclusions>
+          <!-- need to exclude jaxb-impl since it depends on an old version  -->
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+          </exclusion>
+        </exclusions>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-opengis</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-referencing</artifactId>
+	    <exclusions>
+	    	<exclusion>
+	    		<groupId>org.eclipse.emf</groupId>
+	    		<artifactId>org.eclipse.emf.common</artifactId>
+	    	</exclusion>
+	    	<exclusion>
+	    		<groupId>org.eclipse.emf</groupId>
+	    		<artifactId>org.eclipse.emf.ecore</artifactId>
+	    	</exclusion>
+	    	<exclusion>
+	    		<groupId>org.eclipse.emf</groupId>
+	    		<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+	    	</exclusion>
+	    </exclusions>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-epsg-wkt</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.geotools</groupId>
+	    <artifactId>gt-main</artifactId>
+	</dependency>
+	</dependencies>
 </project>
 

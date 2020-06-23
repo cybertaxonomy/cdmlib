@@ -54,9 +54,11 @@ import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -67,12 +69,14 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -80,10 +84,10 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISourcedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
@@ -99,6 +103,11 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.IParsedMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchStrategyFactory;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
@@ -120,9 +129,6 @@ public class NameServiceImpl
     @Autowired
     protected ITaxonService taxonService;
     @Autowired
-    @Qualifier("refEntDao")
-    protected IReferencedEntityDao<ReferencedEntityBase> referencedEntityDao;
-    @Autowired
     @Qualifier("sourcedEntityDao")
     protected ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
     @Autowired
@@ -135,6 +141,9 @@ public class NameServiceImpl
     private ICdmGenericDao genericDao;
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
+    @Autowired
+    protected ICommonService commonService;
+
     @Autowired
     // @Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;
@@ -496,6 +505,19 @@ public class NameServiceImpl
     @Override
     public TypeDesignationBase<?> loadTypeDesignation(UUID uuid, List<String> propertyPaths){
         return typeDesignationDao.load(uuid, propertyPaths);
+    }
+
+    @Override
+    public List<TypeDesignationBase<?>> loadTypeDesignations(List<UUID> uuids, List<String> propertyPaths){
+    	if(uuids == null) {
+            return null;
+        }
+
+        List<TypeDesignationBase<?>> entities = new ArrayList<>();
+        for(UUID uuid : uuids) {
+            entities.add(uuid == null ? null : typeDesignationDao.load(uuid, propertyPaths));
+        }
+        return entities;
     }
 
     /**
@@ -1118,13 +1140,13 @@ public class NameServiceImpl
 
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfSynonymy(Integer limit, UUID taxonUuid) {
-        List<String> propertyPaths = new ArrayList();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("synonyms.name.*");
-        TaxonBase taxonBase = taxonService.load(taxonUuid, propertyPaths);
+        TaxonBase<?> taxonBase = taxonService.load(taxonUuid, propertyPaths);
         if (taxonBase instanceof Taxon){
             Taxon taxon = (Taxon)taxonBase;
             Set<TaxonName> names = taxon.getSynonymNames();
-            List<UuidAndTitleCache> uuidAndTitleCacheList = new ArrayList();
+            List<UuidAndTitleCache> uuidAndTitleCacheList = new ArrayList<>();
             UuidAndTitleCache<TaxonName> uuidAndTitleCache;
             for (TaxonName name: names){
                 uuidAndTitleCache = new UuidAndTitleCache<TaxonName>(TaxonName.class, name.getUuid(), name.getId(), name.getTitleCache());
@@ -1134,6 +1156,112 @@ public class NameServiceImpl
         return null;
     }
 
+    @Override
+    public UpdateResult parseName(String stringToBeParsed, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate) {
+        TaxonName name = TaxonNameFactory.NewNameInstance(code, preferredRank);
+        return parseName(name, stringToBeParsed, preferredRank, true, doDeduplicate);
+    }
 
+    @Override
+    public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
+            boolean doEmpty, boolean doDeduplicate){
+        UpdateResult result = new UpdateResult();
+        NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
+        nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
+        TaxonName name = nameToBeFilled;
+        if(doDeduplicate) {
+            try {
+//                Level sqlLogLevel = Logger.getLogger("org.hibernate.SQL").getLevel();
+//                Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
+
+                //references
+                if (name.getNomenclaturalReference()!= null && !name.getNomenclaturalReference().isPersited()){
+                    Reference nomRef = name.getNomenclaturalReference();
+                    IMatchStrategy referenceMatcher = MatchStrategyFactory.NewParsedReferenceInstance(nomRef);
+                    List<Reference> matchingReferences = commonService.findMatching(nomRef, referenceMatcher);
+                    if(matchingReferences.size() >= 1){
+                        Reference duplicate = findBestMatching(nomRef, matchingReferences, referenceMatcher);
+                        name.setNomenclaturalReference(duplicate);
+                    }else{
+                        if (nomRef.getInReference() != null){
+                            List<Reference> matchingInReferences = commonService.findMatching(nomRef.getInReference(), MatchStrategyFactory.NewParsedReferenceInstance(nomRef.getInReference()));
+                            if(matchingInReferences.size() >= 1){
+                                Reference duplicate = findBestMatching(nomRef, matchingInReferences, referenceMatcher);
+                                nomRef.setInReference(duplicate);
+                            }
+                        }
+                        TeamOrPersonBase<?> author = deduplicateAuthor(nomRef.getAuthorship());
+                        nomRef.setAuthorship(author);
+                    }
+                }
+                Reference nomRef = name.getNomenclaturalReference();
+                //authors
+                IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
+                if (name.getCombinationAuthorship()!= null && !name.getCombinationAuthorship().isPersited()){
+                    //use same nom.ref. author if possible (should always be possible if nom.ref. exists)
+                    if (nomRef != null && nomRef.getAuthorship() != null){
+                        if(authorMatcher.invoke(name.getCombinationAuthorship(), nomRef.getAuthorship()).isSuccessful()){
+                            name.setCombinationAuthorship(nomRef.getAuthorship());
+                        }
+                    }
+                    name.setCombinationAuthorship(deduplicateAuthor(name.getCombinationAuthorship()));
+                }
+                if (name.getExCombinationAuthorship()!= null && !name.getExCombinationAuthorship().isPersited()){
+                    name.setExCombinationAuthorship(deduplicateAuthor(name.getExCombinationAuthorship()));
+                }
+                if (name.getBasionymAuthorship()!= null && !name.getBasionymAuthorship().isPersited()){
+                    name.setBasionymAuthorship(deduplicateAuthor(name.getBasionymAuthorship()));
+                }
+                if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersited()){
+                    name.setExBasionymAuthorship(deduplicateAuthor(name.getExBasionymAuthorship()));
+                }
+//              Logger.getLogger("org.hibernate.SQL").setLevel(sqlLogLevel);
+            } catch (MatchException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        result.setCdmEntity(name);
+        return result;
+    }
+
+    private TeamOrPersonBase<?> deduplicateAuthor(TeamOrPersonBase<?> authorship) throws MatchException {
+        if (authorship == null){
+            return null;
+        }
+        IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
+        List<TeamOrPersonBase<?>> matchingAuthors = commonService.findMatching(authorship, authorMatcher);
+        if(matchingAuthors.size() >= 1){
+            TeamOrPersonBase<?> duplicate = findBestMatching(authorship, matchingAuthors, authorMatcher);
+            return duplicate;
+        }else{
+            if (authorship instanceof Team){
+                deduplicateTeam((Team)authorship);
+            }
+            return authorship;
+        }
+    }
+
+    private void deduplicateTeam(Team team) throws MatchException {
+        List<Person> members = team.getTeamMembers();
+        IParsedMatchStrategy personMatcher = MatchStrategyFactory.NewParsedPersonInstance();
+        for (int i =0; i< members.size(); i++){
+            Person person = CdmBase.deproxy(members.get(i));
+            List<Person> matchingPersons = commonService.findMatching(person, personMatcher);
+            if (matchingPersons.size() > 0){
+                person = findBestMatching(person, matchingPersons, personMatcher);
+                members.set(i, person);
+            }
+        }
+    }
+
+    private <M extends IMatchable> M findBestMatching(M matchable, List<M> matchingList,
+            IMatchStrategy referenceMatcher) {
+        // FIXME TODO resolve multiple duplications. Use first match for a start
+        if(matchingList.isEmpty()){
+            return null;
+        }
+        M bestMatching = matchingList.iterator().next();
+        return bestMatching;
+    }
 
 }

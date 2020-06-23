@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -32,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.format.description.MicroFormatQuantitativeDescriptionBuilder;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -56,6 +59,8 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -471,7 +476,7 @@ public class DescriptionServiceImpl
     @Transactional(readOnly = false)
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements, boolean returnTransientEntity) {
         List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
-        List<Distribution> toDelete = new ArrayList<>();
+
         for(TaxonDistributionDTO obj : descriptionElements) {
             Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
             List<DescriptionBase> list = new ArrayList(obj.getDescriptionsWrapper().getDescriptions());
@@ -487,6 +492,64 @@ public class DescriptionServiceImpl
         }
 
         return mergedObjects;
+    }
+//
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid) {
+//        List<<DescriptionBase>> mergedObjects = new ArrayList();
+        UpdateResult result = new UpdateResult();
+        DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
+        Set<DescriptionBase> descriptionsOfDataSet = dataSet.getDescriptions();
+        HashMap<UUID, DescriptionBase> descriptionSpecimenMap = new HashMap();
+
+        for (DescriptionBase descriptionBase: descriptionsOfDataSet){
+            if (descriptionBase.getDescribedSpecimenOrObservation() != null){
+                descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), descriptionBase);
+            }
+        }
+        MergeResult<DescriptionBase> mergeResult = null;
+        for(DescriptionBaseDto descDto : descriptions) {
+            DescriptionBase description = descDto.getDescription();
+            UUID describedObjectUuid = null;
+            if (description instanceof SpecimenDescription){
+                describedObjectUuid = descDto.getSpecimenDto().getUuid();
+            }else if (description instanceof TaxonDescription){
+                describedObjectUuid = descDto.getTaxonDto().getUuid();
+            }else if (description instanceof TaxonNameDescription){
+                describedObjectUuid = descDto.getNameDto().getUuid();
+            }
+            if (descriptionSpecimenMap.get(describedObjectUuid) != null && !descriptionSpecimenMap.get(describedObjectUuid).equals(description)){
+                Set<DescriptionElementBase> elements = new HashSet();
+                for (Object element: description.getElements()){
+                    elements.add((DescriptionElementBase)element);
+                }
+                DescriptionBase desc = descriptionSpecimenMap.get(describedObjectUuid);
+//                description.setDescribedSpecimenOrObservation(null);
+
+                for (DescriptionElementBase element: elements){
+                    desc.addElement(element);
+                }
+                descriptionSpecimenMap.put(describedObjectUuid, desc);
+                description = desc;
+            }
+            try{
+                mergeResult = dao.merge(description, true);
+                result.addUpdatedObject( mergeResult.getMergedEntity());
+//                if (description instanceof SpecimenDescription){
+//                    result.addUpdatedObject(mergeResult.getMergedEntity().getDescribedSpecimenOrObservation());
+//                }else if (description instanceof TaxonDescription){
+//                    result.addUpdatedObject(((TaxonDescription)mergeResult.getMergedEntity()).getTaxon());
+//                }else if (description instanceof TaxonNameDescription){
+//                    result.addUpdatedObject(((TaxonNameDescription)mergeResult.getMergedEntity()).getTaxonName());
+//                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+        }
+
+        return result;
     }
 
     /**
@@ -515,7 +578,17 @@ public class DescriptionServiceImpl
         //avoid lazy init exception
 
         deleteResult = isDeletable(description.getUuid());
-        if (deleteResult.isOk()){
+        if (deleteResult.getRelatedObjects() != null && deleteResult.getRelatedObjects().size() == 1){
+            Iterator<CdmBase> relObjects = deleteResult.getRelatedObjects().iterator();
+            CdmBase next = relObjects.next();
+            if (next instanceof CdmLinkSource){
+                CdmLinkSource source = (CdmLinkSource)next;
+                ICdmTarget target = source.getTarget();
+
+
+            }
+        }
+        if (deleteResult.isOk() ){
         	if (description instanceof TaxonDescription){
         		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
         		Taxon tax = taxDescription.getTaxon();

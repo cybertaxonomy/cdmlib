@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.strategy.match;
 /**
  * @author a.mueller
  * @since 20.10.2018
- *
  */
 public interface IMatchStrategy {
 
@@ -42,30 +41,25 @@ public interface IMatchStrategy {
 
     /**
      * Invokes the match check.
-     * If two objects match this method returns true, false otherwise
-     * @param <T>
+     * If two objects match this method returns <code>true</code>, <code>false</code> otherwise
+     * @param <S>
      * @param mergeFirst
      * @param mergeSecond
      * @throws MatchException
      */
-    public <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond) throws MatchException;
+    public <S extends IMatchable> MatchResult invoke(S matchFirst, S matchSecond) throws MatchException;
 
-    public  <T extends IMatchable> MatchResult invoke(T matchFirst, T matchSecond, boolean failAll) throws MatchException;
+    public  <S extends IMatchable> MatchResult invoke(S matchFirst, S matchSecond, boolean failAll) throws MatchException;
 
-
-    /**
-     * @param matchFirst
-     * @param matchSecond
-     * @param matchResult
-     * @param failAll
-     * @throws MatchException
-     */
-    <T extends IMatchable> void invoke(T matchFirst, T matchSecond, MatchResult matchResult, boolean failAll) throws MatchException;
+    public <S extends IMatchable> void invoke(S matchFirst, S matchSecond, MatchResult matchResult, boolean failAll) throws MatchException;
 
     /**
      * Returns the Matching of this match strategy
      * @return
      */
     public Matching getMatching();
+
+    public Matching getMatching(IMatchable instance);
+
 
 }

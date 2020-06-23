@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
  */
 public class FeatureTreeMover extends SchemaUpdaterStepBase {
 
-
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(FeatureTreeMover.class);
 
@@ -62,9 +61,6 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult result) throws SQLException {
@@ -199,14 +195,6 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
 
     }
 
-    /**
-     * @param datasource
-     * @param monitor
-     * @param caseType
-     * @param result
-     * @return
-     * @throws SQLException
-     */
     private List<Integer> getFeatureTreeIds(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult updateResult) throws SQLException {
 
@@ -230,15 +218,7 @@ public class FeatureTreeMover extends SchemaUpdaterStepBase {
         return result;
     }
 
-    /**
-     * @param datasource
-     * @param monitor
-     * @param caseType
-     * @param result
-     * @return
-     * @throws SQLException
-     * @throws NumberFormatException
-     */
+
     private int getMaxIdTermVoc(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult result) throws NumberFormatException, SQLException {
         String sql = "SELECT max(id) FROM " +caseType.transformTo("TermCollection");

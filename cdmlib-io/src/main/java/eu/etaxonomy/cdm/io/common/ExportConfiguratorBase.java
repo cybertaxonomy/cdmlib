@@ -38,7 +38,7 @@ public abstract class ExportConfiguratorBase<STATE extends ExportStateBase, TRAN
 
     protected Class<ICdmIO>[] ioClassList;
 
-	private TaxonNodeFilter taxonNodeFilter = new TaxonNodeFilter();
+	private TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance();
 
 	protected ExportResultType resultType;
 	/**

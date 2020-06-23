@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.Set;
+
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
@@ -21,9 +23,21 @@ public class TaxonRowWrapperDTO extends RowWrapperDTO<TaxonDescription> {
 
     private static final long serialVersionUID = 5198447592554976471L;
 
+    Set<DescriptionBaseDto> taxonDescriptions;
 
-    public TaxonRowWrapperDTO(TaxonDescription description, TaxonNodeDto taxonNode) {
+    public TaxonRowWrapperDTO(DescriptionBaseDto description, TaxonNodeDto taxonNode, Set<DescriptionBaseDto> taxonDescriptions) {
         super(description, taxonNode);
+        this.taxonDescriptions = taxonDescriptions;
+
+    }
+
+    public Set<DescriptionBaseDto> getTaxonDescriptions() {
+        return taxonDescriptions;
+    }
+
+
+    public void setTaxonDescriptions(Set<DescriptionBaseDto> taxonDescriptions) {
+        this.taxonDescriptions = taxonDescriptions;
     }
 
 }

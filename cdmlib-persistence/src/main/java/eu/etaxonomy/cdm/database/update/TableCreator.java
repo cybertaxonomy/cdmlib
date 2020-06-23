@@ -59,6 +59,10 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase {
 		return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, includeCdmBaseAttributes, false, false, false);
 	}
 
+    public static final TableCreator NewAuditedCdmBaseInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables){
+        return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), true, true, false, false, true);
+    }
+
 	public static final TableCreator NewNonVersionableInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables){
 		return new TableCreator(stepList, stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), false, true, false, false, true);
 	}

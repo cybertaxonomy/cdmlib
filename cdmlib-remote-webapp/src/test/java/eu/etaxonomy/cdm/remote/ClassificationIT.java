@@ -24,6 +24,7 @@ public class ClassificationIT extends WebServiceTestBase  {
     @Test
     public void checkInstanceIsOnline(){
         String response = httpGetJson("classification.json", null);
+        logger.debug("response: " + response);
         assertTrue(response.contains("My Classification"));
     }
 

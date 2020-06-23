@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 public class ParsedBaseMatchStrategy extends DefaultMatchStrategy implements IParsedMatchStrategy {
 
     private static final long serialVersionUID = 1253144282030211050L;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ParsedBaseMatchStrategy.class);
 
 	final static UUID uuid = UUID.fromString("4e2efeca-96a3-4894-80f4-f1015295f059");

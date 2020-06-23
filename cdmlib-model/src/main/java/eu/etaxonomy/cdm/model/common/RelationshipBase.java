@@ -38,8 +38,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * Whereas the direction of the relation can be valid for the direct (everted) and also for the inverted {@link Direction} direction.
  * This directional validity is defined by {@link RelationshipTermBase#isSymmetric()}
  *
- *
- *
  * @author m.doering
  * @author a.kohlbecker (Documentation)
  */
@@ -49,7 +47,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @MappedSuperclass
 @Audited
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase>
-        extends ReferencedEntityBase {
+        extends SingleSourcedEntityBase {
 
     private static final long serialVersionUID = -5030154633820061997L;
     @SuppressWarnings("unused")

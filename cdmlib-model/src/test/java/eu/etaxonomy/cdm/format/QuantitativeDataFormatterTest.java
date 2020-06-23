@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.format;
 
+import java.math.BigDecimal;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,9 +39,9 @@ public class QuantitativeDataFormatterTest {
 
     @Before
     public void setUp() throws Exception {
-        min1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(), 0.1f);
-        max1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), 1.3f);
-        n1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.SAMPLE_SIZE(), 2);
+        min1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(), new BigDecimal("0.1"));
+        max1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), new BigDecimal("1.3"));
+        n1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.SAMPLE_SIZE(), new BigDecimal("2"));
     }
 
     @BeforeClass
@@ -65,8 +67,6 @@ public class QuantitativeDataFormatterTest {
         quantData.setUnit(unit);
 
         text = formatter.format(quantData, formatKey);
-        Assert.assertEquals("0.1-1.3 m [n=2.0]", text);
-
+        Assert.assertEquals("0.1-1.3 m [n=2]", text);
     }
-
 }

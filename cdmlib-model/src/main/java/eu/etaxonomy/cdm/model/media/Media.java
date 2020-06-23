@@ -76,7 +76,8 @@ import eu.etaxonomy.cdm.validation.Level2;
     "mediaCreated",
     "description",
     "representations",
-    "artist"
+    "artist",
+    "link"
 })
 @XmlRootElement(name = "Media")
 @Entity
@@ -84,8 +85,10 @@ import eu.etaxonomy.cdm.validation.Level2;
 //@Indexed
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
+public class Media
+        extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
         implements IMultiLanguageTextHolder, IIntextReferenceTarget, Cloneable {
+
     private static final long serialVersionUID = -1927421567263473658L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Media.class);
@@ -139,16 +142,19 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private AgentBase<?> artist;
 
+    @XmlElement(name = "Link")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    private ExternalLink link;
+
 //************************* FACTORY METHODS *******************************/
 
-    /**
-     * Factory method
-     * @return
-     */
     public static Media NewInstance(){
         return new Media();
     }
-
 
     /**
      * Factory method which creates a new media, adds a reprsentation including mime type and suffix information
@@ -221,15 +227,20 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
         if (representation != null){
             representation.setMedia(null);
         }
-
     }
 
     public AgentBase getArtist(){
         return this.artist;
     }
-
     public void setArtist(AgentBase artist){
         this.artist = artist;
+    }
+
+    public ExternalLink getLink() {
+        return link;
+    }
+    public void setLink(ExternalLink link) {
+        this.link = link;
     }
 
 //************************ title / title cache *********************************
@@ -288,9 +299,7 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
         }else{
             return null;
         }
-
     }
-
 
     /**
      * Puts the title into the title field which is a multi-language string
@@ -318,9 +327,6 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
         }
         return titleCache;
     }
-
-
-
 
     public TimePeriod getMediaCreated(){
         return this.mediaCreated;
@@ -382,6 +388,9 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
         for (MediaRepresentation mediaRepresentation: this.representations){
             result.representations.add((MediaRepresentation)mediaRepresentation.clone());
         }
+
+        result.link = this.link != null ? this.link.clone(): null;
+
         //no changes to: artist
         return result;
     }

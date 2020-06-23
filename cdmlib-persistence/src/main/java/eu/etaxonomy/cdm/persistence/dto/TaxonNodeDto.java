@@ -11,11 +11,15 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
+import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
@@ -47,19 +51,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     private List<TaggedText> taggedTitle = new ArrayList<>();
 
     /**
-     * The unplaced flag of the Taxon entity
+     * The status of the TaxonNode entity
      */
-    private boolean unplaced = false;
+    private TaxonNodeStatus nodeStatus;
 
-    /**
-     * The excluded flag of the Taxon entity
-     */
-    private boolean excluded = false;
-
-    /**
-     * The doubtful flag of the TaxonNode entity
-     */
-    private boolean doubtful = false;
 
     /**
      * The Rank.label value of the rank to which the associated TaxonName entity is assigned to.
@@ -111,13 +106,24 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         }
         if (taxonNode != null){
             taxonomicChildrenCount = taxonNode.getCountChildren();
-            unplaced = taxonNode.isUnplaced();
-            excluded = taxonNode.isExcluded();
-            doubtful = taxonNode.isDoubtful();
+            nodeStatus = taxonNode.getStatus();
+
             treeIndex = taxonNode.treeIndex();
-            parentUUID = taxonNode.getParent() == null? null:taxonNode.getParent().getUuid();
+            try{
+                TaxonNode parent = taxonNode.getParent();
+                parentUUID = parent == null? null:parent.getUuid();
+            }catch(Exception e){
+                parentUUID = null;
+            }
+
             sortIndex = taxonNode.getSortIndex();
-            classificationUUID = taxonNode.getClassification().getUuid();
+            try{
+                classificationUUID = taxonNode.getClassification().getUuid();
+
+            }catch(Exception e){
+                classificationUUID = null;
+            }
+
         }
         status = TaxonStatus.Accepted;
     }
@@ -156,16 +162,20 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return taggedTitle;
     }
 
+    public TaxonNodeStatus getNodeStatus() {
+        return nodeStatus;
+    }
+
     public boolean isUnplaced() {
-        return unplaced;
+        return nodeStatus == null ? false : nodeStatus.equals(TaxonNodeStatus.UNPLACED);
     }
 
     public boolean isExcluded() {
-        return excluded;
+        return nodeStatus == null ? false : nodeStatus.equals(TaxonNodeStatus.EXCLUDED);
     }
 
     public boolean isDoubtful() {
-        return doubtful;
+        return nodeStatus == null ? false : nodeStatus.equals(TaxonNodeStatus.DOUBTFUL);
     }
 
     public String getRankLabel() {
@@ -202,6 +212,17 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     public String getNameTitleCache(){
         return getTitleCache();
+    }
+
+    /**
+     * Preliminary implementation. May not be exactly match
+     * the real name cache.
+     */
+    public String getNameCache(){
+        List<TaggedText> nameCacheTags = taggedTitle.stream()
+                .filter(t->t.getType().isNameCachePart())
+                .collect(Collectors.toList());
+        return TaggedCacheHelper.createString(nameCacheTags, new HTMLTagRules());
     }
 
     @Override

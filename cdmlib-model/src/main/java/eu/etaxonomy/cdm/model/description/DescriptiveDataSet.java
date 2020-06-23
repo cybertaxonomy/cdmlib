@@ -68,8 +68,10 @@ import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCach
 @XmlRootElement(name = "DescriptiveDataSet")
 @Entity
 @Audited
-public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDefaultCacheStrategy> {
-	private static final long serialVersionUID = 3256448866757415686L;
+public class DescriptiveDataSet
+        extends IdentifiableEntity<DescriptiveDataSetDefaultCacheStrategy> {
+
+    private static final long serialVersionUID = 3256448866757415686L;
 	private static final Logger logger = Logger.getLogger(DescriptiveDataSet.class);
 
 	@XmlElementWrapper(name = "Representations")
@@ -352,8 +354,11 @@ public class DescriptiveDataSet extends IdentifiableEntity<DescriptiveDataSetDef
 	 * @see     		  	DescriptiveDataSet#removeDescription(DescriptionBase)
 	 */
 	public boolean removeDescription(DescriptionBase description) {
+	    if (description == null){
+	        return false;
+	    }
 		boolean result = this.descriptions.remove(description);
-		if (description.getDescriptiveDataSets().contains(this)){
+		if (description.getDescriptiveDataSets() != null && description.getDescriptiveDataSets().contains(this)){
 			description.removeDescriptiveDataSet(this);
 		}
 		return result;

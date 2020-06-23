@@ -15,22 +15,25 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 public enum AggregationSourceMode implements IKeyTerm{
-    NONE("NO", "None", true, true),
-    ALL("ALL", "All sources", true, true),
-    ALL_SAMEVALUE("ALSV", "All sources with highest status", true, true),
-    DESCRIPTION("DESC","Link to underlying description", true, true),
-    TAXON("TAX","Link to child taxon", false, true);
+    NONE("NO", "None", true, true, false),
+    ALL("ALL", "All sources", true, true, true),
+    ALL_SAMEVALUE("ALSV", "All sources with highest status", true, true, true),
+    DESCRIPTION("DESC","Link to underlying description", true, true, false),
+    TAXON("TAX","Link to child taxon", false, true, false);
 
-    private String key;
-    private String message;
-    private boolean supportsWithinTaxon;
-    private boolean supportsToParent;
+    final private String key;
+    final private String message;
+    final private boolean supportsWithinTaxon;
+    final private boolean supportsToParent;
+    final private boolean supportsOriginalSourceType;
 
-    private AggregationSourceMode(String key, String message, boolean supportsWithinTaxon, boolean supportsToParent) {
+    private AggregationSourceMode(String key, String message, boolean supportsWithinTaxon,
+            boolean supportsToParent, boolean supportsOriginalSourceType) {
         this.key = key;
         this.message = message;
         this.supportsWithinTaxon = supportsWithinTaxon;
         this.supportsToParent = supportsToParent;
+        this.supportsOriginalSourceType = supportsOriginalSourceType;
     }
 
     @Override
@@ -55,6 +58,10 @@ public enum AggregationSourceMode implements IKeyTerm{
 
     public boolean isSupportsToParent() {
         return supportsToParent;
+    }
+
+    public boolean isSupportsOriginalSourceType(){
+        return supportsOriginalSourceType;
     }
 
     /**

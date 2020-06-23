@@ -57,7 +57,7 @@ public class TermDto extends AbstractTermDto{
         this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null);
     }
 
-    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
+    protected TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations) {
         super(uuid, representations);
         this.partOfUuid = partOfUuid;
@@ -152,7 +152,7 @@ public class TermDto extends AbstractTermDto{
         return vocRepresentation_L10n_abbreviatedLabel;
     }
 
-    private void addVocRepresentation(Representation vocRepresentation){
+    protected void addVocRepresentation(Representation vocRepresentation){
         this.vocRepresentations.add(vocRepresentation);
     }
 
@@ -241,7 +241,7 @@ public class TermDto extends AbstractTermDto{
         this.media = media;
     }
 
-    private void addMedia(UUID mediaUuid){
+    protected void addMedia(UUID mediaUuid){
         this.media.add(mediaUuid);
     }
 

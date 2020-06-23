@@ -58,14 +58,8 @@ public interface ICdmDataSource
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll,
 	        HibernateConfiguration hibernateConfig);
 
-	/**
-	 * @return
-	 */
 	public String getFilePath();
 
-	/**
-	 * @return
-	 */
 	public H2Mode getMode();
 
 	public String getUsername();
@@ -101,6 +95,7 @@ public interface ICdmDataSource
 
 	 /**
      * Executes a query and returns the ResultSet.
+     * @see #executeUpdate(String)
      * @return ResultSet for the query.
 	 * @throws SQLException
      */
@@ -108,6 +103,7 @@ public interface ICdmDataSource
 
     /**
      * Executes an update
+     * @see #executeQuery(String)
      * @return return code
      */
 	public int executeUpdate (String sqlUpdate) throws SQLException;

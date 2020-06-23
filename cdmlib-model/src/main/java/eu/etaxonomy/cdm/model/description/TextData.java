@@ -58,7 +58,6 @@ import eu.etaxonomy.cdm.model.term.TermBase;
  * to the SDD schema.
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:59
  */
 @SuppressWarnings("unused")

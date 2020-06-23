@@ -10,14 +10,18 @@
 package eu.etaxonomy.cdm.model.media;
 
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -42,11 +46,12 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlType(name = "MediaRepresentationPart", propOrder = {
 		"uri",
         "size",
-        "mediaRepresentation"
+        "mediaRepresentation",
+        "mediaMetaData"
   })
 @Entity
 @Audited
-public class MediaRepresentationPart extends VersionableEntity implements Cloneable{
+public class MediaRepresentationPart extends VersionableEntity {
 	private static final long serialVersionUID = -1674422508643785796L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
@@ -69,6 +74,12 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private MediaRepresentation mediaRepresentation;
 
+    @XmlElementWrapper(name = "MediaMetaDatas")
+    @XmlElement(name = "MediaMetaData")
+    @OneToMany (mappedBy="mediaRepresentation", fetch= FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
+	private Set<MediaMetaData> mediaMetaData = new HashSet<>();
+
 
 // *************** FACTORY METHOD *********************************/
 
@@ -76,7 +87,6 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		MediaRepresentationPart result = new MediaRepresentationPart(uri, size);
 		return result;
 	}
-
 
 	protected MediaRepresentationPart() {
 		super();
@@ -119,6 +129,32 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 		this.size = size;
 	}
 
+	//metadata
+
+
+	public void addMediaMetaData(MediaMetaData metaData){
+	    this.mediaMetaData.add(metaData);
+	    if(metaData.getMediaRepresentation() != this){
+	        metaData.setMediaRepresentation(this);
+	    }
+    }
+
+    public Set<MediaMetaData> getMediaMetaData() {
+        return mediaMetaData;
+    }
+
+//    public void setMediaMetaData(Set<MediaMetaData> mediaMetaData) {
+//        this.mediaMetaData = mediaMetaData;
+//    }
+
+    public void removeMediaMetaData(MediaMetaData metaData){
+        this.mediaMetaData.remove(metaData);
+        if(metaData.getMediaRepresentation() == this){
+            metaData.setMediaRepresentation(null);
+        }
+    }
+
+
 //************************* CLONE **************************/
 
 	@Override
@@ -127,6 +163,10 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 
 		//media representation
 		result.setMediaRepresentation(null);
+
+		for (MediaMetaData metaData : this.getMediaMetaData()) {
+		    result.addMediaMetaData(metaData.clone());
+		}
 
 		//no changes to: size, uri
 		return result;

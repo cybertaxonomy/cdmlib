@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author k.luther
@@ -31,10 +32,12 @@ public class TaxonDistributionDTO implements Serializable{
     private String rankLabel = null;
     private TaxonDescriptionDTO descriptionsWrapper;
     private String concatenatedSynonyms = null;
+    private String parentNameCache = null;
 
-    public TaxonDistributionDTO(Taxon taxon){
-        this.taxonUUID = taxon.getUuid();
-        taxon = HibernateProxyHelper.deproxy(taxon);
+    public TaxonDistributionDTO(TaxonNode node){
+        this.taxonUUID = node.getTaxon().getUuid();
+        Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
+
         if (taxon.getName() != null){
             this.nameCache = taxon.getName().getNameCache();
         }
@@ -49,7 +52,9 @@ public class TaxonDistributionDTO implements Serializable{
             this.rankOrderIndex = null;
             this.rankLabel = null;
         }
+        Taxon parentTaxon = HibernateProxyHelper.deproxy(node.getParent().getTaxon());
 
+        setParentNameCache(parentTaxon.getName().getNameCache());
         this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
         concatenateSynonyms(taxon);
     }
@@ -97,5 +102,13 @@ public class TaxonDistributionDTO implements Serializable{
        for (TaxonName synName: taxon.getSynonymNames()){
            concatenatedSynonyms = CdmUtils.concat("; ", concatenatedSynonyms, synName.getNameCache());
        }
+    }
+
+    public String getParentNameCache() {
+        return parentNameCache;
+    }
+
+    public void setParentNameCache(String parentNameCache) {
+        this.parentNameCache = parentNameCache;
     }
 }

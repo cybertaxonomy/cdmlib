@@ -18,14 +18,13 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionBaseVoter;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.voter.DescriptionBaseVoter;
 
 /**
  * @author a.kohlbecker
  * @since Feb 2, 2017
- *
  */
 public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
 
@@ -55,7 +54,6 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 new TargetEntityStates(TaxonDescription.NewInstance()),
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
-
     }
 
     @Test
@@ -68,7 +66,6 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 new TargetEntityStates(TaxonDescription.NewInstance()),
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
-
     }
 
     @Test
@@ -81,7 +78,6 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 new TargetEntityStates(TaxonDescription.NewInstance()),
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.UPDATE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_GRANTED, vote);
-
     }
 
     /**
@@ -132,6 +128,4 @@ public class DescriptionBaseVoterTest extends AbstractCdmPermissionVoterTest {
                 Arrays.asList(new CdmAuthority(PermissionClass.DESCRIPTIONBASE, null, EnumSet.of(CRUD.DELETE), null)));
         assertEquals(AccessDecisionVoter.ACCESS_DENIED, vote);
     }
-
-
 }

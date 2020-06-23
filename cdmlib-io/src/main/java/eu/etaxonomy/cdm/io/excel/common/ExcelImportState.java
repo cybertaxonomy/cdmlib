@@ -89,4 +89,13 @@ public class ExcelImportState<CONFIG extends ExcelImportConfiguratorBase, ROW ex
         this.transactionStatus = tx;
     }
 
+    public void addError(String message) {
+        getResult().addError(message, null, null, "row " + getCurrentLine());
+    }
+
+    public void addError(String message, Exception e) {
+        String codeLocation = null; //TODO compute codeLocation from exception
+        getResult().addError(message, e, codeLocation, "row " + getCurrentLine());
+    }
+
 }

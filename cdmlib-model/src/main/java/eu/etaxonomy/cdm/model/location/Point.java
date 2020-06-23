@@ -62,7 +62,7 @@ public class Point implements Cloneable, Serializable {
     private static final long serialVersionUID = 531030660792800636L;
     private static final Logger logger = Logger.getLogger(Point.class);
 
-    //TODO was Float but H2 threw errors
+    //TODO was Float but H2 threw errors, maybe we should also use BigDecimal for exactness, see #8978
     @XmlElement(name = "Longitude")
     @Longitude(of="point")
     @NotNull(groups = Level2.class)
@@ -74,7 +74,7 @@ public class Point implements Cloneable, Serializable {
     private Double latitude;
 
     /**
-     * Error radius in Meters
+     * Error radius in meters
      */
     @XmlElement(name = "ErrorRadius")
     @Field
@@ -90,18 +90,10 @@ public class Point implements Cloneable, Serializable {
 
 //******************** FACTORY METHODS ****************************
 
-    /**
-     * Factory method
-     * @return
-     */
     public static Point NewInstance(){
         return new Point();
     }
 
-    /**
-     * Factory method
-     * @return
-     */
     public static Point NewInstance(Double longitude, Double latitude, ReferenceSystem referenceSystem, Integer errorRadius){
         Point result = new Point();
         result.setLongitude(longitude);
@@ -113,9 +105,6 @@ public class Point implements Cloneable, Serializable {
 
 // ******************** CONSTRUCTOR ***************************
 
-    /**
-     * Constructor
-     */
     public Point() {
     }
 

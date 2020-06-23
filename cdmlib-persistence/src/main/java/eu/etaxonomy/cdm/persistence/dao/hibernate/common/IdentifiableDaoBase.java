@@ -719,10 +719,16 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
 
 
-		List<SortableTaxonNodeQueryResult> result = query.list();
+		List<Object> result = query.list();
 
-        for(SortableTaxonNodeQueryResult stnqr : result){
-            list.add(new UuidAndTitleCache<>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
+        for(Object obj : result){
+            if (obj instanceof SortableTaxonNodeQueryResult) {
+                SortableTaxonNodeQueryResult stnqr = (SortableTaxonNodeQueryResult) obj;
+                list.add(new UuidAndTitleCache<>(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
+            }else{
+                Object[] object = (Object[])obj;
+                list.add(new UuidAndTitleCache<>((UUID) object[0],(Integer) object[1], (String) object[2]));
+            }
         }
         return list;
     }

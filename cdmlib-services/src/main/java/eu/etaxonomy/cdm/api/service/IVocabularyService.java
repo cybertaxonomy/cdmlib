@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -188,5 +189,12 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
     public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuid);
 
     public List<TermVocabularyDto> findVocabularyDtoByTermTypeAndPattern(String pattern, TermType termType);
+
+    /**
+     * @param termTypes
+     * @param includeSubtypes
+     * @return
+     */
+    public List<TermVocabularyDto> findFeatureVocabularyDtoByTermTypes(Set<CdmClass> availableFor);
 
 }

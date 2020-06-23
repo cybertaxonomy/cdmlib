@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
@@ -619,6 +620,14 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements,
             boolean returnTransientEntity);
+
+    /**
+     * @param descriptions
+     * @param returnTransientEntity
+     * @return
+     */
+    public UpdateResult mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid);
+
 
     /**
      * @param descriptionElementUUIDs

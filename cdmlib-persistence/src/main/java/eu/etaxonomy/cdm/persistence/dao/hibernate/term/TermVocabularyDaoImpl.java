@@ -27,6 +27,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
@@ -317,6 +319,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         String queryString;
         if (type.equals(TermType.NamedArea)){
             queryString = TermDto.getTermDtoSelectNamedArea();
+        }else if (type.equals(TermType.Feature) || type.isKindOf(TermType.Feature)){
+            queryString = FeatureDto.getTermDtoSelect();
         }else{
             queryString = TermDto.getTermDtoSelect();
         }
@@ -329,8 +333,12 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
-
-        List<TermDto> list = TermDto.termDtoListFrom(result);
+        List<TermDto> list = null;
+        if (type.equals(TermType.Feature)|| type.isKindOf(TermType.Feature)){
+            list = FeatureDto.termDtoListFrom(result);
+        }else{
+            list = TermDto.termDtoListFrom(result);
+        }
         return list;
     }
 
@@ -346,23 +354,91 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 
     @Override
+    public List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableForSet) {
+
+        String queryVocWithFittingTerms = "SELECT DISTINCT(v.uuid) FROM DefinedTermBase term JOIN term.vocabulary as v WHERE " ;
+        for (CdmClass availableFor: availableForSet){
+            queryVocWithFittingTerms += " term.availableFor like '%"+availableFor.getKey()+"%' AND term.termType = :feature";
+
+        }
+
+//        Query query1 =  getSession().createQuery(queryVocWithFittingTerms);
+//        List<Object[]> result1 = query1.list();
+
+        String queryString = ""
+                + "SELECT v.uuid, v.termType, r "
+                + "FROM TermCollection v LEFT JOIN v.representations AS r "
+                + "LEFT JOIN v.representations AS r "
+                + "WHERE v.uuid in "
+                + " (" + queryVocWithFittingTerms + ")";
+
+
+
+
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("feature", TermType.Feature);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
+        for (Object[] elements : result) {
+            UUID uuid = (UUID)elements[0];
+            TermType termType = (TermType)elements[1];
+            if(dtoMap.containsKey(uuid)){
+                dtoMap.get(uuid).addRepresentation((Representation)elements[2]);
+            } else {
+                Set<Representation> representations = new HashSet<>();
+                if(elements[2] instanceof Representation) {
+                    representations = new HashSet<Representation>();
+                    representations.add((Representation)elements[2]);
+                } else {
+                    representations = (Set<Representation>)elements[2];
+                }
+                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType));
+            }
+        }
+        return new ArrayList<>(dtoMap.values());
+    }
+
+
+    @Override
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, String pattern, boolean includeSubtypes) {
-        Set<TermType> termTypeWithSubType = new HashSet<>(termTypes);
+        Set<TermType> termTypeWithSubType = new HashSet<>();
+        if (! (termTypes.isEmpty() || (termTypes.size() == 1 && termTypes.iterator().next() == null))){
+            termTypeWithSubType = new HashSet<>(termTypes);
+        }
+
         if(includeSubtypes){
-            for (TermType termType : termTypes) {
-                termTypeWithSubType.addAll(termType.getGeneralizationOf(true));
+            if (!termTypes.isEmpty()){
+                for (TermType termType : termTypes) {
+                    if (termType != null){
+                        termTypeWithSubType.addAll(termType.getGeneralizationOf(true));
+                    }
+                }
             }
         }
         String queryString = ""
                 + "select v.uuid, v.termType, r "
                 + "from TermVocabulary as v LEFT JOIN v.representations AS r "
-                + "where v.termType in (:termTypes) "
+
                 ;
-        if (pattern != null){
-            queryString += "AND v.titleCache like :pattern";
+
+        if (!termTypeWithSubType.isEmpty()){
+            queryString += "where v.termType in (:termTypes) ";
+            if (pattern != null){
+                queryString += "AND v.titleCache like :pattern";
+            }
+        }else{
+            if (pattern != null){
+                queryString += "WHERE v.titleCache like :pattern";
+            }
         }
+
         Query query =  getSession().createQuery(queryString);
-        query.setParameterList("termTypes", termTypeWithSubType);
+        if (!termTypeWithSubType.isEmpty()){
+            query.setParameterList("termTypes", termTypeWithSubType);
+        }
         if (pattern != null){
             pattern = pattern.replace("*", "%");
             pattern = "%"+pattern+"%";

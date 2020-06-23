@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
@@ -87,6 +89,7 @@ import eu.etaxonomy.cdm.validation.Level2;
     "credits",
     "extensions",
     "identifiers",
+    "links",
     "rights"
 })
 @Audited
@@ -148,7 +151,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
@@ -162,6 +165,13 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private List<Identifier> identifiers = new ArrayList<>();
+
+    @XmlElementWrapper(name = "Links", nillable = true)
+    @XmlElement(name = "Link")
+    @OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Merge(MergeMode.ADD_CLONE)
+    private Set<ExternalLink> links = new HashSet<>();
 
     @XmlTransient
     @Transient
@@ -333,6 +343,36 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         getRights().remove(right);
     }
 
+
+//********************** External Links **********************************************
+
+
+    public Set<ExternalLink> getLinks(){
+        return this.links;
+    }
+    public void setLinks(Set<ExternalLink> links){
+        this.links = links;
+    }
+    public void addLink(ExternalLink link){
+        if (link != null){
+            links.add(link);
+        }
+    }
+    public ExternalLink addLinkWebsite(URI uri, String description, Language descriptionLanguage){
+        ExternalLink link = null;
+        if (uri != null || description != null || descriptionLanguage != null){
+            link = ExternalLink.NewWebSiteInstance(uri, description, descriptionLanguage);
+            links.add(link);
+        }
+        return link;
+    }
+    public void removeLink(ExternalLink link){
+        if(links.contains(link)) {
+            links.remove(link);
+        }
+    }
+
+//********************** CREDITS **********************************************
 
     @Override
     public List<Credit> getCredits() {
@@ -660,6 +700,13 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         for(Credit credit : getCredits()) {
             Credit newCredit = (Credit)credit.clone();
             result.addCredit(newCredit);
+        }
+
+        //Links
+        result.links = new HashSet<>();
+        for(ExternalLink link : getLinks()) {
+            ExternalLink newLink = link.clone();
+            result.addLink(newLink);
         }
 
         //no changes to: lsid, titleCache, protectedTitleCache

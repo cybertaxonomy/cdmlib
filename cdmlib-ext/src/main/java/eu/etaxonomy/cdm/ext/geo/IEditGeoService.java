@@ -22,6 +22,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import de.micromata.opengis.kml.v_2_2_0.Kml;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
@@ -131,7 +132,7 @@ public interface IEditGeoService {
             List<Language> langs);
 
 
-    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(
+    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameters(
             List<SpecimenOrObservationBase> specimensOrObersvations,
             Map<SpecimenOrObservationType,Color> specimenOrObservationTypeColors
             );
@@ -221,5 +222,9 @@ public interface IEditGeoService {
             MarkerType fallbackAreaMarkerType,
             CondensedDistributionRecipe recipe,
             List<Language> langs);
+
+
+	public Kml occurrencesToKML(List<SpecimenOrObservationBase> specimensOrObersvations,
+			Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors);
 
 }

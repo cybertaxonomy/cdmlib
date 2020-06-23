@@ -51,18 +51,12 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return pref;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CdmPreference findDatabase(IPreferencePredicate<?> predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), predicate);
         return find(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CdmPreference findVaadin(IPreferencePredicate<?> predicate){
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewVaadinInstance(), predicate);
@@ -74,7 +68,6 @@ public class PreferenceServiceImpl implements IPreferenceService {
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewTaxEditorInstance(), predicate);
         return find(key);
     }
-
 
 	@Override
     @Transactional(readOnly = false)
@@ -98,7 +91,6 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return dao.list();
     }
 
-
     @Override
     public List<CdmPreference> list(IPreferencePredicate<?> predicate) {
         return dao.list(predicate);
@@ -114,9 +106,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return dao.find(taxonNode, predicate.getKey());
     }
 
-
 // ********************** NOT YET HANDLED *******************/
-
 
     @Override
     public List<CdmPreference> list(String subject, String predicate) {
@@ -131,10 +121,6 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return dao.find(taxonNode, predicate);
     }
 
-    /**
-     * @param taxonNodeRelatedCdmBase
-     * @return
-     */
     private TaxonNode mapToTaxonNode(CdmBase taxonNodeRelatedCdmBase) {
         if (taxonNodeRelatedCdmBase == null){
             return null;
@@ -144,13 +130,4 @@ public class PreferenceServiceImpl implements IPreferenceService {
             throw new RuntimeException("mapToTaxonNode not yet implemented for " + taxonNodeRelatedCdmBase.getClass().getSimpleName());
         }
     }
-
-
-//    @Override
-//    public String setCdmPrefs(CdmBase cdmBase, String predicate, String value) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-
-
 }

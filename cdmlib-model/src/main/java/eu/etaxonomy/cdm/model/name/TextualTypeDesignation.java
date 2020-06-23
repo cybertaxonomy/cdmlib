@@ -90,8 +90,6 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
         return result;
     }
 
-
-
 //********************** CONSTRUCTOR *********************************/
 
     protected TextualTypeDesignation() {
@@ -251,7 +249,8 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
 
     /**
      * @deprecated not relevant for {@link TextualTypeDesignation} throws Exception
-     */@Deprecated
+     */
+    @Deprecated
     @Override
     public void setNotDesignated(boolean notDesignated) {
         throw new RuntimeException("Method should not be called in textbased type designaiton");
@@ -259,7 +258,8 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
 
     /**
      * @deprecated not relevant for {@link TextualTypeDesignation} throws Exception
-     */@Deprecated
+     */
+    @Deprecated
     @Override
     public void setCitationMicroReference(String citationMicroReference) {
         throw new RuntimeException("Method should not be called in textbased type designaiton");

@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
@@ -12,19 +10,34 @@ import java.sql.Types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 
 /**
- * This software is public domain and carries NO WARRANTY.
+ * Hibernate {@link UserType} for BigDecimal with correct handling for scale.
+ * Correct means that a BigDecimal with scale 2 will be stored and reloaded
+ * with scale 2 even if the defined scale in the database has a higher scale defined.
  *
- * Patches, bug reports and feature requests welcome:
+ * E.g. "1.32" is persisted as exactly this BigDecimal even if scale of the column is
+ * defined with scale = 4. The default {@link BigDecimalType} stores and reloads it
+ * as 1.3200 which is a difference when handling e.g. measurement values as it looses the
+ * information about the exactness of the data.<BR><BR>
  *
- * https://bitbucket.org/ratkins/bigdecimalusertype/
+ * Usage example with annotations (with type already declared in according package-info.java):<BR>
+ *
+ * <BR>@Columns(columns={@Column(name="xxx", precision = 18, scale = 9), @Column(name="xxx_scale")})
+ * <BR>@Type(type="bigDecimalUserType")
+ * <BR><BR>
+ *
+ * This class has been originally copied and adapted from
+ * https://bitbucket.org/ratkins/bigdecimalusertype/src/default/<BR><BR>
  */
 public class BigDecimalUserType implements UserType {
 
-	private static final int[] SQL_TYPES = new int[] {Types.DECIMAL, Types.INTEGER};
+	private static final int[] SQL_TYPES = new int[] {
+	        Types.NUMERIC, //for some reason Types.Decimal does not exist at least in MySQL Dialect
+	        Types.INTEGER};
 
 	@Override
 	public Object assemble(Serializable arg0, Object arg1) throws HibernateException {
@@ -59,32 +72,23 @@ public class BigDecimalUserType implements UserType {
 	@Override
 	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
 		BigDecimal bigDecimal = (BigDecimal) StandardBasicTypes.BIG_DECIMAL.nullSafeGet(rs, names, session, owner);
-
-//		BigDecimal bigDecimal = rs.getBigDecimal(names[0]);
 		if (bigDecimal == null) {
 			return null;
 		}
 		return bigDecimal.setScale(rs.getInt(names[1]), BigDecimal.ROUND_HALF_UP);
 	}
-	
 
 	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
 		if (value == null) {
 			StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, null, index, session);
-			StandardBasicTypes.INTEGER.nullSafeSet(st, null, index, session);
-			
-//			st.setNull(index, Types.DECIMAL);
-//			st.setNull(index + 1, Types.INTEGER);
+			StandardBasicTypes.INTEGER.nullSafeSet(st, null, index+1, session);
 		} else {
 			BigDecimal bdec = (BigDecimal)value;
-//			st.setBigDecimal(index, bdec);
-//			st.setInt(index + 1, bdec.scale());
 			StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, bdec, index, session);
 			StandardBasicTypes.INTEGER.nullSafeSet(st, bdec.scale(), index + 1, session);
 		}
 	}
-	
 
 	@Override
 	public Object replace(Object arg0, Object arg1, Object arg2) throws HibernateException {
@@ -100,7 +104,4 @@ public class BigDecimalUserType implements UserType {
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
-
-
-
 }

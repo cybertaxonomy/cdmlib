@@ -20,7 +20,7 @@ import org.springframework.dao.DataAccessException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
@@ -48,7 +48,7 @@ public interface ICdmGenericDao {
 	 * @param value
 	 * @return
 	 */
-	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase, Integer limit);
+	public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit);
 
 	/**
 	 * Returns ...
@@ -58,7 +58,8 @@ public interface ICdmGenericDao {
 	 * @param referencedCdmBase
 	 * @return
 	 */
-	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item, Integer limit);
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class<?> itemClass,
+	        Class<?> clazz, String propertyName, CdmBase item, Integer limit);
 
 	/**
 	 * Returns all classes that are persisted via the persisting framework.
@@ -122,7 +123,7 @@ public interface ICdmGenericDao {
 	 * @return
 	 * @throws MatchException
 	 */
-	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategyEqual matchStrategy) throws MatchException;
+	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
 
 
 	/**
@@ -188,7 +189,7 @@ public interface ICdmGenericDao {
 	 * @deprecated this is not clean implementation as it is hibernate related.
 	 */
 	@Deprecated
-	public List getHqlResult(String hqlQuery, Object[] params) throws UnsupportedOperationException;
+	public List<?> getHqlResult(String hqlQuery, Object[] params) throws UnsupportedOperationException;
 
 	/**
 	 * TODO remove as this is Hibernate specific.
@@ -312,33 +313,12 @@ public interface ICdmGenericDao {
      */
     public boolean containsValue(UUID ownerUuid, String fieldName, Object element);
 
-    /**
-     * @param itemClass
-     * @param clazz
-     * @param propertyName
-     * @param item
-     * @return
-     */
-    public long getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item);
+    public long getCountWithItemInCollection(Class<?> itemClass, Class<?> clazz, String propertyName, CdmBase item);
 
-    /**
-     * @param clazz
-     * @param propertyName
-     * @param referencedCdmBase
-     * @return
-     */
-    public long getCountByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase);
+    public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase);
 
-    /**
-     * @param referencedCdmBase
-     * @return
-     */
     public long getReferencingObjectsCount(CdmBase referencedCdmBase);
 
-    /**
-     * @param clazz
-     * @return
-     */
     public List<UUID> listUuid(Class<? extends CdmBase> clazz);
 
 }

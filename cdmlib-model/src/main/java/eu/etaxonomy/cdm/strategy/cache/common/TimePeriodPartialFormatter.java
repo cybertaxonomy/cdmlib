@@ -21,15 +21,15 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  *
  */
 public class TimePeriodPartialFormatter extends DateTimeFormatter{
-	
+
 	public static TimePeriodPartialFormatter NewInstance(){
 		return new TimePeriodPartialFormatter();
 	}
-	
-	private TimePeriodPartialFormatter(){
+
+	protected TimePeriodPartialFormatter(){
 		super(null, null);
 	}
-	
+
 	@Override
     public String print(ReadablePartial partial){
 		//TODO

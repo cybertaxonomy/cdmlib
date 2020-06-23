@@ -10,13 +10,16 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,6 +30,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Columns;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -54,12 +59,18 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
-public class StatisticalMeasurementValue extends VersionableEntity implements IModifiable, Cloneable{
+public class StatisticalMeasurementValue
+         extends VersionableEntity
+         implements IModifiable{
+
 	private static final long serialVersionUID = -3576311887760351982L;
 	private static final Logger logger = Logger.getLogger(StatisticalMeasurementValue.class);
 
-	@XmlElement(name = "Value")
-	private float value;
+    @XmlElement(name = "Value")
+    @Columns(columns={@Column(name="value", precision = 18, scale = 9), @Column(name="value_scale")})
+    @Type(type="bigDecimalUserType")
+    @NotNull  //#8978 the old float value also could not be null and a value without value does not make sense, but do we want to have a default?
+    private BigDecimal value;
 
 	@XmlElementWrapper(name = "Modifiers")
 	@XmlElement(name = "Modifier")
@@ -82,33 +93,34 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
     @IndexedEmbedded(depth=1)
 	private QuantitativeData quantitativeData;
 
+// ***************** FACTORY ****************************/
 
+    public static StatisticalMeasurementValue NewInstance(){
+        return new StatisticalMeasurementValue();
+    }
 
-    /**
-	 * Class constructor: creates a new empty statistical measurement value
-	 * instance.
-	 */
+    public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, Integer value){
+        StatisticalMeasurementValue result = new StatisticalMeasurementValue();
+        result.setValue(new BigDecimal(value));
+        result.setType(type);
+        return result;
+    }
+
+    public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, BigDecimal value){
+        StatisticalMeasurementValue result = new StatisticalMeasurementValue();
+        result.setValue(value);
+        result.setType(type);
+        return result;
+    }
+
+// ******************* CONSTRUCTOR *************************/
+
 	protected StatisticalMeasurementValue(){
 		super();
 	}
 
-	/**
-	 * Creates a new empty statistical measurement value instance.
-	 */
-	public static StatisticalMeasurementValue NewInstance(){
-		return new StatisticalMeasurementValue();
-	}
+// ***************** GETTER / SETTER **************************/
 
-
-	/**
-	 * Creates a new empty statistical measurement value instance.
-	 */
-	public static StatisticalMeasurementValue NewInstance(StatisticalMeasure type, float value){
-		StatisticalMeasurementValue result = new StatisticalMeasurementValue();
-		result.setValue(value);
-		result.setType(type);
-		return result;
-	}
 
 	/**
 	 * Returns the type of {@link StatisticalMeasure statistical measure} used in
@@ -130,16 +142,15 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	 * corresponding to the {@link QuantitativeData quantitative data} <i>this</i>
 	 * statistical measurement value belongs to.
 	 */
-	public float getValue(){
+	public BigDecimal getValue(){
 		return this.value;
 	}
 	/**
 	 * @see	#getValue()
 	 */
-	public void setValue(float value){
+	public void setValue(BigDecimal value){
 		this.value = value;
 	}
-
 
     /**
      * Returns the {@link QuantitativeData quantitative data} <i>this</i>
@@ -154,7 +165,6 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
     protected void setQuantitativeData(QuantitativeData quantitativeData) {
         this.quantitativeData = quantitativeData;
     }
-
 
 	/**
 	 * Returns the set of terms of {@link TermType type} Modifier used to qualify the validity
@@ -189,7 +199,6 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
     public void removeModifier(DefinedTerm modifier) {
 		this.modifiers.remove(modifier);
 	}
-
 
 //*********************************** CLONE *****************************************/
 

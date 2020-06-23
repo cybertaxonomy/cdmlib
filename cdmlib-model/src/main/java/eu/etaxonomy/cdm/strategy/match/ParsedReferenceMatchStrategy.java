@@ -15,11 +15,17 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 /**
  * @author a.mueller
  * @since 20.10.2018
- *
  */
 public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
 
     private static ParsedReferenceMatchStrategy instance;
+
+    private IParsedMatchStrategy articleStrategy = MatchStrategyFactory.NewParsedArticleInstance();
+    private IParsedMatchStrategy bookStrategy = MatchStrategyFactory.NewParsedBookInstance();
+    private IParsedMatchStrategy bookSectionStrategy = MatchStrategyFactory.NewParsedBookSectionInstance();
+    private IParsedMatchStrategy journalStrategy = MatchStrategyFactory.NewParsedJournalInstance();
+    //TODO no generic reference yet
+    private IMatchStrategy genericStrategy = MatchStrategyFactory.NewDefaultInstance(Reference.class);
 
     /**
      * Immutable singleton instance.
@@ -32,42 +38,35 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
         return instance;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMatchMode(String propertyName, MatchMode matchMode) throws MatchException {
         setMatchMode(propertyName, matchMode, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setMatchMode(String propertyName, MatchMode matchMode, IMatchStrategy matchStrategy)
             throws MatchException {
         throw new MatchException("ParsedReferenceMatchStrategy is immutable");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Matching getMatching() {
         //why does it not throw MatchException?
         throw new RuntimeException("getMatching not yet implemented");
     }
 
-    private IParsedMatchStrategy articleStrategy = MatchStrategyFactory.NewParsedArticleInstance();
-    private IParsedMatchStrategy bookStrategy = MatchStrategyFactory.NewParsedBookInstance();
-    private IParsedMatchStrategy bookSectionStrategy = MatchStrategyFactory.NewParsedBookSectionInstance();
-    private IParsedMatchStrategy journalStrategy = MatchStrategyFactory.NewParsedJournalInstance();
-    //TODO no generic reference yet
-    private IMatchStrategy genericStrategy = MatchStrategyFactory.NewDefaultInstance(Reference.class);
+    @Override
+    public Matching getMatching(IMatchable instance) {
+        if (instance instanceof Reference){
+            IMatchStrategy innerStrategy = getStrategyByType(((Reference)instance).getType());
+            if (innerStrategy != null){
+                return innerStrategy.getMatching();
+            }
+        }
+        //why does it not throw MatchException?
+        throw new RuntimeException("getMatching not yet implemented");
+    }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IMatchable> MatchResult invoke(T fullInstance, T parsedInstance) throws MatchException {
         return invoke(fullInstance, parsedInstance, false);
@@ -81,10 +80,6 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
         return matchResult;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IMatchable> void invoke(T fullInstance, T parsedInstance, MatchResult matchResult,
             boolean failAll)
@@ -102,24 +97,27 @@ public class ParsedReferenceMatchStrategy implements IParsedMatchStrategy{
             return;
         }else{
             ReferenceType type = fullRef.getType();
-            if (type.equals(ReferenceType.Article)){
-                articleStrategy.invoke(fullRef, parsedRef, matchResult, failAll);
-            }else if (type.equals(ReferenceType.Book)){
-                bookStrategy.invoke(fullRef, parsedRef, matchResult, failAll);
-            }else if (type.equals(ReferenceType.Book)){
-                bookSectionStrategy.invoke(fullRef, parsedRef, matchResult, failAll);
-            }else if (type.equals(ReferenceType.Journal)){
-                journalStrategy.invoke(fullRef, parsedRef, matchResult, failAll);
-            }else if (type.equals(ReferenceType.Generic)){
-                //TODO
-                genericStrategy.invoke(fullRef, parsedRef, matchResult, failAll);
-            }else{
-                //TODO
-                genericStrategy.invoke(fullRef, parsedRef, matchResult, failAll);
-            }
+            IMatchStrategy strategy = getStrategyByType(type);
+            strategy.invoke(fullRef, parsedRef, matchResult, failAll);
             return;
         }
-
     }
 
+    public IMatchStrategy getStrategyByType(ReferenceType type) {
+        if (type.equals(ReferenceType.Article)){
+            return articleStrategy;
+        }else if (type.equals(ReferenceType.Book)){
+            return bookStrategy;
+        }else if (type.equals(ReferenceType.BookSection)){
+            return bookSectionStrategy;
+        }else if (type.equals(ReferenceType.Journal)){
+            return journalStrategy;
+        }else if (type.equals(ReferenceType.Generic)){
+            //TODO
+            return genericStrategy;
+        }else{
+            //TODO
+            return genericStrategy;
+        }
+    }
 }

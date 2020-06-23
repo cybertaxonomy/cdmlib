@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,19 +44,19 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     private static final long serialVersionUID = -7817164423660563673L;
 
-    protected T description;
+    protected DescriptionBaseDto description;
 
     private TaxonNodeDto taxonNode;
     private Map<Feature, DescriptionElementBase> featureToElementMap;
     private Map<Feature, Collection<String>> featureToDisplayDataMap;
 
-    public RowWrapperDTO(T description, TaxonNodeDto taxonNode) {
+    public RowWrapperDTO(DescriptionBaseDto specimenDescription, TaxonNodeDto taxonNode) {
         this.taxonNode = taxonNode;
         this.featureToElementMap = new HashMap<>();
         this.featureToDisplayDataMap = new HashMap<>();
-        this.description = description;
+        this.description = specimenDescription;
 
-        Set<DescriptionElementBase> elements = description.getElements();
+        Set<DescriptionElementBase> elements = specimenDescription.getDescription().getElements();
         for (DescriptionElementBase descriptionElementBase : elements) {
             if(hasData(descriptionElementBase)){
                 Feature feature = descriptionElementBase.getFeature();
@@ -70,19 +71,19 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     public QuantitativeData addQuantitativeData(Feature feature){
         QuantitativeData data = QuantitativeData.NewInstance(feature);
-        description.addElement(data);
+        description.getDescription().addElement(data);
         featureToElementMap.put(feature, data);
         return data;
     }
 
     public CategoricalData addCategoricalData(Feature feature){
         CategoricalData data = CategoricalData.NewInstance(feature);
-        description.addElement(data);
+        description.getDescription().addElement(data);
         featureToElementMap.put(feature, data);
         return data;
     }
 
-    public T getDescription() {
+    public DescriptionBaseDto getDescription() {
         return description;
     }
 
@@ -117,15 +118,15 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     private String generateQuantitativeDataString(QuantitativeData quantitativeData) {
         String displayData;
         displayData = "";
-        Float min = quantitativeData.getMin();
-        Float max = quantitativeData.getMax();
+        BigDecimal min = quantitativeData.getMin();
+        BigDecimal max = quantitativeData.getMax();
         if(min!=null||max!=null){
             displayData += "["+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+"] ";
         }
-        displayData += quantitativeData.getStatisticalValues().stream().
-        filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
-        .map(exact->Float.toString(exact.getValue()))
-        .collect(Collectors.joining(", "));
+        displayData += quantitativeData.getStatisticalValues().stream()
+                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+                .map(exact->exact.getValue().toString())
+                .collect(Collectors.joining(", "));
         if (quantitativeData.getUnit() != null){
             displayData += " "+ quantitativeData.getUnit().getIdInVocabulary();
         }
@@ -155,7 +156,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         featureToElementMap.remove(feature);
         featureToDisplayDataMap.remove(feature);
         if(descriptionElementBase!=null){
-            description.removeElement(descriptionElementBase);
+            description.getDescription().removeElement(descriptionElementBase);
         }
     }
 
@@ -174,7 +175,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 texts.forEach(text->{
                     String string = text;
                     try {
-                        float exactValue = Float.parseFloat(string);
+                        BigDecimal exactValue = new BigDecimal(string);
                         quantitativeData.addStatisticalValue(StatisticalMeasurementValue.NewInstance(measure, exactValue));
                     } catch (NumberFormatException e) {
                     }

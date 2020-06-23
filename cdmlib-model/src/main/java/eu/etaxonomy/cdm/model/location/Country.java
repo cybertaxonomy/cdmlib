@@ -62,7 +62,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Country extends NamedArea {
-	private static final long serialVersionUID = -6791671976199722843L;
+
+    private static final long serialVersionUID = -6791671976199722843L;
 	private static final Logger logger = Logger.getLogger(Country.class);
 
 	/**

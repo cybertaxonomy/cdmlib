@@ -13,7 +13,9 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
  * @author pplitzner
@@ -25,25 +27,54 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     private static final long serialVersionUID = 5198447592554976471L;
 
     private TaxonRowWrapperDTO defaultDescription;
-    private SpecimenOrObservationBase specimen;
-    private FieldUnit fieldUnit;
+    private DerivateDTO specimen;
+    private UuidAndTitleCache<FieldUnit> fieldUnit;
+    private SpecimenOrObservationType type;
     private String identifier;
     private NamedArea country;
 
-    public SpecimenRowWrapperDTO(SpecimenDescription description, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
+    public SpecimenRowWrapperDTO(DescriptionBaseDto description, SpecimenOrObservationType type, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
                 NamedArea country) {
         super(description, taxonNode);
-        this.fieldUnit = fieldUnit;
+        if (fieldUnit != null){
+            this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
+        }
         this.identifier = identifier;
         this.country = country;
-        this.specimen = description.getDescribedSpecimenOrObservation();
+        this.specimen = description.getSpecimenDto();
+        this.type = type;
     }
 
-    public SpecimenOrObservationBase getSpecimen() {
+
+    public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
+            NamedArea country) {
+        super(new DescriptionBaseDto(specimen), taxonNode);
+        if (fieldUnit != null){
+            this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
+        }
+        this.identifier = identifier;
+        this.country = country;
+        this.specimen = DerivateDTO.newInstance(specimen);
+        this.type = specimen.getRecordBasis();
+    }
+
+    public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, UuidAndTitleCache<FieldUnit> fieldUnit, String identifier,
+            NamedArea country) {
+    super(new DescriptionBaseDto(specimen), taxonNode);
+    if (fieldUnit != null){
+        this.fieldUnit = fieldUnit;
+    }
+    this.identifier = identifier;
+    this.country = country;
+    this.specimen = DerivateDTO.newInstance(specimen);
+    this.type = specimen.getRecordBasis();
+
+}
+    public DerivateDTO getSpecimen() {
         return specimen;
     }
 
-    public FieldUnit getFieldUnit() {
+    public UuidAndTitleCache<FieldUnit> getFieldUnit() {
         return fieldUnit;
     }
 
@@ -61,5 +92,9 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
     public TaxonRowWrapperDTO getDefaultDescription() {
         return defaultDescription;
+    }
+
+    public SpecimenOrObservationType getType(){
+        return type;
     }
 }

@@ -395,7 +395,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
       }
 
 
-
     public abstract void resetTerms();
 
     protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);

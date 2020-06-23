@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterc
 /**
  * @author a.kohlbecker
  * @since Jul 28, 2014
- *
  */
 @Configuration
 public class PreloadedBeans {

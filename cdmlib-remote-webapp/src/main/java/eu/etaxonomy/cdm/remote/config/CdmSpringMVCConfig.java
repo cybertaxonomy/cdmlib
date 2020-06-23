@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
  *
  * @author a.kohlbecker
  * @since Jul 1, 2014
- *
  */
 // @EnableWebMvc // do not add this since we are overriding WebMvcConfigurationSupport directly
 @Import(value={PreloadedBeans.class}) // can not be replaced by @DependsOn("...") ?
@@ -103,26 +102,29 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
 
     public CdmSpringMVCConfig() {
         super();
-        logger.debug("contructor");
-
+        logger.debug("constructor");
     }
 
-    @Bean
-    @DependsOn({"requestMappingHandlerAdapter"})
-    public XmlViewResolver getOaiXmlViewResolver() {
-        XmlViewResolver resolver = new XmlViewResolver();
-      resolver.setOrder(1);
-      resolver.setLocation(new ServletContextResource(servletContext,"/WEB-INF/oai-views.xml"));
-      resolver.setCache(XML_VIEW_CACHING);
-      return resolver;
-    }
+	@Bean
+	@DependsOn({ "requestMappingHandlerAdapter" })
+	public XmlViewResolver getOaiXmlViewResolver() {
+		XmlViewResolver resolver = new XmlViewResolver();
+		resolver.setOrder(1);
+		resolver.setLocation(new ServletContextResource(servletContext, "/WEB-INF/oai-views.xml"));
+		resolver.setCache(XML_VIEW_CACHING);
+		return resolver;
+	}
 
+	@Bean
+	@DependsOn({ "requestMappingHandlerAdapter" })
+	public XmlViewResolver kmlXmlViewResolver() {
+		XmlViewResolver resolver = new PatternViewResolver();
+		resolver.setOrder(1);
+		resolver.setLocation(new ServletContextResource(servletContext, "/WEB-INF/kml-views.xml"));
+		resolver.setCache(XML_VIEW_CACHING);
+		return resolver;
+	}
 
-
-
-    /* (non-Javadoc)
-     * @see org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration#addInterceptors(org.springframework.web.servlet.config.annotation.InterceptorRegistry)
-     */
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         // TODO does it work?
@@ -135,28 +137,27 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
         registry.addConverter(new RestrictionConverter(jsonObjectMapper));
     }
 
-
     @Override
     protected void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-      // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to
-      // the Servlet container's "default" servlet, since the DispatcherServlet is mapped to "/"
-      // so static content ad welcome files are handled by the default servlet
-      configurer.enable();
-      logger.debug("configureDefaultServletHandling");
+        // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to
+        // the Servlet container's "default" servlet, since the DispatcherServlet is mapped to "/"
+        // so static content ad welcome files are handled by the default servlet
+        configurer.enable();
+        logger.debug("configureDefaultServletHandling");
     }
 
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer
-        .favorPathExtension(true)
-        .favorParameter(false)
-        .defaultContentType(MediaType.APPLICATION_JSON)
-        .mediaType("xml", MediaType.APPLICATION_XML)
-        .mediaType("dc", MediaType.APPLICATION_XML)
-        .mediaType("rdf", MediaType.APPLICATION_XML)
-        .mediaType("rdfxml", MediaType.APPLICATION_XML)
-        .mediaType("json", MediaType.APPLICATION_JSON);
+            .favorPathExtension(true)
+            .favorParameter(false)
+            .defaultContentType(MediaType.APPLICATION_JSON)
+            .mediaType("xml", MediaType.APPLICATION_XML)
+            .mediaType("dc", MediaType.APPLICATION_XML)
+            .mediaType("rdf", MediaType.APPLICATION_XML)
+            .mediaType("rdfxml", MediaType.APPLICATION_XML)
+            .mediaType("json", MediaType.APPLICATION_JSON);
 
         logger.debug("configureContentNegotiation");
     }
@@ -168,7 +169,7 @@ public abstract class CdmSpringMVCConfig extends WebMvcConfigurationSupport  {
    @Bean
    public ViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager) {
 
-       List<ViewResolver> resolvers = new ArrayList<ViewResolver>();
+       List<ViewResolver> resolvers = new ArrayList<>();
 
        resolvers.add(getPatternViewResolver("xml"));
        resolvers.add(getPatternViewResolver("json"));

@@ -36,4 +36,10 @@
         <property name="password" value="" />
         <property name="jdbcUrl" value="jdbc:h2:file:${project.build.directory}/test-classes/h2/cdmTest"/>
     </bean>
+    <bean id="h2_cdm_blank"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="eu.etaxonomy.cdm.database.LocalH2"/>
+        <property name="user" value="sa" />
+        <property name="password" value="" />
+        <property name="jdbcUrl" value="jdbc:h2:file:${project.build.directory}/test-classes/h2/cdm_blank"/>
+    </bean>
 </beans>

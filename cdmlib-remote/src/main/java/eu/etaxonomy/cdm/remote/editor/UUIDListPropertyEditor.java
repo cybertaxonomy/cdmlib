@@ -33,7 +33,7 @@ public class UUIDListPropertyEditor extends PropertyEditorSupport {
             //set the value for more than one UUID
             String[] uuidStringList = text.split(separator);
             for (String element : uuidStringList) {
-                    if(nullRepresentation.equals(element) && !uuidList.contains(null)){
+                    if(nullRepresentation != null && nullRepresentation.equals(element) && !uuidList.contains(null)){
                         uuidList.add(null);
                     } else {
                         uuidList.add(UUID.fromString(element));

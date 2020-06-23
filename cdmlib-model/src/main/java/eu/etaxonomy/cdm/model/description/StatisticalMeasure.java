@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
-/**
  * This class represents terms describing different statistical measures (such
  * as "sample size", "minimum" or "average") for {@link Feature features} that can be
  * described with numerical values (like for instance weights or temperature).
@@ -90,7 +89,6 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 		return new StatisticalMeasure(term, label, labelAbbrev);
 	}
 
-
 //********************************** Constructor *******************************************************************/
 
 	// ************* CONSTRUCTORS *************/
@@ -107,7 +105,6 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private StatisticalMeasure(String term, String label, String labelAbbrev) {
 		super(TermType.StatisticalMeasure, term, label, labelAbbrev);
 	}
-
 
 //************************** METHODS ********************************
 

@@ -16,9 +16,7 @@ import org.springframework.context.annotation.Profile;
 /**
  * @author a.kohlbecker
  * @since Feb 25, 2016
- *
  */
-
 @Profile("remoting")
 @Configuration
 @ImportResource(locations="classpath:/eu/etaxonomy/cdm/remoting-services.xml")

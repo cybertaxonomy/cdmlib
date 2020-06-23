@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -38,8 +39,8 @@ import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.User;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.Role;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -115,6 +116,10 @@ public class FirstDataInserter extends AbstractDataInserter {
     public static final String[] EDITOR_REFERENCE_GROUP_AUTHORITIES = new String[]{
             new CdmAuthority(PermissionClass.REFERENCE, UPDATE_DELETE).toString(),
             new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString()
+    };
+
+    public static final String[] EDIT_ALL_TAXA_GROUP_AUTHORITIES = new String[]{
+            new CdmAuthority(PermissionClass.TAXONNODE, CREATE_READ_UPDATE_DELETE).toString()
     };
 
     public static final String[] ADMIN_GROUP_AUTHORITIES = new String[]{
@@ -231,6 +236,7 @@ public class FirstDataInserter extends AbstractDataInserter {
         checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, Group.GROUP_PROJECT_MANAGER_NAME, PROJECT_MANAGER_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE, EDITOR_REFERENCE_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_ALLOW_ALL_TAXA_UUID, Group.GROUP_ALLOW_ALL_TAXA_NAME, EDIT_ALL_TAXA_GROUP_AUTHORITIES);
         progressMonitor.worked(1);
     }
 

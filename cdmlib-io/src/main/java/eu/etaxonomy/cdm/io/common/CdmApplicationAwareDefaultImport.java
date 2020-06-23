@@ -91,7 +91,6 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         return result;
     }
 
-
     @SuppressWarnings("unchecked")
     protected <S extends IImportConfigurator> boolean doCheck(S  config){
         boolean result = true;

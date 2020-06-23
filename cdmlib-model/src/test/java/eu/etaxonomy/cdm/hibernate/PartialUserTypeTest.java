@@ -86,21 +86,21 @@ public class PartialUserTypeTest {
 
 	@Test
 	public void testNullSafeGet() throws Exception {
-	    logger.warn("Not yet implemented");
+        logger.warn("testNullSafeGet not yet implemented");
 	}
 
 	@Test
 	public void testNullSafeGetWithNull() throws Exception {
-	    logger.warn("Not yet implemented");
+	    logger.warn("testNullSafeGetWithNull not yet implemented");
 	}
 
 	@Test
 	public void testNullSafeSet() throws Exception {
-	    logger.warn("Not yet implemented");
+	    logger.warn("testNullSafeSet not yet implemented");
 	}
 
 	@Test
 	public void testNullSafeSetWithNull() throws Exception {
-	    logger.warn("Not yet implemented");
+	    logger.warn("testNullSafeSetWithNull not yet implemented");
 	}
 }

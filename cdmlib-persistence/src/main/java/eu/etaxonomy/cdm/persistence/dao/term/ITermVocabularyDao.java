@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -214,4 +215,10 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      */
     public <S extends TermVocabulary> List<UuidAndTitleCache<S>> getUuidAndTitleCache(Class<S> clazz, TermType termType,
             Integer limit, String pattern);
+
+    /**
+     * @param availableFor
+     * @return
+     */
+    List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableFor);
 }

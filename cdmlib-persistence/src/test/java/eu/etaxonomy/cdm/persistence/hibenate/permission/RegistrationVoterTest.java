@@ -20,9 +20,9 @@ import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.RegistrationVoter;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.voter.RegistrationVoter;
 
 /**
  * Most basic permission votes are tested via the {@link DescriptionBaseVoterTest}. The

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -180,10 +181,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         datasetService.save(dataSet);
 
         SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
-        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.MIN(), 5.0f);
+        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.MIN(), new BigDecimal("5.0"));
 
         SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
-        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.MAX(), 7.0f);
+        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.MAX(), new BigDecimal("7.0"));
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
         Assert.assertNotNull(tnLapsana);
@@ -307,17 +308,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
         addCategoricalData(specDescAlpina1, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 5.0f);
+        addQuantitativeData(specDescAlpina1, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("5.0"));
         addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
 
         SpecimenDescription specDescAlpina2 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen2");
         addCategoricalData(specDescAlpina2, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 7.0f);
+        addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("7.0"));
         addCategoricalData(specDescAlpina2, uuidFeatureLeafColor, uuidLeafColorBlue);
 
         SpecimenDescription specDescAdenophora = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ADENOPHORA_UUID, "adenophora specimen");
         addCategoricalData(specDescAdenophora, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), 12.0f);
+        addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("12.0"));
         addCategoricalData(specDescAdenophora, uuidFeatureLeafColor, uuidLeafColorYellow);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
@@ -383,7 +384,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(stateUuid, stateData.getState().getUuid());
     }
 
-    private void addQuantitativeData(SpecimenDescription specDesc, UUID uuidFeature, StatisticalMeasure type, float value) {
+    private void addQuantitativeData(SpecimenDescription specDesc, UUID uuidFeature, StatisticalMeasure type, BigDecimal value) {
         Feature feature = (Feature)termService.find(uuidFeature);
         QuantitativeData qd = QuantitativeData.NewInstance(feature);
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(type, value);

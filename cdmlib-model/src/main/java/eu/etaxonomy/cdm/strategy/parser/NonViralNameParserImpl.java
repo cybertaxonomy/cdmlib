@@ -686,9 +686,8 @@ public class NonViralNameParserImpl
 		return result;
 	}
 
-
 	private Reference parseArticle(String reference){
-		//if (articlePatter)
+		//if (articlePattern)
 		//(type, author, title, volume, editor, series;
 		Reference result = ReferenceFactory.newArticle();
 		reference = makeVolume(result, reference);

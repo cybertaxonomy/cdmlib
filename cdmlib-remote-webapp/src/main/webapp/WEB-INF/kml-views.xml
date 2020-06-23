@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <!--
+        ===============================================================
+        This is the configuration file for a
+        eu.etaxonomy.cdm.remote.view.XMLViewResolver
+        ===============================================================
+    -->
+    <bean name="**/kml/** **/kml/*" class="org.springframework.web.servlet.view.xml.MarshallingView">
+        <property name="contentType" value="text/xml; charset=UTF-8"/>
+        <property name="marshaller" ref="kmlMarshaller"/><!-- see /cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote.xml -->
+    </bean>
+</beans>

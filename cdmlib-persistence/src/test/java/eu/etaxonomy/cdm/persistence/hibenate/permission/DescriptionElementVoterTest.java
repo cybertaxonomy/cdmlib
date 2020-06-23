@@ -19,9 +19,9 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.TargetEntityStates;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter;
+import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.permission.TargetEntityStates;
+import eu.etaxonomy.cdm.persistence.permission.voter.DescriptionElementVoter;
 
 /**
  * Most basic permission votes are tested via the {@link DescriptionBaseVoterTest}. The

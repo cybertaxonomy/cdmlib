@@ -36,6 +36,7 @@ public class ColumnTypeChanger
 	private final String referencedTable;
 
 
+
 	public static final ColumnTypeChanger NewStringSizeInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, int newSize, boolean includeAudTable){
 		return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, newSize, includeAudTable, null, false, null);
 	}
@@ -60,9 +61,10 @@ public class ColumnTypeChanger
         return new ColumnTypeChanger(stepList, stepName, tableName, columnName, Datatype.VARCHAR, size, includeAudTable, null, false, null);
     }
 
+	protected ColumnTypeChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Datatype newColumnType, Integer size,
+	        boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
 
-	protected ColumnTypeChanger(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String columnName, Datatype newColumnType, Integer size, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
-		super(stepList, stepName, tableName, includeAudTable);
+	    super(stepList, stepName, tableName, includeAudTable);
 		this.columnName = columnName;
 		this.newColumnType = newColumnType;
 		this.newSize = size;
@@ -111,6 +113,7 @@ public class ColumnTypeChanger
 		}
 	}
 
+
     protected void changeType(String tableName, ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result)
             throws DatabaseTypeNotSupportedException, SQLException {
@@ -138,7 +141,7 @@ public class ColumnTypeChanger
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
-		String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize);
+		String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize, null);
 
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			//MySQL allows both syntaxes
@@ -190,7 +193,7 @@ public class ColumnTypeChanger
         //
         boolean includeAuditing = false;
         String colNameChanged = this.columnName + _OLDXXX;
-        String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize);
+        String databaseColumnType = getDatabaseColumnType(datasource, this.newColumnType, newSize, null);
 
         //change old column name
         //note data type is not relevant for ColumnNameChanger with Postgres
@@ -201,7 +204,7 @@ public class ColumnTypeChanger
         //create new column
 //        step = ColumnAdder.NewStringInstance(this.stepName + " - Add new column", tableName, this.columnName, includeAuditing);
         Object defaultValue = null;
-        step = new ColumnAdder(null, this.stepName + " - Add new column", tableName, this.columnName, newColumnType, newSize, includeAuditing, defaultValue, false, null);
+        step = new ColumnAdder(null, this.stepName + " - Add new column", tableName, this.columnName, newColumnType, newSize, null, includeAuditing, defaultValue, false, null);
         step.invoke(datasource, monitor, caseType, result);
 
         //move data
@@ -223,8 +226,8 @@ public class ColumnTypeChanger
         step.invoke(datasource, monitor, caseType, result);
     }
 
-	private String getDatabaseColumnType(ICdmDataSource datasource, Datatype columnType, Integer size) {
-		return columnType.format(datasource, size);
+	private String getDatabaseColumnType(ICdmDataSource datasource, Datatype columnType, Integer size, Integer scale) {
+		return columnType.format(datasource, size, scale);
 	}
 
 	public String getReferencedTable() {

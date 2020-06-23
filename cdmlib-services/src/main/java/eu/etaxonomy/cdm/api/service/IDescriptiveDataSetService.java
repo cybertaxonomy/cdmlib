@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
+import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
@@ -20,6 +22,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -85,7 +88,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param datasetUuid the target dataset
      * @return the result of the operation
      */
-    public UpdateResult addRowWrapperToDataset(Collection<SpecimenNodeWrapper> wrapper, UUID datasetUuid);
+    public UpdateResult addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrapper, UUID datasetUuid);
 
     /**
      * Creates a specimen row wrapper object for the given description
@@ -94,6 +97,14 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return the created row wrapper
      */
     public SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, UUID descriptiveDataSetUuid);
+
+    /**
+     * Creates a specimen row wrapper object for the given description
+     * @param uuid of the specimen for which the wrapper should be created
+     * @param descriptiveDataSetUuid the data set it should be used in
+     * @return the created row wrapper
+     */
+    public SpecimenRowWrapperDTO createSpecimenRowWrapper(UUID specimenUuid, UUID taxonNodeUuid, UUID descriptiveDataSetUuid);
 
     /**
      * Returns a {@link TaxonDescription} for a given taxon node with corresponding
@@ -124,7 +135,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * will be added to the description <b>if</b> a new one is created
      * @return either the found specimen description or a newly created one
      */
-    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, UUID specimenUuid, boolean addDatasetSource);
+    public SpecimenDescription findSpecimenDescription(UUID descriptiveDataSetUuid, SpecimenOrObservationBase specimenUuid, boolean addDatasetSource);
 
     /**
      * Returns all states for all supportedCategoricalEnumeration of this categorical feature
@@ -142,14 +153,6 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @return a taxon row wrapper of the description with the features defined in the data set
      */
     public TaxonRowWrapperDTO createTaxonDescription(UUID dataSetUuid, UUID taxonNodeUuid, DescriptionType descriptionType);
-
-    /**
-     * Removes the description specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
-     * @param descriptionUuid the UUID of the description to delete
-     * @param descriptiveDataSetUuid the UUID of the data set to delete
-     * @return the result of the operation
-     */
-    public DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid);
 
     /**
      * Loads all taxon nodes that match the filter set defined in the
@@ -179,5 +182,30 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
     public TaxonDescription findDefaultDescription(UUID specimenDescriptionUuid, UUID dataSetUuid);
 
     public Collection<SpecimenNodeWrapper> loadSpecimens(UUID descriptiveDataSetUuid);
+
+    /**
+     * @param datasetUuid
+     * @param monitor
+     * @return
+     */
+    DeleteResult delete(UUID datasetUuid, DeleteDescriptiveDataSetConfigurator config, IProgressMonitor monitor);
+
+    /**
+     * Removes the descriptions specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
+     * @param descriptionUuid
+     * @param descriptiveDataSetUuid
+     * @return
+     */
+    DeleteResult removeDescriptions(List<UUID> descriptionUuids, UUID descriptiveDataSetUuid, RemoveDescriptionsFromDescriptiveDataSetConfigurator config);
+
+    /**
+     * Removes the description specified by the given {@link UUID} from the given {@link DescriptiveDataSet}.
+     * @param descriptionUuid
+     * @param descriptiveDataSetUuid
+     * @param config
+     * @return
+     */
+    DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid,
+            RemoveDescriptionsFromDescriptiveDataSetConfigurator config);
 
 }

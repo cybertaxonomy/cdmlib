@@ -45,3 +45,7 @@ fi
 Instructions on how to set this up for Windows can be found here: http://maven.apache.org/plugins/maven-deploy-plugin/examples/deploy-ssh-external.html
 
 
+A dialog may pop up saying that a mapping for antrun and maybe others are missing. 
+Just install all connectors that are available. The problem with antrun will then be solved by importing 
+cdmlib/lifecycle-mapping-metadata.xml in the preferences under Maven->Lifecycle Mappings->Change mapping file location 
+

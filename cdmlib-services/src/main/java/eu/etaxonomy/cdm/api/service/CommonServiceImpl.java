@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchStrategyConfigurator;
@@ -292,7 +292,7 @@ public class CommonServiceImpl
     }
 
     @Override
-    public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategyEqual matchStrategy) throws MatchException {
+    public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException {
         if (matchStrategy == null){
             matchStrategy = DefaultMatchStrategy.NewInstance(((objectToMatch).getClass()));
         }

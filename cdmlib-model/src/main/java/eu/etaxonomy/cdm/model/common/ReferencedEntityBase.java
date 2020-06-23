@@ -36,15 +36,18 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReferencedEntityBase", propOrder = {
-    "citationMicroReference",
     "originalNameString",
-    "citation"
+    "citation",
+    "citationMicroReference"
 })
 @XmlRootElement(name = "ReferencedEntityBase")
 @MappedSuperclass
 @Audited
-public abstract class ReferencedEntityBase extends AnnotatableEntity implements IReferencedEntity {
-	private static final long serialVersionUID = -5614669050360359126L;
+public abstract class ReferencedEntityBase
+        extends AnnotatableEntity
+        implements IReferencedEntity {
+
+    private static final long serialVersionUID = -5614669050360359126L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferencedEntityBase.class);
 
@@ -69,8 +72,6 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
     protected ReferencedEntityBase() {
 		super();
 	}
-
-
 
 	public ReferencedEntityBase(Reference citation, String citationMicroReference,
 			String originalNameString) {
@@ -103,6 +104,16 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 	public void setCitation(Reference citation) {
 		this.citation = citation;
 	}
+
+// **************** EMPTY ************************/
+
+    @Override
+    protected boolean checkEmpty(){
+       return super.checkEmpty()
+            && this.getCitation() == null
+            && isBlank(this.getCitationMicroReference())
+            && isBlank(this.getOriginalNameString());
+    }
 
 //****************** CLONE ************************************************/
 

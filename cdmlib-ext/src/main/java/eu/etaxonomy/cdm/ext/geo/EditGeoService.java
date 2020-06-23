@@ -28,12 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.micromata.opengis.kml.v_2_2_0.Kml;
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.api.utility.DistributionOrder;
+import eu.etaxonomy.cdm.ext.geo.kml.KMLDocumentBuilder;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -181,30 +183,46 @@ public class EditGeoService implements IEditGeoService {
     }
 
     @Override
-    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameterString(
-            List<SpecimenOrObservationBase> specimensOrObersvations,
+    public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameters(
+            List<SpecimenOrObservationBase> specimensOrObservations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
 
         List<Point> fieldUnitPoints = new ArrayList<>();
         List<Point> derivedUnitPoints = new ArrayList<>();
 
-        for (SpecimenOrObservationBase<?> specimenOrObservationBase : specimensOrObersvations) {
-            SpecimenOrObservationBase<?> specimenOrObservation = occurrenceDao
+        for (SpecimenOrObservationBase<?> specimenOrObservationBase : specimensOrObservations) {
+            SpecimenOrObservationBase<?> specimensOrObservation = occurrenceDao
                     .load(specimenOrObservationBase.getUuid());
 
-            if (specimenOrObservation instanceof FieldUnit) {
-                GatheringEvent gatherEvent = ((FieldUnit) specimenOrObservation).getGatheringEvent();
+            if (specimensOrObservation instanceof FieldUnit) {
+                GatheringEvent gatherEvent = ((FieldUnit) specimensOrObservation).getGatheringEvent();
                 if (gatherEvent != null && gatherEvent.getExactLocation() != null){
                     fieldUnitPoints.add(gatherEvent.getExactLocation());
                 }
             }
-            if (specimenOrObservation instanceof DerivedUnit) {
-                registerDerivedUnitLocations((DerivedUnit) specimenOrObservation, derivedUnitPoints);
+            if (specimensOrObservation instanceof DerivedUnit) {
+                registerDerivedUnitLocations((DerivedUnit) specimensOrObservation, derivedUnitPoints);
             }
         }
 
         return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
                 derivedUnitPoints, specimenOrObservationTypeColors);
+    }
+    
+    @Override
+    public Kml occurrencesToKML(
+            List<SpecimenOrObservationBase> specimensOrObservations,
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
+    	
+    		KMLDocumentBuilder builder = new KMLDocumentBuilder();
+    		
+    		for (SpecimenOrObservationBase<?> specimenOrObservationBase : specimensOrObservations) {
+    			builder.addSpecimenOrObservationBase(occurrenceDao.load(specimenOrObservationBase.getUuid())); 			 
+    		}
+    	
+    		Kml kml = builder.build();
+    		
+    		return kml;
     }
 
     public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,

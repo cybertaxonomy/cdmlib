@@ -8,62 +8,29 @@
  */
 package eu.etaxonomy.cdm.opt.config;
 
-import java.io.IOException;
 import java.util.Enumeration;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.EnhancedPatternLayout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 
-/**
- * @author a.kohlbecker
- * @since 20.07.2010
- *
- */
 @Configuration
 public class LoggingConfigurer extends AbstractWebApplicationConfigurer implements InitializingBean  {
+
 
     @Autowired
     private DataSourceProperties dataSourceProperties = null;
 
     /**
-     *
-     */
-    private static final String ROLLING_FILE_APPENDER = "rollingFileAppender";
-
-    /**
-     * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes</code>
-     */
-    private static final String CDM_LOGFILE = "cdm.logfile";
-
-    private void configureLogFile() {
-        PatternLayout layout = new PatternLayout("%d %p [%c] - %m%n");
-        String logFile = findProperty(CDM_LOGFILE, false);
-        if (logFile == null) {
-            logger.info("No logfile specified, running without.");
-            return;
-        }
-        try {
-            RollingFileAppender appender = new RollingFileAppender(layout, logFile);
-            appender.setName(ROLLING_FILE_APPENDER);
-            appender.setMaxBackupIndex(3);
-            appender.setMaxFileSize("2MB");
-            Logger.getRootLogger().addAppender(appender);
-            logger.info("logging to :" + logFile);
-        } catch (IOException e) {
-            logger.error("Creating RollingFileAppender failed:", e);
-        }
-    }
-
-    /**
-     *
+     * As we have changed the logging in the cdm-server (see https://dev.e-taxonomy.eu/redmine/issues/7085)
+     * adding the instance name to the log is no longer required for server systems but it is
+     * still a very nice feature for developers, so we keep this method.
      */
     private void configureInstanceNamePrefix() {
         String instanceName = dataSourceProperties.getCurrentDataSourceId();
@@ -90,18 +57,11 @@ public class LoggingConfigurer extends AbstractWebApplicationConfigurer implemen
                 }
             }
         }
-
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
-        // per instance logfiles disabled, see #6249
-        // configureLogFile();
         configureInstanceNamePrefix();
     }
-
 
 }

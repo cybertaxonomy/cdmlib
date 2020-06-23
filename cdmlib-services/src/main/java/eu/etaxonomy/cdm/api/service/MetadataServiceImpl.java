@@ -18,11 +18,10 @@ import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 
 /**
- * Provides metadata information corresponding ti the underlying CDM Datasource.
+ * Provides metadata information corresponding to the underlying CDM Datasource.
  *
  * @author cmathew
  * @since 20 Nov 2015
- *
  */
 @Service
 @Transactional(readOnly = true)
@@ -36,29 +35,19 @@ public class MetadataServiceImpl implements IMetadataService {
         this.databaseService = databaseService;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public  String getDbSchemaVersion() throws CdmSourceException  {
         return databaseService.getDbSchemaVersion();
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDbEmpty() throws CdmSourceException {
         return databaseService.isDbEmpty();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Map<CdmMetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
         return databaseService.getCdmMetadataMap();
     }
-
 }

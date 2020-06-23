@@ -6,19 +6,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractView;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
- * View class which takes a serializes a cdm object as xml
+ * View class which serializes objects as xml
+ * 
  * @author ben
  * @see javax.xml.transform.Source
  * @see com.ibm.lsid.MetadataResponse
+ * @deprecated use {@link org.springframework.web.servlet.view.xml.MarshallingView} instead
  */
+@Deprecated
 public class XmlView extends AbstractView {
 
     private Marshaller marshaller;
@@ -39,12 +40,9 @@ public class XmlView extends AbstractView {
 
     }
 
-    @Autowired
-    @Qualifier("marshaller")
     public void setMarshaller(Marshaller marshaller) {
         this.marshaller = marshaller;
     }
-
 
 
     @Override

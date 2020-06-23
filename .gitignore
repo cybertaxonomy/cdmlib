@@ -50,3 +50,4 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 !cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/data/.settings
 !cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v35_36/.settings
 workbench.xmi
+cdmlib-ext/KmlJaxbMarshallerTest.kml

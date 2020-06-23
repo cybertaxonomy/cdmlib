@@ -55,49 +55,48 @@ public class ClassBaseTypeUpdater extends AuditedSchemaUpdaterStepBase {
 	private void makeColumns() {
 		String innerStepName;
 		String newColumnName;
-		ColumnAdder adder;
 		if (this.includeIdentifiableEntity){
 
 			//lsid authority
 			innerStepName = "-add lsid_authority";
 			newColumnName = "lsid_authority";
-			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
+			ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 
 			//lsid lsid
 			innerStepName = "-add lsid_lsid";
 			newColumnName = "lsid_lsid";
-			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
+			ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 
 			//lsid namespace
 			innerStepName = "-add lsid_namespace";
 			newColumnName = "lsid_namespace";
-			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
+			ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 
 			//lsid object
 			innerStepName = "-add lsid_object";
 			newColumnName = "lsid_object";
-			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
+			ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 
 			//lsid revision
 			innerStepName = "-add lsid_revision";
 			newColumnName = "lsid_revision";
-			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
+			ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 
 			//protected title cache
 			innerStepName = "-add protected title cache";
 			newColumnName = "protectedTitleCache";
-			adder = ColumnAdder.NewBooleanInstance(columnAdderStepList, innerStepName, tableName, newColumnName,
+			ColumnAdder.NewBooleanInstance(columnAdderStepList, innerStepName, tableName, newColumnName,
 					SchemaUpdaterBase.INCLUDE_AUDIT, false);
 
 			//title cache
 			innerStepName = "-add titleCache";
 			newColumnName = "titleCache";
-			adder = ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
+			ColumnAdder.NewStringInstance(columnAdderStepList, stepName + innerStepName, tableName,
 					newColumnName, SchemaUpdaterBase.INCLUDE_AUDIT);
 		}
 	}

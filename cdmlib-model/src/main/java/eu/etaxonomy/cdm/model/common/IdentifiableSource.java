@@ -34,7 +34,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 public class IdentifiableSource
-        extends OriginalSourceBase<IdentifiableEntity<?>>{
+        extends OriginalSourceBase<IdentifiableEntity<?>>
+        implements ICheckEmpty{
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
@@ -110,7 +111,7 @@ public class IdentifiableSource
 // ****************** CONSTRUCTOR ********************************/
 
 	//for hibernate only
-	private IdentifiableSource() {
+	protected IdentifiableSource() {
 	}
 
 	private IdentifiableSource(OriginalSourceType type) {
@@ -119,12 +120,21 @@ public class IdentifiableSource
 
 // ********************** GETTER /SETTER *****************************/
 
+	@Override
+    public boolean checkEmpty(){
+	    return this.checkEmpty(false);
+	}
 
+	@Override
+    public boolean checkEmpty(boolean excludeType){
+        //nothing to do
+	    return super.checkEmpty(excludeType);
+	}
 //*********************************** CLONE *********************************************************/
 
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public IdentifiableSource clone() throws CloneNotSupportedException{
 		IdentifiableSource result = (IdentifiableSource)super.clone();
 
 		//no changes

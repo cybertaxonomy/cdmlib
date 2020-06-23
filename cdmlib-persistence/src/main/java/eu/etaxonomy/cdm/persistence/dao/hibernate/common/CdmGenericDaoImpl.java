@@ -27,13 +27,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.sql.JoinType;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
@@ -55,6 +55,7 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.data.FullCoverageDataGenerator;
+import eu.etaxonomy.cdm.hibernate.BigDecimalUserType;
 import eu.etaxonomy.cdm.hibernate.DOIUserType;
 import eu.etaxonomy.cdm.hibernate.EnumSetUserType;
 import eu.etaxonomy.cdm.hibernate.EnumUserType;
@@ -73,7 +74,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
-import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -107,7 +108,7 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
+    public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
         Session session = super.getSession();
 
       Criteria criteria = session.createCriteria(clazz);
@@ -122,7 +123,7 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public long getCountByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
+    public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase){
         Session session = super.getSession();
         Query query = session.createQuery("SELECT count(this) "
                 + "FROM "+ clazz.getSimpleName() + " this "
@@ -134,8 +135,10 @@ public class CdmGenericDaoImpl
     }
 
 	@Override
-	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item, Integer limit){
-		Session session = super.getSession();
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class<?> itemClass,
+	        Class<?> clazz, String propertyName, CdmBase item, Integer limit){
+
+	    Session session = super.getSession();
 		String thisClassStr = itemClass.getSimpleName();
 		String otherClassStr = clazz.getSimpleName();
 		String queryStr = " SELECT other FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
@@ -150,7 +153,7 @@ public class CdmGenericDaoImpl
 	}
 
 	@Override
-    public long getCountWithItemInCollection(Class itemClass, Class clazz, String propertyName,
+    public long getCountWithItemInCollection(Class<?> itemClass, Class<?> clazz, String propertyName,
             CdmBase item){
         Session session = super.getSession();
         String thisClassStr = itemClass.getSimpleName();
@@ -466,7 +469,8 @@ public class CdmGenericDaoImpl
 				OrcidUserType.class,
 				ShiftUserType.class,
 				EnumSetUserType.class,
-				SeverityUserType.class
+				SeverityUserType.class,
+				BigDecimalUserType.class,
 				};
 		Set<String> classNames = new HashSet<>();
 		for (Class<?> clazz: classes){
@@ -566,10 +570,9 @@ public class CdmGenericDaoImpl
         }
     }
 
-
 	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
-			IMatchStrategyEqual matchStrategy) throws MatchException {
+			IMatchStrategy matchStrategy) throws MatchException {
 
 		getSession().flush();
 		try {
@@ -590,7 +593,7 @@ public class CdmGenericDaoImpl
 	}
 
 	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,
-	        IMatchStrategyEqual matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+	        IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
 
 	    List<T> result = new ArrayList<>();
 		Session session = getSession();
@@ -608,7 +611,7 @@ public class CdmGenericDaoImpl
 				if (matchStrategy.invoke(objectToMatch, matchCandidate).isSuccessful()){
 					result.add(matchCandidate);
 				}else{
-					logger.warn("Match candidate did not match: " + matchCandidate);
+					logger.info("Match candidate did not match: " + matchCandidate);
 				}
 			}
 		}
@@ -616,9 +619,10 @@ public class CdmGenericDaoImpl
 	}
 
 	private <T> boolean makeCriteria(T objectToMatch,
-			IMatchStrategyEqual matchStrategy, ClassMetadata classMetaData,
+			IMatchStrategy matchStrategy, ClassMetadata classMetaData,
 			Criteria criteria) throws IllegalAccessException, MatchException {
-		Matching matching = matchStrategy.getMatching();
+
+	    Matching matching = matchStrategy.getMatching((IMatchable)objectToMatch);
 		boolean noMatch = false;
 		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
@@ -673,24 +677,15 @@ public class CdmGenericDaoImpl
 		return noMatch;
 	}
 
-	/**
-	 * @param criteria
-	 * @param fieldMatcher
-	 * @param propertyName
-	 * @param value
-	 * @param matchMode
-	 * @throws MatchException
-	 * @throws IllegalAccessException
-	 */
 	private void matchComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher, String propertyName, Object value,
 			List<MatchMode> matchModes) throws MatchException, IllegalAccessException {
 		if (value == null){
-			boolean requiresSecondNull = requiresSecondNull(matchModes, value);
+			boolean requiresSecondNull = requiresSecondNull(matchModes, null);
 			if (requiresSecondNull){
 				criteria.add(Restrictions.isNull(propertyName));
 			}else{
-				//TODO
+				//this should not happen, should be handled as ignore before
 				logger.warn("Component type not yet implemented for (null) value: " + propertyName);
 				throw new MatchException("Component type not yet fully implemented for (null) value. Property: " + propertyName);
 			}
@@ -700,13 +695,13 @@ public class CdmGenericDaoImpl
 			for (String fieldName : fields.keySet()){
 				String restrictionPath = propertyName +"."+fieldName;
 				Object componentValue = fields.get(fieldName).get(value);
-				//TODO diffentiate matchMode
+				//TODO differentiate matchMode
 				createCriterion(criteria, restrictionPath, componentValue, matchModes);
 			}
 		}
 	}
 
-	private boolean matchNonComponentType(Criteria criteria,
+    private boolean matchNonComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher,
 			String propertyName,
 			Object value,
@@ -725,15 +720,16 @@ public class CdmGenericDaoImpl
 				if (propertyType.isCollectionType()){
 					//TODO collection not yet handled for match
 				}else{
-					int joinType = CriteriaSpecification.INNER_JOIN;
+					JoinType joinType = JoinType.INNER_JOIN;
 					if (! requiresSecondValue(matchModes,value)){
-						joinType = CriteriaSpecification.LEFT_JOIN;
+						joinType = JoinType.LEFT_OUTER_JOIN;
 					}
 					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
-					Class matchClass = value.getClass();
+					@SuppressWarnings("rawtypes")
+                    Class matchClass = value.getClass();
 					if (IMatchable.class.isAssignableFrom(matchClass)){
-						IMatchStrategyEqual valueMatchStrategy = DefaultMatchStrategy.NewInstance(matchClass);
-						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());;
+						IMatchStrategy valueMatchStrategy = fieldMatcher.getMatchStrategy() != null? fieldMatcher.getMatchStrategy() : DefaultMatchStrategy.NewInstance(matchClass);
+						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria);
 					}else{
 						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");
@@ -749,13 +745,6 @@ public class CdmGenericDaoImpl
 		return noMatch;
 	}
 
-	/**
-	 * @param criteria
-	 * @param propertyName
-	 * @param value
-	 * @param matchMode
-	 * @throws MatchException
-	 */
 	private void createCriterion(Criteria criteria, String propertyName,
 			Object value, List<MatchMode> matchModes) throws MatchException {
 		Criterion finalRestriction = null;
@@ -772,12 +761,6 @@ public class CdmGenericDaoImpl
 		criteria.add(finalRestriction);
 	}
 
-	/**
-	 * @param matchModes
-	 * @param value
-	 * @return
-	 * @throws MatchException
-	 */
 	private boolean requiresSecondNull(List<MatchMode> matchModes, Object value) throws MatchException {
 		boolean result = true;
 		for (MatchMode matchMode: matchModes){
@@ -786,13 +769,7 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/**
-	 * @param matchModes
-	 * @param value
-	 * @return
-	 * @throws MatchException
-	 */
-	private boolean requiresSecondValue(List<MatchMode> matchModes, Object value) throws MatchException {
+	private boolean requiresSecondValue(List<MatchMode> matchModes, Object value) {
 		boolean result = true;
 		for (MatchMode matchMode: matchModes){
 			result &= matchMode.requiresSecondValue(value);
@@ -800,13 +777,7 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/**
-	 * @param matchModes
-	 * @param value
-	 * @return
-	 * @throws MatchException
-	 */
-	private boolean isRequired(List<MatchMode> matchModes) throws MatchException {
+	private boolean isRequired(List<MatchMode> matchModes) {
 		boolean result = true;
 		for (MatchMode matchMode: matchModes){
 			result &= matchMode.isRequired();
@@ -815,7 +786,7 @@ public class CdmGenericDaoImpl
 	}
 
 	/**
-	 * Returns true if at least one match mode is of typ MATCH_XXX
+	 * Returns true if at least one match mode is of type MATCH_XXX
 	 * @param matchModes
 	 * @param value
 	 * @return

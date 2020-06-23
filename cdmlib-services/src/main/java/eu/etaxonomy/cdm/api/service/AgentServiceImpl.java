@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -40,21 +39,19 @@ import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
-
-
 /**
  * @author a.mueller
- *
  */
 @Service
 @Transactional(readOnly = true)
 public class AgentServiceImpl
         extends IdentifiableServiceBase<AgentBase,IAgentDao>
         implements IAgentService {
+
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 
     @Autowired
-    ICdmGenericDao genericDao;
+    private ICdmGenericDao genericDao;
 
 	@Override
     @Autowired
@@ -157,7 +154,7 @@ public class AgentServiceImpl
 			if (base instanceof Team){
 				Team baseTeam = (Team) base;
 				List<Person> members = baseTeam.getTeamMembers();
-				List<Person> temp = new ArrayList<Person>();
+				List<Person> temp = new ArrayList<>();
 				for (Person member:members){
 					temp.add(member);
 				}

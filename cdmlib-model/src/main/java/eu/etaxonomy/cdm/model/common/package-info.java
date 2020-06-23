@@ -106,6 +106,7 @@
 	@org.hibernate.annotations.TypeDef(name="doiUserType", typeClass=eu.etaxonomy.cdm.hibernate.DOIUserType.class),
 	@org.hibernate.annotations.TypeDef(name="orcidUserType", typeClass=eu.etaxonomy.cdm.hibernate.OrcidUserType.class),
     @org.hibernate.annotations.TypeDef(name="shiftUserType", typeClass=eu.etaxonomy.cdm.hibernate.ShiftUserType.class),
+    @org.hibernate.annotations.TypeDef(name="bigDecimalUserType", typeClass=eu.etaxonomy.cdm.hibernate.BigDecimalUserType.class),
 })
 @org.hibernate.annotations.AnyMetaDef(name = "CdmBase" ,
 		                              metaType="string",
@@ -214,9 +215,6 @@
         @MetaValue(value = "TaxonRelationship", targetEntity = TaxonRelationship.class),
         @MetaValue(value = "NameTypeDesignation", targetEntity = NameTypeDesignation.class),
         @MetaValue(value = "SpecimenTypeDesignation", targetEntity = SpecimenTypeDesignation.class),
-
-
-
 })
 package eu.etaxonomy.cdm.model.common;
 
