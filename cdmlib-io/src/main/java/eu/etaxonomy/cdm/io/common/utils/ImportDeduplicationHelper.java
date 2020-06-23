@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 /**
  * Helper class for deduplicating authors, references, names, etc.
  * during import.
+ *
  * @author a.mueller
  * @since 11.02.2017
  */
