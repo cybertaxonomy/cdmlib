@@ -57,6 +57,11 @@ public class CommonServiceImpl
     private ICdmGenericDao genericDao;
 
     @Override
+    public <T extends CdmBase> T findWithUpdate(Class<T> clazz, int id){
+        return genericDao.find(clazz, id);
+    }
+
+    @Override
     public <T extends CdmBase> T find(Class<T> clazz, int id){
         return genericDao.find(clazz, id);
     }
