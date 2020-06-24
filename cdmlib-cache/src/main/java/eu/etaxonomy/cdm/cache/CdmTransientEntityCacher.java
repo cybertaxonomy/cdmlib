@@ -34,9 +34,9 @@ import net.sf.ehcache.management.ManagementService;
 import net.sf.ehcache.statistics.LiveCacheStatistics;
 
 /**
- * This cache handle transient (id>0) and volatile (id=0) CdmBase object.
+ * This cache handles transient (id>0) and volatile (id=0) CdmBase objects.
  * Volatile objects need to be added via {@link #addNewEntity(CdmBase)}
- * and there id is updated as soon as a transient object with same
+ * and their id is updated as soon as a transient object with the same
  * uuid is added to the cacher.
  *
  * This cache guarantees that
@@ -349,6 +349,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         cache.removeAll();
     }
 
+    @Override
     public void dispose() {
         createCacheManager().removeCache(cache.getName());
         cache.dispose();
@@ -380,7 +381,4 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     public boolean exists(CdmBase cdmBase) {
         return exists(generateKey(cdmBase));
     }
-
-
-
 }
