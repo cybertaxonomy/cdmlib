@@ -1127,7 +1127,7 @@ public class Feature extends DefinedTermBase<Feature> {
         return getTermByUuid(uuidLifeform);
     }
 
-	public static final Feature FLOWERING_PERIDO(){
+	public static final Feature FLOWERING_PERIOD(){
 	    return getTermByUuid(uuidFloweringPeriod);
 	}
 
