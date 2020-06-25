@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import org.hibernate.LazyInitializationException;
+
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -21,23 +23,33 @@ import net.sf.json.JsonConfig;
  */
 public class TeamOrPersonBaseBeanProcessor extends AbstractBeanProcessor<TeamOrPersonBase> {
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#getIgnorePropNames()
-     */
     @Override
     public List<String> getIgnorePropNames() {
         // nothing to ignore by default
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-     */
+
     @Override
     public JSONObject processBeanSecondStep(TeamOrPersonBase bean, JSONObject json,
             JsonConfig jsonConfig) {
-        json.element("titleCache", bean.getTitleCache());
-        json.element("nomenclaturalTitle", bean.getNomenclaturalTitle());
+        //NOTE LazyInitializationException related to author teams are often causing problems
+        //     so we catch them here in order to avoid breaking the web service response completely
+        //     The team should be initialized by the TeamAutoInitializer but due to the bug #7331
+        //     this seems to be broken in specific cases.
+        //     The below try-catch should be removed once #7331 but by carefully checking the examples
+        //     #9095, #9096. Other tickets related to LIEs and eu.etaxonomy.cdm.model.agent.Team.teamMembers
+        //     should also be checked.
+        try {
+            json.element("titleCache", bean.getTitleCache());
+        } catch (LazyInitializationException e) {
+           logger.error("Caught LazyInitializationException at getTitleCache()", e);
+        }
+        try {
+            json.element("nomenclaturalTitle", bean.getNomenclaturalTitle());
+        } catch (LazyInitializationException e) {
+            logger.error("Caught LazyInitializationException at getNomenclaturalTitle()", e);
+         }
         return json;
     }
 
