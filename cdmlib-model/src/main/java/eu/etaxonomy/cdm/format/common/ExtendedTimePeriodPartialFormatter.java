@@ -10,10 +10,9 @@ package eu.etaxonomy.cdm.format.common;
 
 import org.joda.time.ReadablePartial;
 
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-
 /**
  * @author k.luther
+ * @author a.mueller
  * @since Jun 15, 2020
  */
 public class ExtendedTimePeriodPartialFormatter extends TimePeriodPartialFormatter {
@@ -28,25 +27,7 @@ public class ExtendedTimePeriodPartialFormatter extends TimePeriodPartialFormatt
 
     @Override
     public String print(ReadablePartial partial){
-        //TODO
-        String result = "";
-        String year = (partial.isSupported(TimePeriod.YEAR_TYPE))? String.valueOf(partial.get(TimePeriod.YEAR_TYPE)):null;
-        String month = (partial.isSupported(TimePeriod.MONTH_TYPE))? String.valueOf(partial.get(TimePeriod.MONTH_TYPE)):null;;
-        String day = (partial.isSupported(TimePeriod.DAY_TYPE))? String.valueOf(partial.get(TimePeriod.DAY_TYPE)):null;;
-
-
-        if (day != null){
-            if (month == null){
-                month = "xx";
-            }
-
-        }
-        result = (day != null)? day + "." : "";
-        result += (month != null)? month + "." : "";
-        result += (year != null)? year : "";
-
-        return result;
-    }
-
-
+        //for now we keep the same formatting as for TimePeriodPartialFormatter
+        return super.print(partial);
+     }
 }
