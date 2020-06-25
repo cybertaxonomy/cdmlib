@@ -149,6 +149,9 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         initializer.initialize(person, propPath);
     }
 
+    /**
+     * Attempt to reproduce #7331 without success (DO NOT REMOVE THIS COMMENT!)
+     */
     @DataSet
     @Test
     public void testFullNameGraphWithPreloadedReference() {
