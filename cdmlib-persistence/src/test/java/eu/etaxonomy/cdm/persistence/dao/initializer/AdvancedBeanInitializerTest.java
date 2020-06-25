@@ -107,7 +107,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
         assert defaultBeanInitializer != null;
 
-        Class[] expectedAutoInitializers = new Class[]{
+        Class<?>[] expectedAutoInitializers = new Class[]{
             eu.etaxonomy.cdm.persistence.dao.initializer.TitleAndNameCacheAutoInitializer.class,
             eu.etaxonomy.cdm.persistence.dao.initializer.AnnotationTypeAutoInitializer.class,
             eu.etaxonomy.cdm.persistence.dao.initializer.MarkerTypeAutoInitializer.class,
@@ -118,9 +118,9 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
             eu.etaxonomy.cdm.persistence.dao.initializer.TeamAutoInitializer.class
             };
 
-        Set<Class> checkSet = new HashSet<>(Arrays.asList(expectedAutoInitializers));
+        Set<Class<?>> checkSet = new HashSet<>(Arrays.asList(expectedAutoInitializers));
 
-        for(AutoPropertyInitializer api : defaultBeanInitializer.getBeanAutoInitializers().values()){
+        for(AutoPropertyInitializer<?> api : defaultBeanInitializer.getBeanAutoInitializers().values()){
             assert checkSet.remove(api.getClass()) == true;
         }
         assert checkSet.size() == 0;
