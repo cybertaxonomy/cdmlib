@@ -266,9 +266,9 @@ public class VerbatimTimePeriodTest {
         assertNotNull(tp1);
         Assert.assertEquals("1788"+endash+"1799", tp1.toString());
         tp1.setStartDay(3);
-        Assert.assertEquals("1788 MMM 3"+endash+"1799", tp1.toString());
+        Assert.assertEquals("3 MMM 1788"+endash+"1799", tp1.toString());
         tp1.setEndMonth(11);
-        Assert.assertEquals("1788 MMM 3"+endash+"1799 Nov", tp1.toString());
+        Assert.assertEquals("3 MMM 1788"+endash+"Nov 1799", tp1.toString());
     }
 
     @Test

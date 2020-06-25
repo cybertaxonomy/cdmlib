@@ -25,6 +25,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
+
 /**
  * @author a.mueller
  * @since 29.04.2020
@@ -306,7 +308,7 @@ public class ExtendedTimePeriodTest {
         tp1.setExtremeStartMonth(startMonth2);
         tp1.setExtremeEndDay(endDay2);
         tp1.setExtremeEndMonth(endMonth2);
-        Assert.assertEquals("(1787 May 24"+endash+")1788 Jun 25"+endash+"1799 Dec 21("+endash+"1800 Nov 20)", tp1.toString()); //date formatting may change in future
+        Assert.assertEquals("(24 May 1787"+endash+")25 Jun 1788"+endash+"21 Dec 1799("+endash+"20 Nov 1800)", tp1.toString()); //date formatting may change in future
 
         tp1.setFreeText("My extended period");
         Assert.assertEquals("My extended period", tp1.toString());

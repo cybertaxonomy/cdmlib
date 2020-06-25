@@ -48,7 +48,7 @@ public class TimePeriodPartialFormatter extends DateTimeFormatter{
 		    monthStr = "MMM";
         }
 
-		String result = CdmUtils.concat(" ", yearStr, monthStr, dayStr);
+		String result = CdmUtils.concat(" ", dayStr, monthStr, yearStr);
 
 		return result;
 	}

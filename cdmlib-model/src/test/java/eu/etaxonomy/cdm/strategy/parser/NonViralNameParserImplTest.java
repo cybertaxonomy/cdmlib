@@ -2492,12 +2492,13 @@ public class NonViralNameParserImplTest {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("1978 [\"1977\"]", nomRef.getDatePublished().toString());
 
-        name = parser.parseReferencedName("Calamintha transsilvanica (J\u00e1v.) So\u00f3 in Acta Bot. Acad. Sci. Hung. 23: 382. 1977 Apr 4");
+        name = parser.parseReferencedName("Calamintha transsilvanica (J\u00e1v.) So\u00f3 in Acta Bot. Acad. Sci. Hung. 23: 382. 4 Apr 1977");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
-        assertEquals("1977 Apr 4", nomRef.getDatePublished().toString());
+        assertEquals("4 Apr 1977", nomRef.getDatePublished().toString());
         assertEquals(Integer.valueOf(4), nomRef.getDatePublished().getStartMonth());
+
     }
 
 

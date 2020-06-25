@@ -56,8 +56,8 @@ public class TimePeriodParser {
 	private static final Pattern slashDatePattern =  Pattern.compile(strSlashDatePeriodPattern);
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|May|June?|July?))";
-	private static final String strDateWithMonthes = "([0-3]?\\d" + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}\\+?";
-	public static final String strDateYearMonthDay = "(\\d{4,4}" + dashOrWs + ")?" + strMonthes + "(" + dashOrWs + "[0-3]?\\d)?\\+?";
+	public static final String strDateWithMonthes = "([0-3]?\\d" + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}\\+?";
+	private static final String strDateYearMonthDay = "(\\d{4,4}" + dashOrWs + ")?" + strMonthes + "(" + dashOrWs + "[0-3]?\\d)?\\+?";
     private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthes);
 	private static final Pattern dateYearMonthDayPattern = Pattern.compile(strDateYearMonthDay);
 
