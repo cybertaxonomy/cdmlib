@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -58,8 +57,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * this test can be deleted or adapted and moved to cdmlib-model.
  *
  * @author a.mueller
- * @since 03.06.2010
- *
+ * @since 2010 Jun 3
  */
 public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
@@ -73,7 +71,6 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
     private IDescriptionService descService;
 
     private static final UUID taxonUuid = UUID.fromString("10cfb372-0b1a-4d82-9707-c5ffd2b93a55");
-
 
     private DerivedUnit specimen;
     private DerivationEvent derivationEvent;
@@ -120,10 +117,6 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 
 //****************************** SET UP *****************************************/
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -188,9 +181,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
 
 	}
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
-	 */
+
 	@Test
 	public void testGetSpecimenTitleCache() {
 //		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
@@ -206,14 +197,8 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimen.getTitleCache());
-
-
-
 	}
 
-	   /**
-     * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
-     */
     @Test
     public void testGetFieldUnitTitleCache() {
 //        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue.";
@@ -257,13 +242,6 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
         Assert.assertEquals(expectedFieldUnitCache, myFieldUnit.getTitleCache());
     }
 
-
-
-    /**
-     * @param taxon
-     * @param i
-     * @return
-     */
     private IndividualsAssociation getDescriptionElement(Taxon taxon, int id) {
         for (DescriptionElementBase el : taxon.getDescriptions().iterator().next().getElements()){
             if (el.getId() == id) {
@@ -274,8 +252,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
     }
 
     @Override
-    @Test
-    @Ignore
+//  @Test
     public void createTestDataSet() throws FileNotFoundException {
 //        specimen.setUuid(derivedUnitUuid);
 //        fieldUnit.setUuid(fieldUnitUuid);

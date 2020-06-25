@@ -1228,7 +1228,6 @@ public class NonViralNameParserImplTest {
             assertTrue(false);
         }
 
-
         //null
         String strNull = null;
         Rank rankSpecies = Rank.SPECIES();
@@ -1356,7 +1355,6 @@ public class NonViralNameParserImplTest {
         assertEquals(35, nameZooNameNewCombination.getProblemStarts());
         assertEquals(51, nameZooNameNewCombination.getProblemEnds());
 
-
         //Special MicroRefs
         String strSpecDetail1 = "Abies alba Mill. in Sp. Pl. 4(6): [455]. 1987";
         INonViralName nameSpecDet1 = parser.parseReferencedName(strSpecDetail1 + ".", null, rankSpecies);
@@ -1385,7 +1383,6 @@ public class NonViralNameParserImplTest {
         assertFalse(nameSpecDet4.hasProblem());
         assertEquals(strSpecDetail4, nameSpecDet4.getFullTitleCache());
         assertEquals("fig. 455-567", nameSpecDet4.getNomenclaturalMicroReference());
-
 
         //Special MicroRefs
         String strSpecDetail5 = "Abies alba Mill. in Sp. Pl. 4(6): Gard n\u00B0 4. 1987";
@@ -2484,9 +2481,7 @@ public class NonViralNameParserImplTest {
 //        title = nomRef.getInReference().getAbbrevTitle();
 //        assertEquals( "Mount. Fl. Greece", title);
 
-
     }
-
 
     @Test
     public final void testDatePublished(){
@@ -2583,7 +2578,6 @@ public class NonViralNameParserImplTest {
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("3", nomRef.getVolume());
         assertEquals("75, pl. 19, figs 4-6", name.getNomenclaturalMicroReference());
-
 
         //pl
         name = parser.parseReferencedName("Carapichea  Aubl."

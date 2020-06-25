@@ -56,9 +56,6 @@ public class ExtendedTimePeriodTest {
 
   //************************ TESTS ******************************************
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance()}.
-     */
     @Test
     public void testNewExtendedInstance() {
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance();
@@ -66,9 +63,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertTrue("VerbatimTimeperiod should be empty",tp.isEmpty());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(org.joda.time.Partial)}.
-     */
     @Test
     public void testNewExtendedInstancePartial() {
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(new Partial().with(DateTimeFieldType.dayOfWeek(), 5));
@@ -76,9 +70,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertFalse("VerbatimTimeperiod should not be empty",tp.isEmpty());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(org.joda.time.Partial, org.joda.time.Partial)}.
-     */
     @Test
     public void testNewExtendedInstancePartialPartial() {
         ExtendedTimePeriod tp = ExtendedTimePeriod.NewExtendedInstance(new Partial().with(DateTimeFieldType.dayOfMonth(),day));
@@ -87,9 +78,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("VerbatimTimeperiod's should not be empty", day, tp.getStartDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(java.lang.Integer)}.
-     */
     @Test
     public void testNewExtendedInstanceInteger() {
         onlyStartYear = ExtendedTimePeriod.NewExtendedYearInstance(1922);
@@ -98,9 +86,6 @@ public class ExtendedTimePeriodTest {
         assertEquals("1922", onlyStartYear.getYear());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(java.lang.Integer, java.lang.Integer)}.
-     */
     @Test
     public void testNewExtendedInstanceIntegerInteger() {
         startAndEndYear = ExtendedTimePeriod.NewExtendedYearInstance(1931, 1957);
@@ -109,9 +94,6 @@ public class ExtendedTimePeriodTest {
         assertEquals("1931"+SEP+"1957", startAndEndYear.getYear());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(java.util.Calendar)}.
-     */
     @Test
     public void testNewExtendedInstanceCalendar() {
         Calendar cal = Calendar.getInstance();
@@ -122,9 +104,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Timeperiod's should not be empty", day, tp.getStartDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(java.util.Calendar, java.util.Calendar)}.
-     */
     @Test
     public void testNewExtendedInstanceCalendarCalendar() {
         Calendar cal = Calendar.getInstance();
@@ -168,9 +147,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Timeperiod's extreme end day should be equal with day4", day4, tp.getExtremeEndDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(org.joda.time.ReadableInstant)}.
-     */
     @Test
     public void testNewExtendedInstanceReadableInstant() {
         ReadableInstant readInst = new MutableDateTime();
@@ -180,9 +156,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Timeperiod's should not be empty", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.ExtendedTimePeriod#NewExtendedInstance(org.joda.time.ReadableInstant, org.joda.time.ReadableInstant)}.
-     */
     @Test
     public void testNewExtendedInstanceReadableInstantReadableInstant() {
         ReadableInstant readInst = new MutableDateTime();
@@ -198,9 +171,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Timeperiod's day should be equal to readable instant day", (Integer)readInst2.get(DateTimeFieldType.dayOfMonth()), tp.getEndDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#calendarToPartial(java.util.Calendar)}.
-     */
     @Test
     public void testCalendarToPartial() {
         Calendar cal = Calendar.getInstance();
@@ -209,9 +179,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Partial's day should not be equal to calednars day", day, (Integer)part.get(DateTimeFieldType.dayOfMonth()));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#readableInstantToPartial(org.joda.time.ReadableInstant)}.
-     */
     @Test
     public void testReadableInstantToPartial() {
         ReadableInstant readInst = new MutableDateTime();
@@ -220,9 +187,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Partial's day should not be equal to calednars day", (Integer)part.get(DateTimeFieldType.dayOfMonth()), (Integer)part.get(DateTimeFieldType.dayOfMonth()));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#TimePeriod()}.
-     */
     @Test
     public void testTimePeriod() {
         TimePeriod tp = new TimePeriod();
@@ -272,9 +236,6 @@ public class ExtendedTimePeriodTest {
 //      Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod ", !startString.equals(changedString));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#isPeriod()}.
-     */
     @Test
     public void testIsPeriod() {
         assertTrue(startAndEndYear.isPeriod());
@@ -287,9 +248,6 @@ public class ExtendedTimePeriodTest {
         assertTrue(onlyStartYear.isPeriod()); //may be discussed
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getStart()}.
-     */
     @Test
     public void testGetStart() {
         TimePeriod tp = new TimePeriod();
@@ -299,10 +257,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Start should be 'start'", start, tp.getStart());
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getEnd()}.
-     */
     @Test
     public void testGetEnd() {
         TimePeriod tp = new TimePeriod();
@@ -312,9 +266,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("End should be 'end'", end, tp.getEnd());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getYear()}.
-     */
     @Test
     public void testGetYear() {
         TimePeriod tp = new TimePeriod();
@@ -361,10 +312,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("My extended period", tp1.toString());
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
-     */
     @Test
     public void testClone() {
         Integer startYear = 1788;
@@ -408,9 +355,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
-     */
     @Test
     public void testEquals() {
         Integer startYear = 1788;

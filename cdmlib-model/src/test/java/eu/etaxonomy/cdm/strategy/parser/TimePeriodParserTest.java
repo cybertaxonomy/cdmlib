@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
 /**
  * @author a.mueller
- *
  */
 public class TimePeriodParserTest {
 	@SuppressWarnings("unused")
@@ -40,9 +39,6 @@ public class TimePeriodParserTest {
 
 	private static final String SEP = TimePeriod.SEP;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 //		onlyStartYear = TimePeriod.NewInstance(1922);
@@ -53,9 +49,7 @@ public class TimePeriodParserTest {
 //		noStartAndEndYear = TimePeriod.NewInstance(start, end);
 	}
 
-
 //************************ TESTS ******************************************
-
 
 	@Test
 	public void testParseSingleDateString() {
@@ -78,10 +72,6 @@ public class TimePeriodParserTest {
 		//to be continued
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#parseString(java.lang.String)}.
-	 */
 	@Test
 	public void testParseStringString() {
 		String strTimePeriod = "1756";
@@ -120,7 +110,6 @@ public class TimePeriodParserTest {
         Assert.assertEquals(null, tpcorrectedEn.getFreeText());
         Assert.assertEquals("1806", tpcorrected.getVerbatimDate());
         Assert.assertEquals("1807", tpcorrectedEn.getYear());
-
 
 		//fl. 1806
 		String strFlPeriod = "fl.  1806?";

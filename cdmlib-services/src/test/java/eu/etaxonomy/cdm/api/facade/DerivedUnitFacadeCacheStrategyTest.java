@@ -162,9 +162,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
 
 	}
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
-	 */
+
 	@Test
 	public void testGetTitleCache() {
 		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 2005 May 3, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";

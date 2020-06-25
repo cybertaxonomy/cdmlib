@@ -130,10 +130,6 @@ public class TimePeriodParser {
 		return result;
 	}
 
-    /**
-     * @param periodString
-     * @return
-     */
     private static boolean isEnglishParsable(String periodString) {
         try {
             TimePeriod en = parseEnglishDate(periodString, null);
@@ -146,10 +142,6 @@ public class TimePeriodParser {
             return false;
         }
     }
-
-
-
-
 
     private static boolean isDateString(String periodString) {
 		String[] startEnd = makeStartEnd(periodString);
@@ -167,11 +159,6 @@ public class TimePeriodParser {
 		return false;
 	}
 
-
-	/**
-	 * @param periodString
-	 * @return
-	 */
 	private static String[] makeStartEnd(String periodString) {
 		String[] startEnd = new String[]{periodString};
 		if (periodString.contains("-") && periodString.matches("^-{2,}-^-{2,}")){
@@ -179,7 +166,6 @@ public class TimePeriodParser {
 		}
 		return startEnd;
 	}
-
 
 	private static DateTime dateStringParse(String string, boolean strict) {
 		DateFormat dateFormat = DateFormat.getDateInstance();
@@ -194,10 +180,6 @@ public class TimePeriodParser {
 		return result;
 	}
 
-    /**
-     * @param periodString
-     * @param result
-     */
     private static void parseSlashDatePattern(String periodString, TimePeriod result) {
         String[] dates = periodString.split("-");
         Partial dtStart = null;
@@ -228,11 +210,6 @@ public class TimePeriodParser {
         }
     }
 
-
-	/**
-	 * @param periodString
-	 * @param result
-	 */
 	private static void parseDotDatePattern(String periodString,TimePeriod result) {
 		String[] dates = periodString.split("-");
 		Partial dtStart = null;
@@ -266,9 +243,6 @@ public class TimePeriodParser {
     /**
      * Checks if dates is a "continued" date (e.g. 2017+).
      * If yes, dtEnd is returned as {@link TimePeriod#CONTINUED} and dates[0] is shortened by "+".
-     * @param dates
-     * @param dtEnd
-     * @return
      */
     protected static Partial handleContinued(String[] dates, Partial dtEnd) {
         if (dates.length == 1 && dates[0].endsWith("+") && dates[0].length()>1){
@@ -278,11 +252,6 @@ public class TimePeriodParser {
         return dtEnd;
     }
 
-
-    /**
-     * @param dateString
-     * @param result
-     */
     private static void parseDateWithMonthName(String dateString, TimePeriod result) {
         String[] dates = dateString.split("(\\.|\\s+)+");
 
@@ -342,12 +311,6 @@ public class TimePeriodParser {
         }
     }
 
-    /**
-     * @param year
-     * @param month
-     * @param day
-     * @return
-     */
     public static Partial makePartialFromDateParts(Integer year, Integer month, Integer day) {
         Partial partial = new Partial();
         //TODO deduplicate code with other routines
@@ -370,10 +333,6 @@ public class TimePeriodParser {
         return partial;
     }
 
-	/**
-     * @param valueOf
-     * @return
-     */
     private static Integer monthNrFormName(String strMonth) {
 
         switch (strMonth.substring(0, 3)) {
@@ -404,8 +363,6 @@ public class TimePeriodParser {
             default:
                 throw new IllegalArgumentException("Month not recognized: " + strMonth);
         }
-
-
     }
 
     //TODO "continued" not yet handled, probably looks different here (e.g. 2017--x)
@@ -424,11 +381,6 @@ public class TimePeriodParser {
 		}
 	}
 
-
-	/**
-	 * @param periodString
-	 * @param result
-	 */
 	private static void parseStandardPattern(String periodString,
 			TimePeriod result) {
 		String[] years = periodString.split("-");
@@ -496,7 +448,6 @@ public class TimePeriodParser {
         String bracketStart = "\\[";
         String bracketEnd = "\\]";
 
-
         //very first implementation, only for years and following 1 format
         String reVerbatim1 = anyDate + fWs + bracketStart + verbatimStart + anyVerbatim + verbatimEnd + bracketEnd;
         patVerbatim1 = Pattern.compile(reVerbatim1);
@@ -506,15 +457,8 @@ public class TimePeriodParser {
 
         String reVerbatim3 = anyVerbatim + "(" + oWs + "publ\\." + oWs + "(" + anyDate + "))";
         patVerbatim3 = Pattern.compile(reVerbatim3);
-
     }
 
-
-	/**
-     * @param timePeriod
-	 * @param strPeriod
-     * @return
-     */
     private static String parseVerbatimPart(VerbatimTimePeriod timePeriod, String strPeriod) {
         if (strPeriod == null){
             return null;
@@ -566,7 +510,6 @@ public class TimePeriodParser {
 			throw new IllegalArgumentException("Until now only years can be parsed as single dates. But date is: " + singleDateString);
 		}
 		return partial;
-
 	}
 
 	//this code is very redundant to parseSingleDotDate
@@ -581,7 +524,6 @@ public class TimePeriodParser {
         String strYear = split[split.length-1];
         String strMonth = length >= 2? split[split.length-2]: null;
         String strDay = length >= 3? split[split.length-3]: null;
-
 
         try {
             Integer year = Integer.valueOf(strYear.trim());
@@ -621,7 +563,6 @@ public class TimePeriodParser {
 		String strMonth = length >= 2? split[split.length-2]: null;
 		String strDay = length >= 3? split[split.length-3]: null;
 
-
 		try {
 			Integer year = Integer.valueOf(strYear.trim());
 			Integer month = strMonth == null? null : Integer.valueOf(strMonth.trim());
@@ -646,7 +587,6 @@ public class TimePeriodParser {
 		}
 		return partial;
 	}
-
 
     /**
      * @see #parseEnglishDate(String, String, boolean)
@@ -681,10 +621,7 @@ public class TimePeriodParser {
 
 
     private static final String ENGLISH_FORMAT = "\\d{4}-\\d{1,2}-\\d{1,2}";
-    /**
-     * @param strFrom
-     * @return
-     */
+
     private static Partial parseSingleEnglishDate(String strDate, boolean isAmerican) {
         if (StringUtils.isEmpty(strDate)){
             return null;
@@ -709,12 +646,10 @@ public class TimePeriodParser {
         return result;
     }
 
-
     private static boolean isBlank(String str){
         return StringUtils.isBlank(str);
     }
     private static boolean isNotBlank(String str){
         return StringUtils.isNotBlank(str);
     }
-
 }
