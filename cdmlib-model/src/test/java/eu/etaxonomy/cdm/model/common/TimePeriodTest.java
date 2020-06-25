@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
- *
  */
 public class TimePeriodTest {
 	@SuppressWarnings("unused")
@@ -45,9 +44,6 @@ public class TimePeriodTest {
 	private static final Integer month = 1;
 	private static final Integer day = 5;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		onlyStartYear = TimePeriod.NewInstance(1922);
@@ -218,9 +214,6 @@ public class TimePeriodTest {
 //		Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod	", !startString.equals(changedString));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#isPeriod()}.
-	 */
 	@Test
 	public void testIsPeriod() {
 		assertTrue(startAndEndYear.isPeriod());
@@ -311,7 +304,6 @@ public class TimePeriodTest {
         Assert.assertEquals(null, tp1.getEndYear());
         Assert.assertEquals(month, tp1.getEndMonth());
         Assert.assertEquals(null, tp1.getEndDay());
-
 	}
 
 	@Test
