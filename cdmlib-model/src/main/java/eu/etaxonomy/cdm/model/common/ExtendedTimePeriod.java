@@ -33,9 +33,10 @@ import org.joda.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 
 /**
  * TimePeriod class with extended time period for "extreme" phases
@@ -311,13 +312,12 @@ public class ExtendedTimePeriod extends TimePeriod {
              String result = super.getTimePeriod();
              DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
              if (extremeStart != null){
-                 result = "(" + extremeStart.toString(formatter) +"-)" + result;
+                 result = "(" + extremeStart.toString(formatter) + TimePeriod.SEP + ")" + result;
              }
              if (getExtremeEnd() != null){
-                 result += "(-" + getExtremeEnd().toString(formatter)+")";
+                 result += "(" + TimePeriod.SEP + getExtremeEnd().toString(formatter)+")";
              }
              return result;
-
          }
     }
 

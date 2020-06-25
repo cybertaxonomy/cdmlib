@@ -38,6 +38,7 @@ public class TimePeriodParserTest {
 //	private TimePeriod startAndEndYear;
 //	private TimePeriod noStartAndEndYear;
 
+	private static final String SEP = TimePeriod.SEP;
 
 	/**
 	 * @throws java.lang.Exception
@@ -93,7 +94,7 @@ public class TimePeriodParserTest {
 		strTimePeriod = "1756-88";
 		tp1 = TimePeriodParser.parseString(strTimePeriod);
 		assertNotNull(tp1);
-		Assert.assertEquals("1756-1788", tp1.getYear());
+		Assert.assertEquals("1756"+SEP+"1788", tp1.getYear());
 		Assert.assertEquals("1756", String.valueOf(tp1.getStartYear()));
 		Assert.assertEquals("1788", String.valueOf(tp1.getEndYear()));
 		assertNull(tp1.getEndMonth());
@@ -134,13 +135,13 @@ public class TimePeriodParserTest {
 		Assert.assertEquals(strCPeriod, tpC.getFreeText());
 		Assert.assertEquals(Integer.valueOf(1806), tpC.getStartYear());
 		Assert.assertEquals(Integer.valueOf(1810), tpC.getEndYear());
-		Assert.assertEquals("1806-1810", tpC.getYear());
+		Assert.assertEquals("1806"+SEP+"1810", tpC.getYear());
 
 		//1.1.2011
 		String strDotDate = "1.2.2011";
 		TimePeriod tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
-		Assert.assertEquals(strDotDate, tp.toString());
+		Assert.assertEquals("2011 Feb 1", tp.toString());
 		Assert.assertEquals("2011", tp.getYear());
 		Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
 		Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
@@ -148,7 +149,7 @@ public class TimePeriodParserTest {
 		strDotDate = "31.03.2012";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
-		Assert.assertEquals("31.3.2012", tp.toString());
+		Assert.assertEquals("2012 Mar 31", tp.toString());
 		Assert.assertEquals("2012", tp.getYear());
 		Assert.assertEquals(Integer.valueOf(3), tp.getStartMonth());
 		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
@@ -156,7 +157,7 @@ public class TimePeriodParserTest {
 		strDotDate = "00.04.2013";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
-		Assert.assertEquals("4.2013", tp.toString());
+		Assert.assertEquals("2013 Apr", tp.toString());
 		Assert.assertEquals("2013", tp.getYear());
 		Assert.assertEquals(Integer.valueOf(4), tp.getStartMonth());
 		Assert.assertEquals(null, tp.getStartDay());
@@ -164,7 +165,7 @@ public class TimePeriodParserTest {
 		strDotDate = "13.00.2014";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
-		Assert.assertEquals("13.xx.2014", tp.toString());
+		Assert.assertEquals("2014 MMM 13", tp.toString());
 		Assert.assertEquals("2014", tp.getYear());
 		Assert.assertEquals(null, tp.getStartMonth());
 		Assert.assertEquals(Integer.valueOf(13), tp.getStartDay());
@@ -172,8 +173,8 @@ public class TimePeriodParserTest {
 		strDotDate = "31.12.2015 - 02.01.2016";
 		tp = TimePeriodParser.parseString(strDotDate);
 		assertNotNull(tp);
-		Assert.assertEquals("31.12.2015-2.1.2016", tp.toString());
-		Assert.assertEquals("2015-2016", tp.getYear());
+		Assert.assertEquals("2015 Dec 31"+SEP+"2016 Jan 2", tp.toString());
+		Assert.assertEquals("2015"+SEP+"2016", tp.getYear());
 		Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
 		Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
 		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
@@ -189,8 +190,8 @@ public class TimePeriodParserTest {
         String strSlashDate = "31/12/2015 - 2/1/2016";
         TimePeriod tp = TimePeriodParser.parseString(strSlashDate);
         assertNotNull(tp);
-        Assert.assertEquals("31.12.2015-2.1.2016", tp.toString());
-        Assert.assertEquals("2015-2016", tp.getYear());
+        Assert.assertEquals("2015 Dec 31"+SEP+"2016 Jan 2", tp.toString());
+        Assert.assertEquals("2015"+SEP+"2016", tp.getYear());
         Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
         Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
@@ -201,8 +202,8 @@ public class TimePeriodParserTest {
         strSlashDate = "1/12/2015 - 2/1/2016";
         tp = TimePeriodParser.parseString(strSlashDate);
         assertNotNull(tp);
-        Assert.assertEquals("1.12.2015-2.1.2016", tp.toString());
-        Assert.assertEquals("2015-2016", tp.getYear());
+        Assert.assertEquals("2015 Dec 1"+SEP+"2016 Jan 2", tp.toString());
+        Assert.assertEquals("2015"+SEP+"2016", tp.getYear());
         Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
         Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
@@ -216,7 +217,7 @@ public class TimePeriodParserTest {
 	    String strDate = "24 Aug. 1957";
 	    TimePeriod tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
-        Assert.assertEquals("24.8.1957", tp.toString());
+        Assert.assertEquals("1957 Aug 24", tp.toString());
         Assert.assertEquals("1957", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
@@ -225,7 +226,7 @@ public class TimePeriodParserTest {
         String strSingleDay = "8 March 1957";
         tp = TimePeriodParser.parseString(strSingleDay);
         assertNotNull(tp);
-        Assert.assertEquals("8.3.1957", tp.toString());
+        Assert.assertEquals("1957 Mar 8", tp.toString());
         Assert.assertEquals("1957", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(3), tp.getStartMonth());
@@ -234,7 +235,7 @@ public class TimePeriodParserTest {
         String strNoSpace = "26.Apr.2003";
         tp = TimePeriodParser.parseString(strNoSpace);
         assertNotNull(tp);
-        Assert.assertEquals("26.4.2003", tp.toString());
+        Assert.assertEquals("2003 Apr 26", tp.toString());
         Assert.assertEquals("2003", tp.getYear());
         Assert.assertEquals(Integer.valueOf(2003), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(4), tp.getStartMonth());
@@ -243,14 +244,67 @@ public class TimePeriodParserTest {
         String strMissingDay = "Feb. 1894";
         tp = TimePeriodParser.parseString(strMissingDay);
         assertNotNull(tp);
-        Assert.assertEquals("2.1894", tp.toString());
+        Assert.assertEquals("1894 Feb", tp.toString());
         Assert.assertEquals("1894", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1894), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
         Assert.assertEquals(null, tp.getStartDay());
 
-	}
+        String strYearMonth = "1894 Feb";
+        tp = TimePeriodParser.parseString(strYearMonth);
+        assertNotNull(tp);
+        Assert.assertEquals("1894 Feb", tp.toString());
+        Assert.assertEquals("1894", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1894), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
+        Assert.assertEquals(null, tp.getStartDay());
 
+        String strYearMonthDay = "1894 Feb 4";
+        tp = TimePeriodParser.parseString(strYearMonthDay);
+        assertNotNull(tp);
+        Assert.assertEquals("1894 Feb 4", tp.toString());
+        Assert.assertEquals("1894", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1894), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
+
+        String strYearMonthDay2 = "1894 Feb 04";
+        tp = TimePeriodParser.parseString(strYearMonthDay2);
+        assertNotNull(tp);
+        Assert.assertEquals("1894 Feb 4", tp.toString());
+        Assert.assertEquals("1894", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1894), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
+
+        String strMonth = "Feb";
+        tp = TimePeriodParser.parseString(strMonth);
+        assertNotNull(tp);
+        Assert.assertEquals("Feb", tp.toString());
+        Assert.assertEquals("", tp.getYear());
+        Assert.assertEquals(null, tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
+        Assert.assertEquals(null, tp.getStartDay());
+
+        String strMonthDay = "Feb 4";
+        tp = TimePeriodParser.parseString(strMonthDay);
+        assertNotNull(tp);
+        Assert.assertEquals("Feb 4", tp.toString());
+        Assert.assertEquals("", tp.getYear());
+        Assert.assertEquals(null, tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
+
+        String strYearMonthDayPlus = "1982 Feb 4+";
+        tp = TimePeriodParser.parseString(strYearMonthDayPlus);
+        assertNotNull(tp);
+        Assert.assertEquals(strYearMonthDayPlus, tp.toString());
+        Assert.assertEquals("1982+", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1982), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp.getStartDay());
+        Assert.assertTrue(tp.isContinued());
+	}
 
     @Test
     public void testParseVerbatim() {
@@ -314,7 +368,7 @@ public class TimePeriodParserTest {
         String strDate = "01.12.1957+";
         TimePeriod tp = TimePeriodParser.parseString(strDate);
         Assert.assertTrue(tp.isContinued());
-        Assert.assertEquals("1.12.1957+", tp.toString());
+        Assert.assertEquals("1957 Dec 1+", tp.toString());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
         Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
@@ -331,7 +385,7 @@ public class TimePeriodParserTest {
 
         strDate = "24 Aug. 1957+";
         tp = TimePeriodParser.parseString(strDate);
-        Assert.assertEquals("24.8.1957+", tp.toString());
+        Assert.assertEquals("1957 Aug 24+", tp.toString());
         Assert.assertTrue(tp.isContinued());
         Assert.assertEquals("1957+", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
@@ -340,14 +394,13 @@ public class TimePeriodParserTest {
 
         String strSlashDate = "31/12/2015+";
         tp = TimePeriodParser.parseString(strSlashDate);
-        Assert.assertEquals("31.12.2015+", tp.toString());
+        Assert.assertEquals("2015 Dec 31+", tp.toString());
         Assert.assertTrue(tp.isContinued());
         Assert.assertEquals("2015+", tp.getYear());
         Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
         Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
         Assert.assertNull(tp.getEnd());
-
     }
 
 

@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -110,7 +110,7 @@ public class TimePeriodTest {
 		startAndEndYear = TimePeriod.NewInstance(1931, 1957);
 		assertEquals(Integer.valueOf(1957), startAndEndYear.getEndYear());
 		assertEquals(Integer.valueOf(1931), startAndEndYear.getStartYear());
-		assertEquals("1931-1957", startAndEndYear.getYear());
+		assertEquals("1931"+TimePeriod.SEP+"1957", startAndEndYear.getYear());
 	}
 
 	/**
@@ -304,7 +304,7 @@ public class TimePeriodTest {
 		tp.setStartYear(1999);
 		Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
 		tp.setEndYear(2002);
-		Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
+		Assert.assertEquals("Year should be 1999-2002", "1999"+TimePeriod.SEP+"2002", tp.getYear());
 		tp.setContinued(true);
 		Assert.assertEquals("Year should be 1999+", "1999+", tp.getYear());
 	}
@@ -315,15 +315,16 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testToStringTimePeriod() {
-		TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
+		String endash = UTF8.EN_DASH.toString();
+	    TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
 		assertNotNull(tp1);
-		Assert.assertEquals("1788-1799", tp1.toString());
+		Assert.assertEquals("1788"+endash+"1799", tp1.toString());
 		tp1.setStartDay(3);
-		Assert.assertEquals("3.xx.1788-1799", tp1.toString());
+		Assert.assertEquals("1788 MMM 3"+endash+"1799", tp1.toString());
 		tp1.setEndMonth(11);
-		Assert.assertEquals("3.xx.1788-11.1799", tp1.toString());
+		Assert.assertEquals("1788 MMM 3"+endash+"1799 Nov", tp1.toString());
 		tp1.setContinued(true);
-		Assert.assertEquals("3.xx.1788+", tp1.toString());
+		Assert.assertEquals("1788 MMM 3+", tp1.toString());
 
 		tp1 = TimePeriod.NewInstance(1788,1799);
 		tp1.setContinued(true);

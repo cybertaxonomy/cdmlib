@@ -39,9 +39,10 @@ import org.joda.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 
 /**
  * @author m.doering
@@ -68,6 +69,8 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     public static final DateTimeFieldType DAY_TYPE = DateTimeFieldType.dayOfMonth();
     public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
     public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
+
+    public static final String SEP = UTF8.EN_DASH.toString(); //maybe this will be moved to a formatter class in future
 
     public static final Partial CONTINUED = new Partial
             (new DateTimeFieldType[]{YEAR_TYPE, MONTH_TYPE, DAY_TYPE},
@@ -522,7 +525,7 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
             result = CdmUtils.concat("", strStart, "+");
         }else{
             String strEnd = end != null ? end.toString(formatter): null;
-            result = CdmUtils.concat("-", strStart, strEnd);
+            result = CdmUtils.concat(SEP, strStart, strEnd);
         }
 
         return result;
@@ -534,7 +537,7 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         if (getStartYear() != null){
             result += String.valueOf(getStartYear());
             if (getEndYear() != null){
-                result += "-" + String.valueOf(getEndYear());
+                result += SEP + String.valueOf(getEndYear());
             }
         }else{
             if (getEndYear() != null){
@@ -563,7 +566,6 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     }
 
 //*********** EQUALS **********************************/
-
 
     @Override
     public boolean equals(Object obj) {

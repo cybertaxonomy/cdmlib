@@ -25,8 +25,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
-
 /**
  * @author a.mueller
  * @since 29.04.2020
@@ -43,6 +41,8 @@ public class ExtendedTimePeriodTest {
     private static final Integer year = 1982;
     private static final Integer month = 1;
     private static final Integer day = 5;
+
+    private static final String SEP = TimePeriod.SEP;
 
     @Before
     public void setUp() throws Exception {
@@ -106,7 +106,7 @@ public class ExtendedTimePeriodTest {
         startAndEndYear = ExtendedTimePeriod.NewExtendedYearInstance(1931, 1957);
         assertEquals(Integer.valueOf(1957), startAndEndYear.getEndYear());
         assertEquals(Integer.valueOf(1931), startAndEndYear.getStartYear());
-        assertEquals("1931-1957", startAndEndYear.getYear());
+        assertEquals("1931"+SEP+"1957", startAndEndYear.getYear());
     }
 
     /**
@@ -321,7 +321,7 @@ public class ExtendedTimePeriodTest {
         tp.setStartYear(1999);
         Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
         tp.setEndYear(2002);
-        Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
+        Assert.assertEquals("Year should be 1999"+SEP+"2002", "1999"+SEP+"2002", tp.getYear());
     }
 
 
@@ -344,8 +344,9 @@ public class ExtendedTimePeriodTest {
         Integer endYear2 = 1800;
         ExtendedTimePeriod tp1 = ExtendedTimePeriod.NewExtendedYearInstance(startYear,endYear,startYear2,endYear2);
 
+        String endash = TimePeriod.SEP;
         assertNotNull(tp1);
-        Assert.assertEquals("(1787-)1788-1799(-1800)", tp1.toString());
+        Assert.assertEquals("(1787"+endash+")1788"+endash+"1799("+endash+"1800)", tp1.toString());
         tp1.setStartDay(startDay);
         tp1.setStartMonth(startMonth);
         tp1.setEndDay(endDay);
@@ -354,7 +355,7 @@ public class ExtendedTimePeriodTest {
         tp1.setExtremeStartMonth(startMonth2);
         tp1.setExtremeEndDay(endDay2);
         tp1.setExtremeEndMonth(endMonth2);
-        Assert.assertEquals("(24.5.1787-)25.6.1788-21.12.1799(-20.11.1800)", tp1.toString()); //date formatting may change in future
+        Assert.assertEquals("(1787 May 24"+endash+")1788 Jun 25"+endash+"1799 Dec 21("+endash+"1800 Nov 20)", tp1.toString()); //date formatting may change in future
 
         tp1.setFreeText("My extended period");
         Assert.assertEquals("My extended period", tp1.toString());

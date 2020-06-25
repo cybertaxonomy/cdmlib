@@ -25,7 +25,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
+import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -44,6 +45,8 @@ public class VerbatimTimePeriodTest {
     private static final Integer year = 1982;
     private static final Integer month = 1;
     private static final Integer day = 5;
+
+    private static final String SEP = TimePeriod.SEP;
 
     @Before
     public void setUp() throws Exception {
@@ -107,7 +110,7 @@ public class VerbatimTimePeriodTest {
         startAndEndYear = VerbatimTimePeriod.NewVerbatimInstance(1931, 1957);
         assertEquals(Integer.valueOf(1957), startAndEndYear.getEndYear());
         assertEquals(Integer.valueOf(1931), startAndEndYear.getStartYear());
-        assertEquals("1931-1957", startAndEndYear.getYear());
+        assertEquals("1931"+SEP+"1957", startAndEndYear.getYear());
     }
 
     /**
@@ -300,7 +303,7 @@ public class VerbatimTimePeriodTest {
         tp.setStartYear(1999);
         Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
         tp.setEndYear(2002);
-        Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
+        Assert.assertEquals("Year should be 1999-2002", "1999"+SEP+"2002", tp.getYear());
     }
 
 
@@ -309,13 +312,14 @@ public class VerbatimTimePeriodTest {
      */
     @Test
     public void testToStringTimePeriod() {
+        String endash = UTF8.EN_DASH.toString();
         VerbatimTimePeriod tp1 = VerbatimTimePeriod.NewVerbatimInstance(1788,1799);
         assertNotNull(tp1);
-        Assert.assertEquals("1788-1799", tp1.toString());
+        Assert.assertEquals("1788"+endash+"1799", tp1.toString());
         tp1.setStartDay(3);
-        Assert.assertEquals("3.xx.1788-1799", tp1.toString());
+        Assert.assertEquals("1788 MMM 3"+endash+"1799", tp1.toString());
         tp1.setEndMonth(11);
-        Assert.assertEquals("3.xx.1788-11.1799", tp1.toString());
+        Assert.assertEquals("1788 MMM 3"+endash+"1799 Nov", tp1.toString());
     }
 
 

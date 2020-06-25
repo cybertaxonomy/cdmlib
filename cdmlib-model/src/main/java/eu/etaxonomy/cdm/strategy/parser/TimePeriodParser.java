@@ -35,6 +35,9 @@ public class TimePeriodParser {
 	private static final Logger logger = Logger.getLogger(TimePeriodParser.class);
 
 	private static final String dotOrWs = "(\\.\\s*|\\s+)";
+	private static final String dashOrWs = "(-"+TimePeriod.SEP+"\\s*|\\s+)";
+
+	public static final String SEP = "(-|"+TimePeriod.SEP+"|"+UTF8.EN_DASH + ")";
 
 	//patter for first year in string;
 	private static final Pattern firstYearPattern =  Pattern.compile("\\d{4}");
@@ -54,7 +57,9 @@ public class TimePeriodParser {
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
 	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|May|June?|July?))";
 	private static final String strDateWithMonthes = "([0-3]?\\d" + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}\\+?";
-	private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthes);
+	public static final String strDateYearMonthDay = "(\\d{4,4}" + dashOrWs + ")?" + strMonthes + "(" + dashOrWs + "[0-3]?\\d)?\\+?";
+    private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthes);
+	private static final Pattern dateYearMonthDayPattern = Pattern.compile(strDateYearMonthDay);
 
 	public static <T extends TimePeriod> T parseString(T timePeriod, String periodString){
 		//TODO until now only quick and dirty (and partly wrong)
@@ -96,6 +101,8 @@ public class TimePeriodParser {
             parseSlashDatePattern(periodString, result);
         }else if (dateWithMonthNamePattern.matcher(periodString).matches()){
             parseDateWithMonthName(periodString, result);
+        }else if (dateYearMonthDayPattern.matcher(periodString).matches()){
+            parseDateYearMonthDay(periodString, result);
 		}else if (lifeSpanPattern.matcher(periodString).matches()){
 			parseLifeSpanPattern(periodString, result);
 		}else if (standardPattern.matcher(periodString).matches()){
@@ -305,6 +312,35 @@ public class TimePeriodParser {
         }
     }
 
+    private static void parseDateYearMonthDay(String dateString, TimePeriod result) {
+        String[] dates = dateString.split(dashOrWs);
+
+        if (dates.length > 3 || dates.length < 1){
+            logger.warn("Not 2 or 3 date parts in date string: " + dateString);
+            result.setFreeText(dateString);
+        }else {
+
+            boolean hasYear = dates[0].trim().matches("\\d{4,4}");
+            String strYear = hasYear ? dates[0] : null;
+            String strMonth = hasYear ? dates[1] : dates[0];
+            String strDay = (hasYear && dates.length == 2 || dates.length == 1) ? null : hasYear ? dates[2] : dates[1];
+            try {
+                if (strDay != null && strDay.endsWith("+")){
+                    strDay = strDay.substring(0, strDay.length()-1).trim();
+                    result.setContinued(true);
+                }
+                Integer year = strYear == null ? null : Integer.valueOf(strYear.trim());
+                Integer month = monthNrFormName(strMonth.trim());
+                Integer day = strDay == null ? null : Integer.valueOf(strDay.trim());
+
+                Partial partial = makePartialFromDateParts(year, month, day);
+
+                result.setStart(partial);
+            } catch (IllegalArgumentException e) {
+                result.setFreeText(dateString);
+            }
+        }
+    }
 
     /**
      * @param year
@@ -315,13 +351,15 @@ public class TimePeriodParser {
     public static Partial makePartialFromDateParts(Integer year, Integer month, Integer day) {
         Partial partial = new Partial();
         //TODO deduplicate code with other routines
-        if (year < 1000 && year > 2100){
-            logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
-        }else if (year < 1700 && year > 2100){
-            logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
-            partial = partial.with(TimePeriod.YEAR_TYPE, year);
-        }else{
-            partial = partial.with(TimePeriod.YEAR_TYPE, year);
+        if (year != null){
+            if (year < 1000 && year > 2100){
+                logger.warn("Not a valid year: " + year + ". Year must be between 1000 and 2100");
+            }else if (year < 1700 && year > 2100){
+                logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
+                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+            }else{
+                partial = partial.with(TimePeriod.YEAR_TYPE, year);
+            }
         }
         if (month != null && month != 0){
             partial = partial.with(TimePeriod.MONTH_TYPE, month);

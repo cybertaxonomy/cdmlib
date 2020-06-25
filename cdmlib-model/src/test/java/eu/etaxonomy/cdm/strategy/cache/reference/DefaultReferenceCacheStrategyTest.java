@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
@@ -46,6 +47,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 public class DefaultReferenceCacheStrategyTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultReferenceCacheStrategyTest.class);
+
+	private static final String SEP = TimePeriod.SEP;
 
 	//article
 	private static IArticle article1;
@@ -498,7 +501,7 @@ public class DefaultReferenceCacheStrategyTest {
     @Test
     public void testCdDvdGetTitleCache() {
         String result = defaultStrategy.getTitleCache(cdDvd);
-        assertEquals(cdDvdTitle + ". 1999-2001", result);
+        assertEquals(cdDvdTitle + ". 1999"+SEP+"2001", result);
     }
 
 // *************************** GENERIC *****************************************/
@@ -616,7 +619,7 @@ public class DefaultReferenceCacheStrategyTest {
         generic1.setAbbrevTitle("My title");
         generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("My title: sine no. 1883-1884", generic1.getNomenclaturalCitation(detail));
+        Assert.assertEquals("My title: sine no. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail));
     }
 
     //#4338
@@ -626,11 +629,11 @@ public class DefaultReferenceCacheStrategyTest {
         generic1.setAuthorship(genericTeam1);
         generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("My generic: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
+        Assert.assertEquals("My generic: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
         generic1.setVolume("7");
-        Assert.assertEquals("My generic 7: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
-        Assert.assertEquals("Authorteam, My generic 7. 1883-1884", generic1.getTitleCache());
-        Assert.assertEquals("AT., My generic 7. 1883-1884", generic1.getAbbrevTitleCache());
+        Assert.assertEquals("My generic 7: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
+        Assert.assertEquals("Authorteam, My generic 7. 1883"+SEP+"1884", generic1.getTitleCache());
+        Assert.assertEquals("AT., My generic 7. 1883"+SEP+"1884", generic1.getAbbrevTitleCache());
 
         //inRef
         Reference generic2 = ReferenceFactory.newGeneric();
@@ -641,7 +644,7 @@ public class DefaultReferenceCacheStrategyTest {
         generic1.setInReference(generic2);
 
         //only reference has a volume
-        Assert.assertEquals("in InRefAuthor, My InRef 7: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
+        Assert.assertEquals("in InRefAuthor, My InRef 7: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
 //        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getTitleCache());
 //        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getAbbrevTitleCache());
 
@@ -653,9 +656,9 @@ public class DefaultReferenceCacheStrategyTest {
 
         //only inref has volume
         generic1.setVolume(null);
-        Assert.assertEquals("in InRefAuthor, My InRef 9: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
-        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getTitleCache());
-        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 9. 1883-1884", generic1.getAbbrevTitleCache());
+        Assert.assertEquals("in InRefAuthor, My InRef 9: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
+        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 9. 1883"+SEP+"1884", generic1.getTitleCache());
+        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 9. 1883"+SEP+"1884", generic1.getAbbrevTitleCache());
    }
 
     //#3532
