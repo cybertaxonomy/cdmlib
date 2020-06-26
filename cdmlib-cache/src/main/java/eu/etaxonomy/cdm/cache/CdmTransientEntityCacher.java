@@ -35,7 +35,7 @@ import net.sf.ehcache.statistics.LiveCacheStatistics;
 
 /**
  * This cache handles transient (id>0) and volatile (id=0) CdmBase objects.
- * Volatile objects need to be added via {@link #addNewEntity(CdmBase)}
+ * Volatile objects need to be added via {@link #putNewEntity(CdmBase)}
  * and their id is updated as soon as a transient object with the same
  * uuid is added to the cacher.
  *
@@ -201,47 +201,63 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         return cacheLoader.getFromCdmlibModelCache(className);
     }
 
-    public void addNewEntity(CdmBase newEntity) {
+    private void putNewEntity(CdmBase newEntity) {
         if(newEntity != null && newEntity.getId() == 0 && newEntity.getUuid() != null) {
-            newEntitiesMap.put(newEntity.getUuid(), newEntity);
+            CdmBase cachedEntity = newEntitiesMap.get(newEntity.getUuid());
+            if (cachedEntity == null){
+                newEntitiesMap.put(newEntity.getUuid(), newEntity);
+            }
         }
     }
 
     /**
      * Puts the passed <code>cdmEntity</code> into the according caches
-     * (cache, newEntitiesMap, permanentCache) as long it does not yet exist there.
+     * (cache, newEntitiesMap, permanentCache(TODO still needs to be checked, not implemented yet))
+     * as long it does not yet exist there.
      * <p>
      * The adjacent <b>ENTITY GRAPH WILL NOT BE LOADED RECURSIVELY</b>
      */
     @Override
-    public void put(CdmBase cdmEntity) {
-
-        CdmBase cachedCdmEntity = permanentCache.load(cdmEntity);
-        if(cachedCdmEntity != null) {
-            logger.info("Cdm Entity with id : " + cdmEntity.getId() + " already exists in permanent cache. Ignoring put.");
+    public void putToCache(CdmBase cdmEntity) {
+        if (cdmEntity == null){
             return;
-        }
-        CdmEntityCacheKey<?> key = new CdmEntityCacheKey<>(cdmEntity);
-
-        cachedCdmEntity = getFromCache(key);
-        if(cachedCdmEntity == null) {
-            CdmBase cdmEntityToCache = cdmEntity;
-            CdmBase newInMapEntity = newEntitiesMap.get(cdmEntity.getUuid());
-            if(newInMapEntity != null) {
-                newInMapEntity.setId(cdmEntity.getId());
-                cdmEntityToCache = newInMapEntity;
-            }
-            putToCache(key, cdmEntityToCache);
-            cdmEntityToCache.initListener();
-            newEntitiesMap.remove(cdmEntity.getUuid());
-            if (logger.isDebugEnabled()){logger.debug(" - object of type " + cdmEntityToCache.getClass().getName() + " with id " + cdmEntityToCache.getId() + " put in cache");}
-            return;
+        }else if (!cdmEntity.isPersited()){
+            putNewEntity(cdmEntity);
         }else{
-            logger.debug(" - object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + " already exists");
+            CdmBase cachedCdmEntity = permanentCache.load(cdmEntity);
+            if(cachedCdmEntity != null) {
+                logger.info("Cdm Entity with id : " + cdmEntity.getId() + " already exists in permanent cache. Ignoring put.");
+                return;
+            }
+            CdmEntityCacheKey<?> key = new CdmEntityCacheKey<>(cdmEntity);
+
+            cachedCdmEntity = getFromCache(key);
+            if(cachedCdmEntity == null) {
+                CdmBase cdmEntityToCache = cdmEntity;
+                CdmBase newInMapEntity = newEntitiesMap.get(cdmEntity.getUuid());
+                if(newInMapEntity != null) {
+                    newInMapEntity.setId(cdmEntity.getId());
+                    cdmEntityToCache = newInMapEntity;
+                }
+                putToTransientCache(key, cdmEntityToCache);
+                cdmEntityToCache.initListener();
+                newEntitiesMap.remove(cdmEntity.getUuid());
+                if (logger.isDebugEnabled()){logger.debug(" - object of type " + cdmEntityToCache.getClass().getName() + " with id " + cdmEntityToCache.getId() + " put in cache");}
+                return;
+            }else{
+                logger.debug(" - object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + " already exists");
+            }
         }
     }
 
-    protected void putToCache(CdmEntityCacheKey<?> key, CdmBase cdmEntityToCache) {
+    /**
+     * Puts the entity to the cache for transient entities. If the entity is not transient
+     * but volatile (id = 0) an {@link IllegalArgumentException} is thrown
+     */
+    protected void putToTransientCache(CdmEntityCacheKey<?> key, CdmBase cdmEntityToCache) throws IllegalArgumentException {
+        if (key.getPersistenceId() == 0){
+            throw new IllegalArgumentException("Volatile objects are not allowed in the transient object cache. Use newEntitiesMap instead.");
+        }
         getCache().put(new Element(key, cdmEntityToCache));
     }
 
@@ -268,18 +284,21 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     @Override
     public <T extends CdmBase> T getFromCache(T cdmBase) {
+        if (!cdmBase.isPersited()){
+            return (T)newEntitiesMap.get(cdmBase.getUuid());
+        }else{
+            CdmEntityCacheKey<T> cacheId = generateKey(ProxyUtils.deproxy(cdmBase));
+            // first try this cache
+            T  cachedCdmEntity = getFromCache(cacheId);
 
-        CdmEntityCacheKey<T> cacheId = generateKey((T)ProxyUtils.deproxy(cdmBase));
-        // first try this cache
-        T  cachedCdmEntity = getFromCache(cacheId);
-
-        if(cachedCdmEntity == null) {
-            // ... then try the permanent cache
-            //TODO also use generics and clazz parameter for getFromCache(uuid)
-            cachedCdmEntity = (T)permanentCache.getFromCache(cdmBase.getUuid());
+            if(cachedCdmEntity == null) {
+                // ... then try the permanent cache
+                //TODO also use generics and clazz parameter for getFromCache(uuid)
+                cachedCdmEntity = (T)permanentCache.getFromCache(cdmBase.getUuid());
+            }
+            return cachedCdmEntity;
         }
 
-        return cachedCdmEntity;
     }
 
     public List<CdmBase> getAllEntities() {
