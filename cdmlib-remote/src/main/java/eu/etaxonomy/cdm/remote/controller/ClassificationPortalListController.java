@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.NodeDtoSortMode;
 import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import io.swagger.annotations.Api;
 
@@ -119,20 +121,21 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     @RequestMapping(
             value = {"{treeUuid}/childNodesOf/{taxonUuid}"},
             method = RequestMethod.GET)
-    public List<TaxonNode> getChildNodesOfTaxon(
+    public List<TaxonNodeDto> getChildNodesOfTaxon(
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") NodeDtoSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
 
         boolean includeUnpublished = NO_UNPUBLISHED;  //for now we do not allow any remote service to publish unpublished data
 
-        List<TaxonNode> children;
+        List<TaxonNodeDto> children;
         try {
-            children = service.listChildNodesOfTaxon(taxonUuid, treeUuid, subtreeUuid,
-                    includeUnpublished, null, null, NODE_INIT_STRATEGY);
+            children = service.listChildNodeDtosOfTaxon(taxonUuid, treeUuid, subtreeUuid,
+                    includeUnpublished, null, null, sortMode, NODE_INIT_STRATEGY);
         } catch (FilterException e) {
             HttpStatusMessage.SUBTREE_FILTER_INVALID.send(response);
             return null;
@@ -179,7 +182,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     @RequestMapping(
             value = {"{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"},
             method = RequestMethod.GET)
-    public List<TaxonNode> getPathFromTaxonToRank(
+    public List<TaxonNodeDto> getPathFromTaxonToRank(
             @PathVariable("treeUuid") UUID classificationUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @PathVariable("rankUuid") UUID rankUuid,
@@ -199,7 +202,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             return null;
         }
         try {
-            List<TaxonNode> result = service.loadTreeBranchToTaxon(taxon, classification, subtree, rank, includeUnpublished, NODE_INIT_STRATEGY);
+            List<TaxonNodeDto> result = service.loadTreeBranchDTOsToTaxon(taxon, classification, subtree, rank, includeUnpublished, NODE_INIT_STRATEGY);
             return result;
         } catch (UnpublishedException e) {
             HttpStatusMessage.ACCESS_DENIED.send(response);
@@ -227,7 +230,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     @RequestMapping(
             value = {"{treeUuid}/pathFrom/{taxonUuid}"},
             method = RequestMethod.GET)
-    public List<TaxonNode> getPathFromTaxon(
+    public List<TaxonNodeDto> getPathFromTaxon(
             @PathVariable("treeUuid") UUID classificationUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,

@@ -230,11 +230,11 @@ public class TaxonNodeServiceImpl
 
         TaxonName parentName = null;
 
-        for(CdmBase record : PagerUtils.pageList(allRecords, pageIndex, pageSize)) {
-            if (record.isInstanceOf(TaxonNode.class)){
-                dtos.add(new TaxonNodeDto(CdmBase.deproxy(record, TaxonNode.class)));
-            }else if (record.isInstanceOf(Synonym.class)){
-                Synonym synonym = CdmBase.deproxy(record, Synonym.class);
+        for(CdmBase item : PagerUtils.pageList(allRecords, pageIndex, pageSize)) {
+            if (item.isInstanceOf(TaxonNode.class)){
+                dtos.add(new TaxonNodeDto(CdmBase.deproxy(item, TaxonNode.class)));
+            }else if (item.isInstanceOf(Synonym.class)){
+                Synonym synonym = CdmBase.deproxy(item, Synonym.class);
                 parentName = parentName == null? parentNode.getTaxon().getName(): parentName;
                 boolean isHomotypic = synonym.getName().isHomotypic(parentName);
                 dtos.add(new TaxonNodeDto(synonym, isHomotypic));

@@ -31,6 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.NodeDtoSortMode;
 import eu.etaxonomy.cdm.api.service.NodeSortMode;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
@@ -105,23 +106,25 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     @RequestMapping(
             value = {"childNodes"},
             method = RequestMethod.GET)
-    public List<TaxonNode> getChildNodes(
+    public List<TaxonNodeDto> getChildNodes(
             @PathVariable("uuid") UUID classificationUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") NodeDtoSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
 
-        return getChildNodesAtRank(classificationUuid, null, subtreeUuid, request, response);
+        return getChildNodesAtRank(classificationUuid, null, subtreeUuid, sortMode, request, response);
     }
 
     @RequestMapping(
             value = {"childNodesAt/{rankUuid}"},
             method = RequestMethod.GET)
-    public List<TaxonNode> getChildNodesAtRank(
+    public List<TaxonNodeDto> getChildNodesAtRank(
             @PathVariable("uuid") UUID classificationUuid,
             @PathVariable("rankUuid") UUID rankUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
+            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") NodeDtoSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -141,8 +144,8 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
 
         boolean includeUnpublished = NO_UNPUBLISHED;
 //        long start = System.currentTimeMillis();
-        List<TaxonNode> rootNodes = service.listRankSpecificRootNodes(classification, subtree, rank,
-                includeUnpublished, null, null, NODE_INIT_STRATEGY());
+        List<TaxonNodeDto> rootNodes = service.listRankSpecificRootNodeDtos(classification, subtree, rank,
+                includeUnpublished, null, null, sortMode, NODE_INIT_STRATEGY());
 //        System.err.println("service.listRankSpecificRootNodes() " + (System.currentTimeMillis() - start));
 
         return rootNodes;

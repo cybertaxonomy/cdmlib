@@ -14,7 +14,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
-import eu.etaxonomy.cdm.remote.l10n.EnumTerm_L10n;
+import eu.etaxonomy.cdm.remote.l10n.KeyTerm_L10n;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -44,7 +44,7 @@ public class TaxonNodeDtoBeanProcessor implements JsonBeanProcessor {
         if(node.getStatus() != null) {
             json.element("status", node.getStatus());
             json.element("status_symbol", node.getStatus().getSymbol());
-            EnumTerm_L10n<TaxonNodeStatus> status_L10n = new EnumTerm_L10n<TaxonNodeStatus>(node.getStatus());
+            KeyTerm_L10n<TaxonNodeStatus> status_L10n = new KeyTerm_L10n<TaxonNodeStatus>(node.getStatus());
             json.element("status_message_L10n", status_L10n.localizedMessage());
         }
 
