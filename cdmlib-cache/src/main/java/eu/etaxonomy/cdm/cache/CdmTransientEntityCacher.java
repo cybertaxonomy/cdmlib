@@ -35,7 +35,7 @@ import net.sf.ehcache.statistics.LiveCacheStatistics;
 
 /**
  * This cache handles transient (id>0) and volatile (id=0) CdmBase objects.
- * Volatile objects need to be added via {@link #putNewEntity(CdmBase)}
+ * Volatile objects need to be added via {@link #putVolatitleEntity(CdmBase)}
  * and their id is updated as soon as a transient object with the same
  * uuid is added to the cacher.
  *
@@ -65,7 +65,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     private final CacheLoader cacheLoader;
 
     //map for volatile entities (id=0)
-    private final Map<UUID, CdmBase> newEntitiesMap = new HashMap<>();
+    private final Map<UUID, CdmBase> volatileEntitiesMap = new HashMap<>();
 
     private static volatile boolean managementBeansConfigured = false;
 
@@ -201,11 +201,11 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         return cacheLoader.getFromCdmlibModelCache(className);
     }
 
-    private void putNewEntity(CdmBase newEntity) {
-        if(newEntity != null && newEntity.getId() == 0 && newEntity.getUuid() != null) {
-            CdmBase cachedEntity = newEntitiesMap.get(newEntity.getUuid());
+    private void putVolatitleEntity(CdmBase volatileEntity) {
+        if(volatileEntity != null && volatileEntity.getId() == 0 && volatileEntity.getUuid() != null) {
+            CdmBase cachedEntity = volatileEntitiesMap.get(volatileEntity.getUuid());
             if (cachedEntity == null){
-                newEntitiesMap.put(newEntity.getUuid(), newEntity);
+                volatileEntitiesMap.put(volatileEntity.getUuid(), volatileEntity);
             }
         }
     }
@@ -222,7 +222,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         if (cdmEntity == null){
             return;
         }else if (!cdmEntity.isPersited()){
-            putNewEntity(cdmEntity);
+            putVolatitleEntity(cdmEntity);
         }else{
             CdmBase cachedCdmEntity = permanentCache.load(cdmEntity);
             if(cachedCdmEntity != null) {
@@ -234,14 +234,14 @@ public class CdmTransientEntityCacher implements ICdmCacher {
             cachedCdmEntity = getFromCache(key);
             if(cachedCdmEntity == null) {
                 CdmBase cdmEntityToCache = cdmEntity;
-                CdmBase newInMapEntity = newEntitiesMap.get(cdmEntity.getUuid());
-                if(newInMapEntity != null) {
-                    newInMapEntity.setId(cdmEntity.getId());
-                    cdmEntityToCache = newInMapEntity;
+                CdmBase cachedVolatileEntity = volatileEntitiesMap.get(cdmEntity.getUuid());
+                if(cachedVolatileEntity != null) {
+                    cachedVolatileEntity.setId(cdmEntity.getId());
+                    cdmEntityToCache = cachedVolatileEntity;
                 }
                 putToTransientCache(key, cdmEntityToCache);
                 cdmEntityToCache.initListener();
-                newEntitiesMap.remove(cdmEntity.getUuid());
+                volatileEntitiesMap.remove(cdmEntity.getUuid());
                 if (logger.isDebugEnabled()){logger.debug(" - object of type " + cdmEntityToCache.getClass().getName() + " with id " + cdmEntityToCache.getId() + " put in cache");}
                 return;
             }else{
@@ -285,7 +285,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     @Override
     public <T extends CdmBase> T getFromCache(T cdmBase) {
         if (!cdmBase.isPersited()){
-            return (T)newEntitiesMap.get(cdmBase.getUuid());
+            return (T)volatileEntitiesMap.get(cdmBase.getUuid());
         }else{
             CdmEntityCacheKey<T> cacheId = generateKey(ProxyUtils.deproxy(cdmBase));
             // first try this cache
@@ -320,14 +320,14 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     public void clear() {
         cache.removeAll();
-        newEntitiesMap.clear();
+        volatileEntitiesMap.clear();
     }
 
     @Override
     public void dispose() {
         getCacheManager().removeCache(cache.getName());
         cache.dispose();
-        newEntitiesMap.clear();
+        volatileEntitiesMap.clear();
     }
 
     @Override
