@@ -13,7 +13,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author cmathew
  * @since 19 Feb 2015
- *
  */
 public interface ICdmCacher {
 
@@ -50,7 +49,7 @@ public interface ICdmCacher {
     /**
      *
      * @param cdmEntity
-     * @return returns true if the <code>cdmEntity</code> is cacheable by the
+     * @return returns true if the <code>cdmEntity</code> is cachable by the
      *         implementation
      */
     public boolean isCachable(CdmBase cdmEntity);
