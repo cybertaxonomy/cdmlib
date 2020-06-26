@@ -43,8 +43,8 @@ public class CdmTransientEntityAndUuidCacher extends CdmTransientEntityCacher im
     }
 
     @Override
-    protected void putToCache(CdmEntityCacheKey<?> key, CdmBase cdmEntityToCache) {
-        super.putToCache(key, cdmEntityToCache);
+    protected void putToTransientCache(CdmEntityCacheKey<?> key, CdmBase cdmEntityToCache) {
+        super.putToTransientCache(key, cdmEntityToCache);
         uuidKeyMap.put(cdmEntityToCache.getUuid(), key);
     }
 

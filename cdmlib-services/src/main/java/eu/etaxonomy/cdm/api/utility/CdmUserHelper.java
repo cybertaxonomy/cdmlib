@@ -182,7 +182,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
         if(entity == null){
             entity = repo().getCommonService().find(cdmType, entitiyUuid);
             if(getCache() != null && entity != null){
-                getCache().put(entity);
+                getCache().putToCache(entity);
             }
         }
         return entity;

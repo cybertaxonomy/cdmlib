@@ -152,7 +152,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     }
 
     @Override
-    public void put(CdmBase cdmEntity) {
+    public void putToCache(CdmBase cdmEntity) {
         if(cdmEntity != null) {
             put(cdmEntity.getUuid(), cdmEntity);
         }

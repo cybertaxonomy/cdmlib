@@ -259,10 +259,9 @@ public class CacheLoader {
 
     }
 
-
     protected <T extends CdmBase> T put(T cdmEntity) {
         logger.debug("loading object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
-        cdmCacher.put((CdmBase)ProxyUtils.deproxy(cdmEntity));
+        cdmCacher.putToCache((CdmBase)ProxyUtils.deproxy(cdmEntity));
         return cdmCacher.getFromCache(cdmEntity);
     }
 

@@ -34,7 +34,7 @@ public interface ICdmCacher {
      *
      * @param cdmEntity
      */
-    public void put(CdmBase cdmEntity);
+    public void putToCache(CdmBase cdmEntity);
 
     /**
      * Load into the cache and return the entity from the cache. The entity
