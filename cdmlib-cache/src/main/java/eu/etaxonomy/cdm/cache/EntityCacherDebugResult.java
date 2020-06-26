@@ -32,7 +32,6 @@ import net.sf.ehcache.Element;
 /**
  * @author cmathew
  * @since 9 Feb 2015
- *
  */
 public class EntityCacherDebugResult {
 
@@ -51,7 +50,6 @@ public class EntityCacherDebugResult {
     public EntityCacherDebugResult() {
     }
 
-
     public <T extends CdmBase> EntityCacherDebugResult(CdmTransientEntityCacher cacher, Collection<T> rootEntities) {
         this.cacher = cacher;
         init();
@@ -64,7 +62,6 @@ public class EntityCacherDebugResult {
                 debugOutput.append(out);
                 clear();
             }
-
         }
     }
 
@@ -97,7 +94,6 @@ public class EntityCacherDebugResult {
         System.out.println(toString(duplicateCdmEntityMap, notInCacheList, rootEntity));
     }
 
-
     @Override
     public String toString() {
         return debugOutput.toString();
@@ -106,7 +102,6 @@ public class EntityCacherDebugResult {
     private String toString(Map<CdmEntityInfo, CdmEntityInfo> duplicateCdmEntityMap,
             List<CdmEntityInfo> notInCacheList,
             CdmBase rootEntity) {
-
 
         StringBuilder sb = new StringBuilder();
         sb.append(System.getProperty("line.separator"));
@@ -231,7 +226,6 @@ public class EntityCacherDebugResult {
         return caches;
     }
 
-
     private void debug(CdmBase cdmEntity, boolean recursive) {
         if(cdmEntity == null) {
             return;
@@ -258,10 +252,7 @@ public class EntityCacherDebugResult {
         } else if (obj instanceof Collection) {
             debug((Collection<T>)obj, alreadyVisitedEntities, cei);
         }
-
         logger.info("No caching yet for type " + obj.getClass().getName());
-
-
     }
 
     private <T extends Object> void debug(Map<T,T> map,
@@ -306,21 +297,17 @@ public class EntityCacherDebugResult {
                 cei.addChild(childCei);
                 debugRecursive(obj, alreadyVisitedEntities, childCei);
             }
-
         }
-
     }
 
     private void debugRecursive(CdmBase cdmEntity,
             List<CdmEntityInfo> alreadyVisitedEntities,
             CdmEntityInfo cei) {
 
-        CdmBase cachedCdmEntityInSubGraph = null;
-
         if(cei.getObject() instanceof CdmBase) {
            CdmBase cb =  (CdmBase)cei.getObject();
            cb = (CdmBase) ProxyUtils.deproxy(cb);
-           cachedCdmEntityInSubGraph = cacher.getFromCache(cb);
+           CdmBase cachedCdmEntityInSubGraph = cacher.getFromCache(cb);
            if(cachedCdmEntityInSubGraph != cb) {
                cei.setNotInCacheDetail(cachedCdmEntityInSubGraph == null ? NotInCacheDetail.NOT_FOUND : NotInCacheDetail.COPY_ENTITY);
                // found a cdm entity which is not in cache - need to record this
@@ -328,7 +315,6 @@ public class EntityCacherDebugResult {
                addEntityNotInCache(cei);
            }
         }
-
 
         // we want to recursive through the cdmEntity (and not the cachedCdmEntity)
         // since there could be new or deleted objects in the cdmEntity sub-graph
@@ -417,17 +403,11 @@ public class EntityCacherDebugResult {
             // we return the original cdm entity in the sub graph because we
             // want to continue to recurse on the input cdm entity graph
             // and not the one in the cache
-
             return childCei;
-        } catch (SecurityException e) {
-            throw new CdmClientCacheException(e);
-        } catch (IllegalArgumentException e) {
-            throw new CdmClientCacheException(e);
-        } catch (IllegalAccessException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new CdmClientCacheException(e);
         }
     }
-
 
     private CdmEntityInfo getDuplicate(List<CdmEntityInfo> alreadyVisitedEntities, Object objectToCompare) {
         if(objectToCompare != null ) {
@@ -474,7 +454,6 @@ public class EntityCacherDebugResult {
         public CdmEntityInfo getParent() {
             return parent;
         }
-
         public void setParent(CdmEntityInfo parent) {
             this.parent = parent;
         }
@@ -482,7 +461,6 @@ public class EntityCacherDebugResult {
         public List<CdmEntityInfo> getChildren() {
             return children;
         }
-
         public void setChildren(List<CdmEntityInfo> children) {
             this.children = children;
         }
@@ -495,11 +473,9 @@ public class EntityCacherDebugResult {
         public Field getField() {
             return field;
         }
-
         public void setField(Field field) {
             this.field = field;
         }
-
 
         public String getLabel() {
             String label;
@@ -568,20 +544,12 @@ public class EntityCacherDebugResult {
             this.isProxy = isProxy;
         }
 
-        /**
-         * @return the notInCacheDetail
-         */
         public NotInCacheDetail getNotInCacheDetail() {
             return notInCacheDetail;
         }
-
-        /**
-         * @param notInCacheDetail the notInCacheDetail to set
-         */
         public void setNotInCacheDetail(NotInCacheDetail notInCacheDetail) {
             this.notInCacheDetail = notInCacheDetail;
         }
-
     }
 
     enum NotInCacheDetail {
@@ -594,9 +562,6 @@ public class EntityCacherDebugResult {
             this.label = label;
         }
 
-        /**
-         * @return
-         */
         public Object getLabel() {
             return label;
         }

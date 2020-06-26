@@ -34,11 +34,8 @@ import eu.etaxonomy.cdm.model.common.PersistentMultiLanguageText;
 /**
  * @author cmathew
  * @since 17 Feb 2015
- *
  */
 public class ProxyUtils {
-
-
 
     public static enum CollectionType {
         SET,
@@ -142,7 +139,6 @@ public class ProxyUtils {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
             if(!hli.isUninitialized()) {
                 return hli.getImplementation();
-
             }
         }
 
@@ -150,7 +146,6 @@ public class ProxyUtils {
             PersistentCollection pc = ((PersistentCollection)o);
             if(pc.wasInitialized()) {
                 return  ProxyUtils.getObject(pc);
-
             }
         }
         return o;
@@ -221,9 +216,6 @@ public class ProxyUtils {
         return o;
     }
     ########################################### ########################################### */
-
-
-
 
     public static void setRoleValueInOwner(Object owner, String role, Object value) {
         if(role == null || role.isEmpty()) {

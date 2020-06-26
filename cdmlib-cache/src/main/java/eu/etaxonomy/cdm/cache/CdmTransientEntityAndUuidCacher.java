@@ -24,22 +24,15 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author a.kohlbecker
  * @since Oct 14, 2018
- *
  */
 public class CdmTransientEntityAndUuidCacher extends CdmTransientEntityCacher implements ICdmEntityUuidCacher {
 
     private Map<UUID, CdmEntityCacheKey<?>> uuidKeyMap = new HashMap<>();
 
-    /**
-     * @param cacheId
-     */
     public CdmTransientEntityAndUuidCacher(String cacheId) {
         super(cacheId);
     }
 
-    /**
-     * @param sessionOwner
-     */
     public CdmTransientEntityAndUuidCacher(Object sessionOwner) {
         super(sessionOwner);
     }
@@ -55,12 +48,9 @@ public class CdmTransientEntityAndUuidCacher extends CdmTransientEntityCacher im
         uuidKeyMap.put(cdmEntityToCache.getUuid(), key);
     }
 
-
     @Override
     public void dispose() {
         super.dispose();
         uuidKeyMap.clear();
     }
-
-
 }

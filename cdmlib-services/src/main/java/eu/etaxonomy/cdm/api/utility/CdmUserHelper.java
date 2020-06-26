@@ -35,8 +35,8 @@ import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.ICdmEntityUuidCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.permission.CRUD;
-import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthorityParsingException;
@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.persistence.permission.Role;
 /**
  * @author a.kohlbecker
  * @since May 19, 2017
- *
  */
 public class CdmUserHelper implements UserHelper, Serializable {
 
@@ -62,7 +61,7 @@ public class CdmUserHelper implements UserHelper, Serializable {
     @Qualifier("cdmRepository")
     protected CdmRepository repo;
 
-    AuthenticationProvider runAsAuthenticationProvider;
+    private AuthenticationProvider runAsAuthenticationProvider;
 
     @Autowired(required=false)
     @Qualifier("runAsAuthenticationProvider")
@@ -79,16 +78,10 @@ public class CdmUserHelper implements UserHelper, Serializable {
         super();
     }
 
-    /**
-     * @return
-     */
     protected ICdmPermissionEvaluator permissionEvaluator() {
         return permissionEvaluator;
     }
 
-    /**
-     * @return
-     */
     protected CdmRepository repo() {
         return repo;
     }
@@ -101,7 +94,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         }
         return false;
     }
-
 
     @Override
     public boolean userIsAnnonymous() {
@@ -140,9 +132,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean userIs(RoleProbe roleProbe) {
         return roleProbe.checkForRole(getAuthentication());
@@ -188,11 +177,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return false;
     }
 
-    /**
-     * @param cdmType
-     * @param entitiyUuid
-     * @return
-     */
     protected CdmBase entity(Class<? extends CdmBase> cdmType, UUID entitiyUuid) {
         CdmBase entity = entityFromCache(cdmType, entitiyUuid);
         if(entity == null){
@@ -222,7 +206,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         SecurityContextHolder.clearContext();
     }
 
-
     private EnumSet<CRUD> crudSetFromArgs(Object[] args) {
         EnumSet<CRUD> crudSet = EnumSet.noneOf(CRUD.class);
         for(int i = 0; i < args.length; i++){
@@ -235,7 +218,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return crudSet;
     }
 
-
     private SecurityContext currentSecurityContext() {
         if(securityContextAccess != null){
             return securityContextAccess.currentSecurityContext();
@@ -243,18 +225,11 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return SecurityContextHolder.getContext();
     }
 
-    /**
-     * @return
-     */
     @Override
     public Authentication getAuthentication() {
         return currentSecurityContext().getAuthentication();
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     */
     @Override
     public CdmAuthority createAuthorityFor(String username, CdmBase cdmEntity, EnumSet<CRUD> crud, String property) {
 
@@ -314,13 +289,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return createAuthorityFor(username, cdmEntity, crud, property);
     }
 
-    /**
-     * @param username
-     * @param cdmType
-     * @param entitiyUuid
-     * @param crud
-     * @return
-     */
     @Override
     public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, UUID entitiyUuid, EnumSet<CRUD> crud, String property) {
 
@@ -328,49 +296,28 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return createAuthorityFor(username, cdmEntity, crud, property);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CdmAuthority createAuthorityForCurrentUser(CdmBase cdmEntity, EnumSet<CRUD> crud, String property) {
         return createAuthorityFor(userName(), cdmEntity, crud, property);
 
     }
 
-    /**
-     * @param cdmType
-     * @param entitiyId
-     * @param crud
-     * @return
-     */
     @Override
     public CdmAuthority createAuthorityForCurrentUser(Class<? extends CdmBase> cdmType, Integer entitiyId, EnumSet<CRUD> crud, String property) {
         return createAuthorityFor(userName(), cdmType, entitiyId, crud, property);
     }
 
-    /**
-     * @param cdmType
-     * @param entitiyUuid
-     * @param crud
-     * @return
-     */
     @Override
     public CdmAuthority createAuthorityForCurrentUser(Class<? extends CdmBase> cdmType, UUID entitiyUuid, EnumSet<CRUD> crud, String property) {
         return createAuthorityFor(userName(), cdmType, entitiyUuid, crud, property);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeAuthorityForCurrentUser(CdmAuthority cdmAuthority) {
         removeAuthorityForCurrentUser(userName(), cdmAuthority);
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeAuthorityForCurrentUser(String username, CdmAuthority cdmAuthority) {
 
@@ -394,9 +341,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         repo().commitTransaction(txStatus);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Collection<CdmAuthority> findUserPermissions(CdmBase cdmEntity, EnumSet<CRUD> crud) {
         Set<CdmAuthority> matches = new HashSet<>();
@@ -421,7 +365,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return matches;
     }
 
-    // @Override
     @Override
     public <T extends CdmBase> Collection<CdmAuthority> findUserPermissions(Class<T> cdmType, EnumSet<CRUD> crud) {
         Set<CdmAuthority> matches = new HashSet<>();
@@ -442,17 +385,11 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return matches;
     }
 
-    /**
-     * @param securityContextAccess the securityContextAccess to set
-     */
     @Override
     public void setSecurityContextAccess(SecurityContextAccess securityContextAccess) {
         this.securityContextAccess = securityContextAccess;
     }
 
-    /**
-     * @return the runAsAutheticator
-     */
     public RunAsAuthenticator getRunAsAutheticator() {
         if(runAsAutheticator == null){
           throw new RuntimeException("RunAsAuthenticator is missing! The application needs to be configured with security context.");
@@ -460,18 +397,10 @@ public class CdmUserHelper implements UserHelper, Serializable {
         return runAsAutheticator;
     }
 
-    /**
-     * @return the cache
-     */
     public ICdmEntityUuidCacher getCache() {
         return null;
     }
 
-    /**
-     * @param cdmType
-     * @param entitiyUuid
-     * @return
-     */
     private CdmBase entityFromCache(Class<? extends CdmBase> cdmType, UUID entitiyUuid) {
         CdmBase entity = null;
         if(getCache() != null){
@@ -486,12 +415,10 @@ public class CdmUserHelper implements UserHelper, Serializable {
 
     @Override
     public CdmUserHelper withCache(ICdmEntityUuidCacher cache){
-
         return new CachingCdmUserHelper(cache);
     }
 
     class CachingCdmUserHelper extends CdmUserHelper{
-
 
         private static final long serialVersionUID = -5010082174809972831L;
 
@@ -501,9 +428,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
             this.cache = cache;
         }
 
-        /**
-         * @return the cache
-         */
         @Override
         public ICdmEntityUuidCacher getCache() {
             return cache;
@@ -518,7 +442,6 @@ public class CdmUserHelper implements UserHelper, Serializable {
         protected ICdmPermissionEvaluator permissionEvaluator() {
             return CdmUserHelper.this.permissionEvaluator;
         }
-
     }
 
 }

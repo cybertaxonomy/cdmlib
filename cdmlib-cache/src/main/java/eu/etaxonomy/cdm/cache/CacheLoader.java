@@ -39,12 +39,10 @@ public class CacheLoader {
 
     private final Cache cdmlibModelCache;
 
-
     public CacheLoader(ICdmCacher cdmCacher) {
         this.cdmCacher = cdmCacher;
         this.cdmlibModelCache = CdmRemoteCacheManager.getInstance().getCdmModelGetMethodsCache();
     }
-
 
     public CdmModelFieldPropertyFromClass getFromCdmlibModelCache(String className) {
         Element e = cdmlibModelCache.get(className);
@@ -213,7 +211,7 @@ public class CacheLoader {
      * cache.
      * <p>
      * <b>WARNING: Recursive updating of the cached entity will not take place
-     * in case there is a cached entity which is the same object as
+     * in case there is a cached entity which is the same/identical object as
      * <code>cdmEntity</code>.</b>
      *
      * For in depth details on the mechanism see
@@ -284,6 +282,8 @@ public class CacheLoader {
      *            all fields of the cached entity will be overwritten by setting
      *            them to the value of the cdm entity being loaded
      * @return
+     *            The cached object which is identical with the input entity in case
+     *            the object did not yet exist in the cache
      */
     private <T extends CdmBase> T loadRecursive(T cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
@@ -336,7 +336,7 @@ public class CacheLoader {
      * <code>cdmEntity</code>. In case the cached field value contains a proxy
      * object the value will always be overwritten (Q: This might only occur in
      * case of uninitialized proxies, since initialized proxies are expected to
-     * be replaces by the target entity.)
+     * be replaced by the target entity.)
      *
      * @param cdmEntity
      *            the entity to be loaded into the cache
@@ -405,7 +405,7 @@ public class CacheLoader {
                     if(cachedCdmEntityInSubGraph != null) {
                         if(cachedCdmEntityInSubGraph != cdmEntityInSubGraph) {
                             // exception : is the case where
-                            // the field has been already initialised, cached and
+                            // the field has been already initialized, cached and
                             // is not the same as the one in the cache, in which case we set the value
                             // of the field to the one found in the cache
                             logger.debug("setting cached + real value to '" + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
@@ -414,7 +414,7 @@ public class CacheLoader {
                         } else {
                             // since the field value object in cdmEntity
                             // is the same as the field value object in cachedCdmEntity
-                            // we are sure that the its subgraph is also correctly loaded,
+                            // we are sure that the subgraph is also correctly loaded,
                             // so we can exit the recursion
                             return null;
                         }
@@ -429,11 +429,7 @@ public class CacheLoader {
             // want to continue to recurse on the input cdm entity graph
             // and not the one in the cache
             return cdmEntityInSubGraph;
-        } catch (SecurityException e) {
-            throw new CdmClientCacheException(e);
-        } catch (IllegalArgumentException e) {
-            throw new CdmClientCacheException(e);
-        } catch (IllegalAccessException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new CdmClientCacheException(e);
         }
     }

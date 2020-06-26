@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2015 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.cache;
 
 import java.io.Serializable;
@@ -13,7 +21,6 @@ public class CdmModelFieldPropertyFromClass implements Serializable {
 
 	private List<String> fields = new ArrayList<>();
 
-
 	public CdmModelFieldPropertyFromClass(String className) {
 		this.setClassName(className);
 	}
@@ -21,7 +28,6 @@ public class CdmModelFieldPropertyFromClass implements Serializable {
 	public String getParentClassName() {
 		return parentClassName;
 	}
-
 	public void setParentClassName(String parentClassName) {
 		this.parentClassName = parentClassName;
 	}
@@ -29,7 +35,6 @@ public class CdmModelFieldPropertyFromClass implements Serializable {
 	public List<String> getFields() {
 		return fields;
 	}
-
 	public void setFields(List<String> fields) {
 		this.fields = fields;
 	}
@@ -41,7 +46,6 @@ public class CdmModelFieldPropertyFromClass implements Serializable {
 	public String getClassName() {
 		return className;
 	}
-
 	public void setClassName(String className) {
 		this.className = className;
 	}
