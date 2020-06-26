@@ -31,17 +31,15 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 
     /**
-     * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
-     *
+     * Constructor which initializes a singleton {@link net.sf.ehcache.CacheManager}
      */
     public CdmCacher() {
         init();
     }
 
     /**
-     * Initialises an empty singleton {@link net.sf.ehcache.CacheManager} and
+     * Initializes an empty singleton {@link net.sf.ehcache.CacheManager} and
      * sets itself as the cacher object in specific CDM Entity objects.
-     *
      */
     private void init() {
         setup();
@@ -51,9 +49,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     /**
      * Returns the singleton default cache manager.
-     * @param conf
-     *
-     * @return
      */
     public void addCacheManager(CacheManager cacheManager) {
 
@@ -106,9 +101,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     /**
      * Gets the cache element corresponding to the given {@link java.util.UUID}
-     *
-     * @param uuid
-     * @return
      */
     public Element getCacheElement(UUID uuid) {
         return getDefaultCache().get(uuid);
@@ -144,7 +136,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         return cdmEntity;
     }
 
-
     @Override
     public  CdmBase getFromCache(UUID uuid) {
         Element e = getCacheElement(uuid);
@@ -159,7 +150,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     public <T extends CdmBase> T getFromCache(T cdmBase) {
         return (T) getFromCache(cdmBase.getUuid());
     }
-
 
     @Override
     public void put(CdmBase cdmEntity) {
@@ -183,7 +173,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
             return exists(cdmBase.getUuid());
         }
         return false;
-
     }
 
     @Override
