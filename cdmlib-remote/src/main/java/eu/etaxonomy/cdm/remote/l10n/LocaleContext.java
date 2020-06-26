@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2020 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.l10n;
 
 import java.util.Enumeration;
@@ -22,7 +30,6 @@ public class LocaleContext {
 		protected Vector<Locale> initialValue() {
 			return new Vector<>();
 		}
-
 	};
 
 	protected static Hashtable<String, List<Language>> languageMap = new Hashtable<>();
@@ -47,10 +54,6 @@ public class LocaleContext {
 		return localesHolder.get().elements();
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	public static List<Language> getLanguages(){
 		String localesKey = composeLocalesKey(getLocales());
 		return languageMap.get(localesKey);
@@ -79,7 +82,4 @@ public class LocaleContext {
 		}
 		return localesKey;
 	}
-
-
-
 }
