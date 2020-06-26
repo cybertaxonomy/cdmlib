@@ -301,6 +301,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
 
     public void clear() {
         cache.removeAll();
+        newEntitiesMap.clear();
     }
 
     @Override
