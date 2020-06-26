@@ -253,14 +253,14 @@ public class CacheLoader {
             logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + "\n");
             loadedCdmBase =  cb;
         } else {
-            loadedCdmBase = load(cdmEntity);
+            loadedCdmBase = put(cdmEntity);
         }
         return loadedCdmBase;
 
     }
 
 
-    protected <T extends CdmBase> T load(T cdmEntity) {
+    protected <T extends CdmBase> T put(T cdmEntity) {
         logger.debug("loading object of type " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
         cdmCacher.put((CdmBase)ProxyUtils.deproxy(cdmEntity));
         return cdmCacher.getFromCache(cdmEntity);
@@ -287,7 +287,7 @@ public class CacheLoader {
      */
     private <T extends CdmBase> T loadRecursive(T cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
 
-        T cachedCdmEntity = load(cdmEntity);
+        T cachedCdmEntity = put(cdmEntity);
 
         // we want to recurse through the cdmEntity (and not the cachedCdmEntity)
         // since there could be new or deleted objects in the cdmEntity sub-graph
