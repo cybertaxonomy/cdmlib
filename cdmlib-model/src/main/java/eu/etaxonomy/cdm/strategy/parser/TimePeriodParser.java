@@ -257,6 +257,7 @@ public class TimePeriodParser {
 
     private static void parseDateWithMonthName(String dateString, TimePeriod result) {
         String[] periods = dateString.split(SEP);
+        boolean isContinued = false;
         if (periods.length > 2){
             logger.info("More than 2 periods in date string to parse: " + dateString);
             result.setFreeText(dateString);
@@ -264,10 +265,11 @@ public class TimePeriodParser {
             if (periods[0].endsWith("+")){
                 periods[0] = periods[0].substring(0, periods[0].length()-1).trim();
                 result.setContinued(true);
+                isContinued = true;
             }
             Partial start = dateWithMonthPartial(periods[0]);
             Partial end = periods.length < 2? null : dateWithMonthPartial(periods[1]);
-            if(start == null || (periods.length == 2 && end == null)){
+            if(start == null || (periods.length == 2 && (end == null || isContinued))){
                 result.setFreeText(dateString);
             }else if (end != null){
                 if (end.isSupported(TimePeriod.YEAR_TYPE)&& !start.isSupported(TimePeriod.YEAR_TYPE)){
@@ -282,7 +284,9 @@ public class TimePeriodParser {
                 }
             }
             result.setStart(start);
-            result.setEnd(end);
+            if(end != null){  //to avoid incorrect isConinued handling
+                result.setEnd(end);
+            }
         }
     }
 
