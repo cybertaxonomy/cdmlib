@@ -63,11 +63,10 @@ public abstract class NonViralNameParserImplRegExBase  {
    //years
     protected static String month = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
     protected static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";       // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits
-    protected static String singleDate = TimePeriodParser.strDateWithMonthes;
-    protected static String singleDateYear = "(" + singleYear + "|" + singleDate +")";
+    protected static String datePeriod = TimePeriodParser.strDateWithMonthesPeriod;
     protected static String SEP = TimePeriodParser.SEP;
-    protected static String correctYearPhrase = singleDateYear + "("+ fWs + SEP + fWs + singleDateYear + ")?" ;
-    								//+ "(" + month + ")?)" ;                 // optional month
+    protected static String yearPeriod = singleYear + "("+ fWs + SEP + fWs + singleYear + ")?";
+    protected static String correctYearPhrase = "(" + yearPeriod + "|" + datePeriod + ")" ;
 
     public static String verbStart = TimePeriodParser.verbatimStart;
     public static String verbEnd = TimePeriodParser.verbatimEnd;

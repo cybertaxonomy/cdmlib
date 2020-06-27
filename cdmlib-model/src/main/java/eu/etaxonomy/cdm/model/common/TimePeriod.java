@@ -520,10 +520,27 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     public String getTimePeriod(){
         String result = null;
         DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
-        String strStart = start != null ? start.toString(formatter): null;
         if (isContinued()){
+            String strStart = start != null ? start.toString(formatter): null;
             result = CdmUtils.concat("", strStart, "+");
         }else{
+            Partial start = this.start;
+            Partial end = this.end;
+            if (start != null && end != null){
+                if (start.isSupported(YEAR_TYPE) && end.isSupported(YEAR_TYPE)
+                        && start.get(YEAR_TYPE) == end.get(YEAR_TYPE)){
+                    if (start.getFields().length == 1){
+                        end = null;
+                    }else{
+                        start = start.without(YEAR_TYPE);
+                    }
+                }
+                if (end != null && !start.isSupported(YEAR_TYPE) && start.isSupported(MONTH_TYPE) &&
+                        end.isSupported(MONTH_TYPE) && start.get(MONTH_TYPE) == end.get(MONTH_TYPE)){
+                    start = start.without(MONTH_TYPE);
+                }
+            }
+            String strStart = start != null ? start.toString(formatter): null;
             String strEnd = end != null ? end.toString(formatter): null;
             result = CdmUtils.concat(SEP, strStart, strEnd);
         }
@@ -536,7 +553,7 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
         String result = "";
         if (getStartYear() != null){
             result += String.valueOf(getStartYear());
-            if (getEndYear() != null){
+            if (getEndYear() != null && !getStartYear().equals(getEndYear())){
                 result += SEP + String.valueOf(getEndYear());
             }
         }else{

@@ -200,6 +200,31 @@ public class TimePeriodParserTest {
         Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
 	}
 
+    @Test
+    public void testParseAbbreviatedPeriod() {
+        String strTimePeriod = "Feb-Apr 1756";
+        TimePeriod tp1 = TimePeriodParser.parseString(strTimePeriod);
+        assertNotNull(tp1);
+        Assert.assertEquals("1756", tp1.getYear());
+        Assert.assertEquals("1756", String.valueOf(tp1.getStartYear()));
+        Assert.assertEquals("1756", String.valueOf(tp1.getEndYear()));
+        Assert.assertEquals(Integer.valueOf(2), tp1.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp1.getEndMonth());
+        assertNull(tp1.getStartDay());
+        assertNull(tp1.getEndDay());
+
+        strTimePeriod = "1-5 Apr 1756";
+        tp1 = TimePeriodParser.parseString(strTimePeriod);
+        assertNotNull(tp1);
+        Assert.assertEquals("1756", tp1.getYear());
+        Assert.assertEquals("1756", String.valueOf(tp1.getStartYear()));
+        Assert.assertEquals("1756", String.valueOf(tp1.getEndYear()));
+        Assert.assertEquals(Integer.valueOf(4), tp1.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(4), tp1.getEndMonth());
+        Assert.assertEquals(Integer.valueOf(1), tp1.getStartDay());
+        Assert.assertEquals(Integer.valueOf(5), tp1.getEndDay());
+    }
+
 	@Test
 	public void testParseDateWithMonths() {
 	    String strDate = "24 Aug. 1957";

@@ -275,6 +275,22 @@ public class TimePeriodTest {
         tp1.setContinued(true);
         //this is still undefined, could be something like 'xxxx+' in future
         Assert.assertEquals("+", tp1.toString());
+
+        tp1 = TimePeriod.NewInstance(1788, 1788);
+        Assert.assertEquals("1788", tp1.toString());
+        tp1.setStartMonth(2);
+        tp1.setEndMonth(4);
+        Assert.assertEquals("Feb"+endash+"Apr 1788", tp1.toString());
+        tp1.setEndMonth(2);
+        tp1.setStartDay(19);
+        tp1.setEndDay(25);
+        Assert.assertEquals("19"+endash+"25 Feb 1788", tp1.toString());
+        tp1.setEndYear(1789);
+        Assert.assertEquals("19 Feb 1788"+endash+"25 Feb 1789", tp1.toString());
+        tp1.setEndYear(1788);
+        tp1.setEndMonth(3);
+        Assert.assertEquals("19 Feb"+endash+"25 Mar 1788", tp1.toString());
+
 	}
 
 	@Test
