@@ -9,8 +9,10 @@
 package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 
@@ -30,7 +32,7 @@ public class QuantitativeDataFormatter
     }
 
     @Override
-    public String doFormat(QuantitativeData quantData) {
+    protected String doFormat(QuantitativeData quantData, List<Language> preferredLanguages) {
 
         String result = "";
 
