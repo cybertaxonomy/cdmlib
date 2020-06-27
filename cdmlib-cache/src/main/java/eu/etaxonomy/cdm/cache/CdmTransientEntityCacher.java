@@ -235,6 +235,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
             if(cachedCdmEntity == null) {
                 CdmBase cdmEntityToCache = cdmEntity;
                 CdmBase cachedVolatileEntity = volatileEntitiesMap.get(cdmEntity.getUuid());
+                //if former volatile object became transient now
                 if(cachedVolatileEntity != null) {
                     cachedVolatileEntity.setId(cdmEntity.getId());
                     cdmEntityToCache = cachedVolatileEntity;

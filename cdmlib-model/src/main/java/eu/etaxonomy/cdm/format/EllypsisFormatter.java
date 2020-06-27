@@ -13,7 +13,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @since Dec 12, 2018
- *
  */
 public interface EllypsisFormatter<T extends CdmBase> {
 
