@@ -320,6 +320,45 @@ public class TimePeriodParserTest {
 	}
 
     @Test
+    public void testParseDateWithMonthPeriods() {
+        String strDate = "24 Aug 1957-14 Oct 1988";
+        TimePeriod tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("24 Aug 1957–14 Oct 1988", tp.toString());
+        Assert.assertEquals("1957–1988", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
+        Assert.assertEquals(Integer.valueOf(1988), tp.getEndYear());
+        Assert.assertEquals(Integer.valueOf(10), tp.getEndMonth());
+        Assert.assertEquals(Integer.valueOf(14), tp.getEndDay());
+
+        strDate = "24 Aug 1957–1988";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals(strDate, tp.toString());
+        Assert.assertEquals("1957–1988", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
+        Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
+        Assert.assertEquals(Integer.valueOf(1988), tp.getEndYear());
+        Assert.assertNull(tp.getEndMonth());
+        Assert.assertNull(tp.getEndDay());
+
+        strDate = "1957–14 Oct 1988";
+        tp = TimePeriodParser.parseString(strDate);
+        assertNotNull(tp);
+        Assert.assertEquals("1957–14 Oct 1988", tp.toString());
+        Assert.assertEquals("1957–1988", tp.getYear());
+        Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
+        Assert.assertNull(tp.getStartMonth());
+        Assert.assertNull(tp.getStartDay());
+        Assert.assertEquals(Integer.valueOf(1988), tp.getEndYear());
+        Assert.assertEquals(Integer.valueOf(10), tp.getEndMonth());
+        Assert.assertEquals(Integer.valueOf(14), tp.getEndDay());
+    }
+
+    @Test
     public void testParseVerbatim() {
         String strDate = "1957 [\"1958\"]";
         VerbatimTimePeriod tp = TimePeriodParser.parseStringVerbatim(strDate);

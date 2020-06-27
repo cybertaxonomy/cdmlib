@@ -46,26 +46,29 @@ public class TimePeriodParser {
 //	private static final Pattern uncorrectYearPatter = Pattern.compile(NonViralNameParserImplRegExBase.incorrectYearPhrase);
 
 	//case fl. 1806 or c. 1806 or fl. 1806?
-	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*-\\s*\\d{4})?\\??");
+	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*"+SEP+"\\s*\\d{4})?\\??");
 	//standard
-	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-(\\s*\\d{2,4})?|\\+)?");
+	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*"+SEP+"(\\s*\\d{2,4})?|\\+)?");
+
 	private static final String strDotDate = strDay + "\\.[01]?\\d\\.\\d{4,4}";
-	private static final String strDotDatePeriodPattern = String.format("%s(\\s*-\\s*%s|\\+)?", strDotDate, strDotDate);
-	private static final Pattern dotDatePattern =  Pattern.compile(strDotDatePeriodPattern);
+	private static final String strDotDatePeriod = String.format("%s(\\s*-\\s*%s|\\+)?", strDotDate, strDotDate);
+	private static final Pattern dotDatePattern =  Pattern.compile(strDotDatePeriod);
+
 	private static final String strSlashDate = strDay + "\\/[01]?\\d\\/\\d{4,4}";
-	private static final String strSlashDatePeriodPattern = String.format("%s(\\s*-\\s*%s|\\+)?", strSlashDate, strSlashDate);
-	private static final Pattern slashDatePattern =  Pattern.compile(strSlashDatePeriodPattern);
+	private static final String strSlashDatePeriod = String.format("%s(\\s*"+SEP+"\\s*%s|\\+)?", strSlashDate, strSlashDate);
+	private static final Pattern slashDatePattern =  Pattern.compile(strSlashDatePeriod);
+
 	private static final Pattern lifeSpanPattern =  Pattern.compile(String.format("%s--%s", firstYearPattern, firstYearPattern));
+
 	private static final String strMonthes = "((Jan|Feb|Aug|Sept?|Oct(ober)?|Nov|Dec)\\.?|(Mar(ch)?|Apr(il)?|Ma(yi)|June?|July?))";
-	public static final String strDateWithMonthes = "("+ strDay + dotOrWs + ")?" + strMonthes + dotOrWs + "\\d{4,4}\\+?";
-	public static final String strStartDateWithMonthes = "(" + strDay + "|(" + strDay + dotOrWs + ")?" + strMonthes + ")(" + dotOrWs + "\\d{4,4})?";
-	public static final String strDateWithMonthesPeriod = "("+strStartDateWithMonthes +SEP+")?" + strDateWithMonthes;
+	public static final String strDateWithMonthesPeriod = "(("+ strDay + "|(" + strDay + dotOrWs +")?" + strMonthes + "|((" + strDay + dotOrWs +")?" + strMonthes  + dotOrWs + ")?" + "\\d{4,4})" + SEP + ")?" +
+	        "(("+ strDay + dotOrWs + ")?" + strMonthes + dotOrWs + ")?\\d{4,4}\\+?";
     private static final Pattern dateWithMonthNamePattern = Pattern.compile(strDateWithMonthesPeriod);
+
     private static final String strDateYearMonthDay = "(\\d{4,4}" + dashOrWs + ")?" + strMonthes + "(" + dashOrWs + "[0-3]?\\d)?\\+?";
 	private static final Pattern dateYearMonthDayPattern = Pattern.compile(strDateYearMonthDay);
 
 	public static <T extends TimePeriod> T parseString(T timePeriod, String periodString){
-		//TODO until now only quick and dirty (and partly wrong)
 		T result = timePeriod;
 
 		if(timePeriod == null){
