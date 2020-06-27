@@ -25,8 +25,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -254,21 +252,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
         tp.setEndYear(2002);
         Assert.assertEquals("Year should be 1999-2002", "1999"+SEP+"2002", tp.getYear());
-    }
-
-    /**
-     * TODO should be partly moved to a test class for {@link TimePeriodPartialFormatter}
-     */
-    @Test
-    public void testToStringTimePeriod() {
-        String endash = UTF8.EN_DASH.toString();
-        VerbatimTimePeriod tp1 = VerbatimTimePeriod.NewVerbatimInstance(1788,1799);
-        assertNotNull(tp1);
-        Assert.assertEquals("1788"+endash+"1799", tp1.toString());
-        tp1.setStartDay(3);
-        Assert.assertEquals("3 MMM 1788"+endash+"1799", tp1.toString());
-        tp1.setEndMonth(11);
-        Assert.assertEquals("3 MMM 1788"+endash+"Nov 1799", tp1.toString());
     }
 
     @Test

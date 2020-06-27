@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.common.VerbatimTimePeriodFormatter;
 
 /**
  * @author a.mueller
@@ -43,9 +43,10 @@ public class VerbatimTimePeriod extends TimePeriod {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(VerbatimTimePeriod.class);
 
+    private static VerbatimTimePeriodFormatter formatter = VerbatimTimePeriodFormatter.NewDefaultInstance();
+
     @XmlElement(name = "FreeText")
     private String verbatimDate;
-
 
  // ********************** FACTORY METHODS **************************/
 
@@ -184,11 +185,7 @@ public class VerbatimTimePeriod extends TimePeriod {
      */
       @Override
       public String toString(){
-         String result = super.toString();
-         if (StringUtils.isNotBlank(this.verbatimDate) && StringUtils.isBlank(this.getFreeText())){
-             result = CdmUtils.concat(" ", result, "[\""+this.verbatimDate+"\"]");
-         }
-         return result;
+         return formatter.format(this);
     }
 
 //*********** CLONE **********************************/
