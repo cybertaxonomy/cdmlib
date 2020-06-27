@@ -34,13 +34,12 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
-import org.joda.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
+import eu.etaxonomy.cdm.format.common.TimePeriodFormatter;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 
@@ -75,6 +74,8 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     public static final Partial CONTINUED = new Partial
             (new DateTimeFieldType[]{YEAR_TYPE, MONTH_TYPE, DAY_TYPE},
              new int[]{9999, 11, 30});
+
+    private static TimePeriodFormatter formatter = TimePeriodFormatter.NewDefaultInstance();
 
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -505,68 +506,20 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
      */
     @Override
     public String toString(){
-        String result = null;
-        if ( StringUtils.isNotBlank(this.getFreeText())){
-            result = this.getFreeText();
-        }else{
-            result = getTimePeriod();
-        }
-        return result;
+        return formatter.format(this);
     }
 
     /**
      * Returns the concatenation of <code>start</code> and <code>end</code>
      */
     public String getTimePeriod(){
-        String result = null;
-        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
-        if (isContinued()){
-            String strStart = start != null ? start.toString(formatter): null;
-            result = CdmUtils.concat("", strStart, "+");
-        }else{
-            Partial start = this.start;
-            Partial end = this.end;
-            if (start != null && end != null){
-                if (start.isSupported(YEAR_TYPE) && end.isSupported(YEAR_TYPE)
-                        && start.get(YEAR_TYPE) == end.get(YEAR_TYPE)){
-                    if (start.getFields().length == 1){
-                        end = null;
-                    }else{
-                        start = start.without(YEAR_TYPE);
-                    }
-                }
-                if (end != null && !start.isSupported(YEAR_TYPE) && start.isSupported(MONTH_TYPE) &&
-                        end.isSupported(MONTH_TYPE) && start.get(MONTH_TYPE) == end.get(MONTH_TYPE)){
-                    start = start.without(MONTH_TYPE);
-                }
-            }
-            String strStart = start != null ? start.toString(formatter): null;
-            String strEnd = end != null ? end.toString(formatter): null;
-            result = CdmUtils.concat(SEP, strStart, strEnd);
-        }
-
-        return result;
+        return formatter.getTimePeriod(this);
     }
 
     @Transient
     public String getYear(){
-        String result = "";
-        if (getStartYear() != null){
-            result += String.valueOf(getStartYear());
-            if (getEndYear() != null && !getStartYear().equals(getEndYear())){
-                result += SEP + String.valueOf(getEndYear());
-            }
-        }else{
-            if (getEndYear() != null){
-                result += String.valueOf(getEndYear());
-            }
-        }
-        if (isContinued()){
-            result += "+";
-        }
-        return result;
+        return formatter.getYear(this);
     }
-
 
     @Override
     public boolean checkEmpty() {

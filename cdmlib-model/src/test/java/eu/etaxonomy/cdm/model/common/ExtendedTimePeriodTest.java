@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -24,8 +23,6 @@ import org.joda.time.ReadableInstant;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import eu.etaxonomy.cdm.format.common.TimePeriodPartialFormatter;
 
 /**
  * @author a.mueller
@@ -275,43 +272,6 @@ public class ExtendedTimePeriodTest {
         Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
         tp.setEndYear(2002);
         Assert.assertEquals("Year should be 1999"+SEP+"2002", "1999"+SEP+"2002", tp.getYear());
-    }
-
-
-    /**
-     * TODO should be partly moved to a test class for {@link TimePeriodPartialFormatter}
-     */
-    @Test
-    public void testToStringTimePeriod() {
-        Integer startYear = 1788;
-        Integer startMonth = 6;
-        Integer startDay = 25;
-        Integer endDay = 21;
-        Integer endMonth = 12;
-        Integer endYear = 1799;
-        Integer startYear2 = 1787;
-        Integer startMonth2 = 5;
-        Integer startDay2 = 24;
-        Integer endDay2 = 20;
-        Integer endMonth2 = 11;
-        Integer endYear2 = 1800;
-        ExtendedTimePeriod tp1 = ExtendedTimePeriod.NewExtendedYearInstance(startYear,endYear,startYear2,endYear2);
-
-        String endash = TimePeriod.SEP;
-        assertNotNull(tp1);
-        Assert.assertEquals("(1787"+endash+")1788"+endash+"1799("+endash+"1800)", tp1.toString());
-        tp1.setStartDay(startDay);
-        tp1.setStartMonth(startMonth);
-        tp1.setEndDay(endDay);
-        tp1.setEndMonth(endMonth);
-        tp1.setExtremeStartDay(startDay2);
-        tp1.setExtremeStartMonth(startMonth2);
-        tp1.setExtremeEndDay(endDay2);
-        tp1.setExtremeEndMonth(endMonth2);
-        Assert.assertEquals("(24 May 1787"+endash+")25 Jun 1788"+endash+"21 Dec 1799("+endash+"20 Nov 1800)", tp1.toString()); //date formatting may change in future
-
-        tp1.setFreeText("My extended period");
-        Assert.assertEquals("My extended period", tp1.toString());
     }
 
     @Test
