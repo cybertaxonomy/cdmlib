@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  * @author cmathew
  */
 @Component
-public class CdmTermCacher extends CdmCacher {
+public class CdmTermCacher extends CdmCacherBase {
 
 	@Autowired
 	ITermService termService;

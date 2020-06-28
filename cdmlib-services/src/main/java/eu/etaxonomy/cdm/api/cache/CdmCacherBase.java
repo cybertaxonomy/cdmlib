@@ -20,9 +20,9 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  *
  * @author cmathew
  */
-public abstract class CdmCacher implements ICdmUuidCacher {
+public abstract class CdmCacherBase implements ICdmUuidCacher {
 
-    public static final Logger logger = Logger.getLogger(CdmCacher.class);
+    public static final Logger logger = Logger.getLogger(CdmCacherBase.class);
 
     @Autowired
     public CacheManager cacheManager;
@@ -32,7 +32,7 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     /**
      * Constructor which initializes a singleton {@link net.sf.ehcache.CacheManager}
      */
-    public CdmCacher() {
+    public CdmCacherBase() {
         init();
     }
 
@@ -188,4 +188,8 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      */
     protected abstract CdmBase findByUuid(UUID uuid);
 
+    @Override
+    public boolean ignoreRecursiveLoad(CdmBase cdmBase){
+        return false;
+    }
 }

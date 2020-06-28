@@ -23,7 +23,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.springframework.util.ReflectionUtils;
 
-import eu.etaxonomy.cdm.api.cache.CdmCacher;
+import eu.etaxonomy.cdm.api.cache.CdmCacherBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -212,7 +212,7 @@ public class EntityCacherDebugResult {
     }
 
     private String getCachesContainingEntity(CdmBase cdmEntity) {
-        Cache defaultCache = CacheManager.create().getCache(CdmCacher.DEFAULT_CACHE_NAME);
+        Cache defaultCache = CacheManager.create().getCache(CdmCacherBase.DEFAULT_CACHE_NAME);
         String caches = "";
         Element dce = defaultCache.get(cdmEntity.getUuid());
         if(dce != null && dce.getObjectValue() == cdmEntity) {
