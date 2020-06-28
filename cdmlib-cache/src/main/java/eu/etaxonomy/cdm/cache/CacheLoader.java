@@ -289,7 +289,10 @@ public class CacheLoader {
      *            the object did not yet exist in the cache
      */
     private <T extends CdmBase> T loadRecursive(T cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
-
+        if (cdmCacher.ignoreRecursiveLoad(cdmEntity)){
+            if (logger.isDebugEnabled()){logger.debug("ignore recursive load for " + cdmEntity.getClass() + "#" + cdmEntity.getId());}
+            return cdmEntity;
+        }
         T cachedCdmEntity = putToCache(cdmEntity);
 
         // we want to recurse through the cdmEntity (and not the cachedCdmEntity)

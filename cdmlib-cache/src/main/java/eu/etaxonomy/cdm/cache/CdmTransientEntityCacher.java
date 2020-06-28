@@ -345,4 +345,11 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     public boolean exists(CdmBase cdmEntity) {
         return exists(generateKey(cdmEntity));
     }
+
+    @Override
+    public boolean ignoreRecursiveLoad(CdmBase cdmEntity){
+        //recursive loading should be handled by the permanent cache itself
+        return permanentCache.isCachable(cdmEntity);
+    }
+
 }
