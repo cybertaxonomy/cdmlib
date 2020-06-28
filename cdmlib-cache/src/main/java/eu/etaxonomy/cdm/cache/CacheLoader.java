@@ -177,6 +177,7 @@ public class CacheLoader {
         while(collectionItr.hasNext()) {
             Object obj = collectionItr.next();
             if(alreadyVisitedEntities == null) {
+                //AM: does this really ever happen?
                 result[count] = load(obj, false, update);
             } else {
                 result[count] = loadRecursive(obj, alreadyVisitedEntities, update);
@@ -295,7 +296,9 @@ public class CacheLoader {
         //TODO improve generics for deproxyOrNull, probably need to split the method
         @SuppressWarnings("unchecked")
         T deproxiedEntity = (T)ProxyUtils.deproxyOrNull(cdmEntity);
-        if(deproxiedEntity != null){
+        if(deproxiedEntity == null){
+            if (logger.isDebugEnabled()){logger.debug("ignoring uninitlialized proxy " + cdmEntity.getClass() + "#" + cdmEntity.getId());}
+        }else{
             String className = deproxiedEntity.getClass().getName();
             CdmModelFieldPropertyFromClass cmfpfc = getFromCdmlibModelCache(className);
             if(cmfpfc != null) {
@@ -321,8 +324,6 @@ public class CacheLoader {
                 throw new CdmClientCacheException("CdmEntity with class " + cdmEntity.getClass().getName() + " is not found in the cdmlib model cache. " +
                         "The cache may be corrupted or not in sync with the latest model version" );
             }
-        } else { //deproxiedEntity == null
-            logger.debug("ignoring uninitlialized proxy " + cdmEntity.getClass() + "#" + cdmEntity.getId());
         }
 
         return cachedCdmEntity;
@@ -398,7 +399,7 @@ public class CacheLoader {
                 if(CdmBase.class.isAssignableFrom(obj.getClass())) {
                     logger.debug("found initialised cdm entity '" + fieldName + "' in object of type " + clazz.getName() + " with id " + cdmEntity.getId());
 
-                    cdmEntityInSubGraph  = (CdmBase)obj;
+                    cdmEntityInSubGraph = (CdmBase)obj;
                     CdmBase cachedCdmEntityInSubGraph = cdmCacher.getFromCache(cdmEntityInSubGraph);
 
                     if(cachedCdmEntityInSubGraph != null) {

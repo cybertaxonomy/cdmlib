@@ -31,11 +31,6 @@ import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-
-/**
- * @author a.mueller
- *
- */
 /**
  * @author a.kohlbecker
  * @since 23.03.2009
@@ -91,8 +86,6 @@ public interface IService<T extends ICdmBase>{
      */
     public DeleteResult delete(UUID persistentObjectUUID) ;
 
-
-
     /**
      * Returns true if an entity of type <T> with a unique identifier matching the
      * identifier supplied exists in the database, or false if no such entity can be
@@ -128,8 +121,6 @@ public interface IService<T extends ICdmBase>{
      * @return an entity of type <T>, or null if the entity does not exist or uuid is <code>null</code>
      */
     public T find(UUID uuid);
-
-
 
 	/**
 	 * Return a persisted entity that matches the unique identifier

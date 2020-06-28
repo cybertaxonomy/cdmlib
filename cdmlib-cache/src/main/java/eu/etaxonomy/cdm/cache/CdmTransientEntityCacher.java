@@ -342,7 +342,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
     }
 
     @Override
-    public boolean exists(CdmBase cdmBase) {
-        return exists(generateKey(cdmBase));
+    public boolean exists(CdmBase cdmEntity) {
+        return exists(generateKey(cdmEntity));
     }
 }
