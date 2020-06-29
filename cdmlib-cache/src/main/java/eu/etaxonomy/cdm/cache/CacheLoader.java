@@ -185,7 +185,6 @@ public class CacheLoader {
         while(collectionItr.hasNext()) {
             Object obj = collectionItr.next();
             if(alreadyVisitedEntities == null) {
-                //AM: does this really ever happen?
                 result[count] = load(obj, false, update);
             } else {
                 result[count] = loadRecursiveAny(obj, alreadyVisitedEntities, update);
@@ -457,11 +456,11 @@ public class CacheLoader {
                             return null;
                         }
                     }
-                } else if(obj instanceof Map && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
-                    loadRecursiveMap((Map<Object,Object>)obj, alreadyVisitedEntities, update);
-                } else if(obj instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
-                    loadRecursiveCollection((Collection<?>)obj, alreadyVisitedEntities, update);
-                }
+//                } else if(obj instanceof Map && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
+//                    loadRecursiveMap((Map<Object,Object>)obj, alreadyVisitedEntities, update);
+//                } else if(obj instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
+//                    loadRecursiveCollection((Collection<?>)obj, alreadyVisitedEntities, update);
+//                }
             }
             // we return the original cdm entity in the sub graph because we
             // want to continue to recurse on the input cdm entity graph
