@@ -64,7 +64,6 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
         this.intextReferences = intextReferences;
     }
 
-
     @Override
     public IntextReference addIntextReference(IIntextReferenceTarget target, String start, String inner, String end){
         return IntextReferenceHelper.addIntextReference(target, this, start, inner, end);
@@ -89,8 +88,6 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 			intextReference.setReferencedEntity(null);
 		}
 	}
-
-
 
 //********************* FACTORY *******************************************/
 
@@ -140,5 +137,4 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 
 		return result;
 	}
-
 }
