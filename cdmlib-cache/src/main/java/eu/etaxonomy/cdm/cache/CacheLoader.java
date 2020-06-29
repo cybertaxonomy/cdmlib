@@ -108,6 +108,10 @@ public class CacheLoader {
         }
     }
 
+    /**
+     * Loads the map recursively into the cache. If alreadyVisitedEntities is <code>null</code> only
+     * the map elements are loaded without recursion.
+     */
     private <T extends Object> Map<T,T> loadRecursiveMap(Map<T,T> map, List<Object> alreadyVisitedEntities, boolean update){
 
         if(map == null || map.isEmpty()) {
@@ -160,6 +164,10 @@ public class CacheLoader {
         return loadedCollection;
     }
 
+    /**
+     * Loads the collection recursively into the cache. If alreadyVisitedEntities is <code>null</code> only
+     * the collection elements are loaded without recursion.
+     */
     @SuppressWarnings("unchecked")
     private <T extends Object> Collection<T> loadRecursiveCollection(Collection<T> collection, List<Object> alreadyVisitedEntities, boolean update) {
 
@@ -201,6 +209,10 @@ public class CacheLoader {
         return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
+    /**
+     * Loads the elements in the merge result into the cache. If alreadyVisitedEntities is <code>null</code> only
+     * the merge result elements are loaded without recursion.
+     */
     private MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult, List<Object> alreadyVisitedEntities, boolean update) {
         CdmBase cdmBase = loadRecursive(mergeResult.getMergedEntity(), alreadyVisitedEntities, update);
         loadRecursiveCollection(mergeResult.getNewEntities(), alreadyVisitedEntities, update);
@@ -217,7 +229,7 @@ public class CacheLoader {
      *
      * For in depth details on the mechanism see
      * {@link #loadRecursive(CdmBase, List, boolean)} and
-     * {@link #getCdmBaseTypeFieldValue(CdmBase, CdmBase, String, List, boolean)}
+     * {@link #getAndUpdateFieldVale(CdmBase, CdmBase, String, List, boolean)}
      *
      * @param cdmEntity
      *            the entity to be put into the cache
@@ -273,14 +285,14 @@ public class CacheLoader {
      * Load the <code>cdmEntity</code> graph recursively into the cache and
      * updates entities which are already in the cache depending on the value of
      * <code>update</code>, for more in depth details on this mechanism see
-     * {@link #getCdmBaseTypeFieldValue(CdmBase, CdmBase, String, List, boolean)}.
+     * {@link #getAndUpdateFieldVale(CdmBase, CdmBase, String, List, boolean)}.
      *
      * @param cdmEntity
      *            the entity to be loaded into the cache
      * @param alreadyVisitedEntities
      *            protocol list of entities already visited during loading an
-     *            entity graph recursively into the cache.
-     *
+     *            entity graph recursively into the cache. If <code>null</code>
+     *            only the entity itself is loaded without recursion.
      * @param update
      *            all fields of the cached entity will be overwritten by setting
      *            them to the value of the cdm entity being loaded
@@ -298,8 +310,7 @@ public class CacheLoader {
         // since there could be new or deleted objects in the cdmEntity sub-graph
 
         // start by getting the fields from the cdm entity
-        //TODO improve generics for deproxyOrNull, probably need to split the method
-        T deproxiedEntity = (T)ProxyUtils.deproxyOrNull(cdmEntity);
+        T deproxiedEntity = ProxyUtils.deproxyOrNull(cdmEntity);
         if(deproxiedEntity == null){
             if (logger.isDebugEnabled()){logger.debug("ignoring uninitlialized proxy " + cdmEntity.getClass() + "#" + cdmEntity.getId());}
         }else{
@@ -309,7 +320,7 @@ public class CacheLoader {
                 alreadyVisitedEntities.add(cdmEntity);
                 List<String> fields = classFields.getFields();
                 for(String field : fields) {
-                    handleField(alreadyVisitedEntities, update, cachedCdmEntity, deproxiedEntity, field);
+                    loadField(alreadyVisitedEntities, update, cachedCdmEntity, deproxiedEntity, field);
                 }
             } else {
                 throw new CdmClientCacheException("CdmEntity with class " + cdmEntity.getClass().getName() + " is not found in the cdmlib model cache. " +
@@ -320,7 +331,11 @@ public class CacheLoader {
         return cachedCdmEntity;
     }
 
-    private <T extends CdmBase> void handleField(List<Object> alreadyVisitedEntities, boolean update, T cachedCdmEntity,
+    /**
+     * Updates and loads recursively the value of the given field in the entity. If alreadyVisitedEntities
+     * is <code>null</code> no recursion will take place.
+     */
+    private <T extends CdmBase> void loadField(List<Object> alreadyVisitedEntities, boolean update, T cachedCdmEntity,
             T deproxiedEntity, String field) {
         // retrieve the actual object corresponding to the field.
         // this object will be either a CdmBase or a Collection / Map
@@ -330,7 +345,7 @@ public class CacheLoader {
             //checkForIdenticalCdmEntity(alreadyVisitedEntities, cdmEntityInSubGraph);
             if(!entityAlreadyVisisted(alreadyVisitedEntities, cdmEntityInSubGraph) ) {
                 if(cdmCacher.ignoreRecursiveLoad(cdmEntityInSubGraph)){
-                    if (logger.isDebugEnabled()){logger.debug("recursiveload of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId() + " ignored");}
+                    if (logger.isDebugEnabled()){logger.debug("recursive load of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId() + " ignored");}
                 }else{
                     if (logger.isDebugEnabled()){logger.debug("recursive loading object of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId());}
                     loadRecursive(cdmEntityInSubGraph, alreadyVisitedEntities, update);
@@ -364,7 +379,7 @@ public class CacheLoader {
      *            them to the value of the cdm entity being loaded
      * @return
      */
-    private CdmBase getCdmBaseTypeFieldValue(CdmBase cdmEntity,
+    private CdmBase getAndUpdateFieldVale(CdmBase cdmEntity,
             CdmBase cachedCdmEntity,
             String fieldName,
             List<Object> alreadyVisitedEntities,

@@ -131,7 +131,7 @@ public class ProxyUtils {
     }
 
     /**
-     * de-proxies the passed object <code>o</code> if it is an initialized proxy object,
+     * De-proxies the passed object <code>o</code> if it is an initialized proxy object,
      * otherwise <code>o</code> is returned.
      */
     public static <T extends Object> T deproxyIfInitialized(T o) {
@@ -155,8 +155,9 @@ public class ProxyUtils {
         return o;
     }
 
+
     /**
-     * de-proxies the passed object <code>o</code> if it is an initialized proxy object,
+     * De-proxies the passed object <code>o</code> if it is an initialized proxy object,
      * otherwise <code>null</code> is returned.
      */
     public static Object deproxyOrNull(Object o) {
