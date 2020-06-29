@@ -288,7 +288,7 @@ public class CdmTransientEntityCacher implements ICdmCacher {
         if (!cdmBase.isPersited()){
             return (T)volatileEntitiesMap.get(cdmBase.getUuid());
         }else{
-            CdmEntityCacheKey<T> cacheId = generateKey(ProxyUtils.deproxy(cdmBase));
+            CdmEntityCacheKey<T> cacheId = generateKey(ProxyUtils.deproxyIfInitialized(cdmBase));
             // first try this cache
             T  cachedCdmEntity = getFromCache(cacheId);
 

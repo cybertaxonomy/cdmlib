@@ -232,7 +232,7 @@ public class EntityCacherDebugResult {
         }
         logger.info("---- starting recursive debug for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
         List<CdmEntityInfo> alreadyVisitedEntities = new ArrayList<CdmEntityInfo>();
-        CdmEntityInfo cei = new CdmEntityInfo(ProxyUtils.deproxy(cdmEntity));
+        CdmEntityInfo cei = new CdmEntityInfo(ProxyUtils.deproxyIfInitialized(cdmEntity));
         debugRecursive(cdmEntity, alreadyVisitedEntities, cei);
         rootElements.add(cei);
         alreadyVisitedEntities.clear();
@@ -268,9 +268,9 @@ public class EntityCacherDebugResult {
             CdmEntityInfo childCei = new CdmEntityInfo(e);
             cei.addChild(childCei);
 
-            CdmEntityInfo keyCei = new CdmEntityInfo(ProxyUtils.deproxy(e.getKey()));
+            CdmEntityInfo keyCei = new CdmEntityInfo(ProxyUtils.deproxyIfInitialized(e.getKey()));
             childCei.addChild(keyCei);
-            CdmEntityInfo valueCei = new CdmEntityInfo(ProxyUtils.deproxy(e.getValue()));
+            CdmEntityInfo valueCei = new CdmEntityInfo(ProxyUtils.deproxyIfInitialized(e.getValue()));
             childCei.addChild(valueCei);
 
             debugRecursive(e.getKey(), alreadyVisitedEntities, keyCei);
@@ -293,7 +293,7 @@ public class EntityCacherDebugResult {
                 }
             }
             if(!alreadyVisited){
-                CdmEntityInfo childCei = new CdmEntityInfo(ProxyUtils.deproxy(obj));
+                CdmEntityInfo childCei = new CdmEntityInfo(ProxyUtils.deproxyIfInitialized(obj));
                 cei.addChild(childCei);
                 debugRecursive(obj, alreadyVisitedEntities, childCei);
             }
@@ -306,7 +306,7 @@ public class EntityCacherDebugResult {
 
         if(cei.getObject() instanceof CdmBase) {
            CdmBase cb =  (CdmBase)cei.getObject();
-           cb = (CdmBase) ProxyUtils.deproxy(cb);
+           cb = (CdmBase) ProxyUtils.deproxyIfInitialized(cb);
            CdmBase cachedCdmEntityInSubGraph = cacher.getFromCache(cb);
            if(cachedCdmEntityInSubGraph != cb) {
                cei.setNotInCacheDetail(cachedCdmEntityInSubGraph == null ? NotInCacheDetail.NOT_FOUND : NotInCacheDetail.COPY_ENTITY);
@@ -369,7 +369,7 @@ public class EntityCacherDebugResult {
             }
             field.setAccessible(true);
             Object o = field.get(cdmEntity);
-            o = ProxyUtils.deproxy(o);
+            o = ProxyUtils.deproxyIfInitialized(o);
             CdmBase cdmEntityInSubGraph = null;
 
             childCei = new CdmEntityInfo(o);

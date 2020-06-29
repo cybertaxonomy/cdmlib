@@ -265,7 +265,7 @@ public class CacheLoader {
      */
     protected <T extends CdmBase> T putToCache(T cdmEntity) {
         if (logger.isDebugEnabled()){logger.debug("put object of type " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + " to cache ");}
-        cdmCacher.putToCache(ProxyUtils.deproxy(cdmEntity));
+        cdmCacher.putToCache(ProxyUtils.deproxyIfInitialized(cdmEntity));
         return cdmCacher.getFromCache(cdmEntity);
     }
 
@@ -388,7 +388,7 @@ public class CacheLoader {
             field.setAccessible(true);
             Object obj = field.get(cdmEntity);
             // resetting the value in cdm entity to the deproxied object
-            obj = ProxyUtils.deproxy(obj);
+            obj = ProxyUtils.deproxyIfInitialized(obj);
             field.set(cdmEntity, obj);
             Object cachedObj = field.get(cachedCdmEntity);
             CdmBase cdmEntityInSubGraph = null;
