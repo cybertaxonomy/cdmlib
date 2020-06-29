@@ -460,7 +460,7 @@ public class CacheLoader {
 //                    loadRecursiveMap((Map<Object,Object>)obj, alreadyVisitedEntities, update);
 //                } else if(obj instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
 //                    loadRecursiveCollection((Collection<?>)obj, alreadyVisitedEntities, update);
-//                }
+                }
             }
             // we return the original cdm entity in the sub graph because we
             // want to continue to recurse on the input cdm entity graph
