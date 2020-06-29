@@ -95,7 +95,7 @@ public class MultilanguageTextHelper {
 	public static LanguageString getPreferredLanguageString(Map<Language, LanguageString> multilanguageText,
 	        List<Language> languages) {
 	    boolean restrictToGivenLanguages = false;
-	    return getPreferredLanguageString(multilanguageText, languages, restrictToGivenLanguages);
+	    return getPreferredLanguageObject(multilanguageText, languages, restrictToGivenLanguages);
 	}
 
 	/**
@@ -109,28 +109,58 @@ public class MultilanguageTextHelper {
 	 */
 	public static LanguageString getPreferredLanguageString(Map<Language, LanguageString> multilanguageText,
 	            List<Language> languages, boolean restrictToGivenLanguages) {
-
-		LanguageString languageString = null;
-		if(languages != null){
-			for(Language language : languages) {
-				languageString = multilanguageText.get(language);
-				if(languageString != null){
-					return languageString;
-				}
-			}
-		}
-		if (!restrictToGivenLanguages){
-        	languageString = multilanguageText.get(Language.DEFAULT());
-
-        	if(languageString == null && multilanguageText.size() > 0){
-        		Iterator<LanguageString> it = multilanguageText.values().iterator();
-        		if(it.hasNext()){
-        			languageString = it.next();
-        		}
-        	}
-		}
-		return languageString;
+		return getPreferredLanguageObject(multilanguageText, languages, restrictToGivenLanguages);
 	}
+
+	/**
+     * See {@link #getPreferredLanguageString(Map, List)}. If restrictToGivenLanguages is <code>true</code>
+     * a non-<code>null</code> result is returned if a language representation for one
+     * of the given languages exists. No default or arbitrary representation is used.
+     * @param lstringMap Map with LAnguate as key and LSTRNG as value
+     * @param languages the ordered list of preferred languages
+     * @param restrictToGivenLanguages flag to indicate if a fall-back language string should be used or not
+     * @return
+     * @return the best matching language string
+     */
+    public static <LSTRING> LSTRING getPreferredLanguageObject(Map<Language, LSTRING> lstringMap,
+                List<Language> languages) {
+        return getPreferredLanguageObject(lstringMap, languages, false);
+    }
+
+	/**
+     * See {@link #getPreferredLanguageString(Map, List)}. If restrictToGivenLanguages is <code>true</code>
+     * a non-<code>null</code> result is returned if a language representation for one
+     * of the given languages exists. No default or arbitrary representation is used.
+     * @param lstringMap Map with LAnguate as key and LSTRNG as value
+     * @param languages the ordered list of preferred languages
+     * @param restrictToGivenLanguages flag to indicate if a fall-back language string should be used or not
+	 * @return
+     * @return the best matching language string
+     */
+    public static <LSTRING> LSTRING getPreferredLanguageObject(Map<Language, LSTRING> lstringMap,
+                List<Language> languages, boolean restrictToGivenLanguages) {
+
+        LSTRING lstring = null;
+        if(languages != null){
+            for(Language language : languages) {
+                lstring = lstringMap.get(language);
+                if(lstring != null){
+                    return lstring;
+                }
+            }
+        }
+        if (!restrictToGivenLanguages){
+            lstring = lstringMap.get(Language.DEFAULT());
+
+            if(lstring == null && lstringMap.size() > 0){
+                Iterator<LSTRING> it = lstringMap.values().iterator();
+                if(it.hasNext()){
+                    lstring = it.next();
+                }
+            }
+        }
+        return lstring;
+    }
 
 	/**
 	 * Returns a {@link Set} of {@link Language Languages} that are contained in the given multi-language map

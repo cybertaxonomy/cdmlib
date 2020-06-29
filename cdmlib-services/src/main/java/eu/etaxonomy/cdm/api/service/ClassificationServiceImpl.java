@@ -966,10 +966,10 @@ public class ClassificationServiceImpl
         //children
         if(! isSynonym) {
             for (TaxonNodeDto childDto : children.getRecords()){
-                if (doChildren && childDto.getStatus().equals(TaxonStatus.Accepted)){
+                if (doChildren && childDto.getTaxonStatus().equals(TaxonStatus.Accepted)){
                     EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addChild(child);
-                }else if (doSynonyms && childDto.getStatus().isSynonym()){
+                }else if (doSynonyms && childDto.getTaxonStatus().isSynonym()){
                     EntityDTO<Synonym> child = new EntityDTO<>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addSynonym(child);
                 }

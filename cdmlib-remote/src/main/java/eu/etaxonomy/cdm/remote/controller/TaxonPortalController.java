@@ -110,6 +110,7 @@ public class TaxonPortalController extends TaxonController{
     public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "sources",
+            "statusNote",
             // taxon relations
 //            "relationsToThisName.fromTaxon.name",
             // the name
