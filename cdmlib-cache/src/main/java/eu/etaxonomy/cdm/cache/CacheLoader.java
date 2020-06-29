@@ -290,8 +290,7 @@ public class CacheLoader {
      */
     private <T extends CdmBase> T loadRecursive(T cdmEntity,  List<Object> alreadyVisitedEntities, boolean update) {
         if (cdmCacher.ignoreRecursiveLoad(cdmEntity)){
-            if (logger.isDebugEnabled()){logger.debug("ignore recursive load for " + cdmEntity.getClass() + "#" + cdmEntity.getId());}
-            return cdmEntity;
+            if (logger.isDebugEnabled()){logger.debug("recursive load for " + cdmEntity.getClass() + "#" + cdmEntity.getId() + " which is usually ignored by the cache");}
         }
         T cachedCdmEntity = putToCache(cdmEntity);
 
@@ -329,9 +328,13 @@ public class CacheLoader {
         CdmBase cdmEntityInSubGraph = getCdmBaseTypeFieldValue(deproxiedEntity, cachedCdmEntity, field, alreadyVisitedEntities, update);
         if(cdmEntityInSubGraph != null) {
             //checkForIdenticalCdmEntity(alreadyVisitedEntities, cdmEntityInSubGraph);
-            if(!entityAlreadyVisisted(alreadyVisitedEntities, cdmEntityInSubGraph)) {
-                if (logger.isDebugEnabled()){logger.debug("recursive loading object of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId());}
-                loadRecursive(cdmEntityInSubGraph, alreadyVisitedEntities, update);
+            if(!entityAlreadyVisisted(alreadyVisitedEntities, cdmEntityInSubGraph) ) {
+                if(cdmCacher.ignoreRecursiveLoad(cdmEntityInSubGraph)){
+                    if (logger.isDebugEnabled()){logger.debug("recursiveload of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId() + " ignored");}
+                }else{
+                    if (logger.isDebugEnabled()){logger.debug("recursive loading object of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId());}
+                    loadRecursive(cdmEntityInSubGraph, alreadyVisitedEntities, update);
+                }
             } else {
                 if (logger.isDebugEnabled()){logger.debug("object of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId() + " already visited");}
             }
