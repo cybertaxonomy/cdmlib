@@ -75,16 +75,16 @@ public class CacheLoader {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Object> T loadRecursive(T obj, List<Object> alreadyVisitedEntities, boolean update) {
+    private <T extends Object> T loadRecursiveAny(T obj, List<Object> alreadyVisitedEntities, boolean update) {
         if(obj == null) {
             return null;
         }
         if(obj instanceof CdmBase) {
             return (T) loadRecursive((CdmBase)obj, alreadyVisitedEntities, update);
         } else if (obj instanceof Map) {
-            return (T) load((Map<T,T>)obj, alreadyVisitedEntities, update);
+            return (T) loadRecursiveMap((Map<T,T>)obj, alreadyVisitedEntities, update);
         } else if (obj instanceof Collection) {
-            return (T) load((Collection<T>)obj, alreadyVisitedEntities, update);
+            return (T) loadRecursiveCollection((Collection<T>)obj, alreadyVisitedEntities, update);
         } else if (obj instanceof MergeResult) {
             return (T) loadRecursive((MergeResult<CdmBase>)obj, alreadyVisitedEntities, update);
         }
@@ -99,16 +99,16 @@ public class CacheLoader {
         if(isRecursiveEnabled && recursive) {
             if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity map");}
             List<Object> alreadyVisitedEntities = new ArrayList<>();
-            Map<T,T> cachedMap = load(map, alreadyVisitedEntities, update);
+            Map<T,T> cachedMap = loadRecursiveMap(map, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity map \n");}
             return cachedMap;
         } else {
-            return load(map, null, update);
+            return loadRecursiveMap(map, null, update);
         }
     }
 
-    private <T extends Object> Map<T,T> load(Map<T,T> map, List<Object> alreadyVisitedEntities, boolean update){
+    private <T extends Object> Map<T,T> loadRecursiveMap(Map<T,T> map, List<Object> alreadyVisitedEntities, boolean update){
 
         if(map == null || map.isEmpty()) {
             return map;
@@ -131,7 +131,7 @@ public class CacheLoader {
             if(alreadyVisitedEntities == null) {
                 result[i] = load(result[i], false, update);
             } else {
-                result[i] = loadRecursive(result[i], alreadyVisitedEntities, update);
+                result[i] = loadRecursiveAny(result[i], alreadyVisitedEntities, update);
             }
         }
         map.clear();
@@ -150,18 +150,18 @@ public class CacheLoader {
         if(isRecursiveEnabled && recursive) {
             if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity collection");}
             List<Object> alreadyVisitedEntities = new ArrayList<>();
-            Collection<T> cachedCollection = load(collection, alreadyVisitedEntities, update);
+            Collection<T> cachedCollection = loadRecursiveCollection(collection, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity collection \n");}
             loadedCollection = cachedCollection;
         } else {
-            loadedCollection = load(collection, null, update);
+            loadedCollection = loadRecursiveCollection(collection, null, update);
         }
         return loadedCollection;
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Object> Collection<T> load(Collection<T> collection, List<Object> alreadyVisitedEntities, boolean update) {
+    private <T extends Object> Collection<T> loadRecursiveCollection(Collection<T> collection, List<Object> alreadyVisitedEntities, boolean update) {
 
         if(collection == null || collection.isEmpty()) {
             return collection;
@@ -180,7 +180,7 @@ public class CacheLoader {
                 //AM: does this really ever happen?
                 result[count] = load(obj, false, update);
             } else {
-                result[count] = loadRecursive(obj, alreadyVisitedEntities, update);
+                result[count] = loadRecursiveAny(obj, alreadyVisitedEntities, update);
             }
 
             count++;
@@ -201,9 +201,9 @@ public class CacheLoader {
         return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
-    public MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult, List<Object> alreadyVisitedEntities, boolean update) {
+    private MergeResult<CdmBase> loadRecursive(MergeResult<CdmBase> mergeResult, List<Object> alreadyVisitedEntities, boolean update) {
         CdmBase cdmBase = loadRecursive(mergeResult.getMergedEntity(), alreadyVisitedEntities, update);
-        loadRecursive(mergeResult.getNewEntities(), alreadyVisitedEntities, update);
+        loadRecursiveCollection(mergeResult.getNewEntities(), alreadyVisitedEntities, update);
         return new MergeResult<>(cdmBase, mergeResult.getNewEntities());
     }
 
@@ -249,7 +249,7 @@ public class CacheLoader {
         if(isRecursiveEnabled && recursive) {
             if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId());}
             List<Object> alreadyVisitedEntities = new ArrayList<>();
-            T cb =  loadRecursive(cdmEntity, alreadyVisitedEntities, update);
+            T cb = loadRecursive(cdmEntity, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + "\n");}
             loadedCdmBase =  cb;
@@ -300,7 +300,6 @@ public class CacheLoader {
 
         // start by getting the fields from the cdm entity
         //TODO improve generics for deproxyOrNull, probably need to split the method
-        @SuppressWarnings("unchecked")
         T deproxiedEntity = (T)ProxyUtils.deproxyOrNull(cdmEntity);
         if(deproxiedEntity == null){
             if (logger.isDebugEnabled()){logger.debug("ignoring uninitlialized proxy " + cdmEntity.getClass() + "#" + cdmEntity.getId());}
@@ -430,9 +429,9 @@ public class CacheLoader {
                         }
                     }
                 } else if(obj instanceof Map && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
-                    loadRecursive((Map<?,?>)obj, alreadyVisitedEntities, update);
+                    loadRecursiveMap((Map<Object,Object>)obj, alreadyVisitedEntities, update);
                 } else if(obj instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
-                    loadRecursive((Collection<?>)obj, alreadyVisitedEntities, update);
+                    loadRecursiveCollection((Collection<?>)obj, alreadyVisitedEntities, update);
                 }
             }
             // we return the original cdm entity in the sub graph because we
