@@ -261,10 +261,13 @@ public class CacheLoader {
         if(isRecursiveEnabled && recursive) {
             if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId());}
             List<Object> alreadyVisitedEntities = new ArrayList<>();
-            T cb = loadRecursive(cdmEntity, alreadyVisitedEntities, update);
+            loadedCdmBase = loadRecursive(cdmEntity, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + "\n");}
-            loadedCdmBase =  cb;
+        } else if (update){
+            if (logger.isDebugEnabled()){logger.debug("---- update cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId());}
+            loadedCdmBase = loadRecursive(cdmEntity, null, update);
+            if (logger.isDebugEnabled()){logger.debug("---- ending update for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + "\n");}
         } else {
             loadedCdmBase = putToCache(cdmEntity);
         }
@@ -317,7 +320,9 @@ public class CacheLoader {
             String className = deproxiedEntity.getClass().getName();
             CdmModelFieldPropertyFromClass classFields = getFromCdmlibModelCache(className);
             if(classFields != null) {
-                alreadyVisitedEntities.add(cdmEntity);
+                if (alreadyVisitedEntities != null){
+                    alreadyVisitedEntities.add(cdmEntity);
+                }
                 List<String> fields = classFields.getFields();
                 for(String field : fields) {
                     loadField(alreadyVisitedEntities, update, cachedCdmEntity, deproxiedEntity, field);
@@ -340,9 +345,13 @@ public class CacheLoader {
         // retrieve the actual object corresponding to the field.
         // this object will be either a CdmBase or a Collection / Map
         // with CdmBase as the generic type
-        CdmBase cdmEntityInSubGraph = getCdmBaseTypeFieldValue(deproxiedEntity, cachedCdmEntity, field, alreadyVisitedEntities, update);
-        if(cdmEntityInSubGraph != null) {
-            //checkForIdenticalCdmEntity(alreadyVisitedEntities, cdmEntityInSubGraph);
+        Object fieldValue = getAndUpdateFieldVale(deproxiedEntity, cachedCdmEntity, field, alreadyVisitedEntities, update);
+        if (fieldValue instanceof Map && !entityAlreadyVisisted(alreadyVisitedEntities, fieldValue)) {
+            loadRecursiveMap((Map<Object,Object>)fieldValue, alreadyVisitedEntities, update);
+        } else if(fieldValue instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, fieldValue)) {
+            loadRecursiveCollection((Collection<?>)fieldValue, alreadyVisitedEntities, update);
+        } else if (fieldValue instanceof CdmBase) {
+            CdmBase cdmEntityInSubGraph = (CdmBase)fieldValue;
             if(!entityAlreadyVisisted(alreadyVisitedEntities, cdmEntityInSubGraph) ) {
                 if(cdmCacher.ignoreRecursiveLoad(cdmEntityInSubGraph)){
                     if (logger.isDebugEnabled()){logger.debug("recursive load of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId() + " ignored");}
@@ -353,6 +362,8 @@ public class CacheLoader {
             } else {
                 if (logger.isDebugEnabled()){logger.debug("object of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId() + " already visited");}
             }
+        } else if (fieldValue != null){
+            throw new IllegalArgumentException("Unhandled field value of type " + fieldValue.getClass().getName() + " for field " + field);
         }
     }
 
@@ -462,7 +473,7 @@ public class CacheLoader {
     }
 
     private boolean entityAlreadyVisisted(List<Object> objList, Object objToCompare) {
-        if(objToCompare != null) {
+        if(objList != null && objToCompare != null) {
             for(Object obj : objList) {
                 if(obj == objToCompare) {
                     return true;
