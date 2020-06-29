@@ -228,7 +228,7 @@ public class CacheLoader {
      *
      * For in depth details on the mechanism see
      * {@link #loadRecursive(CdmBase, List, boolean)} and
-     * {@link #getAndUpdateFieldVale(CdmBase, CdmBase, String, List, boolean)}
+     * {@link #getAndUpdateFieldValue(CdmBase, CdmBase, String, List, boolean)}
      *
      * @param cdmEntity
      *            the entity to be put into the cache
@@ -287,7 +287,7 @@ public class CacheLoader {
      * Load the <code>cdmEntity</code> graph recursively into the cache and
      * updates entities which are already in the cache depending on the value of
      * <code>update</code>, for more in depth details on this mechanism see
-     * {@link #getAndUpdateFieldVale(CdmBase, CdmBase, String, List, boolean)}.
+     * {@link #getAndUpdateFieldValue(CdmBase, CdmBase, String, List, boolean)}.
      *
      * @param cdmEntity
      *            the entity to be loaded into the cache
@@ -344,12 +344,9 @@ public class CacheLoader {
         // retrieve the actual object corresponding to the field.
         // this object will be either a CdmBase or a Collection / Map
         // with CdmBase as the generic type
-        Object fieldValue = getAndUpdateFieldVale(deproxiedEntity, cachedCdmEntity, field, alreadyVisitedEntities, update);
-        if (fieldValue instanceof Map && !entityAlreadyVisisted(alreadyVisitedEntities, fieldValue)) {
-            loadRecursiveMap((Map<Object,Object>)fieldValue, alreadyVisitedEntities, update);
-        } else if(fieldValue instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, fieldValue)) {
-            loadRecursiveCollection((Collection<?>)fieldValue, alreadyVisitedEntities, update);
-        } else if (fieldValue instanceof CdmBase) {
+        Object fieldValue = getAndUpdateFieldValue(deproxiedEntity, cachedCdmEntity, field, alreadyVisitedEntities, update);
+        //Map and Collection are loaded recursivly in getAndUpdateFieldValue already
+        if (fieldValue instanceof CdmBase) {
             CdmBase cdmEntityInSubGraph = (CdmBase)fieldValue;
             if(!entityAlreadyVisisted(alreadyVisitedEntities, cdmEntityInSubGraph) ) {
                 if(cdmCacher.ignoreRecursiveLoad(cdmEntityInSubGraph)){
@@ -389,7 +386,7 @@ public class CacheLoader {
      *            them to the value of the cdm entity being loaded
      * @return
      */
-    private CdmBase getAndUpdateFieldVale(CdmBase cdmEntity,
+    private CdmBase getAndUpdateFieldValue(CdmBase cdmEntity,
             CdmBase cachedCdmEntity,
             String fieldName,
             List<Object> alreadyVisitedEntities,
@@ -456,10 +453,10 @@ public class CacheLoader {
                             return null;
                         }
                     }
-//                } else if(obj instanceof Map && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
-//                    loadRecursiveMap((Map<Object,Object>)obj, alreadyVisitedEntities, update);
-//                } else if(obj instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
-//                    loadRecursiveCollection((Collection<?>)obj, alreadyVisitedEntities, update);
+                } else if(obj instanceof Map && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
+                    loadRecursiveMap((Map<Object,Object>)obj, alreadyVisitedEntities, update);
+                } else if(obj instanceof Collection && !entityAlreadyVisisted(alreadyVisitedEntities, obj)) {
+                    loadRecursiveCollection((Collection<?>)obj, alreadyVisitedEntities, update);
                 }
             }
             // we return the original cdm entity in the sub graph because we
