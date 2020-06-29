@@ -260,17 +260,29 @@ public class CacheLoader {
         if(isRecursiveEnabled && recursive) {
             if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId());}
             List<Object> alreadyVisitedEntities = new ArrayList<>();
-            loadedCdmBase = loadRecursive(cdmEntity, alreadyVisitedEntities, update);
+            T cb = loadRecursive(cdmEntity, alreadyVisitedEntities, update);
             alreadyVisitedEntities.clear();
             if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + "\n");}
-        } else if (update){
-            if (logger.isDebugEnabled()){logger.debug("---- update cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId());}
-            loadedCdmBase = loadRecursive(cdmEntity, null, update);
-            if (logger.isDebugEnabled()){logger.debug("---- ending update for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + "\n");}
+            loadedCdmBase =  cb;
         } else {
             loadedCdmBase = putToCache(cdmEntity);
         }
         return loadedCdmBase;
+
+//        if(isRecursiveEnabled && recursive) {
+//            if (logger.isDebugEnabled()){logger.debug("---- starting recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId());}
+//            List<Object> alreadyVisitedEntities = new ArrayList<>();
+//            loadedCdmBase = loadRecursive(cdmEntity, alreadyVisitedEntities, update);
+//            alreadyVisitedEntities.clear();
+//            if (logger.isDebugEnabled()){logger.debug("---- ending recursive load for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + "\n");}
+//        } else if (update){
+//            if (logger.isDebugEnabled()){logger.debug("---- update cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId());}
+//            loadedCdmBase = loadRecursive(cdmEntity, null, update);
+//            if (logger.isDebugEnabled()){logger.debug("---- ending update for cdm entity " + cdmEntity.getClass().getSimpleName() + " with id " + cdmEntity.getId() + "\n");}
+//        } else {
+//            loadedCdmBase = putToCache(cdmEntity);
+//        }
+//        return loadedCdmBase;
 
     }
 
@@ -346,7 +358,7 @@ public class CacheLoader {
         // with CdmBase as the generic type
         Object fieldValue = getAndUpdateFieldValue(deproxiedEntity, cachedCdmEntity, field, alreadyVisitedEntities, update);
         //Map and Collection are loaded recursivly in getAndUpdateFieldValue already
-        if (fieldValue instanceof CdmBase) {
+        if (fieldValue != null) {
             CdmBase cdmEntityInSubGraph = (CdmBase)fieldValue;
             if(!entityAlreadyVisisted(alreadyVisitedEntities, cdmEntityInSubGraph) ) {
                 if(cdmCacher.ignoreRecursiveLoad(cdmEntityInSubGraph)){
@@ -358,8 +370,8 @@ public class CacheLoader {
             } else {
                 if (logger.isDebugEnabled()){logger.debug("object of type " + cdmEntityInSubGraph.getClass().getSimpleName() + " with id " + cdmEntityInSubGraph.getId() + " already visited");}
             }
-        } else if (fieldValue != null){
-            throw new IllegalArgumentException("Unhandled field value of type " + fieldValue.getClass().getName() + " for field " + field);
+//        } else if (fieldValue != null){
+//            throw new IllegalArgumentException("Unhandled field value of type " + fieldValue.getClass().getName() + " for field " + field);
         }
     }
 
