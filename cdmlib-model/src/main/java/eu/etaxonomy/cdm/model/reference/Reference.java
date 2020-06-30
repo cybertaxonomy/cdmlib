@@ -885,8 +885,6 @@ public class Reference
         }
     }
 
-
-
 	@Override
     public int getParsingProblem(){
 		return this.parsingProblem;

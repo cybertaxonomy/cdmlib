@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2015 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.cache;
 
 import javax.sql.DataSource;
@@ -15,7 +23,6 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
  * When changing this class please also adapt https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions
  *
  * @author a.mueller
- *
  */
 public class CdmModelCacherConnectionProvider extends DatasourceConnectionProviderImpl{
 	private static final long serialVersionUID = 454393966637126346L;
@@ -32,7 +39,4 @@ public class CdmModelCacherConnectionProvider extends DatasourceConnectionProvid
         CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", username, "", path);
         return dataSource;
 	}
-
-
-
 }

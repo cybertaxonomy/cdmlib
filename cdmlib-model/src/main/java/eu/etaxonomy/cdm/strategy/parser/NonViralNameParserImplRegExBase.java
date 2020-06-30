@@ -60,13 +60,13 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\\-]+";   //a-z + diaeresis for ieo
     protected static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
 
-
    //years
     protected static String month = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
-    protected static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";                      // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits
-    protected static String correctYearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
-    								//+ "(" + month + ")?)" ;                 // optional month
-
+    protected static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";       // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits
+    protected static String datePeriod = TimePeriodParser.strDateWithMonthesPeriod;
+    protected static String SEP = TimePeriodParser.SEP;
+    protected static String yearPeriod = singleYear + "("+ fWs + SEP + fWs + singleYear + ")?";
+    protected static String correctYearPhrase = "(" + yearPeriod + "|" + datePeriod + ")" ;
 
     public static String verbStart = TimePeriodParser.verbatimStart;
     public static String verbEnd = TimePeriodParser.verbatimEnd;

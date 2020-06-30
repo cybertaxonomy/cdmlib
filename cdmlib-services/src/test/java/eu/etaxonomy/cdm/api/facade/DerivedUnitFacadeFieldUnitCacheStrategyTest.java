@@ -41,9 +41,9 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.mueller
  * @since 03.06.2010
  */
-
 public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldUnitCacheStrategyTest.class);
 
 	DerivedUnit specimen;
@@ -90,12 +90,8 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 	FieldUnit firstFieldObject;
 	Media media1 = Media.NewInstance();
 
-
 //****************************** SET UP *****************************************/
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -160,14 +156,11 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 		firstDerivationEvent.addOriginal(firstFieldObject);
 		existingGatheringEvent = GatheringEvent.NewInstance();
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
-
 	}
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
-	 */
+
 	@Test
 	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue.";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue.";
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
@@ -184,8 +177,5 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 		specimenFacade.setAbsoluteElevationText(altitudeTextM);
 		expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeTextM);
 		Assert.assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
-
 	}
-
-
 }

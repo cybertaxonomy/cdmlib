@@ -183,7 +183,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	public final void testGetFullTitleCache() {
 		assertNull("Full title cache of null object should return null", strategy.getFullTitleCache(null));
 		//NOTE: Unclear if the date part should contain the full date or only the year. Undefined Behaviour.
-		assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 2.4.1968, nom. illeg.", strategy.getFullTitleCache(speciesName));
+		assertEquals("Abies alba app phrase, Gard. Dict., ed. 8, 1. 2 Apr 1968, nom. illeg.", strategy.getFullTitleCache(speciesName));
 
 //		assertNull(subSpeciesNameString, strategy.getFullTitleCache(null));
 //		assertEquals("Abies alba app phrase L. Gard. Dict. ed. 8, 1. 1768, nom. illeg.", strategy.getFullTitleCache(speciesName));

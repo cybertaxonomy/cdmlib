@@ -34,14 +34,14 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
-import org.joda.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.common.TimePeriodFormatter;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 
 /**
  * @author m.doering
@@ -69,9 +69,13 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     public static final DateTimeFieldType HOUR_TYPE = DateTimeFieldType.hourOfDay();
     public static final DateTimeFieldType MINUTE_TYPE = DateTimeFieldType.minuteOfHour();
 
+    public static final String SEP = UTF8.EN_DASH.toString(); //maybe this will be moved to a formatter class in future
+
     public static final Partial CONTINUED = new Partial
             (new DateTimeFieldType[]{YEAR_TYPE, MONTH_TYPE, DAY_TYPE},
              new int[]{9999, 11, 30});
+
+    private static TimePeriodFormatter formatter = TimePeriodFormatter.NewDefaultInstance();
 
     @XmlElement(name = "Start")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -502,51 +506,20 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
      */
     @Override
     public String toString(){
-        String result = null;
-        if ( StringUtils.isNotBlank(this.getFreeText())){
-            result = this.getFreeText();
-        }else{
-            result = getTimePeriod();
-        }
-        return result;
+        return formatter.format(this);
     }
 
     /**
      * Returns the concatenation of <code>start</code> and <code>end</code>
      */
     public String getTimePeriod(){
-        String result = null;
-        DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
-        String strStart = start != null ? start.toString(formatter): null;
-        if (isContinued()){
-            result = CdmUtils.concat("", strStart, "+");
-        }else{
-            String strEnd = end != null ? end.toString(formatter): null;
-            result = CdmUtils.concat("-", strStart, strEnd);
-        }
-
-        return result;
+        return formatter.getTimePeriod(this);
     }
 
     @Transient
     public String getYear(){
-        String result = "";
-        if (getStartYear() != null){
-            result += String.valueOf(getStartYear());
-            if (getEndYear() != null){
-                result += "-" + String.valueOf(getEndYear());
-            }
-        }else{
-            if (getEndYear() != null){
-                result += String.valueOf(getEndYear());
-            }
-        }
-        if (isContinued()){
-            result += "+";
-        }
-        return result;
+        return formatter.getYear(this);
     }
-
 
     @Override
     public boolean checkEmpty() {
@@ -563,7 +536,6 @@ public class TimePeriod implements Cloneable, Serializable, ICheckEmpty {
     }
 
 //*********** EQUALS **********************************/
-
 
     @Override
     public boolean equals(Object obj) {

@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.term.TermBase;
@@ -29,12 +31,12 @@ public class TermBaseAutoInitializer extends AutoPropertyInitializer<TermBase> {
     }
 
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
     	String result = String.format(" LEFT JOIN FETCH %s.representations ", beanAlias);
     	if (RelationshipTermBase.class.isAssignableFrom(clazz)){
             result += String.format(" LEFT JOIN FETCH %s.inverseRepresentations ", beanAlias);
         }
-    	return result;
+    	return Optional.of(result);
     }
 
 }

@@ -395,7 +395,7 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(distribution);
 
 		//TemporalData
-		Feature floweringSeason = Feature.FLOWERING_SEASON();
+		Feature floweringSeason = Feature.FLOWERING_PERIOD();
         TemporalData temporalData = TemporalData.NewInstance(ExtendedTimePeriod.NewExtendedMonthInstance(5, 8, 4, 9));
         temporalData.setFeature(floweringSeason);
         temporalData.getPeriod().setFreeText("My temporal text");

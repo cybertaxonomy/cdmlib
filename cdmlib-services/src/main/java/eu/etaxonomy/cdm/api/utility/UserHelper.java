@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
  *
  * @author a.kohlbecker
  * @since May 23, 2017
- *
  */
 public interface UserHelper {
 
@@ -51,7 +50,6 @@ public interface UserHelper {
     boolean userIs(RoleProbe roleProbe);
 
     /**
-     *
      * @param username
      * @param cdmEntity
      * @param crud
@@ -62,7 +60,6 @@ public interface UserHelper {
     public CdmAuthority createAuthorityFor(String username, CdmBase cdmEntity, EnumSet<CRUD> crud, String property);
 
     /**
-     *
      * @param username
      * @param cdmType
      * @param entitiyId
@@ -73,9 +70,7 @@ public interface UserHelper {
      */
     public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, Integer entitiyId, EnumSet<CRUD> crud, String property);
 
-
-    /**
-    *
+   /**
     * @param username
     * @param cdmType
     * @param entitiyUuid
@@ -85,7 +80,6 @@ public interface UserHelper {
     * <code>null</code> in case the operation failed of if the user was already granted with this authority.
     */
    public CdmAuthority createAuthorityFor(String username, Class<? extends CdmBase> cdmType, UUID entitiyUuid, EnumSet<CRUD> crud, String property);
-
 
     /**
      * @param cdmType
@@ -116,46 +110,23 @@ public interface UserHelper {
 
     /**
      * Scans the currently authenticated user for CdmAuthorities which match the given parameters
-     *
-     * @param cdmEntity
-     * @param crud
-     * @return
      */
     public Collection<CdmAuthority> findUserPermissions(CdmBase cdmEntity, EnumSet<CRUD> crud);
 
     /**
      * Scans the currently authenticated user for CdmAuthorities which match the given parameters
-     *
-     * @param cdmType
-     * @param crud
-     * @return
      */
     public <T extends CdmBase> Collection<CdmAuthority> findUserPermissions(Class<T> cdmType, EnumSet<CRUD> crud);
 
-    /**
-     * @param newAuthority
-     */
     public void removeAuthorityForCurrentUser(CdmAuthority newAuthority);
 
-    /**
-     * @param username
-     * @param newAuthority
-     */
     public void removeAuthorityForCurrentUser(String username, CdmAuthority newAuthority);
 
-    /**
-     *
-     */
     public void logout();
 
     void setSecurityContextAccess(SecurityContextAccess securityContextAccess);
 
-    /**
-     * @return
-     */
     public Authentication getAuthentication();
 
     public CdmUserHelper withCache(ICdmEntityUuidCacher iCdmCacher);
-
-
 }

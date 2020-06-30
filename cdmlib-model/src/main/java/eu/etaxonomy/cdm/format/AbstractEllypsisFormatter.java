@@ -109,20 +109,14 @@ public abstract class AbstractEllypsisFormatter<T extends CdmBase> implements El
         }
     }
 
-
     public static class EllipsisData {
         public String original;
         public String truncated;
-        /**
-         * @param original
-         * @param truncated
-         */
+
         public EllipsisData(String original, String truncated) {
             super();
             this.original = original;
             this.truncated = truncated;
         }
     }
-
-
 }

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -189,6 +190,14 @@ public class ClassificationServiceImpl
     }
 
     @Override
+    public List<TaxonNodeDto> listRankSpecificRootNodeDtos(Classification classification, TaxonNode subtree,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, NodeDtoSortMode sortMode,
+            List<String> propertyPaths) {
+        List<TaxonNode> list = listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
+        return list.stream().filter(e ->  e != null).map(e -> new TaxonNodeDto(e)).sorted(sortMode.newComparator()).collect(Collectors.toList());
+    }
+
+    @Override
     public Pager<TaxonNode> pageRankSpecificRootNodes(Classification classification, Rank rank,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
         return pageRankSpecificRootNodes(classification, null, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
@@ -308,6 +317,14 @@ public class ClassificationServiceImpl
     }
 
     @Override
+    public List<TaxonNodeDto> loadTreeBranchDTOsToTaxon(Taxon taxon, Classification classification,
+            TaxonNode subtree, Rank baseRank,
+            boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException {
+        List<TaxonNode> list = loadTreeBranchToTaxon(taxon, classification, subtree, baseRank, includeUnpublished, propertyPaths);
+        return list.stream().map(e -> new TaxonNodeDto(e)).collect(Collectors.toList());
+    }
+
+    @Override
     public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, Classification classification,
             TaxonNode subtree, Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
@@ -362,6 +379,24 @@ public class ClassificationServiceImpl
                 taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
         Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         return results;
+    }
+
+    @Override
+    public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
+            Integer pageSize, Integer pageIndex, NodeDtoSortMode sortMode, List<String> propertyPaths) throws FilterException{
+        Classification classification = dao.load(classificationUuid);
+        Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
+        TaxonNode subtree = taxonNodeDao.load(subtreeUuid);
+        if (subtreeUuid != null && subtree == null){
+            throw new FilterException("Taxon node for subtree filter can not be found in database", true);
+        }
+
+        List<TaxonNode> results = dao.listChildrenOf(
+                taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
+        Comparator<TaxonNodeDto> comparator = sortMode.newComparator();
+        // TODO order during the hibernate query in the dao?
+        List<TaxonNodeDto> dtos = results.stream().map(e -> new TaxonNodeDto(e)).sorted(comparator).collect(Collectors.toList());
+        return dtos;
     }
 
     @Override
@@ -848,6 +883,7 @@ public class ClassificationServiceImpl
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonBaseUuid,
             Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
             NodeSortMode sortMode) {
+
         TaxonInContextDTO result = new TaxonInContextDTO();
 
         TaxonBase<?> taxonBase = taxonDao.load(taxonBaseUuid);
@@ -930,10 +966,10 @@ public class ClassificationServiceImpl
         //children
         if(! isSynonym) {
             for (TaxonNodeDto childDto : children.getRecords()){
-                if (doChildren && childDto.getStatus().equals(TaxonStatus.Accepted)){
+                if (doChildren && childDto.getTaxonStatus().equals(TaxonStatus.Accepted)){
                     EntityDTO<Taxon> child = new EntityDTO<Taxon>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addChild(child);
-                }else if (doSynonyms && childDto.getStatus().isSynonym()){
+                }else if (doSynonyms && childDto.getTaxonStatus().isSynonym()){
                     EntityDTO<Synonym> child = new EntityDTO<>(childDto.getTaxonUuid(), childDto.getTitleCache());
                     result.addSynonym(child);
                 }

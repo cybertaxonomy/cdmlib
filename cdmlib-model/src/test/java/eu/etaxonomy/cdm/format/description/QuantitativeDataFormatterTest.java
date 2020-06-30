@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.format;
+package eu.etaxonomy.cdm.format.description;
 
 import java.math.BigDecimal;
 
@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.format.ICdmFormatter;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
 import eu.etaxonomy.cdm.model.common.Language;

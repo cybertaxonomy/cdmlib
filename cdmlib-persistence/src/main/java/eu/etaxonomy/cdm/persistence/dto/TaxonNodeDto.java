@@ -9,10 +9,14 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -53,7 +57,9 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     /**
      * The status of the TaxonNode entity
      */
-    private TaxonNodeStatus nodeStatus;
+    private TaxonNodeStatus status;
+
+    private Map<Language, String> statusNote = new HashMap<>();
 
 
     /**
@@ -62,7 +68,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     private String rankLabel = null;
     private Integer rankOrderIndex = null;
 
-    private TaxonStatus status;
+    private TaxonStatus taxonStatus;
 
     private UUID classificationUUID = null;
     private UUID parentUUID = null;
@@ -106,7 +112,11 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         }
         if (taxonNode != null){
             taxonomicChildrenCount = taxonNode.getCountChildren();
-            nodeStatus = taxonNode.getStatus();
+            status = taxonNode.getStatus();
+
+            for(Language lang : taxonNode.getStatusNote().keySet()) {
+                statusNote.put(lang, taxonNode.getStatusNote(lang));
+            }
 
             treeIndex = taxonNode.treeIndex();
             try{
@@ -125,7 +135,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             }
 
         }
-        status = TaxonStatus.Accepted;
+        taxonStatus = TaxonStatus.Accepted;
     }
 
     public TaxonNodeDto(Synonym synonym, boolean isHomotypic) {
@@ -139,7 +149,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
         rankLabel = synonym.getNullSafeRank() != null ? synonym.getNullSafeRank().getLabel() : null;
         rankOrderIndex =synonym.getNullSafeRank() != null ? synonym.getNullSafeRank().getOrderIndex() : null;
-        status = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
+        taxonStatus = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
         classificationUUID = null;
 
 
@@ -162,28 +172,28 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return taggedTitle;
     }
 
-    public TaxonNodeStatus getNodeStatus() {
-        return nodeStatus;
+    public TaxonNodeStatus getStatus() {
+        return status;
     }
 
     public boolean isUnplaced() {
-        return nodeStatus == null ? false : nodeStatus.equals(TaxonNodeStatus.UNPLACED);
+        return status == null ? false : status.equals(TaxonNodeStatus.UNPLACED);
     }
 
     public boolean isExcluded() {
-        return nodeStatus == null ? false : nodeStatus.equals(TaxonNodeStatus.EXCLUDED);
+        return status == null ? false : status.equals(TaxonNodeStatus.EXCLUDED);
     }
 
     public boolean isDoubtful() {
-        return nodeStatus == null ? false : nodeStatus.equals(TaxonNodeStatus.DOUBTFUL);
+        return status == null ? false : status.equals(TaxonNodeStatus.DOUBTFUL);
     }
 
     public String getRankLabel() {
         return rankLabel;
     }
 
-    public TaxonStatus getStatus() {
-        return status;
+    public TaxonStatus getTaxonStatus() {
+        return taxonStatus;
     }
 
     public UUID getClassificationUUID() {
@@ -234,6 +244,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         }
     }
 
-
+    public Map<Language, String> getStatusNote() {
+        return Collections.unmodifiableMap(statusNote);
+    }
 
 }

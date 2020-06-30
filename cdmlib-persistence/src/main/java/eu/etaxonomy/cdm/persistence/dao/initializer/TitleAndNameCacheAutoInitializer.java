@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -87,7 +89,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
     }
 
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
 
         String result = "";
         if (TaxonName.class.isAssignableFrom(clazz)){
@@ -106,9 +108,8 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
 
         // throw an exception since LEFT JOIN FETCH is not really working for titleCaches
         // TODO test if the LEFT JOIN FETCHes are at least working for TaxonName and NonViralName
-        throw new Exception();
+        return Optional.empty();
 
-//        return result;
     }
 
 

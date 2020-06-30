@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
@@ -29,13 +28,12 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
-import org.joda.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import eu.etaxonomy.cdm.format.common.ExtendedTimePeriodFormatter;
 import eu.etaxonomy.cdm.hibernate.search.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 
 /**
  * TimePeriod class with extended time period for "extreme" phases
@@ -55,6 +53,8 @@ public class ExtendedTimePeriod extends TimePeriod {
     private static final long serialVersionUID = -6543644293635460526L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ExtendedTimePeriod.class);
+
+    private static ExtendedTimePeriodFormatter formatter = ExtendedTimePeriodFormatter.NewDefaultInstance();
 
     @XmlElement(name = "ExtremeStart")
     @XmlJavaTypeAdapter(value = PartialAdapter.class)
@@ -305,21 +305,8 @@ public class ExtendedTimePeriod extends TimePeriod {
      */
       @Override
       public String toString(){
-         if (StringUtils.isNotBlank(this.getFreeText())){
-             return this.getFreeText();
-         }else{
-             String result = super.getTimePeriod();
-             DateTimeFormatter formatter = TimePeriodPartialFormatter.NewInstance();
-             if (extremeStart != null){
-                 result = "(" + extremeStart.toString(formatter) +"-)" + result;
-             }
-             if (getExtremeEnd() != null){
-                 result += "(-" + getExtremeEnd().toString(formatter)+")";
-             }
-             return result;
-
-         }
-    }
+         return formatter.format(this);
+     }
 
 //*********** CLONE **********************************/
 

@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2015 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.cache;
 
 import java.io.File;
@@ -28,7 +36,6 @@ import org.hibernate.property.access.spi.Getter;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
-
 /**
  * This class is serializing and deserializing the CDM model for performance purposes.
  * To serialize see comments on {@link #main(String[])} and on
@@ -46,7 +53,6 @@ public class CdmModelCacher {
     public static final String CDM_MAP_SER_FILE = "cdm.map.ser";
     public static final String CDM_MAP_SER_FOLDER = "/eu/etaxonomy/cdm/mappings/";
     public static final String CDM_MAP_SER_FILE_PATH = CDM_MAP_SER_FOLDER + CDM_MAP_SER_FILE;
-
 
     public void cacheGetterFields(Cache cache) throws IOException, ClassNotFoundException, URISyntaxException {
         Map<String, CdmModelFieldPropertyFromClass> modelClassMap = loadModelClassMap();
@@ -78,7 +84,6 @@ public class CdmModelCacher {
         return modelClassMap;
     }
 
-
     public Map<String, CdmModelFieldPropertyFromClass> generateModelClassMap() {
 
     	// A SessionFactory is set up once for an application!
@@ -98,7 +103,6 @@ public class CdmModelCacher {
         	Map<String, ClassMetadata> classMetaDataMap = sessionFactory.getAllClassMetadata();
 //        	Metadata metadata = new MetadataSources( registry ).getMetadataBuilder().applyImplicitNamingStrategy( ImplicitNamingStrategyJpaCompliantImpl.INSTANCE ).build();
 
-
             for(ClassMetadata classMetaData : classMetaDataMap.values()) {
             	Class<?> mappedClass = classMetaData.getMappedClass();
 
@@ -117,11 +121,8 @@ public class CdmModelCacher {
     		StandardServiceRegistryBuilder.destroy( registry );
     		e.printStackTrace();
     	}
-
-
         return modelClassMap;
     }
-
 
     public static Configuration buildConfiguration(String hibernateConfigFilePath) {
         Configuration configuration = new Configuration().configure(hibernateConfigFilePath);
@@ -148,8 +149,6 @@ public class CdmModelCacher {
         }
     }
 
-
-
     public static void main(String argv[]) {
 
         // To re-create the serialised cdm map run,
@@ -157,7 +156,6 @@ public class CdmModelCacher {
         // in the eu.etaxonomy.taxeditor.cdmlib project root dir
     	// See also https://dev.e-taxonomy.eu/redmine/projects/edit/wiki/TaxonomicEditorDevelopersGuide#Model-Change-Actions
     	//Note AM: does not fully work for me, but running the main from the IDE works.
-
 
         CdmModelCacher cdmModelCacher = new CdmModelCacher();
         Map<String, CdmModelFieldPropertyFromClass> modelClassMap = cdmModelCacher.generateModelClassMap();
@@ -178,6 +176,5 @@ public class CdmModelCacher {
         }catch(Exception ex){
             ex.printStackTrace();
         }
-
     }
 }

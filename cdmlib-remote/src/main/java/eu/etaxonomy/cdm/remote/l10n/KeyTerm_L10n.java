@@ -11,18 +11,18 @@ package eu.etaxonomy.cdm.remote.l10n;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.term.IEnumTerm;
+import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 /**
  * @author a.kohlbecker
  * @since May 28, 2020
  */
-public class EnumTerm_L10n<T extends IEnumTerm<?>> {
+public class KeyTerm_L10n<T extends IKeyTerm> {
 
-    private T enumTerm;
+    private T keyTerm;
 
-    public EnumTerm_L10n(T enumTerm) {
-        this.enumTerm = enumTerm;
+    public KeyTerm_L10n(T enumTerm) {
+        this.keyTerm = enumTerm;
     }
 
     public String localizedMessage() {
@@ -31,13 +31,13 @@ public class EnumTerm_L10n<T extends IEnumTerm<?>> {
         String message_L10n = null;
         if(languages != null){
             for(Language language : languages) {
-                message_L10n = enumTerm.getMessage(language);
+                message_L10n = keyTerm.getMessage(language);
                 if(message_L10n != null){
                     return message_L10n;
                 }
             }
         }
-        message_L10n = enumTerm.getMessage();
+        message_L10n = keyTerm.getMessage();
 
         return message_L10n;
     }

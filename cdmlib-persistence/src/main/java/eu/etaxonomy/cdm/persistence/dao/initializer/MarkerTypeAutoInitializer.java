@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import eu.etaxonomy.cdm.model.common.Marker;
 
 /**
@@ -25,10 +27,10 @@ public class MarkerTypeAutoInitializer extends AutoPropertyInitializer<Marker> {
     public void initialize(Marker bean) {
         beanInitializer.initializeInstance(bean.getMarkerType());
     }
-    
+
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
-    	return String.format(" LEFT JOIN FETCH %s.markerType ", beanAlias); 
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return Optional.of(String.format(" LEFT JOIN FETCH %s.markerType ", beanAlias));
     }
 
 }

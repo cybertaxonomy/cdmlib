@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.format.description;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -30,12 +29,8 @@ public class CategoricalDataFormatter
     }
 
     @Override
-    public String doFormat(CategoricalData catData) {
-
+    protected String doFormat(CategoricalData catData, List<Language> preferredLanguages) {
         List<StateData> stateDatas = catData.getStateData();
-         //TODO add as method argument
-        List<Language> preferredLanguages = new ArrayList<>();
-        preferredLanguages.add(Language.DEFAULT());
         String stateDataText = getStateDatasText(stateDatas, preferredLanguages);
         return stateDataText;
     }

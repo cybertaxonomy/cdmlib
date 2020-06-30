@@ -20,10 +20,9 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  *
  * @author cmathew
  */
+public abstract class CdmCacherBase implements ICdmUuidCacher {
 
-public abstract class CdmCacher implements ICdmUuidCacher {
-
-    public static final Logger logger = Logger.getLogger(CdmCacher.class);
+    public static final Logger logger = Logger.getLogger(CdmCacherBase.class);
 
     @Autowired
     public CacheManager cacheManager;
@@ -31,17 +30,15 @@ public abstract class CdmCacher implements ICdmUuidCacher {
     public static final String DEFAULT_CACHE_NAME = "cdmDefaultCache"; //TODO compare with CacheConfiguration where the name for the default cache is 'default', Why another name here?
 
     /**
-     * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
-     *
+     * Constructor which initializes a singleton {@link net.sf.ehcache.CacheManager}
      */
-    public CdmCacher() {
+    public CdmCacherBase() {
         init();
     }
 
     /**
-     * Initialises an empty singleton {@link net.sf.ehcache.CacheManager} and
+     * Initializes an empty singleton {@link net.sf.ehcache.CacheManager} and
      * sets itself as the cacher object in specific CDM Entity objects.
-     *
      */
     private void init() {
         setup();
@@ -51,9 +48,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     /**
      * Returns the singleton default cache manager.
-     * @param conf
-     *
-     * @return
      */
     public void addCacheManager(CacheManager cacheManager) {
 
@@ -106,9 +100,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     /**
      * Gets the cache element corresponding to the given {@link java.util.UUID}
-     *
-     * @param uuid
-     * @return
      */
     public Element getCacheElement(UUID uuid) {
         return getDefaultCache().get(uuid);
@@ -144,7 +135,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
         return cdmEntity;
     }
 
-
     @Override
     public  CdmBase getFromCache(UUID uuid) {
         Element e = getCacheElement(uuid);
@@ -157,12 +147,11 @@ public abstract class CdmCacher implements ICdmUuidCacher {
 
     @Override
     public <T extends CdmBase> T getFromCache(T cdmBase) {
-        return (T) getFromCache(cdmBase.getUuid());
+        return (T)getFromCache(cdmBase.getUuid());
     }
 
-
     @Override
-    public void put(CdmBase cdmEntity) {
+    public void putToCache(CdmBase cdmEntity) {
         if(cdmEntity != null) {
             put(cdmEntity.getUuid(), cdmEntity);
         }
@@ -183,7 +172,6 @@ public abstract class CdmCacher implements ICdmUuidCacher {
             return exists(cdmBase.getUuid());
         }
         return false;
-
     }
 
     @Override
@@ -200,4 +188,8 @@ public abstract class CdmCacher implements ICdmUuidCacher {
      */
     protected abstract CdmBase findByUuid(UUID uuid);
 
+    @Override
+    public boolean ignoreRecursiveLoad(CdmBase cdmBase){
+        return false;
+    }
 }

@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.format.description;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.etaxonomy.cdm.format.DefaultCdmFormatter;
@@ -47,6 +48,12 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
 
     @Override
     public String format(Object object) {
+        List<Language> preferredLanguages = new ArrayList<>();
+        preferredLanguages.add(Language.DEFAULT());
+        return format(object, preferredLanguages);
+    }
+
+    public String format(Object object, List<Language> preferredLanguages) {
         if (! (object instanceof ICdmBase)){
             throw new IllegalArgumentException("object is not of type ICdmBase");
         }
@@ -55,11 +62,18 @@ public abstract class DesciptionElementFormatterBase<T extends DescriptionElemen
             throw new IllegalArgumentException("object is not of type " + clazz.getSimpleName());
         }
         T descEl = CdmBase.deproxy(object, clazz);
-
-        return doFormat(descEl);
+        if (preferredLanguages == null || preferredLanguages.isEmpty()){
+            preferredLanguages = new ArrayList<>();
+            preferredLanguages.add(Language.DEFAULT());
+        }
+        return doFormat(descEl, preferredLanguages);
     }
 
-    protected abstract String doFormat(T descEl);
+    /**
+     * To be implemented by subclasses. The caller must guarantee that preferredLanguages
+     * is neither <code>null</code> nor empty.
+     */
+    protected abstract String doFormat(T descEl, List<Language> preferredLanguages);
 
 
     protected String getLabel(DefinedTermBase<?> term, List<Language> preferredLanguages) {

@@ -149,6 +149,9 @@
          <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeBeanProcessor" />
          </entry>
+         <entry key="eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDtoBeanProcessor" />
+        </entry>
          <entry key="eu.etaxonomy.cdm.model.reference.Reference">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
          </entry>
@@ -230,6 +233,9 @@
         <entry key="java.net.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
+        </entry>
       </map>
     </property>
     <property name="ignoreDefaultExcludes" value="true" />
@@ -265,6 +271,10 @@
             class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNode2DtoBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDtoBeanProcessor" />
         </entry>
@@ -310,6 +320,9 @@
         </entry>
         <entry key="java.net.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor" />
         </entry>
       </map>
     </property>
@@ -378,7 +391,10 @@
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeBeanProcessor">
                 <property name="replaceMultilanguageText" value="true" />
             </bean>
-         </entry>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDtoBeanProcessor" />
+        </entry>
         <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor">
                 <property name="replaceMultilanguageText" value="true" />
@@ -497,6 +513,9 @@
         <entry key="java.net.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor" />
+        </entry>
       </map>
     </property>
     <property name="ignoreDefaultExcludes" value="true" />
@@ -565,7 +584,6 @@
           <entry key="java.net.URI">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
           </entry>
-
       </map>
     </property>
     <property name="ignoreDefaultExcludes" value="true" />

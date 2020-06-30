@@ -9,11 +9,11 @@
 package eu.etaxonomy.cdm.model;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 
 /**
  * @author cmathew
  * @since 19 Feb 2015
- *
  */
 public interface ICdmCacher {
 
@@ -34,7 +34,7 @@ public interface ICdmCacher {
      *
      * @param cdmEntity
      */
-    public void put(CdmBase cdmEntity);
+    public void putToCache(CdmBase cdmEntity);
 
     /**
      * Load into the cache and return the entity from the cache. The entity
@@ -50,7 +50,7 @@ public interface ICdmCacher {
     /**
      *
      * @param cdmEntity
-     * @return returns true if the <code>cdmEntity</code> is cacheable by the
+     * @return returns true if the <code>cdmEntity</code> is cachable by the
      *         implementation
      */
     public boolean isCachable(CdmBase cdmEntity);
@@ -62,5 +62,12 @@ public interface ICdmCacher {
     public boolean exists(CdmBase cdmBase);
 
     public void dispose();
+
+    /**
+     * For certain entities like {@link DefinedTermBase defined terms} some
+     * caches do want to stop recursive loading. In this case this method
+     * should return <code>true</code>, <code>false</code> otherwise.
+     */
+    public boolean ignoreRecursiveLoad(CdmBase cdmBase);
 
 }

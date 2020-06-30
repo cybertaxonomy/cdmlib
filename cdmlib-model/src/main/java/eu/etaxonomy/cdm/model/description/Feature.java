@@ -204,11 +204,11 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
     private static final UUID uuidNotes = UUID.fromString("b5780b45-6439-4f3c-9818-d89d26d36eb2");
     public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
-    private static final UUID uuidFloweringSeason = UUID.fromString("03710cb5-606e-444a-a3e6-594268e3cc47");
+    private static final UUID uuidFloweringPeriod = UUID.fromString("03710cb5-606e-444a-a3e6-594268e3cc47");
+    private static final UUID uuidFruitingPeriod = UUID.fromString("04aa8993-24b4-43e3-888c-5afaa733376e");
     public static final UUID uuidAltitude = UUID.fromString("1a28ed59-e15f-4001-b5c2-ea89f0012671");
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
-
 
 	/**
 	 * Creates a new empty feature instance.
@@ -1127,9 +1127,13 @@ public class Feature extends DefinedTermBase<Feature> {
         return getTermByUuid(uuidLifeform);
     }
 
-	public static final Feature FLOWERING_SEASON(){
-	    return getTermByUuid(uuidFloweringSeason);
+	public static final Feature FLOWERING_PERIOD(){
+	    return getTermByUuid(uuidFloweringPeriod);
 	}
+
+    public static final Feature FRUITING_PERIOD(){
+        return getTermByUuid(uuidFruitingPeriod);
+    }
 
 	public static final Feature ALTITUDE(){
         return getTermByUuid(uuidAltitude);

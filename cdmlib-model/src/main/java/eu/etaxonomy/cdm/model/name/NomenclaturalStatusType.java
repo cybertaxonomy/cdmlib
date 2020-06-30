@@ -6,10 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
-
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,7 +121,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return new NomenclaturalStatusType(description, label, labelAbbrev);
 	}
 
-
 	protected static Map<UUID, NomenclaturalStatusType> termMap = null;
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
@@ -134,12 +130,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static Map<String, UUID> zooAbbrevMap = null;
 	private static Map<String, UUID> zooLabelMap = null;
 
-
-
 	protected static NomenclaturalStatusType getTermByUuid(UUID uuid){
 	    if ((termMap == null || termMap.isEmpty()) && (zooTermMap == null || zooTermMap.isEmpty())){
 	        return getTermByClassAndUUID(NomenclaturalStatusType.class, uuid);
-
 	    }
 		NomenclaturalStatusType result = null;
 		if (termMap != null){
@@ -185,7 +178,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 //********* METHODS **************************************
-
 
 	@Override
 	public void resetTerms(){
@@ -292,7 +284,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			return false;
 		}
 	}
-
 
 	/**
 	 * Returns the nomenclatural status type "ambiguous". A "valid"
@@ -457,8 +448,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
         return getTermByUuid(uuidConservedDesig);
     }
 
-
-
 	/**
 	 * Returns the nomenclatural status type "proposed to be conserved
 	 * (orthography)". A {@link TaxonName taxon name} is "proposed to be conserved
@@ -565,9 +554,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType ORTHOGRAPHY_CONSERVED(){
 		return getTermByUuid(uuidOrthographyConserved);
 	}
-
-
-
 
     /**
      * Returns the nomenclatural status type "orthography rejected". <BR>
@@ -812,9 +798,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
     }
 
 
-
 	//TODO further Zoological status
-
 
 	//TODO Soraya
 	//	orth. var.: orthographic variant
@@ -861,10 +845,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
-	/**
-     * @param statusAbbreviation
-     * @return
-     */
     private static String normalizeStatusAbbrev(String statusAbbreviation) {
         //#7109 should not happen anymore
         if (statusAbbreviation.equalsIgnoreCase("nom. valid")){
@@ -903,7 +883,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
-
 	/**
 	 * Fills <i>this</i> nomenclatural status type with contents (uuid, uri,
 	 * description text, label and label abbreviation) coming from a csv line.
@@ -934,17 +913,17 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NomenclaturalStatusType> termVocabulary) {
 		if (termVocabulary.getUuid().equals(uuidIcnafpNomStatusVocabulary)){
-			termMap = new HashMap<UUID, NomenclaturalStatusType>();
-			abbrevMap = new HashMap<String, UUID>();
-			labelMap = new HashMap<String, UUID>();
+			termMap = new HashMap<>();
+			abbrevMap = new HashMap<>();
+			labelMap = new HashMap<>();
 			for (NomenclaturalStatusType term : termVocabulary.getTerms()){
 				termMap.put(term.getUuid(), term);
 				addStatusType(term, abbrevMap, labelMap);
 			}
 		}else if (termVocabulary.getUuid().equals(uuidIcznNomStatusVocabulary)){
-			zooTermMap = new HashMap<UUID, NomenclaturalStatusType>();
-			zooAbbrevMap = new HashMap<String, UUID>();
-			zooLabelMap = new HashMap<String, UUID>();
+			zooTermMap = new HashMap<>();
+			zooAbbrevMap = new HashMap<>();
+			zooLabelMap = new HashMap<>();
 			for (NomenclaturalStatusType term : termVocabulary.getTerms()){
 				zooTermMap.put(term.getUuid(), term);
 				addStatusType(term, zooAbbrevMap, zooLabelMap);
@@ -968,7 +947,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			logger.warn("statusType is NULL");
 			return;
 		}
-		List<Language> list = new ArrayList<Language>();
+		List<Language> list = new ArrayList<>();
 		list.add(Language.LATIN());
 		list.add(Language.ENGLISH());
 		list.add(Language.DEFAULT());

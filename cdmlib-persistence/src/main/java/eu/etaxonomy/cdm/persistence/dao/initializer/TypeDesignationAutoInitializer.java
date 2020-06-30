@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 
 /**
@@ -26,8 +28,8 @@ public class TypeDesignationAutoInitializer extends AutoPropertyInitializer<Type
      * {@inheritDoc}
      */
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception {
-        return String.format(" LEFT JOIN FETCH %s.typeStatus ", beanAlias);
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias) {
+        return Optional.of(String.format(" LEFT JOIN FETCH %s.typeStatus ", beanAlias));
     }
 
 }

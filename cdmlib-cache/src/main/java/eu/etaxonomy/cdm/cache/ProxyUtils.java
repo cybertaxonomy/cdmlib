@@ -29,16 +29,14 @@ import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.PersistentMultiLanguageText;
 
 /**
  * @author cmathew
  * @since 17 Feb 2015
- *
  */
 public class ProxyUtils {
-
-
 
     public static enum CollectionType {
         SET,
@@ -134,52 +132,63 @@ public class ProxyUtils {
     }
 
     /**
-     * de-proxies the passed object <code>o</code> if it is an initialized proxy object,
+     * De-proxies the passed object <code>o</code> if it is an initialized proxy object,
      * otherwise <code>o</code> is returned.
      */
-    public static Object deproxy(Object o) {
+    public static <T extends Object> T deproxyIfInitialized(T o) {
         if(o != null && o instanceof HibernateProxy) {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
             if(!hli.isUninitialized()) {
-                return hli.getImplementation();
-
+                @SuppressWarnings("unchecked")
+                T result = (T)hli.getImplementation();
+                return result;
             }
         }
 
         if(o != null && o instanceof PersistentCollection) {
             PersistentCollection pc = ((PersistentCollection)o);
             if(pc.wasInitialized()) {
-                return  ProxyUtils.getObject(pc);
-
+                @SuppressWarnings("unchecked")
+                T result = (T)ProxyUtils.getObject(pc);
+                return result;
             }
         }
         return o;
     }
+
 
     /**
-     * de-proxies the passed object <code>o</code> if it is an initialized proxy object,
+     * De-proxies the passed object <code>o</code> if it is an initialized proxy object,
      * otherwise <code>null</code> is returned.
      */
-    public static Object deproxyOrNull(Object o) {
+    public static <T extends CdmBase> T deproxyOrNull(T o) {
         if(o != null && o instanceof HibernateProxy) {
             LazyInitializer hli = ((HibernateProxy)o).getHibernateLazyInitializer();
             if(!hli.isUninitialized()) {
-                return hli.getImplementation();
-            } else {
-                return null;
-            }
-        }
-
-        if(o != null && o instanceof PersistentCollection) {
-            PersistentCollection pc = ((PersistentCollection)o);
-            if(pc.wasInitialized()) {
-                return  ProxyUtils.getObject(pc);
+                return (T)hli.getImplementation();
             } else {
                 return null;
             }
         }
         return o;
     }
+
+//    /**
+//     * Currently not yet used.
+//     * de-proxies the passed object <code>o</code> if it is an initialized proxy object,
+//     * otherwise <code>null</code> is returned.
+//     */
+//    public static Object deproxyOrNull(Object o) {
+//        if(o != null && o instanceof PersistentCollection) {
+//            PersistentCollection pc = ((PersistentCollection)o);
+//            if(pc.wasInitialized()) {
+//                return ProxyUtils.getObject(pc);
+//            } else {
+//                return null;
+//            }
+//        }
+//        return o;
+//    }
 
     public static boolean isUninitializedProxy(Object o) {
         if(o != null && o instanceof HibernateProxy) {
@@ -221,9 +230,6 @@ public class ProxyUtils {
         return o;
     }
     ########################################### ########################################### */
-
-
-
 
     public static void setRoleValueInOwner(Object owner, String role, Object value) {
         if(role == null || role.isEmpty()) {

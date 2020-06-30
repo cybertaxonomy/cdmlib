@@ -20,11 +20,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @Ignore
-public class CdmCacherTest extends CdmIntegrationTest {
-	private static final Logger logger = Logger.getLogger(CdmCacherTest.class);
+public class CdmCacherBaseTest extends CdmIntegrationTest {
+	private static final Logger logger = Logger.getLogger(CdmCacherBaseTest.class);
 
 	@SpringBeanByType
-	private CdmCacher cdmCacher;
+	private CdmCacherBase cdmCacherBase;
 
     @SpringBeanByType
     private IReferenceService referenceService;
@@ -36,11 +36,11 @@ public class CdmCacherTest extends CdmIntegrationTest {
 	public void testLanguageCache() {
 		Language defaultLanguage = Language.getDefaultLanguage();
 
-		Language defaultLanguageInCache = (Language)cdmCacher.getFromCache(defaultLanguage.getUuid());
+		Language defaultLanguageInCache = (Language)cdmCacherBase.getFromCache(defaultLanguage.getUuid());
 		Assert.assertEquals("Loaded Language Term should match Language Term in Cache",defaultLanguage,defaultLanguageInCache);
 
 		Language language = Language.getLanguageFromUuid(Language.uuidFrench);
-		Language languageInCache = (Language)cdmCacher.getFromCache(language.getUuid());
+		Language languageInCache = (Language)cdmCacherBase.getFromCache(language.getUuid());
 		Assert.assertEquals("Loaded Language Term should match Language Term in Cache",language,languageInCache);
 
 		// Following test is just to make sure no exception is raised when saving a taxon corresponding

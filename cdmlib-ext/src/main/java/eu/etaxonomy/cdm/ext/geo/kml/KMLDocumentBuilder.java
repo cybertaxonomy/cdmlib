@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.diff.StringsComparator;
 import org.apache.log4j.Logger;
 import org.geotools.feature.SchemaException;
 import org.locationtech.jts.geom.Coordinate;
@@ -50,7 +49,7 @@ import si.uom.SI;
 import tec.uom.se.quantity.Quantities;
 
 /**
- * 
+ *
  * @author Andreas Kohlbecker
  * @since Apr 21, 2020
  */
@@ -59,7 +58,7 @@ public class KMLDocumentBuilder {
 	private final static Logger logger = Logger.getLogger(KMLDocumentBuilder.class);
 
 	private Set<SpecimenOrObservationBase> occSet = new HashSet<>();
-	
+
 	private Map<FieldUnit, Set<SpecimenOrObservationBase>> fieldUnitMap = new HashMap<>();
 	private Map<FieldUnit, Set<SpecimenOrObservationType>> fieldUnitRecordBases = new HashMap<>();
 
@@ -89,16 +88,16 @@ public class KMLDocumentBuilder {
 		doc.getStyleSelector().addAll(styles.values());
 		return kml;
 	}
-	
+
 	private void mapFieldUnit(SpecimenOrObservationBase unitOfInterest, SpecimenOrObservationBase original, Set<SpecimenOrObservationType> recordBases) {
-		
+
 		if(original == null) {
 			original = unitOfInterest;
 		}
 		if(recordBases == null) {
 			recordBases = new HashSet<>();
 		}
-		
+
 		if (original instanceof FieldUnit) {
 			FieldUnit fu = (FieldUnit)original;
 			if(!fieldUnitMap.containsKey(fu)) {
@@ -125,7 +124,7 @@ public class KMLDocumentBuilder {
 	 * @param gatherEvent
 	 */
 	private void createFieldUnitPlacemarks(List<Feature> documentFeatures, FieldUnit fieldUnit) {
-		
+
 		GatheringEvent gatherEvent = fieldUnit.getGatheringEvent();
 		if (gatherEvent != null && isValidPoint(gatherEvent.getExactLocation())) {
 			Placemark mapMarker = fieldUnitLocationMarker(gatherEvent.getExactLocation(),
@@ -161,11 +160,11 @@ public class KMLDocumentBuilder {
 
 		return mapMarker;
 	}
-	
+
 	private Optional<Placemark> errorRadiusPlacemark(Point exactLocation) {
 
 		// exactLocation.setErrorRadius(25 * 1000); // METER // uncomment for debugging
-		
+
 		Placemark errorRadiusCicle = null;
 		if (exactLocation.getErrorRadius() != null && exactLocation.getErrorRadius() > 0) {
 			errorRadiusCicle = KmlFactory.createPlacemark();
@@ -179,8 +178,8 @@ public class KMLDocumentBuilder {
 
 		return Optional.ofNullable(errorRadiusCicle);
 	}
-	
-	
+
+
 	/**
 	 * @param longitude
 	 * @param latitude
@@ -227,9 +226,9 @@ public class KMLDocumentBuilder {
 		}
 		return lineString;
 	}
-	
+
 	private void addExtendedData(Placemark mapMarker, FieldUnit fieldUnit, GatheringEvent gatherEvent) {
-		
+
 		String name = fieldUnit.toString();
 		String titleCache = fieldUnit.getTitleCache();
 		String locationString = null;
@@ -240,8 +239,12 @@ public class KMLDocumentBuilder {
 		String description = "<p class=\"title-cache\">" + titleCache;
 		if(locationString != null) {
 			// see https://www.mediawiki.org/wiki/GeoHack
-			description += "<br/><a class=\"exact-location\" target=\"geohack\" href=\"https://tools.wmflabs.org/geohack/en/" + 
-					gatherEvent.getExactLocation().getLatitude() + ";" + gatherEvent.getExactLocation().getLongitude() +"?pagename=" + name + "\">" + locationString + "</a>";
+		    String geohackUrl = String.format(
+		            "https://geohack.toolforge.org/geohack.php?language=en&params=%f;%f&pagename=%s",
+		            gatherEvent.getExactLocation().getLatitude(),
+		            gatherEvent.getExactLocation().getLongitude(),
+		            name);
+			description +=  "<br/><a class=\"exact-location\" target=\"geohack\" href=\"" + geohackUrl + "\">" + locationString + "</a>";
 		}
 		description += "</p>";
 		description += "<figure><figcaption>Specimens and observations:</figcaption><ul>";
@@ -255,17 +258,17 @@ public class KMLDocumentBuilder {
 				}
 			}
 			description += "<li><a class=\"occurrence-link occurrence-link-" + sob.getUuid() + " \" href=\"${occurrence-link-base-url}/" + sob.getUuid() + "\">" + unitTitle + "</a></li>";
-		}	
+		}
 		description += "</ul></figure>";
 		// mapMarker.setName(name);
 		mapMarker.setDescription(description);
-		
+
 		ExtendedData extendedData = mapMarker.createAndSetExtendedData();
 		extendedData.createAndAddData(fieldUnit.getTitleCache()).setName("titleCache");
 		if(mapMarker.getGeometry() != null && mapMarker.getGeometry() instanceof de.micromata.opengis.kml.v_2_2_0.Point) {
 			extendedData.createAndAddData(((de.micromata.opengis.kml.v_2_2_0.Point)mapMarker.getGeometry()).getCoordinates().toString()).setName("Location");
 		}
-		
+
 	}
 
 

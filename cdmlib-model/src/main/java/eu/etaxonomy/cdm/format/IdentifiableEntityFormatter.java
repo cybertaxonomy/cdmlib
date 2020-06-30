@@ -14,7 +14,6 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Identifier;
 
-
 /**
  * @author pplitzner
  * @since Nov 30, 2015

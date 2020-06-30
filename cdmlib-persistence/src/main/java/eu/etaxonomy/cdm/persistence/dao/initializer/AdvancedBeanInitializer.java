@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -591,10 +592,18 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             Set<AutoPropertyInitializer<CdmBase>> inits = getAutoInitializers(clazz);
             for (AutoPropertyInitializer<CdmBase> init: inits){
                 try {
-                    autoInit.leftJoinFetch +=init.hibernateFetchJoin(clazz, beanAlias);
+                    Optional<String> fetchJoin = init.hibernateFetchJoin(clazz, beanAlias);
+                    if(fetchJoin.isPresent()) {
+                        autoInit.leftJoinFetch += fetchJoin.get();
+                    } else {
+                        // the AutoPropertyInitializer is not supporting LEFT JOIN FETCH so it needs to be
+                        // used explicitly
+                        autoInit.initlializers.add(init);
+                    }
                 } catch (Exception e) {
-                    // the AutoPropertyInitializer is not supporting LEFT JOIN FETCH so it needs to be
-                    // used explicitly
+                    // should not happen, but just in case we fall back to explicit initialization
+                    // and log the error
+                    logger.error(e);
                     autoInit.initlializers.add(init);
                 }
 

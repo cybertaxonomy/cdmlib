@@ -31,11 +31,6 @@ import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-
-/**
- * @author a.mueller
- *
- */
 /**
  * @author a.kohlbecker
  * @since 23.03.2009
@@ -91,8 +86,6 @@ public interface IService<T extends ICdmBase>{
      */
     public DeleteResult delete(UUID persistentObjectUUID) ;
 
-
-
     /**
      * Returns true if an entity of type <T> with a unique identifier matching the
      * identifier supplied exists in the database, or false if no such entity can be
@@ -129,8 +122,6 @@ public interface IService<T extends ICdmBase>{
      */
     public T find(UUID uuid);
 
-
-
 	/**
 	 * Return a persisted entity that matches the unique identifier
      * supplied as an argument, or null if the entity does not exist.
@@ -141,13 +132,13 @@ public interface IService<T extends ICdmBase>{
      * <p>
      * <b>WARNING:</b>This method should <em>ONLY</em> be used when it is absolutely
      * necessary and safe to ensure that the hibernate session is not flushed before a read
-     * query. A use case for this is the {@link eu.etaxonomy.cdm.api.cache.CdmCacher CdmCacher},
-     * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID) load}
+     * query. A use case for this is the {@link eu.etaxonomy.cdm.api.cache.CdmCacherBase CdmCacher},
+     * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmCacherBase#load(UUID) load}
      * the CDM Entity using the standard {@link #find(UUID) find} method results in recursion
      * due to the fact that the {@link #find(UUID) find} method triggers a hibernate session
      * flush which eventually could call {@link eu.etaxonomy.cdm.model.name.NonViralName#getNameCache getNameCache},
 	 * which in turn (in the event that name cache is null) eventually calls the
-	 * {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID uuid) load} again.
+	 * {@link eu.etaxonomy.cdm.api.cache.CdmCacherBase#load(UUID uuid) load} again.
 	 * Apart from these kind of exceptional circumstances, the standard {@link #find(UUID) find}
 	 * method should always be used to ensure that the persistence layer is always in sync with the
 	 * underlying database.

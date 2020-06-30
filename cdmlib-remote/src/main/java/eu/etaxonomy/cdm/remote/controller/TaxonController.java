@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
@@ -239,7 +241,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     }
 
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
-    public Set<TaxonNode>  doGetTaxonNodes(
+    public Set<TaxonNodeDto>  doGetTaxonNodes(
             @PathVariable("uuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             HttpServletRequest request,
@@ -253,7 +255,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             taxonBase = service.load(taxonUuid, NO_UNPUBLISHED, getTaxonNodeInitStrategy().getPropertyPaths());
         }
         if(taxonBase instanceof Taxon){
-            return ((Taxon)taxonBase).getTaxonNodes();
+            return ((Taxon)taxonBase).getTaxonNodes().stream().map(e -> new TaxonNodeDto(e)).collect(Collectors.toSet());
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;

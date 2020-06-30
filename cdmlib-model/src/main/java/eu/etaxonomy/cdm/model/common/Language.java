@@ -1323,7 +1323,8 @@ public class Language extends DefinedTermBase<Language> {
      */
     public static Language getDefaultLanguage() {
         if(getCacher() != null) {
-            return (Language)getCacher().load(uuidEnglish);
+            defaultLanguage = (Language)getCacher().load(uuidEnglish);
+            return defaultLanguage;
         }
     	return null;
     }

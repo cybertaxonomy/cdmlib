@@ -8,8 +8,11 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import org.hibernate.Hibernate;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
@@ -31,14 +34,20 @@ public class TeamAutoInitializer extends AutoPropertyInitializer<TeamOrPersonBas
     }
 
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
 
         String result = "";
         if(clazz.equals(Team.class)){
             result += String.format(" LEFT JOIN FETCH %s.teamMembers ", beanAlias);
-        }
+         } else if(clazz.equals(Person.class)) {
+             // nothing to do in this case
+         } else {
+             // impossible to distinguish Team from Person due to polymorphism,
+             // need to initialize explicitly via the bean property.
+             return Optional.empty();
+         }
 
-        return result;
+        return Optional.of(result);
     }
 
 

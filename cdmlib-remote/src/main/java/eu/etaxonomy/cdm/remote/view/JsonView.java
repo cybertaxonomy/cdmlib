@@ -15,6 +15,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.SuppressPropertiesBeanIntrospector;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.View;
 
@@ -27,7 +29,23 @@ import net.sf.json.JsonConfig;
 import net.sf.json.xml.XMLSerializer;
 
 
-public class JsonView extends BaseView implements View{
+public class JsonView extends BaseView implements View {
+
+    static {
+        optOut_BEANUTILS_520();
+    }
+
+    /**
+     * BEANUTILS-520 Fixes CVE-2014-0114: https://nvd.nist.gov/vuln/detail/CVE-2014-0114
+     * This patch by default enables the SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS.
+     *
+     * see https://github.com/apache/commons-beanutils/pull/7
+     */
+    static private void optOut_BEANUTILS_520() {
+        final BeanUtilsBean bub = new BeanUtilsBean();
+        bub.getPropertyUtils().removeBeanIntrospector(SuppressPropertiesBeanIntrospector.SUPPRESS_CLASS);
+        BeanUtilsBean.setInstance(bub);
+    }
 
     public static final Logger logger = Logger.getLogger(JsonView.class);
 

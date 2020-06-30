@@ -1,7 +1,17 @@
+/**
+ * Copyright (C) 2015 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.cache;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+
+import org.apache.log4j.Logger;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheException;
@@ -9,13 +19,11 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.SizeOfPolicyConfiguration;
 
-import org.apache.log4j.Logger;
-
 
 public class CdmRemoteCacheManager {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CdmRemoteCacheManager.class);
-
 
     private Cache cdmlibModelCache;
 
@@ -33,14 +41,12 @@ public class CdmRemoteCacheManager {
     }
 
     public static CdmRemoteCacheManager getInstance(){
-
         if(cdmRemoteCacheManager == null) {
             cdmRemoteCacheManager = new CdmRemoteCacheManager();
         }
         return cdmRemoteCacheManager;
     }
     private CdmRemoteCacheManager() {
-
 
         try {
             // NOTE:Programmatically creating the cache manager may solve the problem of
@@ -54,10 +60,10 @@ public class CdmRemoteCacheManager {
             sizeOfConfig.setMaxDepthExceededBehavior("abort");
 
             CacheConfiguration modelcc = new CacheConfiguration(CDM_MODEL_CACHE_NAME, 0)
-            .eternal(true)
-            .statistics(true)
-            .sizeOfPolicy(sizeOfConfig)
-            .overflowToOffHeap(false);
+                    .eternal(true)
+                    .statistics(true)
+                    .sizeOfPolicy(sizeOfConfig)
+                    .overflowToOffHeap(false);
 
             cdmlibModelCache = new Cache(modelcc);
 
@@ -65,18 +71,10 @@ public class CdmRemoteCacheManager {
             CdmModelCacher cmdmc = new CdmModelCacher();
             cmdmc.cacheGetterFields(cdmlibModelCache);
 
-        } catch (CacheException e) {
-            throw new CdmClientCacheException(e);
-        } catch (ClassNotFoundException e) {
-            throw new CdmClientCacheException(e);
-        } catch (IOException e) {
-            throw new CdmClientCacheException(e);
-        } catch (URISyntaxException e) {
+        } catch (CacheException | ClassNotFoundException | IOException | URISyntaxException e) {
             throw new CdmClientCacheException(e);
         }
-
     }
-
 
     public Cache getCdmModelGetMethodsCache(){
         return cdmlibModelCache;

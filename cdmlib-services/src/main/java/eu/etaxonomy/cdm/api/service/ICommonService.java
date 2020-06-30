@@ -155,7 +155,8 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, MatchStrategyConfigurator.MatchStrategy strategy) throws MatchException;
 
-    public <T extends CdmBase> T findWithUpdate(Class<T> clazz, int id);
+	public <T extends CdmBase> T findWithUpdate(Class<T> clazz, int id);
+
 
 	/**
 	 * A generic method to retrieve any CdmBase object by its id and class.<BR>

@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -45,6 +44,8 @@ public class VerbatimTimePeriodTest {
     private static final Integer month = 1;
     private static final Integer day = 5;
 
+    private static final String SEP = TimePeriod.SEP;
+
     @Before
     public void setUp() throws Exception {
         onlyStartYear = VerbatimTimePeriod.NewVerbatimInstance(1922);
@@ -57,9 +58,6 @@ public class VerbatimTimePeriodTest {
 
   //************************ TESTS ******************************************
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance()}.
-     */
     @Test
     public void testNewVerbatimInstance() {
         VerbatimTimePeriod tp = VerbatimTimePeriod.NewVerbatimInstance();
@@ -67,9 +65,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertTrue("VerbatimTimeperiod should be empty",tp.isEmpty());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(org.joda.time.Partial)}.
-     */
     @Test
     public void testNewVerbatimInstancePartial() {
         VerbatimTimePeriod tp = VerbatimTimePeriod.NewVerbatimInstance(new Partial().with(DateTimeFieldType.dayOfWeek(), 5));
@@ -77,9 +72,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertFalse("VerbatimTimeperiod should not be empty",tp.isEmpty());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(org.joda.time.Partial, org.joda.time.Partial)}.
-     */
     @Test
     public void testNewVerbatimInstancePartialPartial() {
         VerbatimTimePeriod tp = VerbatimTimePeriod.NewVerbatimInstance(new Partial().with(DateTimeFieldType.dayOfMonth(),day));
@@ -88,9 +80,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("VerbatimTimeperiod's should not be empty", day, tp.getStartDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(java.lang.Integer)}.
-     */
     @Test
     public void testNewVerbatimInstanceInteger() {
         onlyStartYear = VerbatimTimePeriod.NewVerbatimInstance(1922);
@@ -99,20 +88,14 @@ public class VerbatimTimePeriodTest {
         assertEquals("1922", onlyStartYear.getYear());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(java.lang.Integer, java.lang.Integer)}.
-     */
     @Test
     public void testNewVerbatimInstanceIntegerInteger() {
         startAndEndYear = VerbatimTimePeriod.NewVerbatimInstance(1931, 1957);
         assertEquals(Integer.valueOf(1957), startAndEndYear.getEndYear());
         assertEquals(Integer.valueOf(1931), startAndEndYear.getStartYear());
-        assertEquals("1931-1957", startAndEndYear.getYear());
+        assertEquals("1931"+SEP+"1957", startAndEndYear.getYear());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(java.util.Calendar)}.
-     */
     @Test
     public void testNewVerbatimInstanceCalendar() {
         Calendar cal = Calendar.getInstance();
@@ -123,9 +106,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Timeperiod's should not be empty", day, tp.getStartDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(java.util.Calendar, java.util.Calendar)}.
-     */
     @Test
     public void testNewVerbatimInstanceCalendarCalendar() {
         Calendar cal = Calendar.getInstance();
@@ -149,9 +129,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Timeperiod's end should not be equal with cal2", day2, tp.getEndDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(org.joda.time.ReadableInstant)}.
-     */
     @Test
     public void testNewVerbatimInstanceReadableInstant() {
         ReadableInstant readInst = new MutableDateTime();
@@ -161,9 +138,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Timeperiod's should not be empty", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.VerbatimTimePeriod#NewVerbatimInstance(org.joda.time.ReadableInstant, org.joda.time.ReadableInstant)}.
-     */
     @Test
     public void testNewVerbatimInstanceReadableInstantReadableInstant() {
         ReadableInstant readInst = new MutableDateTime();
@@ -177,9 +151,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Timeperiod's day should not be equal to readable instant", (Integer)readInst2.get(DateTimeFieldType.dayOfMonth()), tp.getEndDay());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#calendarToPartial(java.util.Calendar)}.
-     */
     @Test
     public void testCalendarToPartial() {
         Calendar cal = Calendar.getInstance();
@@ -188,9 +159,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Partial's day should not be equal to calednars day", day, (Integer)part.get(DateTimeFieldType.dayOfMonth()));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#readableInstantToPartial(org.joda.time.ReadableInstant)}.
-     */
     @Test
     public void testReadableInstantToPartial() {
         ReadableInstant readInst = new MutableDateTime();
@@ -199,9 +167,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Partial's day should not be equal to calednars day", (Integer)part.get(DateTimeFieldType.dayOfMonth()), (Integer)part.get(DateTimeFieldType.dayOfMonth()));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#TimePeriod()}.
-     */
     @Test
     public void testTimePeriod() {
         TimePeriod tp = new TimePeriod();
@@ -240,7 +205,6 @@ public class VerbatimTimePeriodTest {
         changedString = tp.toString();
         Assert.assertEquals("Setting a partial for a time period having the freetext set should not change the string representation of the TimePeriod  ", startString, changedString);
 
-
         //
 //      tp = TimePeriodParser.parseString("15.12.1730"); //TODO currently not parsed
 //
@@ -251,9 +215,6 @@ public class VerbatimTimePeriodTest {
 //      Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod ", !startString.equals(changedString));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#isPeriod()}.
-     */
     @Test
     public void testIsPeriod() {
         assertTrue(startAndEndYear.isPeriod());
@@ -266,9 +227,6 @@ public class VerbatimTimePeriodTest {
         assertTrue(onlyStartYear.isPeriod()); //may be discussed
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getStart()}.
-     */
     @Test
     public void testGetStart() {
         TimePeriod tp = new TimePeriod();
@@ -278,10 +236,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Start should be 'start'", start, tp.getStart());
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getEnd()}.
-     */
     @Test
     public void testGetEnd() {
         TimePeriod tp = new TimePeriod();
@@ -291,37 +245,15 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("End should be 'end'", end, tp.getEnd());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getYear()}.
-     */
     @Test
     public void testGetYear() {
         TimePeriod tp = new TimePeriod();
         tp.setStartYear(1999);
         Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
         tp.setEndYear(2002);
-        Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
+        Assert.assertEquals("Year should be 1999-2002", "1999"+SEP+"2002", tp.getYear());
     }
 
-
-    /**
-     * TODO should be partly moved to a test class for {@link TimePeriodPartialFormatter}
-     */
-    @Test
-    public void testToStringTimePeriod() {
-        VerbatimTimePeriod tp1 = VerbatimTimePeriod.NewVerbatimInstance(1788,1799);
-        assertNotNull(tp1);
-        Assert.assertEquals("1788-1799", tp1.toString());
-        tp1.setStartDay(3);
-        Assert.assertEquals("3.xx.1788-1799", tp1.toString());
-        tp1.setEndMonth(11);
-        Assert.assertEquals("3.xx.1788-11.1799", tp1.toString());
-    }
-
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
-     */
     @Test
     public void testClone() {
         Integer startYear = 1788;
@@ -337,7 +269,7 @@ public class VerbatimTimePeriodTest {
         tp1.setEndDay(endDay);
         tp1.setEndMonth(endMonth);
         tp1.setFreeText(freeText);
-        TimePeriod tpClone = (TimePeriod)tp1.clone();
+        TimePeriod tpClone = tp1.clone();
         Assert.assertEquals("Start year must be 1788.", startYear, tpClone.getStartYear());
         Assert.assertEquals("Start month must be 6.", startMonth, tpClone.getStartMonth());
         Assert.assertEquals("Start day must be 25.", startDay, tpClone.getStartDay());
@@ -347,9 +279,6 @@ public class VerbatimTimePeriodTest {
         Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
-     */
     @Test
     public void testEquals() {
         Integer startYear = 1788;
@@ -359,28 +288,27 @@ public class VerbatimTimePeriodTest {
         String freeText = "A free period";
 
         VerbatimTimePeriod tp1 = VerbatimTimePeriod.NewVerbatimInstance(startYear);
-        VerbatimTimePeriod tpClone = (VerbatimTimePeriod)tp1.clone();
+        VerbatimTimePeriod tpClone = tp1.clone();
         Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
 
         tp1.setStartMonth(startMonth);
         Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
-        tpClone = (VerbatimTimePeriod)tp1.clone();
+        tpClone = tp1.clone();
         Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
-
 
         tp1.setEndYear(endYear);
         Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
-        tpClone = (VerbatimTimePeriod)tp1.clone();
+        tpClone = tp1.clone();
         Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
 
         tp1.setEndDay(endDay);
         Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
-        tpClone = (VerbatimTimePeriod)tp1.clone();
+        tpClone = tp1.clone();
         Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
 
         tp1.setFreeText(freeText);
         Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
-        tpClone = (VerbatimTimePeriod)tp1.clone();
+        tpClone = tp1.clone();
         Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
 
         tp1 = VerbatimTimePeriod.NewVerbatimInstance();
@@ -395,5 +323,4 @@ public class VerbatimTimePeriodTest {
         tp2.setFreeText(freeText);
         Assert.assertEquals("Tp2 must be equal", tp1, tp2);
     }
-
 }
