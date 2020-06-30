@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import org.hibernate.Hibernate;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 
@@ -34,11 +35,13 @@ public class TeamAutoInitializer extends AutoPropertyInitializer<TeamOrPersonBas
     public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
 
         String result = "";
-        // can't distinguish Person and Team here as
-        // ((HibernateProxy)propertyValue).getHibernateLazyInitializer().getPersistentClass();
-        // always returns TeamOrPersonBase in
-        // AdvancedBeanInitializer.preparePropertyValueForBulkLoadOrStore(BeanInitNode node, Object parentBean, String param, Object propertyValue)
-        result += String.format(" LEFT JOIN FETCH %s.teamMembers ", beanAlias);
+        if(clazz.equals(Team.class)){
+            result += String.format(" LEFT JOIN FETCH %s.teamMembers ", beanAlias);
+         } else if(clazz.equals(Person.class)) {
+             // nothing to do in this case
+         } else {
+             throw new Exception("impossible to distinguish Team from Person due to polymorphism, need to initialize explicitly via the bean property.");
+         }
 
         return result;
     }
