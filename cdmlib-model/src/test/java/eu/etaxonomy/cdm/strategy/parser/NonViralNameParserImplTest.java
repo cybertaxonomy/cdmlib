@@ -2503,7 +2503,7 @@ public class NonViralNameParserImplTest {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
-        assertEquals("Feb–Apr 1977", nomRef.getDatePublished().toString());
+        assertEquals("Feb"+SEP+"Apr 1977", nomRef.getDatePublished().toString());
         assertEquals(Integer.valueOf(2), nomRef.getDatePublished().getStartMonth());
         assertEquals(Integer.valueOf(4), nomRef.getDatePublished().getEndMonth());
         assertEquals(Integer.valueOf(1977), nomRef.getDatePublished().getStartYear());

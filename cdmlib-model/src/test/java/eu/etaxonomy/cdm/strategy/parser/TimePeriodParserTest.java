@@ -324,7 +324,7 @@ public class TimePeriodParserTest {
         String strDate = "24 Aug 1957-14 Oct 1988";
         TimePeriod tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
-        Assert.assertEquals("24 Aug 1957–14 Oct 1988", tp.toString());
+        Assert.assertEquals("24 Aug 1957"+SEP+"14 Oct 1988", tp.toString());
         Assert.assertEquals("1957–1988", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
