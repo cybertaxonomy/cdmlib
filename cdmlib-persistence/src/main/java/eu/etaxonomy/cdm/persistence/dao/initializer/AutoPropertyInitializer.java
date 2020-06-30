@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -37,7 +39,7 @@ public abstract class AutoPropertyInitializer<T extends CdmBase> {
     public abstract void initialize(T bean);
 
 
-	public abstract String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception;
+	public abstract Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias);
 
 
 }

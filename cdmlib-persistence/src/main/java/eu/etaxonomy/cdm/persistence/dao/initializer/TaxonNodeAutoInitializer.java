@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -24,11 +26,11 @@ public class TaxonNodeAutoInitializer extends AutoPropertyInitializer<TaxonNode>
     }
 
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
 
         String result = "";
         result += String.format(" LEFT JOIN FETCH %s.taxon taxon LEFT JOIN FETCH taxon.name LEFT JOIN FETCH taxon.sec", beanAlias);
-        return result;
+        return Optional.of(result);
     }
 
 }

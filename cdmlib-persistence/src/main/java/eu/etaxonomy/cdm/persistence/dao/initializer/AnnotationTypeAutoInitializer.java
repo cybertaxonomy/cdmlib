@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import eu.etaxonomy.cdm.model.common.Annotation;
 
 /**
@@ -25,10 +27,10 @@ public class AnnotationTypeAutoInitializer extends AutoPropertyInitializer<Annot
     public void initialize(Annotation bean) {
         beanInitializer.initializeInstance(bean.getAnnotationType());
     }
-    
+
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
-    	return String.format(" LEFT JOIN FETCH %s.annotationType ", beanAlias); 
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return Optional.of(String.format(" LEFT JOIN FETCH %s.annotationType ", beanAlias));
     }
 
 }

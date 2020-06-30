@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.util.Optional;
+
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
@@ -26,10 +28,10 @@ public class GatheringEventLocationAutoInitializer extends AutoPropertyInitializ
             /* IGNORE */
         }
     }
-    
+
     @Override
-    public String hibernateFetchJoin(Class<?> clazz, String beanAlias) throws Exception{
-    	return String.format(" LEFT JOIN FETCH %s.exactLocation l LEFT JOIN l.referenceSystem rs LEFT JOIN rs.representations ", beanAlias); 
+    public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return Optional.of(String.format(" LEFT JOIN FETCH %s.exactLocation l LEFT JOIN l.referenceSystem rs LEFT JOIN rs.representations ", beanAlias));
     }
 
 }
