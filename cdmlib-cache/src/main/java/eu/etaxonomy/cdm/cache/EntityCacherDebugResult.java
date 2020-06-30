@@ -66,9 +66,9 @@ public class EntityCacherDebugResult {
     }
 
     private void init() {
-        duplicateCdmEntityMap = new HashMap<CdmEntityInfo, CdmEntityInfo>();
-        notInCacheList = new ArrayList<CdmEntityInfo>();
-        rootElements = new ArrayList<CdmEntityInfo>();
+        duplicateCdmEntityMap = new HashMap<>();
+        notInCacheList = new ArrayList<>();
+        rootElements = new ArrayList<>();
     }
 
     private void clear() {
@@ -108,22 +108,21 @@ public class EntityCacherDebugResult {
         sb.append("<<< Root Entity " + rootEntity.getUserFriendlyTypeName() + " with id " + rootEntity.getId() + " >>>");
         sb.append(System.getProperty("line.separator"));
         if(duplicateCdmEntityMap.isEmpty()) {
-            sb.append("No Duplicate CDM Entities.");
+            sb.append("No Duplicate CDM Entities in root graph.");
         } else {
-            sb.append("Duplicate CDM Entities,");
+            sb.append("Duplicate CDM Entities in root graph: ");
 
-            for (Map.Entry<CdmEntityInfo, CdmEntityInfo> entry : duplicateCdmEntityMap.entrySet())
-            {
+            for (Map.Entry<CdmEntityInfo, CdmEntityInfo> entry : duplicateCdmEntityMap.entrySet()){
+
                 sb.append(System.getProperty("line.separator"));
                 CdmEntityInfo cei = entry.getKey();
                 CdmBase cb = (CdmBase) cei.getObject();
 
-                sb.append(" - " + cei.getField().getName() + ":" + cb.getUserFriendlyTypeName() + "/" + cb.getId());
+                sb.append(" 1 " + cei.getField().getName() + ":" + cb.getUserFriendlyTypeName() + "/" + cb.getId());
                 if(cei.getParent() != null) {
                     Object cbParent = cei.getParent().getObject();
                     sb.append("     in entity " + cbParent.getClass().getCanonicalName());
                     if(cbParent instanceof CdmBase) {
-
                         sb.append(" with id : " + ((CdmBase)cbParent).getId());
                     }
                 }
@@ -139,7 +138,7 @@ public class EntityCacherDebugResult {
                 if(dupCei.getField() != null) {
                     dupCeiFieldName = dupCei.getField().getName();
                 }
-                sb.append(" - " + dupCeiFieldName + ":" + dupCb.getUserFriendlyTypeName() + "/" + dupCb.getId());
+                sb.append(" 2 " + dupCeiFieldName + ":" + dupCb.getUserFriendlyTypeName() + "/" + dupCb.getId());
                 if(dupCei.getParent() != null) {
                     Object dupCbParent = dupCei.getParent().getObject();
                     sb.append("      in entity " + dupCbParent.getClass().getCanonicalName());
@@ -231,9 +230,11 @@ public class EntityCacherDebugResult {
             return;
         }
         logger.info("---- starting recursive debug for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId());
-        List<CdmEntityInfo> alreadyVisitedEntities = new ArrayList<CdmEntityInfo>();
+        List<CdmEntityInfo> alreadyVisitedEntities = new ArrayList<>();
         CdmEntityInfo cei = new CdmEntityInfo(ProxyUtils.deproxyIfInitialized(cdmEntity));
-        debugRecursive(cdmEntity, alreadyVisitedEntities, cei);
+        if(recursive){
+            debugRecursive(cdmEntity, alreadyVisitedEntities, cei, includeIgnored);
+        }
         rootElements.add(cei);
         alreadyVisitedEntities.clear();
         logger.info("---- ending recursive debug for cdm entity " + cdmEntity.getClass().getName() + " with id " + cdmEntity.getId() + "\n");
@@ -306,7 +307,7 @@ public class EntityCacherDebugResult {
 
         if(cei.getObject() instanceof CdmBase) {
            CdmBase cb =  (CdmBase)cei.getObject();
-           cb = (CdmBase) ProxyUtils.deproxyIfInitialized(cb);
+           cb = ProxyUtils.deproxyIfInitialized(cb);
            CdmBase cachedCdmEntityInSubGraph = cacher.getFromCache(cb);
            if(cachedCdmEntityInSubGraph != cb) {
                cei.setNotInCacheDetail(cachedCdmEntityInSubGraph == null ? NotInCacheDetail.NOT_FOUND : NotInCacheDetail.COPY_ENTITY);
@@ -316,32 +317,17 @@ public class EntityCacherDebugResult {
            }
         }
 
-        // we want to recursive through the cdmEntity (and not the cachedCdmEntity)
+        // we want to recurse through the cdmEntity (and not the cachedCdmEntity)
         // since there could be new or deleted objects in the cdmEntity sub-graph
 
         // start by getting the fields from the cdm entity
         String className = cdmEntity.getClass().getName();
-        CdmModelFieldPropertyFromClass cmgmfc = cacher.getFromCdmlibModelCache(className);
-        if(cmgmfc != null) {
+        CdmModelFieldPropertyFromClass classFields = cacher.getFromCdmlibModelCache(className);
+        if(classFields != null) {
             alreadyVisitedEntities.add(cei);
-            List<String> fields = cmgmfc.getFields();
+            List<String> fields = classFields.getFields();
             for(String field : fields) {
-                // retrieve the actual object corresponding to the field.
-                // this object will be either a CdmBase or a Collection / Map
-                // with CdmBase as the generic type
-                CdmEntityInfo childCei = getDebugCdmBaseTypeFieldValue(cdmEntity, field, alreadyVisitedEntities, cei);
-                if(!childCei.isProxy()) {
-                    Object object = childCei.getObject();
-                    if(object != null && object instanceof CdmBase) {
-                        CdmBase cdmEntityInSubGraph = (CdmBase)object;
-                        if(!containsIdenticalCdmEntity(alreadyVisitedEntities, cdmEntityInSubGraph)) {
-                            logger.info("recursive debugging object of type " + cdmEntityInSubGraph.getClass().getName() + " with id " + cdmEntityInSubGraph.getId());
-                            debugRecursive(cdmEntityInSubGraph, alreadyVisitedEntities, childCei);
-                        } else {
-                            logger.info("object of type " + cdmEntityInSubGraph.getClass().getName() + " with id " + cdmEntityInSubGraph.getId() + " already visited");
-                        }
-                    }
-                }
+                debugField(cdmEntity, alreadyVisitedEntities, cei, field, includeIgnored);
             }
         } else {
             throw new CdmClientCacheException("CdmEntity with class " + cdmEntity.getClass().getName() + " is not found in the cdmlib model cache. " +
@@ -441,14 +427,13 @@ public class EntityCacherDebugResult {
         private CdmEntityInfo parent;
         private List<CdmEntityInfo> children;
         private Field field;
-        private String label;
         private boolean isProxy;
-        private NotInCacheDetail notInCacheDetail = null;
+        private NotInCacheType notInCacheType = null;
 
         public CdmEntityInfo(Object object) {
             this.object = object;
             isProxy = false;
-            children = new ArrayList<CdmEntityInfo>();
+            children = new ArrayList<>();
         }
 
         public CdmEntityInfo getParent() {
@@ -518,14 +503,11 @@ public class EntityCacherDebugResult {
                 } else {
                     label = "[" + className + "] " + fieldName + " : " + object.toString();
                 }
+                label += " {"+ System.identityHashCode(object) + "}";
             } else {
                 label = "[NULL] " + fieldName;
             }
             return label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
         }
 
         public Object getObject() {
@@ -544,21 +526,21 @@ public class EntityCacherDebugResult {
             this.isProxy = isProxy;
         }
 
-        public NotInCacheDetail getNotInCacheDetail() {
-            return notInCacheDetail;
+        public NotInCacheType getNotInCacheDetail() {
+            return notInCacheType;
         }
-        public void setNotInCacheDetail(NotInCacheDetail notInCacheDetail) {
-            this.notInCacheDetail = notInCacheDetail;
+        public void setNotInCacheDetail(NotInCacheType notInCacheType) {
+            this.notInCacheType = notInCacheType;
         }
     }
 
-    enum NotInCacheDetail {
+    enum NotInCacheType {
         NOT_FOUND("*"),
         COPY_ENTITY("?");
 
         private String label;
 
-        private NotInCacheDetail(String label){
+        private NotInCacheType(String label){
             this.label = label;
         }
 
@@ -566,5 +548,4 @@ public class EntityCacherDebugResult {
             return label;
         }
     }
-
 }
