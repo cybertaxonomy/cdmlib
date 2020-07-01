@@ -127,7 +127,16 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
+      <exclusions>
+        <!-- https://stackoverflow.com/questions/17077922/maven-xpp3-versus-xpp3-min -->
+        <!-- But maybe we can exclude xpp3 instead, not sure if it is directly needed or only for xstream -->
+        <exclusion>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3_min</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+    
     <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
