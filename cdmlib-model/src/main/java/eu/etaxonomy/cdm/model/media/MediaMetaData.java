@@ -31,9 +31,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * This class is for storing metadata about media files
  * (e.g. Exif, IPCT, PhotoshopMetadata, etc) in a key-value format.<BR>
- * It is not audited as the metadata is considered to be cached
- * only from the original file and therefore can be reconstructed
- * and updated when ever the file is available.<BR>
+ * In principle auditing would be not necessary as the metadata is considered
+ * to be cached only from the original file and therefore can be reconstructed
+ * and updated when ever the file is available. For technical reasons auditing
+ * of <code>MediaMetaData</code> entities had to be activated nevertheless.<BR>
  * Data should only contain data which can not be stored otherwise
  * (height, width, size, authorship, ...).
  *
