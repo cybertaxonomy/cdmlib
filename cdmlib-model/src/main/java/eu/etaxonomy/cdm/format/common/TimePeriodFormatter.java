@@ -70,12 +70,18 @@ public class TimePeriodFormatter {
                     start = start.without(MONTH_TYPE);
                 }
             }
-            String strStart = start != null ? start.toString(formatter): null;
-            String strEnd = end != null ? end.toString(formatter): null;
+            @SuppressWarnings("null")
+            String strStart = isNotEmpty(start) ? start.toString(formatter): null;
+            @SuppressWarnings("null")
+            String strEnd = isNotEmpty(end) ? end.toString(formatter): null;
             result = CdmUtils.concat(TimePeriod.SEP, strStart, strEnd);
         }
 
         return result;
+    }
+
+    private boolean isNotEmpty(Partial partial) {
+        return partial != null && partial.getFields().length>0;
     }
 
     public String getYear(TimePeriod tp){

@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 public class TimePeriodFormatterTest {
 
     private TimePeriodFormatter formatter;
+    private String endash = UTF8.EN_DASH.toString();
 
     @Before
     public void setUp() throws Exception {
@@ -32,7 +33,6 @@ public class TimePeriodFormatterTest {
 
     @Test
     public void test() {
-        String endash = UTF8.EN_DASH.toString();
         TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
         assertNotNull(tp1);
         Assert.assertEquals("1788"+endash+"1799", formatter.format(tp1));
@@ -68,4 +68,15 @@ public class TimePeriodFormatterTest {
 
     }
 
+    @Test
+    public void testEmptyEnd() {
+        TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
+        assertNotNull(tp1);
+        Assert.assertEquals("1788"+endash+"1799", formatter.format(tp1));
+        tp1.setEndYear(null);
+        Assert.assertEquals("1788", formatter.format(tp1));
+        tp1.setEndYear(1799);
+        tp1.setStartYear(null);
+        Assert.assertEquals("1799", formatter.format(tp1));
+    }
 }
