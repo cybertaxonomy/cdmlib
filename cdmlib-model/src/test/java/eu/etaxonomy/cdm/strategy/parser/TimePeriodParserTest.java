@@ -333,7 +333,7 @@ public class TimePeriodParserTest {
         Assert.assertEquals(Integer.valueOf(10), tp.getEndMonth());
         Assert.assertEquals(Integer.valueOf(14), tp.getEndDay());
 
-        strDate = "24 Aug 1957–1988";
+        strDate = "24 Aug 1957"+SEP+"1988";
         tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
         Assert.assertEquals(strDate, tp.toString());
@@ -345,7 +345,7 @@ public class TimePeriodParserTest {
         Assert.assertNull(tp.getEndMonth());
         Assert.assertNull(tp.getEndDay());
 
-        strDate = "1957–14 Oct 1988";
+        strDate = "1957"+SEP+"14 Oct 1988";
         tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
         Assert.assertEquals("1957"+SEP+"14 Oct 1988", tp.toString());
