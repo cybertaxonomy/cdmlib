@@ -939,7 +939,7 @@ public class SpecimenCdmExcelImport
 	}
 
 	@Override
-	protected boolean needsNomenclaturalCode() {
+	protected boolean requiresNomenclaturalCode() {
 		return false;
 	}
 

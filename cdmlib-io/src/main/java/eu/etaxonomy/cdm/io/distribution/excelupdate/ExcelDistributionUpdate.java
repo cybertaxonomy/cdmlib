@@ -322,7 +322,7 @@ public class ExcelDistributionUpdate
         return false;
     }
     @Override
-    protected boolean needsNomenclaturalCode() {
+    protected boolean requiresNomenclaturalCode() {
         return false;
     }
 

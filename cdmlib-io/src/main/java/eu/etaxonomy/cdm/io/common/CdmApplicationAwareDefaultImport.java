@@ -70,7 +70,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
     public ImportResult invoke(IImportConfigurator config){
         ImportResult result = new ImportResult();
         if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-            boolean success =  doCheck(config);
+            boolean success = doCheck(config);
             if (! success){
                 result.setAborted();
             }

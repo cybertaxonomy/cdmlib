@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.common;
 
 import java.io.FileNotFoundException;
@@ -22,7 +21,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,7 +31,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 /**
  * @author n.hoffmann
  * @since 18.11.2008
- * @version 1.0
  */
 public class ExcelUtils {
 	private static final Logger logger = Logger.getLogger(ExcelUtils.class);
@@ -42,7 +39,6 @@ public class ExcelUtils {
     public static List<Map<String, String>> parseXLS(URI uri) throws FileNotFoundException {
     	return parseXLS(uri, null);
     }
-
 
 	/** Reads all rows of an Excel worksheet */
     public static List<Map<String, String>> parseXLS(URI uri, String worksheetName) throws FileNotFoundException {
@@ -57,7 +53,6 @@ public class ExcelUtils {
             ioe.printStackTrace();
             throw new RuntimeException(message);
         }
-
     }
 
     /** Reads all rows of an Excel worksheet */
@@ -145,7 +140,6 @@ public class ExcelUtils {
 	    			recordList.add(headers);
 	    		}
     		}
-
     	} catch(Exception ioe) {
     		logger.error("Error reading the Excel file.");
     		ioe.printStackTrace();
@@ -153,22 +147,21 @@ public class ExcelUtils {
     	return recordList;
     }
 
-
 	public static String getCellValue(Cell cell) {
 		try {
-			if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING ){
+			if (cell.getCellType() == Cell.CELL_TYPE_STRING ){
 				return cell.getStringCellValue();
-			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_BLANK){
+			}else if (cell.getCellType() == Cell.CELL_TYPE_BLANK){
 				return "";
-			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
+			}else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
 				return getNumericCellValue(cell);
-			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN){
+			}else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN){
 				Boolean cellValue = cell.getBooleanCellValue();
 				String value = String.valueOf(cellValue);
 				return value;
-			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_ERROR){
+			}else if (cell.getCellType() == Cell.CELL_TYPE_ERROR){
 				return "-error-";
-			}else if (cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA){
+			}else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA){
 				try {
 					String strValue = cell.getStringCellValue();
 					if ("".equals(strValue)){
@@ -200,18 +193,14 @@ public class ExcelUtils {
 	private static String getExcelColString(int colNr){
 		int first = colNr / 26;
 		int second = colNr % 26;
-//		char a = Integer.valueOf(first).shortValue();
 		String firstStr = String.valueOf((first > 0 ? (char)(first +64) :""));
 		String secondStr = String.valueOf((char)(second + 64));
 		return firstStr +  secondStr;
 	}
 
-
 	/**
 	 * Returns the numeric cell value. In case the cell is formatted as
 	 * a date it returns a date (using the dates toString() method.
-	 * @param cell
-	 * @return
 	 */
 	private static String getNumericCellValue(Cell cell) {
 		Double number = cell.getNumericCellValue();
@@ -233,7 +222,6 @@ public class ExcelUtils {
 
 			return result;
 		}
-//		System.out.println(d);
 
 		if (number.intValue() == number){
 			return String.valueOf(number.intValue());
@@ -242,12 +230,8 @@ public class ExcelUtils {
 		}
 	}
 
-
 	/**
 	 * Returns false, if row is null or has no values
-	 * @param row
-	 * @param notEmpty
-	 * @return
 	 */
 	private static boolean checkIsEmptyRow(Row row) {
 		if (row == null){
