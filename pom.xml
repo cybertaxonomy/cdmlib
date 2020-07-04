@@ -1581,7 +1581,7 @@
 	  <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.4.200</version>
+        <version>1.4.190</version>
       </dependency>
       <!--for sqlserver2008 and sqlserver2005 -->
       <dependency>
