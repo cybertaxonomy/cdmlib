@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -156,8 +157,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
  		}
 	}
 
+    protected ICdmRepository repository;
 
-	}
+    @Override
+    public void setRepository(ICdmRepository repository){
+        this.repository = repository;
+    }
 
     @Override
     protected ImportResult getNoDataResult(STATE state) {

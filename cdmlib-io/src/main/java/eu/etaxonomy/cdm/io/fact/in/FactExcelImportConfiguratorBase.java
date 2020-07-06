@@ -13,6 +13,7 @@ import java.net.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.fact.altitude.in.analyze.ExcelFormatAnalyzer;
 
 /**
  * Configurator base class for taxon fact excel imports.
@@ -20,7 +21,7 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
  * @author a.mueller
  * @since 28.05.2020
  */
-public abstract class FactExcelImportConfiguratorBase
+public abstract class FactExcelImportConfiguratorBase<A extends ExcelFormatAnalyzer<?>>
         extends ExcelImportConfiguratorBase{
 
     private static final long serialVersionUID = 1649010514975388511L;
@@ -28,5 +29,7 @@ public abstract class FactExcelImportConfiguratorBase
     protected FactExcelImportConfiguratorBase(URI uri, ICdmDataSource destination, IInputTransformer transformer) {
         super(uri, destination, transformer);
     }
+
+    public abstract A getAnalyzer();
 
 }

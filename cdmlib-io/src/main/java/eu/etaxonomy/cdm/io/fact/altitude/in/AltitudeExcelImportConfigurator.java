@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @since 28.05.2020
  */
 public class AltitudeExcelImportConfigurator
-        extends FactExcelImportConfiguratorBase{
+        extends FactExcelImportConfiguratorBase<AltitudeExcelFormatAnalyzer>{
 
     private static final long serialVersionUID = -6403743396163163359L;
 
@@ -58,6 +58,11 @@ public class AltitudeExcelImportConfigurator
         ioClassList = new Class[]{
                 AltitudeExcelImport.class,
         };
+    }
+
+    @Override
+    public AltitudeExcelFormatAnalyzer getAnalyzer() {
+        return new AltitudeExcelFormatAnalyzer(this);
     }
 
     public UUID getFeatureUuid() {

@@ -8,15 +8,31 @@
 */
 package eu.etaxonomy.cdm.io.fact.altitude.in.analyze;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import eu.etaxonomy.cdm.common.UriUtils;
+import eu.etaxonomy.cdm.io.fact.in.FactExcelImportConfiguratorBase;
 
 /**
  * @author a.mueller
  * @since 02.06.2020
  */
-public class ExcelFormatAnalyzer {
+public class ExcelFormatAnalyzer<CONFIG extends FactExcelImportConfiguratorBase<?>> {
+
+    private CONFIG config;
+
+    private List<String> requiredWorksheets = new ArrayList<>();
 
     private List<String> requiredColumns = new ArrayList<>();
 
@@ -24,8 +40,13 @@ public class ExcelFormatAnalyzer {
 
     private List<String> optionalMultiColumns = new ArrayList<>();
 
-    public ExcelFormatAnalyzer(String[] requiredColumns, String[] optionalColumns,
+    public ExcelFormatAnalyzer(CONFIG config,
+            String[] requiredWorksheets,
+            String[] requiredColumns,
+            String[] optionalColumns,
             String[] optionalMultiColumns) {
+        this.config = config;
+        this.requiredWorksheets.addAll(Arrays.asList(requiredWorksheets));
         this.requiredColumns.addAll(Arrays.asList(requiredColumns));
         this.optionalColumns.addAll(Arrays.asList(optionalColumns));
         this.optionalMultiColumns.addAll(Arrays.asList(optionalMultiColumns));
@@ -57,16 +78,56 @@ public class ExcelFormatAnalyzer {
 //************************* METHOD ************************/
 
     public ExcelFormatAnalyzeResult invoke(){
-        ExcelFormatAnalyzeResult result = new ExcelFormatAnalyzeResult();
+        ExcelFormatAnalyzeResult result = new ExcelFormatAnalyzeResult(this);
 
-        analyzeWorkbook(result);
+        //workbook format
+        analyzeWorkbookFormat(result);
+        if (result.hasFatalErrors()){
+            return result;
+        }
 
-        result.addError(FormatAnalyzeInfo.NewInstance("Obligatory column xxx is missing. Running import not possible"));
+//        result.addError("Obligatory column xxx is missing. Running import not possible");
         return result;
     }
 
-    private void analyzeWorkbook(ExcelFormatAnalyzeResult result) {
-        // TODO Auto-generated method stub
+    protected void analyzeWorkbookFormat(ExcelFormatAnalyzeResult result) {
+        URI uri = config.getSource();
+        if (uri == null){
+            result.addFatalError("Now source defined. Import not possible.");
+            return;
+        }
+        try {
+            InputStream stream = UriUtils.getInputStream(uri);
+            Workbook wb = WorkbookFactory.create(stream);
 
+            List<String> worksheetNames = new ArrayList<>();
+            worksheetNames.add(config.getWorksheetName());
+            for (String worksheetName : worksheetNames){
+                analyzeWorksheetName(result, wb, worksheetNames, worksheetName);
+            }
+        } catch(FileNotFoundException fne) {
+            result.addFatalError("Import file '" + uri.toString() + "' not found. Import not possible.");
+        } catch(InvalidFormatException ife) {
+            result.addFatalError("Import file has invalid format for an excel file. Import not possible.");
+        } catch(EncryptedDocumentException ede) {
+            result.addFatalError("File is encrypted. Import not possible.");
+        } catch(Exception ioe) {
+            result.addFatalError("Unhandled exception  when reading '" + uri.toString() + "'. Import not possible.");
+        }
+    }
+
+    private void analyzeWorksheetName(ExcelFormatAnalyzeResult result, Workbook wb, List<String> worksheetNames,
+            String worksheetName) {
+        try {
+            Sheet worksheet = wb.getSheet(worksheetName);
+            if(worksheet == null && worksheetNames.size() == 1){
+                worksheet = wb.getSheetAt(0);
+            }
+            if (worksheet == null){
+                result.addFatalError("Required worksheet "+worksheetName+" not found in file. Import not possible.");
+            }
+        } catch (Exception e) {
+            result.addFatalError("Error when reading worksheet '" + worksheetName + "' not found. Import not possible.");
+        }
     }
 }

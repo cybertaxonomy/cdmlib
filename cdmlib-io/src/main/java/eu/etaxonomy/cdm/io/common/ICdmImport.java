@@ -6,6 +6,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 
 /**
  * Interface for all import classes.
@@ -20,5 +21,7 @@ public interface ICdmImport<CONFIG extends IImportConfigurator, STATE extends Im
     public byte[] getByteArray();
 
     public abstract void invoke(STATE state);
+
+    public void setRepository(ICdmRepository repository);
 
 }
