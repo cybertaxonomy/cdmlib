@@ -165,9 +165,10 @@ public class CategoricalData extends DescriptionElementBase {
      * @see #addStateData(StateData)
      * @param state
      */
-    public void addStateData(State state){
+    public StateData addStateData(State state){
         StateData stateData = StateData.NewInstance(state);
         addStateData(stateData);
+        return stateData;
     }
 
 

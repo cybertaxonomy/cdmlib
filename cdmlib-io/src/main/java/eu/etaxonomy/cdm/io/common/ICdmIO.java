@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.io.common.events.IIoEvent;
  * @author a.mueller
  * @since 20.06.2008
  */
-
 public interface ICdmIO<STATE extends IoStateBase> extends  IIoObservable {
 
 	final String TEAM_STORE = "team";
@@ -31,8 +30,6 @@ public interface ICdmIO<STATE extends IoStateBase> extends  IIoObservable {
 
 //	public boolean invoke(T config, Map<String, MapWrapper<? extends CdmBase>> stores);
 
-
-
 //	public boolean invoke(IoState<T> state);
 
 	public void updateProgress(STATE state, String message);
@@ -44,7 +41,6 @@ public interface ICdmIO<STATE extends IoStateBase> extends  IIoObservable {
     public long countSteps(STATE state);
 
 //******************** Observers *********************************************************
-
 
 	/**
 	 * If this object fires an event then notify all of its observers.

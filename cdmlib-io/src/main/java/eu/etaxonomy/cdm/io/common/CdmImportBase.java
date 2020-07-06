@@ -118,7 +118,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedNomenclaturalStatusTypeVocabulary = UUID.fromString("1a5c7745-5588-4151-bc43-9ca22561977b");
 
 
-
 	private static final String UuidOnly = "UUIDOnly";
 	private static final String UuidLabel = "UUID or label";
 	private static final String UuidLabelAbbrev = "UUID, label or abbreviation";
@@ -127,13 +126,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	private final static String authorSeparator = ", ";
     private final static String lastAuthorSeparator = " & ";
 
-	public enum TermMatchMode{
+    public enum TermMatchMode{
 		UUID_ONLY(0, UuidOnly)
 		,UUID_LABEL(1, UuidLabel)
 		,UUID_LABEL_ABBREVLABEL(2, UuidLabelAbbrev)
 		,UUID_ABBREVLABEL(3, UuidAbbrev)
 		;
-
 
 		private final int id;
 		private final String representation;
@@ -156,6 +154,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				default: return UUID_ONLY;
 			}
  		}
+	}
 
 
 	}
@@ -177,7 +176,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(reference);
-
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
@@ -218,9 +216,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		state.putTreeUuid(ref, tree);
 		return tree;
 	}
-
-
-
 
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getExtensionType(state, uuid, label, text, labelAbbrev, null);
