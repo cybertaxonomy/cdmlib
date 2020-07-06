@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.fact.altitude.in;
 
 import java.net.URI;
-import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -24,8 +23,6 @@ public class AltitudeExcelImportConfigurator
         extends FactExcelImportConfiguratorBase<AltitudeExcelFormatAnalyzer>{
 
     private static final long serialVersionUID = -6403743396163163359L;
-
-    private UUID featureUuid;
 
     public static AltitudeExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
         return new AltitudeExcelImportConfigurator(uri, destination, null);
@@ -63,14 +60,6 @@ public class AltitudeExcelImportConfigurator
     @Override
     public AltitudeExcelFormatAnalyzer getAnalyzer() {
         return new AltitudeExcelFormatAnalyzer(this);
-    }
-
-    public UUID getFeatureUuid() {
-        return featureUuid;
-    }
-
-    public void setFeatureUuid(UUID featureUuid) {
-        this.featureUuid = featureUuid;
     }
 
     @Override

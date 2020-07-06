@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.io.fact.in;
 
 import java.net.URI;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -26,10 +27,28 @@ public abstract class FactExcelImportConfiguratorBase<A extends ExcelFormatAnaly
 
     private static final long serialVersionUID = 1649010514975388511L;
 
+    private UUID featureUuid;
+    private String featureLabel;
+
     protected FactExcelImportConfiguratorBase(URI uri, ICdmDataSource destination, IInputTransformer transformer) {
         super(uri, destination, transformer);
     }
 
     public abstract A getAnalyzer();
 
+
+
+    public UUID getFeatureUuid() {
+        return featureUuid;
+    }
+    public void setFeatureUuid(UUID featureUuid) {
+        this.featureUuid = featureUuid;
+    }
+
+    public String getFeatureLabel() {
+        return this.featureLabel;
+    }
+    public void setFeatureLabel(String featureLabel) {
+        this.featureLabel = featureLabel;
+    }
 }

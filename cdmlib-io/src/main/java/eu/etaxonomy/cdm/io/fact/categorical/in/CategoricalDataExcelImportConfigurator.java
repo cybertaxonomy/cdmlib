@@ -29,7 +29,6 @@ public class CategoricalDataExcelImportConfigurator
 
     private UUID stateVocabularyUuid;
     private String stateVocabularyLabel;
-    private UUID featureUuid;
 
     public static CategoricalDataExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
         return new CategoricalDataExcelImportConfigurator(uri, destination, null);
@@ -84,13 +83,6 @@ public class CategoricalDataExcelImportConfigurator
     }
     public void setStateVocabularyLabel(String stateVocabularyLabel) {
         this.stateVocabularyLabel = stateVocabularyLabel;
-    }
-
-    public UUID getFeatureUuid() {
-        return featureUuid;
-    }
-    public void setFeatureUuid(UUID featureUuid) {
-        this.featureUuid = featureUuid;
     }
 
 }

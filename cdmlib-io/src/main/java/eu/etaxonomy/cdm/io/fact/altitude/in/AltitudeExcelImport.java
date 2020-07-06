@@ -45,6 +45,7 @@ public class AltitudeExcelImport
 //            return;
             taxon = Taxon.NewInstance(null, null);
         }
+
         UUID featureUuid = Feature.uuidAltitude;
         String featureLabel = "Altitude";
         Feature feature = getFeature(state, featureUuid);
