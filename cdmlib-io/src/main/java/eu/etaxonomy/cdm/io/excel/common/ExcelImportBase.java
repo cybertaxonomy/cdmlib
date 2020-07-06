@@ -79,8 +79,8 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 		// read and save all rows of the excel worksheet
 		if ((state.getConfig() instanceof NormalExplicitImportConfigurator
 		        || state.getConfig() instanceof ExcelDistributionUpdateConfigurator
-		        || state.getConfig() instanceof TaxonListImportConfigurator) && (state.getConfig().getStream() != null
-		        || state.getConfig().getStream() != null)){
+		        || state.getConfig() instanceof TaxonListImportConfigurator) && (state.getConfig().getStream() != null)
+		    ){
 		    data =  state.getConfig().getStream();
 		} else{
 		    source = state.getConfig().getSource();
