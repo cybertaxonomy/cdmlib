@@ -171,7 +171,7 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
     private static final UUID uuidDistributionGeneral = UUID.fromString("fd8c64f0-6ea5-44b0-9f70-e95833d6076e");
     private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
-    private static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
+    public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
     private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
     private static final UUID uuidChromosomeNumber = UUID.fromString("6f677e98-d8d5-4bc5-80bf-affdb7e3945a");
 

@@ -67,10 +67,16 @@ public class OrderedTermVocabulary<T extends OrderedTermBase>
 	 * @param termSourceUri
 	 * @return
 	 * @throws NullPointerException if type is <code>null</code>
+	 * @deprecated use {@link #NewOrderedInstance(TermType, Class, String, String, String, URI)} instead
 	 */
+	@Deprecated
 	public static OrderedTermVocabulary NewInstance(TermType type, String description, String label, String labelAbbrev, URI termSourceUri){
 		return new OrderedTermVocabulary(type, description, label, labelAbbrev, termSourceUri);
 	}
+
+    public static <T extends OrderedTermBase<T>> OrderedTermVocabulary<T> NewOrderedInstance(TermType type, Class<T> clazz, String description, String label, String labelAbbrev, URI termSourceUri){
+        return new OrderedTermVocabulary<T>(type, description, label, labelAbbrev, termSourceUri);
+    }
 
 
 //************************ CONSTRUCTOR *****************************************************/
