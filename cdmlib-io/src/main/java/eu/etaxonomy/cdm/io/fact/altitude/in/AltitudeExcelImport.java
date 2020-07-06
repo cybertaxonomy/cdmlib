@@ -16,12 +16,14 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.io.fact.in.FactExcelImportBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
+ * Import for taxon based altitude data as quantitative data.
  *
  * @author a.mueller
  * @since 28.05.2020
@@ -43,12 +45,16 @@ public class AltitudeExcelImport
 //            return;
             taxon = Taxon.NewInstance(null, null);
         }
-        UUID uuid = Feature.uuidAltitude;
+        UUID featureUuid = Feature.uuidAltitude;
         String featureLabel = "Altitude";
-        Feature feature = getFeature(state, uuid);
+        Feature feature = getFeature(state, featureUuid);
         if (feature == null){
-            feature = getFeature(state, uuid, featureLabel, featureLabel, null, null);
+            feature = getFeature(state, featureUuid, featureLabel, featureLabel, null, null);
         }
+
+        UUID measurementUnitUuid = MeasurementUnit.uuidMeter;
+        MeasurementUnit unit = getMeasurementUnit(state, measurementUnitUuid, null, null, null, null);
+        //TODO log error if unit is not persistent yet or handle like for feature first part
 
         String minStr = getValue(state, COL_ALTITUDE_MIN);
         String maxStr = getValue(state, COL_ALTITUDE_MAX);
@@ -59,14 +65,14 @@ public class AltitudeExcelImport
             state.addError("No minimum and no maximum exists. Record not imported.");
             return;
         }
-        QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature, min, max);
+        QuantitativeData qd = QuantitativeData.NewMinMaxInstance(feature, unit, min, max);
 
         //source
         String id = null;
         String idNamespace = null;
         Reference reference = getSourceReference(state);
 
-
+        //description
         TaxonDescription taxonDescription = this.getTaxonDescription(taxon, reference, !IMAGE_GALLERY, true);
         taxonDescription.addElement(qd);
         qd.addImportSource(id, idNamespace, reference, linePure);
@@ -84,6 +90,11 @@ public class AltitudeExcelImport
             state.getResult().addException(e, "Number text not recognized as number (BigDecimal)", getClass().getName()+"getBigDecimal()", "row " + state.getCurrentLine());
             return null;
         }
+    }
+
+    @Override
+    protected boolean requiresNomenclaturalCode() {
+        return false;
     }
 
     @Override
