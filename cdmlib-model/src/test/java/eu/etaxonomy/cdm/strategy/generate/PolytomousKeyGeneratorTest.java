@@ -198,6 +198,7 @@ public class PolytomousKeyGeneratorTest {
 
 		qtd31 = QuantitativeData.NewExactValueInstance(featureLength, new BigDecimal("0.0"), new BigDecimal("3.0"));
 //        qtd31 = QuantitativeData.NewMinMaxInstance(featureLength, 0, 3);
+		//TODO add unit
 		qtd32 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("0.0"), new BigDecimal("3.0"));
 		qtd33 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("6.0"), new BigDecimal("9.0"));
 		qtd34 = QuantitativeData.NewMinMaxInstance(featureLength, new BigDecimal("6.0"), new BigDecimal("9.0"));

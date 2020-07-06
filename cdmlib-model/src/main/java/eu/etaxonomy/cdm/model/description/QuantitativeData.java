@@ -161,6 +161,18 @@ public class QuantitativeData
         return result;
     }
 
+    public static QuantitativeData NewMinMaxInstance(Feature feature, MeasurementUnit unit, BigDecimal min, BigDecimal max){
+        QuantitativeData result = NewMinMaxInstance(feature, min, max);
+        result.setUnit(unit);
+        return result;
+    }
+
+    public static QuantitativeData NewExactValueInstance(Feature feature, MeasurementUnit unit, BigDecimal... exactValues){
+        QuantitativeData result = NewExactValueInstance(feature, exactValues);
+        result.setUnit(unit);
+        return result;
+    }
+
 // ******************************** CONSTRUCTOR *******************************/
 
 	/**
