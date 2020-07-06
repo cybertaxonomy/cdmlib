@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.fact.categorical.in;
 
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,10 +15,10 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
 import eu.etaxonomy.cdm.io.fact.in.FactExcelImportBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -36,6 +35,11 @@ public class CategoricalDataExcelImport
         extends FactExcelImportBase<CategoricalDataExcelImportState, CategoricalDataExcelImportConfigurator, ExcelRowBase>{
 
     private static final long serialVersionUID = 8264900898340386516L;
+
+    @Override
+    protected String getWorksheetName(CategoricalDataExcelImportConfigurator config) {
+        return "Data";
+    }
 
     @Override
     protected void doFirstPass(CategoricalDataExcelImportState state, Taxon taxon,
@@ -56,21 +60,21 @@ public class CategoricalDataExcelImport
         @SuppressWarnings("unchecked")
         TermVocabulary<State> voc = getVocabularyService().find(uuidVoc);
         for (State cdState : voc.getTerms()){
-            String label = cdState.getLabel();
+            Language language = Language.DEFAULT();
+            String label = cdState.getLabel(language);
             String valueStr = record.get(label);
             if(isNotBlank(valueStr)){
                 if (valueStr.trim().matches("(1|x|X)")){
-                    StateData stateData = cd.addStateData(cdState);
+                    cd.addStateData(cdState);
                 }else{
                     state.getResult().addWarning("Value not recognized", "doFirstPass", line + ":" + label);
                 }
             }
         }
 
-
         //source
         String id = null;
-        String idNamespace = null;
+        String idNamespace = getWorksheetName(state.getConfig());
         Reference reference = getSourceReference(state);
 
         //description
@@ -78,19 +82,6 @@ public class CategoricalDataExcelImport
             TaxonDescription taxonDescription = this.getTaxonDescription(taxon, reference, !IMAGE_GALLERY, true);
             taxonDescription.addElement(cd);
             cd.addImportSource(id, idNamespace, reference, linePure);
-        }
-    }
-
-    private BigDecimal getBigDecimal(CategoricalDataExcelImportState state, String numberStr) {
-        if(isBlank(numberStr)){
-            return null;
-        }
-        try {
-            BigDecimal result = new BigDecimal(numberStr);
-            return result;
-        } catch (Exception e) {
-            state.getResult().addException(e, "Number text not recognized as number (BigDecimal)", getClass().getName()+"getBigDecimal()", "row " + state.getCurrentLine());
-            return null;
         }
     }
 
@@ -103,5 +94,4 @@ public class CategoricalDataExcelImport
     protected boolean isIgnore(CategoricalDataExcelImportState state) {
         return false;
     }
-
 }

@@ -62,6 +62,9 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 		logger.debug("Importing excel data");
 
+		//cleanup state from prior session
+		state.setSourceReference(null);
+
     	configurator = state.getConfig();
 
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();

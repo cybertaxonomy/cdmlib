@@ -38,9 +38,15 @@ public class StateVocabularyExcelImport
     private static final String COL_LABEL_EN = "label_en";
     private static final String COL_LABEL_RU = "label_ru";
 
+
+    @Override
+    protected String getWorksheetName(CategoricalDataExcelImportConfigurator config) {
+        return "Vocabulary";
+    }
+
     @Override
     protected void firstPass(CategoricalDataExcelImportState importState) {
-        String linePure = String.valueOf(importState.getCurrentLine());
+        String line = "row " + importState.getCurrentLine();
 
         UUID uuidVoc = importState.getConfig().getStateVocabularyUuid();
         String vocLabel = importState.getConfig().getStateVocabularyLabel();
@@ -60,12 +66,12 @@ public class StateVocabularyExcelImport
         voc.addTerm(state);
 
         //source
-        String id = null;
-        String idNamespace = null;
+        String id = line;
+        String idNamespace = "Vocabulary";
         Reference reference = getSourceReference(importState);
 
         voc.addImportSource(id, idNamespace, reference, null);
-        state.addImportSource(id, idNamespace, reference, linePure);
+        state.addImportSource(id, idNamespace, reference, line);
 
     }
 
