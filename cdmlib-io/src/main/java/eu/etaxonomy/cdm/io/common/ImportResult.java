@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author cmathew
  * @since 5 Aug 2015
  */
-public class ImportResult extends IoResultBase implements Serializable {
+public class ImportResult extends IoResultBase {
 
     private static final long serialVersionUID = -7299667532720042100L;
 
