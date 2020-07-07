@@ -155,6 +155,8 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     SortTaxaByRankAndName(UUID.fromString("2b7e90b2-1722-4bbf-989a-113281fa0b30"), "Sort Taxa By Rank And Name", "search.selectionDialog.sortTaxaByRankAndName", Boolean.FALSE),
     NamedAreaSearchForAbbrev(UUID.fromString("1db58b79-048b-4981-9cd1-51cb2b915c8a"), "Search Field for Named Areas", "search.selectionDialog.searchField", NamedAreaSearchField.NoAbbrev),
 
+    //Media
+    AdditionalMediaCopyright(UUID.fromString("c55aa7ca-4a6a-4a40-b4f1-e75030cd38bc"), "Additional media copyright","copyright.additional.media", null);
 
     ;
 
