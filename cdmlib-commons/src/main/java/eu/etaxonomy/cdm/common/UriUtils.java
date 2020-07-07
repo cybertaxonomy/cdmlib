@@ -126,7 +126,7 @@ public class UriUtils {
      */
     public static long getResourceLength(URI uri, Map<String, String> requestHeaders) throws ClientProtocolException, IOException, HttpException{
         if(requestHeaders == null){
-            requestHeaders = new HashMap<>();
+            requestHeaders = new HashMap<String, String>();
         }
 
         if(! uri.isAbsolute()){
@@ -141,7 +141,7 @@ public class UriUtils {
                 }
 
                 if(contentLengths.length > 1){
-                    throw new HttpException("Multiple Content-Length headers sent");
+                    throw new HttpException("Multiple Conten-Length headers sent");
                 }
 
                 Header contentLength = contentLengths[0];

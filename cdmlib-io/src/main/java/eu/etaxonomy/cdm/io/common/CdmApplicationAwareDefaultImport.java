@@ -117,7 +117,6 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         state.setCheck(true);
 
         if (config instanceof FactExcelImportConfiguratorBase<?>){
-            //TODO work in progress
             ExcelFormatAnalyzer<?> analyzer = ((FactExcelImportConfiguratorBase<?>)config).getAnalyzer();
             ExcelFormatAnalyzeResult analyzeResult = analyzer.invoke();
             //TODO very preliminary for development only
