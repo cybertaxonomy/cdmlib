@@ -60,8 +60,9 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MediaRepresentation extends VersionableEntity implements Cloneable{
-	private static final long serialVersionUID = -1520078266008619806L;
+public class MediaRepresentation extends VersionableEntity {
+
+    private static final long serialVersionUID = -1520078266008619806L;
 	private static final Logger logger = Logger.getLogger(MediaRepresentation.class);
 
 	//http://www.iana.org/assignments/media-types
