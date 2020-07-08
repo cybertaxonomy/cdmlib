@@ -65,7 +65,9 @@ public class ImageFile extends MediaRepresentationPart {
 		if(imageInfo != null){
 			imageFile.setHeight(imageInfo.getHeight());
 			imageFile.setWidth(imageInfo.getWidth());
-//			imageFile.setSize((int)imageInfo.getLength());
+			if(imageInfo.getLength() != 0){
+			    imageFile.setSize((int)imageInfo.getLength());
+			}
 		}
 
 		return imageFile;

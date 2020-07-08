@@ -96,8 +96,23 @@ public  class ImageInfo extends MediaInfo {
 	}
 
 	private void readImageLength() throws ClientProtocolException, IOException, HttpException{
-		long length = UriUtils.getResourceLength(imageUri, null);
-		setLength(length);
+		try {
+            long length = UriUtils.getResourceLength(imageUri, null);
+            setLength(length);
+        } catch (HttpException e) {
+            if (e.getMessage().equals("Could not retrieve Content-Length")){
+                InputStream inputStream = UriUtils.getInputStream(imageUri);
+                int n = 0;
+                while(inputStream.read() != -1){
+                    n++;
+                }
+                inputStream.close();
+                logger.info("Content-Length not available in http header. Image size computed via input stream size: " + imageUri);
+                setLength(n);
+            }else{
+                throw e;
+            }
+        }
 	}
 
 	/**
