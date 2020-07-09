@@ -23,10 +23,10 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPreferencePredicate<Object>{
     Test(UUID.fromString("b71214ab-2524-4b5d-8e2b-0581767ac839"), "Test", "Test", "Test"),
 
-    //names
+    //Names
     NomenclaturalCode(UUID.fromString("39c5cb91-9370-4803-abf7-fa01e7dbe4e2"), "Nomenclatural code", "model.name.NC", eu.etaxonomy.cdm.model.name.NomenclaturalCode.ICNAFP),
 
-    //taxonGraph
+    //TaxonGraph
     TaxonGraphSecRefUuid(UUID.fromString("86ba874c-7491-4f4a-a3b4-aa2d1ea9c411"), "TaxonGraph SecReference Uuid", "model.taxonGraph.secRefUuid", null),
 
     //taxon
@@ -34,13 +34,13 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
 //    DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", null),  //default inherit from parent
 
 
-    //vaadin + distribution editor
+    //cdm-vaadin (Distribution UI, Registration UI,  etc)
 	AvailableDistributionStatus(UUID.fromString("6721599e-686b-460e-9d57-cfd364f4b626"), "Available Distribution Status", "distribution.status.term", null),
 	AvailableDistributionAreaVocabularies(UUID.fromString("dd1f35d5-dbf3-426b-9ed3-8b5992cb2e27"), "Available Distribution Area Vocabularies", "distribution.area.voc", null),
 
 
 
-    //common name area vocabularies
+    //Common name area vocabularies
 
     CommonNameAreaVocabularies(UUID.fromString("59d68062-b4ff-4c3a-b29d-66bf850c1d82"), "Common Names: Available Vocabularies for Areas of Common Names", "commonname.area.voc", null),
     CommonNameReferencesWithMarker(UUID.fromString("41402495-96a8-47be-9129-cf9b2a4bc189"), "Common Names: Use only References with Common Name Marker", "commonname.reference.useMarked", Boolean.FALSE),
@@ -51,14 +51,14 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "model.editor.NDV", null),
     DeterminationOnlyForFieldUnits(UUID.fromString("91b9224b-6610-4cf1-b3da-d60d6f9d59b1"), "DeterminationOnlyForFieldUnit", "model.editor.DOFU", Boolean.FALSE),
 
-    //taxeditor UI
+    //Taxeditor UI
     ShowMediaView(UUID.fromString("ba7ba1bb-47e3-4b68-bc44-c5ac45775db4"), "Show media view", "views.showMediaView", Boolean.TRUE),
     ShowTaxonNodeWizard(UUID.fromString("af06fbec-635b-4676-8b60-0b98aefda6aa"), "Show TaxonNode wizard", "views.showTaxonNodeWizard", Boolean.TRUE),
     DisableMultiClassification(UUID.fromString("abdf7e40-afe6-4131-9af3-c6b6779ee6be"), "Disable multi-classification functionality", "menu.disableMultiClassification", Boolean.FALSE),
     ShowChecklistPerspective(UUID.fromString("6058762b-893c-4330-bfe7-45d5717d02b2"), "Show checklist perspective as default", "perspective.checklist", Boolean.FALSE),
 
 
-    //sources
+    //Sources
     ShowIdInSource(UUID.fromString("de291d1b-d89e-42ee-a7b5-15f306f50785"), "Source Details: Show ID in Source", "sourceDetails.IdInSource", Boolean.TRUE),
     //I did rename this "Name"-> "ID Namespace" (later we should adapt the modelKey similarly
     ShowNamespaceInSource(UUID.fromString("f2e881bb-03a1-4bf9-aff1-7bfd4d355a7c"), "Source Details: Show ID Namespace in Source", "sourceDetails.NameInSource", Boolean.TRUE),
@@ -67,7 +67,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     ExtensionTypes(UUID.fromString("412adf43-ad4b-42a9-a4a6-faf96d3e7c02"), "Extension Types", "supplementalData.extension.types", null),
     MarkerTypes(UUID.fromString("2c080f46-aad0-4420-9af1-fe32f3cea73a"), "Marker Types", "supplementalData.marker.types", null),
 
-    //name details view
+    //Name details view
     SimpleDetailsViewActivated(UUID.fromString("78666fde-9ee5-4c09-923b-be98604aace6"), "Name Details: Activated", "editor.nameDetails.activated", Boolean.FALSE),
     ShowTaxon(UUID.fromString("0853e47a-68a8-49af-94d6-505a0479cb28"), "Name Details: Show Taxon", "editor.nameDetails.taxon", Boolean.TRUE),
     ShowLSID(UUID.fromString("fa26eba7-43ed-4498-83a5-8f306a3ef6b3"), "Name Details: Show LSID", "editor.nameDetails.LSID", Boolean.TRUE),
@@ -85,7 +85,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     ShowNameRelations(UUID.fromString("7173817e-c15f-4618-8dea-2035b84f7757"), "Name Details: Show Namerelationships", "editor.nameDetails.NRS", Boolean.TRUE),
     ShowHybrid(UUID.fromString("f58a4e82-8162-4d2e-905d-466d40069df8"), "Name Details: Show Hybrid Section", "editor.nameDetails.hybrids", Boolean.TRUE),
 
-    //distribution editor
+    //Distribution editor
     DistributionEditorActivated(UUID.fromString("733e9bce-4394-4fae-97d3-1b7dfc48ee3c"), "Distribution Editor Is activated", "distribution.editor.activated",  Boolean.TRUE),
     AreasSortedInDistributionEditor(UUID.fromString("513d7de9-fec4-432c-b4dd-75f9f6e74ad0"), "Distribution Editor: Areas sorted in Distribution Editor", "distribution.editor.areas.sortedInDistributionEditor", TermOrder.IdInVoc),  //unsure about correct default value, please decide
     StatusSortedInDistributionEditor(UUID.fromString("83e9ddb7-e498-4e00-bfdc-69c68f3ad5eb"), "Distribution Editor: Status sorted in Distribution Editor", "distribution.editor.areas.sortedStatusInDistributionEditor", TermOrder.IdInVoc),  //unsure about correct default value, please decide
@@ -97,18 +97,18 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     OwnDescriptionForDistributionEditor(UUID.fromString("38282571-049c-473e-bec3-bde6f65f796a"), "Distribution Editor: Create distribution editor TaxonDescription", "distribution.editor.distributionOwnDescription",  Boolean.FALSE),
     AvailableDistributionAreaTerms(UUID.fromString("34469acc-9e23-4f95-92d4-1695e02cb5a0"), "Available Distribution Area Terms", "distribution.area.terms", null),  //default: all/no filter
 
-    //character matrix
+    //Character matrix
     CharacterMatrixTableState(UUID.fromString("c2b52b1e-3e39-4890-88ce-3bf0abb49709"), "Character Matrix Table State", "character.matrix.table.state",  null),
 
     ShowRankInDistributionEditor(UUID.fromString("fb13b4f2-2d82-4fd3-8abe-2b955a695245"), "Distribution Editor: Show Rank", "distribution.editor.showRank", Boolean.FALSE),
 
 
-    //import
+    //Import
     ShowImportExportMenu(UUID.fromString("92839352-beee-4d66-b078-77fd4f500ab4"), "Show Import Export Menu Items", "io.showMenu", Boolean.TRUE),
     AbcdImportConfig(UUID.fromString("65380375-d041-458c-8275-c36cdc1f34df"), "AbcdImportConfig", "io.ABCD.config", null),  //default defined in TaxEditor
     BioCaseProvider(UUID.fromString("bd22c85c-f4e8-4771-ae7b-5750868762c4"), "BioCaseProvider", "io.ABCD.providerList", null),  //default defined in TaxEditor
 
-    //specimen
+    //Specimen
     ShowSpecimen(UUID.fromString("a925f874-b953-429f-9db7-f28e3beb576f"), "Show Specimen", "showSpecimen", Boolean.TRUE),
     ShowCollectingAreasInGeneralSection(UUID.fromString("578a1195-64ce-4dfb-9be9-6f2823288678"), "Show Collecting Area in General Section", "specimen.detail.showCollectingAreaInGeneralSection", Boolean.FALSE),
     ShowTaxonAssociations(UUID.fromString("849c24f9-b62b-4f70-b0a0-1b02182b3433"), "Show Taxon Associations", "specimen.detail.showTaxonAssociations", Boolean.FALSE),
@@ -156,7 +156,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     NamedAreaSearchForAbbrev(UUID.fromString("1db58b79-048b-4981-9cd1-51cb2b915c8a"), "Search Field for Named Areas", "search.selectionDialog.searchField", NamedAreaSearchField.NoAbbrev),
 
     //Media
-    AdditionalMediaCopyright(UUID.fromString("c55aa7ca-4a6a-4a40-b4f1-e75030cd38bc"), "Additional media copyright","copyright.additional.media", null);
+    AdditionalMediaCopyright(UUID.fromString("c55aa7ca-4a6a-4a40-b4f1-e75030cd38bc"), "Additional media copyright","copyright.additional.media", null),
     MediaRepresentationTransformations(UUID.fromString("7d5151a4-6354-43da-b784-f167da236020"), "Transformations rules media representations", "media.representationTransformations", null),
 
     ;

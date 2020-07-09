@@ -113,6 +113,7 @@ public class MediaToolbox implements IMediaToolbox {
 
     private List<MediaUriTransformation> readTransformations() {
 
+        //System.setProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET, "1");
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaRepresentationTransformations);
         CdmPreference pref = service.find(key);
         if(pref != null && pref.getValue() != null) {

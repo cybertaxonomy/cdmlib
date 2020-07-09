@@ -44,10 +44,8 @@ public class SearchReplace {
         return replace;
     }
 
-    /**
-     * @return the search
-     */
-    public Pattern getSearchPattern() {
+    // not as property to avoid serialization
+    public Pattern searchPattern() {
         if (searchPattern == null) {
             searchPattern = Pattern.compile(search);
         }
