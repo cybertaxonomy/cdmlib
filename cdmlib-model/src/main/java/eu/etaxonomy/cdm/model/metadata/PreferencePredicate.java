@@ -157,6 +157,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
 
     //Media
     AdditionalMediaCopyright(UUID.fromString("c55aa7ca-4a6a-4a40-b4f1-e75030cd38bc"), "Additional media copyright","copyright.additional.media", null);
+    MediaRepresentationTransformations(UUID.fromString("7d5151a4-6354-43da-b784-f167da236020"), "Transformations rules media representations", "media.representationTransformations", null),
 
     ;
 

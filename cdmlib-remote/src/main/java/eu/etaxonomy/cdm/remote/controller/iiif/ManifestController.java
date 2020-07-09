@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.remote.controller.MediaPortalController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
+import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -116,6 +117,9 @@ public class ManifestController {
 
     @Autowired
     ITermService termService;
+
+    @Autowired
+    IMediaToolbox mediaTools;
 
     private String[] tumbnailMimetypes = new String[] {"image/.*", ".*"};
 
@@ -180,8 +184,10 @@ public class ManifestController {
         int mediaID = 0;
         for(Media media : entityMediaContext.getMedia()){
 
-            MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
-            MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
+            MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
+            MediaRepresentation fullSizeRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
+            // MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
+            // MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
             if(logger.isDebugEnabled()){
                 logger.debug("fullSizeRepresentation: " + fullSizeRepresentation.getParts().get(0).getUri());
                 logger.debug("thumbnailRepresentation: " + thumbnailRepresentation.getParts().get(0).getUri());

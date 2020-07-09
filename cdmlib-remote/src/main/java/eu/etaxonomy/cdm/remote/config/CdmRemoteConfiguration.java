@@ -8,7 +8,11 @@
 */
 package eu.etaxonomy.cdm.remote.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
+import eu.etaxonomy.cdm.remote.controller.util.MediaToolbox;
 
 /**
  * This configuration may completely replace the src/main/resources/eu/etaxonomy/cdm/remote.xml in future
@@ -19,6 +23,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CdmRemoteConfiguration {
+
+    @Bean
+    public IMediaToolbox mediaToolbox() {
+        return new MediaToolbox();
+    }
 
 
 }
