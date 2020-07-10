@@ -469,7 +469,7 @@ public interface ITaxonService
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a list of TaxonBase instances
      */
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
+    public <T extends TaxonBase>  Pager<T> findTaxaByName(Class<T> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
             String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
@@ -488,7 +488,7 @@ public interface ITaxonService
      * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a List of TaxonBase instances
      */
-    public List<TaxonBase> listTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
+    public <T extends TaxonBase> List<T> listTaxaByName(Class<T> clazz, String uninomial, String infragenericEpithet, String specificEpithet,
             String infraspecificEpithet, String authorshipCache, Rank rank, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
