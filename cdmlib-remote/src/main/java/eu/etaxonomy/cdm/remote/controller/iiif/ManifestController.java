@@ -81,7 +81,6 @@ import io.swagger.annotations.Api;
  *
  * @author a.kohlbecker
  * @since Feb 28, 2020
- *
  */
 @RestController
 @CrossOrigin(origins = "*")
@@ -89,14 +88,8 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/iiif"}, produces = "application/json; charset=utf-8")
 public class ManifestController {
 
-    /**
-     *
-     */
     private static final int IMAGE_READ_TIMEOUT = 3000;
 
-    /**
-     *
-     */
     private static final String HTTP_IIIF_CYBERTAXONOMY_ORG = "http://iiif.cybertaxonomy.org/";
 
     public static final Logger logger = Logger.getLogger(ManifestController.class);
@@ -121,7 +114,7 @@ public class ManifestController {
     @Autowired
     IMediaToolbox mediaTools;
 
-    private String[] tumbnailMimetypes = new String[] {"image/.*", ".*"};
+    private String[] thumbnailMimetypes = new String[] {"image/.*", ".*"};
 
     /**
      * Universalviewer only shows one attribution value in the popup panel
@@ -168,15 +161,9 @@ public class ManifestController {
         return iiifMapper.writeValueAsString(manifest);
     }
 
-    /**
-     * @param media
-     * @return
-     */
     private <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) {
 
-
         List<Canvas> canvases = new ArrayList<>(entityMediaContext.getMedia().size());
-
 
 //        Logger.getLogger(MediaUtils.class).setLevel(Level.DEBUG);
 //        logger.setLevel(Level.DEBUG);
@@ -184,7 +171,7 @@ public class ManifestController {
         int mediaID = 0;
         for(Media media : entityMediaContext.getMedia()){
 
-            MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
+            MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, thumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
             MediaRepresentation fullSizeRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
             // MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
             // MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
@@ -607,11 +594,6 @@ public class ManifestController {
         return imageContents;
     }
 
-    /**
-     * @param onEntitiyType
-     * @param onEntityUuid
-     * @return
-     */
     private String iiifID(String onEntitiyType, String onEntityUuid, Class<? extends Resource> iiifType, Object index) {
         String indexPart = "";
         if(index != null){
