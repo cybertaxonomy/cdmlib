@@ -82,7 +82,7 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
     @Override
     public void clear(NamedArea area){
 
-        Set<Annotation> removeCandidates = new HashSet<Annotation>();
+        Set<Annotation> removeCandidates = new HashSet<>();
         for (Annotation annotation : area.getAnnotations()){
             if (AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
                 if (GeoServiceArea.isAreaMapping(annotation.getText())){
@@ -96,6 +96,4 @@ public class GeoServiceAreaAnnotatedMapping implements IGeoServiceAreaMapping {
         }
         termService.saveOrUpdate(area);
     }
-
-
 }

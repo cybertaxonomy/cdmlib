@@ -208,20 +208,20 @@ public class EditGeoService implements IEditGeoService {
         return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
                 derivedUnitPoints, specimenOrObservationTypeColors);
     }
-    
+
     @Override
     public Kml occurrencesToKML(
-            List<SpecimenOrObservationBase> specimensOrObservations,
+            @SuppressWarnings("rawtypes") List<SpecimenOrObservationBase> specimensOrObservations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
-    	
+
     		KMLDocumentBuilder builder = new KMLDocumentBuilder();
-    		
+
     		for (SpecimenOrObservationBase<?> specimenOrObservationBase : specimensOrObservations) {
-    			builder.addSpecimenOrObservationBase(occurrenceDao.load(specimenOrObservationBase.getUuid())); 			 
+    			builder.addSpecimenOrObservationBase(occurrenceDao.load(specimenOrObservationBase.getUuid()));
     		}
-    	
+
     		Kml kml = builder.build();
-    		
+
     		return kml;
     }
 
@@ -255,6 +255,7 @@ public class EditGeoService implements IEditGeoService {
 
     private void registerDerivedUnitLocations(DerivedUnit derivedUnit, List<Point> derivedUnitPoints) {
 
+        @SuppressWarnings("rawtypes")
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if (originals != null) {
             for (SpecimenOrObservationBase<?> original : originals) {
@@ -297,6 +298,7 @@ public class EditGeoService implements IEditGeoService {
         Set<NamedArea> areas = new HashSet<>();
 
         if(areaVocabularyUuid != null){
+            @SuppressWarnings("unchecked")
             TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
             if(areaVocabulary == null){
                 throw new EntityNotFoundException("No Vocabulary found for uuid " + areaVocabularyUuid);
