@@ -1170,7 +1170,7 @@ public class Feature extends DefinedTermBase<Feature> {
 //*********************************** CLONE *********************************************************/
 
     @Override
-    public Object clone() {
+    public Feature clone() {
         Feature result = (Feature)super.clone();
 
         result.inverseRepresentations = new HashSet<Representation>();
