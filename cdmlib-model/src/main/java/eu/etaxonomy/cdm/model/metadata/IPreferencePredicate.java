@@ -15,7 +15,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 /**
  * @author a.mueller
  * @since 12.11.2018
- *
  */
 public interface IPreferencePredicate<T extends Object> {
 

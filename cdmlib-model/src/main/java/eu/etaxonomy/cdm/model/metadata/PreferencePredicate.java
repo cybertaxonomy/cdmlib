@@ -170,7 +170,6 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
 	private PreferencePredicate(UUID uuid, String messageString, String modelKey, PreferencePredicate parent, Object defaultValue){
 	    delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, messageString, modelKey, parent);
 	    this.defaultValue = defaultValue;
-
 	}
 
 	// *************************** DELEGATE **************************************/
@@ -226,7 +225,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     @Override
     public Set<PreferencePredicate> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
-	public static IPreferencePredicate getByKey(String key){return delegateVoc.getByKey(key);}
-    public static IPreferencePredicate getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+	public static IPreferencePredicate<?> getByKey(String key){return delegateVoc.getByKey(key);}
+    public static IPreferencePredicate<?> getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 }
