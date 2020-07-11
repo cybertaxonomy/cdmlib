@@ -504,34 +504,33 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        DefinedTermBase result;
+    public DefinedTermBase<T> clone() {
         try {
-            result = (DefinedTermBase) super.clone();
+            DefinedTermBase<T> result = (DefinedTermBase<T>) super.clone();
+
+            result.generalizationOf = new HashSet<>();
+            for (DefinedTermBase<T> generalizationOf : this.generalizationOf){
+                result.generalizationOf.add((T)generalizationOf.clone());
+            }
+
+            result.includes = new HashSet<>();
+
+            for (DefinedTermBase<?> include: this.includes){
+                result.includes.add((T)include.clone());
+            }
+
+            result.media = new HashSet<>();
+
+            for (Media media: this.media){
+                result.addMedia(media);
+            }
+
+            return result;
         }catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");
             e.printStackTrace();
             return null;
         }
-
-        result.generalizationOf = new HashSet<DefinedTermBase>();
-        for (DefinedTermBase generalizationOf : this.generalizationOf){
-            result.generalizationOf.add(generalizationOf.clone());
-        }
-
-        result.includes = new HashSet<DefinedTermBase>();
-
-        for (DefinedTermBase include: this.includes){
-            result.includes.add(include.clone());
-        }
-
-        result.media = new HashSet<Media>();
-
-        for (Media media: this.media){
-            result.addMedia(media);
-        }
-
-        return result;
     }
 
     // Currently the CDM Caching mechanism is only used for caching terms
