@@ -278,10 +278,10 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	//*********************************** CLONE *********************************************************/
 
 	@Override
-	public Object clone() {
-		RelationshipTermBase<?> result = (RelationshipTermBase<?>)super.clone();
+	public RelationshipTermBase<T> clone() {
+		RelationshipTermBase<T> result = (RelationshipTermBase<T>)super.clone();
 
-		result.inverseRepresentations = new HashSet<Representation>();
+		result.inverseRepresentations = new HashSet<>();
 		for (Representation rep: this.inverseRepresentations){
 			result.addInverseRepresentation((Representation)rep.clone());
 		}

@@ -856,13 +856,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        NamedArea result;
+    public NamedArea clone() {
+        NamedArea result = (NamedArea)super.clone();
 
-            result = (NamedArea)super.clone();
-            //no changes to level, pointApproximation, shape, type, validPeriod and countries
-            return result;
-
+        //no changes to level, pointApproximation, shape, type, validPeriod and countries
+        return result;
     }
 
 
