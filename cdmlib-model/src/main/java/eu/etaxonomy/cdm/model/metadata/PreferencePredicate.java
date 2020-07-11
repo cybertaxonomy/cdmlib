@@ -202,52 +202,27 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
         return defaultValue;
     }
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
 	public String getKey(){return delegateVocTerm.getKey();}
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public String getMessage(){return delegateVocTerm.getMessage();}
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
 
-
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public PreferencePredicate getKindOf() {return delegateVocTerm.getKindOf();}
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public Set<PreferencePredicate> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
 	public boolean isKindOf(PreferencePredicate ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
 
-	/**
-     * {@inheritDoc}
-     */
     @Override
     public Set<PreferencePredicate> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 

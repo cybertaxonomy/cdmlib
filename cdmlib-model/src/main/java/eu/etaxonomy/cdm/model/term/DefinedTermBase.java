@@ -331,17 +331,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
           this.media.remove(media);
       }
 
-      /**
-       * @return
-       */
       public TermVocabulary<T> getVocabulary() {
           return this.vocabulary;
       }
 
       //for bedirectional use only, use vocabulary.addTerm instead
-      /**
-       * @param newVocabulary
-       */
       protected void setVocabulary(TermVocabulary<T> newVocabulary) {
           this.vocabulary = newVocabulary;
     }
@@ -353,33 +347,25 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
-    /**
-     * @return the symbol2
-     */
+
     public String getSymbol2() {
         return symbol2;
     }
-
-    /**
-     * @param symbol2 the symbol2 to set
-     */
     public void setSymbol2(String symbol2) {
         this.symbol2 = symbol2;
     }
 
 //******************************* METHODS ******************************************************/
 
-
-
     @Override
       public boolean isKindOf(T ancestor) {
           if (kindOf == null || ancestor == null){
-            return false;
-        }else if (kindOf.equals(ancestor)){
-            return true;
-        }else{
-            return kindOf.isKindOf(ancestor);
-        }
+              return false;
+          }else if (kindOf.equals(ancestor)){
+              return true;
+          }else{
+              return kindOf.isKindOf(ancestor);
+          }
       }
 
       @Override
@@ -393,7 +379,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
         }
         return result;
       }
-
 
     public abstract void resetTerms();
 
@@ -444,17 +429,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
                  partOf.addIncludes(newInstance);
              }
          }
-
     }
 
-    /**
-     * Get the
-     * @return
-     */
     protected int partOfCsvLineIndex() {
         return -1;
     }
-
 
     private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass, TermType termType) {
         try {
