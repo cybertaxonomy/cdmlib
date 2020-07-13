@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -51,6 +52,11 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  */
 @Entity
 public final class CdmPreference implements Serializable {
+
+    /**
+     *
+     */
+    private static final String STRING_LIST_SEPARATOR = "[,;\\s]";
 
     private static final int VALUE_LENGTH = 65536; //= CdmBase.CLOB_LENGTH;
 
@@ -291,23 +297,29 @@ public final class CdmPreference implements Serializable {
 	 * @throws IllegalArgumentException
 	 */
 	public List<UUID> getValueUuidList() throws IllegalArgumentException {
+
 	    List<UUID> result = new ArrayList<>();
-	    if (StringUtils.isBlank(value)){
-	        return result;
+	    for (String split : splitStringListValue()){
+            UUID uuid = UUID.fromString(split.trim());
+            result.add(uuid);
 	    }
-	    String[] splits = getValue().split("[,;]");
-	    for (String split : splits ){
-	        try {
-                if (StringUtils.isBlank(split)){
-                    continue; //neglect trailing separators
-                }
-	            UUID uuid = UUID.fromString(split.trim());
-                result.add(uuid);
-            } catch (IllegalArgumentException e) {
-                throw e;
-            }
-	    }
+
 	    return result;
+    }
+
+	/**
+	 * Splits the <code>value</code> into tokens by the separators defined in {@link #STRING_LIST_SEPARATOR}
+	 *
+	 * @return
+	 */
+    public  List<String> splitStringListValue() {
+        List<String> tokens;
+        if (!StringUtils.isBlank(value)){
+	        tokens = Arrays.stream(getValue().split(STRING_LIST_SEPARATOR)).filter(t -> !StringUtils.isBlank(t)).collect(Collectors.toList());
+	    } else {
+	        tokens = new ArrayList<>();
+	    }
+        return tokens;
     }
 
 

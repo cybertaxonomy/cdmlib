@@ -46,6 +46,7 @@ import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import de.digitalcollections.model.api.identifiable.resource.MimeType;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -87,8 +88,6 @@ import io.swagger.annotations.Api;
 @Api("iiif")
 @RequestMapping(value = {"/iiif"}, produces = "application/json; charset=utf-8")
 public class ManifestController {
-
-    private static final int IMAGE_READ_TIMEOUT = 3000;
 
     private static final String HTTP_IIIF_CYBERTAXONOMY_ORG = "http://iiif.cybertaxonomy.org/";
 
@@ -396,7 +395,7 @@ public class ManifestController {
             }
             if (part.getUri() != null) {
                 try {
-                    ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(part.getUri(), IMAGE_READ_TIMEOUT);
+                    ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(part.getUri(), MediaServiceImpl.IMAGE_READ_TIMEOUT);
                     Map<String, String> result = imageInfo.getMetaData();
                     if(result != null){
                         for (String key : result.keySet()) {
