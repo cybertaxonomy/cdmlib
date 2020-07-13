@@ -48,7 +48,7 @@ import de.digitalcollections.model.api.identifiable.resource.MimeType;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -395,8 +395,8 @@ public class ManifestController {
             }
             if (part.getUri() != null) {
                 try {
-                    ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(part.getUri(), MediaServiceImpl.IMAGE_READ_TIMEOUT);
-                    Map<String, String> result = imageInfo.getMetaData();
+                    CdmImageInfo cdmImageInfo = CdmImageInfo.NewInstanceWithMetaData(part.getUri(), MediaServiceImpl.IMAGE_READ_TIMEOUT);
+                    Map<String, String> result = cdmImageInfo.getMetaData();
                     if(result != null){
                         for (String key : result.keySet()) {
                             metadata.add(new MetadataEntry(key, result.get(key)));

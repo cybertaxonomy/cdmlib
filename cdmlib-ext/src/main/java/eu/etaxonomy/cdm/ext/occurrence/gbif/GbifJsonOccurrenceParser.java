@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.UriUtils;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -429,7 +429,7 @@ public class GbifJsonOccurrenceParser {
                     JSONObject mediaRecord;
                     Media media;
                     URI uri = null;
-                    ImageInfo imageInf = null;
+                    CdmImageInfo imageInf = null;
                     MediaRepresentation representation = null;
                     SpecimenOrObservationType type = null;
                     for(Object object:multimediaArray){
@@ -444,7 +444,7 @@ public class GbifJsonOccurrenceParser {
                             if (mediaRecord.has("identifier")){
                                 try {
                                     uri = new URI(mediaRecord.getString("identifier"));
-                                    imageInf = ImageInfo.NewInstance(uri, 0);
+                                    imageInf = CdmImageInfo.NewInstance(uri, 0);
                                 } catch (URISyntaxException |IOException | HttpException e) {
                                     e.printStackTrace();
                                 }

@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
@@ -59,14 +59,14 @@ public class ImageFile extends MediaRepresentationPart {
 		return new ImageFile(uri, size, height, width);
 	}
 
-	public static ImageFile NewInstance(URI uri, Integer size, ImageInfo imageInfo){
+	public static ImageFile NewInstance(URI uri, Integer size, CdmImageInfo cdmImageInfo){
 		ImageFile imageFile = NewInstance(uri, size);
 
-		if(imageInfo != null){
-			imageFile.setHeight(imageInfo.getHeight());
-			imageFile.setWidth(imageInfo.getWidth());
-			if(imageInfo.getLength() != 0){
-			    imageFile.setSize((int)imageInfo.getLength());
+		if(cdmImageInfo != null){
+			imageFile.setHeight(cdmImageInfo.getHeight());
+			imageFile.setWidth(cdmImageInfo.getWidth());
+			if(cdmImageInfo.getLength() != 0){
+			    imageFile.setSize((int)cdmImageInfo.getLength());
 			}
 		}
 

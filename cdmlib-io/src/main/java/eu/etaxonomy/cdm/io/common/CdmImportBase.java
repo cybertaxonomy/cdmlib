@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
@@ -1424,26 +1424,26 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
      */
     private MediaRepresentation makeMediaRepresentation(String uriString, boolean readMediaData) throws URISyntaxException {
         uriString = uriString.replace(" ", "%20");  //replace whitespace
-        ImageInfo imageInfo = null;
+        CdmImageInfo cdmImageInfo = null;
         URI uri = new URI(uriString);
 
         try {
         	if (readMediaData){
         		logger.info("Read media data from: " + uri);
-        		imageInfo = ImageInfo.NewInstance(uri, 0);
+        		cdmImageInfo = CdmImageInfo.NewInstance(uri, 0);
         	}
         } catch (Exception e) {
         	String message = "An error occurred when trying to read image meta data for " + uri.toString() + ": " +  e.getMessage();
         	logger.warn(message);
         	fireWarningEvent(message, "unknown location", 2, 0);
         }
-        ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
+        ImageFile imageFile = ImageFile.NewInstance(uri, null, cdmImageInfo);
 
         MediaRepresentation representation = MediaRepresentation.NewInstance();
 
-        if(imageInfo != null){
-        	representation.setMimeType(imageInfo.getMimeType());
-        	representation.setSuffix(imageInfo.getSuffix());
+        if(cdmImageInfo != null){
+        	representation.setMimeType(cdmImageInfo.getMimeType());
+        	representation.setSuffix(cdmImageInfo.getSuffix());
         }
         representation.addRepresentationPart(imageFile);
         return representation;

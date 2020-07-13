@@ -22,7 +22,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.io.common.utils.ImportDeduplicationHelper;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
@@ -223,23 +223,23 @@ public class MediaExcelImport
     }
 
     private void handleUri(MediaExcelImportState state, URI uri, Media media, String line) {
-            ImageInfo imageInfo = null;
+            CdmImageInfo cdmImageInfo = null;
             try {
                 if (state.getConfig().isReadMediaData()){
-                    imageInfo = ImageInfo.NewInstance(uri, 0);
+                    cdmImageInfo = CdmImageInfo.NewInstance(uri, 0);
                 }
             } catch (Exception e) {
                 String message = "An error occurred when trying to read image meta data for %s. Image was created but without metadata.";
                 message = String.format(message, uri.toString());
                 state.getResult().addException(e, message, null, line);
             }
-            ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
+            ImageFile imageFile = ImageFile.NewInstance(uri, null, cdmImageInfo);
 
             MediaRepresentation representation = MediaRepresentation.NewInstance();
 
-            if(imageInfo != null){
-                representation.setMimeType(imageInfo.getMimeType());
-                representation.setSuffix(imageInfo.getSuffix());
+            if(cdmImageInfo != null){
+                representation.setMimeType(cdmImageInfo.getMimeType());
+                representation.setSuffix(cdmImageInfo.getSuffix());
             }
             representation.addRepresentationPart(imageFile);
             media.addRepresentation(representation);
