@@ -25,6 +25,7 @@ import org.apache.http.HttpException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
@@ -159,10 +160,20 @@ public  class CdmImageInfo extends MediaInfo {
 
 			if (mediaData != null){
 				metaData = new HashMap<>();
-				for (ImageMetadataItem item2 : mediaData.getItems()){
-					if (item2 instanceof GenericImageMetadataItem){
-					    GenericImageMetadataItem item = (GenericImageMetadataItem)item2;
-					    if (item.getKeyword().contains("/")){
+				for (ImageMetadataItem imItem : mediaData.getItems()){
+					if (imItem instanceof GenericImageMetadataItem){
+					    GenericImageMetadataItem item = (GenericImageMetadataItem)imItem;
+					    if ("Keywords".equals(item.getKeyword())){
+					        String value = text(item);
+					        String[] splits = value.split(":");
+	                        if (splits.length == 2){
+	                            //convention used e.g. for Flora of cyprus (#9137)
+	                            metaData.put(splits[0].trim(), splits[1].trim());
+	                        }else{
+	                            metaData.put(item.getKeyword(), CdmUtils.concat("; ", metaData.get(item.getKeyword()), value));
+	                        }
+					    }else if (item.getKeyword().contains("/")){
+	                        //TODO: not sure where this syntax is used originally
 					        String key = item.getKeyword();
 					        //key.replace("/", "");
 					        int index = key.indexOf("/");
@@ -174,8 +185,7 @@ public  class CdmImageInfo extends MediaInfo {
 					}
 				}
 			}
-		}
-		catch (ImageReadException e) {
+		}catch (ImageReadException e) {
 			logger.error("Could not read: " + imageUri + ". " + e.getMessage());
 			//throw new IOException(e);
 		}

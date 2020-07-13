@@ -213,7 +213,7 @@ public class CdmImageInfoTest {
 
     @Test
     public void testGetLength(){
-        Assert.assertEquals(63500, getJpegInstance().getLength());
+        Assert.assertEquals(55872, getJpegInstance().getLength());
         Assert.assertEquals(202926, getTifInstance().getLength());
 
         try {
@@ -249,7 +249,14 @@ public class CdmImageInfoTest {
 
         Map<String, String> metaData = instance.getMetaData();
 
-        Assert.assertEquals(48, metaData.size());
+        Assert.assertEquals(52, metaData.size());
+
+        Assert.assertEquals("My taxon", metaData.get("Taxon"));
+        Assert.assertEquals("on the road", metaData.get("Locality"));
+        Assert.assertEquals("15.02.1955", metaData.get("Date"));
+        Assert.assertEquals("Any person", metaData.get("Photographer"));
+        Assert.assertEquals("My Keyword; Second Keyword", metaData.get("Keywords"));
+
     }
 
 
