@@ -35,6 +35,8 @@ import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 
 /**
+ * See {@link MediaUriTransformationProcessor} and {@link MediaUriTransformation}
+ *
  * @author a.kohlbecker
  * @since Jul 8, 2020
  */

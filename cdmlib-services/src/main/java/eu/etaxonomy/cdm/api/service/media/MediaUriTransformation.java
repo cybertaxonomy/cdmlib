@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.media;
 
 /**
  * All defined {@link SearchReplace} rules must match otherwise the transformations is omitted.
- * A {@link SearchReplace} rule can be mediate an identity transformation of ist URI part
+ * A {@link SearchReplace} rule can be mediate an identity transformation of is URI part
  * in which case the rule just acts as a filter.
  *
  * @author a.kohlbecker

@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.media;
 
-
 import java.awt.Point;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -22,7 +21,19 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 
+/**
+ * Creates new purely volatile {@link MediaRepresentation MediaRepresentations} objects based
+ * a list of {@link MediaUriTransformation} rules. These rules are usually stored in the
+ * per data base {@link PreferencePredicate.MediaRepresentationTransformations MediaRepresentationTransformations} property
+ * (See also {@link MediaToolbox#readTransformations()}).
+ * <p>
+ * These volatile {@link MediaRepresentation MediaRepresentations} objects must not be persisted!
+ *
+ * @author a.kohlbecker
+ * @since Jul 8, 2020
+ */
 public class MediaUriTransformationProcessor {
 
     private static final Logger logger = Logger.getLogger(MediaUriTransformationProcessor.class);
@@ -56,7 +67,8 @@ public class MediaUriTransformationProcessor {
         return newUris;
     }
 
-    protected URI uriTransformation(URI uri, String pathQueryFragment, MediaUriTransformation replacement) throws URISyntaxException {
+    protected URI uriTransformation(URI uri, String pathQueryFragment, MediaUriTransformation replacement)
+            throws URISyntaxException {
 
         String newScheme = uri.getScheme();
         String newHost = uri.getHost();
@@ -73,7 +85,7 @@ public class MediaUriTransformationProcessor {
         if (replacement.getHost() != null) {
             Matcher m = replacement.getHost().searchPattern().matcher(newHost);
             isMatch &= m.find();
-            newHost= m.replaceAll(replacement.getHost().getReplace());
+            newHost = m.replaceAll(replacement.getHost().getReplace());
         }
         // TODO port
 
@@ -82,7 +94,7 @@ public class MediaUriTransformationProcessor {
             isMatch &= m.find();
             newPathQueryFragment = m.replaceAll(replacement.getPathQueryFragment().getReplace());
         }
-        if(isMatch) {
+        if (isMatch) {
             // recombine
             String newURIString = newScheme + "://" + newHost + (newPort > 0 ? ":" + String.valueOf(newPort) : "")
                     + newPathQueryFragment;
@@ -93,7 +105,6 @@ public class MediaUriTransformationProcessor {
         } else {
             return uri;
         }
-
 
     }
 
@@ -109,7 +120,7 @@ public class MediaUriTransformationProcessor {
     }
 
     @Deprecated
-    public List<MediaRepresentation> makeNewMediaRepresentationsFor(URI uri){
+    public List<MediaRepresentation> makeNewMediaRepresentationsFor(URI uri) {
 
         List<MediaRepresentation> repr = new ArrayList<>();
 
@@ -119,9 +130,10 @@ public class MediaUriTransformationProcessor {
 
             try {
                 URI newUri = uriTransformation(uri, pathQueryFragment, transformation);
-                MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(), null);
+                MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(),
+                        null);
                 MediaRepresentationPart part;
-                if(transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
+                if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
                     part = ImageFile.NewInstance(newUri, null, transformation.getHeight(), transformation.getWidth());
                 } else {
                     part = MediaRepresentationPart.NewInstance(newUri, null);
@@ -137,7 +149,7 @@ public class MediaUriTransformationProcessor {
         return repr;
     }
 
-    public List<MediaRepresentation> makeNewMediaRepresentationsFor(MediaRepresentationPart part){
+    public List<MediaRepresentation> makeNewMediaRepresentationsFor(MediaRepresentationPart part) {
 
         List<MediaRepresentation> repr = new ArrayList<>();
 
@@ -147,19 +159,22 @@ public class MediaUriTransformationProcessor {
 
             try {
                 URI newUri = uriTransformation(part.getUri(), pathQueryFragment, transformation);
-                if(newUri.equals(part.getUri())){
+                if (newUri.equals(part.getUri())) {
                     // transformation did not apply
                     continue;
                 }
-                MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(), null);
+                MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(),
+                        null);
                 MediaRepresentationPart newPart;
-                if(transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
-                    if(part instanceof ImageFile) {
-                        ImageFile originalImageFile = (ImageFile)part;
-                        Point newSize = calculateTargetSize(transformation, originalImageFile.getWidth(), originalImageFile.getHeight());
+                if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
+                    if (part instanceof ImageFile) {
+                        ImageFile originalImageFile = (ImageFile) part;
+                        Point newSize = calculateTargetSize(transformation, originalImageFile.getWidth(),
+                                originalImageFile.getHeight());
                         newPart = ImageFile.NewInstance(newUri, null, newSize.y, newSize.x);
                     } else {
-                        newPart = ImageFile.NewInstance(newUri, null, transformation.getHeight(), transformation.getWidth());
+                        newPart = ImageFile.NewInstance(newUri, null, transformation.getHeight(),
+                                transformation.getWidth());
                     }
                 } else {
                     newPart = MediaRepresentationPart.NewInstance(newUri, null);
@@ -177,22 +192,22 @@ public class MediaUriTransformationProcessor {
 
     protected Point calculateTargetSize(MediaUriTransformation trans, Integer originalWidth, Integer originalHeight) {
 
-        if(trans.getWidth() == null && trans.getHeight() == null) {
+        if (trans.getWidth() == null && trans.getHeight() == null) {
             return null;
-        } else if(originalWidth == null || originalHeight == null) {
+        } else if (originalWidth == null || originalHeight == null) {
             return new Point(trans.getWidth(), trans.getHeight());
         } else {
             // calculate
-            float originalAspectRatio = ((float)originalWidth/(float)originalHeight);
-            if(trans.getWidth() == null) {
-                return new Point(Math.round((float)trans.getHeight() * originalAspectRatio), trans.getHeight());
-            } else if(trans.getHeight() == null) {
-                return new Point(trans.getWidth(), Math.round((float)trans.getWidth() / originalAspectRatio));
-            } else if(trans.getWidth().equals(trans.getHeight())) {
+            float originalAspectRatio = ((float) originalWidth / (float) originalHeight);
+            if (trans.getWidth() == null) {
+                return new Point(Math.round((float) trans.getHeight() * originalAspectRatio), trans.getHeight());
+            } else if (trans.getHeight() == null) {
+                return new Point(trans.getWidth(), Math.round((float) trans.getWidth() / originalAspectRatio));
+            } else if (trans.getWidth().equals(trans.getHeight())) {
                 int extend = trans.getWidth();
-                if(originalWidth.equals(originalHeight)) {
+                if (originalWidth.equals(originalHeight)) {
                     return new Point(extend, extend);
-                } else if(originalWidth > originalHeight) {
+                } else if (originalWidth > originalHeight) {
                     return new Point(extend, Math.round(extend / originalAspectRatio));
                 } else {
                     return new Point(Math.round(extend * originalAspectRatio), extend);
