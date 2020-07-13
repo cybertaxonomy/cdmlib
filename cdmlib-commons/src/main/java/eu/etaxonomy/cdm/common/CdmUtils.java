@@ -174,7 +174,12 @@ public class CdmUtils {
      * @param strings
      * @param seperator
      * @return String
+     *
+     * @deprecated Use `String.join()` or one of the <code>org.apache.commons.lang3.StringUtils.join(..)</code> methods instead. These methods
+     * are making explicit use of the <code>StringBuffer</code> class. This method here can not be optimized by the jit, so
+     * the for each item the new String object needs to be extended to new length, which is known to be a performance penalty.
      */
+    @Deprecated
     static public String concat(CharSequence separator, String... strings){
         String result = "";
         boolean allNull = true;
@@ -204,7 +209,12 @@ public class CdmUtils {
      * @param string1
      * @param string2
      * @return String
+     *
+     * @deprecated Use `String.join()` or one of the <code>org.apache.commons.lang3.StringUtils.join(..)</code> methods instead. These methods
+     * are making explicit use of the <code>StringBuffer</code> class. This method here can not be optimized by the jit, so
+     * the for each item the new String object needs to be extended to new length, which is known to be a performance penalty.
      */
+    @Deprecated
     static public String concat(CharSequence separator, String string1, String string2){
         String[] strings = {string1, string2};
         return concat(separator, strings);
@@ -249,7 +259,8 @@ public class CdmUtils {
         return matcher.replaceAll(replaceStr);
     }
 
-    /** Builds a list of strings by splitting an input string
+    /**
+     * Builds a list of strings by splitting an input string
      * with delimiters whitespace, comma, or semicolon
      * @param value
      * @return
@@ -282,6 +293,14 @@ public class CdmUtils {
         return false;
     }
 
+    /**
+     *
+     * @param string
+     * @return
+     *
+     * @deprecated unused and dangerous since it swallows the URISyntaxException --> need to be removed
+     */
+    @Deprecated
     static public URI string2Uri(String string) {
         URI uri = null;
         try {
