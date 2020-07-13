@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Service
 @Transactional(readOnly=true)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
+
 
     public static final Integer IMAGE_READ_TIMEOUT = 3000;
 
@@ -280,20 +282,27 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
      * Metadata of multiple parts is merged into one common metadata map whereas the later part being read may overwrite data from previous parts.
      * The consequences of this can be neglected since we don't expect that multiple parts are actually being used.
      *
-     * @param represenatation
+     * @param representation
      * @return
      * @throws IOException
      * @throws HttpException
      */
-    public Map<String, String> readResourceMetadataFiltered(MediaRepresentation represenatation) throws IOException, HttpException {
+    @Override
+    public Map<String, String> readResourceMetadataFiltered(MediaRepresentation representation) throws IOException, HttpException {
 
         List<String> includes = mediaMetadataKeyIncludes();
         List<String> excludes = mediaMetadataKeyExludes();
         Map<String, String> metadata = new HashMap<>();
 
-        for(MediaRepresentationPart part : represenatation.getParts()) {
-            CdmImageInfo iInfo = CdmImageInfo.NewInstance(part.getUri(), IMAGE_READ_TIMEOUT);
-            metadata.putAll(iInfo.getMetaData());
+        for(MediaRepresentationPart part : representation.getParts()) {
+            CdmImageInfo iInfo = CdmImageInfo.NewInstanceWithMetaData(part.getUri(), IMAGE_READ_TIMEOUT);
+            if(iInfo.getMetaData() != null) {
+                metadata.putAll(iInfo.getMetaData());
+            }
+        }
+
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }
 
         if(!includes.isEmpty()) {
@@ -301,12 +310,18 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                     .stream()
                     .filter( e -> containsCaseInsensitive(e.getKey(), includes))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            if(logger.isDebugEnabled()) {
+                logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+            }
         }
         if(!excludes.isEmpty()) {
             metadata = metadata.entrySet()
                     .stream()
                     .filter( e -> !containsCaseInsensitive(e.getKey(), excludes))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            if(logger.isDebugEnabled()) {
+                logger.debug("meta filtered by excludes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+            }
         }
 
         if(metadata == null) {
@@ -320,12 +335,18 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     }
 
     protected List<String> mediaMetadataKeyExludes(){
-        CdmPreference pref = prefsService.find(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameExcludes));
+        CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameExcludes));
+        if(pref == null) {
+            return new ArrayList<>(0);
+        }
         return pref.splitStringListValue();
     }
 
     protected List<String> mediaMetadataKeyIncludes(){
-        CdmPreference pref = prefsService.find(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
+        CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
+        if(pref == null) {
+            return Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(","));
+        }
         return pref.splitStringListValue();
     }
 
