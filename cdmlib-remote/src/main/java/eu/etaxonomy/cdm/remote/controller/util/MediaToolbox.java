@@ -40,9 +40,6 @@ import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
  */
 public class MediaToolbox implements IMediaToolbox {
 
-    /**
-     *
-     */
     private static final String SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET = "mediaRepresentationTransformationsReset";
 
     private static final Logger logger = Logger.getLogger(MediaToolbox.class);

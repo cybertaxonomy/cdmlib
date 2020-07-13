@@ -104,20 +104,19 @@ public class ManifestController {
         // binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<>(termService));
     }
 
+    @Autowired
+    private TaxonPortalController taxonPortalController;
 
     @Autowired
-    TaxonPortalController taxonPortalController;
+    private ITermService termService;
 
     @Autowired
-    ITermService termService;
-
-    @Autowired
-    IMediaToolbox mediaTools;
+    private IMediaToolbox mediaTools;
 
     private String[] thumbnailMimetypes = new String[] {"image/.*", ".*"};
 
     /**
-     * Universalviewer only shows one attribution value in the popup panel
+     * Universal viewer only shows one attribution value in the popup panel
      * Therefore it makes sense to join all of them.
      */
     private boolean doJoinAttributions = true;
@@ -341,19 +340,11 @@ public class ManifestController {
         }
     }
 
-    /**
-     * @param canvas
-     */
     private void orderMedatadaItems(Canvas canvas) {
         // TODO Auto-generated method stub
         // order by label name, Title, description, author, license, attribution should come first.
     }
 
-
-    /**
-     * @param mediaMetadata
-     * @return
-     */
     private List<MetadataEntry> deduplicateMetadata(List<MetadataEntry> mediaMetadata) {
         Map<String, MetadataEntry> dedupMap = new HashMap<>();
         mediaMetadata.stream().forEach(mde -> {
@@ -361,14 +352,10 @@ public class ManifestController {
                 dedupMap.put(dedupKey, mde);
             }
         );
-        return new ArrayList<MetadataEntry>(dedupMap.values());
+        return new ArrayList<>(dedupMap.values());
     }
 
-    /**
-     * @param canvas
-     * @param mediaMetadata
-     */
-    void extractAndAddDesciptions(Resource resource, List<MetadataEntry> mediaMetadata) {
+    private void extractAndAddDesciptions(Resource resource, List<MetadataEntry> mediaMetadata) {
         List<MetadataEntry> descriptions = mediaMetadata.stream()
             .filter(mde -> mde.getLabelString().toLowerCase().matches(".*description.*|.*caption.*"))
             .collect(Collectors.toList());
@@ -378,10 +365,6 @@ public class ManifestController {
         descriptions.stream().forEach(mde -> resource.addDescription(mde.getValueString()));
     }
 
-    /**
-     * @param entity
-     * @return
-     */
     private <T extends IdentifiableEntity> List<MetadataEntry> entityMetadata(T entity) {
 
         List<MetadataEntry> metadata = new ArrayList<>();
@@ -557,18 +540,10 @@ public class ManifestController {
         return resource;
     }
 
-    /**
-     * @param right
-     * @return
-     */
-    String htmlLink(URI uri, String text) {
+    private String htmlLink(URI uri, String text) {
         return String.format(" <a href=\"%s\">%s</a>", uri, text);
     }
 
-    /**
-     * @param thumbnailRepresentation
-     * @return
-     */
     private List<ImageContent> representationPartsToImageContent(MediaRepresentation representation) {
         List<ImageContent> imageContents = new ArrayList<>();
         for(MediaRepresentationPart part : representation.getParts()){
