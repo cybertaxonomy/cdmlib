@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
  * @author n.hoffmann
- *
  */
 public class ImageInfoTest {
 
@@ -266,7 +265,7 @@ public class ImageInfoTest {
     }
 
     @Test
-    public void testReadMetaDataRemotePng() throws IOException, HttpException{
+    public void testReadMetaDataRemotePng() throws HttpException{
 
         try {
             ImageInfo instance = getRemotePngInstance();
