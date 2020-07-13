@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
@@ -77,7 +78,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
             MediaRepresentation mediaRepresentation = representations.iterator().next();
             URI uri = mediaRepresentation.getParts().get(0).getUri();
             try {
-                    ImageInfo imageInfo = CdmImageInfo.NewInstanceWithMetaData(uri, MediaServiceImpl.IMAGE_READ_TIMEOUT);
+                    CdmImageInfo cdmImageInfo = CdmImageInfo.NewInstanceWithMetaData(uri, MediaServiceImpl.IMAGE_READ_TIMEOUT);
                     result = cdmImageInfo.getMetaData();
 
             } catch (HttpException e) {

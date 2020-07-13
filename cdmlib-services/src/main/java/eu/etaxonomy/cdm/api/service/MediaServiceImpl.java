@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -292,7 +292,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         Map<String, String> metadata = new HashMap<>();
 
         for(MediaRepresentationPart part : represenatation.getParts()) {
-            ImageInfo iInfo = ImageInfo.NewInstance(part.getUri(), IMAGE_READ_TIMEOUT);
+            CdmImageInfo iInfo = CdmImageInfo.NewInstance(part.getUri(), IMAGE_READ_TIMEOUT);
             metadata.putAll(iInfo.getMetaData());
         }
 
