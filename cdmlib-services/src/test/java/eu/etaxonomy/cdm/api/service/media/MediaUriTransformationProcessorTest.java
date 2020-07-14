@@ -176,7 +176,6 @@ public class MediaUriTransformationProcessorTest {
     @Test
     public void testMakeMediaCalculateExtend() throws URISyntaxException {
 
-
         MediaUriTransformation transformation1 = new MediaUriTransformation();
         transformation1.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/!400,400/full/0/default.jpg"));
         transformation1.setMimeType("image/jpeg");
@@ -185,7 +184,8 @@ public class MediaUriTransformationProcessorTest {
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
-        MediaRepresentation repr1 = makeImageMediaRepresentation(2000, 1500); // aspect ratio = 4/3
+        // aspect ratio = 4/3
+        MediaRepresentation repr1 = makeImageMediaRepresentation(2000, 1500);
 
         List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1.getParts().get(0));
 
@@ -195,7 +195,8 @@ public class MediaUriTransformationProcessorTest {
         assertEquals(Integer.valueOf(400), image.getWidth());
         assertEquals(Integer.valueOf(300), image.getHeight());
 
-        MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000); // aspect ratio = 3/4
+        // aspect ratio = 3/4
+        MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
 
         representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
 

@@ -116,7 +116,7 @@ public class MediaToolbox implements IMediaToolbox {
         CdmPreference pref = preferenceService.find(key);
         if(pref != null && pref.getValue() != null) {
             if(System.getProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET) == null
-                    ||mediaRepresentationTransformationsLastHash == null
+                    || mediaRepresentationTransformationsLastHash == null
                     || mediaRepresentationTransformationsLastHash != pref.getValue().hashCode()) {
                 // loaded value is different from last value
                 ObjectMapper mapper = new ObjectMapper();
