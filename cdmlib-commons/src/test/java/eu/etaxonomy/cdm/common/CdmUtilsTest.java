@@ -130,8 +130,20 @@ public class CdmUtilsTest {
         }
     }
 
-
-
-
+    @Test
+    public void testConcat(){
+        String str1 = "Str1";
+        String str2 = "Str2";
+        String str3 = "Str3";
+        Assert.assertEquals("Str1;Str2", CdmUtils.concat(";", str1, str2));
+        Assert.assertEquals("Str2", CdmUtils.concat(";", null, str2));
+        Assert.assertEquals("Str1", CdmUtils.concat(";", str1, null));
+        Assert.assertNull(CdmUtils.concat(";", null, null));
+        Assert.assertEquals("Str1;Str2;Str3", CdmUtils.concat(";", str1, str2, str3));
+        Assert.assertEquals("Str1: Str2", CdmUtils.concat(": ", str1, str2));
+        Assert.assertEquals("Str2;Str3", CdmUtils.concat(";", "", str2, str3));
+        Assert.assertEquals("Str1;Str3", CdmUtils.concat(";", str1, "", str3));
+        Assert.assertEquals("Str1; ;Str3", CdmUtils.concat(";", str1, " ", str3));
+    }
 
 }

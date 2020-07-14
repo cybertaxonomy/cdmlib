@@ -169,26 +169,27 @@ public class CdmUtils {
 
     /**
      * Concatenates an array of strings using the defined separator.<BR>
-     * <code>Null</code> values are interpreted as empty strings.<BR>
-     * If all strings are <code>null</code> then <code>null</code> is returned.
-     * @param strings
-     * @param seperator
-     * @return String
+     * <code>Null</code> values and empty strings are handled as if they
+     * do not exist. So <BR><BR>
      *
-     * @deprecated Use `String.join()` or one of the <code>org.apache.commons.lang3.StringUtils.join(..)</code> methods instead. These methods
-     * are making explicit use of the <code>StringBuffer</code> class. This method here can not be optimized by the jit, so
-     * the for each item the new String object needs to be extended to new length, which is known to be a performance penalty.
+     * concat(":", "a", "", null, "b") results in "a:b"<BR><BR>
+     *
+     * If all strings are <code>null</code> then <code>null</code> is returned.
+     *
+     * @see #concat(CharSequence, String, String)
+     * @param strings the strings to concatenate
+     * @param seperator the separator for concatenation
+     * @return String the concatenation result
      */
-    @Deprecated
     static public String concat(CharSequence separator, String... strings){
-        String result = "";
+        StringBuffer result = new StringBuffer();
         boolean allNull = true;
         for (String string : strings){
             if (string != null){
                 if (result.length() > 0 && string.length() > 0){
-                    result += separator;
+                    result.append(separator);
                 }
-                result += string;
+                result.append(string);
                 allNull = false;
             }
         }
@@ -196,25 +197,25 @@ public class CdmUtils {
         if (allNull){
             return null;
         }else {
-            return result;
+            return result.toString();
         }
     }
 
+
     /**
-     * Concatenates two strings, using the defined seperator.<BR>
-     * <code>Null</code> values are interpreted as empty Strings.<BR>
-     * If both strings are <code>null</code> then <code>null</code> is returned.
-     * @see #concat(CharSequence, String[])
-     * @param seperator
-     * @param string1
-     * @param string2
-     * @return String
+     * Concatenates two strings, using the defined separator.<BR>
+     * <code>Null</code> values are interpreted as empty strings.<BR>
+     * Empty strings are not included in concatenation so concat(":", "a", "")
+     * results in "a", not "a:".<BR>
      *
-     * @deprecated Use `String.join()` or one of the <code>org.apache.commons.lang3.StringUtils.join(..)</code> methods instead. These methods
-     * are making explicit use of the <code>StringBuffer</code> class. This method here can not be optimized by the jit, so
-     * the for each item the new String object needs to be extended to new length, which is known to be a performance penalty.
+     * If both strings are <code>null</code> then <code>null</code> is returned.
+     *
+     * @see #concat(CharSequence, String[])
+     * @param sepearator the separator
+     * @param string1 first string to concatenate
+     * @param string2 second string to concatenate
+     * @return String the concatenated string
      */
-    @Deprecated
     static public String concat(CharSequence separator, String string1, String string2){
         String[] strings = {string1, string2};
         return concat(separator, strings);
