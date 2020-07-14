@@ -180,7 +180,7 @@ public class CdmUtils {
      * @return String the concatenation result
      */
     static public String concat(CharSequence separator, String... strings){
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         boolean allNull = true;
         for (String string : strings){
             if (string != null){
