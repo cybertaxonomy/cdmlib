@@ -51,16 +51,16 @@ public class MediaToolbox implements IMediaToolbox {
     private Integer mediaRepresentationTransformationsLastHash = null;
 
     @Autowired
-    private IPreferenceService service;
+    private IPreferenceService preferenceService;
 
     @Override
     public List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
-            Integer widthOrDuration, Integer height, Integer size, List<Media> taxonGalleryMedia) {
+            Integer widthOrDuration, Integer height, Integer size, List<Media> galleryMedia) {
 
         MediaUriTransformationProcessor mediaTransformationProcessor = new MediaUriTransformationProcessor();
         mediaTransformationProcessor.addAll(readTransformations());
 
-        for(Media media : taxonGalleryMedia) {
+        for(Media media : galleryMedia) {
             List<MediaRepresentation> newRepr = new ArrayList<>();
             for(MediaRepresentation repr : media.getRepresentations()) {
                 for(MediaRepresentationPart part : repr.getParts()) {
@@ -69,8 +69,7 @@ public class MediaToolbox implements IMediaToolbox {
             }
             media.getRepresentations().addAll(newRepr);
         }
-        return filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size, taxonGalleryMedia);
-
+        return filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size, galleryMedia);
     }
 
     @Override
@@ -96,10 +95,10 @@ public class MediaToolbox implements IMediaToolbox {
 
     @Override
     public List<Media> filterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
-            Integer widthOrDuration, Integer height, Integer size, List<Media> taxonGalleryMedia) {
+            Integer widthOrDuration, Integer height, Integer size, List<Media> galleryMedia) {
 
-
-        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(taxonGalleryMedia, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);
+        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(
+                galleryMedia, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);
 
         List<Media> filteredMedia = new ArrayList<>(mediaRepresentationMap.size());
         for (Media media : mediaRepresentationMap.keySet()) {
@@ -114,9 +113,11 @@ public class MediaToolbox implements IMediaToolbox {
 
         //System.setProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET, "1");
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaRepresentationTransformations);
-        CdmPreference pref = service.find(key);
+        CdmPreference pref = preferenceService.find(key);
         if(pref != null && pref.getValue() != null) {
-            if(System.getProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET) == null ||mediaRepresentationTransformationsLastHash == null || mediaRepresentationTransformationsLastHash != pref.getValue().hashCode()) {
+            if(System.getProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET) == null
+                    ||mediaRepresentationTransformationsLastHash == null
+                    || mediaRepresentationTransformationsLastHash != pref.getValue().hashCode()) {
                 // loaded value is different from last value
                 ObjectMapper mapper = new ObjectMapper();
                 CollectionType javaType = mapper.getTypeFactory()
@@ -176,7 +177,7 @@ public class MediaToolbox implements IMediaToolbox {
             try {
                 String json = mapper.writerFor(javaType).writeValueAsString(transformations);
                 pref = CdmPreference.NewDatabaseInstance(PreferencePredicate.MediaRepresentationTransformations, json);
-                service.set(pref);
+                preferenceService.set(pref);
             } catch (JsonProcessingException e) {
                 logger.error(e);
             }

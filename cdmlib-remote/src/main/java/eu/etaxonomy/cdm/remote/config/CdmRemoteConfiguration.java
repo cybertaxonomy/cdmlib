@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.remote.controller.util.MediaToolbox;
  *
  * @author a.kohlbecker
  * @since Jun 3, 2019
- *
  */
 @Configuration
 public class CdmRemoteConfiguration {

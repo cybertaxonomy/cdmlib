@@ -60,9 +60,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly=true)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
 
-
     public static final Integer IMAGE_READ_TIMEOUT = 3000;
-
 
     @Override
     @Autowired
@@ -225,10 +223,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             String message = null;
             if (ref instanceof MediaRepresentation){
                 continue;
-            }
-            if (ref instanceof TextData){
+            }else if (ref instanceof TextData){
                 TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
-                DescriptionBase description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
+                DescriptionBase<?> description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
 
                 if (description instanceof TaxonDescription){
                     TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
@@ -256,8 +253,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         result.setAbort();
                     }
                 }
-
-            }if (ref instanceof MediaSpecimen){
+            }else if (ref instanceof MediaSpecimen){
                message = "The media can't be deleted from the database because it is referenced by a mediaspecimen. ("+((MediaSpecimen)ref).getTitleCache()+")";
                result.setAbort();
             }else {
@@ -267,9 +263,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             if (message != null){
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(ref);
-
             }
-
         }
 
         return result;
@@ -325,7 +319,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         }
 
         if(metadata == null) {
-            metadata = new HashMap<>(0);
+            metadata = new HashMap<>();
         }
         return metadata;
     }
@@ -337,7 +331,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     protected List<String> mediaMetadataKeyExludes(){
         CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameExcludes));
         if(pref == null) {
-            return new ArrayList<>(0);
+            return new ArrayList<>();
         }
         return pref.splitStringListValue();
     }
@@ -349,6 +343,4 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         }
         return pref.splitStringListValue();
     }
-
-
 }

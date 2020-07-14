@@ -16,30 +16,18 @@ public class SearchReplace {
     private String search;
     private Pattern searchPattern;
 
-
     public SearchReplace() {
-
     }
 
-    /**
-     * @param search
-     * @param replace
-     */
     public SearchReplace(String search, String replace) {
         this.search = search;
         this.replace = replace;
     }
 
-    /**
-     * @return the search
-     */
     public String getSearch() {
         return search;
     }
 
-    /**
-     * @return the replace
-     */
     public String getReplace() {
         return replace;
     }

@@ -41,7 +41,6 @@ public class MediaUriTransformationProcessorTest {
     public void testUriTranformation() throws URISyntaxException {
         URI uri = new URI(URI_STRING_1);
 
-
         MediaUriTransformation transformation1 = new MediaUriTransformation();
         transformation1.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/full/full/0/default.jpg"));
 
