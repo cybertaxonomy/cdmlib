@@ -18,8 +18,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -292,26 +290,6 @@ public class CdmUtils {
             //
         }
         return false;
-    }
-
-    /**
-     *
-     * @param string
-     * @return
-     *
-     * @deprecated unused and dangerous since it swallows the URISyntaxException --> need to be removed
-     */
-    @Deprecated
-    static public URI string2Uri(String string) {
-        URI uri = null;
-        try {
-            uri = new URI(string);
-            logger.debug("uri: " + uri.toString());
-        } catch (URISyntaxException ex) {
-            logger.error("Problem converting string " + string + " to URI " + uri);
-            return null;
-        }
-        return uri;
     }
 
     static public boolean isNumeric(String string){

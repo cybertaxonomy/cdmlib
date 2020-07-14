@@ -3531,7 +3531,6 @@ public class TaxonName
 
 // *********************** CACHES ***************************************************/
 
-
     @Override
     public boolean updateCaches() {
         boolean result = updateAuthorshipCache();
@@ -3560,9 +3559,6 @@ public class TaxonName
         return false;
     }
 
-    /**
-     * @return
-     */
     private boolean updateNameCache() {
         //updates the name cache if necessary and via the listener updates all higher caches
         if (protectedNameCache == false){
