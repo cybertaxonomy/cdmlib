@@ -199,21 +199,13 @@ public class MediaUriTransformationProcessor {
         } else {
             // calculate
             float originalAspectRatio = ((float) originalWidth / (float) originalHeight);
-            if (trans.getWidth() == null) {
-                return new Point(Math.round((float) trans.getHeight() * originalAspectRatio), trans.getHeight());
-            } else if (trans.getHeight() == null) {
-                return new Point(trans.getWidth(), Math.round((float) trans.getWidth() / originalAspectRatio));
-            } else if (trans.getWidth().equals(trans.getHeight())) {
-                int extend = trans.getWidth();
-                if (originalWidth.equals(originalHeight)) {
-                    return new Point(extend, extend);
-                } else if (originalWidth > originalHeight) {
-                    return new Point(extend, Math.round(extend / originalAspectRatio));
-                } else {
-                    return new Point(Math.round(extend * originalAspectRatio), extend);
-                }
+
+            boolean widthIsLimiting = trans.getHeight() == null ||
+                    trans.getWidth() != null && trans.getHeight() * originalAspectRatio > trans.getWidth() ;
+            if (widthIsLimiting){
+                return new Point(trans.getWidth(), Math.round(trans.getWidth() / originalAspectRatio ));
             } else {
-                return new Point(trans.getWidth(), trans.getHeight());
+                return new Point(Math.round(trans.getHeight() * originalAspectRatio), trans.getHeight());
             }
         }
     }

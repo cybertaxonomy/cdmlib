@@ -195,6 +195,14 @@ public class MediaUriTransformationProcessorTest {
         assertEquals(Integer.valueOf(400), image.getWidth());
         assertEquals(Integer.valueOf(300), image.getHeight());
 
+        //height = 250
+        transformation1.setHeight(250);
+        representations = processor.makeNewMediaRepresentationsFor(repr1.getParts().get(0));
+        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(Integer.valueOf(333), image.getWidth());
+        assertEquals(Integer.valueOf(250), image.getHeight());
+        transformation1.setHeight(400);  //reset
+
         // aspect ratio = 3/4
         MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
 
@@ -205,5 +213,13 @@ public class MediaUriTransformationProcessorTest {
         image = (ImageFile)representations.get(0).getParts().get(0);
         assertEquals(Integer.valueOf(300), image.getWidth());
         assertEquals(Integer.valueOf(400), image.getHeight());
+
+        //width = 250
+        transformation1.setWidth(250);
+        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(Integer.valueOf(250), image.getWidth());
+        assertEquals(Integer.valueOf(333), image.getHeight());
+        transformation1.setWidth(250);  //reset
     }
 }
