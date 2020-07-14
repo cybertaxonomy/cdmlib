@@ -35,9 +35,6 @@ public class CdmImageInfoTest {
     private URI remotePngUri;
     private CdmImageInfo pngInstance;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         URL jpegUrl = CdmImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.jpg");
@@ -239,16 +236,12 @@ public class CdmImageInfoTest {
         }
     }
 
-
-
     @Test
     public void testReadMetaDataJpeg() throws IOException, HttpException{
         CdmImageInfo instance = getJpegInstance();
 
         instance.readMetaData(0);
-
         Map<String, String> metaData = instance.getMetaData();
-
         Assert.assertEquals(52, metaData.size());
 
         Assert.assertEquals("My taxon", metaData.get("Taxon"));
@@ -256,18 +249,14 @@ public class CdmImageInfoTest {
         Assert.assertEquals("15.02.1955", metaData.get("Date"));
         Assert.assertEquals("Any person", metaData.get("Photographer"));
         Assert.assertEquals("My Keyword; Second Keyword", metaData.get("Keywords"));
-
     }
 
 
     @Test
     public void testReadMetaDataTif() throws IOException, HttpException{
         CdmImageInfo instance = getTifInstance();
-
         instance.readMetaData(0);
-
         Map<String, String> metaData = instance.getMetaData();
-
         Assert.assertEquals(15, metaData.size());
     }
 
@@ -276,11 +265,8 @@ public class CdmImageInfoTest {
 
         try {
             CdmImageInfo instance = getRemotePngInstance();
-
             instance.readMetaData(3000);
-
             Map<String, String> metaData = instance.getMetaData();
-
             Assert.assertEquals(1, metaData.size());
 
         } catch (IOException e){
@@ -288,7 +274,5 @@ public class CdmImageInfoTest {
                 logger.warn("test testReadMetaDataRemotePng() skipped, since server is not available.");
             }
         }
-
-
     }
 }
