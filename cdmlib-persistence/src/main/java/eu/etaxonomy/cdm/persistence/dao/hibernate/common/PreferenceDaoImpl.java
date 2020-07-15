@@ -125,14 +125,13 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
         List<CdmPreference> allPreferences = query.list();
         CdmPreference result = null;
         for (CdmPreference pref : allPreferences){
-            //FIXME this is problematci
+            //FIXME this is problematic
             if (result == null || result.getSubjectString().length() < pref.getSubjectString().length()){
                 result = pref;
             }
         }
         return result;
 	}
-
 
 	@Override
 	public long count(){
@@ -149,9 +148,6 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
         CdmPreferenceLookup.instance().setIPreferenceDao(this);
