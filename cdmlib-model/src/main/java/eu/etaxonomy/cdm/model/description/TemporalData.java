@@ -47,6 +47,11 @@ public class TemporalData extends DescriptionElementBase {
     @XmlElement(name = "Period")
     private ExtendedTimePeriod period = ExtendedTimePeriod.NewExtendedInstance();
 
+    public static TemporalData NewInstance(){
+        TemporalData result = new TemporalData();
+        return result;
+    }
+
     /**
      * Creates a temporal fact with the given period.
      */
