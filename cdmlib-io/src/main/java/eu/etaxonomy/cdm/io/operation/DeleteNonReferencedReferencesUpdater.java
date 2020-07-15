@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.io.operation;
 
 import java.util.List;
@@ -12,8 +20,12 @@ import eu.etaxonomy.cdm.io.operation.config.DeleteNonReferencedReferencesConfigu
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-@Component
 
+/**
+ * @author k.luther
+ * @since 2015
+ */
+@Component
 public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNonReferencedReferencesConfigurator, DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
 
     private static final long serialVersionUID = -3514276133181062270L;
@@ -27,7 +39,7 @@ public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNo
 			DeleteResult result;
 			int deleted = 0;
 			System.out.println("There are " + authors.size() + " authors");
-			for (TeamOrPersonBase author: authors){
+			for (TeamOrPersonBase<?> author: authors){
 				Set<CdmBase> refObjects = getCommonService().getReferencingObjects(author);
 				if (refObjects.isEmpty()) {
 					result = getAgentService().delete(author);
@@ -46,8 +58,8 @@ public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNo
 			int deleted = 0;
 			System.out.println("There are " + references.size() + " references");
 			for (Reference ref: references){
-				Set<CdmBase> refObjects = getCommonService().getReferencingObjects(ref);
-				if (refObjects.isEmpty()) {
+				long refObjects = getCommonService().getReferencingObjectsCount(ref);
+				if (refObjects > 0) {
 					result = getReferenceService().delete(ref);
 					deleted++;
 					if (!result.isOk()){
@@ -61,16 +73,12 @@ public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNo
 	}
 
 	@Override
-	protected boolean doCheck(
-			DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
+	protected boolean doCheck(DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
 		return true;
 	}
 
 	@Override
-	protected boolean isIgnore(
-			DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
+	protected boolean isIgnore(DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
 		return false;
 	}
-
-
 }
