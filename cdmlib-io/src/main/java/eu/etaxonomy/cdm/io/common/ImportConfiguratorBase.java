@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Method;
@@ -52,10 +51,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	 */
 	private IInputTransformer transformer;
 
-//
-//	//TODO
-//	private boolean deleteAll = false;
-
 	private UUID uuidFeatureTree;
 
 	private String featureTreeTitle;
@@ -86,13 +81,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	@SuppressWarnings("rawtypes")
     protected Class<ICdmImport>[] ioClassList;
 
-	protected ICdmIO[] ioList;
+	@SuppressWarnings("rawtypes")
+    protected ICdmIO[] ioList;
 
 	protected String[] ioBeans;
 
 	/*user interaction*/
     private boolean askUserForHelp =false;
-
 
 /* *****************CONSTRUCTOR *****************************/
 
@@ -119,7 +114,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	public void setSource(SOURCE source) {
 		this.source = source;
 	}
-
 
 	@Override
     public boolean isValid(){

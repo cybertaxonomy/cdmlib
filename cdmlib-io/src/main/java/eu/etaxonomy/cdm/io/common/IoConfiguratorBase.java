@@ -45,7 +45,6 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 
 	protected HibernateConfiguration hibernateConfig = new HibernateConfiguration();
 
-
     //etc
 	private IProgressMonitor progressMonitor;
 	private String userFriendlyIOName;
