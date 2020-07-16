@@ -159,7 +159,7 @@ public class ManifestController {
         return iiifMapper.writeValueAsString(manifest);
     }
 
-    private <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) {
+    private <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) throws IOException {
 
         List<Canvas> canvases = new ArrayList<>(entityMediaContext.getMedia().size());
 

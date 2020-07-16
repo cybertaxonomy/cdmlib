@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -21,9 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import eu.etaxonomy.cdm.api.service.IPreferenceService;
+import eu.etaxonomy.cdm.api.service.media.DefaultMediaTransformations;
 import eu.etaxonomy.cdm.api.service.media.MediaUriTransformation;
 import eu.etaxonomy.cdm.api.service.media.MediaUriTransformationProcessor;
-import eu.etaxonomy.cdm.api.service.media.SearchReplace;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -35,14 +36,17 @@ import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 
 /**
- * See {@link MediaUriTransformationProcessor} and {@link MediaUriTransformation}
+ * Utility service which which creates volatile object which must not be persisted.
+ * <p>
+ * By now this class provides methods for filtering {@link Media} and  {@link MediaRepresentation}s
+ * <p>
+ * See also {@link MediaUriTransformationProcessor} and {@link MediaUriTransformation}
  *
  * @author a.kohlbecker
  * @since Jul 8, 2020
  */
+@Component // not used for component scan, see eu.etaxonomy.cdm.remote.config.CdmRemoteConfiguration
 public class MediaToolbox implements IMediaToolbox {
-
-    private static final String SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET = "mediaRepresentationTransformationsReset";
 
     private static final Logger logger = Logger.getLogger(MediaToolbox.class);
 
@@ -55,12 +59,12 @@ public class MediaToolbox implements IMediaToolbox {
 
     @Override
     public List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
-            Integer widthOrDuration, Integer height, Integer size, List<Media> galleryMedia) {
+            Integer widthOrDuration, Integer height, Integer size, List<Media> mediaList) {
 
         MediaUriTransformationProcessor mediaTransformationProcessor = new MediaUriTransformationProcessor();
         mediaTransformationProcessor.addAll(readTransformations());
 
-        for(Media media : galleryMedia) {
+        for(Media media : mediaList) {
             List<MediaRepresentation> newRepr = new ArrayList<>();
             for(MediaRepresentation repr : media.getRepresentations()) {
                 for(MediaRepresentationPart part : repr.getParts()) {
@@ -69,7 +73,7 @@ public class MediaToolbox implements IMediaToolbox {
             }
             media.getRepresentations().addAll(newRepr);
         }
-        return filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size, galleryMedia);
+        return filterPreferredMediaRepresentations(mediaList, type, mimeTypes, widthOrDuration, height, size);
     }
 
     @Override
@@ -90,15 +94,14 @@ public class MediaToolbox implements IMediaToolbox {
 
         return MediaUtils.findBestMatchingRepresentation(media, type, size, height, widthOrDuration, mimeTypes,
                 missingValStrategy);
-
     }
 
     @Override
-    public List<Media> filterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
-            Integer widthOrDuration, Integer height, Integer size, List<Media> galleryMedia) {
+    public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
+            String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size) {
 
-        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(
-                galleryMedia, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);
+
+        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(mediaList, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);
 
         List<Media> filteredMedia = new ArrayList<>(mediaRepresentationMap.size());
         for (Media media : mediaRepresentationMap.keySet()) {
@@ -109,15 +112,17 @@ public class MediaToolbox implements IMediaToolbox {
         return filteredMedia;
     }
 
+    /**
+     * Read the {@link MediaUriTransformation MediaUriTransformations} from the cdm preferences ({@link PreferencePredicate.MediaRepresentationTransformations}
+     * or use the default defined in {@link DefaultMediaTransformations#digilib()}
+     *
+     */
     private List<MediaUriTransformation> readTransformations() {
 
-        //System.setProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET, "1");
         PrefKey key = CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaRepresentationTransformations);
         CdmPreference pref = preferenceService.find(key);
         if(pref != null && pref.getValue() != null) {
-            if(System.getProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET) == null
-                    || mediaRepresentationTransformationsLastHash == null
-                    || mediaRepresentationTransformationsLastHash != pref.getValue().hashCode()) {
+            if(mediaRepresentationTransformationsLastHash == null || mediaRepresentationTransformationsLastHash != pref.getValue().hashCode()) {
                 // loaded value is different from last value
                 ObjectMapper mapper = new ObjectMapper();
                 CollectionType javaType = mapper.getTypeFactory()
@@ -132,57 +137,38 @@ public class MediaToolbox implements IMediaToolbox {
                 }
             }
         }
-        if(transformations == null || System.getProperty(SYS_PROP_MEDIA_REPRESENTATION_TRANSFORMATIONS_RESET) != null) {
-
-            transformations = new ArrayList<>();
-            MediaUriTransformation tr1 = new MediaUriTransformation();
-
-            tr1.setPathQueryFragment(new SearchReplace("digilib/Scaler/IIIF/([^\\!]+)\\!([^\\/]+)(.*)", "digilib/Scaler/IIIF/$1!$2/full/!200,200/0/default.jpg"));
-            tr1.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
-            tr1.setMimeType("image/jpeg");
-            tr1.setWidth(200);
-            tr1.setHeight(200);
-
-            MediaUriTransformation tr2 = new MediaUriTransformation();
-
-            tr2.setPathQueryFragment(new SearchReplace("digilib/Scaler/IIIF/([^\\!]+)\\!([^\\/]+)(.*)", "digilib/Scaler/IIIF/$1!$2/full/!400,400/0/default.jpg"));
-            tr2.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
-            tr2.setMimeType("image/jpeg");
-            tr2.setWidth(400);
-            tr2.setHeight(400);
-
-
-            MediaUriTransformation tr3 = new MediaUriTransformation();
-            tr3.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", "digilib/Scaler/IIIF/$1!$2/full/!400,400/0/default.jpg"));
-            tr3.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
-            tr3.setMimeType("image/jpeg");
-            tr3.setWidth(400);
-            tr3.setHeight(400);
-
-            MediaUriTransformation tr4 = new MediaUriTransformation();
-            tr4.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", "digilib/Scaler/IIIF/$1!$2/full/!200,200/0/default.jpg"));
-            tr4.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
-            tr4.setMimeType("image/jpeg");
-            tr4.setWidth(200);
-            tr4.setHeight(200);
-
-            transformations.add(tr1);
-            transformations.add(tr2);
-            transformations.add(tr3);
-            transformations.add(tr4);
-
-            ObjectMapper mapper = new ObjectMapper();
-            CollectionType javaType = mapper.getTypeFactory()
-                    .constructCollectionType(List.class, MediaUriTransformation.class);
-            try {
-                String json = mapper.writerFor(javaType).writeValueAsString(transformations);
-                pref = CdmPreference.NewDatabaseInstance(PreferencePredicate.MediaRepresentationTransformations, json);
-                preferenceService.set(pref);
-            } catch (JsonProcessingException e) {
-                logger.error(e);
-            }
+        if(transformations == null) {
+            transformations = DefaultMediaTransformations.digilib();
         }
 
         return transformations;
     }
+
+    /**
+     * @param trans the list of MediaUriTransformation to be serialized
+     * @return the JSON string
+     * @throws JsonProcessingException
+     */
+    static protected String transformationsToJson(List<MediaUriTransformation> trans) throws JsonProcessingException {
+
+      ObjectMapper mapper = new ObjectMapper();
+      CollectionType javaType = mapper.getTypeFactory()
+              .constructCollectionType(List.class, MediaUriTransformation.class);
+
+      String json = mapper.writerFor(javaType).withDefaultPrettyPrinter().writeValueAsString(trans);
+      return json;
+    }
+
+    /**
+     *
+     * @param args
+     * @throws JsonProcessingException
+     */
+    public static void main(String[] args) throws JsonProcessingException {
+
+        System.out.println("Default tansformations for digilib");
+        System.out.println("========================================");
+        System.out.println(transformationsToJson(DefaultMediaTransformations.digilib()));
+    }
+
 }
