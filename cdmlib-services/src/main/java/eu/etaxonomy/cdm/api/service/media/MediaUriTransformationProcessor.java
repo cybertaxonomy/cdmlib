@@ -197,15 +197,19 @@ public class MediaUriTransformationProcessor {
         } else if (originalWidth == null || originalHeight == null) {
             return new Point(trans.getWidth(), trans.getHeight());
         } else {
-            // calculate
-            float originalAspectRatio = ((float) originalWidth / (float) originalHeight);
-
-            boolean widthIsLimiting = trans.getHeight() == null ||
-                    trans.getWidth() != null && trans.getHeight() * originalAspectRatio > trans.getWidth() ;
-            if (widthIsLimiting){
-                return new Point(trans.getWidth(), Math.round(trans.getWidth() / originalAspectRatio ));
+            if(trans.getHeight() != null && trans.getWidth() != null && !trans.getHeight().equals(trans.getWidth())) {
+                return new Point(trans.getWidth(), trans.getHeight());
             } else {
-                return new Point(Math.round(trans.getHeight() * originalAspectRatio), trans.getHeight());
+                // calculate
+                float originalAspectRatio = ((float) originalWidth / (float) originalHeight);
+
+                boolean widthIsLimiting = trans.getHeight() == null ||
+                        trans.getWidth() != null && trans.getHeight() * originalAspectRatio > trans.getWidth() ;
+                if (widthIsLimiting){
+                    return new Point(trans.getWidth(), Math.round(trans.getWidth() / originalAspectRatio ));
+                } else {
+                    return new Point(Math.round(trans.getHeight() * originalAspectRatio), trans.getHeight());
+                }
             }
         }
     }
