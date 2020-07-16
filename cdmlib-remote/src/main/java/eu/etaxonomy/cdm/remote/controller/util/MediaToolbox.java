@@ -65,13 +65,15 @@ public class MediaToolbox implements IMediaToolbox {
         mediaTransformationProcessor.addAll(readTransformations());
 
         for(Media media : mediaList) {
-            List<MediaRepresentation> newRepr = new ArrayList<>();
+            List<MediaRepresentation> newReprs = new ArrayList<>();
             for(MediaRepresentation repr : media.getRepresentations()) {
                 for(MediaRepresentationPart part : repr.getParts()) {
-                    newRepr.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
+                    newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
                 }
             }
-            media.getRepresentations().addAll(newRepr);
+            for(MediaRepresentation r : newReprs) {
+                media.addRepresentation(r);
+            }
         }
         return filterPreferredMediaRepresentations(mediaList, type, mimeTypes, widthOrDuration, height, size);
     }
@@ -84,13 +86,15 @@ public class MediaToolbox implements IMediaToolbox {
         MediaUriTransformationProcessor mediaTransformationProcessor = new MediaUriTransformationProcessor();
         mediaTransformationProcessor.addAll(readTransformations());
 
-        List<MediaRepresentation> newRepr = new ArrayList<>();
+        List<MediaRepresentation> newReprs = new ArrayList<>();
         for (MediaRepresentation repr : media.getRepresentations()) {
             for (MediaRepresentationPart part : repr.getParts()) {
-                newRepr.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
+                newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
             }
         }
-        media.getRepresentations().addAll(newRepr);
+        for(MediaRepresentation r : newReprs) {
+            media.addRepresentation(r);
+        }
 
         return MediaUtils.findBestMatchingRepresentation(media, type, size, height, widthOrDuration, mimeTypes,
                 missingValStrategy);
