@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.media;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class DefaultMediaTransformations {
          * for example used in the taxon general page, max extend of the resulting images is 400px
          */
         String dataPortalPreviewImage = "digilib/Scaler/IIIF/$1!$2/full/!400,400/0/default.jpg";
+        Point dataPortalPreviewImageSize = new Point(400,400);
 
         /*
          * universalViewerThumbnail:
@@ -48,34 +50,35 @@ public class DefaultMediaTransformations {
          * question mark character which causes problems for the URI query parser see https://dev.e-taxonomy.eu/redmine/issues/9132#note-8
          */
         String universalViewerThumbnail = "digilib/Scaler/?fn=$1/$2&mo=crop&dw=200&dh=147&uvfix=1";
+        Point universalViewerThumbnailSize = new Point(200,147);
 
         MediaUriTransformation tr1 = new MediaUriTransformation();
         tr1.setPathQueryFragment(new SearchReplace("digilib/Scaler/IIIF/([^\\!]+)\\!([^\\/]+)(.*)", dataPortalPreviewImage));
         tr1.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
         tr1.setMimeType("image/jpeg");
-        tr1.setWidth(400);
-        tr1.setHeight(400);
+        tr1.setWidth(dataPortalPreviewImageSize.x);
+        tr1.setHeight(dataPortalPreviewImageSize.y);
 
         MediaUriTransformation tr2 = new MediaUriTransformation();
         tr2.setPathQueryFragment(new SearchReplace("digilib/Scaler/IIIF/([^\\!]+)\\!([^\\/]+)(.*)", universalViewerThumbnail));
         tr2.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
         tr2.setMimeType("image/jpeg");
-        tr2.setWidth(200);
-        tr2.setHeight(200);
+        tr2.setWidth(universalViewerThumbnailSize.x);
+        tr2.setHeight(universalViewerThumbnailSize.y);
 
         MediaUriTransformation tr3 = new MediaUriTransformation();
         tr3.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", dataPortalPreviewImage));
         tr3.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
         tr3.setMimeType("image/jpeg");
-        tr3.setWidth(400);
-        tr3.setHeight(400);
+        tr3.setWidth(dataPortalPreviewImageSize.x);
+        tr3.setHeight(dataPortalPreviewImageSize.y);
 
         MediaUriTransformation tr4 = new MediaUriTransformation();
         tr4.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", universalViewerThumbnail));
         tr4.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
         tr4.setMimeType("image/jpeg");
-        tr4.setWidth(200);
-        tr4.setHeight(200);
+        tr4.setWidth(universalViewerThumbnailSize.x);
+        tr4.setHeight(universalViewerThumbnailSize.y);
 
         defaultTransformations.add(tr2);
         defaultTransformations.add(tr1);
