@@ -54,7 +54,8 @@ public class DeleteNonReferencedReferencesConfigurator
 		return (STATE) new DefaultImportState(this);
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	protected void makeIoClassList() {
 		ioClassList = new Class[]{
 				 DeleteNonReferencedReferencesUpdater.class
