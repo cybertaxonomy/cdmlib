@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -260,6 +261,9 @@ public class MatchStrategyFactoryTest {
         parsedBook = getDefaultParsedBook();
         Assert.assertTrue("Same abbrev. title should match",
                 matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
+        fullBook.setDoi(DOI.fromString("10.1234/abc"));
+        Assert.assertTrue("DOI only with full book should match as abbrev title identifies the book",
+                matchStrategy.invoke(parsedBook, fullBook).isSuccessful());
 
         //differing nom. title.
         parsedBook.setAbbrevTitle("Wrong");
@@ -301,6 +305,13 @@ public class MatchStrategyFactoryTest {
         parsedBookSection = getDefaultParsedBookSection();
         Assert.assertTrue("Only author, book and date published should match",
                 matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful() );
+        fullBookSection.setDoi(DOI.fromString("10.1234/abc"));
+        Assert.assertFalse("Full book section having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page",
+                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
+        fullBookSection.setDoi(null);
+        fullBookSection.setReferenceAbstract("My abstract");
+        Assert.assertFalse("Full book section having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page",
+                matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
 
         //should match
         fullBookSection = getDefaultFullBookSection();
@@ -399,16 +410,20 @@ public class MatchStrategyFactoryTest {
 
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
-        Assert.assertTrue("Only author, book and date published should match",
-                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful() );
+        Assert.assertTrue("Having only paramters both have in common like author, book and date published "
+                + "should match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        fullArticle.setDoi(DOI.fromString("10.1234/abc"));
+        Assert.assertFalse("Full article having additional parameters should not match if parsed article has no identifying parameter like (abbrev)title or page",
+                matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
 
-        //should match
+        //no match due to missing abbrev title match
         fullArticle = getDefaultFullArticle();
         Assert.assertFalse("Abbrev. title must be equal or null", matchStrategy.invoke(parsedArticle,
                 fullArticle).isSuccessful());
         parsedArticle.setAbbrevTitle(fullArticle.getAbbrevTitle());
         Assert.assertFalse("Still not match because pages are not equal (parsed is null)",
                 matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+        //FIXME in future this should not fail, but parsed articles never have really pages, they only have page or a page span in the parsed detail which is not the same as the pages of the article
         parsedArticle.setPages(fullArticle.getPages());
         Assert.assertFalse("Now they should match",
                 matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
