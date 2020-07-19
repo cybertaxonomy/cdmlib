@@ -617,21 +617,16 @@ public class DescriptionServiceImpl
         return deleteResult;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#deleteDescription(java.util.UUID)
-     */
     @Override
     @Transactional(readOnly = false)
     public DeleteResult deleteDescription(UUID descriptionUuid) {
         return deleteDescription(dao.load(descriptionUuid));
     }
 
-
     @Override
     public DeleteResult isDeletable(UUID descriptionUuid){
         DeleteResult result = new DeleteResult();
-        DescriptionBase description = this.load(descriptionUuid);
+        DescriptionBase<?> description = this.load(descriptionUuid);
         Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(description);
 
         if (references == null || references.isEmpty()){
@@ -647,7 +642,6 @@ public class DescriptionServiceImpl
                 continue;
             } else if (ref instanceof DescriptionElementBase){
                 continue;
-
             }else {
                 message = "The description can't be completely deleted because it is referenced by " + ref.getUserFriendlyTypeName() ;
                 result.setAbort();
@@ -655,9 +649,7 @@ public class DescriptionServiceImpl
             if (message != null){
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(ref);
-
             }
-
         }
 
         return result;
