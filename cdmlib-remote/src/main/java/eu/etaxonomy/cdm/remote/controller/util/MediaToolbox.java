@@ -9,8 +9,10 @@
 package eu.etaxonomy.cdm.remote.controller.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,18 +88,14 @@ public class MediaToolbox implements IMediaToolbox {
         MediaUriTransformationProcessor mediaTransformationProcessor = new MediaUriTransformationProcessor();
         mediaTransformationProcessor.addAll(readTransformations());
 
-        List<MediaRepresentation> newReprs = new ArrayList<>();
+        Set<MediaRepresentation> newReprs = new HashSet<>();
         for (MediaRepresentation repr : media.getRepresentations()) {
             for (MediaRepresentationPart part : repr.getParts()) {
                 newReprs.addAll(mediaTransformationProcessor.makeNewMediaRepresentationsFor(part));
             }
         }
-        for(MediaRepresentation r : newReprs) {
-            media.addRepresentation(r);
-        }
-
-        return MediaUtils.findBestMatchingRepresentation(media, type, size, height, widthOrDuration, mimeTypes,
-                missingValStrategy);
+        newReprs.addAll(media.getRepresentations());
+        return MediaUtils.findBestMatchingRepresentation(newReprs, type, size, height, widthOrDuration, mimeTypes, missingValStrategy);
     }
 
     @Override
@@ -111,6 +109,7 @@ public class MediaToolbox implements IMediaToolbox {
         for (Media media : mediaRepresentationMap.keySet()) {
             media.getRepresentations().clear();
             media.addRepresentation(mediaRepresentationMap.get(media));
+            media.setId(0); // prevent from persisting the media entity accidentally
             filteredMedia.add(media);
         }
         return filteredMedia;
