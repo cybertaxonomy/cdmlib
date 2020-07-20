@@ -51,7 +51,8 @@ public interface IPreferenceDao {
 
     /**
      * Retrieves the best matching CdmPreference for the given
-     * taxon node and the given predicate
+     * taxon node and the given predicate.
+     *
      * @param taxonNode
      * @param predicate
      * @return the CdmPreference

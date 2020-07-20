@@ -9,7 +9,11 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +43,21 @@ public class PreferenceServiceImpl implements IPreferenceService {
     @Autowired
     private IPreferenceDao dao;
 
-	@Override
+    private Map<String, CdmPreference> cache = new ConcurrentHashMap<>();
+
+    private boolean cacheIsComplete = false;
+
+    private boolean cacheIsLocked = false;
+
+    @Override
 	public CdmPreference findExact(PrefKey key) {
-		return dao.get(key);
+		String cacheKey = cacheKey(key);
+        return fromCacheGet(key, cacheKey);
 	}
 
     @Override
     public CdmPreference find(PrefKey key) {
-        List<CdmPreference> prefs = dao.list();
-        CdmPreference pref = PreferenceResolver.resolve(prefs, key);
+        CdmPreference pref = PreferenceResolver.resolve(list(), key);
         return pref;
     }
 
@@ -73,37 +83,44 @@ public class PreferenceServiceImpl implements IPreferenceService {
     @Transactional(readOnly = false)
 	public void set(CdmPreference preference) {
 		dao.set(preference);
+		cachePut(preference);
 	}
 
-	@Override
+    @Override
     @Transactional(readOnly = false)
-    public void remove(PrefKey preference) {
-        dao.remove(preference);
+    public void remove(PrefKey key) {
+        dao.remove(key);
+        removeFromCache(key);
     }
 
-	@Override
+    @Override
 	public long count() {
 		return dao.count();
 	}
 
 	@Override
     public List<CdmPreference> list() {
-        return dao.list();
+	    if(!cacheIsComplete) {
+	        cacheFullUpdate();
+	    }
+        return new ArrayList<CdmPreference>(cacheValues());
     }
 
     @Override
     public List<CdmPreference> list(IPreferencePredicate<?> predicate) {
+        // using the cache for this method makes not much sense
         return dao.list(predicate);
     }
 
     @Override
-    public Object find(TaxonNode taxonNode, String predicate) {
-        return dao.find(taxonNode, predicate);
+    public CdmPreference find(TaxonNode taxonNode, String predicate) {
+        String cacheKey = cacheKey(taxonNode, predicate);
+        return fromCacheOrFind(taxonNode, predicate, cacheKey);
     }
 
     @Override
     public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate<?> predicate){
-        return dao.find(taxonNode, predicate.getKey());
+        return find(taxonNode, predicate.getKey());
     }
 
 // ********************** NOT YET HANDLED *******************/
@@ -130,4 +147,73 @@ public class PreferenceServiceImpl implements IPreferenceService {
             throw new RuntimeException("mapToTaxonNode not yet implemented for " + taxonNodeRelatedCdmBase.getClass().getSimpleName());
         }
     }
+
+    // ====================== Cache methods ======================= //
+    /**
+     * Concatenates subject and predicate as key for the cache map
+     */
+    private String cacheKey(PrefKey key) {
+        return key.getSubject() + key.getPredicate();
+    }
+
+    private String cacheKey(TaxonNode taxonNode, String predicate) {
+        return taxonNode.treeIndex() + predicate;
+    }
+
+
+    // --------------- non locking cache read methods --------------- //
+
+    protected Collection<CdmPreference> cacheValues() {
+        waitForCache();
+        return cache.values();
+    }
+
+    protected CdmPreference fromCacheGet(PrefKey key, String cacheKey) {
+        waitForCache();
+        return cache.computeIfAbsent(cacheKey, k -> dao.get(key));
+    }
+
+
+    protected CdmPreference fromCacheOrFind(TaxonNode taxonNode, String predicate, String cacheKey) {
+        waitForCache();
+        return cache.computeIfAbsent(cacheKey, k -> dao.find(taxonNode, predicate));
+    }
+
+    // --------------- cache locking methods --------------- //
+
+    protected void cachePut(CdmPreference preference) {
+        waitForCache();
+        cacheIsLocked = true;
+        cache.put(cacheKey(preference.getKey()), preference);
+        cacheIsLocked = false;
+    }
+
+
+    protected void removeFromCache(PrefKey key) {
+        waitForCache();
+        cacheIsLocked = true;
+        cache.remove(cacheKey(key));
+        cacheIsLocked = false;
+    }
+
+    protected void cacheFullUpdate() {
+        waitForCache();
+        cacheIsLocked = true;
+        cache.clear();
+        for(CdmPreference pref :  dao.list()){
+            cache.put(cacheKey(pref.getKey()), pref);
+        }
+        cacheIsLocked = false;
+    }
+
+    protected void waitForCache() {
+        while(cacheIsLocked) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // just keep on sleeping, we may improve this later on
+            }
+        }
+    }
+
 }

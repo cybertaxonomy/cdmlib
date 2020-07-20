@@ -100,6 +100,7 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 
 	@Override
 	public CdmPreference find(TaxonNode taxonNode, String predicate){
+
 	    String treeIndex = taxonNode.treeIndex();
 	    String[] splits = treeIndex == null ? new String[]{}: treeIndex.split("#");
 	    List<String> filterStrings = new ArrayList<>();
