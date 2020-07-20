@@ -99,6 +99,7 @@ public class MediaToolbox implements IMediaToolbox {
     }
 
     @Override
+    @Deprecated
     public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size) {
 

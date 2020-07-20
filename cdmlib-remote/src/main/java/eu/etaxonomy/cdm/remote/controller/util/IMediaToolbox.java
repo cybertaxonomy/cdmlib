@@ -36,7 +36,10 @@ public interface IMediaToolbox {
      * attributes defined via the parameters <code>type</code>, <code>size</code>, <code>height</code>, <code>widthOrDuration</code>
      * and <code>mimeTypes</code> and finally return the media objects which have at lease one matching representation.
      * The MediaRepresentations are also filtered and ordered by the ranging of the match.
+     *
+     * @deprecated needs to be replaced, see https://dev.e-taxonomy.eu/redmine/issues/9146
      */
+    @Deprecated
     List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size);
 
