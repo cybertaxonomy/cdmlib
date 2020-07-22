@@ -7,7 +7,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByNameComparator;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoNaturalComparator;
 
-public enum NodeDtoSortMode {
+public enum TaxonNodeDtoSortMode {
 
 	NaturalOrder(TaxonNodeDtoNaturalComparator.class),
 	/**
@@ -21,7 +21,7 @@ public enum NodeDtoSortMode {
 
 	private Class<? extends Comparator<TaxonNodeDto>> type;
 
-    NodeDtoSortMode(Class<? extends Comparator<TaxonNodeDto>> type){
+    TaxonNodeDtoSortMode(Class<? extends Comparator<TaxonNodeDto>> type){
 	    this.type = type;
 	}
 

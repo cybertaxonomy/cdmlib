@@ -7,7 +7,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByRankAndNameComparator;
 
-public enum NodeSortMode {
+public enum TaxonNodeSortMode {
 
 	NaturalOrder(TaxonNaturalComparator.class),
 	/**
@@ -21,7 +21,7 @@ public enum NodeSortMode {
 
 	private Class<? extends Comparator<TaxonNode>> type;
 
-    NodeSortMode(Class<? extends Comparator<TaxonNode>> type){
+    TaxonNodeSortMode(Class<? extends Comparator<TaxonNode>> type){
 	    this.type = type;
 	}
 

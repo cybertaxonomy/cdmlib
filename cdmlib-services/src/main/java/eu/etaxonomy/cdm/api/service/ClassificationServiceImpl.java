@@ -191,7 +191,7 @@ public class ClassificationServiceImpl
 
     @Override
     public List<TaxonNodeDto> listRankSpecificRootNodeDtos(Classification classification, TaxonNode subtree,
-            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, NodeDtoSortMode sortMode,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
             List<String> propertyPaths) {
         List<TaxonNode> list = listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
         return list.stream().filter(e ->  e != null).map(e -> new TaxonNodeDto(e)).sorted(sortMode.newComparator()).collect(Collectors.toList());
@@ -383,7 +383,7 @@ public class ClassificationServiceImpl
 
     @Override
     public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, NodeDtoSortMode sortMode, List<String> propertyPaths) throws FilterException{
+            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode, List<String> propertyPaths) throws FilterException{
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
         TaxonNode subtree = taxonNodeDao.load(subtreeUuid);
@@ -882,7 +882,7 @@ public class ClassificationServiceImpl
     @Override
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonBaseUuid,
             Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
-            NodeSortMode sortMode) {
+            TaxonNodeSortMode sortMode) {
 
         TaxonInContextDTO result = new TaxonInContextDTO();
 

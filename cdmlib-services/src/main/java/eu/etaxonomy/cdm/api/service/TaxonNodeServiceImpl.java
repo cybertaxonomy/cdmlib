@@ -128,7 +128,7 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
             List<String> propertyPaths, boolean recursive,  boolean includeUnpublished,
-            NodeSortMode sortMode) {
+            TaxonNodeSortMode sortMode) {
 
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
@@ -205,7 +205,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
-            boolean doSynonyms, NodeSortMode sortMode,
+            boolean doSynonyms, TaxonNodeSortMode sortMode,
             Integer pageSize, Integer pageIndex) {
 
         TaxonNode parentNode = dao.load(taxonNodeUuid);

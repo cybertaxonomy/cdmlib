@@ -134,7 +134,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      *
      */
     public List<TaxonNodeDto> listRankSpecificRootNodeDtos(Classification classification, TaxonNode subtree,
-            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, NodeDtoSortMode sortMode,
+            Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
             List<String> propertyPaths);
 
 
@@ -259,7 +259,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
             Integer pageSize, Integer pageIndex, List<String> propertyPaths) throws FilterException;
 
     public List<TaxonNodeDto> listChildNodeDtosOfTaxon(UUID taxonUuid, UUID classificationUuid, UUID subtreeUuid, boolean includeUnpublished,
-            Integer pageSize, Integer pageIndex, NodeDtoSortMode comparator, List<String> propertyPaths) throws FilterException;
+            Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode comparator, List<String> propertyPaths) throws FilterException;
 
     /**
      * @param taxonNode
@@ -368,7 +368,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      */
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
             Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
-            NodeSortMode sortMode);
+            TaxonNodeSortMode sortMode);
 
     /**
      * @param classification
