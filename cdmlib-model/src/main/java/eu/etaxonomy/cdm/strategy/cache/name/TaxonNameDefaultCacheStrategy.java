@@ -445,7 +445,7 @@ public class TaxonNameDefaultCacheStrategy
     public List<TaggedText> getTaggedName(TaxonName nonViralName) {
         if (nonViralName == null){
             return null;
-        }else if (nonViralName.getNameType().isViral()){
+        }else if (nonViralName.isViral()){
             return null;
         }
         List<TaggedText> tags = new ArrayList<>();

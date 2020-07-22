@@ -3526,7 +3526,7 @@ public class TaxonName
     }
     @Override
     public boolean isViral() {
-        return nameType.isViral();
+        return nameType != null? nameType.isViral(): false;
     }
 
 // *********************** CACHES ***************************************************/
