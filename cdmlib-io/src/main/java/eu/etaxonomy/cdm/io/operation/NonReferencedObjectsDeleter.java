@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
-import eu.etaxonomy.cdm.io.operation.config.DeleteNonReferencedReferencesConfigurator;
+import eu.etaxonomy.cdm.io.operation.config.NonReferencedObjectsDeleterConfigurator;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -27,12 +27,12 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @since 2015
  */
 @Component
-public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNonReferencedReferencesConfigurator, DefaultImportState<DeleteNonReferencedReferencesConfigurator>> {
+public class NonReferencedObjectsDeleter extends CdmImportBase<NonReferencedObjectsDeleterConfigurator, DefaultImportState<NonReferencedObjectsDeleterConfigurator>> {
 
     private static final long serialVersionUID = -3514276133181062270L;
 
     @Override
-	protected void doInvoke(DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
+	protected void doInvoke(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state) {
 
         List<OrderHint> orderHint = new ArrayList<>();
         orderHint.add(OrderHint.ORDER_BY_ID);
@@ -89,7 +89,7 @@ public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNo
 		}
 	}
 
-    private boolean isIgnore(DefaultImportState<DeleteNonReferencedReferencesConfigurator> state, Reference ref) {
+    private boolean isIgnore(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state, Reference ref) {
         if (state.getConfig().isKeepReferencesWithTitle() && isNotBlank(ref.getTitle())
                 || state.getConfig().isKeepRisSources() && hasRISSource(ref)){
             return true;
@@ -117,12 +117,12 @@ public class DeleteNonReferencedReferencesUpdater extends CdmImportBase<DeleteNo
     }
 
     @Override
-	protected boolean doCheck(DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
+	protected boolean doCheck(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state) {
 		return true;
 	}
 
 	@Override
-	protected boolean isIgnore(DefaultImportState<DeleteNonReferencedReferencesConfigurator> state) {
+	protected boolean isIgnore(DefaultImportState<NonReferencedObjectsDeleterConfigurator> state) {
 		return false;
 	}
 }

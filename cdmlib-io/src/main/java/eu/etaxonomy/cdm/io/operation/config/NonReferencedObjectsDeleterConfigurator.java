@@ -16,15 +16,15 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.operation.DeleteNonReferencedReferencesUpdater;
+import eu.etaxonomy.cdm.io.operation.NonReferencedObjectsDeleter;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author k.luther
  * @since 2015
  */
-public class DeleteNonReferencedReferencesConfigurator
-        extends ImportConfiguratorBase<DefaultImportState<DeleteNonReferencedReferencesConfigurator>, Object> {
+public class NonReferencedObjectsDeleterConfigurator
+        extends ImportConfiguratorBase<DefaultImportState<NonReferencedObjectsDeleterConfigurator>, Object> {
 
     private static final long serialVersionUID = -3063590000817699527L;
     @SuppressWarnings("unused")
@@ -36,19 +36,19 @@ public class DeleteNonReferencedReferencesConfigurator
 	private boolean isKeepReferencesWithTitle = false;
 	private boolean isKeepRisSources = false;
 
-	public DeleteNonReferencedReferencesConfigurator() {
+	public NonReferencedObjectsDeleterConfigurator() {
 		super(null);
 	}
 
-	public DeleteNonReferencedReferencesConfigurator(ICdmDataSource destination) {
+	public NonReferencedObjectsDeleterConfigurator(ICdmDataSource destination) {
 		super(null);
 		this.setSource(destination);
 		this.setDestination(destination);
 		this.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 	}
 
-	public static DeleteNonReferencedReferencesConfigurator NewInstance(ICdmDataSource destination){
-		DeleteNonReferencedReferencesConfigurator result = new DeleteNonReferencedReferencesConfigurator(destination);
+	public static NonReferencedObjectsDeleterConfigurator NewInstance(ICdmDataSource destination){
+		NonReferencedObjectsDeleterConfigurator result = new NonReferencedObjectsDeleterConfigurator(destination);
 		return result;
 	}
 
@@ -61,7 +61,7 @@ public class DeleteNonReferencedReferencesConfigurator
     @Override
 	protected void makeIoClassList() {
 		ioClassList = new Class[]{
-				 DeleteNonReferencedReferencesUpdater.class
+				 NonReferencedObjectsDeleter.class
 		};
 	}
 
