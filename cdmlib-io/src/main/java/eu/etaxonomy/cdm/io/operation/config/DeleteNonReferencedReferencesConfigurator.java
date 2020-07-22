@@ -33,6 +33,9 @@ public class DeleteNonReferencedReferencesConfigurator
 	private boolean doReferences = true;
 	private boolean doAuthors = true;
 
+	private boolean isKeepReferencesWithTitle = false;
+	private boolean isKeepRisSources = false;
+
 	public DeleteNonReferencedReferencesConfigurator() {
 		super(null);
 	}
@@ -65,7 +68,6 @@ public class DeleteNonReferencedReferencesConfigurator
     public boolean isDoReferences() {
         return doReferences;
     }
-
     public void setDoReferences(boolean doReferences) {
         this.doReferences = doReferences;
     }
@@ -73,13 +75,26 @@ public class DeleteNonReferencedReferencesConfigurator
     public boolean isDoAuthors() {
         return doAuthors;
     }
-
     public void setDoAuthors(boolean doAuthors) {
         this.doAuthors = doAuthors;
     }
 
-	@Override
-	public Reference getSourceReference() {
-		return null;
-	}
+    public boolean isKeepReferencesWithTitle() {
+        return isKeepReferencesWithTitle;
+    }
+    public void setKeepReferencesWithTitle(boolean isKeepReferencesWithTitle) {
+        this.isKeepReferencesWithTitle = isKeepReferencesWithTitle;
+    }
+
+    public boolean isKeepRisSources() {
+        return isKeepRisSources;
+    }
+    public void setKeepRisSources(boolean isKeepRisSources) {
+        this.isKeepRisSources = isKeepRisSources;
+    }
+
+    @Override
+    public Reference getSourceReference() {
+        return null;
+    }
 }
