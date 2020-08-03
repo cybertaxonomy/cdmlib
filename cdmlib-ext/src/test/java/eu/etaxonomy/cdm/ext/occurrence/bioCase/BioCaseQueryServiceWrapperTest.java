@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -90,14 +89,16 @@ public class BioCaseQueryServiceWrapperTest {
     }
 
     @Test//(timeout=TIMEOUT)
-    @Ignore   //preliminary ignored due to #9138, should be reenabled as soon as possible
+//    @Ignore   //preliminary ignored due to #9138, should be reenabled as soon as possible
     public void testQueryForUnitId(){
 
         if(UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper service = new BioCaseQueryServiceWrapper();
             try {
+
                 Set<String[]> unitIds = new HashSet<>();
                 String[] unitIdArray ={"B 10 0463639"};
+
                 unitIds.add(unitIdArray);
                 InputStream queryForSingleUnit = service.query(new OccurenceQuery(unitIds), URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
 
@@ -126,6 +127,7 @@ public class BioCaseQueryServiceWrapperTest {
                         String unitId = "<abcd:UnitID>";
                         int indexId = line.indexOf(unitId);
                         if(indexId>-1){
+                            @SuppressWarnings("unused")
                             String id = line.substring(indexId+unitId.length(), indexId+unitId.length()+5);
                            // assertEquals("Incorrect UnitId", 29596, Integer.parseInt(id));
                            // break;
@@ -135,7 +137,7 @@ public class BioCaseQueryServiceWrapperTest {
                     count++;
                 } while (line!=null);
                 unitIds = new HashSet<>();
-                String[] unitIdsArray = {"B -W 16385 -00 0"};
+                String[] unitIdsArray = {"B -W 16385 -01 0"};
                 unitIds.add(unitIdsArray);
                 String[] unitIdsArray2 ={"B 10 0641985"};
                 unitIds.add(unitIdsArray2);
@@ -174,4 +176,6 @@ public class BioCaseQueryServiceWrapperTest {
             return;
         }
     }
+
+
 }
