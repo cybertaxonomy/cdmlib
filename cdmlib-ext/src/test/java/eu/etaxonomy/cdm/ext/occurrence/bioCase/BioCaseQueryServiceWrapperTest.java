@@ -89,7 +89,6 @@ public class BioCaseQueryServiceWrapperTest {
     }
 
     @Test//(timeout=TIMEOUT)
-//    @Ignore   //preliminary ignored due to #9138, should be reenabled as soon as possible
     public void testQueryForUnitId(){
 
         if(UriUtils.isInternetAvailable(null)){
