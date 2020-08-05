@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
@@ -48,6 +49,21 @@ public class CdmLightExportConfigurator
     private boolean isFilterImportSources = true;
 
     private Comparator<TaxonNodeDto> comparator;
+
+
+    //metadata /gfbio
+    private String description;
+    private String creator;
+    private String contributor;
+    private String title;
+    private Language language;
+    private String dataSet_landing_page;
+    private String dataset_download_link;
+    private String base_url;
+    private String recommended_citation;
+    private String location;
+    private String keywords;
+    private String licence;
 
     /**
      * @param transformer
@@ -105,12 +121,192 @@ public class CdmLightExportConfigurator
         // TODO Auto-generated method stub
         return null;
     }
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void makeIoClassList() {
-        ioClassList = new Class[] {
-                CdmLightClassificationExport.class
-        };
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
+    /**
+     * @return the creator
+     */
+    public String getCreator() {
+        return creator;
+    }
+
+
+    /**
+     * @param creator the creator to set
+     */
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+
+    public String getContributor() {
+        return contributor;
+    }
+
+
+    public void setContributor(String contributor) {
+        this.contributor = contributor;
+    }
+
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+
+    /**
+     * @param title the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
+    /**
+     * @return the language
+     */
+    public Language getLanguage() {
+        return language;
+    }
+
+
+    /**
+     * @param language the language to set
+     */
+    public void setLanguage(Language language) {
+        this.language = language;
+    }
+
+
+
+
+
+    /**
+     * @return the dataSet_landing_page
+     */
+    public String getDataSet_landing_page() {
+        return dataSet_landing_page;
+    }
+
+
+    /**
+     * @param dataSet_landing_page the dataSet_landing_page to set
+     */
+    public void setDataSet_landing_page(String dataSet_landing_page) {
+        this.dataSet_landing_page = dataSet_landing_page;
+    }
+
+
+    /**
+     * @return the dataset_download_link
+     */
+    public String getDataset_download_link() {
+        return dataset_download_link;
+    }
+
+
+    /**
+     * @param dataset_download_link the dataset_download_link to set
+     */
+    public void setDataset_download_link(String dataset_download_link) {
+        this.dataset_download_link = dataset_download_link;
+    }
+
+
+    /**
+     * @return the base_url
+     */
+    public String getBase_url() {
+        return base_url;
+    }
+
+
+    /**
+     * @param base_url the base_url to set
+     */
+    public void setBase_url(String base_url) {
+        this.base_url = base_url;
+    }
+
+
+    /**
+     * @return the recommended_citation
+     */
+    public String getRecommended_citation() {
+        return recommended_citation;
+    }
+
+
+    /**
+     * @param recommended_citation the recommended_citation to set
+     */
+    public void setRecommended_citation(String recommended_citation) {
+        this.recommended_citation = recommended_citation;
+    }
+
+
+    /**
+     * @return the location
+     */
+    public String getLocation() {
+        return location;
+    }
+
+
+    /**
+     * @param location the location to set
+     */
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+
+    /**
+     * @return the keywords
+     */
+    public String getKeywords() {
+        return keywords;
+    }
+
+
+    /**
+     * @param keywords the keywords to set
+     */
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
+
+    /**
+     * @return the licence
+     */
+    public String getLicence() {
+        return licence;
+    }
+
+
+    /**
+     * @param licence the licence to set
+     */
+    public void setLicence(String licence) {
+        this.licence = licence;
     }
 
 
@@ -147,6 +343,14 @@ public class CdmLightExportConfigurator
     }
     public void setFilterImportSources(boolean isFilterImportSources) {
         this.isFilterImportSources = isFilterImportSources;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void makeIoClassList() {
+        ioClassList = new Class[] {
+                CdmLightClassificationExport.class
+        };
     }
 
 }

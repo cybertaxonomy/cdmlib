@@ -147,6 +147,8 @@ public class CdmLightClassificationExport
             TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
                     state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
 
+
+            handleMetaData(state);
             monitor.subTask("Start partitioning");
 
             TaxonNode node = partitioner.next();
@@ -448,6 +450,26 @@ public class CdmLightClassificationExport
 
     private void handleAnnotations(DescriptionElementBase element) {
         // TODO Auto-generated method stub
+    }
+
+    private void handleMetaData(CdmLightExportState state) {
+        CdmLightExportTable table = CdmLightExportTable.METADATA;
+        String[] csvLine = new String[table.getSize()];
+//        csvLine[table.getIndex(CdmLightExportTable.INSTANCE_ID)] = state.getConfig().getInctanceId();
+//        csvLine[table.getIndex(CdmLightExportTable.INSTANCE_NAME)] = state.getConfig().getInstanceName();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_BASE_URL)] = state.getConfig().getBase_url();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_CONTRIBUTOR)] = state.getConfig().getContributor();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_CREATOR)] = state.getConfig().getCreator();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_DESCRIPTION)] = state.getConfig().getDescription();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_DOWNLOAD_LINK)] = state.getConfig().getDataset_download_link();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_KEYWORDS)] = state.getConfig().getKeywords();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_LANDINGPAGE)] = state.getConfig().getDataSet_landing_page();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_LANGUAGE)] = state.getConfig().getLanguage().getLabel();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_LICENCE)] = state.getConfig().getLicence();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_LOCATION)] = state.getConfig().getLocation();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_RECOMMENDED_CITATTION)] = state.getConfig().getRecommended_citation();
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_TITLE)] = state.getConfig().getTitle();
+        state.getProcessor().put(table, "", csvLine);
     }
 
     private boolean isSpecimenFeature(Feature feature) {
