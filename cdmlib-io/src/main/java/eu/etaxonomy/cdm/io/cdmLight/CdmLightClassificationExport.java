@@ -464,7 +464,8 @@ public class CdmLightClassificationExport
         csvLine[table.getIndex(CdmLightExportTable.DATASET_DOWNLOAD_LINK)] = state.getConfig().getDataset_download_link();
         csvLine[table.getIndex(CdmLightExportTable.DATASET_KEYWORDS)] = state.getConfig().getKeywords();
         csvLine[table.getIndex(CdmLightExportTable.DATASET_LANDINGPAGE)] = state.getConfig().getDataSet_landing_page();
-        csvLine[table.getIndex(CdmLightExportTable.DATASET_LANGUAGE)] = state.getConfig().getLanguage().getLabel();
+
+        csvLine[table.getIndex(CdmLightExportTable.DATASET_LANGUAGE)] = state.getConfig().getLanguage() != null? state.getConfig().getLanguage().getLabel(): null;
         csvLine[table.getIndex(CdmLightExportTable.DATASET_LICENCE)] = state.getConfig().getLicence();
         csvLine[table.getIndex(CdmLightExportTable.DATASET_LOCATION)] = state.getConfig().getLocation();
         csvLine[table.getIndex(CdmLightExportTable.DATASET_RECOMMENDED_CITATTION)] = state.getConfig().getRecommended_citation();

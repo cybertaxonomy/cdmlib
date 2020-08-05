@@ -152,8 +152,8 @@ public enum CdmLightExportTable {
     protected static final String DATASET_DOWNLOAD_LINK = "DatasetDownloadLink";
     protected static final String DATASET_BASE_URL = "DatasetBaseUrl";
     protected static final String DATASET_RECOMMENDED_CITATTION = "RecommendedCitation";
-    protected static final String DATASET_LOCATION = "Location";
-    protected static final String DATASET_KEYWORDS = "Keywords";
+    protected static final String DATASET_LOCATION = "DatasetLocation";
+    protected static final String DATASET_KEYWORDS = "DatasetKeywords";
     protected static final String DATASET_LICENCE = "Licence";
 
 
