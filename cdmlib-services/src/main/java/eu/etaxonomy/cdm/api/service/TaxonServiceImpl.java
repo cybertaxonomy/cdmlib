@@ -33,6 +33,7 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.util.BytesRef;
+import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1511,6 +1512,47 @@ public class TaxonServiceImpl
         long totalHits = topDocsResultSet != null ? Long.valueOf(topDocsResultSet.totalGroupCount) : 0;
         return new DefaultPagerImpl<>(pageNumber, totalHits, pageSize, searchResults);
     }
+
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public <S extends TaxonBase> Pager<S> findByTitleWithRestrictions(Class<S> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+         long numberOfResults = dao.countByTitleWithRestrictions(clazz, queryString, matchmode, restrictions);
+         numberOfResults = numberOfResults + dao.countByTitleWithRestrictions(clazz, "?".concat(queryString), matchmode, restrictions);
+
+         List<S> results = new ArrayList<>();
+         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+
+             results = dao.findByTitleWithRestrictions(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
+             results.addAll(dao.findByTitleWithRestrictions(clazz, "?".concat(queryString), matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths));
+         }
+
+         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public <S extends TaxonBase> Pager<S> findByTitle(Class<S> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        long numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+        //check whether there are doubtful taxa matching
+        long numberOfResults_doubtful = dao.countByTitle(clazz, "?".concat(queryString), matchmode, criteria);
+        List<S> results = new ArrayList<>();
+        if(numberOfResults > 0 || numberOfResults_doubtful > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+               if (numberOfResults > 0){
+                   results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+               }else{
+                   results = new ArrayList<>();
+               }
+               if (numberOfResults_doubtful > 0){
+                   results.addAll(dao.findByTitle(clazz, "?".concat(queryString), matchmode,  criteria, pageSize, pageNumber, orderHints, propertyPaths));
+               }
+        }
+
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
+    }
+
 
     @Override
     public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTerm> statusFilter,
