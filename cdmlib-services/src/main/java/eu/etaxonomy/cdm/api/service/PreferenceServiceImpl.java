@@ -204,6 +204,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
         for(CdmPreference pref :  dao.list()){
             cache.put(cacheKey(pref.getKey()), pref);
         }
+        cacheIsComplete = true;
         cacheIsLocked = false;
     }
 
