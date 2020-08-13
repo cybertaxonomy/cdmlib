@@ -30,24 +30,17 @@ public interface IPreferenceDao {
 
 	/**
 	 * Write the value for the preference's key
-	 * @param preference
 	 */
 	public void set(CdmPreference preference);
 
 	/**
 	 * Return the number of all existing cdm preferences
-	 * @return
 	 */
 	public long count();
 
-    /**
-     * @return
-     */
     public List<CdmPreference> list();
 
     public List<CdmPreference> list(IPreferencePredicate<?> predicate);
-
-
 
     /**
      * Retrieves the best matching CdmPreference for the given
@@ -59,10 +52,6 @@ public interface IPreferenceDao {
      */
     public CdmPreference find(TaxonNode taxonNode, String predicate);
 
-    /**
-     * @param key
-     */
-    void remove(PrefKey key);
-
+    public void remove(PrefKey key);
 
 }

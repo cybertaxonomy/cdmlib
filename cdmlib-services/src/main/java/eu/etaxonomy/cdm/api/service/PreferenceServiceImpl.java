@@ -103,7 +103,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
 	    if(!cacheIsComplete) {
 	        cacheFullUpdate();
 	    }
-        return new ArrayList<CdmPreference>(cacheValues());
+        return new ArrayList<>(cacheValues());
     }
 
     @Override
@@ -149,6 +149,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
     }
 
     // ====================== Cache methods ======================= //
+
     /**
      * Concatenates subject and predicate as key for the cache map
      */

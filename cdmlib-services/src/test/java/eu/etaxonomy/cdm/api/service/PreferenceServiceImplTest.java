@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
- *
  */
 public class PreferenceServiceImplTest  extends CdmIntegrationTest {
 
