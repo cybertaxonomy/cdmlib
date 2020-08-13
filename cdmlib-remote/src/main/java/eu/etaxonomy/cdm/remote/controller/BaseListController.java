@@ -166,7 +166,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "class", required = false) Class<T> type,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         if (request != null)
         {

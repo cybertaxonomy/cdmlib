@@ -188,22 +188,6 @@ public class TaxonNode
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private Set<TaxonNodeAgentRelation> agentRelations = new HashSet<>();
 
-//    private boolean unplaced = false;
-    public boolean isUnplaced() {return hasStatus(TaxonNodeStatus.UNPLACED);}
-//    @Deprecated
-//    public void setUnplaced(boolean unplaced) {setStatus(TaxonNodeStatus.UNPLACED, unplaced);}
-
-    //#8281 indicates a preliminary placement
-//    private boolean doubtful = false;
-    public boolean isDoubtful() {return hasStatus(TaxonNodeStatus.DOUBTFUL);}
-//    @Deprecated
-//    public void setDoubtful(boolean doubtful) {setStatus(TaxonNodeStatus.DOUBTFUL, doubtful);}
-
-//    private boolean excluded = false;
-    public boolean isExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
-//    @Deprecated
-//    public void setExcluded(boolean excluded) {setStatus(TaxonNodeStatus.EXCLUDED, excluded);}
-
     /**
      * The {@link TaxonNodeStatus status} of this taxon node.
      */
@@ -311,6 +295,13 @@ public class TaxonNode
     protected void setClassification(Classification classification) {
         this.classification = classification;
     }
+
+    public boolean isUnplaced() {return hasStatus(TaxonNodeStatus.UNPLACED);}
+
+    //#8281 indicates a preliminary placement
+    public boolean isDoubtful() {return hasStatus(TaxonNodeStatus.DOUBTFUL);}
+
+    public boolean isExcluded() {return hasStatus(TaxonNodeStatus.EXCLUDED);}
 
 //************************* SOURCE *********************/
 
