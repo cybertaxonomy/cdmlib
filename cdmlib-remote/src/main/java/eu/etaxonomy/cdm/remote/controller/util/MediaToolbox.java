@@ -38,9 +38,9 @@ import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 
 /**
- * Utility service which which creates volatile object which must not be persisted.
+ * Utility service which creates volatile objects which must not be persisted.
  * <p>
- * By now this class provides methods for filtering {@link Media} and  {@link MediaRepresentation}s
+ * By now this class provides methods for filtering {@link Media} and {@link MediaRepresentation}s
  * <p>
  * See also {@link MediaUriTransformationProcessor} and {@link MediaUriTransformation}
  *
@@ -98,11 +98,13 @@ public class MediaToolbox implements IMediaToolbox {
         return MediaUtils.findBestMatchingRepresentation(newReprs, type, size, height, widthOrDuration, mimeTypes, missingValStrategy);
     }
 
+    /**
+     * @deprecated needs to be replaced, see https://dev.e-taxonomy.eu/redmine/issues/9160
+     */
     @Override
     @Deprecated
     public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size) {
-
 
         Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(mediaList, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);
 

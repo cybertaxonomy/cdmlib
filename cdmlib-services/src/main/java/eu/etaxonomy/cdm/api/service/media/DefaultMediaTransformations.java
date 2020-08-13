@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Factory class to create default transformations
+ * Factory class to create default media transformations
  *
  * @author a.kohlbecker
  * @since Jul 15, 2020
@@ -87,7 +87,4 @@ public class DefaultMediaTransformations {
 
         return defaultTransformations;
     }
-
-
-
 }

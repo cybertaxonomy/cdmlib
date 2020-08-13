@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 
 /**
- * Creates new purely volatile {@link MediaRepresentation MediaRepresentations} objects based
+ * Creates new purely volatile {@link MediaRepresentation MediaRepresentations} objects based on
  * a list of {@link MediaUriTransformation} rules. These rules are usually stored in the
  * per data base {@link PreferencePredicate.MediaRepresentationTransformations MediaRepresentationTransformations} property
  * (See also {@link MediaToolbox#readTransformations()}).
@@ -105,7 +105,6 @@ public class MediaUriTransformationProcessor {
         } else {
             return uri;
         }
-
     }
 
     protected String buildPathQueryFragment(URI uri) {

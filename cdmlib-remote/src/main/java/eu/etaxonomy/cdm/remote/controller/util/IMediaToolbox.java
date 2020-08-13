@@ -28,11 +28,11 @@ public interface IMediaToolbox {
      * and <code>mimeTypes</code> and finally return the list of matching MediaRepresentations ordered by the ranging of the match.
      *
      */
-    List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type,
+    public List<Media> processAndFilterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size, List<Media> taxonGalleryMedia) throws IOException;
 
     /**
-     * Filters the Media  objects and the contained MediaRepresentations the by the
+     * Filters the Media  objects and the contained MediaRepresentations by the
      * attributes defined via the parameters <code>type</code>, <code>size</code>, <code>height</code>, <code>widthOrDuration</code>
      * and <code>mimeTypes</code> and finally return the media objects which have at lease one matching representation.
      * The MediaRepresentations are also filtered and ordered by the ranging of the match.
@@ -40,7 +40,7 @@ public interface IMediaToolbox {
      * @deprecated needs to be replaced, see https://dev.e-taxonomy.eu/redmine/issues/9160
      */
     @Deprecated
-    List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
+    public List<Media> filterPreferredMediaRepresentations(List<Media> mediaList, Class<? extends MediaRepresentationPart> type,
             String[] mimeTypes, Integer widthOrDuration, Integer height, Integer size);
 
     /**
@@ -58,7 +58,7 @@ public interface IMediaToolbox {
      * @return
      * @throws IOException
      */
-    MediaRepresentation processAndFindBestMatchingRepresentation(Media media,
+    public MediaRepresentation processAndFindBestMatchingRepresentation(Media media,
             Class<? extends MediaRepresentationPart> type, Integer size, Integer height, Integer widthOrDuration,
             String[] mimeTypes, MissingValueStrategy missingValStrategy) throws IOException;
 
