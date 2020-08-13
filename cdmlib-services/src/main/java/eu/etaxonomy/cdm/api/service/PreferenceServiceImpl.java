@@ -154,7 +154,7 @@ public class PreferenceServiceImpl implements IPreferenceService {
      * Concatenates subject and predicate as key for the cache map
      */
     private String cacheKey(PrefKey key) {
-        return key.getSubject() + key.getPredicate();
+        return key.getSubject() + "@" + key.getPredicate();
     }
 
     private String cacheKey(TaxonNode taxonNode, String predicate) {
