@@ -850,7 +850,12 @@ public class TaxonNodeServiceImpl
        TaxonNode child = null;
        Reference ref = null;
        if (source != null){
-           ref = referenceService.load(source.getCitation().getUuid());
+           if (source.getCitation() != null){
+               source.setCitation(referenceService.load(source.getCitation().getUuid()));
+           }
+           if (source.getNameUsedInSource() !=null){
+               source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
+           }
        }
 
        try{
