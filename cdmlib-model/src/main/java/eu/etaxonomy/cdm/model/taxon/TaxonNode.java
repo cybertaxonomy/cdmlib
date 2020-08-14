@@ -512,6 +512,11 @@ public class TaxonNode
         return addChildTaxon(taxon, this.childNodes.size(), citation, microCitation);
     }
 
+   @Override
+   public TaxonNode addChildTaxon(Taxon taxon, DescriptionElementSource source) {
+       return addChildTaxon(taxon, this.childNodes.size(), source);
+   }
+
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
         Classification classification = CdmBase.deproxy(this.getClassification());
@@ -520,6 +525,17 @@ public class TaxonNode
             throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
        }
        return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
+    }
+
+
+    @Override
+    public TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source) {
+        Classification classification = CdmBase.deproxy(this.getClassification());
+        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+        if (classification.isTaxonInTree(taxon)){
+            throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
+       }
+       return addChildNode(new TaxonNode(taxon), index, source);
     }
 
     /**
@@ -567,6 +583,40 @@ public class TaxonNode
         return child;
     }
 
+
+    /**
+     * Inserts the given taxon node in the list of children of <i>this</i> taxon node
+     * at the given (index + 1) position. If the given index is out of bounds
+     * an exception will arise.<BR>
+     * Due to bidirectionality this method must also assign <i>this</i> taxon node
+     * as the parent of the given child.
+     *
+     * @param   child   the taxon node to be added
+     * @param   index   the integer indicating the position at which the child
+     *                  should be added
+     * @see             #getChildNodes()
+     * @see             #addChildNode(TaxonNode, Reference, String, Synonym)
+     * @see             #deleteChildNode(TaxonNode)
+     * @see             #deleteChildNode(int)
+     */
+    @Override
+    public TaxonNode addChildNode(TaxonNode child, int index, DescriptionElementSource source){
+        if (index < 0 || index > childNodes.size() + 1){
+            throw new IndexOutOfBoundsException("Wrong index: " + index);
+        }
+           // check if this node is a descendant of the childNode
+        if(child.getParent() != this && child.isAncestor(this)){
+            throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
+        }
+
+        child.setParentTreeNode(this, index);
+
+        child.setSource(source);
+
+
+        return child;
+    }
+
     /**
      * Sets this nodes classification. Updates classification of child nodes recursively.
      *
@@ -588,6 +638,9 @@ public class TaxonNode
             }
         }
     }
+
+
+
 
     @Override
     public boolean deleteChildNode(TaxonNode node) {

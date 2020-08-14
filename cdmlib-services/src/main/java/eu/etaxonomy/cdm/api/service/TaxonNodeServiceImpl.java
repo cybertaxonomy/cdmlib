@@ -813,7 +813,7 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto,
-            UUID refUuid, String microref,
+            DescriptionElementSource source, String microref,
             TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
 
         UpdateResult result = new UpdateResult();
@@ -849,13 +849,14 @@ public class TaxonNodeServiceImpl
        TaxonNode parent = dao.load(parentNodeUuid);
        TaxonNode child = null;
        Reference ref = null;
-       if (refUuid != null){
-           ref = referenceService.load(refUuid);
+       if (source != null){
+           ref = referenceService.load(source.getCitation().getUuid());
        }
 
        try{
-           child = parent.addChildTaxon(newTaxon, ref, microref);
+           child = parent.addChildTaxon(newTaxon, source);
            child.setStatus(status);
+
            if (statusNote != null){
                child.getStatusNote().putAll(statusNote);
            }
