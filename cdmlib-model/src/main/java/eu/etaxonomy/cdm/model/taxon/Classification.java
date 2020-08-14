@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -220,6 +221,25 @@ public class Classification
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
         return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
     }
+
+    @Override
+    public TaxonNode addChildTaxon(Taxon taxon, DescriptionElementSource source) {
+        return addChildTaxon(taxon, rootNode.getCountChildren(), source);
+    }
+
+    @Override
+    public TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source) {
+        return addChildNode(new TaxonNode(taxon), index, source);
+    }
+
+    @Override
+    public TaxonNode addChildNode(TaxonNode childNode, int index, DescriptionElementSource source) {
+        childNode.setParentTreeNode(this.rootNode, index);
+        childNode.setSource(source);
+
+        return childNode;
+    }
+
 
     @Override
     public boolean deleteChildNode(TaxonNode node) {
@@ -703,5 +723,6 @@ public class Classification
         }
 
     }
+
 
 }
