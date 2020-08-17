@@ -120,7 +120,8 @@ public class TaxonPortalController extends TaxonController{
             "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "name.rank.representations",
-            "name.status.type.representations"
+            "name.status.type.representations",
+            "sec.authorship"
 //            "descriptions" // TODO remove
 
             }));
@@ -140,6 +141,7 @@ public class TaxonPortalController extends TaxonController{
             "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "taxonNodes.classification",
+            "sec.authorship"
             }));
 
     private static final EntityInitStrategy SYNONYMY_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
