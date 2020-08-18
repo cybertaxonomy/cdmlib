@@ -316,7 +316,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      *
      * @throws CloneNotSupportedException
      *
-     * @see eu.etaxonomy.cdm.model.common.ReferencedEntityBase#clone()
+     * @see eu.etaxonomy.cdm.model.common.SourcedEntityBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override

@@ -22,7 +22,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
@@ -190,7 +189,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 //*********************************** EQUALS *********************************************************/
 
     @Override
-    public boolean equalsByShallowCompare(ReferencedEntityBase other) {
+    public boolean equalsByShallowCompare(OriginalSourceBase other) {
 
 	    if(!super.equalsByShallowCompare(other)) {
 	        return false;

@@ -154,10 +154,6 @@ public class NameTypeDesignation
 
 	//********* METHODS **************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#removeType()
-	 */
 	@Override
 	public void removeType() {
 		this.typeName = null;
@@ -220,9 +216,8 @@ public class NameTypeDesignation
 	 * designation should have a {@link eu.etaxonomy.cdm.model.reference.Reference reference} that is different to the
 	 * {@link TaxonName#getNomenclaturalReference() nomenclatural reference} of the typified taxon name.
 	 *
-	 * @see   ReferencedEntityBase#getCitation()
+	 * @see OriginalSourceBas#getCitation()
 	 */
-
 
 //*********************** CLONE ********************************************************/
 

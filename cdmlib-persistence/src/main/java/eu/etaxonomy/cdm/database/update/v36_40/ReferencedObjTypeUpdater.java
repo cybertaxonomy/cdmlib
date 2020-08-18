@@ -40,9 +40,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
+import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -392,8 +393,9 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
                         || superClass == AnnotatableEntity.class
                         || superClass == IdentifiableEntity.class
                         || superClass == RelationshipBase.class
-                        || superClass == ReferencedEntityBase.class
                         || superClass == IdentifiableMediaEntity.class
+                        || superClass == SingleSourcedEntityBase.class
+                        || superClass == SourcedEntityBase.class
                         || superClass == LanguageStringBase.class
                          ) {
                     return clazz;

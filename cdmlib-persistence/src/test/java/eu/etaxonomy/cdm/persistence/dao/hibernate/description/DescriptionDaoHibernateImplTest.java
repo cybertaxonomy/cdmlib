@@ -309,7 +309,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         assertNotNull("Description Element with ID 34 should be part of the list",element34);
         assertTrue("DescriptionElement.sources should be initialized",Hibernate.isInitialized(element34.getSources()));
         assertTrue("DescriptionElement.sources should have elements",element34.getSources().size() > 0);
-        assertTrue("ReferencedEntityBase.citation should be initialized",Hibernate.isInitialized(element34.getSources().iterator().next().getCitation()));
+        assertTrue("OriginalSourceBase.citation should be initialized",Hibernate.isInitialized(element34.getSources().iterator().next().getCitation()));
         assertTrue("DescriptionElementBase.feature should be initialized",Hibernate.isInitialized(element34.getFeature()));
         assertTrue("DescriptionElementBase.media should be initialized",Hibernate.isInitialized(element34.getMedia()));
         assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(((TextData)element34).getMultilanguageText()));

@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -41,8 +42,8 @@ import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -69,7 +70,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(name="OriginalSourceBase")
 public abstract class OriginalSourceBase<T extends ISourceable>
-        extends ReferencedEntityBase
+        extends AnnotatableEntity
         implements IOriginalSource<T>, IIntextReferenceTarget {
 
 	private static final long serialVersionUID = -1972959999261181462L;
@@ -97,6 +98,21 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
 
+    @XmlElement(name = "Citation")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private Reference citation;
+
+    //Details of the reference. These are mostly (implicitly) pages but can also be tables or any other element of a
+    //publication. {if the citationMicroReference exists then there must be also a reference}
+    @XmlElement(name = "CitationMicroReference")
+    private String citationMicroReference;
+
+    @XmlElement(name = "OriginalNameString")
+    private String originalNameString;
+
     @XmlElement(name = "CdmSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -120,7 +136,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 	/**
 	 * Constructor
-	 * @param type2
+	 * @param type
 	 */
 	protected OriginalSourceBase(OriginalSourceType type){
 		if (type == null){
@@ -131,6 +147,15 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 //**************** GETTER / SETTER *******************************/
 
+    @Override
+    public OriginalSourceType getType() {
+        return type;
+    }
+    @Override
+    public void setType(OriginalSourceType type) {
+        Assert.notNull(type, "OriginalSourceType must not be null");
+        this.type = type;
+    }
 
 	@Override
 	public String getIdInSource(){
@@ -141,7 +166,6 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		this.idInSource = idInSource;
 	}
 
-
 	@Override
 	public String getIdNamespace() {
 		return idNamespace;
@@ -151,16 +175,30 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		this.idNamespace = idNamespace;
 	}
 
+    @Override
+    public Reference getCitation(){
+        return this.citation;
+    }
+    @Override
+    public void setCitation(Reference citation) {
+        this.citation = citation;
+    }
 
-	@Override
-	public OriginalSourceType getType() {
-		return type;
-	}
-	@Override
-	public void setType(OriginalSourceType type) {
-		Assert.notNull(type, "OriginalSourceType must not be null");
-		this.type = type;
-	}
+    @Override
+    public String getCitationMicroReference(){
+        return this.citationMicroReference;
+    }
+    @Override
+    public void setCitationMicroReference(String citationMicroReference){
+        this.citationMicroReference = citationMicroReference;
+    }
+
+    public String getOriginalNameString(){
+        return this.originalNameString;
+    }
+    public void setOriginalNameString(String originalNameString){
+        this.originalNameString = originalNameString;
+    }
 
 	@Override
     public ICdmTarget getCdmSource() {
@@ -227,7 +265,8 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 		    result.setCdmSource(this.cdmSource.getTarget());
 		}
 
-		//no changes to: idInSource
+		//no changes to: type, idInSource, idNamespace,
+		//   citation, citationMicroReference, originalNameString
 		return result;
 	}
 
@@ -240,11 +279,14 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
     public boolean checkEmpty(boolean excludeType){
 	   return super.checkEmpty()
+	        && (excludeType || this.type == null)
+	        && this.getCitation() == null
+	        && isBlank(this.getCitationMicroReference())
+	        && isBlank(this.getOriginalNameString())
 	        && isBlank(this.getIdInSource())
 	        && isBlank(this.getIdNamespace())
 	        && this.links.isEmpty()
 	        && this.cdmSource == null
-	        && (excludeType || this.type == null)
            ;
 	}
 
@@ -260,14 +302,32 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 //*********************************** EQUALS *********************************************************/
 
-    @Override
-    public boolean equalsByShallowCompare(ReferencedEntityBase other) {
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * Uses a content based compare strategy which avoids bean initialization. This is achieved by
+     * comparing the cdm entity ids.
+     */
+    public boolean equalsByShallowCompare(OriginalSourceBase<T> other) {
 
-        if(!super.equalsByShallowCompare(other)) {
+        int thisCitationId = -1;
+        int otherCitationId = -1;
+        if(this.getCitation() != null) {
+            thisCitationId = this.getCitation().getId();
+        }
+        if(other.getCitation() != null) {
+            otherCitationId = other.getCitation().getId();
+        }
+
+        if(thisCitationId != otherCitationId
+                || !StringUtils.equals(this.getCitationMicroReference(), other.getCitationMicroReference())
+                || !StringUtils.equals(this.getOriginalNameString(), other.getOriginalNameString())
+                        ){
             return false;
         }
+
         @SuppressWarnings("unchecked")
-        OriginalSourceBase<T> theOther = (OriginalSourceBase<T>)other;
+        OriginalSourceBase<T> theOther = other;
         if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
                 || !CdmUtils.nullSafeEqual(this.getIdNamespace(), theOther.getIdNamespace())
                 || !CdmUtils.nullSafeEqual(this.getType(), theOther.getType())

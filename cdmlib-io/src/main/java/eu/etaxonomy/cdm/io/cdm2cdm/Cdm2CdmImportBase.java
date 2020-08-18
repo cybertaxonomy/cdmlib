@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
@@ -814,8 +813,9 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected <T extends OriginalSourceBase> T  handlePersisted(OriginalSourceBase source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((ReferencedEntityBase)source);
+        T result = handlePersisted((AnnotatableEntity)source);
         //complete
+        result.setCitation(detache(result.getCitation()));
         handleCollection(result, OriginalSourceBase.class, "links", ExternalLink.class);
         return result;
     }
@@ -852,13 +852,6 @@ public abstract class Cdm2CdmImportBase
         T result = handlePersisted((IdentifiableEntity)mediaEntity);
         //complete
         handleCollection(result, IdentifiableMediaEntity.class, "media", Media.class);
-        return result;
-    }
-
-    protected <T extends ReferencedEntityBase> T  handlePersisted(ReferencedEntityBase referencedEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((AnnotatableEntity)referencedEntity);
-        //complete
-        result.setCitation(detache(result.getCitation()));
         return result;
     }
 
