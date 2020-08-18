@@ -114,8 +114,12 @@ public class PreferenceServiceImpl implements IPreferenceService {
 
     @Override
     public CdmPreference find(TaxonNode taxonNode, String predicate) {
-        String cacheKey = cacheKey(taxonNode, predicate);
-        return fromCacheOrFind(taxonNode, predicate, cacheKey);
+
+        return dao.find(taxonNode, predicate);
+//      caching of taxon node related prefs disabled, see https://dev.e-taxonomy.eu/redmine/issues/9152#note-8
+//      code has been left here in case we decide later for solution 2 which has been suggested also in comment 5
+//        String cacheKey = cacheKey(taxonNode, predicate);
+//        return fromCacheOrFind(taxonNode, predicate, cacheKey);
     }
 
     @Override
@@ -157,6 +161,11 @@ public class PreferenceServiceImpl implements IPreferenceService {
         return key.getSubject() + "@" + key.getPredicate();
     }
 
+    /**
+     * @deprecated caching of taxon node related prefs disabled, see https://dev.e-taxonomy.eu/redmine/issues/9152#note-8
+     * code has been left here in case we decide later for solution 2 which has been suggested also in comment 5
+     */
+    @Deprecated
     private String cacheKey(TaxonNode taxonNode, String predicate) {
         return taxonNode.treeIndex() + predicate;
     }
@@ -175,6 +184,11 @@ public class PreferenceServiceImpl implements IPreferenceService {
     }
 
 
+    /**
+     * @deprecated caching of taxon node related prefs disabled, see https://dev.e-taxonomy.eu/redmine/issues/9152#note-8
+     * code has been left here in case we decide later for solution 2 which has been suggested also in comment 5
+     */
+    @Deprecated
     protected CdmPreference fromCacheOrFind(TaxonNode taxonNode, String predicate, String cacheKey) {
         waitForCache();
         return cache.computeIfAbsent(cacheKey, k -> dao.find(taxonNode, predicate));
