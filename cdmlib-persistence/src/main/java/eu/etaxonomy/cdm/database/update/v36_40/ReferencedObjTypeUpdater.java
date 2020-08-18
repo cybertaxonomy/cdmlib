@@ -377,9 +377,6 @@ public class ReferencedObjTypeUpdater extends SchemaUpdaterStepBase{
         datasource.executeUpdate(sql);
     }
 
-    /**
-     * @param identifiableClass
-     */
     private Class<?> getTable(Class<?> clazz) {
         Class<?> spezificClass = specificClasses.get(clazz);
         if (spezificClass != null){

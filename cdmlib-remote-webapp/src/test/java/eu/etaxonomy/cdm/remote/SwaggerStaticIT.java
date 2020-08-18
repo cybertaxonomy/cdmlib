@@ -23,9 +23,7 @@ import eu.etaxonomy.cdm.remote.staticSwagger.StaticSwaggerApiDoc;
  *
  * @author a.kohlbecker
  * @since Mar 3, 2014
- *
  */
-
 public class SwaggerStaticIT extends WebServiceTestBase {
 
     public static final Logger logger = Logger.getLogger(SwaggerStaticIT.class);

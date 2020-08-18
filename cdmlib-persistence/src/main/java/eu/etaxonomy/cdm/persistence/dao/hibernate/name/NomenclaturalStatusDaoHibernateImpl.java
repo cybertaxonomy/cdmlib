@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 
 /**
  * @author a.mueller
- *
  */
 @Repository
 public class NomenclaturalStatusDaoHibernateImpl

@@ -36,10 +36,8 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
  *
  * For further details on the concept and related discussion see https://dev.e-taxonomy.eu/redmine/issues/6173
  *
- *
  * @author a.kohlbecker
  * @since Sep 26, 2018
- *
  */
 @Repository("taxonGraphDao")
 @Transactional(readOnly = true)
@@ -62,10 +60,6 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
         return relType;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonGraphEdgeDTO> listTaxonGraphEdgeDTOs(UUID fromTaxonUuid, UUID toTaxonUuid, TaxonRelationshipType type,
             boolean includeUnpublished, Integer pageSize, Integer pageIndex) {
@@ -176,9 +170,6 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
         return listTaxonGraphEdgeDTOs(fromtaxonUuid, toTaxonUuid, relType(), includeUnpublished, null, null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Session getSession() {
         return taxonDao.getSession();

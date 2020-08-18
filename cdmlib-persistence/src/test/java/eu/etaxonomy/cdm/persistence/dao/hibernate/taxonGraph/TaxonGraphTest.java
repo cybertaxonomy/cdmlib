@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.kohlbecker
  * @since Sep 27, 2018
- *
  */
 public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
@@ -98,7 +97,6 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
 
         return processor;
     }
-
 
    protected void setUuidPref() {
        PrefKey key = TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID;
@@ -361,7 +359,5 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
             "HIBERNATE_SEQUENCES", // IMPORTANT!!!
             },
             fileNameAppendix, false );
-
     }
-
 }
