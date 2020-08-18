@@ -180,7 +180,7 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 //*********************************** CLONE *********************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public DescriptionElementSource clone() throws CloneNotSupportedException{
 		DescriptionElementSource result = (DescriptionElementSource)super.clone();
 
 		//no changes

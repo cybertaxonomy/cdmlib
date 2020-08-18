@@ -117,7 +117,8 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
                     + ")";
         }
         hql += " FROM TaxonRelationship as tr "
-                + " JOIN tr.citation as c"
+                + " JOIN tr.source as s"
+                + " JOIN s.citation as c"
                 + " JOIN tr.relatedFrom as fromT"
                 + " JOIN tr.relatedTo as toT"
                 + " JOIN fromT.name as fromN"

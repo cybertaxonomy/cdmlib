@@ -407,15 +407,16 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      */
     protected List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
 
+        getSession().flush();
         String hql = "SELECT rel FROM TaxonRelationship rel WHERE rel." + direction + " = :relatedTaxon AND rel.type = :type";
         if(citation != null){
-            hql += " AND rel.citation = :citation";
+            hql += " AND rel.source.citation = :citation";
         }
         Query q = getSession().createQuery(hql);
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
         if(citation != null){
-        q.setParameter("citation", citation);
+            q.setParameter("citation", citation);
         }
         @SuppressWarnings("unchecked")
         List<TaxonRelationship> rels = q.list();
