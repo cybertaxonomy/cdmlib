@@ -64,6 +64,7 @@ public class MediaUriTransformationProcessorTest {
         MediaUriTransformation transformation2 = new MediaUriTransformation();
         transformation2.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/!400,400/full/0/default.jpg"));
         transformation2.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
+        transformation2.setMaxExtend(true);
 
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation2);
@@ -79,6 +80,7 @@ public class MediaUriTransformationProcessorTest {
         MediaUriTransformation transformation2 = new MediaUriTransformation();
         transformation2.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/!400,400/full/0/default.jpg"));
         transformation2.setHost(new SearchReplace("not.matching.host", "images.bgbm.org"));
+        transformation2.setMaxExtend(true);
 
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation2);
@@ -97,6 +99,7 @@ public class MediaUriTransformationProcessorTest {
         transformation1.setMimeType("image/jpeg");
         transformation1.setWidth(400);
         transformation1.setHeight(200);
+        transformation1.setMaxExtend(true);
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
@@ -118,6 +121,7 @@ public class MediaUriTransformationProcessorTest {
         transformation2.setMimeType("image/jpeg");
         transformation2.setWidth(400);
         transformation2.setHeight(200);
+        transformation2.setMaxExtend(true);
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation2);
 
@@ -136,6 +140,7 @@ public class MediaUriTransformationProcessorTest {
         transformation1.setMimeType("image/jpeg");
         transformation1.setWidth(400);
         transformation1.setHeight(null);
+        transformation1.setMaxExtend(false);
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
@@ -159,6 +164,7 @@ public class MediaUriTransformationProcessorTest {
         transformation1.setMimeType("image/jpeg");
         transformation1.setWidth(null);
         transformation1.setHeight(300);
+        transformation1.setMaxExtend(false);
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
@@ -181,6 +187,7 @@ public class MediaUriTransformationProcessorTest {
         transformation1.setMimeType("image/jpeg");
         transformation1.setWidth(200);
         transformation1.setHeight(147);
+        transformation1.setMaxExtend(false);
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
@@ -214,6 +221,7 @@ public class MediaUriTransformationProcessorTest {
         transformation1.setMimeType("image/jpeg");
         transformation1.setWidth(147);
         transformation1.setHeight(200);
+        transformation1.setMaxExtend(false);
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
@@ -240,6 +248,41 @@ public class MediaUriTransformationProcessorTest {
     }
 
     @Test
+    public void testMakeMediaCropSquare() throws URISyntaxException {
+
+        MediaUriTransformation transformation1 = new MediaUriTransformation();
+        transformation1.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/400,400/full/0/default.jpg"));
+        transformation1.setMimeType("image/jpeg");
+        transformation1.setWidth(400);
+        transformation1.setHeight(400);
+        transformation1.setMaxExtend(false);
+        MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
+        processor.add(transformation1);
+
+        // aspect ratio = 4/3
+        MediaRepresentation repr1 = makeImageMediaRepresentation(2000, 1500);
+
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1.getParts().get(0));
+
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,400/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(Integer.valueOf(400), image.getWidth());
+        assertEquals(Integer.valueOf(400), image.getHeight());
+
+        // aspect ratio = 3/4
+        MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
+
+        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+
+        assertEquals("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cyprus!Salvia_aethiopis_A1.jpg/400,400/full/0/default.jpg", representations.get(0).getParts().get(0).getUri().toString());
+        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
+        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(Integer.valueOf(400), image.getWidth());
+        assertEquals(Integer.valueOf(400), image.getHeight());
+    }
+
+    @Test
     public void testMakeMediaCalculateExtend() throws URISyntaxException {
 
         MediaUriTransformation transformation1 = new MediaUriTransformation();
@@ -247,6 +290,7 @@ public class MediaUriTransformationProcessorTest {
         transformation1.setMimeType("image/jpeg");
         transformation1.setWidth(400);
         transformation1.setHeight(400);
+        transformation1.setMaxExtend(true);
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
         processor.add(transformation1);
 
@@ -271,5 +315,42 @@ public class MediaUriTransformationProcessorTest {
         image = (ImageFile)representations.get(0).getParts().get(0);
         assertEquals(Integer.valueOf(300), image.getWidth());
         assertEquals(Integer.valueOf(400), image.getHeight());
+    }
+
+    @Test
+    public void testMakeMediaCalculateExtendRect() throws URISyntaxException {
+
+        MediaUriTransformation transformation1 = new MediaUriTransformation();
+        transformation1.setPathQueryFragment(new SearchReplace(PATTERN_1, "digilib/Scaler/IIIF/$1!$2/!300,400/full/0/default.jpg"));
+        transformation1.setMimeType("image/jpeg");
+        transformation1.setWidth(300);
+        transformation1.setHeight(400);
+        transformation1.setMaxExtend(true);
+        MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
+        processor.add(transformation1);
+
+        // aspect ratio = 4/3
+        MediaRepresentation repr1 = makeImageMediaRepresentation(2000, 1500);
+
+        List<MediaRepresentation> representations = processor.makeNewMediaRepresentationsFor(repr1.getParts().get(0));
+
+        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
+        ImageFile image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(Integer.valueOf(300), image.getWidth());
+        assertEquals(Integer.valueOf(225), image.getHeight());
+
+        // aspect ratio = 3/4
+        MediaRepresentation repr2 = makeImageMediaRepresentation(1500, 2000);
+
+        transformation1.setWidth(400);
+        transformation1.setHeight(300);
+        transformation1.setMaxExtend(true);
+
+        representations = processor.makeNewMediaRepresentationsFor(repr2.getParts().get(0));
+
+        assertEquals(ImageFile.class, representations.get(0).getParts().get(0).getClass());
+        image = (ImageFile)representations.get(0).getParts().get(0);
+        assertEquals(Integer.valueOf(225), image.getWidth());
+        assertEquals(Integer.valueOf(300), image.getHeight());
     }
 }

@@ -189,6 +189,15 @@ public class MediaUriTransformationProcessor {
         return repr;
     }
 
+    /**
+     *
+     * @param trans
+     *   The transfomation
+     * @param originalWidth
+     * @param originalHeight
+     * @param calculateMaxExtend
+     * @return
+     */
     protected Point calculateTargetSize(MediaUriTransformation trans, Integer originalWidth, Integer originalHeight) {
 
         if (trans.getWidth() == null && trans.getHeight() == null) {
@@ -196,14 +205,15 @@ public class MediaUriTransformationProcessor {
         } else if (originalWidth == null || originalHeight == null) {
             return new Point(trans.getWidth(), trans.getHeight());
         } else {
-            if(trans.getHeight() != null && trans.getWidth() != null && !trans.getHeight().equals(trans.getWidth())) {
+            if(trans.getHeight() != null && trans.getWidth() != null && !trans.isMaxExtend()) {
+                // CROP
                 return new Point(trans.getWidth(), trans.getHeight());
             } else {
-                // calculate
+                // MAX EXTEND
                 float originalAspectRatio = ((float) originalWidth / (float) originalHeight);
 
                 boolean widthIsLimiting = trans.getHeight() == null ||
-                        trans.getWidth() != null && trans.getHeight() * originalAspectRatio > trans.getWidth() ;
+                        trans.getWidth() != null && trans.getHeight() * originalAspectRatio > trans.getWidth();
                 if (widthIsLimiting){
                     return new Point(trans.getWidth(), Math.round(trans.getWidth() / originalAspectRatio ));
                 } else {

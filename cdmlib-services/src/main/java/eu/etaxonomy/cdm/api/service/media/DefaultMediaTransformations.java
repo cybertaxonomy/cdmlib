@@ -58,6 +58,7 @@ public class DefaultMediaTransformations {
         tr1.setMimeType("image/jpeg");
         tr1.setWidth(dataPortalPreviewImageSize.x);
         tr1.setHeight(dataPortalPreviewImageSize.y);
+        tr1.setMaxExtend(true);
 
         MediaUriTransformation tr2 = new MediaUriTransformation();
         tr2.setPathQueryFragment(new SearchReplace("digilib/Scaler/IIIF/([^\\!]+)\\!([^\\/]+)(.*)", universalViewerThumbnail));
@@ -65,6 +66,7 @@ public class DefaultMediaTransformations {
         tr2.setMimeType("image/jpeg");
         tr2.setWidth(universalViewerThumbnailSize.x);
         tr2.setHeight(universalViewerThumbnailSize.y);
+        tr2.setMaxExtend(false);
 
         MediaUriTransformation tr3 = new MediaUriTransformation();
         tr3.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", dataPortalPreviewImage));
@@ -72,6 +74,7 @@ public class DefaultMediaTransformations {
         tr3.setMimeType("image/jpeg");
         tr3.setWidth(dataPortalPreviewImageSize.x);
         tr3.setHeight(dataPortalPreviewImageSize.y);
+        tr3.setMaxExtend(true);
 
         MediaUriTransformation tr4 = new MediaUriTransformation();
         tr4.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", universalViewerThumbnail));
@@ -79,6 +82,7 @@ public class DefaultMediaTransformations {
         tr4.setMimeType("image/jpeg");
         tr4.setWidth(universalViewerThumbnailSize.x);
         tr4.setHeight(universalViewerThumbnailSize.y);
+        tr4.setMaxExtend(false);
 
         defaultTransformations.add(tr2);
         defaultTransformations.add(tr1);

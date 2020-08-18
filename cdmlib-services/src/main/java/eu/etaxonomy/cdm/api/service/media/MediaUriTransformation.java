@@ -26,7 +26,11 @@ public class MediaUriTransformation {
 
     Integer width = null;
     Integer height = null;
+    boolean isMaxExtend = false;
 
+    /**
+     *
+     */
     public MediaUriTransformation() {
 
     }
@@ -102,6 +106,7 @@ public class MediaUriTransformation {
 
     /**
      * The pixel width of the target media, usually of an image.
+     * The resulting image size also depends on {@link #isMaxExtend()}.
      *
      * @return the width
      */
@@ -111,6 +116,7 @@ public class MediaUriTransformation {
 
     /**
      * The pixel width of the target media, usually of an image.
+     * The resulting image size also depends on {@link #isMaxExtend()}.
      *
      * @param width the width to set
      */
@@ -120,6 +126,7 @@ public class MediaUriTransformation {
 
     /**
      * The pixel height of the target media, usually of an image.
+     * The resulting image size also depends on {@link #isMaxExtend()}.
      *
      * @return the height
      */
@@ -129,11 +136,31 @@ public class MediaUriTransformation {
 
     /**
      * The pixel height of the target media, usually of an image.
+     * The resulting image size also depends on {@link #isMaxExtend()}.
      *
      * @param height the height to set
      */
     public void setHeight(Integer height) {
         this.height = height;
+    }
+
+    /**
+     * When true, the {@link #getWidth() width} and {@link #getHeight() height} are interpreted as max-extend. Otherwise
+     * it is is assumed that the image will be cropped to the specified size.
+     *
+     * @return the isMaxExtend
+     */
+    public boolean isMaxExtend() {
+        return isMaxExtend;
+    }
+
+    /**
+     * See {@link #isMaxExtend()}
+     *
+     * @param isMaxExtend the isMaxExtend to set
+     */
+    public void setMaxExtend(boolean isMaxExtend) {
+        this.isMaxExtend = isMaxExtend;
     }
 
 
