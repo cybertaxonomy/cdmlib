@@ -1490,10 +1490,10 @@ public class TaxonServiceImpl
     @Override
     public <S extends TaxonBase> Pager<S> findByTitleWithRestrictions(Class<S> clazz, String queryString, MatchMode matchmode, List<Restriction<?>> restrictions, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
          long numberOfResults = dao.countByTitleWithRestrictions(clazz, queryString, matchmode, restrictions);
-         numberOfResults = numberOfResults + dao.countByTitleWithRestrictions(clazz, "?".concat(queryString), matchmode, restrictions);
 
+         long numberOfResults_doubtful = dao.countByTitleWithRestrictions(clazz, "?".concat(queryString), matchmode, restrictions);
          List<S> results = new ArrayList<>();
-         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+         if(numberOfResults > 0 || numberOfResults_doubtful > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
 
              results = dao.findByTitleWithRestrictions(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
              results.addAll(dao.findByTitleWithRestrictions(clazz, "?".concat(queryString), matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths));
