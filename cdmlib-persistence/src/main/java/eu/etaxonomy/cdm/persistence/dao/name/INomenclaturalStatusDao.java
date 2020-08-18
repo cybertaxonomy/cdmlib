@@ -8,9 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.name;
 
-import java.util.List;
-
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.persistence.dao.common.ISingleSourcedEntityDao;
 
@@ -18,7 +15,5 @@ import eu.etaxonomy.cdm.persistence.dao.common.ISingleSourcedEntityDao;
  * @author a.mueller
  */
 public interface INomenclaturalStatusDao extends ISingleSourcedEntityDao<NomenclaturalStatus> {
-
-	public List<ReferencedEntityBase> getAllNomenclaturalStatus(Integer limit, Integer start);
 
 }
