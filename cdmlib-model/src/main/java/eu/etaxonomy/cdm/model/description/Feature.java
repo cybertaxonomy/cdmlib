@@ -171,7 +171,7 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidDistribution = UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6");
     private static final UUID uuidDistributionGeneral = UUID.fromString("fd8c64f0-6ea5-44b0-9f70-e95833d6076e");
     private static final UUID uuidEcology = UUID.fromString("aa923827-d333-4cf5-9a5f-438ae0a4746b");
-    private static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
+    public static final UUID uuidHabitat = UUID.fromString("fb16929f-bc9c-456f-9d40-dec987b36438");
     private static final UUID uuidHabitatAndEcology = UUID.fromString("9fdc4663-4d56-47d0-90b5-c0bf251bafbb");
     private static final UUID uuidChromosomeNumber = UUID.fromString("6f677e98-d8d5-4bc5-80bf-affdb7e3945a");
 
@@ -204,8 +204,8 @@ public class Feature extends DefinedTermBase<Feature> {
     private static final UUID uuidUseRecord = UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599");
     private static final UUID uuidNotes = UUID.fromString("b5780b45-6439-4f3c-9818-d89d26d36eb2");
     public static final UUID uuidLifeform = UUID.fromString("db9228d3-8bbf-4460-abfe-0b1326c82f8e");
-    private static final UUID uuidFloweringPeriod = UUID.fromString("03710cb5-606e-444a-a3e6-594268e3cc47");
-    private static final UUID uuidFruitingPeriod = UUID.fromString("04aa8993-24b4-43e3-888c-5afaa733376e");
+    public static final UUID uuidFloweringPeriod = UUID.fromString("03710cb5-606e-444a-a3e6-594268e3cc47");
+    public static final UUID uuidFruitingPeriod = UUID.fromString("04aa8993-24b4-43e3-888c-5afaa733376e");
     public static final UUID uuidAltitude = UUID.fromString("1a28ed59-e15f-4001-b5c2-ea89f0012671");
 
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
@@ -1170,7 +1170,7 @@ public class Feature extends DefinedTermBase<Feature> {
 //*********************************** CLONE *********************************************************/
 
     @Override
-    public Object clone() {
+    public Feature clone() {
         Feature result = (Feature)super.clone();
 
         result.inverseRepresentations = new HashSet<Representation>();

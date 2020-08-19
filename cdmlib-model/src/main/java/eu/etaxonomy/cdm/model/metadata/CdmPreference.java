@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -52,6 +53,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @Entity
 public final class CdmPreference implements Serializable {
 
+    private static final String STRING_LIST_SEPARATOR = "[,;\\s]";
+
     private static final int VALUE_LENGTH = 65536; //= CdmBase.CLOB_LENGTH;
 
     private static final long serialVersionUID = 4307599154287181582L;
@@ -65,8 +68,6 @@ public final class CdmPreference implements Serializable {
         return new CdmPreference(key.subject, key.predicate, value);
     }
 
-
-
     public static final CdmPreference NewInstance(PreferenceSubject subject, IPreferencePredicate<?> predicate, List<UUID> value){
         return new CdmPreference(subject, predicate, uuidListStr(value));
     }
@@ -78,29 +79,14 @@ public final class CdmPreference implements Serializable {
         return new CdmPreference(subject, predicate, value.toString());
     }
 
-    /**
-     * @param predicate
-     * @param value
-     * @return
-     */
     public static CdmPreference NewDatabaseInstance(IPreferencePredicate<?> predicate, String value) {
         return new CdmPreference(PreferenceSubject.NewDatabaseInstance(), predicate, value);
     }
 
-    /**
-     * @param predicate
-     * @param value
-     * @return
-     */
     public static CdmPreference NewVaadinInstance(IPreferencePredicate<?> predicate, String value) {
         return new CdmPreference(PreferenceSubject.NewVaadinInstance(), predicate, value);
     }
 
-    /**
-     * @param predicate
-     * @param value
-     * @return
-     */
     public static CdmPreference NewTaxEditorInstance(IPreferencePredicate<?> predicate, String value) {
         return new CdmPreference(PreferenceSubject.NewTaxEditorInstance(), predicate, value);
     }
@@ -172,8 +158,6 @@ public final class CdmPreference implements Serializable {
                 throw new IllegalArgumentException("Subject does not follow the required syntax");
             }
 
-
-
             this.subject = subject;
             this.predicate = predicate;
         }
@@ -208,7 +192,6 @@ public final class CdmPreference implements Serializable {
         public String getPredicate() {
             return predicate;
         }
-
     }
 
 //****************** CONSTRUCTOR **********************/
@@ -227,6 +210,7 @@ public final class CdmPreference implements Serializable {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param subject must not be null and must not be longer then 255 characters.
 	 * @param predicate must not be null and must not be longer then 255 characters.
 	 * @param value must not be longer then 1023 characters.
@@ -238,9 +222,6 @@ public final class CdmPreference implements Serializable {
 
 	}
 
-    /**
-     * @param value
-     */
     private void checkValue(String value) {
         //TODO are null values allowed?     assert predicate != null : "value must not be null for preference";
         if (value != null && value.length() > VALUE_LENGTH -1 ) {
@@ -255,20 +236,18 @@ public final class CdmPreference implements Serializable {
 	    return PreferenceSubject.ROOT.equals(key.subject);
 	}
 
-
 	/**
-	 * @return the subject of the preference
+	 * @return the subject of the preference as String.
 	 */
 	public String getSubjectString() {
 		return key.subject;
 	}
-	   /**
+	/**
      * @return the subject of the preference
      */
     public PreferenceSubject getSubject() {
         return PreferenceSubject.fromKey(key);
     }
-
 
 	/**
 	 * @return the predicate of the preference
@@ -291,31 +270,31 @@ public final class CdmPreference implements Serializable {
 	 * @throws IllegalArgumentException
 	 */
 	public List<UUID> getValueUuidList() throws IllegalArgumentException {
+
 	    List<UUID> result = new ArrayList<>();
-	    if (StringUtils.isBlank(value)){
-	        return result;
+	    for (String split : splitStringListValue()){
+            UUID uuid = UUID.fromString(split.trim());
+            result.add(uuid);
 	    }
-	    String[] splits = getValue().split("[,;]");
-	    for (String split : splits ){
-	        try {
-                if (StringUtils.isBlank(split)){
-                    continue; //neglect trailing separators
-                }
-	            UUID uuid = UUID.fromString(split.trim());
-                result.add(uuid);
-            } catch (IllegalArgumentException e) {
-                throw e;
-            }
-	    }
+
 	    return result;
     }
 
+	/**
+	 * Splits the <code>value</code> into tokens by the separators defined in {@link #STRING_LIST_SEPARATOR}
+	 *
+	 * @return
+	 */
+    public  List<String> splitStringListValue() {
+        List<String> tokens;
+        if (StringUtils.isNotBlank(value)){
+	        tokens = Arrays.stream(getValue().split(STRING_LIST_SEPARATOR)).filter(t -> !StringUtils.isBlank(t)).collect(Collectors.toList());
+	    } else {
+	        tokens = new ArrayList<>();
+	    }
+        return tokens;
+    }
 
-
-    /**
-     * @param value
-     * @return
-     */
     protected static String uuidListStr(List<UUID> value) {
         String valueStr = "";
         for (UUID uuid : value){
@@ -323,7 +302,6 @@ public final class CdmPreference implements Serializable {
         }
         return valueStr;
     }
-
 
 //
 //  we try to avoid setting of values

@@ -128,7 +128,7 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
             List<String> propertyPaths, boolean recursive,  boolean includeUnpublished,
-            NodeSortMode sortMode) {
+            TaxonNodeSortMode sortMode) {
 
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
@@ -205,7 +205,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive,  boolean includeUnpublished,
-            boolean doSynonyms, NodeSortMode sortMode,
+            boolean doSynonyms, TaxonNodeSortMode sortMode,
             Integer pageSize, Integer pageIndex) {
 
         TaxonNode parentNode = dao.load(taxonNodeUuid);
@@ -813,7 +813,7 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto,
-            UUID refUuid, String microref,
+            DescriptionElementSource source, String microref,
             TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
 
         UpdateResult result = new UpdateResult();
@@ -849,13 +849,19 @@ public class TaxonNodeServiceImpl
        TaxonNode parent = dao.load(parentNodeUuid);
        TaxonNode child = null;
        Reference ref = null;
-       if (refUuid != null){
-           ref = referenceService.load(refUuid);
+       if (source != null){
+           if (source.getCitation() != null){
+               source.setCitation(referenceService.load(source.getCitation().getUuid()));
+           }
+           if (source.getNameUsedInSource() !=null){
+               source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
+           }
        }
 
        try{
-           child = parent.addChildTaxon(newTaxon, ref, microref);
+           child = parent.addChildTaxon(newTaxon, source);
            child.setStatus(status);
+
            if (statusNote != null){
                child.getStatusNote().putAll(statusNote);
            }

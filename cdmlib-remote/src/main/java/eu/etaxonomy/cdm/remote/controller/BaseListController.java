@@ -6,8 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
@@ -37,13 +35,9 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
-
 /**
  * @author a.kohlbecker
  * @since 22.07.2009
- *
- * @param <T>
- * @param <SERVICE>
  */
 public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
 
@@ -54,7 +48,6 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
         binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
     }
-
 
     /**
      * NOTE: The indices for pages are 0-based see {@link Pager}
@@ -119,7 +112,6 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         return pageByRestrictions(type, initStrategy, orderBy, pagerParameters, new ArrayList<>(restrictions));
     }
 
-
     /**
      * This method can be overwritten by subclasses, for example to apply additional filtering like for the publish flag.
      *
@@ -134,7 +126,6 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             PagerParameters pagerParameters, ArrayList<Restriction<?>> restrictions) {
         return service.page(type, restrictions, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), orderBy.orderHints(), initStrategy);
     }
-
 
 //    /**
 //     * Parameter less method to be used as default when request without parameter are made. Otherwise
@@ -166,16 +157,18 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             @RequestParam(value = "limit", required = false) Integer limit,
             @RequestParam(value = "class", required = false) Class<T> type,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
-        if (request != null)
-        {
+        if (request != null){
             logger.info("doList() " + requestPathAndQuery(request));
         }
 
         //if(start == null){ start = 0;}
-        if(limit == null){ limit = PagerParameters.DEFAULT_PAGESIZE;}
-        if(limit < 1){ limit = null;}
+        if(limit == null){
+            limit = PagerParameters.DEFAULT_PAGESIZE;
+        }else if(limit < 1){
+            limit = null;
+        }
         return service.list(type, limit, start, null, getInitializationStrategy());
     }
 

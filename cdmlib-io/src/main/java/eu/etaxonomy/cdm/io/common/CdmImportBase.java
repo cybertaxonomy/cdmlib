@@ -22,8 +22,9 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.markup.MarkupTransformer;
@@ -118,7 +119,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedNomenclaturalStatusTypeVocabulary = UUID.fromString("1a5c7745-5588-4151-bc43-9ca22561977b");
 
 
-
 	private static final String UuidOnly = "UUIDOnly";
 	private static final String UuidLabel = "UUID or label";
 	private static final String UuidLabelAbbrev = "UUID, label or abbreviation";
@@ -127,13 +127,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	private final static String authorSeparator = ", ";
     private final static String lastAuthorSeparator = " & ";
 
-	public enum TermMatchMode{
+    public enum TermMatchMode{
 		UUID_ONLY(0, UuidOnly)
 		,UUID_LABEL(1, UuidLabel)
 		,UUID_LABEL_ABBREVLABEL(2, UuidLabelAbbrev)
 		,UUID_ABBREVLABEL(3, UuidAbbrev)
 		;
-
 
 		private final int id;
 		private final String representation;
@@ -156,9 +155,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				default: return UUID_ONLY;
 			}
  		}
-
-
 	}
+
+    protected ICdmRepository repository;
+
+    @Override
+    public void setRepository(ICdmRepository repository){
+        this.repository = repository;
+    }
 
     @Override
     protected ImportResult getNoDataResult(STATE state) {
@@ -177,7 +181,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 		Classification tree = Classification.NewInstance(treeName);
 		tree.setReference(reference);
-
 
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
@@ -218,9 +221,6 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		state.putTreeUuid(ref, tree);
 		return tree;
 	}
-
-
-
 
 	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
 		return getExtensionType(state, uuid, label, text, labelAbbrev, null);
@@ -1424,26 +1424,26 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
      */
     private MediaRepresentation makeMediaRepresentation(String uriString, boolean readMediaData) throws URISyntaxException {
         uriString = uriString.replace(" ", "%20");  //replace whitespace
-        ImageInfo imageInfo = null;
+        CdmImageInfo cdmImageInfo = null;
         URI uri = new URI(uriString);
 
         try {
         	if (readMediaData){
         		logger.info("Read media data from: " + uri);
-        		imageInfo = ImageInfo.NewInstance(uri, 0);
+        		cdmImageInfo = CdmImageInfo.NewInstance(uri, 0);
         	}
         } catch (Exception e) {
         	String message = "An error occurred when trying to read image meta data for " + uri.toString() + ": " +  e.getMessage();
         	logger.warn(message);
         	fireWarningEvent(message, "unknown location", 2, 0);
         }
-        ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInfo);
+        ImageFile imageFile = ImageFile.NewInstance(uri, null, cdmImageInfo);
 
         MediaRepresentation representation = MediaRepresentation.NewInstance();
 
-        if(imageInfo != null){
-        	representation.setMimeType(imageInfo.getMimeType());
-        	representation.setSuffix(imageInfo.getSuffix());
+        if(cdmImageInfo != null){
+        	representation.setMimeType(cdmImageInfo.getMimeType());
+        	representation.setSuffix(cdmImageInfo.getSuffix());
         }
         representation.addRepresentationPart(imageFile);
         return representation;

@@ -95,8 +95,6 @@ public abstract class CdmIoBase<STATE extends IoStateBase, RESULT extends IoResu
 
 //******************** End Observers *********************************************************
 
-
-
     public void invoke(STATE state) {
         if (isIgnore(state)){
             logger.info("No invoke for " + ioName + " (ignored)");

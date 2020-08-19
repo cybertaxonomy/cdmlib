@@ -87,7 +87,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media
         extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
-        implements IMultiLanguageTextHolder, IIntextReferenceTarget, Cloneable {
+        implements IMultiLanguageTextHolder, IIntextReferenceTarget {
 
     private static final long serialVersionUID = -1927421567263473658L;
     @SuppressWarnings("unused")
@@ -208,7 +208,7 @@ public class Media
 
     public Set<MediaRepresentation> getRepresentations(){
         if(representations == null) {
-            this.representations = new HashSet<MediaRepresentation>();
+            this.representations = new HashSet<>();
         }
         return this.representations;
     }

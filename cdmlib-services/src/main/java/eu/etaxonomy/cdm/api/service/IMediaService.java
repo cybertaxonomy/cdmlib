@@ -9,16 +9,22 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import org.apache.http.HttpException;
 
 import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -69,4 +75,18 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 
 
 	public DeleteResult delete(UUID mediaUuid, MediaDeletionConfigurator config);
+
+    /**
+     * Reads the metadata as stored in the file or web resource and filters the data by the include and exclude lists of key names
+     * as stored in the data base properties {@link PreferencePredicate#MediaMetadataKeynameExcludes} and {@link PreferencePredicate#MediaMetadataKeynameExcludes}
+     * <p>
+     * Metadata of multiple parts is merged into one common metadata map whereas the later part being read may overwrite data from previous parts.
+     * The consequences of this can be neglected since we don't expect that multiple parts are actually being used.
+     *
+     * @param representation
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    Map<String, String> readResourceMetadataFiltered(MediaRepresentation representation) throws IOException, HttpException;
 }

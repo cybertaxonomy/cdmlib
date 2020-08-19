@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -57,7 +58,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param recursive
 	 * @return List<TaxonNode>
 	 */
-	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive,  boolean includeUnpublished, NodeSortMode sortMode);
+	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive,  boolean includeUnpublished, TaxonNodeSortMode sortMode);
 
 	/**
 	 * Lists all direct child nodes of the given {@link UuidAndTitleCache} which
@@ -116,7 +117,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @return List<TaxonNodeDto>
      */
     public Pager<TaxonNodeDto> pageChildNodesDTOs(UUID taxonNodeUuid, boolean recursive, boolean includeUnpublished,
-            boolean doSynonyms, NodeSortMode sortMode,
+            boolean doSynonyms, TaxonNodeSortMode sortMode,
             Integer pageSize, Integer pageIndex);
 
     public TaxonNodeDto parentDto(UUID taxonNodeUuid);
@@ -200,7 +201,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, UUID refUuid, String microref,
+    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto, DescriptionElementSource source, String microref,
             TaxonNodeStatus status, Map<Language,LanguageString> statusNote);
 
     public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType);

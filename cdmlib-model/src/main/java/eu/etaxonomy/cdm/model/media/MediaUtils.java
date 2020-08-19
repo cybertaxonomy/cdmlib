@@ -22,24 +22,23 @@ public class MediaUtils {
     private static final Logger logger = Logger.getLogger(MediaUtils.class);
 
 
-    /**
-     *
-     * @param media
-     * @param representationPartType
-     * @param size
-     * @param height
-     * @param widthOrDuration
-     * @param mimeTypes
-     * @param missingValStrategy
-     * @return
-     */
     public static MediaRepresentation findBestMatchingRepresentation(Media media,
             Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height,
             Integer widthOrDuration, String[] mimeTypes, MissingValueStrategy missingValStrategy){
 
         // find best matching representations of each media
+        Set<MediaRepresentation> representations = media.getRepresentations();
+        return findBestMatchingRepresentation(representations, representationPartType, size, height, widthOrDuration,
+                mimeTypes, missingValStrategy);
+    }
+
+    public static MediaRepresentation findBestMatchingRepresentation(
+            Set<MediaRepresentation> representations, Class<? extends MediaRepresentationPart> representationPartType, Integer size,
+            Integer height, Integer widthOrDuration, String[] mimeTypes,
+            MissingValueStrategy missingValStrategy) {
+
         SortedMap<Long, MediaRepresentation> prefRepresentations
-                = filterAndOrderMediaRepresentations(media.getRepresentations(), representationPartType, mimeTypes,
+                = filterAndOrderMediaRepresentations(representations, representationPartType, mimeTypes,
                         size, widthOrDuration, height, missingValStrategy);
         if(prefRepresentations.size() > 0){
             MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());

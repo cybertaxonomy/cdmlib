@@ -14,11 +14,15 @@ import eu.etaxonomy.cdm.io.fact.altitude.in.analyze.ExcelFormatAnalyzer;
  * @author a.mueller
  * @since 02.06.2020
  */
-public class AltitudeExcelFormatAnalyzer extends ExcelFormatAnalyzer {
+public class AltitudeExcelFormatAnalyzer
+            extends ExcelFormatAnalyzer<AltitudeExcelImportConfigurator> {
 
-    private AltitudeExcelFormatAnalyzer() {
-        super(requiredColumns(), optionalColumns(), optionalMultiColumns());
-        // TODO Auto-generated constructor stub
+    protected AltitudeExcelFormatAnalyzer(AltitudeExcelImportConfigurator config) {
+        super(config, requiredWorksheets(), requiredColumns(), optionalColumns(), optionalMultiColumns());
+    }
+
+    private static String[] requiredWorksheets() {
+        return new String[]{"Altitude"};
     }
 
     private static String[] requiredColumns() {

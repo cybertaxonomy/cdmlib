@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -100,21 +99,16 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     public void testGetWebServiceUrlCountry() {
         Set<Distribution> distributions = new HashSet<>();
         Country germany = termService.findByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class);
-//        germany = (Country)termService.find(665);
-//        germany = (Country)termService.find(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
-
-//        germany = Country.GERMANY();
 
         distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.PRESENT()));
         distributions.add(Distribution.NewInstance(termService.findByIdInVocabulary("DE", Country.uuidCountryVocabulary, Country.class), PresenceAbsenceTerm.INTRODUCED()));
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTerm, Color>();
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
-        List<Language> languages = new ArrayList<Language>();
+        List<Language> languages = new ArrayList<>();
 
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
-
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions, null, true, statusOrderPreference, subAreaPreference);
@@ -141,13 +135,13 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.CULTIVATED(), Color.YELLOW);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.ABSENT(), Color.DARK_GRAY);
-        String backLayer ="";
+//        String backLayer ="";
         presenceAbsenceColorMap = null;
-        String bbox="-20,0,120,70";
+//        String bbox="-20,0,120,70";
         List<Language> languages = new ArrayList<>();
 
-        boolean subAreaPreference = false;
-        boolean statusOrderPreference = false;
+//        boolean subAreaPreference = false;
+//        boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
                 distributions,
                 mapping,
@@ -171,7 +165,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException, URISyntaxException {
+    public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException {
         makeCyprusAreas();
         Set<Distribution> distributions = new HashSet<Distribution>();
         distributions.add(Distribution.NewInstance(divisions.get("1"), PresenceAbsenceTerm.PRESENT()));
@@ -181,18 +175,14 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         distributions.add(Distribution.NewInstance(divisions.get("5"), PresenceAbsenceTerm.ABSENT()));
         distributions.add(Distribution.NewInstance(divisions.get("6"), PresenceAbsenceTerm.PRESENT()));
 
-        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTerm, Color>();
+        Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.INTRODUCED(), Color.BLACK);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.CULTIVATED(), Color.YELLOW);
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.ABSENT(), Color.DARK_GRAY);
-        String backLayer ="";
         presenceAbsenceColorMap = null;
-        String bbox="-20,0,120,70";
-        List<Language> languages = new ArrayList<Language>();
+        List<Language> languages = new ArrayList<>();
 
-        boolean subAreaPreference = false;
-        boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
                 distributions,
                 mapping,
@@ -236,7 +226,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     private boolean makeCyprusAreas() throws IOException {
         //divisions
 
-
         NamedAreaType areaType = NamedAreaType.NATURAL_AREA();
         NamedAreaLevel areaLevel = NamedAreaLevel.NewInstance("Cyprus Division", "Cyprus Division", null);
 
@@ -245,7 +234,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         TermVocabulary<NamedArea> areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea,
                 NamedArea.class, "Cyprus devisions", "Cyprus divisions", null, null);
         areaVocabulary.setUuid(uuidCyprusDivisionsVocabulary);
-
 
         for(int i = 1; i <= 8; i++){
             UUID divisionUuid = getNamedAreaUuid(String.valueOf(i));
@@ -263,7 +251,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         vocabService.saveOrUpdate(areaVocabulary);
         commitAndStartNewTransaction(null);
 
-
         // import and map shapefile attributes from csv
         InputStream is = getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/ext/geo/cyprusdivs.csv");
         List<String> idSearchFields = new ArrayList<String>();
@@ -273,7 +260,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
         divisions.clear();
         Set<DefinedTermBase> terms = vocabService.load(uuidCyprusDivisionsVocabulary).getTerms();
-        for(DefinedTermBase dtb : terms){
+        for(DefinedTermBase<?> dtb : terms){
             divisions.put(dtb.getIdInVocabulary(), (NamedArea) dtb);
         }
 
@@ -339,17 +326,15 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         geoServiceArea.add(geoServiceLayer, layerFieldName, "BALI");
 
         mapping.set(areaBangka, geoServiceArea);
-        Set<Distribution> distributions = new HashSet<Distribution>();
+        Set<Distribution> distributions = new HashSet<>();
         distributions.add(Distribution.NewInstance(areaBangka, PresenceAbsenceTerm.PRESENT()));
 
         Map<PresenceAbsenceTerm, Color> presenceAbsenceColorMap = new HashMap<>();
         presenceAbsenceColorMap.put(PresenceAbsenceTerm.PRESENT(), Color.BLUE);
 
         presenceAbsenceColorMap = null;
-        List<Language> languages = new ArrayList<Language>();
+        List<Language> languages = new ArrayList<>();
 
-        boolean subAreaPreference = false;
-        boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
                 mapping,
                 null, null, languages );
@@ -411,7 +396,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 //    @Test
     public void createTestDataSet() throws FileNotFoundException {
 
-        List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+        List<TaxonDescription> taxonDescriptions = new ArrayList<>();
         TaxonDescription description1 = TaxonDescription.NewInstance();
         taxonDescriptions.add(description1);
         Distribution distribution1 = Distribution.NewInstance(Country.POLANDPOLISHPEOPLESREPUBLIC(), null);

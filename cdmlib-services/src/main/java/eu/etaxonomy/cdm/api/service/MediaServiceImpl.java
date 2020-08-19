@@ -9,11 +9,17 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.apache.http.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -37,7 +44,11 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
+import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -48,6 +59,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Service
 @Transactional(readOnly=true)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
+
+    public static final Integer IMAGE_READ_TIMEOUT = 3000;
 
     @Override
     @Autowired
@@ -61,6 +74,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     private ITaxonService taxonService;
 	@Autowired
     private INameService nameService;
+	@Autowired
+	private IPreferenceService prefsService;
 
 
 	@Override
@@ -208,10 +223,9 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             String message = null;
             if (ref instanceof MediaRepresentation){
                 continue;
-            }
-            if (ref instanceof TextData){
+            }else if (ref instanceof TextData){
                 TextData textData = HibernateProxyHelper.deproxy(ref, TextData.class);
-                DescriptionBase description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
+                DescriptionBase<?> description = HibernateProxyHelper.deproxy(textData.getInDescription(), DescriptionBase.class);
 
                 if (description instanceof TaxonDescription){
                     TaxonDescription desc = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
@@ -239,8 +253,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                         result.setAbort();
                     }
                 }
-
-            }if (ref instanceof MediaSpecimen){
+            }else if (ref instanceof MediaSpecimen){
                message = "The media can't be deleted from the database because it is referenced by a mediaspecimen. ("+((MediaSpecimen)ref).getTitleCache()+")";
                result.setAbort();
             }else {
@@ -250,11 +263,84 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
             if (message != null){
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(ref);
-
             }
-
         }
 
         return result;
+    }
+
+    /**
+     * Reads the metadata as stored in the file or web resource and filters the data by the include and exclude lists of key names
+     * as stored in the data base properties {@link PreferencePredicate#MediaMetadataKeynameExcludes} and {@link PreferencePredicate#MediaMetadataKeynameExcludes}
+     * <p>
+     * Metadata of multiple parts is merged into one common metadata map whereas the later part being read may overwrite data from previous parts.
+     * The consequences of this can be neglected since we don't expect that multiple parts are actually being used.
+     *
+     * @param representation
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    @Override
+    public Map<String, String> readResourceMetadataFiltered(MediaRepresentation representation) throws IOException, HttpException {
+
+        List<String> includes = mediaMetadataKeyIncludes();
+        List<String> excludes = mediaMetadataKeyExludes();
+        Map<String, String> metadata = new HashMap<>();
+
+        for(MediaRepresentationPart part : representation.getParts()) {
+            CdmImageInfo iInfo = CdmImageInfo.NewInstanceWithMetaData(part.getUri(), IMAGE_READ_TIMEOUT);
+            if(iInfo.getMetaData() != null) {
+                metadata.putAll(iInfo.getMetaData());
+            }
+        }
+
+        if(logger.isDebugEnabled()) {
+            logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+        }
+
+        if(!includes.isEmpty()) {
+            metadata = metadata.entrySet()
+                    .stream()
+                    .filter( e -> containsCaseInsensitive(e.getKey(), includes))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            if(logger.isDebugEnabled()) {
+                logger.debug("meta filtered by includes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+            }
+        }
+        if(!excludes.isEmpty()) {
+            metadata = metadata.entrySet()
+                    .stream()
+                    .filter( e -> !containsCaseInsensitive(e.getKey(), excludes))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            if(logger.isDebugEnabled()) {
+                logger.debug("meta filtered by excludes: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
+            }
+        }
+
+        if(metadata == null) {
+            metadata = new HashMap<>();
+        }
+        return metadata;
+    }
+
+    private boolean containsCaseInsensitive(String s, List<String> l){
+        return l.stream().anyMatch(x -> x.equalsIgnoreCase(s));
+    }
+
+    protected List<String> mediaMetadataKeyExludes(){
+        CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameExcludes));
+        if(pref == null) {
+            return new ArrayList<>();
+        }
+        return pref.splitStringListValue();
+    }
+
+    protected List<String> mediaMetadataKeyIncludes(){
+        CdmPreference pref = prefsService.findExact(CdmPreference.NewKey(PreferenceSubject.NewDatabaseInstance(), PreferencePredicate.MediaMetadataKeynameIncludes));
+        if(pref == null) {
+            return Arrays.asList(PreferencePredicate.MediaMetadataKeynameIncludes.getDefaultValue().toString().split(","));
+        }
+        return pref.splitStringListValue();
     }
 }

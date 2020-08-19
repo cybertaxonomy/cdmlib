@@ -78,4 +78,12 @@ public class ExtendedTimePeriodFormatterTest {
 
     }
 
+    @Test
+    public void testEqual() {
+        ExtendedTimePeriod tp1 = ExtendedTimePeriod.NewExtendedMonthInstance(5, 5);
+        assertNotNull(tp1);
+        Assert.assertEquals("May", formatter.format(tp1));
+    }
+
+
 }

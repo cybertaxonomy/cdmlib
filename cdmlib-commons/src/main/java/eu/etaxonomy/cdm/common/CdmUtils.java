@@ -18,8 +18,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -169,21 +167,27 @@ public class CdmUtils {
 
     /**
      * Concatenates an array of strings using the defined separator.<BR>
-     * <code>Null</code> values are interpreted as empty strings.<BR>
+     * <code>Null</code> values and empty strings are handled as if they
+     * do not exist. So <BR><BR>
+     *
+     * concat(":", "a", "", null, "b") results in "a:b"<BR><BR>
+     *
      * If all strings are <code>null</code> then <code>null</code> is returned.
-     * @param strings
-     * @param seperator
-     * @return String
+     *
+     * @see #concat(CharSequence, String, String)
+     * @param strings the strings to concatenate
+     * @param seperator the separator for concatenation
+     * @return String the concatenation result
      */
     static public String concat(CharSequence separator, String... strings){
-        String result = "";
+        StringBuilder result = new StringBuilder();
         boolean allNull = true;
         for (String string : strings){
             if (string != null){
                 if (result.length() > 0 && string.length() > 0){
-                    result += separator;
+                    result.append(separator);
                 }
-                result += string;
+                result.append(string);
                 allNull = false;
             }
         }
@@ -191,19 +195,24 @@ public class CdmUtils {
         if (allNull){
             return null;
         }else {
-            return result;
+            return result.toString();
         }
     }
 
+
     /**
-     * Concatenates two strings, using the defined seperator.<BR>
-     * <code>Null</code> values are interpreted as empty Strings.<BR>
+     * Concatenates two strings, using the defined separator.<BR>
+     * <code>Null</code> values are interpreted as empty strings.<BR>
+     * Empty strings are not included in concatenation so concat(":", "a", "")
+     * results in "a", not "a:".<BR>
+     *
      * If both strings are <code>null</code> then <code>null</code> is returned.
+     *
      * @see #concat(CharSequence, String[])
-     * @param seperator
-     * @param string1
-     * @param string2
-     * @return String
+     * @param sepearator the separator
+     * @param string1 first string to concatenate
+     * @param string2 second string to concatenate
+     * @return String the concatenated string
      */
     static public String concat(CharSequence separator, String string1, String string2){
         String[] strings = {string1, string2};
@@ -249,7 +258,8 @@ public class CdmUtils {
         return matcher.replaceAll(replaceStr);
     }
 
-    /** Builds a list of strings by splitting an input string
+    /**
+     * Builds a list of strings by splitting an input string
      * with delimiters whitespace, comma, or semicolon
      * @param value
      * @return
@@ -280,18 +290,6 @@ public class CdmUtils {
             //
         }
         return false;
-    }
-
-    static public URI string2Uri(String string) {
-        URI uri = null;
-        try {
-            uri = new URI(string);
-            logger.debug("uri: " + uri.toString());
-        } catch (URISyntaxException ex) {
-            logger.error("Problem converting string " + string + " to URI " + uri);
-            return null;
-        }
-        return uri;
     }
 
     static public boolean isNumeric(String string){

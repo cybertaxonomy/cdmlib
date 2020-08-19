@@ -18,7 +18,8 @@ import eu.etaxonomy.cdm.common.IoResultBase;
  * @author a.mueller
  * @since 11.05.2009
  */
-public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICdmIO, RESULT extends IoResultBase> {
+public abstract class IoStateBase<CONFIG
+        extends IIoConfigurator, IO extends ICdmIO, RESULT extends IoResultBase> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoStateBase.class);
@@ -28,8 +29,6 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 	protected CONFIG config;
 
 	private RESULT result;
-
-
 
     //TODO config not necessary ones it it implemented in constructor for IOs too.
 	public void initialize(CONFIG config){
@@ -50,7 +49,6 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
 		return currentIO;
 	}
 
-
     public RESULT getResult() {
         return result;
     }
@@ -58,14 +56,10 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator, IO extends ICd
         this.result = result;
     }
 
-
 //    public IProgressMonitor getCurrentMonitor() {
 //        return currentMonitor;
 //    }
 //    public void setCurrentMonitor(IProgressMonitor currentMonitor) {
 //        this.currentMonitor = currentMonitor;
 //    }
-
-
-
 }

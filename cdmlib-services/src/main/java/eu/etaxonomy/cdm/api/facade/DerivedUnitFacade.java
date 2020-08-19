@@ -57,9 +57,11 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.reference.IOriginalSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * This class is a facade to the eu.etaxonomy.cdm.model.occurrence package from
@@ -1913,6 +1915,17 @@ public class DerivedUnitFacade {
 		return ! checkDerivedUnit()? null : this.derivedUnit.getDefinition();
 	}
 
+	public TypedEntityReference<DerivedUnit> getDerivedUnitEntityReference() {
+	   return new TypedEntityReference(derivedUnit.getClass(), derivedUnit.getUuid());
+	}
+
+    public TypedEntityReference<FieldUnit> getFieldUnitEntityReference() {
+        if(fieldUnit == null) {
+            return null;
+        } else {
+            return new TypedEntityReference(FieldUnit.class, fieldUnit.getUuid());
+        }
+     }
 
 	public String getDerivedUnitDefinition(Language language) {
 		if (! checkDerivedUnit()){

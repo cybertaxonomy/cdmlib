@@ -246,8 +246,8 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>>
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        OrderedTermBase<?> result = (OrderedTermBase<?>) super.clone();
+    public OrderedTermBase<T> clone() {
+        OrderedTermBase<T> result = (OrderedTermBase<T>) super.clone();
         //no changes to orderIndex
         return result;
     }

@@ -127,7 +127,7 @@ public class MatchStrategyFactory {
         try {
             IParsedMatchStrategy parsedBookSectionMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(Reference.class);
 
-            addParsedReferenceMatchModes(parsedBookSectionMatchStrategy);
+            addParsedSectionReferenceMatchModes(parsedBookSectionMatchStrategy);
 
             //author (or either title or authorship match, but usually only authorship is known for parsed instances)
             parsedBookSectionMatchStrategy.setMatchMode("authorship", MatchMode.MATCH_REQUIRED, NewParsedTeamOrPersonInstance());
@@ -150,7 +150,7 @@ public class MatchStrategyFactory {
         try {
             IParsedMatchStrategy articleMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(Reference.class);
 
-            addParsedReferenceMatchModes(articleMatchStrategy);
+            addParsedSectionReferenceMatchModes(articleMatchStrategy);
 
             //if a title or abbrevTitle exists for the existing (first) article
             //we can not guarantee that the article is really the one that is
@@ -178,8 +178,8 @@ public class MatchStrategyFactory {
     }
 
     /**
-     * Adds all typical parsed reference match modes which are equal for journal, article,
-     * book section, book (and generic?).
+     * Adds all typical parsed reference match modes which are equal for non section references
+     * (journal, book, (generic(?))).
      * The following fields need to be handled explicitly by each calling method:<BR>
      *
      * <LI>authorship</LI>
@@ -191,6 +191,7 @@ public class MatchStrategyFactory {
      * <LI>protectedAbbrevTitleCache</LI>
      * <LI>inReference</LI>
      *
+     * @see #addParsedSectionReferenceMatchModes(IParsedMatchStrategy)
      * @param referenceMatchStrategy the strategy to fill
      * @throws MatchException
      */
@@ -220,6 +221,57 @@ public class MatchStrategyFactory {
         String[] matchOrNullParams = new String[]{"institution"};
         for(String param : matchOrNullParams){
             referenceMatchStrategy.setMatchMode(param, MatchMode.MATCH_OR_FIRST_NULL);
+        }
+    }
+
+    /**
+     * Adds all typical parsed reference match modes which are equal for section references
+     * (article, book section).
+     * The following fields need to be handled explicitly by each calling method:<BR>
+     *
+     * For further information see: #9157
+     *
+     * <LI>authorship</LI>
+     * <LI>title</LI>
+     * <LI>abbrevTitle</LI>
+     * <LI>titleCache</LI>
+     * <LI>abbrevTitleCache</LI>
+     * <LI>protectedTitleCache</LI>
+     * <LI>protectedAbbrevTitleCache</LI>
+     * <LI>inReference</LI>
+     *
+     * @see #addParsedReferenceMatchModes(IParsedMatchStrategy)
+     * @param referenceMatchStrategy the strategy to fill
+     * @throws MatchException
+     */
+    private static void addParsedSectionReferenceMatchModes(IParsedMatchStrategy referenceMatchStrategy) throws MatchException {
+
+        //"placePublished" should be MatchMode.EQUAL if parser parses place published
+        //TODO datePublished could also be more detailed in first then in second, e.g. Apr 2008 <-> 2008,
+        //something like MatchMode.IncludedIn is needed here
+        //TODO pages if a page number is given the parsed reference may not be unidentified anymore
+
+        //TODO externally managed
+
+        addParsedIdentifiableEntityModes(referenceMatchStrategy);
+
+        //here the result differs from addParsedReferenceMatchModes
+        String[] equalOrNullParams = new String[]{"accessed","doi",
+                "institution","isbn","issn","organization",
+                "pages","publisher","placePublished",
+                "referenceAbstract","school","uri"};
+        for(String param : equalOrNullParams){
+            referenceMatchStrategy.setMatchMode(param, MatchMode.EQUAL); //EQUAL !!
+        }
+
+        String[] equalParams = new String[]{"datePublished","edition",
+                "editor","seriesPart","volume"};
+        for(String param : equalParams){
+            referenceMatchStrategy.setMatchMode(param, MatchMode.EQUAL);
+        }
+        String[] matchOrNullParams = new String[]{"institution"};
+        for(String param : matchOrNullParams){
+            referenceMatchStrategy.setMatchMode(param, MatchMode.MATCH); //MATCH!!
         }
     }
 

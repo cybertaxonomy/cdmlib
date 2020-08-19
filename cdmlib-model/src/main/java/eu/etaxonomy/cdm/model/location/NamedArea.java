@@ -89,7 +89,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
     private static final long serialVersionUID = 6248434369557403036L;
     private static final Logger logger = Logger.getLogger(NamedArea.class);
 
-
 	//Continent UUIDs
     private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
 	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
@@ -101,11 +100,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final UUID uuidPacific = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
 	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
 
-
     public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
     public static final UUID uuidContinentVocabulary = UUID.fromString("e72cbcb6-58f8-4201-9774-15d0c6abc128");
     public static final UUID uuidWaterbodyVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
-
 
 	private static final UUID uuidArcticOcean = UUID.fromString("af4271e5-8897-4e6f-9db7-54ea4f28cfc0");
 	private static final UUID uuidAtlanticOcean = UUID.fromString("77e79804-1b17-4c99-873b-933fe216e3da");
@@ -118,15 +115,12 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final UUID uuidRedSea = UUID.fromString("ee69385e-6c80-405c-be6e-974e9fd1e297");
 	private static final UUID uuidPersianGulf = UUID.fromString("8dc16e70-74b8-4143-95cf-a659a319a854");
 
-
-
     private static Map<String, UUID> tdwgAbbrevMap = null;
     private static Map<String, UUID> tdwgLabelMap = null;
 
     private static Map<UUID, NamedArea> tdwgTermMap = null;
     private static Map<UUID, NamedArea> continentMap = null;
     private static Map<UUID, NamedArea> waterbodyMap = null;
-
 
     private static Map<UUID, NamedArea> termMap = null;
 
@@ -159,7 +153,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
     public static NamedArea NewInstance(String description, String label, String labelAbbrev){
         return new NamedArea(description, label, labelAbbrev);
     }
-
 
 //**************************** VARIABLES *******************************/
 
@@ -368,7 +361,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		return 7;
 	}
 
-
     @Override
     public void resetTerms(){
         termMap = null;
@@ -488,7 +480,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		return getContinentByUuid(uuidPacific);
 	}
 
-
 	protected void setDefaultContinentTerms(TermVocabulary<NamedArea> termVocabulary) {
 		continentMap = new HashMap<>();
 		for (NamedArea term : termVocabulary.getTerms()){
@@ -509,7 +500,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
             tdwgTermMap.put(term.getUuid(), term);  //TODO casting
             addTdwgArea(term);
         }
-
 	}
 
    protected static void addTdwgArea(NamedArea area){
@@ -556,8 +546,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
     	tdwgAbbrevMap = new HashMap<>();
     }
 
-
-
     @Override
     protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
         if (termVocabulary.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
@@ -598,7 +586,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
         return result;
     }
 
-
     public static class LevelNode {
         NamedAreaLevel level;
         List<NamedAreaNode> areaList = new ArrayList<>();
@@ -608,7 +595,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
             node.area = area;
             areaList.add(node);
             return node;
-
         }
 
         public NamedAreaNode getNamedAreaNode(NamedArea area) {
@@ -646,12 +632,10 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
                 }
                 if (areaSize > 0){
                     result += "]";
-
                 }
                 return result;
             }
         }
-
     }
 
     public static class NamedAreaNode {
@@ -674,7 +658,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
             } else {
                 return node.areaList;
             }
-        };
+        }
 
         public boolean contains(NamedAreaLevel level) {
             if (getList(level).size() > 0) {
@@ -748,7 +732,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
         }
         List<NamedArea> newList = areaHierarchie.subList(1, areaHierarchie.size());
         mergeIntoResult(namedAreaNode, newList);
-
     }
 
     @Transient
@@ -781,8 +764,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 
         return result;
     }
-
-
 
     /**
      * Returns the label of the named area together with the area level label and the abbreviated label.
@@ -820,11 +801,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
         return title.toString();
     }
 
-    /**
-     * @param definedTerm
-     * @param representation
-     * @return
-     */
     private static String getPreferredAreaLabel(DefinedTermBase<?> definedTerm, Representation representation) {
         String areaString = null;
         if (representation != null){
@@ -856,14 +832,10 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        NamedArea result;
+    public NamedArea clone() {
+        NamedArea result = (NamedArea)super.clone();
 
-            result = (NamedArea)super.clone();
-            //no changes to level, pointApproximation, shape, type, validPeriod and countries
-            return result;
-
+        //no changes to level, pointApproximation, shape, type, validPeriod and countries
+        return result;
     }
-
-
 }

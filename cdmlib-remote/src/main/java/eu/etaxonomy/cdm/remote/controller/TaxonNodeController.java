@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
-import eu.etaxonomy.cdm.api.service.NodeSortMode;
+import eu.etaxonomy.cdm.api.service.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -84,7 +84,7 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value="sortMode", defaultValue="AlphabeticalOrder") NodeSortMode sortMode,
+            @RequestParam(value="sortMode", defaultValue="AlphabeticalOrder") TaxonNodeSortMode sortMode,
             @RequestParam(value="doSynonyms", defaultValue="false") Boolean doSynonyms,
             HttpServletResponse response
             ) throws IOException {

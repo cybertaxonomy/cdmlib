@@ -143,6 +143,20 @@ public enum CdmLightExportTable {
     protected static final String INSTANCE_ID = "EditInstance_ID";
     protected static final String INSTANCE_NAME = "EditInstanceName";
 
+    protected static final String DATASET_DESCRIPTION = "DatasetDescription";
+    protected static final String DATASET_CREATOR = "DatasetCreator";
+    protected static final String DATASET_CONTRIBUTOR = "DatasetContributor";
+    protected static final String DATASET_TITLE = "DatasetTitle";
+    protected static final String DATASET_LANGUAGE = "Language";
+    protected static final String DATASET_LANDINGPAGE = "DataSetLandingPage";
+    protected static final String DATASET_DOWNLOAD_LINK = "DatasetDownloadLink";
+    protected static final String DATASET_BASE_URL = "DatasetBaseUrl";
+    protected static final String DATASET_RECOMMENDED_CITATTION = "RecommendedCitation";
+    protected static final String DATASET_LOCATION = "DatasetLocation";
+    protected static final String DATASET_KEYWORDS = "DatasetKeywords";
+    protected static final String DATASET_LICENCE = "Licence";
+
+
     //Homotypic Group
     protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
     protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
@@ -309,7 +323,9 @@ public enum CdmLightExportTable {
     }
 
     final static String[] metaDataColumns(){
-        return new String[]{INSTANCE_ID, INSTANCE_NAME};
+        return new String[]{INSTANCE_ID, INSTANCE_NAME, DATASET_TITLE, DATASET_CONTRIBUTOR, DATASET_CREATOR, DATASET_DESCRIPTION,
+                DATASET_DOWNLOAD_LINK, DATASET_BASE_URL, DATASET_KEYWORDS, DATASET_LANDINGPAGE, DATASET_LANGUAGE, DATASET_LICENCE,
+                DATASET_LOCATION, DATASET_RECOMMENDED_CITATTION};
     }
     final static String[] nameRelationColumns(){
         return new String[]{NAME1_FK, NAME2_FK, NAME_REL_TYPE};

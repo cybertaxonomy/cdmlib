@@ -157,7 +157,7 @@ public class NamedAreaLevelExcelImport
 	}
 
 	@Override
-	protected boolean needsNomenclaturalCode() {
+	protected boolean requiresNomenclaturalCode() {
 		return false;
 	}
 

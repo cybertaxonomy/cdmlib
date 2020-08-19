@@ -14,12 +14,19 @@ package eu.etaxonomy.cdm.io.fact.altitude.in.analyze;
  */
 public class FormatAnalyzeInfo {
 
+    private AnalyzeResultSeverity severity;
     private String description;
 
-    public static FormatAnalyzeInfo NewInstance(String description) {
-        FormatAnalyzeInfo result = new FormatAnalyzeInfo();
-        result.description = description;
+    public static FormatAnalyzeInfo NewInstance(AnalyzeResultSeverity severity, String description) {
+        FormatAnalyzeInfo result = new FormatAnalyzeInfo(severity, description);
         return result;
+    }
+
+// ************************* GETTER /SETTER **********************/
+
+    private FormatAnalyzeInfo(AnalyzeResultSeverity severity, String description) {
+        this.setSeverity(severity);
+        this.description = description;
     }
 
     public String getDescription() {
@@ -29,6 +36,15 @@ public class FormatAnalyzeInfo {
         this.description = description;
     }
 
+    public AnalyzeResultSeverity getSeverity() {
+        return severity;
+    }
+    public void setSeverity(AnalyzeResultSeverity severity) {
+        this.severity = severity;
+    }
 
-
+    @Override
+    public String toString() {
+        return severity.toString() + ":" + getDescription();
+    }
 }

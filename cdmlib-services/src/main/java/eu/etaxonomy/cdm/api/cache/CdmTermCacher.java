@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 public class CdmTermCacher extends CdmCacherBase {
 
 	@Autowired
-	ITermService termService;
+	private ITermService termService;
 
 	@Override
 	protected void setup() {

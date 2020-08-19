@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.beans.PropertyDescriptor;
@@ -42,25 +41,19 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
  * based on org.cateproject.controller.common
  * @author b.clark
  * @author a.kohlbecker
- *
- * @param <T>
- * @param <SERVICE>
  */
-
 public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController<T, SERVICE> {
 
     private static final Logger logger = Logger.getLogger(BaseController.class);
@@ -199,12 +192,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         } else {
             //FIXME use real paging mechanism of according service class instead of subCollection()
             //FIXME use BaseListController.normalizeAndValidatePagerParameters(pageNumber, pageSize, response);
-            PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
-            pagerParameters.normalizeAndValidate(response);
-
-            start = pagerParameters.getPageIndex() * pagerParameters.getPageSize();
-            List<? extends CdmBase> sub_c = subCollection(c, start, pagerParameters.getPageSize());
-            Pager<? extends CdmBase> p = new DefaultPagerImpl<>(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
+            Pager<? extends CdmBase> p = pagerForSubCollectionOf(c, pageNumber, pageSize, response);
             return p;
         }
     }
@@ -394,20 +382,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
             HttpStatusMessage.PROPERTY_NOT_FOUND.send(response);
         }
         return result;
-    }
-
-    private <E> List<E> subCollection(Collection<? extends E> c, Integer start, Integer length){
-        List<E> sub_c = new ArrayList<E>(length);
-        if(c.size() > length){
-            E[] a = (E[]) c.toArray();
-            for(int i = start; i < start + length; i++){
-                sub_c.add(a[i]);
-            }
-        } else {
-            sub_c.addAll(c);
-        }
-        return sub_c;
-
     }
 
     /**

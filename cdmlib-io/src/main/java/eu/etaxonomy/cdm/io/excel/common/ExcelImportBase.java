@@ -62,10 +62,13 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 		logger.debug("Importing excel data");
 
+		//cleanup state from prior session
+		state.setSourceReference(null);
+
     	configurator = state.getConfig();
 
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
-		if (nc == null && needsNomenclaturalCode()) {
+		if (nc == null && requiresNomenclaturalCode()) {
 			logger.error("Nomenclatural code could not be determined. Skip invoke.");
 			state.setUnsuccessfull();
 			return;
@@ -74,8 +77,10 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
 
 		byte[] data = null;
 		// read and save all rows of the excel worksheet
-		if ((state.getConfig() instanceof NormalExplicitImportConfigurator || state.getConfig() instanceof ExcelDistributionUpdateConfigurator || state.getConfig() instanceof TaxonListImportConfigurator) &&
-		        (state.getConfig().getStream() != null || state.getConfig().getStream() != null)){
+		if ((state.getConfig() instanceof NormalExplicitImportConfigurator
+		        || state.getConfig() instanceof ExcelDistributionUpdateConfigurator
+		        || state.getConfig() instanceof TaxonListImportConfigurator) && (state.getConfig().getStream() != null)
+		    ){
 		    data =  state.getConfig().getStream();
 		} else{
 		    source = state.getConfig().getSource();
@@ -107,7 +112,7 @@ public abstract class ExcelImportBase<STATE extends ExcelImportState<CONFIG, ROW
     	return;
 	}
 
-	protected boolean needsNomenclaturalCode() {
+	protected boolean requiresNomenclaturalCode() {
 		return true;
 	}
 

@@ -44,9 +44,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
-import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -56,6 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
+import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
@@ -106,6 +105,9 @@ public class TaxonPortalController extends TaxonController{
     @Autowired
     private ITermService termService;
 
+    @Autowired
+    private IMediaToolbox mediaToolbox;
+
 
     public static final EntityInitStrategy TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
@@ -118,7 +120,8 @@ public class TaxonPortalController extends TaxonController{
             "name.nomenclaturalReference.authorship",
             "name.nomenclaturalReference.inReference",
             "name.rank.representations",
-            "name.status.type.representations"
+            "name.status.type.representations",
+            "sec.authorship"
 //            "descriptions" // TODO remove
 
             }));
@@ -129,18 +132,19 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.childNodes.$"
             }));
 
-    private static final EntityInitStrategy SIMPLE_TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+    public static final EntityInitStrategy SIMPLE_TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             // the name
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
             "name.nomenclaturalReference.authorship",
-            "name.nomenclaturalReference.inReference",
+            "name.nomenclaturalReference.inReference.authorship",
             "taxonNodes.classification",
+            "sec.authorship"
             }));
 
-    private static final EntityInitStrategy SYNONYMY_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+    public static final EntityInitStrategy SYNONYMY_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             // initialize homotypical and heterotypical groups; needs synonyms
             "synonyms.$",
             "synonyms.name.status.type.representations",
@@ -265,7 +269,8 @@ public class TaxonPortalController extends TaxonController{
      * @param response
      * @return a Map with two entries which are mapped by the following keys:
      *         "homotypicSynonymsByHomotypicGroup", "heterotypicSynonymyGroups",
-     *         containing lists of {@link Synonym}s which are initialized using the
+     *         containing lists of {@link Synonym}s which // TODO Auto-generated catch block
+                    e.printStackTrace();are initialized using the
      *         following initialization strategy: {@link #SYNONYMY_INIT_STRATEGY}
      *
      * @throws IOException
@@ -523,7 +528,7 @@ public class TaxonPortalController extends TaxonController{
                 relationshipInversUuids, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
                 response, initStrategy, MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
 
-        List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
+        List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
                 taxonMediaContext.media);
 
         return mediafilteredForPreferredRepresentations;
@@ -630,7 +635,7 @@ public class TaxonPortalController extends TaxonController{
         media = addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, taxon,
                 includeRelationships, media);
 
-        List<Media> mediafilteredForPreferredRepresentations = filterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
+        List<Media> mediafilteredForPreferredRepresentations = mediaToolbox.processAndFilterPreferredMediaRepresentations(type, mimeTypes, widthOrDuration, height, size,
                 media);
 
         return mediafilteredForPreferredRepresentations;
@@ -691,30 +696,6 @@ public class TaxonPortalController extends TaxonController{
                 false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, propertyPath);
 
         return media;
-    }
-
-    /**
-     * @param type
-     * @param mimeTypes
-     * @param widthOrDuration
-     * @param height
-     * @param size
-     * @param taxonGalleryMedia
-     * @return
-     */
-    List<Media> filterPreferredMediaRepresentations(Class<? extends MediaRepresentationPart> type, String[] mimeTypes,
-            Integer widthOrDuration, Integer height, Integer size, List<Media> taxonGalleryMedia) {
-
-        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(
-                taxonGalleryMedia, type, mimeTypes, widthOrDuration, height, size, MediaUtils.MissingValueStrategy.MAX);
-
-        List<Media> filteredMedia = new ArrayList<>(mediaRepresentationMap.size());
-        for (Media media : mediaRepresentationMap.keySet()) {
-            media.getRepresentations().clear();
-            media.addRepresentation(mediaRepresentationMap.get(media));
-            filteredMedia.add(media);
-        }
-        return filteredMedia;
     }
 
 

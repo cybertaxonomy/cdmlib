@@ -20,31 +20,27 @@ import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
  * @author n.hoffmann
- *
  */
-public class ImageInfoTest {
+public class CdmImageInfoTest {
 
     private static final String OFFLINE = "OFFLINE";
 
-    public static final Logger logger = Logger.getLogger(ImageInfoTest.class);
+    public static final Logger logger = Logger.getLogger(CdmImageInfoTest.class);
 
     private URI jpegUri;
     private URI tiffUri;
-    private ImageInfo jpegInstance;
-    private ImageInfo tifInstance;
+    private CdmImageInfo jpegInstance;
+    private CdmImageInfo tifInstance;
 
     private URI remotePngUri;
-    private ImageInfo pngInstance;
+    private CdmImageInfo pngInstance;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
-        URL jpegUrl = ImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.jpg");
+        URL jpegUrl = CdmImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.jpg");
         jpegUri = jpegUrl.toURI();
 
-        URL tiffUrl = ImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.tif");
+        URL tiffUrl = CdmImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.tif");
         tiffUri = tiffUrl.toURI();
 
         remotePngUri = URI.create("https://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
@@ -53,7 +49,7 @@ public class ImageInfoTest {
     @Test
     public void testNewInstanceJpeg(){
         try {
-            ImageInfo.NewInstance(jpegUri, 0);
+            CdmImageInfo.NewInstance(jpegUri, 0);
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -62,7 +58,7 @@ public class ImageInfoTest {
     @Test
     public void testNewInstanceTiff() {
         try {
-            ImageInfo.NewInstance(tiffUri, 0);
+            CdmImageInfo.NewInstance(tiffUri, 0);
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -72,7 +68,7 @@ public class ImageInfoTest {
     public void testNewInstanceRemotePng() {
         if(UriUtils.isInternetAvailable(remotePngUri)){
             try {
-                ImageInfo.NewInstance(remotePngUri, 3000);
+                CdmImageInfo.NewInstance(remotePngUri, 3000);
             } catch (Exception e) {
                 fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
             }
@@ -85,13 +81,13 @@ public class ImageInfoTest {
     public void testNewInstanceFileDoesNotExist() throws HttpException, IOException {
         URI nonExistentUri = URI.create("file:///nonExistentImage.jpg");
 
-        ImageInfo.NewInstance(nonExistentUri, 0);
+        CdmImageInfo.NewInstance(nonExistentUri, 0);
     }
 
-    private ImageInfo getJpegInstance(){
+    private CdmImageInfo getJpegInstance(){
         if(jpegInstance == null){
             try {
-                jpegInstance = ImageInfo.NewInstance(jpegUri, 0);
+                jpegInstance = CdmImageInfo.NewInstance(jpegUri, 0);
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -100,10 +96,10 @@ public class ImageInfoTest {
         return jpegInstance;
     }
 
-    private ImageInfo getTifInstance(){
+    private CdmImageInfo getTifInstance(){
         if(tifInstance == null){
             try {
-                tifInstance = ImageInfo.NewInstance(tiffUri, 0);
+                tifInstance = CdmImageInfo.NewInstance(tiffUri, 0);
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -112,13 +108,13 @@ public class ImageInfoTest {
         return tifInstance;
     }
 
-    private ImageInfo getRemotePngInstance() throws IOException{
+    private CdmImageInfo getRemotePngInstance() throws IOException{
         if (!UriUtils.isInternetAvailable(remotePngUri)){
             throw new IOException(OFFLINE);
         }
         if(pngInstance == null){
             try {
-                pngInstance = ImageInfo.NewInstance(remotePngUri, 3000);
+                pngInstance = CdmImageInfo.NewInstance(remotePngUri, 3000);
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -128,7 +124,7 @@ public class ImageInfoTest {
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.common.media.ImageInfo#getWidth()}.
+     * Test method for {@link eu.etaxonomy.cdm.common.media.CdmImageInfo#getWidth()}.
      */
     @Test
     public void testGetWidth() {
@@ -145,7 +141,7 @@ public class ImageInfoTest {
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.common.media.ImageInfo#getHeight()}.
+     * Test method for {@link eu.etaxonomy.cdm.common.media.CdmImageInfo#getHeight()}.
      */
     @Test
     public void testGetHeight() {
@@ -162,7 +158,7 @@ public class ImageInfoTest {
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.common.media.ImageInfo#getBitPerPixel()}.
+     * Test method for {@link eu.etaxonomy.cdm.common.media.CdmImageInfo#getBitPerPixel()}.
      */
     @Test
     public void testGetBitPerPixel() {
@@ -179,7 +175,7 @@ public class ImageInfoTest {
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.common.media.ImageInfo#getFormatName()}.
+     * Test method for {@link eu.etaxonomy.cdm.common.media.CdmImageInfo#getFormatName()}.
      */
     @Test
     public void testGetFormatName() {
@@ -196,7 +192,7 @@ public class ImageInfoTest {
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.common.media.ImageInfo#getMimeType()}.
+     * Test method for {@link eu.etaxonomy.cdm.common.media.CdmImageInfo#getMimeType()}.
      */
     @Test
     public void testGetMimeType() {
@@ -214,7 +210,7 @@ public class ImageInfoTest {
 
     @Test
     public void testGetLength(){
-        Assert.assertEquals(63500, getJpegInstance().getLength());
+        Assert.assertEquals(55872, getJpegInstance().getLength());
         Assert.assertEquals(202926, getTifInstance().getLength());
 
         try {
@@ -240,41 +236,37 @@ public class ImageInfoTest {
         }
     }
 
-
-
     @Test
     public void testReadMetaDataJpeg() throws IOException, HttpException{
-        ImageInfo instance = getJpegInstance();
+        CdmImageInfo instance = getJpegInstance();
 
         instance.readMetaData(0);
-
         Map<String, String> metaData = instance.getMetaData();
+        Assert.assertEquals(52, metaData.size());
 
-        Assert.assertEquals(48, metaData.size());
+        Assert.assertEquals("My taxon", metaData.get("Taxon"));
+        Assert.assertEquals("on the road", metaData.get("Locality"));
+        Assert.assertEquals("15.02.1955", metaData.get("Date"));
+        Assert.assertEquals("Any person", metaData.get("Photographer"));
+        Assert.assertEquals("My Keyword; Second Keyword", metaData.get("Keywords"));
     }
 
 
     @Test
     public void testReadMetaDataTif() throws IOException, HttpException{
-        ImageInfo instance = getTifInstance();
-
+        CdmImageInfo instance = getTifInstance();
         instance.readMetaData(0);
-
         Map<String, String> metaData = instance.getMetaData();
-
         Assert.assertEquals(15, metaData.size());
     }
 
     @Test
-    public void testReadMetaDataRemotePng() throws IOException, HttpException{
+    public void testReadMetaDataRemotePng() throws HttpException{
 
         try {
-            ImageInfo instance = getRemotePngInstance();
-
+            CdmImageInfo instance = getRemotePngInstance();
             instance.readMetaData(3000);
-
             Map<String, String> metaData = instance.getMetaData();
-
             Assert.assertEquals(1, metaData.size());
 
         } catch (IOException e){
@@ -282,7 +274,5 @@ public class ImageInfoTest {
                 logger.warn("test testReadMetaDataRemotePng() skipped, since server is not available.");
             }
         }
-
-
     }
 }

@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.location.Point;
 /**
  * @author pplitzner
  * @since Apr 9, 2015
- *
  */
 public class OccurrenceServiceRequestParameterDto {
 
@@ -62,13 +61,13 @@ public class OccurrenceServiceRequestParameterDto {
     }
     public void addFieldUnitPoint(Point point){
         if(fieldUnitPoints==null){
-            fieldUnitPoints = new ArrayList<Point>();
+            fieldUnitPoints = new ArrayList<>();
         }
         fieldUnitPoints.add(point);
     }
     public void addDerivedUnitPoint(Point point){
         if(derivedUnitPoints==null){
-            derivedUnitPoints = new ArrayList<Point>();
+            derivedUnitPoints = new ArrayList<>();
         }
         derivedUnitPoints.add(point);
     }

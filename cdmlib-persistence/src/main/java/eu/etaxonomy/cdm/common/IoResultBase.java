@@ -180,22 +180,10 @@ public abstract class IoResultBase implements Serializable{
         return report;
     }
 
-
-
-
-
-    /**
-     * @param report
-     */
     protected void addShortDescription(StringBuffer report) {
         //do nothing
-
     }
-    /**
-     * @param report
-     * @param label
-     * @param list
-     */
+
     private void addErrorReport(StringBuffer report, String label, List<IoInfo> list) {
         if (!list.isEmpty()){
             report.append("\n\n" + label + ":\n" + StringUtils.leftPad("", label.length()+1, "="));

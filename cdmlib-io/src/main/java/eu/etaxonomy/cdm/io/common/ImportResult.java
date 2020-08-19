@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.common;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +22,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author cmathew
  * @since 5 Aug 2015
  */
-public class ImportResult extends IoResultBase implements Serializable {
+public class ImportResult extends IoResultBase {
+
     private static final long serialVersionUID = -7299667532720042100L;
 
     private List<byte[]> reports = new ArrayList<>();
@@ -91,10 +91,6 @@ public class ImportResult extends IoResultBase implements Serializable {
     public List<byte[]> getReports() {
         return reports;
     }
-
-    /**
-     * @param reports the reports to set
-     */
     public void setReports(List<byte[]> reports) {
         this.reports = reports;
     }
@@ -141,7 +137,6 @@ public class ImportResult extends IoResultBase implements Serializable {
         this.addNewRecord(CdmBase.deproxy(newRecord).getClass().getSimpleName());
     }
 
-
     //updated records
     public void addUpdatedRecord(String clazz){
         addUpdatedRecords(clazz, 1);
@@ -171,7 +166,6 @@ public class ImportResult extends IoResultBase implements Serializable {
             records.put(clazz, 0);
         }
     }
-
 
     public void addDeletedRecord(CdmBase deletedRecord) {
         this.addDeletedRecord(CdmBase.deproxy(deletedRecord).getClass().getSimpleName());

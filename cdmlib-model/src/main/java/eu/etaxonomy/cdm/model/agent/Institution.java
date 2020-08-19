@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:29
  */
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -938,7 +938,7 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
+    public <T extends TaxonBase> List<T> findTaxaByName(Class<T> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,
             String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, String authorship, Rank rank, Integer pageSize,Integer pageNumber, List<String> propertyPaths)");
         Criteria criteria = getCriteria(clazz);
@@ -989,8 +989,8 @@ public class TaxonDaoHibernateImpl
             }
         }
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        List<TaxonBase> result = criteria.list();
+        @SuppressWarnings({ "unchecked"})
+        List<T> result = criteria.list();
 
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;

@@ -127,7 +127,7 @@ public interface IPreferenceService {
       * @param predicate
       * @return
       */
-     public Object find(TaxonNode taxonNode, String predicate);
+     public CdmPreference find(TaxonNode taxonNode, String predicate);
 
      public CdmPreference find(TaxonNode taxonNode, IPreferencePredicate<?> predicate);
 

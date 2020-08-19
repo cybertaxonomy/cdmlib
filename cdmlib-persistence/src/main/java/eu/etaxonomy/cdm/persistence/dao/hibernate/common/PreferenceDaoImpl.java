@@ -100,6 +100,7 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 
 	@Override
 	public CdmPreference find(TaxonNode taxonNode, String predicate){
+
 	    String treeIndex = taxonNode.treeIndex();
 	    String[] splits = treeIndex == null ? new String[]{}: treeIndex.split("#");
 	    List<String> filterStrings = new ArrayList<>();
@@ -125,14 +126,13 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
         List<CdmPreference> allPreferences = query.list();
         CdmPreference result = null;
         for (CdmPreference pref : allPreferences){
-            //FIXME this is problematci
+            //FIXME this is problematic
             if (result == null || result.getSubjectString().length() < pref.getSubjectString().length()){
                 result = pref;
             }
         }
         return result;
 	}
-
 
 	@Override
 	public long count(){
@@ -149,9 +149,6 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
         CdmPreferenceLookup.instance().setIPreferenceDao(this);

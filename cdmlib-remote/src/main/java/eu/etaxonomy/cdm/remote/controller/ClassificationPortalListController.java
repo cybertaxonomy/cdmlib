@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.NodeDtoSortMode;
+import eu.etaxonomy.cdm.api.service.TaxonNodeDtoSortMode;
 import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -125,7 +125,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
-            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") NodeDtoSortMode sortMode,
+            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") TaxonNodeDtoSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());

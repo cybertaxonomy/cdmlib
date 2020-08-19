@@ -28,10 +28,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
-import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
@@ -63,31 +64,43 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
     });
 
     @RequestMapping(value = {"metadata"}, method = RequestMethod.GET)
-    public ModelAndView doGetMediaMetaData(@PathVariable("uuid") UUID uuid,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Map<String, String> result;
+    public Map<String, String> doGetMediaMetaData(
+            @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "applyFilterPreset", defaultValue = "true") Boolean applyFilterPreset,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
-        ModelAndView mv = new ModelAndView();
+        Map<String, String> result;
         try{
             Media media = getCdmBaseInstance(uuid, response, MEDIA_INIT_STRATEGY);
 
             Set<MediaRepresentation> representations = media.getRepresentations();
-            //get first representation and retrieve the according metadata
-
-            MediaRepresentation mediaRepresentation = representations.iterator().next();
-            URI uri = mediaRepresentation.getParts().get(0).getUri();
-            try {
-                    ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(uri, 3000);
-                    result = imageInfo.getMetaData();
-
-            } catch (HttpException e) {
-                logger.info(e.getMessage());
-                HttpStatusMessage.create("Reading media file from " + uri.toString() + " failed due to (" + e.getMessage() + ")", 400).send(response);
+            if(media.getRepresentations().isEmpty()) {
                 return null;
             }
-            if(result != null) {
-                mv.addObject(result);
+            MediaRepresentation mediaRepresentation = representations.iterator().next();
+            URI uri = null;
+            try {
+                if(applyFilterPreset) {
+                        result = service.readResourceMetadataFiltered(mediaRepresentation);
+
+                } else {
+                    uri = mediaRepresentation.getParts().get(0).getUri();
+                            CdmImageInfo cdmImageInfo = CdmImageInfo.NewInstanceWithMetaData(uri, MediaServiceImpl.IMAGE_READ_TIMEOUT);
+                            result = cdmImageInfo.getMetaData();
+                }
+            } catch (IOException | HttpException e) {
+                logger.info(e.getMessage());
+                if(uri != null) {
+                    // may happen when applyFilterPreset == false
+                    HttpStatusMessage.create("Reading media file from " + uri.toString() + " failed due to (" + e.getMessage() + ")", 400).send(response);
+                } else {
+                    // may happen when applyFilterPreset == true
+                    HttpStatusMessage.create("Reading media file failed due to (" + e.getMessage() + ")", 400).send(response);
+                }
+                return null;
             }
+
         } catch (NoRecordsMatchException e){
            /* IGNORE */
            /* java.lang.IllegalStateException: STREAM is thrown by the servlet container
@@ -97,7 +110,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
             return null;
 
         }
-        return mv;
+        return result;
 
     }
 

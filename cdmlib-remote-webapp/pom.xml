@@ -4,7 +4,7 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>5.16.0</version>
+    <version>5.17.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>cdmlib-remote-webapp</artifactId>
@@ -171,8 +171,17 @@
 
     <!-- XmlView -->
     <dependency>
+      <!-- this is also offered by cdmlib-remote. Can it be removed? -->
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
+      <exclusions>
+        <!-- https://stackoverflow.com/questions/17077922/maven-xpp3-versus-xpp3-min -->
+        <!-- But maybe we can exclude xpp3 instead, not sure if it is directly needed or only for xstream -->
+        <exclusion>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3_min</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>xpp3</groupId>
@@ -372,9 +381,9 @@
         </executions>
         <dependencies>
             <dependency>
-                    <groupId>org.apache.taglibs</groupId>
-                    <artifactId>taglibs-standard-impl</artifactId>
-                    <version>1.2.5</version>
+                <groupId>org.apache.taglibs</groupId>
+                <artifactId>taglibs-standard-impl</artifactId>
+                <version>1.2.5</version>
             </dependency>
         </dependencies>
       </plugin>

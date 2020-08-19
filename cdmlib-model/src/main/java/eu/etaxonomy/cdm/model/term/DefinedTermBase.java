@@ -331,17 +331,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
           this.media.remove(media);
       }
 
-      /**
-       * @return
-       */
       public TermVocabulary<T> getVocabulary() {
           return this.vocabulary;
       }
 
       //for bedirectional use only, use vocabulary.addTerm instead
-      /**
-       * @param newVocabulary
-       */
       protected void setVocabulary(TermVocabulary<T> newVocabulary) {
           this.vocabulary = newVocabulary;
     }
@@ -353,33 +347,25 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
-    /**
-     * @return the symbol2
-     */
+
     public String getSymbol2() {
         return symbol2;
     }
-
-    /**
-     * @param symbol2 the symbol2 to set
-     */
     public void setSymbol2(String symbol2) {
         this.symbol2 = symbol2;
     }
 
 //******************************* METHODS ******************************************************/
 
-
-
     @Override
       public boolean isKindOf(T ancestor) {
           if (kindOf == null || ancestor == null){
-            return false;
-        }else if (kindOf.equals(ancestor)){
-            return true;
-        }else{
-            return kindOf.isKindOf(ancestor);
-        }
+              return false;
+          }else if (kindOf.equals(ancestor)){
+              return true;
+          }else{
+              return kindOf.isKindOf(ancestor);
+          }
       }
 
       @Override
@@ -393,7 +379,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
         }
         return result;
       }
-
 
     public abstract void resetTerms();
 
@@ -444,17 +429,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
                  partOf.addIncludes(newInstance);
              }
          }
-
     }
 
-    /**
-     * Get the
-     * @return
-     */
     protected int partOfCsvLineIndex() {
         return -1;
     }
-
 
     private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass, TermType termType) {
         try {
@@ -504,34 +483,33 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        DefinedTermBase result;
+    public DefinedTermBase<T> clone() {
         try {
-            result = (DefinedTermBase) super.clone();
+            DefinedTermBase<T> result = (DefinedTermBase<T>) super.clone();
+
+            result.generalizationOf = new HashSet<>();
+            for (DefinedTermBase<T> generalizationOf : this.generalizationOf){
+                result.generalizationOf.add((T)generalizationOf.clone());
+            }
+
+            result.includes = new HashSet<>();
+
+            for (DefinedTermBase<?> include: this.includes){
+                result.includes.add((T)include.clone());
+            }
+
+            result.media = new HashSet<>();
+
+            for (Media media: this.media){
+                result.addMedia(media);
+            }
+
+            return result;
         }catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");
             e.printStackTrace();
             return null;
         }
-
-        result.generalizationOf = new HashSet<DefinedTermBase>();
-        for (DefinedTermBase generalizationOf : this.generalizationOf){
-            result.generalizationOf.add(generalizationOf.clone());
-        }
-
-        result.includes = new HashSet<DefinedTermBase>();
-
-        for (DefinedTermBase include: this.includes){
-            result.includes.add(include.clone());
-        }
-
-        result.media = new HashSet<Media>();
-
-        for (Media media: this.media){
-            result.addMedia(media);
-        }
-
-        return result;
     }
 
     // Currently the CDM Caching mechanism is only used for caching terms

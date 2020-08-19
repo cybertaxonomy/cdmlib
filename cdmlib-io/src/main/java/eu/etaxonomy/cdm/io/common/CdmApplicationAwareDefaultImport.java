@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +25,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.application.CdmRepository;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
+import eu.etaxonomy.cdm.io.fact.altitude.in.analyze.ExcelFormatAnalyzeResult;
+import eu.etaxonomy.cdm.io.fact.altitude.in.analyze.ExcelFormatAnalyzer;
+import eu.etaxonomy.cdm.io.fact.in.FactExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -70,7 +76,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
     public ImportResult invoke(IImportConfigurator config){
         ImportResult result = new ImportResult();
         if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
-            boolean success =  doCheck(config);
+            boolean success = doCheck(config);
             if (! success){
                 result.setAborted();
             }
@@ -110,26 +116,50 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         state.initialize(config);
         state.setCheck(true);
 
-        //do check for each class
-        for (Class<ICdmImport> ioClass: config.getIoClassList()){
+        if (config instanceof FactExcelImportConfiguratorBase<?>){
+            //TODO work in progress
+            ExcelFormatAnalyzer<?> analyzer = ((FactExcelImportConfiguratorBase<?>)config).getAnalyzer();
+            ExcelFormatAnalyzeResult analyzeResult = analyzer.invoke();
+            //TODO very preliminary for development only
+            System.out.println(analyzeResult.toString());
             try {
-                String ioBeanName = getComponentBeanName(ioClass);
-                ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
-                if (cdmIo != null){
-                    registerObservers(config, cdmIo);
-                    state.setCurrentIO(cdmIo);
-                    result &= cdmIo.check(state);
-                    unRegisterObservers(config, cdmIo);
-                }else{
-                    logger.error("cdmIO was null");
-                    result = false;
+                for (Class<ICdmImport> ioClass: config.getIoClassList()){
+                    Constructor<ICdmImport> constructor = ioClass.getConstructor();
+                    constructor.setAccessible(true);
+                    ICdmImport ioInstance = constructor.newInstance();
+                    CdmRepository repository = (CdmRepository)applicationContext.getBean("CdmRepository");
+                    ioInstance.setRepository(repository);
+//                    ioInstance.analyze();
                 }
-            } catch (Exception e) {
+            } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                analyzeResult.addFatalError("Problem accessing the constructor of the import class. Please contact your system developers");
+            }
+            if (analyzeResult.hasErrors()){
+                result = false;
+            }
+        }else{
+            //do check for each class
+            for (Class<ICdmImport> ioClass: config.getIoClassList()){
+                try {
+                    String ioBeanName = getComponentBeanName(ioClass);
+                    ICdmIO cdmIo = applicationContext.getBean(ioBeanName, ICdmIO.class);
+                    if (cdmIo != null){
+                        registerObservers(config, cdmIo);
+                        state.setCurrentIO(cdmIo);
+                        result &= cdmIo.check(state);
+                        unRegisterObservers(config, cdmIo);
+                    }else{
+                        logger.error("cdmIO was null");
+                        result &= false;
+                    }
+                } catch (Exception e) {
                     logger.error(e);
                     e.printStackTrace();
-                    result = false;
+                    result &= false;
+                }
             }
         }
+
 
         //return
         System.out.println("End checking Source ("+ config.getSourceNameString() + ") for import to Cdm");

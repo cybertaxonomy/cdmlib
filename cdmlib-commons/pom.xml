@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.16.0</version>
+    <version>5.17.0</version>
 	<relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -45,21 +45,11 @@
         <artifactId>commons-lang3</artifactId>
 	</dependency>
 
-
     <!--  ImageMetadata  -->
     
-    <!-- deprecated -->
-    <!--
     <dependency>
-    <groupId>org.devlib.schmidt</groupId>
-    <artifactId>imageinfo</artifactId>
-    <version>1.7</version>
-    </dependency>
-    -->
-    
-    <dependency>
-      <groupId>org.apache.sanselan</groupId>
-      <artifactId>sanselan</artifactId>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-imaging</artifactId>
     </dependency>
     
     <dependency>

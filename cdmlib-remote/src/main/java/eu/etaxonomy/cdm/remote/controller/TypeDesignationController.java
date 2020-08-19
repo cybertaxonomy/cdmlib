@@ -24,9 +24,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -128,6 +130,28 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
         return dtb.getAnnotations();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value="annotations", params = {"pageNumber", "pageSize"})
+    public Pager<Annotation> doGetAnnotations(
+            @PathVariable("uuid") UUID uuid,
+            // doPage request parameters
+            @RequestParam(value = "pageNumber", required = true) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = true) Integer pageSize,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        String servletPath = request.getServletPath();
+        String propertyName = FilenameUtils.getBaseName(servletPath);
+
+        logger.info("doGetAnnotations() - " + requestPathAndQuery(request));
+
+        TypeDesignationBase<?> dtb = service.loadTypeDesignation(uuid, Arrays.asList("$", "annotations"));
+        if(dtb == null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+        Pager<Annotation> p = pagerForSubCollectionOf(dtb.getAnnotations(), pageNumber, pageSize, response);
+        return p;
     }
 
 }

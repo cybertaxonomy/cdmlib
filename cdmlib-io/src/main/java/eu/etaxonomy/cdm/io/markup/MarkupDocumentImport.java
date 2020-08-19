@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author a.mueller
- *
  */
 @Component
 public class MarkupDocumentImport
@@ -114,9 +113,7 @@ public class MarkupDocumentImport
 		}
 
 		return;
-
 	}
-
 
 	/**
 	 * This comes from the old version, needs to be checked on need

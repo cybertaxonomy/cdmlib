@@ -8,15 +8,22 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.UserHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
@@ -131,6 +138,30 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
             }
         }
         return pathParameter;
+    }
+
+    protected <T extends CdmBase> Pager<T> pagerForSubCollectionOf(Collection<T> c, Integer pageNumber, Integer pageSize, HttpServletResponse response) throws IOException {
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+        pagerParameters.normalizeAndValidate(response);
+
+        int subCollectionStart = pagerParameters.getPageIndex() * pagerParameters.getPageSize();
+        List<T> sub_c = subCollection(c, subCollectionStart, pagerParameters.getPageSize());
+        Pager<T> p = new DefaultPagerImpl<>(pageNumber, c.size(), pagerParameters.getPageSize(), sub_c);
+        return p;
+    }
+
+    protected <E> List<E> subCollection(Collection<? extends E> c, Integer start, Integer length) {
+        List<E> sub_c = new ArrayList<E>(length);
+        if(c.size() > length){
+            E[] a = (E[]) c.toArray();
+            for(int i = start; i < start + length; i++){
+                sub_c.add(a[i]);
+            }
+        } else {
+            sub_c.addAll(c);
+        }
+        return sub_c;
+
     }
 
 }

@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 /**
  * @author pplitzner
  * @since 16.09.2013
- *
  */
 public class BioCaseQueryServiceWrapperTest {
 
@@ -95,8 +94,10 @@ public class BioCaseQueryServiceWrapperTest {
         if(UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper service = new BioCaseQueryServiceWrapper();
             try {
-                Set<String[]> unitIds = new HashSet<String[]>();
+
+                Set<String[]> unitIds = new HashSet<>();
                 String[] unitIdArray ={"B 10 0463639"};
+
                 unitIds.add(unitIdArray);
                 InputStream queryForSingleUnit = service.query(new OccurenceQuery(unitIds), URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
 
@@ -125,6 +126,7 @@ public class BioCaseQueryServiceWrapperTest {
                         String unitId = "<abcd:UnitID>";
                         int indexId = line.indexOf(unitId);
                         if(indexId>-1){
+                            @SuppressWarnings("unused")
                             String id = line.substring(indexId+unitId.length(), indexId+unitId.length()+5);
                            // assertEquals("Incorrect UnitId", 29596, Integer.parseInt(id));
                            // break;
@@ -133,8 +135,8 @@ public class BioCaseQueryServiceWrapperTest {
                     line = reader.readLine();
                     count++;
                 } while (line!=null);
-                unitIds = new HashSet<String[]>();
-                String[] unitIdsArray = {"B -W 16385 -00 0"};
+                unitIds = new HashSet<>();
+                String[] unitIdsArray = {"B -W 16385 -01 0"};
                 unitIds.add(unitIdsArray);
                 String[] unitIdsArray2 ={"B 10 0641985"};
                 unitIds.add(unitIdsArray2);
@@ -161,17 +163,11 @@ public class BioCaseQueryServiceWrapperTest {
                             String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
                             assertEquals("Incorrect number of occurrences", 2, Integer.parseInt(recordCount));
                         }
-
-
                     }
                     line = reader.readLine();
                     count++;
                 } while (line!=null);
-            } catch (NumberFormatException e) {
-                fail(e.getMessage());
-            } catch (ClientProtocolException e) {
-                fail(e.getMessage());
-            } catch (IOException e) {
+            } catch (NumberFormatException | IOException e) {
                 fail(e.getMessage());
             }
         } else {
@@ -179,4 +175,6 @@ public class BioCaseQueryServiceWrapperTest {
             return;
         }
     }
+
+
 }

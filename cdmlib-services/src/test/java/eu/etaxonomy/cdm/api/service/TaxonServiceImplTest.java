@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -153,6 +155,29 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertEquals(expectedTaxon, actualTaxon);
     }
+
+    /**
+     * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getTaxonByUuid(java.util.UUID)}.
+     */
+    @Test
+    public final void testGetTaxonByTitle() {
+        TaxonName name = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
+        Taxon expectedTaxon = Taxon.NewInstance(name, null);
+        expectedTaxon.setDoubtful(true);
+        TaxonBase taxon = service.save(expectedTaxon);
+        IdentifiableServiceConfiguratorImpl<TaxonBase> config = new IdentifiableServiceConfiguratorImpl<TaxonBase>();
+        config.setTitleSearchString("Abies alba*");
+        //doubtful taxa should be found
+        Pager<TaxonBase> actualTaxa = service.findByTitle(config);
+        assertEquals(expectedTaxon, actualTaxa.getRecords().get(0));
+
+        //and other taxa as well
+        expectedTaxon.setDoubtful(false);
+        service.saveOrUpdate(expectedTaxon);
+        actualTaxa = service.findByTitle(config);
+        assertEquals(expectedTaxon, actualTaxa.getRecords().get(0));
+    }
+
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.

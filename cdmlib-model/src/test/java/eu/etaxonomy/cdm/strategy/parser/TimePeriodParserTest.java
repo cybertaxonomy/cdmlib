@@ -324,8 +324,8 @@ public class TimePeriodParserTest {
         String strDate = "24 Aug 1957-14 Oct 1988";
         TimePeriod tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
-        Assert.assertEquals("24 Aug 1957–14 Oct 1988", tp.toString());
-        Assert.assertEquals("1957–1988", tp.getYear());
+        Assert.assertEquals("24 Aug 1957"+SEP+"14 Oct 1988", tp.toString());
+        Assert.assertEquals("1957"+SEP+"1988", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
         Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
@@ -333,11 +333,11 @@ public class TimePeriodParserTest {
         Assert.assertEquals(Integer.valueOf(10), tp.getEndMonth());
         Assert.assertEquals(Integer.valueOf(14), tp.getEndDay());
 
-        strDate = "24 Aug 1957–1988";
+        strDate = "24 Aug 1957"+SEP+"1988";
         tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
         Assert.assertEquals(strDate, tp.toString());
-        Assert.assertEquals("1957–1988", tp.getYear());
+        Assert.assertEquals("1957"+SEP+"1988", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
         Assert.assertEquals(Integer.valueOf(8), tp.getStartMonth());
         Assert.assertEquals(Integer.valueOf(24), tp.getStartDay());
@@ -345,11 +345,11 @@ public class TimePeriodParserTest {
         Assert.assertNull(tp.getEndMonth());
         Assert.assertNull(tp.getEndDay());
 
-        strDate = "1957–14 Oct 1988";
+        strDate = "1957"+SEP+"14 Oct 1988";
         tp = TimePeriodParser.parseString(strDate);
         assertNotNull(tp);
-        Assert.assertEquals("1957–14 Oct 1988", tp.toString());
-        Assert.assertEquals("1957–1988", tp.getYear());
+        Assert.assertEquals("1957"+SEP+"14 Oct 1988", tp.toString());
+        Assert.assertEquals("1957"+SEP+"1988", tp.getYear());
         Assert.assertEquals(Integer.valueOf(1957), tp.getStartYear());
         Assert.assertNull(tp.getStartMonth());
         Assert.assertNull(tp.getStartDay());
