@@ -119,18 +119,16 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             }
 
             treeIndex = taxonNode.treeIndex();
-            try{
-                TaxonNode parent = taxonNode.getParent();
-                parentUUID = parent == null? null:parent.getUuid();
-            }catch(Exception e){
+            if(taxonNode.getParent() != null) {
+                parentUUID = taxonNode.getParent().getUuid();
+            } else {
                 parentUUID = null;
             }
 
             sortIndex = taxonNode.getSortIndex();
-            try{
+            if(taxonNode.getClassification() != null) {
                 classificationUUID = taxonNode.getClassification().getUuid();
-
-            }catch(Exception e){
+            } else {
                 classificationUUID = null;
             }
 
