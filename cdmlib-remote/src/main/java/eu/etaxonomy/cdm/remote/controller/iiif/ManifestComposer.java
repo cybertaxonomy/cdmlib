@@ -28,6 +28,7 @@ import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import de.digitalcollections.model.api.identifiable.resource.MimeType;
+import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -60,6 +61,8 @@ public class ManifestComposer {
     public static final Logger logger = Logger.getLogger(ManifestComposer.class);
 
     private IMediaToolbox mediaTools;
+
+    private IMediaService mediaService;
 
     private String iiifIdPrefix;
 
@@ -117,9 +120,10 @@ public class ManifestComposer {
     }
 
 
-    public ManifestComposer(String iiifIdPrefix, IMediaToolbox mediaTools) {
+    public ManifestComposer(String iiifIdPrefix, IMediaToolbox mediaTools, IMediaService mediaService) {
         this.mediaTools = mediaTools;
         this.iiifIdPrefix = iiifIdPrefix;
+        this.mediaService = mediaService;
     }
 
     <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) throws IOException {
@@ -181,8 +185,18 @@ public class ManifestComposer {
             }
 
             List<MetadataEntry> mediaMetadata = mediaMetaData(media);
-            List<MetadataEntry> representationMetadata = mediaRepresentationMetaData(fullSizeRepresentation);
-            mediaMetadata.addAll(representationMetadata);
+            List<MetadataEntry> representationMetadata;
+            try {
+                representationMetadata = mediaService.readResourceMetadataFiltered(fullSizeRepresentation)
+                         .entrySet()
+                         .stream()
+                         .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
+                mediaMetadata.addAll(representationMetadata);
+            } catch (IOException e) {
+                logger.error("Error reading media metadata", e);
+            } catch (HttpException e) {
+                logger.error("Error accessing remote media resource", e);
+            }
 
             // extractAndAddDesciptions(canvas, mediaMetadata);
             mediaMetadata = deduplicateMetadata(mediaMetadata);
@@ -355,11 +369,16 @@ public class ManifestComposer {
         return metadata;
     }
 
+    /**
+     * @deprecated unused as media metadata is now read via the mediaService, see
+     */
+    @Deprecated
     private List<MetadataEntry> mediaRepresentationMetaData(MediaRepresentation representation) {
 
         List<MetadataEntry> metadata = new ArrayList<>();
         boolean needsPrefix = representation.getParts().size() > 1;
         int partIndex = 1;
+
         for (MediaRepresentationPart part : representation.getParts()) {
             String prefix = "";
             if (needsPrefix) {

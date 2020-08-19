@@ -30,6 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import de.digitalcollections.iiif.model.jackson.IiifObjectMapper;
 import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
+import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -82,6 +83,9 @@ public class ManifestController {
     @Autowired
     private IMediaToolbox mediaTools;
 
+    @Autowired
+    private IMediaService mediaService;
+
     @RequestMapping(
             value = {"taxon/{uuid}/manifest"},
             method = RequestMethod.GET)
@@ -112,7 +116,7 @@ public class ManifestController {
                         taxonPortalController.addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, entityMediaContext.getEntity(), includeRelationships, entityMediaContext.getMedia())
                                 );
             }
-            ManifestComposer manifestFactory = new ManifestComposer(HTTP_IIIF_CYBERTAXONOMY_ORG, mediaTools);
+            ManifestComposer manifestFactory = new ManifestComposer(HTTP_IIIF_CYBERTAXONOMY_ORG, mediaTools, mediaService);
             manifestFactory.setDoJoinAttributions(true);
             manifestFactory.setUseThumbnailDimensionsForCanvas(true);
             return serializeManifest(manifestFactory.manifestFor(entityMediaContext, "taxon", uuid.toString()));
