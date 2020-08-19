@@ -13,6 +13,9 @@ package eu.etaxonomy.cdm.api.service.media;
  * A {@link SearchReplace} rule can be mediate an identity transformation of is URI part
  * in which case the rule just acts as a filter.
  *
+ * <p>
+ * <b>CHANGING THIS CLASS MAY BREAK DESERIALIZATION OF EXISTING CDM PREFERENCES</b>
+ *
  * @author a.kohlbecker
  * @since Jul 8, 2020
  */
