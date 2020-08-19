@@ -412,4 +412,16 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, boolean searchForClassifications);
 
+    /**
+     * @param classificationUuid
+     * @param limit
+     * @param pattern
+     * @param searchForClassifications
+     * @param includeDoubtful
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications,
+            boolean includeDoubtful);
+
 }

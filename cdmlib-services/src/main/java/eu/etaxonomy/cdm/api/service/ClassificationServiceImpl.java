@@ -495,8 +495,8 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications) {
-        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  limit, pattern, searchForClassifications);
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications, boolean includeDoubtful) {
+        return taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(dao.load(classificationUuid),  limit, pattern, searchForClassifications, includeDoubtful);
     }
 
     @Override
@@ -1053,5 +1053,12 @@ public class ClassificationServiceImpl
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern) {
         return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification, limit, pattern, false);
+    }
+
+    @Override
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+            UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications) {
+        return getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+                classificationUuid, limit, pattern, searchForClassifications, false);
     }
 }
