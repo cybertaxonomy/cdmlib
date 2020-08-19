@@ -132,19 +132,19 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.childNodes.$"
             }));
 
-    private static final EntityInitStrategy SIMPLE_TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+    public static final EntityInitStrategy SIMPLE_TAXON_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             // the name
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
             "name.nomenclaturalReference.authorship",
-            "name.nomenclaturalReference.inReference",
+            "name.nomenclaturalReference.inReference.authorship",
             "taxonNodes.classification",
             "sec.authorship"
             }));
 
-    private static final EntityInitStrategy SYNONYMY_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+    public static final EntityInitStrategy SYNONYMY_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             // initialize homotypical and heterotypical groups; needs synonyms
             "synonyms.$",
             "synonyms.name.status.type.representations",

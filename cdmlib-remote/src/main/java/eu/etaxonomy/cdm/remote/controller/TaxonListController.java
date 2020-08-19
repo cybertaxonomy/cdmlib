@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -84,6 +85,7 @@ import io.swagger.annotations.Api;
 public class TaxonListController extends AbstractIdentifiableListController<TaxonBase, ITaxonService> {
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = DEFAULT_INIT_STRATEGY;
+
     protected List<String> getSimpleTaxonInitStrategy() {
         return SIMPLE_TAXON_INIT_STRATEGY;
     }

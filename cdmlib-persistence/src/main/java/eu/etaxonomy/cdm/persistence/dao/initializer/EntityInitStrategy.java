@@ -83,4 +83,10 @@ public class EntityInitStrategy {
     public List<String> getPropertyPaths() {
         return propertyPaths;
     }
+
+    @Override
+    public EntityInitStrategy clone() {
+        return new EntityInitStrategy(this.propertyPaths);
+
+    }
 }

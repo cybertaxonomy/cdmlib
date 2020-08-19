@@ -13,6 +13,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
 import io.swagger.annotations.Api;
 
 /**
@@ -25,26 +26,23 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/taxon"})
 public class TaxonPortalListController extends TaxonListController {
 
-    private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
-            //"$",
-            "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
-            "name.nomenclaturalReference.authorship",
-            "name.nomenclaturalReference.inReference.authorship",
-            "taxonNodes.classification",
+    private static final EntityInitStrategy SIMPLE_TAXON_INIT_STRATEGY = TaxonPortalController.SIMPLE_TAXON_INIT_STRATEGY.clone().extend(
+            null,
+            Arrays.asList(
             "synonym.name.nomenclaturalReference.authorship",
-            "synonym.name.nomenclaturalReference.inReference.authorship",
-            });
+            "synonym.name.nomenclaturalReference.inReference.authorship"),
+            false
+            );
+
 
     public TaxonPortalListController() {
         super();
-        setInitializationStrategy(SIMPLE_TAXON_INIT_STRATEGY);
+        setInitializationStrategy(SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths());
     }
 
     @Override
     protected List<String> getSimpleTaxonInitStrategy() {
-        return SIMPLE_TAXON_INIT_STRATEGY;
+        return SIMPLE_TAXON_INIT_STRATEGY.getPropertyPaths();
     }
 
 
