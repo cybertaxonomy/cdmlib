@@ -76,6 +76,7 @@ public class MediaToolbox implements IMediaToolbox {
             for(MediaRepresentation r : newReprs) {
                 media.addRepresentation(r);
             }
+            media.setId(0); // prevent from persisting the modified media entity accidentally
         }
         return filterPreferredMediaRepresentations(mediaList, type, mimeTypes, widthOrDuration, height, size);
     }
@@ -112,7 +113,7 @@ public class MediaToolbox implements IMediaToolbox {
         for (Media media : mediaRepresentationMap.keySet()) {
             media.getRepresentations().clear();
             media.addRepresentation(mediaRepresentationMap.get(media));
-            media.setId(0); // prevent from persisting the media entity accidentally
+            media.setId(0); // prevent from persisting the modified media entity accidentally
             filteredMedia.add(media);
         }
         return filteredMedia;
