@@ -205,8 +205,8 @@ public class Classification
 
         childNode.setParentTreeNode(this.rootNode, index);
 
-        childNode.setReference(citation);
-        childNode.setMicroReference(microCitation);
+        childNode.setCitation(citation);
+        childNode.setCitationMicroReference(microCitation);
 //		childNode.setSynonymToBeUsed(synonymToBeUsed);
 
         return childNode;
@@ -399,13 +399,13 @@ public class Classification
             if (childNode.getReference() != null && ! childNode.getReference().equals(citation)){
                 logger.warn("ReferenceForParentChildRelation will be overwritten");
             }
-            childNode.setReference(citation);
+            childNode.setCitation(citation);
         }
         if (microCitation != null){
             if (childNode.getMicroReference() != null && ! childNode.getMicroReference().equals(microCitation)){
                 logger.warn("MicroReferenceForParentChildRelation will be overwritten");
             }
-            childNode.setMicroReference(microCitation);
+            childNode.setCitationMicroReference(microCitation);
         }
         return true;
     }

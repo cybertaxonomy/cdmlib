@@ -22,7 +22,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
@@ -39,7 +38,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
@@ -59,16 +57,15 @@ import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -107,7 +104,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 @ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonNode
-            extends AnnotatableEntity
+            extends SingleSourcedEntityBase
             implements ITaxonTreeNode, ITreeNode<TaxonNode>{
 
     private static final long serialVersionUID = -4743289894926587693L;
@@ -157,13 +154,13 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/trac/ticket/4200
     private Integer sortIndex = -1;
 
-    //the source for this placement
-    @XmlElement(name = "source")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
-    private DescriptionElementSource source;
+//    //the source for this placement
+//    @XmlElement(name = "source")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
+//    private DescriptionElementSource source;
 
 //    @XmlElement(name = "reference")
 //    @XmlIDREF
@@ -305,45 +302,36 @@ public class TaxonNode
 
 //************************* SOURCE *********************/
 
-    @Override
-    @Transient
-    public String getMicroReference() {
-        return source == null ? null : this.source.getCitationMicroReference();
-    }
-    public void setMicroReference(String microReference) {
-        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
-        checkNullSource();
-    }
+//    @Override
+//    @Transient
+//    public String getMicroReference() {
+//        return source == null ? null : this.source.getCitationMicroReference();
+//    }
+//    public void setMicroReference(String microReference) {
+//        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+//        checkNullSource();
+//    }
+//
+//    @Override
+//    @Transient
+//    public Reference getReference() {
+//        return (this.source == null) ? null : source.getCitation();
+//    }
+//    public void setReference(Reference reference) {
+//        getSource(true).setCitation(reference);
+//        checkNullSource();
+//    }
 
-    @Override
-    @Transient
-    public Reference getReference() {
-        return (this.source == null) ? null : source.getCitation();
-    }
-    public void setReference(Reference reference) {
-        getSource(true).setCitation(reference);
-        checkNullSource();
-    }
+//    @Override
+//    public DescriptionElementSource getSource() {
+//        return source;
+//    }
+//    @Override
+//    public void setSource(DescriptionElementSource source) {
+//        this.source = source;
+//    }
 
-    public DescriptionElementSource getSource() {
-        return source;
-    }
-    public void setSource(DescriptionElementSource source) {
-        this.source = source;
-    }
 
-    private void checkNullSource() {
-        if (this.source != null && this.source.checkEmpty(true)){
-            this.source = null;
-        }
-    }
-
-    private DescriptionElementSource getSource(boolean createIfNotExist){
-        if (this.source == null && createIfNotExist){
-            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
-        }
-        return source;
-    }
 
 //************************************************************/
 
@@ -577,8 +565,8 @@ public class TaxonNode
 
         child.setParentTreeNode(this, index);
 
-        child.setReference(reference);
-        child.setMicroReference(microReference);
+        child.setCitation(reference);
+        child.setCitationMicroReference(microReference);
 
         return child;
     }
@@ -1162,6 +1150,18 @@ public class TaxonNode
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public Reference getReference() {
+
+        return getCitation();
+    }
+
+    @Override
+    public String getMicroReference() {
+        // TODO Auto-generated method stub
+        return getCitationMicroReference();
     }
 
 }
