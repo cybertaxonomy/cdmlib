@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -107,6 +108,24 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
      */
     protected RelationshipBase(FROM from, TO to, TYPE type, Reference citation, String citationMicroReference) {
         super(citation, citationMicroReference, null);
+        setRelatedFrom(from);
+        setRelatedTo(to);
+        setType(type);
+        from.addRelationship(this);
+        to.addRelationship(this);
+    }
+
+    /**
+     * Creates a relationship between 2 objects and adds it to the respective
+     * relation sets of both objects.
+     *
+     * @param from
+     * @param to
+     * @param type
+     * @param source
+     */
+    protected RelationshipBase(FROM from, TO to, TYPE type, DescriptionElementSource source) {
+        super(source);
         setRelatedFrom(from);
         setRelatedTo(to);
         setType(type);
