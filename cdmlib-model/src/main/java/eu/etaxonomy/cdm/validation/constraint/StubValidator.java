@@ -15,8 +15,8 @@ import javax.validation.ConstraintValidatorContext;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
 /**
- * Stub validatior for use when a constraint uses cdmlib-services component
- * (and therfore the implementation requires components that are not visible
+ * Stub validator for use when a constraint uses cdmlib-services component
+ * (and therefore the implementation requires components that are not visible
  * in the cdmlib-model package)
  *
  * To resolve this circular dependency, use this stub as the validator in the

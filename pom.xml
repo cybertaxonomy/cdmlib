@@ -170,7 +170,7 @@
   <!--contributors> <contributor> <name>Test-Contributor</name> </contributor> 
     </contributors -->
   <issueManagement>
-    <system>Trac</system>
+    <system>Redmine</system>
     <url>https://dev.e-taxonomy.eu/redmine/projects/edit</url>
   </issueManagement>
   <ciManagement>
