@@ -84,6 +84,7 @@
 	    		<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
 	    	</exclusion>
             <exclusion>
+                <!-- check if exclusion is ok, comes from jgridshift-core dependency, if remove exclusion make sure v8.0 is used, as otherwise version problems occurr in class javax.validation.Bootstrapconfiguration -->
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
             </exclusion>

@@ -1512,6 +1512,13 @@
 		<artifactId>hibernate-validator-cdi</artifactId>
 		<version>${hibernate-validator.version}</version>
 	  </dependency>
+      <dependency>
+         <!-- not clear if needed, but if needed v8.0 should be used to avoid problems with javax.validation.BootstrapConfiguration -->
+         <!-- it was a (currently excluded) transitiv dependency from org.geotools/gt-referencing  used in cdmlib-ext -->
+         <groupId>javax</groupId>
+         <artifactId>javaee-api</artifactId>
+         <version>8.0</version>
+      </dependency>
 	  
       <!-- for ikey-plus -->
       <dependency>
