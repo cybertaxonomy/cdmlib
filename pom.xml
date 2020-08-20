@@ -27,9 +27,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.codelevel>1.8</java.codelevel>
-    <spring.version>4.2.4.RELEASE</spring.version>
-    <spring-security.version>4.0.3.RELEASE</spring-security.version>
-    <spring-security-oauth2.version>2.3.5.RELEASE</spring-security-oauth2.version>  <!-- checked 2020-08, further upgrade possible -->
+    <spring.version>4.3.28.RELEASE</spring.version>                                 <!-- checked 2020-08, further upgrade possible -->
+    <spring-security.version>4.2.18.RELEASE</spring-security.version>               <!-- checked 2020-08, further upgrade possible -->
+    <spring-security-oauth2.version>2.5.0.RELEASE</spring-security-oauth2.version>  <!-- checked 2020-08 -->
     <spring-cloud.version>1.1.3.RELEASE</spring-cloud.version>
 	<hibernate.version>5.0.7.Final</hibernate.version>
 	<hibernate-validator.version>6.1.5.Final</hibernate-validator.version>          <!-- checked 2020-08 -->
@@ -43,11 +43,11 @@
     <doxia.version>1.6</doxia.version>
     <poi.version>3.13</poi.version>
     <jackson.version>2.11.2</jackson.version>           <!-- checked 2020-08 -->
-	<commons-logging.version>1.2</commons-logging.version>
+	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2020-08 -->
 	<slf4j.version>1.7.30</slf4j.version>               <!-- checked 2020-08 -->
 	<jaxb.version>2.2.11</jaxb.version>
 	<cglib.version>3.2.0</cglib.version>
-	<aspectj.version>1.8.8</aspectj.version>
+	<aspectj.version>1.9.6</aspectj.version>            <!-- checked 2020-08 -->
 	<geotools.version>23.0</geotools.version>           <!-- checked 2020-04 -->
     <javadoc.opts>-Xdoclint:none</javadoc.opts>         
   </properties>
@@ -954,9 +954,6 @@
         <version>3.4.1.Final</version>
         <!-- checked 2020-08 -->
       </dependency>
-      <!-- TODO com.springsource.org.aopalliance and com.springsource.org.apache.commons.logging 
-        seem to be duplicates of e.g. apache commons-logging. Needs to be further 
-        checked. -->
 	  <!-- since hibernate 5.0.4 Dialect throws exception if jta is missing  -->
 	  <dependency>
         <groupId>javax.transaction</groupId>
@@ -1458,12 +1455,19 @@
         <artifactId>spring-cloud-security</artifactId>
         <version>${spring-security.version}</version>
       </dependency>
+      <dependency>
+        <!-- required by spring security core, but not needed anymore in spring security 5.x  -->
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
 
       <!-- ******* SERVLET/JSP/JSF ******* -->
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
-        <version>3.1.0</version>
+        <version>4.0.1</version>
+        <!-- checked 2020-08 -->
       </dependency>
 
       <!-- yourkit profiler api controller (used in ..) -->
