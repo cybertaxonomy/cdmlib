@@ -61,6 +61,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "type",
 	"idInSource",
     "idNamespace",
+    "originalNameString",
+    "citation",
+    "citationMicroReference",
     "cdmSource",
     "links"
 })
