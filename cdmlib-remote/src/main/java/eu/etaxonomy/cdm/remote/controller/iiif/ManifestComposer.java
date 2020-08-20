@@ -21,13 +21,13 @@ import org.apache.log4j.Logger;
 
 import de.digitalcollections.iiif.model.ImageContent;
 import de.digitalcollections.iiif.model.MetadataEntry;
+import de.digitalcollections.iiif.model.MimeType;
 import de.digitalcollections.iiif.model.PropertyValue;
 import de.digitalcollections.iiif.model.enums.ViewingDirection;
 import de.digitalcollections.iiif.model.sharedcanvas.Canvas;
 import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
-import de.digitalcollections.model.api.identifiable.resource.MimeType;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;

@@ -56,8 +56,9 @@ public class PdfOutputModule extends PublishOutputModuleBase {
 		try{
 		
 			 // configure fopFactory as desired
-			FopFactory fopFactory = FopFactory.newInstance();
-				
+		    File dummyFile = null;  //FIXME
+			FopFactory fopFactory = FopFactory.newInstance(dummyFile);  //was FopFactory.newInstance() before switching to FOP v2.5
+
 			FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 			 // configure foUserAgent as desired
 		
