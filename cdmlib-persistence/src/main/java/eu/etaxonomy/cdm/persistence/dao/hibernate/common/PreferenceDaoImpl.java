@@ -113,7 +113,6 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 	        }
 	    }
 
-
 	    //TODO Top1 and ORDER BY treeIndex length and remove for() loop below
 	    String hql = "FROM CdmPreference pref "
 	            + " WHERE pref.key.predicate = :predicate "
