@@ -105,9 +105,6 @@ public class ZipWriter {
         }
     }
 
-    /**
-     * @param os
-     */
     private boolean cleanupFile(DeferredFileOutputStream os) {
         try {
             boolean deleted = true;
@@ -122,5 +119,4 @@ public class ZipWriter {
             return false;
         }
     }
-
 }
