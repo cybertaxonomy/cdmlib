@@ -48,8 +48,8 @@
 	<jaxb.version>2.2.11</jaxb.version>
 	<cglib.version>3.2.0</cglib.version>
 	<aspectj.version>1.8.8</aspectj.version>
-	<geotools.version>23.0</geotools.version>
-    <javadoc.opts>-Xdoclint:none</javadoc.opts>
+	<geotools.version>23.0</geotools.version>           <!-- checked 2020-04 -->
+    <javadoc.opts>-Xdoclint:none</javadoc.opts>         
   </properties>
   
   <scm>
@@ -735,6 +735,7 @@
         <version>${slf4j.version}</version>
       </dependency>
 	  <dependency>
+        <!-- try to generally exclude -nop as we try to use log4j12, this is done already for unitils -->
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-nop</artifactId>
         <version>${slf4j.version}</version>
@@ -1558,7 +1559,7 @@
       </dependency>
 
       <!-- dependencies for swagger-springmvc, added explicitely -->
-        <dependency>
+      <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
         <version>${jackson.version}</version>
