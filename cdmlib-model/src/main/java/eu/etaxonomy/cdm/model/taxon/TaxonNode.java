@@ -1152,13 +1152,16 @@ public class TaxonNode
         }
     }
 
-    @Override
-    public Reference getReference() {
+//To be removed once SingleSourcedEntity attributes have been renamed to reference and microReference
 
+    @Override
+    @Transient
+    public Reference getReference() {
         return getCitation();
     }
 
     @Override
+    @Transient
     public String getMicroReference() {
         // TODO Auto-generated method stub
         return getCitationMicroReference();
