@@ -103,7 +103,6 @@
     <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-jxc</artifactId>
-        <version>${jaxb.version}</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
