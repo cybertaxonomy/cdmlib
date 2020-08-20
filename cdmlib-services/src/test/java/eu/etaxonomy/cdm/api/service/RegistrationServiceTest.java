@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 /**
  * @author a.kohlbecker
  * @since Jun 28, 2019
- *
  */
 public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWithSecurity {
 
