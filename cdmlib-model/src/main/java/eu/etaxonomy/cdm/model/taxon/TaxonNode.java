@@ -85,9 +85,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "treeIndex",
     "sortIndex",
     "childNodes",
-    "source",
-//    "referenceForParentChildRelation",
-//    "microReferenceForParentChildRelation",
+//    "source",
     "countChildren",
     "agentRelations",
     "synonymToBeUsed",
@@ -1163,7 +1161,6 @@ public class TaxonNode
     @Override
     @Transient
     public String getMicroReference() {
-        // TODO Auto-generated method stub
         return getCitationMicroReference();
     }
 
