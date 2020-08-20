@@ -293,7 +293,7 @@ public abstract class Cdm2CdmImportBase
         //complete
         handleCollection(result, TaxonNode.class, "agentRelations", TaxonNodeAgentRelation.class);
         result.setTaxon(detache(result.getTaxon()));
-        result.setReference(detache(node.getReference()));
+        result.setCitation(detache(node.getReference()));
         result.setSynonymToBeUsed(detache(result.getSynonymToBeUsed()));
         handleMap(result, TaxonNode.class, "excludedNote", Language.class, LanguageString.class);
         //classification, parent, children
