@@ -1503,14 +1503,14 @@
           <!-- checked 2020-08 -->
       </dependency>
 	  <dependency>
-		<groupId>org.glassfish.web</groupId>
-		<artifactId>javax.el</artifactId>
-		<version>2.2.6</version>
+		 <groupId>org.glassfish.web</groupId>
+		 <artifactId>javax.el</artifactId>
+		 <version>2.2.6</version>
 	  </dependency>
 	  <dependency>
-	    <groupId>org.hibernate.validator</groupId>
-		<artifactId>hibernate-validator-cdi</artifactId>
-		<version>${hibernate-validator.version}</version>
+	     <groupId>org.hibernate.validator</groupId>
+         <artifactId>hibernate-validator-cdi</artifactId>
+         <version>${hibernate-validator.version}</version>
 	  </dependency>
       <dependency>
          <!-- not clear if needed, but if needed v8.0 should be used to avoid problems with javax.validation.BootstrapConfiguration -->
