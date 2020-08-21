@@ -46,7 +46,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -79,7 +78,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
 public class Classification
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Classification>>
-            implements IReferencedEntity, ITaxonTreeNode{
+            implements ITaxonTreeNode{
 
     private static final long serialVersionUID = -753804821474209635L;
     private static final Logger logger = Logger.getLogger(Classification.class);
@@ -492,7 +491,6 @@ public class Classification
         }
     }
 
-    @Override
     @Transient
     public Reference getCitation() {
         return reference;
