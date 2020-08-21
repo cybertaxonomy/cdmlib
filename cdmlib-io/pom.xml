@@ -80,7 +80,6 @@
       <groupId>xml-resolver</groupId>
       <artifactId>xml-resolver</artifactId>
     </dependency>
-    <dependency>
   </dependencies>
 </project>
 
