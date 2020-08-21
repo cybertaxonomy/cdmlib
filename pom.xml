@@ -700,12 +700,6 @@
          <!-- checked 2020-08 -->
       </dependency>
       <dependency>
-        <groupId>xml-resolver</groupId>
-        <artifactId>xml-resolver</artifactId>
-        <version>1.2</version>
-        <!-- checked 2020-08 -->
-      </dependency>
-      <dependency>
         <groupId>javax.activation</groupId>
         <artifactId>activation</artifactId>
         <version>1.1.1</version>
