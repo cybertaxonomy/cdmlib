@@ -87,10 +87,6 @@
       <artifactId>xercesImpl</artifactId>
     </dependency>
     <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>osgi</artifactId>
     </dependency>
