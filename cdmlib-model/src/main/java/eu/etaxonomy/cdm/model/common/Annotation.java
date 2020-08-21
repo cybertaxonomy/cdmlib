@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -190,7 +189,7 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 
 	@Override
 	public String toString() {
-		if (StringUtils.isNotBlank(this.text)){
+		if (isNotBlank(this.text)){
 			return "Ann.: " + this.text;
 		}else{
 			return super.toString();

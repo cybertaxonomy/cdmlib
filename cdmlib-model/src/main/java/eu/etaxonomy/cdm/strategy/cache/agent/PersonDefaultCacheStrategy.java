@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -128,7 +127,7 @@ public class PersonDefaultCacheStrategy
     public String getInitialsFromGivenName(String givenname, boolean forceOnlyFirstLetter) {
         if (givenname == null){
             return null;
-        }else if (StringUtils.isBlank(givenname)){
+        }else if (isBlank(givenname)){
             return "";
         }
         //remove brackets
@@ -141,13 +140,13 @@ public class PersonDefaultCacheStrategy
         String[] splits = givenname.split("((?<=\\.)|\\s+|(?=([\\-\u2013])))+"); // [\\-\u2013]? // (?!=\\s) wasn't successful to trim
         for (String split : splits){
             split = split.trim();
-            if (StringUtils.isBlank(split) || split.matches("\\(.*\\)")){  //again checking brackets not really necessary
+            if (isBlank(split) || split.matches("\\(.*\\)")){  //again checking brackets not really necessary
                 continue;
             }
             if (split.matches("^[\\-\u2013].*")){
                 result += split.substring(0, 1);
                 split = split.substring(1);
-                if (StringUtils.isBlank(split)){
+                if (isBlank(split)){
                     continue;
                 }
             }

@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;

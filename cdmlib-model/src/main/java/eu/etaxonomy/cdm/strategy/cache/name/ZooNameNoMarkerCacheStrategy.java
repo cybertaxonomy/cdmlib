@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -53,7 +52,7 @@ public class ZooNameNoMarkerCacheStrategy
 	protected void addInfraGenericPart(INonViralName name, List<TaggedText> tags, String infraGenericMarker,
 	        String infraGenEpi) {
 		//add epitheton
-		if (StringUtils.isNotBlank(infraGenEpi)){
+		if (isNotBlank(infraGenEpi)){
 	        tags.add(new TaggedText(TagEnum.name, "(" + infraGenEpi + ")"));
         }
 	}

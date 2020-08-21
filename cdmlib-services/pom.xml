@@ -103,10 +103,6 @@
       <artifactId>lsid-server</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
 	  <groupId>net.sf.ehcache</groupId>
 	  <artifactId>ehcache-core</artifactId>	  
 	</dependency>

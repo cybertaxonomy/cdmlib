@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -102,7 +101,7 @@ public abstract class NameCacheStrategyBase
                     logger.warn(message);
                     throw new IllegalStateException(message);
                 }
-            }else if(StringUtils.isNotBlank(ncStatus.getRuleConsidered())){
+            }else if(isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();
             }
             String statusSeparator = ", ";
@@ -212,7 +211,7 @@ public abstract class NameCacheStrategyBase
             referenceCache = reference.getNomenclaturalCitation(microReference);
         }
             //add to tags
-        if (StringUtils.isNotBlank(referenceCache)){
+        if (isNotBlank(referenceCache)){
             if (! referenceCache.trim().startsWith("in ")){
                 String refConcat = ", ";
                 tags.add(new TaggedText(TagEnum.separator, refConcat));
@@ -230,7 +229,7 @@ public abstract class NameCacheStrategyBase
 
     protected void addOriginalSpelling(List<TaggedText> tags, TaxonName taxonName){
         String originalName = getOriginalNameString(taxonName, tags);
-        if (StringUtils.isNotBlank(originalName)){
+        if (isNotBlank(originalName)){
             tags.add(new TaggedText(TagEnum.name, originalName));
         }
     }
@@ -265,11 +264,11 @@ public abstract class NameCacheStrategyBase
             List<TaggedText> currentNameTags) {
         //use cache if necessary
         String cacheToUse = null;
-        if (originalName.isProtectedNameCache() && StringUtils.isNotBlank(originalName.getNameCache())){
+        if (originalName.isProtectedNameCache() && isNotBlank(originalName.getNameCache())){
             cacheToUse = originalName.getNameCache();
-        }else if (originalName.isProtectedTitleCache() && StringUtils.isNotBlank(originalName.getTitleCache())){
+        }else if (originalName.isProtectedTitleCache() && isNotBlank(originalName.getTitleCache())){
             cacheToUse = originalName.getTitleCache();
-        }else if (originalName.isProtectedFullTitleCache() && StringUtils.isNotBlank(originalName.getFullTitleCache())){
+        }else if (originalName.isProtectedFullTitleCache() && isNotBlank(originalName.getFullTitleCache())){
             cacheToUse = originalName.getFullTitleCache();
         }
         if (cacheToUse != null){

@@ -36,7 +36,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -165,12 +164,12 @@ public class Media
     public static Media NewInstance(URI uri, Integer size, String mimeType, String suffix){
     	//TODO improve type recognition
     	Class<? extends MediaRepresentationPart> clazz = null;
-    	if (StringUtils.isNotBlank(mimeType)){
+    	if (isNotBlank(mimeType)){
     		if (mimeType.matches("image.*")){
     			clazz = ImageFile.class;
     		}
     	}
-    	if (StringUtils.isNotBlank(suffix)){
+    	if (isNotBlank(suffix)){
     		if (suffix.matches("\\.(gif|jpe?g|tiff?)")){
     			clazz = ImageFile.class;
     		}

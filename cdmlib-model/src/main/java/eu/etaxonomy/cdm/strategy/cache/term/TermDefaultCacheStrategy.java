@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.strategy.cache.term;
 
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -48,16 +47,16 @@ public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEn
 			}
 			//return label, or if not exists abbreviated label, of if not exists description
 			result = representation.getLabel();
-			if (StringUtils.isBlank(result)){
+			if (isBlank(result)){
 					result = representation.getAbbreviatedLabel();
 			}
-			if (StringUtils.isBlank(result)){
+			if (isBlank(result)){
 				result = representation.getText();
 				representation.getDescription();
 			}
 		}
 		//if still empty return toString
-		if (StringUtils.isBlank(result)){
+		if (isBlank(result)){
 			result = term.getClass().getSimpleName() + "<" + term.getUuid() + ">";
 		}
 		return result;

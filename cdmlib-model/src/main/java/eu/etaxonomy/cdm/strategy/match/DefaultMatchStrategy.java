@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -363,7 +362,7 @@ public class DefaultMatchStrategy
 
 	private Object checkEmpty(Object object) {
 		if (object instanceof String){
-			if (StringUtils.isBlank((String)object)){
+			if (isBlank((String)object)){
 				return null;
 			}
 		}else if (object instanceof TimePeriod){

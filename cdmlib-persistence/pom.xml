@@ -182,10 +182,6 @@
         <artifactId>commons-beanutils</artifactId>
      </dependency>
      <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
-     </dependency>
-     <dependency>
 	      <groupId>commons-dbcp</groupId>
 	      <artifactId>commons-dbcp</artifactId>
 <!-- 	      <scope>test</scope> , currently also used in NomenclaturalCodeAwareDataSource and maybe others -->

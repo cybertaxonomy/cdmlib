@@ -44,7 +44,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -871,7 +870,7 @@ public class TaxonName
      */
     @Override
     public void setGenusOrUninomial(String genusOrUninomial) {
-        this.genusOrUninomial = StringUtils.isBlank(genusOrUninomial) ? null : genusOrUninomial;
+        this.genusOrUninomial = isBlank(genusOrUninomial) ? null : genusOrUninomial;
     }
 
     /**
@@ -893,7 +892,7 @@ public class TaxonName
      */
     @Override
     public void setInfraGenericEpithet(String infraGenericEpithet){
-        this.infraGenericEpithet = StringUtils.isBlank(infraGenericEpithet)? null : infraGenericEpithet;
+        this.infraGenericEpithet = isBlank(infraGenericEpithet)? null : infraGenericEpithet;
     }
 
     /**
@@ -914,7 +913,7 @@ public class TaxonName
      */
     @Override
     public void setSpecificEpithet(String specificEpithet){
-        this.specificEpithet = StringUtils.isBlank(specificEpithet) ? null : specificEpithet;
+        this.specificEpithet = isBlank(specificEpithet) ? null : specificEpithet;
     }
 
     /**
@@ -936,7 +935,7 @@ public class TaxonName
      */
     @Override
     public void setInfraSpecificEpithet(String infraSpecificEpithet){
-        this.infraSpecificEpithet = StringUtils.isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
+        this.infraSpecificEpithet = isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
     }
 
     /**
@@ -1247,7 +1246,7 @@ public class TaxonName
      */
     @Override
     public void setAcronym(String acronym){
-        this.acronym = StringUtils.isBlank(acronym)? null : acronym;
+        this.acronym = isBlank(acronym)? null : acronym;
     }
 
     // ****************** BACTERIAL NAME ******************/
@@ -1288,7 +1287,7 @@ public class TaxonName
      */
     @Override
     public void setBreed(String breed){
-        this.breed = StringUtils.isBlank(breed) ? null : breed;
+        this.breed = isBlank(breed) ? null : breed;
     }
 
 
@@ -1330,7 +1329,7 @@ public class TaxonName
      */
     @Override
     public void setCultivarName(String cultivarName){
-        this.cultivarName = StringUtils.isBlank(cultivarName) ? null : cultivarName;
+        this.cultivarName = isBlank(cultivarName) ? null : cultivarName;
     }
 
     // **************** Fungus Name
@@ -2299,7 +2298,7 @@ public class TaxonName
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
         //#6581
         this.nomenclaturalMicroReference = nomenclaturalMicroReference;
-//        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+//        this.getNomenclaturalSource(true).setCitationMicroReference(isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
 //        checkNullSource();
     }
 
@@ -2334,7 +2333,7 @@ public class TaxonName
      */
     @Override
     public void setAppendedPhrase(String appendedPhrase){
-        this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
+        this.appendedPhrase = isBlank(appendedPhrase)? null : appendedPhrase;
     }
 
     @Override
@@ -3367,11 +3366,11 @@ public class TaxonName
     @Override
     public String getLastNamePart() {
         String result =
-                StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
+                isNotBlank(this.getInfraSpecificEpithet())?
                     this.getInfraSpecificEpithet() :
-                StringUtils.isNotBlank(this.getSpecificEpithet()) ?
+                isNotBlank(this.getSpecificEpithet()) ?
                     this.getSpecificEpithet():
-                StringUtils.isNotBlank(this.getInfraGenericEpithet()) ?
+                isNotBlank(this.getInfraGenericEpithet()) ?
                     this.getInfraGenericEpithet():
                 this.getGenusOrUninomial();
         return result;

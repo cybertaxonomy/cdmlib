@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -304,11 +303,11 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
 	public void setCatalogNumber(String catalogNumber) {
-		this.catalogNumber = StringUtils.isBlank(catalogNumber)?null:catalogNumber;
+		this.catalogNumber = isBlank(catalogNumber)?null:catalogNumber;
 	}
 
 	public void setBarcode(String barcode) {
-		this.barcode = StringUtils.isBlank(barcode)? null : barcode;
+		this.barcode = isBlank(barcode)? null : barcode;
 	}
 	public String getBarcode() {
 		return barcode;
@@ -321,12 +320,9 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
-
-
 	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = StringUtils.isBlank(accessionNumber)? null : accessionNumber;
+		this.accessionNumber = isBlank(accessionNumber)? null : accessionNumber;
 	}
-
 
 	/**
 	 * Original label information may present the exact original text
@@ -363,7 +359,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 */
 	@Deprecated
 	public void setCollectorsNumber(String collectorsNumber) {
-		this.collectorsNumber = StringUtils.isBlank(collectorsNumber)? null : collectorsNumber;
+		this.collectorsNumber = isBlank(collectorsNumber)? null : collectorsNumber;
 	}
 
 	public TaxonName getStoredUnder() {
@@ -392,13 +388,13 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
     public String getMostSignificantIdentifier() {
-        if (StringUtils.isNotBlank(getAccessionNumber())) {
+        if (isNotBlank(getAccessionNumber())) {
             return getAccessionNumber();
         }
-        else if(StringUtils.isNotBlank(getBarcode())){
+        else if(isNotBlank(getBarcode())){
             return getBarcode();
         }
-        else if(StringUtils.isNotBlank(getCatalogNumber())){
+        else if(isNotBlank(getCatalogNumber())){
             return getCatalogNumber();
         }
         return null;
@@ -420,7 +416,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 
 	public void setExsiccatum(String exsiccatum) {
-		this.exsiccatum = StringUtils.isBlank(exsiccatum)? null : exsiccatum;
+		this.exsiccatum = isBlank(exsiccatum)? null : exsiccatum;
 	}
 
 	public String getExsiccatum() {

@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.location;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +32,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -786,7 +784,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
             title.append(areaString);
         }else if (area.isProtectedTitleCache()){
         	title.append(area.getTitleCache());
-        }else if (StringUtils.isNotBlank(area.getIdInVocabulary())){
+        }else if (isNotBlank(area.getIdInVocabulary())){
         	title.append(area.getIdInVocabulary());
         }
         if (area.getLevel() == null){
@@ -805,17 +803,17 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
         String areaString = null;
         if (representation != null){
             areaString = representation.getLabel();
-            if (StringUtils.isBlank(areaString)){
+            if (isBlank(areaString)){
                 areaString = representation.getAbbreviatedLabel();
             }
-            if (StringUtils.isBlank(areaString)){
+            if (isBlank(areaString)){
                 areaString = representation.getText();
             }
         }
-        if (StringUtils.isBlank(areaString)){
+        if (isBlank(areaString)){
             areaString = definedTerm == null ? null : definedTerm.getTitleCache();
         }
-        if (StringUtils.isBlank(areaString)){
+        if (isBlank(areaString)){
             areaString = "no title";
         }
         return areaString;

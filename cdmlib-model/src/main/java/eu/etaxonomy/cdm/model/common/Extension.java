@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
@@ -96,7 +95,7 @@ public class Extension extends VersionableEntity implements Cloneable {
 
 	@Override
 	public String toString() {
-		if (StringUtils.isNotBlank(this.value)){
+		if (isNotBlank(this.value)){
 			return "Ext.: " + this.value;
 		}else{
 			return super.toString();

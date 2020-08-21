@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -57,11 +56,11 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 		result = (languageString != null ? languageString.getText() : "");
 
 		//get first image uri
-		if (StringUtils.isBlank(result)){
+		if (isBlank(result)){
 			for (MediaRepresentation mediaRepresentation : media.getRepresentations()){
 				for (MediaRepresentationPart part : mediaRepresentation.getParts()){
 					result = (part == null || part.getUri() == null) ? null : part.getUri().toString();
-					if (StringUtils.isBlank(result)){
+					if (isBlank(result)){
 						continue;
 					}
 					int lastSlashPos = result.lastIndexOf("/");
@@ -70,11 +69,11 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 					}
 					break;
 				}
-				if (! StringUtils.isBlank(result)){
+				if (! isBlank(result)){
 					break;
 				}
 			}
-			if (StringUtils.isBlank(result)){
+			if (isBlank(result)){
 				result = "- empty media - <" + media.getUuid() + ">";
 			}
 		}

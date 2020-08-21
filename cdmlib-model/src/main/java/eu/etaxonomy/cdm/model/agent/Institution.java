@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -187,7 +186,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see	   #getCode()
 	 */
 	public void setCode(String code){
-		this.code = StringUtils.isBlank(code) ? null : code;
+		this.code = isBlank(code) ? null : code;
 	}
 
 
@@ -202,7 +201,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see	   #getName()
 	 */
 	public void setName(String name){
-		this.name = StringUtils.isBlank(name) ? null: name;
+		this.name = isBlank(name) ? null: name;
 	}
 
 //*********************** CLONE ********************************************************/

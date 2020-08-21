@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.format.common;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.format.DateTimeFormatter;
 

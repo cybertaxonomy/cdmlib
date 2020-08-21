@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -249,7 +249,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }
 
         String year = reference.getYear();
-        if (StringUtils.isNotBlank(year)){
+        if (isNotBlank(year)){
             stringBuilder.append(nextConcat + year);
         }
 
@@ -265,7 +265,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         authorship = HibernateProxyHelper.deproxy(authorship);
         if (authorship instanceof Person){
             shortCitation = ((Person)authorship).getFamilyName();
-            if (StringUtils.isBlank(shortCitation) ){
+            if (isBlank(shortCitation) ){
                 shortCitation = ((Person)authorship).getTitleCache();
             }
         }
@@ -288,15 +288,15 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
                 }
 
             }
-            if (StringUtils.isBlank(shortCitation)){
+            if (isBlank(shortCitation)){
                 shortCitation = authorTeam.getTitleCache();
             }
 
         }
         if (reference.getDatePublished() != null) {
-            if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
+            if (isNotBlank(reference.getDatePublished().getFreeText())){
                 shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
-            }else if (!StringUtils.isBlank(reference.getYear()) ){
+            }else if (isNotBlank(reference.getYear()) ){
                 shortCitation = shortCitation + " (" + reference.getYear() + ")";
             }
         }
@@ -399,7 +399,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if (team != null){
             String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(),
                     team.getNomenclaturalTitle(), isAbbrev, trim);
-            if (StringUtils.isNotBlank(author)){
+            if (isNotBlank(author)){
                 result = author + afterAuthor + result;
             }
         }

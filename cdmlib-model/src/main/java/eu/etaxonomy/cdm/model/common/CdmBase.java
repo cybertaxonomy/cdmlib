@@ -502,14 +502,13 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         return result;
     }
 
-
     /**
      * Returns <code>true</code> if the given String is blank.
      * @param str the String to check
      * @see StringUtils#isBlank(String)
      * @return <code>true</code> if str is blank, <code>false</code> otherwise
      */
-    protected boolean isBlank(String str) {
+    protected static boolean isBlank(String str) {
         return StringUtils.isBlank(str);
     }
 
@@ -519,7 +518,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      * @see StringUtils#isNotBlank(String)
      * @return <code>true</code> if str is not blank, <code>false</code> otherwise
      */
-    protected boolean isNotBlank(String str) {
+    protected static boolean isNotBlank(String str) {
         return StringUtils.isNotBlank(str);
     }
 

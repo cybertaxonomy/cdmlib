@@ -38,7 +38,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -473,7 +472,7 @@ public class Reference
 
 	@Override
 	public void setAbbrevTitle(String abbrevTitle) {
-		this.abbrevTitle = StringUtils.isBlank(abbrevTitle) ? null : abbrevTitle;
+		this.abbrevTitle = isBlank(abbrevTitle) ? null : abbrevTitle;
 	}
 
 
@@ -485,7 +484,7 @@ public class Reference
 
 	@Override
     public void setEditor(String editor) {
-		this.editor = StringUtils.isBlank(editor)? null : editor;
+		this.editor = isBlank(editor)? null : editor;
 	}
 
 	@Override
@@ -495,7 +494,7 @@ public class Reference
 
 	@Override
     public void setVolume(String volume) {
-		this.volume = StringUtils.isBlank(volume)? null : volume;
+		this.volume = isBlank(volume)? null : volume;
 	}
 
 	@Override
@@ -505,7 +504,7 @@ public class Reference
 
 	@Override
     public void setPages(String pages) {
-		this.pages = StringUtils.isBlank(pages)? null : pages;
+		this.pages = isBlank(pages)? null : pages;
 	}
 
 	@Override
@@ -515,7 +514,7 @@ public class Reference
 
 	@Override
     public void setEdition(String edition) {
-		this.edition = StringUtils.isBlank(edition)? null : edition;
+		this.edition = isBlank(edition)? null : edition;
 	}
 
 	@Override
@@ -525,7 +524,7 @@ public class Reference
 
 	@Override
     public void setIsbn(String isbn) {
-		this.isbn = StringUtils.isBlank(isbn)? null : isbn;
+		this.isbn = isBlank(isbn)? null : isbn;
 	}
 
 	@Override
@@ -535,7 +534,7 @@ public class Reference
 
 	@Override
     public void setIssn(String issn) {
-		this.issn = StringUtils.isBlank(issn)? null : issn;
+		this.issn = isBlank(issn)? null : issn;
 	}
 
     @Override
@@ -560,7 +559,7 @@ public class Reference
 	}
 	@Override
     public void setSeriesPart(String seriesPart) {
-		this.seriesPart = StringUtils.isBlank(seriesPart)? null : seriesPart;
+		this.seriesPart = isBlank(seriesPart)? null : seriesPart;
 	}
 
 	@Override
@@ -570,7 +569,7 @@ public class Reference
 
 	@Override
     public void setOrganization(String organization) {
-		this.organization = StringUtils.isBlank(organization)? null : organization;
+		this.organization = isBlank(organization)? null : organization;
 	}
 
 	@Override
@@ -580,7 +579,7 @@ public class Reference
 
 	@Override
     public void setPublisher(String publisher) {
-		this.publisher = StringUtils.isBlank(publisher)? null : publisher;
+		this.publisher = isBlank(publisher)? null : publisher;
 	}
 
 	@Override
@@ -596,7 +595,7 @@ public class Reference
 
 	@Override
     public void setPlacePublished(String placePublished) {
-		this.placePublished = StringUtils.isBlank(placePublished)? null: placePublished;
+		this.placePublished = isBlank(placePublished)? null: placePublished;
 	}
 
 	@Override
@@ -670,7 +669,7 @@ public class Reference
 	 */
 	@Override
     public void setTitle(String title){
-		this.title = StringUtils.isBlank(title)? null : title;
+		this.title = isBlank(title)? null : title;
 	}
 
 	/**
@@ -698,7 +697,7 @@ public class Reference
     }
 
 	public boolean hasDatePublished(){
-		boolean result =  ! ( (this.datePublished == null) || StringUtils.isBlank(datePublished.toString()));
+		boolean result =  ! ( (this.datePublished == null) || isBlank(datePublished.toString()));
 		return result;
 	}
 
@@ -765,7 +764,7 @@ public class Reference
 	 */
 	@Override
     public void setReferenceAbstract(String referenceAbstract) {
-		this.referenceAbstract = StringUtils.isBlank(referenceAbstract)? null : referenceAbstract;
+		this.referenceAbstract = isBlank(referenceAbstract)? null : referenceAbstract;
 	}
 
 

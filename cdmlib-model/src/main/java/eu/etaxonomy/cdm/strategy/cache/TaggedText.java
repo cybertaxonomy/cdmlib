@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;

@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -348,7 +347,7 @@ public class Amplification extends EventBase implements Cloneable{
          //assemble string
          String designation = CdmUtils.concat("_", new String[]{institutionName, staffName, dnaMarkerString, dateString});
 
-         this.labelCache = StringUtils.isBlank(designation) ? "<Amplification:" + getUuid() + ">" : designation ;
+         this.labelCache = isBlank(designation) ? "<Amplification:" + getUuid() + ">" : designation ;
 	}
 
 

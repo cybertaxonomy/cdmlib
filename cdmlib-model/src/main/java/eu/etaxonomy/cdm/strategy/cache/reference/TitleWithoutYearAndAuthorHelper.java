@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -157,7 +157,7 @@ public class TitleWithoutYearAndAuthorHelper {
         }
         //edition
         String editionPart = "";
-        if (StringUtils.isNotBlank(edition)){
+        if (isNotBlank(edition)){
             editionPart = edition;
             if (isNumeric(edition)){
                 editionPart = prefixBookEdition + blank + editionPart;
@@ -168,7 +168,7 @@ public class TitleWithoutYearAndAuthorHelper {
 
         //inSeries
         String seriesPart = "";
-        if (StringUtils.isNotBlank(refSeriesPart)){
+        if (isNotBlank(refSeriesPart)){
             seriesPart = refSeriesPart;
             if (isNumeric(refSeriesPart)){
                 seriesPart = prefixBookSeries + blank + seriesPart;
@@ -183,7 +183,7 @@ public class TitleWithoutYearAndAuthorHelper {
 
         //volume Part
         String volumePart = "";
-        if (StringUtils.isNotBlank(volume)){
+        if (isNotBlank(volume)){
             volumePart = volume;
             if (needsComma){
                 volumePart = comma + blank + volumePart;
@@ -232,12 +232,12 @@ public class TitleWithoutYearAndAuthorHelper {
         boolean needsComma = false;
         //titelAbbrev
         if (titel.length() > 0 ){
-            String postfix = StringUtils.isNotBlank(edition) ? "" : blank;
+            String postfix = isNotBlank(edition) ? "" : blank;
             result = titel + postfix;
         }
         //edition
         String editionPart = "";
-        if (StringUtils.isNotBlank(edition)){
+        if (isNotBlank(edition)){
             editionPart = edition;
             if (edition.matches(NonViralNameParserImplRegExBase.pEdition)){
                 editionPart = prefixEditionGeneric + blank + editionPart;

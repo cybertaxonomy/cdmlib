@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -94,9 +93,8 @@ public class Identifier<T extends IdentifiableEntity<?>>
 		return identifier;
 	}
 	public void setIdentifier(String identifier) {
-		this.identifier = StringUtils.isBlank(identifier) ? null : identifier;
+		this.identifier = isBlank(identifier) ? null : identifier;
 	}
-
 
 	/**
 	 * The identifier type. E.g. DOI, LSID, Barcode, Sample Designation, ...
