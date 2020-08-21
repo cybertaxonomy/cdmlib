@@ -135,7 +135,7 @@
       <artifactId>spring-aspects</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.opencsv</groupId>
+      <groupId>net.sf.opencsv</groupId>
       <artifactId>opencsv</artifactId>
     </dependency>
     <dependency>
