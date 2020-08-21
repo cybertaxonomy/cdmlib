@@ -160,8 +160,8 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Since hibernate 5.0.4 the logging for a Dialect throws ClassDefNotFound for javax.transaction.SystemException if jta is missing  -->
     <dependency>
+      <!-- Since hibernate 5.0.4 the logging for a Dialect throws ClassDefNotFound for javax.transaction.SystemException if jta is missing  -->
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
     </dependency>  

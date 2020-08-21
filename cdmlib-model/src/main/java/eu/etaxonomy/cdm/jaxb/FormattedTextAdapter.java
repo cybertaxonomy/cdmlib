@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.jaxb;
 
@@ -50,8 +50,9 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 
 	@SuppressWarnings("unused")
 	private static final Log logger = LogFactory.getLog(FormattedTextAdapter.class);
-	
-	public FormattedText marshal(String string) throws Exception {
+
+	@Override
+    public FormattedText marshal(String string) throws Exception {
 		if(string != null) {
 			string = StringEscapeUtils.escapeXml(string);
 			String documentString = "<?xml version=\"1.0\"?><text>"  + string + "</text>";
@@ -65,7 +66,7 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 		    	Node node = childNodes.item(i);
 		    	if(node instanceof org.w3c.dom.Text ) {
 		    		org.w3c.dom.Text textNode = (org.w3c.dom.Text) node;
-		    		
+
 		    		text.getContent().add(textNode.getTextContent());
 		    	} else {
 		    	    text.getContent().add(node);
@@ -76,11 +77,12 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 		return null;
 	}
 
-	public String unmarshal(FormattedText text) throws Exception {
+	@Override
+    public String unmarshal(FormattedText text) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		Document document = factory.newDocumentBuilder().newDocument();
 		DocumentFragment documentFragment = document.createDocumentFragment();
-		
+
 		for(Object object : text.getContent()) {
 			if(object instanceof String) {
 				String string = (String)object;
@@ -96,7 +98,7 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 							throw de;
 						}
 					}
-					
+
 				}
 
 				documentFragment.appendChild(document.importNode(node,true));
@@ -107,7 +109,7 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 		TransformerFactory transformerFactory  = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION , "yes");
-		
+
 		Source input = new DOMSource(documentFragment);
 		StringWriter stringWriter = new StringWriter();
 		Result output = new StreamResult(stringWriter);

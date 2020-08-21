@@ -3376,17 +3376,11 @@ public class TaxonName
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isHybridName() {
         return this.isMonomHybrid() || this.isBinomHybrid() || this.isTrinomHybrid();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isHybrid() {
         return this.isHybridName() || this.isHybridFormula();
@@ -3430,7 +3424,6 @@ public class TaxonName
             this.setNameCache(oldNameCache, isProtected);
         }
 
-
         // Compare name cache of taxon names
         if (CdmUtils.isNotBlank(otherNameCache) && CdmUtils.isNotBlank(thisNameCache)) {
             thisNameCache = normalizeName(thisNameCache);
@@ -3453,12 +3446,6 @@ public class TaxonName
     static final String HYBRID_SIGN = UTF8.HYBRID.toString();
     static final String QUOT_SIGN = "[\\u02BA\\u0022\\u0022]";
 
-    /**
-     * @param thisNameCache
-     * @param HYBRID_SIGN
-     * @param QUOT_SIGN
-     * @return
-     */
     private String normalizeName(String thisNameCache) {
         thisNameCache = thisNameCache.replaceAll(HYBRID_SIGN, "");
         thisNameCache = thisNameCache.replaceAll(QUOT_SIGN, "");
@@ -3499,14 +3486,10 @@ public class TaxonName
 
 //************************ isType ***********************************************/
 
-    /**
-     * @return
-     */
     @Override
     public boolean isNonViral() {
         return nameType.isNonViral();
     }
-
     @Override
     public boolean isZoological(){
         return nameType.isZoological();
@@ -3572,10 +3555,6 @@ public class TaxonName
         return false;
     }
 
-
-    /**
-     * @return
-     */
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
@@ -3588,7 +3567,6 @@ public class TaxonName
         }
         return false;
     }
-
 
 //*********************** CLONE ********************************************************/
 
@@ -3633,7 +3611,6 @@ public class TaxonName
                 result.status.add(newStatus);
             }
 
-
             //to relations
             result.relationsToThisName = new HashSet<>();
             for (NameRelationship toRelationship : getRelationsToThisName()){
@@ -3662,7 +3639,6 @@ public class TaxonName
             //TODO still needs to be discussed
             result.homotypicalGroup = HomotypicalGroup.NewInstance();
             result.homotypicalGroup.addTypifiedName(this);
-
 
             //HybridChildRelations
             result.hybridChildRelations = new HashSet<>();

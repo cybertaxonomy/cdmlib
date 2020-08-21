@@ -26,7 +26,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  * @author m.venin
  * @since 2010
  */
-public class MicroFormatCategoricalDescriptionBuilder extends AbstractCategoricalDescriptionBuilder{
+public class MicroFormatCategoricalDescriptionBuilder
+        extends AbstractCategoricalDescriptionBuilder{
 
 	private final String spanEnd = "</span>";
 

@@ -79,10 +79,6 @@ public class CorrectEpithetsForRankValidator implements ConstraintValidator<Corr
 		return valid;
 	}
 
-    /**
-     * @param specificEpithet
-     * @return
-     */
     private boolean isNotBlank(String str) {
         return StringUtils.isNotBlank(str);
     }

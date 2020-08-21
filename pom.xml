@@ -1006,8 +1006,8 @@
         <version>3.4.1.Final</version>
         <!-- checked 2020-08 -->
       </dependency>
-	  <!-- since hibernate 5.0.4 Dialect throws exception if jta is missing  -->
 	  <dependency>
+	    <!-- since hibernate 5.0.4 Dialect throws exception if jta is missing  -->
         <groupId>javax.transaction</groupId>
         <artifactId>jta</artifactId>
         <version>1.1</version>
@@ -1209,7 +1209,7 @@
         <artifactId>xml-apis</artifactId>
         <!-- 
             WARNING: do not upgrade to later versions 2.0.x of xml-apis
-            since these are effectivly reloated to the early beta version
+            since these are effectivly reloaded to the early beta version
             1.0.b2
         -->
         <version>1.4.01</version>

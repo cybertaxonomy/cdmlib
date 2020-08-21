@@ -6,19 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.agent;
-
 
 import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -29,7 +25,8 @@ import eu.etaxonomy.cdm.model.agent.Team;
  * @since 29.09.2009
  */
 public class TeamDefaultCacheStrategyTest {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategyTest.class);
 
 	private static Team team1;
@@ -41,25 +38,6 @@ public class TeamDefaultCacheStrategyTest {
 	private static Person person3;
 	private static Person person4;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-
-
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		team1 = Team.NewInstance();
@@ -89,23 +67,14 @@ public class TeamDefaultCacheStrategyTest {
 		team2.addTeamMember(person2);
 		team2.addTeamMember(person1);
 		team2.addTeamMember(person3);
-
-
-
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@After
 	public void tearDown() throws Exception {
 	}
 
 //**************************************** TESTS **************************************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy#NewInstance()}.
-	 */
 	@Test
 	public final void testNewInstance() {
 		TeamDefaultCacheStrategy cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
@@ -166,7 +135,6 @@ public class TeamDefaultCacheStrategyTest {
         Assert.assertEquals("team2 nomenclatural title should still be 'P2LN, P., P1LN, P. & al.' now.",
                 "P2LN, P., P1LN, P. & al.", team2.getTitleCache());
 
-
 		//person3
 		Assert.assertNotNull("team3 title cache must not to be null",
 		        team3.getTitleCache());
@@ -214,5 +182,4 @@ public class TeamDefaultCacheStrategyTest {
 		person1.setGivenName("O.");
 		Assert.assertEquals("team1 title cache should be P1LN, O.", "P1LN, O.", team1.getTitleCache());
 	}
-
 }
