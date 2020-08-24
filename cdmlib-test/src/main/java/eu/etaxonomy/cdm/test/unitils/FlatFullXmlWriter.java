@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.test.unitils;
 
 import java.io.IOException;
@@ -19,6 +24,7 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.util.xml.XmlWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 
 /**
  * This is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}, which in
@@ -32,8 +38,7 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 859 $ $Date: 2008-11-02 12:50:23 +0100 (dom, 02 nov 2008) $
  * @since 1.5.5 (Apr 19, 2003)
  */
-public class FlatFullXmlWriter implements IDataSetConsumer
-{
+public class FlatFullXmlWriter implements IDataSetConsumer{
 
     /**
      * Logger for this class
@@ -49,13 +54,11 @@ public class FlatFullXmlWriter implements IDataSetConsumer
     private String _systemId = null;
     private boolean writeNullValues = true;
 
-    public FlatFullXmlWriter(OutputStream out) throws IOException
-    {
+    public FlatFullXmlWriter(OutputStream out) throws IOException {
         this(out, null, true);
     }
 
-    public FlatFullXmlWriter(OutputStream out, boolean writeNullValues) throws IOException
-    {
+    public FlatFullXmlWriter(OutputStream out, boolean writeNullValues) throws IOException {
         this(out, null, writeNullValues);
     }
 
@@ -66,32 +69,27 @@ public class FlatFullXmlWriter implements IDataSetConsumer
      * @throws UnsupportedEncodingException
      */
     public FlatFullXmlWriter(OutputStream outputStream, String encoding, boolean writeNullValues)
-    throws UnsupportedEncodingException
-    {
+            throws UnsupportedEncodingException {
         _xmlWriter = new XmlWriter(outputStream, encoding);
         _xmlWriter.enablePrettyPrint(true);
         this.writeNullValues = writeNullValues;
     }
 
-    public FlatFullXmlWriter(Writer writer)
-    {
+    public FlatFullXmlWriter(Writer writer){
         _xmlWriter = new XmlWriter(writer);
         _xmlWriter.enablePrettyPrint(true);
     }
 
-    public FlatFullXmlWriter(Writer writer, String encoding)
-    {
+    public FlatFullXmlWriter(Writer writer, String encoding){
         _xmlWriter = new XmlWriter(writer, encoding);
         _xmlWriter.enablePrettyPrint(true);
     }
 
-    public void setIncludeEmptyTable(boolean includeEmptyTable)
-    {
+    public void setIncludeEmptyTable(boolean includeEmptyTable){
         _includeEmptyTable = includeEmptyTable;
     }
 
-    public void setDocType(String systemId)
-    {
+    public void setDocType(String systemId){
         _systemId = systemId;
     }
 
@@ -101,8 +99,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
      * <code>false</code> otherwise.
      * @since 2.4
      */
-    public void setPrettyPrint(boolean enabled)
-    {
+    public void setPrettyPrint(boolean enabled){
         _xmlWriter.enablePrettyPrint(enabled);
     }
 
@@ -111,8 +108,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
      * @param dataSet The {@link IDataSet} to be written
      * @throws DataSetException
      */
-    public void write(IDataSet dataSet) throws DataSetException
-    {
+    public void write(IDataSet dataSet) throws DataSetException{
         logger.debug("write(dataSet={}) - start", dataSet);
 
         DataSetProducerAdapter provider = new DataSetProducerAdapter(dataSet);
@@ -124,8 +120,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
     // IDataSetConsumer interface
 
     @Override
-    public void startDataSet() throws DataSetException
-    {
+    public void startDataSet() throws DataSetException{
         logger.debug("startDataSet() - start");
 
         try
@@ -141,8 +136,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
     }
 
     @Override
-    public void endDataSet() throws DataSetException
-    {
+    public void endDataSet() throws DataSetException{
         logger.debug("endDataSet() - start");
 
         try
@@ -157,8 +151,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
     }
 
     @Override
-    public void startTable(ITableMetaData metaData) throws DataSetException
-    {
+    public void startTable(ITableMetaData metaData) throws DataSetException{
         logger.debug("startTable(metaData={}) - start", metaData);
 
         _activeMetaData = metaData;
@@ -166,8 +159,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
     }
 
     @Override
-    public void endTable() throws DataSetException
-    {
+    public void endTable() throws DataSetException{
         logger.debug("endTable() - start");
 
         if (_includeEmptyTable && _activeRowCount == 0)
@@ -187,8 +179,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
     }
 
     @Override
-    public void row(Object[] values) throws DataSetException
-    {
+    public void row(Object[] values) throws DataSetException{
         logger.debug("row(values={}) - start", values);
 
         try
@@ -230,8 +221,7 @@ public class FlatFullXmlWriter implements IDataSetConsumer
             _activeRowCount++;
             _xmlWriter.endElement();
         }
-        catch (IOException e)
-        {
+        catch (IOException e){
             throw new DataSetException(e);
         }
     }

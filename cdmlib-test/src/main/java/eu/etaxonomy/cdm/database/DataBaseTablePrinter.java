@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.io.ByteArrayOutputStream;
@@ -41,8 +40,10 @@ import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
