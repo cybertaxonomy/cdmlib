@@ -52,10 +52,7 @@ import org.hibernate.type.Type;
  *
  * @author Andreas Kohlbecker, 2012
  */
-//TODO this class has been moved to cdmlib-persistence preliminarily. It should be moved to
-//cdmlib-test again as it should be used only in test. Currently this is not possible because
-//sessionFactory bean has a dependsOn relationship to this class and this creates problems in remote-webapp
-//as the been is not available.
+//TODO a copy of this class exists in cdmlib-persistence, see there for further information
 //see also TableGeneratorGlobalOverride
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
@@ -71,5 +68,28 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 		logger.debug("overrideProperies:" + (overrideProperies != null ? overrideProperies :"NULL"));
 		super.configure(type, params, serviceRegistry);
 	}
+
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	@Override
+//	public synchronized Serializable generate(final SessionImplementor session, Object obj) {
+//
+//		Serializable nextId =  super.generate(session, obj);
+//		logger.debug("next id for " + obj.getClass().getSimpleName() + ":" + obj + " =" + nextId );
+//		return nextId;
+//
+//		/*
+//		if(nextId instanceof Number){
+//			long nextIdL = ((Number)nextId).longValue();
+//			int nextIdOffset = 1000;
+//			logger.info("next id = " + (nextIdL + nextIdOffset));
+//			return IdentifierGeneratorHelper.createNumber( nextIdL + nextIdOffset, nextId.getClass() );
+//		} else {
+//			logger.error("identifier expected to be a Number, cannot apply offset");
+//			return nextId;
+//		}
+//		*/
+//	}
 
 }

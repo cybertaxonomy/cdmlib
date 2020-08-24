@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.test.unitils;
 
 
@@ -8,15 +13,19 @@ import java.util.EnumSet;
 
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
-import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.boot.registry.internal.StandardServiceRegistryImpl;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2CorrectedDialectTest;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+
+import eu.etaxonomy.cdm.persistence.hibernate.UpperCasePhysicalNamingStrategyStandardImpl;
 
 /**
  *
@@ -43,46 +52,25 @@ public class DdlCreator {
 		}
 	}
 
-//	private void execute(Class<?> dialect, String lowerCaseDialectName, Class<?>... classes) throws IOException, HibernateException, InstantiationException, IllegalAccessException {
-//		String classPath = "eu/etaxonomy/cdm/hibernate.cfg.xml";
-//		ClassPathResource resource = new ClassPathResource(classPath);
-//		File file = resource.getFile();
-//
-////		File file = new File("C:\\Users\\pesiimport\\Documents\\cdm-3.3\\cdmlib-persistence\\src\\main\\resources\\eu\\etaxonomy\\cdm\\hibernate.cfg.xml");
-//		System.out.println(file.exists());
-//
-//		Configuration config = new Configuration().addFile(file);
-//		config.setProperty(AvailableSettings.DIALECT, dialect.getCanonicalName());
-////		NamingStrategyDelegator;
-//		PhysicalNamingStrategy namingStrategy = new PhysicalNamingStrategyStandardImpl();
-////		        new DefaultComponentSafeNamingStrategy(); //; = new ImprovedNamingStrategy();
-//		config.setPhysicalNamingStrategy(namingStrategy);
-//
-//		config.configure(file);
-////		String[] schema = config.generateSchemaCreationScript((Dialect)dialect.newInstance());
-////		for (String s : schema){
-////			System.out.println(s);
-////		}
-//
-//		//FIXME #4716
-//		EnversService enversService = new EnversServiceImpl();
-////		. .getFor(config.);
-//		SchemaExport schemaExport = new SchemaExport(config);
-//		schemaExport.setDelimiter(";");
-//		schemaExport.drop(false, false);
-//		schemaExport.setOutputFile(String.format("%s.%s.%s ", new Object[] {"new-cdm", lowerCaseDialectName, "sql" }));
-//		boolean consolePrint = true;
-//		boolean exportInDatabase = false;
-//		schemaExport.create(consolePrint, exportInDatabase);
-//
-//		schemaExport.execute(consolePrint, exportInDatabase, false, true);
-//
-//	}
-
-
     public void execute2(Class<?> dialect, String lowerCaseDialectName){
+
+        String outputFileName = String.format("%s.%s.%s ", new Object[] {"001-cdm", lowerCaseDialectName, "sql" });
+        String templateFile = "dbscripts/" + outputFileName + "-template";
+        String outputPath = "src/main/resources/dbscripts/" + outputFileName;
+
+//      String classPath = "eu/etaxonomy/cdm/hibernate.cfg.xml";
+//      ClassPathResource resource = new ClassPathResource(classPath);
+//      File configurationFile = resource.getFile();
+
         StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder()
-                .applySetting("hibernate.dialect", dialect.getName()); // dialect
+                .applySetting(AvailableSettings.DIALECT, dialect.getCanonicalName())  // dialect
+                //alternative: .loadProperties(propertiesFile)
+                //alternative2: .configure("hibernate.cfg.xml")
+                //alternative3: .configure(configurationFile)
+                //SCRIPT_THEN_METADATA does not work with SchemaExport:
+//                .applySetting(AvailableSettings.HBM2DDL_CREATE_SCRIPT_SOURCE, templateFile)
+//                .applySetting(AvailableSettings.HBM2DDL_CREATE_SOURCE, SourceType.SCRIPT_THEN_METADATA);
+                ;
 
         StandardServiceRegistry serviceRegistry = registryBuilder.build();
 
@@ -92,50 +80,28 @@ public class DdlCreator {
         PathMatchingResourcePatternResolver resourceLoader = new PathMatchingResourcePatternResolver();
         new LocalSessionFactoryBuilder(null, resourceLoader, metadataSources).scanPackages("eu.etaxonomy.cdm.model");
 
-        PhysicalNamingStrategy namingStrategy = new PhysicalNamingStrategyStandardImpl();
+//        PhysicalNamingStrategy namingStrategy = new PhysicalNamingStrategyStandardImpl();
+        ImplicitNamingStrategyComponentPathImpl namingStrategy = new ImplicitNamingStrategyComponentPathImpl();
+        PhysicalNamingStrategy physicalNamingStrategy = new UpperCasePhysicalNamingStrategyStandardImpl();
 
-        Metadata metadata = metadataSources.buildMetadata();
+        Metadata metadata = metadataSources.getMetadataBuilder(serviceRegistry)
+                .applyImplicitSchemaName("public")
+                .applyImplicitNamingStrategy(namingStrategy)
+                .applyPhysicalNamingStrategy(physicalNamingStrategy)
+                .build();
 
-        new SchemaExport().setFormat(true).setDelimiter(";").setOutputFile("export.sql")
-            .createOnly(EnumSet.of(TargetType.STDOUT, TargetType.SCRIPT), metadata);
+        EnumSet<TargetType> targetTypes = EnumSet.of(/*TargetType.STDOUT, */TargetType.SCRIPT);
+        new SchemaExport()
+            .setFormat(true)
+            .setDelimiter(";")
+//            .setImportFiles(templateFile)
+            .setOutputFile(outputPath)
+            .createOnly(targetTypes, metadata);
+
+        ((StandardServiceRegistryImpl) serviceRegistry).destroy();
+
+        //approaches for JPA and eclipselink can be found here: https://stackoverflow.com/questions/297438/auto-generate-data-schema-from-jpa-annotated-entity-classes;
     }
-
-//
-//	private void test5_1(){
-//	    String packageName;
-//	    String propertiesFile;
-//	    ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-//                .loadProperties(propertiesFile)
-//                .build();
-//	    MetadataSources metadata = new MetadataSources(serviceRegistry);
-//
-//	    new org.reflections.Reflections(packageName)
-//	            .getTypesAnnotatedWith(Entity.class)
-//	            .forEach(metadata::addAnnotatedClass);
-//
-//        //STDOUT will export to output window, but other `TargetType` values are available to export to file or to the db.
-//        EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.STDOUT);
-//
-//        SchemaExport export = new SchemaExport();
-//
-//        export.setDelimiter(";");
-//        export.setFormat(true);
-//
-//        export.createOnly(targetTypes, metadata.buildMetadata());
-//	}
-
-//
-//	public void test5_1_2(){
-//	    ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-//                .configure("hibernate.cfg.xml")
-//                .build();
-//	    MetadataImplementor metadata = (MetadataImplementor) new  MetadataSources(serviceRegistry)
-//	            .buildMetadata();
-//	    SchemaExport schemaExport = new SchemaExport(metadata);
-//	    schemaExport.setOutputFile("hbm2schema.sql");
-//	    schemaExport.create(true, true);
-//	    ( (StandardServiceRegistryImpl) serviceRegistry ).destroy();
-//	}
 
 }
 

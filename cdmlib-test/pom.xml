@@ -15,88 +15,35 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>hibernate3-maven-plugin</artifactId>
-        <version>3.0</version>
-        <configuration>
-          <components>
-            <component>
-              <name>hbm2ddl</name>
-              <implementation>annotationconfigurationX</implementation>
-            </component>
-          </components>
-          <componentProperties>
-            <namingstrategy>org.hibernate.cfg.DefaultComponentSafeNamingStrategy</namingstrategy>
-            <propertyfile>/src/test/resources/dbscripts/hibernate.properties</propertyfile>
-            <outputfilename>001_cdm.ddl</outputfilename>
-            <configurationfile>/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml</configurationfile>
-          </componentProperties>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>eu.etaxonomy</groupId>
-            <artifactId>cdmlib-db</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.5.6-FINAL</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <configuration>
-          <tasks>
-            <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.EnversHibernateToolTask">
-              <classpath refid="maven.plugin.classpath" />
-            </taskdef>
-            <mkdir dir="target/generated-sources/hibernate3" />
-            <hibernatetool destdir=".">
-              <classpath>
-                <path refid="maven.plugin.classpath" />
-                <path refid="maven.compile.classpath" />
-                <path refid="maven.test.classpath" />
-              </classpath>
-              <jpaconfiguration persistenceunit="cdm" />
-              <hbm2ddl drop="false" create="true" export="false" outputfilename="target/generated-sources/hibernate3/001_cdm.ddl" delimiter=";" format="true" />
-              </hibernatetool>
-          </tasks>
-        </configuration>
-         <dependencies>
-          <dependency>
-            <groupId>eu.etaxonomy</groupId>
-            <artifactId>cdmlib-db</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-envers</artifactId>
-            <version>${hibernate.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-          </dependency>
-          <dependency>
-          	<!-- is this still needed ?? -->
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-tools</artifactId>
-            <version>3.2.4.GA</version>
-          </dependency>
-          <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-              <version>${commons-logging.version}</version>
-          </dependency>
-        </dependencies>
+        <version>3.0.0</version>
+            <executions>
+              <execution>
+                  <!-- Generate DDL for test -->
+                  <!-- Alternatives: http://jpdigital.github.io/hibernate5-ddl-maven-plugin/usage.html, 
+                                     https://webdev.jhuep.com/~jcs/ejava-javaee/coursedocs/content/html/jpa-entitymgrex-dbschemagen.html -->
+                  <id>generate-ddl-create</id>
+                  <phase>process-classes</phase>
+                  <goals>
+                      <goal>run</goal>
+                  </goals>
+                  <configuration>
+                      <target>
+                         <!-- copy template file -->
+                         <copy 
+                             file="src/main/resources/dbscripts/001-cdm.h2.sql-template" 
+                             tofile="src/main/resources/dbscripts/001-cdm.h2.sql">
+                          </copy>
+                          <!-- run DdlCreator -->
+                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator"
+                              fork="false" failonerror="true">
+<!--                               reference to the passed-in classpath reference -->
+                              <classpath refid="maven.compile.classpath" />
+                          </java>
+                      </target>
+                  </configuration>
+              </execution>
+          </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
