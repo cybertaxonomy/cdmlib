@@ -21,7 +21,5 @@ public class H2CorrectedDialectTest extends H2Dialect {
 	 public H2CorrectedDialectTest() {
 	        super();
 	        registerColumnType(Types.FLOAT, "double"); //do we really want this
-
-
 	 }
 }
