@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../database/schema/dataset.xsd">  <SPECIMENOROBSERVATIONBASE DTYPE="DerivedUnit" ID="5000" UUID="68095c8e-025d-49f0-8bb2-ed36378b75c3" RECORDBASIS="FS" PROTECTEDTITLECACHE="false" TITLECACHE="class eu.etaxonomy.cdm.model.occurrence.DerivedUnit: 68095c8e-025d-49f0-8bb2-ed36378b75c3" PUBLISH="true" PROTECTEDIDENTITYCACHE="true" IDENTITYCACHE="ID1"/>
   <SPECIMENOROBSERVATIONBASE DTYPE="DerivedUnit" ID="5000" UUID="68095c8e-025d-49f0-8bb2-ed36378b75c3" RECORDBASIS="FS" PROTECTEDTITLECACHE="false" TITLECACHE="class eu.etaxonomy.cdm.model.occurrence.DerivedUnit: 68095c8e-025d-49f0-8bb2-ed36378b75c3" PUBLISH="true" PROTECTEDIDENTITYCACHE="true" IDENTITYCACHE="ID1"/>
   <DESCRIPTIONBASE DTYPE="SpecimenDescription" ID="5000" UUID="4094f947-ce84-47b1-bad5-e57e33239d3c" PROTECTEDTITLECACHE="false" TITLECACHE="Specimen description for class eu.etaxonomy.cdm.model.occurrence.DerivedUnit: 68095c8e-025d-49f0-8bb2-ed36378b75c3" IMAGEGALLERY="false" ISDEFAULT="false" TYPES="#" SPECIMEN_ID="5000" />
 </dataset>

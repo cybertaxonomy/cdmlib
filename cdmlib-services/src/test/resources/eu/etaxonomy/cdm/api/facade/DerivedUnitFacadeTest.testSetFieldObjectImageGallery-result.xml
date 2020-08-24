@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="dataset.xsd">
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../database/schema/dataset.xsd">
   <SPECIMENOROBSERVATIONBASE DTYPE="DerivedUnit" RECORDBASIS="PS" ID="30" UUID="77af784f-931b-4857-be9a-48ccf31ed3f1" DERIVEDFROM_ID="30" PUBLISH="true"  PROTECTEDIDENTITYCACHE="true" IDENTITYCACHE="ID1"/>
   <SPECIMENOROBSERVATIONBASE DTYPE="FieldUnit" ID="31" FIELDNUMBER="12345" PUBLISH="true" PROTECTEDIDENTITYCACHE="true" IDENTITYCACHE="ID1"/>
   <SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT ORIGINALS_ID="31" DERIVATIONEVENTS_ID="30"/>

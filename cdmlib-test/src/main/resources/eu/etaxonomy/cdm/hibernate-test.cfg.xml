@@ -17,7 +17,7 @@
     When Unitils calls the afterTestTearDown() method after the execution of a test method
     it is directly using the Hibernate5Module to create a new  session instead of using the 
     spring ApplicationContextManager. Unitils has explicitly configured to behave in this way
-    for somr reason (see the property dataSource.wrapInTransactionalProxy=false in 
+    for some reason (see the property dataSource.wrapInTransactionalProxy=false in 
     /cdmlib-test/src/main/resources/unitils.properties). 
     The session created by the Hibernate5Module gets its configuration only from the file defined 
     in  @HibernateSessionFactory, therefore it misses the additional hibernate configuration 
