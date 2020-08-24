@@ -37,7 +37,6 @@
     <lucene.version>5.4.1</lucene.version>
 	<unitils.version>3.4.6</unitils.version>
     <hsqldb.version>2.5.1</hsqldb.version>
-	<!-- <hsqldb.version>1.8.0.10</hsqldb.version>  -->
 	<!-- 1.8.0.10, 1.9.0-rc6 (manually build only for debugging) -->
     <httpcomponents.version>4.5.12</httpcomponents.version>
     <doxia.version>1.9.1</doxia.version>                <!-- checked 2020-08 -->
@@ -49,6 +48,7 @@
 	<cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.6</aspectj.version>            <!-- checked 2020-08 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
+    
     <javadoc.opts>-Xdoclint:none</javadoc.opts>         
   </properties>
   
