@@ -827,7 +827,7 @@ public class TaxonDaoHibernateImpl
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Synonym.class,auditEvent.getRevisionNumber());
             if (onlyAttachedToTaxon){
-                query.add(new NotNullAuditExpression(new EntityPropertyName("acceptedTaxon")));
+                query.add(new NotNullAuditExpression(null, new EntityPropertyName("acceptedTaxon")));
             }
             query.addProjection(AuditEntity.id().count());
 
@@ -875,7 +875,7 @@ public class TaxonDaoHibernateImpl
             return (Long)criteria.uniqueResult();
         } else {
             AuditQuery query = makeAuditQuery(Synonym.class,auditEvent);
-            query.add(new NotNullAuditExpression(new EntityPropertyName("acceptedTaxon")));
+            query.add(new NotNullAuditExpression(null, new EntityPropertyName("acceptedTaxon")));
             query.addProjection(AuditEntity.id().count());
 
             if(type != null) {
