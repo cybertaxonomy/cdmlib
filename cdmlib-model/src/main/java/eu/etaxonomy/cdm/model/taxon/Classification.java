@@ -218,7 +218,7 @@ public class Classification
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
+        return addChildNode(new TaxonNode(taxon), index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
     }
 
     @Override

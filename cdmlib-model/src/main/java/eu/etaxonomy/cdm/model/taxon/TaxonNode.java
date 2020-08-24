@@ -505,12 +505,7 @@ public class TaxonNode
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        Classification classification = CdmBase.deproxy(this.getClassification());
-        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
-        if (classification.isTaxonInTree(taxon)){
-            throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
-       }
-       return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
+        return addChildTaxon(taxon, index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
     }
 
 
@@ -553,20 +548,8 @@ public class TaxonNode
      */
     @Override
     public TaxonNode addChildNode(TaxonNode child, int index, Reference reference, String microReference){
-        if (index < 0 || index > childNodes.size() + 1){
-            throw new IndexOutOfBoundsException("Wrong index: " + index);
-        }
-           // check if this node is a descendant of the childNode
-        if(child.getParent() != this && child.isAncestor(this)){
-            throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
-        }
+        return addChildNode(child, index, DescriptionElementSource.NewPrimarySourceInstance(reference, microReference));
 
-        child.setParentTreeNode(this, index);
-
-        child.setCitation(reference);
-        child.setCitationMicroReference(microReference);
-
-        return child;
     }
 
 
