@@ -173,19 +173,19 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         context.setAuthentication(authentication);
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
-        GrantedAuthorityImpl rolePublishAthotrity = GrantedAuthorityImpl.NewInstance(null);
-        rolePublishAthotrity.setAuthority(Role.ROLE_PUBLISH.toString()); // testing if creating a Role from string is working
-        authorityList.add(rolePublishAthotrity);
+        GrantedAuthorityImpl roleRemotingAuthority = GrantedAuthorityImpl.NewInstance(null);
+        roleRemotingAuthority.setAuthority(Role.ROLE_REMOTING.toString()); // testing if creating a Role from string is working
+        authorityList.add(roleRemotingAuthority);
 
-        String publishersGroupName = "publishers";
+        String remotingGroupName = "publishers";
 
-        groupService.createGroup(publishersGroupName, authorityList);
+        groupService.createGroup(remotingGroupName, authorityList);
 
         commitAndStartNewTransaction(null);
 
-        List<GrantedAuthority> groupAuthorities = groupService.findGroupAuthorities(publishersGroupName);
+        List<GrantedAuthority> groupAuthorities = groupService.findGroupAuthorities(remotingGroupName);
 
-        Assert.assertEquals(Role.ROLE_PUBLISH.toString(), groupAuthorities.get(0).getAuthority());
+        Assert.assertEquals(Role.ROLE_REMOTING.toString(), groupAuthorities.get(0).getAuthority());
     }
 
     @Test
@@ -220,7 +220,6 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         context.setAuthentication(authentication);
 
         // create an entity of ROLE_PUBLISH and save it to the database
-        grantedAuthorityService.save(Role.ROLE_PUBLISH.asNewGrantedAuthority());
         commitAndStartNewTransaction(null);
         GrantedAuthorityImpl rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
 
