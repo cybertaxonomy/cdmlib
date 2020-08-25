@@ -17,7 +17,7 @@ import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.MethodNotSupportedByDerivedUnitTypeException;
-import eu.etaxonomy.cdm.api.service.i18n.LocaleContext;
+import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**

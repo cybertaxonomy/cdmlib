@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.api.service.i18n.TermRepresentation_L10n;
+import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;

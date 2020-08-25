@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
-import eu.etaxonomy.cdm.api.service.i18n.KeyTerm_L10n;
+import eu.etaxonomy.cdm.api.service.l10n.KeyTerm_L10n;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;

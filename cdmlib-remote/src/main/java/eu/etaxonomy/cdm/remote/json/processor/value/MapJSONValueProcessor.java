@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 import java.util.Map;
 import java.util.Objects;
 
-import eu.etaxonomy.cdm.api.service.i18n.TermRepresentation_L10n;
+import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
