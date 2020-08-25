@@ -31,7 +31,7 @@ import net.sf.ehcache.Status;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.SizeOfPolicyConfiguration;
 import net.sf.ehcache.management.ManagementService;
-import net.sf.ehcache.statistics.LiveCacheStatistics;
+import net.sf.ehcache.statistics.FlatStatistics;
 
 /**
  * This cache handles transient (id>0) and volatile (id=0) CdmBase objects.
@@ -127,9 +127,9 @@ public class CdmTransientEntityCacher implements ICdmCacher {
             .overflowToOffHeap(false);
     }
 
-    public LiveCacheStatistics getCacheStatistics() {
+    public FlatStatistics getCacheStatistics() {
         if(cache.getStatus() == Status.STATUS_ALIVE) {
-            return cache.getLiveCacheStatistics();
+            return cache.getStatistics();
         }
         return null;
     }
