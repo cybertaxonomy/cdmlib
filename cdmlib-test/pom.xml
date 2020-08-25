@@ -132,12 +132,6 @@
     </dependency>
 
     <!-- ******* DATABASES DRIVER ******* -->
-    <!-- not really in use anymore -->
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <scope>compile</scope>
-    </dependency>
 
     <dependency>
       <groupId>com.h2database</groupId>
