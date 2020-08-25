@@ -927,14 +927,16 @@
       </dependency>
       <dependency>
         <groupId>cglib</groupId>
-        <artifactId>cglib</artifactId>
-        <version>${cglib.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>cglib</groupId>
         <artifactId>cglib-nodep</artifactId>
         <version>${cglib.version}</version>
       </dependency>
+      <!-- <dependency> -->
+      <!-- we try to have only dependencies to cglib-nodep to reduce size and to avoid
+           having 2 similar libraries. #9206  -->
+<!--         <groupId>cglib</groupId> -->
+<!--         <artifactId>cglib</artifactId> -->
+<!--         <version>${cglib.version}</version> -->
+<!--       </dependency> -->
       <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
