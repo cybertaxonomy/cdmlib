@@ -15,12 +15,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
+import eu.etaxonomy.cdm.api.service.i18n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dto.ITermRepresentation_L10n;
-import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 

@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.remote.json.processor.value;
 import java.util.Map;
 import java.util.Objects;
 
+import eu.etaxonomy.cdm.api.service.i18n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
-import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;

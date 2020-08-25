@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.i18n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -48,7 +49,6 @@ import eu.etaxonomy.cdm.remote.dto.polytomouskey.AbstractLinkDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.LinkedPolytomousKeyNodeRowDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.PolytomousKeyNodeLinkDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.TaxonLinkDto;
-import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * @author l.morris

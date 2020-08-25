@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.hibernate.Hibernate;
 
+import eu.etaxonomy.cdm.api.service.i18n.LocaleContext;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
@@ -20,7 +21,6 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
