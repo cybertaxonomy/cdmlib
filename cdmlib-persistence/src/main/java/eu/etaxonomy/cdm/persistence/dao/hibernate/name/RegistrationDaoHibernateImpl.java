@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.kohlbecker
  * @since May 2, 2017
- *
  */
 @Repository
 public class RegistrationDaoHibernateImpl
@@ -43,17 +42,10 @@ public class RegistrationDaoHibernateImpl
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RegistrationDaoHibernateImpl.class);
 
-    /**
-     * @param type
-     */
     public RegistrationDaoHibernateImpl() {
         super(Registration.class);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Long count(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus) {
         //return 0 for detached volatile references
@@ -66,9 +58,6 @@ public class RegistrationDaoHibernateImpl
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Registration> list(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
             Integer limit, Integer start, List<String> propertyPaths) {
@@ -96,20 +85,10 @@ public class RegistrationDaoHibernateImpl
         return results;
     }
 
-    /**
-     * @param reference
-     * @return
-     */
     private boolean isVolatile(Optional<Reference> reference) {
         return reference != null && reference.isPresent() && reference.get().getId() == 0;
     }
 
-    /**
-     * @param reference
-     * @param includedStatus
-     * @param isCount
-     * @return
-     */
     private Query makeReferenceQuery(Optional<Reference> reference,
             Collection<RegistrationStatus> includedStatus,
             boolean isCount) {
@@ -160,10 +139,6 @@ public class RegistrationDaoHibernateImpl
         return query;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
@@ -176,9 +151,6 @@ public class RegistrationDaoHibernateImpl
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
@@ -235,15 +207,6 @@ public class RegistrationDaoHibernateImpl
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
-
-    /**
-     * @param submitterUuid
-     * @param includedStatus
-     * @param taxonNameUUIDs
-     * @param b
-     * @param orderHints
-     * @return
-     */
     private Query makeByNameUUIDQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             Collection<UUID> taxonNameUUIDs, boolean isCount, List<OrderHint> orderHints) {
 
@@ -291,16 +254,6 @@ public class RegistrationDaoHibernateImpl
 
     }
 
-
-    /**
-     * @param submitterUuid
-     * @param includedStatus
-     * @param identifierFilterPattern
-     * @param taxonNameFilterPattern
-     * @param typeDesignationStatusUuids
-     * @param isCount
-     * @return
-     */
     private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String identifierFilterPattern, String taxonNameFilterPattern, String referenceFilterPattern,
             Collection<UUID> typeDesignationStatusUuids, boolean isCount, List<OrderHint> orderHints) {
@@ -377,6 +330,4 @@ public class RegistrationDaoHibernateImpl
 
         return query;
     }
-
-
 }
