@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.hibernate;
-
 
 import static org.junit.Assert.assertNotNull;
 
@@ -73,29 +71,18 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	@SpringBeanByType
 	private IDefinedTermDao termDao;
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		cdmBase = Taxon.NewInstance(null, null);
 		cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}.
-	 * @throws Exception
-	 */
 	@Test
 	public void testDaos() throws Exception {
 		assertNotNull("cdmEntityDaoBase should exist",cdmEntityDaoBase);
 		assertNotNull("agentDao should exist",agentDao);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
 	@ExpectedDataSet
@@ -185,8 +172,6 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		Assert.assertEquals(team1, team2);
 	}
 
-
-
 	private Person makePerson1() {
 		Person person1;
 		person1 = Person.NewInstance();
@@ -210,9 +195,6 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		return person2;
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
 	@ExpectedDataSet
@@ -265,18 +247,12 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 		amplification.setDnaMarker(marker);
 		amplification.setInstitution(institution);
 
-
 		termDao.save(marker);
 		amplificationDao.saveOrUpdate(amplification);
 		Assert.assertEquals("My institute_Person_marker_2008", amplification.getLabelCache());
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-	 */
 	@Override
-	public void createTestDataSet() throws FileNotFoundException {
-		// TODO Auto-generated method stub
-	}
+	public void createTestDataSet() throws FileNotFoundException {}
 }
 

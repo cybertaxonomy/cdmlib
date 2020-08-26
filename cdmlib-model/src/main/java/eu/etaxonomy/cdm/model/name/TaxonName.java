@@ -2213,7 +2213,6 @@ public class TaxonName
     public Rank getRank(){
         return this.rank;
     }
-
     /**
      * @see  #getRank()
      */
