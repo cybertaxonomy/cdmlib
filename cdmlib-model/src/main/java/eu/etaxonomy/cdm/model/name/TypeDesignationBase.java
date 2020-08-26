@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -244,24 +245,36 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         this.notDesignated = notDesignated;
     }
 
-    public String getCitationMicroReference(){
-        return this.source.getCitationMicroReference();
-    }
-    public void setCitationMicroReference(String citationMicroReference){
-        this.source.setCitationMicroReference(citationMicroReference);
+    @Transient
+    public String getCitationMicroReference() {
+        return source == null ? null : this.source.getCitationMicroReference();
     }
 
+    public void setCitationMicroReference(String microReference) {
+        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+        checkNullSource();
+    }
+    @Transient
     public Reference getCitation(){
-        return this.source.getCitation();
+        return source == null ? null : this.source.getCitation();
     }
     public void setCitation(Reference citation) {
-        this.source.setCitation(citation);
+        this.getSource(true).setCitation(citation);
+        checkNullSource();
     }
 
     /**
+     * @param createNew
      * @return the source
      */
-    public IdentifiableSource getSource() {
+    public IdentifiableSource getSource(boolean createIfNotExist) {
+        if (this.source == null && createIfNotExist){
+            this.source = IdentifiableSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+        }
+        return source;
+    }
+
+    public IdentifiableSource getSource(){
         return source;
     }
 
@@ -270,6 +283,12 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      */
     public void setSource(IdentifiableSource source) {
         this.source = source;
+    }
+
+    private void checkNullSource() {
+        if (this.source != null && this.source.checkEmpty(true)){
+            this.source = null;
+        }
     }
 
     /**
