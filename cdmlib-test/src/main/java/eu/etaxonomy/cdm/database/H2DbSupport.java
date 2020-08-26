@@ -1,15 +1,15 @@
 package eu.etaxonomy.cdm.database;
 
 /**
- * based on from http://code.google.com/p/java-tester/source/browse/trunk/src/main/java/org/jtester/unitils/database/H2DbSupport.java
+ * Based on http://code.google.com/p/java-tester/source/browse/trunk/src/main/java/org/jtester/unitils/database/H2DbSupport.java
  */
-
 
 import java.util.Set;
 
 import org.unitils.core.dbsupport.DbSupport;
 
 public class H2DbSupport extends DbSupport {
+        
         /**
          * Creates support for HsqlDb databases.
          */

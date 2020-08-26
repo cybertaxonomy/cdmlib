@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.term.TermBase;
 /**
  * @author andreas
  * @since Mar 25, 2015
- *
  */
 public interface ITermRepresentation_L10n {
 
