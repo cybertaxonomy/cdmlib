@@ -46,59 +46,6 @@
         </dependencies>
       </plugin>
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <configuration>
-          <tasks>
-            <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.EnversHibernateToolTask">
-              <classpath refid="maven.plugin.classpath" />
-            </taskdef>
-            <mkdir dir="target/generated-sources/hibernate3" />
-            <hibernatetool destdir=".">
-              <classpath>
-                <path refid="maven.plugin.classpath" />
-                <path refid="maven.compile.classpath" />
-                <path refid="maven.test.classpath" />
-              </classpath>
-              <jpaconfiguration persistenceunit="cdm" />
-              <hbm2ddl drop="false" create="true" export="false" outputfilename="target/generated-sources/hibernate3/001_cdm.ddl" delimiter=";" format="true" />
-              </hibernatetool>
-          </tasks>
-        </configuration>
-         <dependencies>
-          <dependency>
-            <groupId>eu.etaxonomy</groupId>
-            <artifactId>cdmlib-db</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-envers</artifactId>
-            <version>${hibernate.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-          </dependency>
-          <dependency>
-          	<!-- is this still needed ?? -->
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-tools</artifactId>
-            <version>3.2.4.GA</version>
-          </dependency>
-          <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-              <version>${commons-logging.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.3.2</version>
