@@ -176,10 +176,27 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
+        this(IdentifiableSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
+    }
+
+    /**
+     * Class constructor: creates a new type designation
+     * (including its {@link Reference reference source} and eventually
+     * the taxon name string originally used by this reference when establishing
+     * the former designation).
+     *
+     * @param source                the reference source for the new designation
+     * @param originalNameString    the taxon name string used originally in the reference source for the new designation
+     * @param isNotDesignated       the boolean flag indicating whether there is no type at all for
+     *                              <i>this</i> type designation
+     * @see                         #TypeDesignationBase()
+     * @see                         #isNotDesignated()
+     * @see                         TaxonName#getTypeDesignations()
+     */
+    protected TypeDesignationBase(IdentifiableSource source, String originalNameString, boolean notDesignated){
         super();
         this.notDesignated = notDesignated;
-        this.citationMicroReference = citationMicroReference;
-        this.citation = citation;
+        this.source = source;
     }
 
 
@@ -239,6 +256,20 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     }
     public void setCitation(Reference citation) {
         this.citation = citation;
+    }
+
+    /**
+     * @return the source
+     */
+    public IdentifiableSource getSource() {
+        return source;
+    }
+
+    /**
+     * @param source the source to set
+     */
+    public void setSource(IdentifiableSource source) {
+        this.source = source;
     }
 
     /**
