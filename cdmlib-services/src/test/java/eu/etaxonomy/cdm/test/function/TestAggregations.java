@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.description.AggregationMode;
 import eu.etaxonomy.cdm.api.service.description.AggregationSourceMode;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -83,7 +83,6 @@ public class TestAggregations {
 //
 //		//H2
 //        String path = "C:\\Users\\a.mueller\\.cdmLibrary\\writableResources\\h2\\LocalH2";
-////		String path = "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2";
 ////      String path = "C:\\Users\\a.mueller\\eclipse\\svn\\cdmlib-trunk\\cdmlib-remote-webapp\\src\\test\\resources\\h2";
 //		username = "sa";
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", path);
