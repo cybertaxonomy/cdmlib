@@ -2225,13 +2225,13 @@ public class TaxonName
 //*************** nom ref/source *******************/
 
     @Override
+    @Transient
     public Reference getNomenclaturalReference(){
         //#6581
-        return this.nomenclaturalReference;
-//        if (this.nomenclaturalSource == null){
-//            return null;
-//        }
-//        return this.nomenclaturalSource.getCitation();
+        if (this.nomenclaturalSource == null){
+            return null;
+        }
+        return this.nomenclaturalSource.getCitation();
     }
 
     @Override
@@ -2261,11 +2261,11 @@ public class TaxonName
      */
 
     @Override
+    @Transient
     public void setNomenclaturalReference(Reference nomenclaturalReference){
         //#6581
-        this.nomenclaturalReference = nomenclaturalReference;
-//        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
-//        checkNullSource();
+        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
+        checkNullSource();
     }
 
     @Override
@@ -2283,13 +2283,13 @@ public class TaxonName
      */
     //Details of the nomenclatural reference (protologue).
     @Override
+    @Transient
     public String getNomenclaturalMicroReference(){
         //#6581
-        return this.nomenclaturalMicroReference;
-//        if (this.nomenclaturalSource == null){
-//            return null;
-//        }
-//        return this.nomenclaturalSource.getCitationMicroReference();
+        if (this.nomenclaturalSource == null){
+            return null;
+        }
+        return this.nomenclaturalSource.getCitationMicroReference();
     }
     /**
      * @see  #getNomenclaturalMicroReference()
@@ -2297,9 +2297,8 @@ public class TaxonName
     @Override
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
         //#6581
-        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
-//        this.getNomenclaturalSource(true).setCitationMicroReference(isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
-//        checkNullSource();
+        this.getNomenclaturalSource(true).setCitationMicroReference(isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+        checkNullSource();
     }
 
     //#6581
