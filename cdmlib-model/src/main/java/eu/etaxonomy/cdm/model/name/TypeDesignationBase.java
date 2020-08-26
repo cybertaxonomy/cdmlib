@@ -245,17 +245,17 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     }
 
     public String getCitationMicroReference(){
-        return this.citationMicroReference;
+        return this.source.getCitationMicroReference();
     }
     public void setCitationMicroReference(String citationMicroReference){
-        this.citationMicroReference = citationMicroReference;
+        this.source.setCitationMicroReference(citationMicroReference);
     }
 
     public Reference getCitation(){
-        return this.citation;
+        return this.source.getCitation();
     }
     public void setCitation(Reference citation) {
-        this.citation = citation;
+        this.source.setCitation(citation);
     }
 
     /**
