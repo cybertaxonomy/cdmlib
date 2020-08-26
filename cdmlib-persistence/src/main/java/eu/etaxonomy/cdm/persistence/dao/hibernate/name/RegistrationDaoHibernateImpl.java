@@ -105,18 +105,22 @@ public class RegistrationDaoHibernateImpl
             //do nothing
         }else if (reference.isPresent()){
            from += "   LEFT JOIN n.nomenclaturalSource nomSource "
-                   + " LEFT JOIN desig.source desigSource ";
+                   + " LEFT JOIN nomSource.citation nomRef "
+                   + " LEFT JOIN desig.source desigSource "
+                   + " LEFT JOIN desigSource.citation desigRef ";
            where += " AND ("
-                   + "     nomSource.citation =:ref "
-                   + "     OR (nomSource.citation.type =:refType AND nomSource.citation.inReference =:ref) "
-                   + "     OR desigSource.citation =:ref "
-                   + "     OR (desigSource.citation.type =:refType AND desigSource.citation.inReference =:ref)"
-                   + ")";
+                   + "     nomRef =:ref "
+                   + "     OR (nomRef.type =:refType AND nomRef.inReference =:ref) "
+                   + "     OR desigRef =:ref "
+                   + "     OR (desigRef.type =:refType AND desigRef.inReference =:ref)"
+                + ")";
            refTypeParameter = ReferenceType.Section;
         }else{  //ref is null
-           where += " AND ((r.name IS NULL AND size(r.typeDesignations) = 0 ) "
-                   + "     OR (n IS NOT NULL AND (r.name.nomenclaturalSource IS NULL OR r.name.nomenclaturalSource.citation IS NULL)) "
-                   + "     OR (size(r.typeDesignations) > 0 AND (desig.source IS NULL OR desig.source.citation IS NULL))"
+            from += "   LEFT JOIN n.nomenclaturalSource nomSource "
+                    + " LEFT JOIN desig.source desigSource ";
+            where += " AND ((r.name IS NULL AND size(r.typeDesignations) = 0 ) "
+                   + "     OR (n IS NOT NULL AND (nomSource.citation IS NULL)) "
+                   + "     OR (size(r.typeDesignations) > 0 AND (desigSource.citation IS NULL))"
                    + ") "
                    ;
         }
