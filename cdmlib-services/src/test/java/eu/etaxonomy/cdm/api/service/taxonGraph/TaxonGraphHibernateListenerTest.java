@@ -191,7 +191,6 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a), nameDao.load(uuid_n_trachelomonas), true);
             Assert.assertEquals(1, edges.size());
             Assert.assertEquals(refX.getUuid(), edges.get(0).getCitationUuid());
-
         } finally {
             rollback();
         }

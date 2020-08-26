@@ -87,7 +87,7 @@ public abstract class SingleSourcedEntityBase
         return source == null ? null : this.source.getCitationMicroReference();
     }
     public void setCitationMicroReference(String microReference) {
-        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+        this.getSource(true).setCitationMicroReference(isBlank(microReference)? null : microReference);
         checkNullSource();
     }
 

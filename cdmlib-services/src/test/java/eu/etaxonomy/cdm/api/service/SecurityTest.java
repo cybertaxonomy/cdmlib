@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
-
 @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 public class SecurityTest extends AbstractSecurityTestBase{
 
@@ -109,7 +108,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
     protected DataSource dataSource;
 
     private Authentication authentication;
-
 
     /**
      * no assertions in this test, since it is only used to create password hashes for test data
