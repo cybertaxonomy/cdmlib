@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @since 05.05.2017
- *
  */
 public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrationTest {
 
@@ -44,7 +43,6 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
 
     @SpringBeanByType
     IReferenceDao referenceDao;
-
 
     @Before
     public void setUp() {
@@ -77,7 +75,6 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         assertEquals("List should have 1 entry", 1, registrationList.size());
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
         assertEquals("In total there should be 1 registrations", 1, registrationList.size());
-
 
         //test type designation with ref
         Registration regWithType = Registration.NewInstance();
@@ -203,7 +200,6 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         statusList.remove(RegistrationStatus.PUBLISHED);
         registrationList = registrationDao.list( fullNullReferenceOptional, statusList, null, null,null);
         assertEquals("In total there should be 6 registration with status preparation", 6, registrationList.size());
-
     }
 
     @Test
@@ -237,16 +233,13 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         registration4.addTypeDesignation(desigInJournal);
         registrationDao.save(registration4);
 
-        List journalRegistrationList = registrationDao.list( Optional.of(journal), null, null, null,null);
+        List<Registration> journalRegistrationList = registrationDao.list( Optional.of(journal), null, null, null,null);
         Assert.assertEquals(4, journalRegistrationList.size());
 
-        List sectionRegistrationList = registrationDao.list( Optional.of(section), null, null, null,null);
+        List<Registration> sectionRegistrationList = registrationDao.list( Optional.of(section), null, null, null,null);
         Assert.assertEquals(2, sectionRegistrationList.size());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }
