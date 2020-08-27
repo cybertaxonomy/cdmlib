@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author ben.clark
- *
  */
 @SuppressWarnings("unused")
 public class ValidationTest extends CdmTransactionalIntegrationTest {
