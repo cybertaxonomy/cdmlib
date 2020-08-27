@@ -236,15 +236,6 @@ public class TaxonName
     @Column(length=255)
     private String appendedPhrase;
 
-    //#6581
-    @XmlElement(name = "NomenclaturalMicroReference")
-    @Field
-    @CacheUpdate(noUpdate ="titleCache")
-    //TODO Val #3379
-    //@NullOrNotEmpty
-    @Column(length=255)
-    private String nomenclaturalMicroReference;
-
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
     private int parsingProblem = 0;
@@ -328,16 +319,6 @@ public class TaxonName
 //    @NotNull
     @IndexedEmbedded(depth=1)
     private Rank rank;
-
-    //#6581
-    @XmlElement(name = "NomenclaturalReference")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @CacheUpdate(noUpdate ="titleCache")
-    @IndexedEmbedded
-    private Reference nomenclaturalReference;
 
     //#6581
     @XmlElement(name = "NomenclaturalSource")
@@ -2224,40 +2205,31 @@ public class TaxonName
 //*************** nom ref/source *******************/
 
     @Override
-    @Transient
-    public Reference getNomenclaturalReference(){
-        //#6581
-        if (this.nomenclaturalSource == null){
-            return null;
-        }
-        return this.nomenclaturalSource.getCitation();
-    }
-
-    @Override
     public DescriptionElementSource getNomenclaturalSource(){
         return this.nomenclaturalSource;
     }
 
     protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
-        if (this.nomenclaturalSource == null){
-            if (!createIfNotExist){
-                return null;
-            }
+        if (this.nomenclaturalSource == null && createIfNotExist){
             this.nomenclaturalSource = DescriptionElementSource.NewInstance(OriginalSourceType.NomenclaturalReference);
         }
-        return this.nomenclaturalSource;
+        return nomenclaturalSource;
     }
 
-    /**
-     * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
-     * The corresponding {@link eu.etaxonomy.cdm.model.reference.Reference.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
-     * as it is obviously used for nomenclatural purposes.
-     *
-     * Shortcut to set the nomenclatural reference.
-     *
-     * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
-     * @see  #getNomenclaturalReference()
-     */
+    @Override
+    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
+        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+        }
+        this.nomenclaturalSource = nomenclaturalSource;
+    }
+
+    @Override
+    @Transient
+    public Reference getNomenclaturalReference(){
+        //#6581
+        return this.nomenclaturalSource == null? null:this.nomenclaturalSource.getCitation();
+    }
 
     @Override
     @Transient
@@ -2285,36 +2257,30 @@ public class TaxonName
     @Transient
     public String getNomenclaturalMicroReference(){
         //#6581
-        if (this.nomenclaturalSource == null){
-            return null;
-        }
-        return this.nomenclaturalSource.getCitationMicroReference();
+        return this.nomenclaturalSource == null? null: this.nomenclaturalSource.getCitationMicroReference();
     }
+
     /**
      * @see  #getNomenclaturalMicroReference()
      */
     @Override
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
         //#6581
-        this.getNomenclaturalSource(true).setCitationMicroReference(isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
-        checkNullSource();
+        if (nomenclaturalMicroReference == null && this.getNomenclaturalSource()==null){
+            return;
+        }else{
+            this.getNomenclaturalSource(true).setCitationMicroReference(isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+            checkNullSource();
+        }
     }
 
     //#6581
     private void checkNullSource() {
-        if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty()){
+        if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty(true)){
             this.nomenclaturalSource = null;
         }
     }
 
-
-    @Override
-    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
-        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
-            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
-        }
-        this.nomenclaturalSource = nomenclaturalSource;
-    }
 
     /**
      * Returns the appended phrase string assigned to <i>this</i> taxon name.

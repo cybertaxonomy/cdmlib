@@ -5095,7 +5095,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         NAMEAPPROBATION varchar(255),
         NAMECACHE varchar(255),
         NAMETYPE varchar(15),
-        NOMENCLATURALMICROREFERENCE varchar(255),
         ORIGINALPUBLICATIONYEAR integer,
         PARSINGPROBLEM integer not null,
         PROBLEMENDS integer not null,
@@ -5116,7 +5115,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         HOMOTYPICALGROUP_ID integer,
         INBASIONYMAUTHORSHIP_ID integer,
         INCOMBINATIONAUTHORSHIP_ID integer,
-        NOMENCLATURALREFERENCE_ID integer,
         NOMENCLATURALSOURCE_ID integer,
         RANK_ID integer,
         primary key (ID)
@@ -5166,7 +5164,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         NAMEAPPROBATION varchar(255),
         NAMECACHE varchar(255),
         NAMETYPE varchar(15),
-        NOMENCLATURALMICROREFERENCE varchar(255),
         ORIGINALPUBLICATIONYEAR integer,
         PARSINGPROBLEM integer,
         PROBLEMENDS integer,
@@ -5187,7 +5184,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         HOMOTYPICALGROUP_ID integer,
         INBASIONYMAUTHORSHIP_ID integer,
         INCOMBINATIONAUTHORSHIP_ID integer,
-        NOMENCLATURALREFERENCE_ID integer,
         NOMENCLATURALSOURCE_ID integer,
         RANK_ID integer,
         primary key (ID, REV)
@@ -11287,11 +11283,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FKhx788pclwci5ly3drr3ldx752 
         foreign key (INCOMBINATIONAUTHORSHIP_ID) 
         references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.TAXONNAME 
-        add constraint FK1dmy5xlaq1fn7omo0dom0kpbr 
-        foreign key (NOMENCLATURALREFERENCE_ID) 
-        references PUBLIC.REFERENCE;
 
     alter table PUBLIC.TAXONNAME 
         add constraint FKle80w71xca5aftjkqxfvgjdq6 
