@@ -89,23 +89,15 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         includeUnpublished = true;
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTaxonNodeByTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.UUID, java.util.List)}.
-     */
     @Test
     public final void testLoadTaxonNodeByTaxon() {
 		logger.warn("testLoadTaxonNodeByTaxon not yet implemented");
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#loadTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List)}.
-     */
     @Test
     public final void testLoadTaxonNode() {
 		logger.warn("testLoadTaxonNode not yet implemented");
     }
-
 
     @Test
     @DataSet
@@ -147,9 +139,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
             }
         }*/
 //		fail("Not yet implemented");
-
     }
-
 
     @Test
     @DataSet
@@ -197,8 +187,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertEquals(3, taxonNodes.size());
         taxonNodes = service.listRankSpecificRootNodes(classification, null, Rank.SPECIES(), includeUnpublished, 2, 1, NODE_INIT_STRATEGY);
         Assert.assertEquals(1, taxonNodes.size());
-
-
     }
 
     @Test
@@ -252,9 +240,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertEquals(1, taxonNodes.size());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.ClassificationServiceImpl#setDao(eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao)}.
-     */
     @Test
     public final void testSetDaoIClassificationDao() {
         Assert.assertNotNull(service);
@@ -288,7 +273,6 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
         Assert.assertFalse(StringUtils.isBlank(result.get(2).getGroupTaxonName()));
     }
 
-
     @Test
     @DataSet
     public final void testCloneClassification(){
@@ -315,15 +299,10 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     	}
     }
 
-
     private UUID acacia_acicularis_uuid  = UUID.fromString("90ad2d8f-19a9-4a10-bab3-7d1de5ce1968");
     private UUID acacia_cuspidifolia_uuid = UUID.fromString("94123e4d-da49-4ed0-9d59-f52a9f7a3618");
     private UUID acacia_sect_botrycephalae_uuid = UUID.fromString("2c73a166-35d1-483d-b8e8-209214cb6193");
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
 //    @Test
     public void createTestDataSet() throws FileNotFoundException {
@@ -419,6 +398,5 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
             fileNameAppendix, true );
-
     }
 }

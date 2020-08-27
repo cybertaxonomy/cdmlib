@@ -32,12 +32,12 @@ import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
  *
  * @author a.kohlbecker
  * @since Sep 26, 2018
- *
  */
 public class TaxonGraphBeforeTransactionCompleteProcess
         extends AbstractHibernateTaxonGraphProcessor
         implements BeforeTransactionCompletionProcess {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
     private String[] NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
@@ -78,9 +78,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         this.runAs = runAs;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doBeforeTransactionCompletion(SessionImplementor session) {
 
@@ -113,7 +110,6 @@ public class TaxonGraphBeforeTransactionCompleteProcess
               }
           }
       }
-
     }
 
     private int checkStateChange(String[] propertyNamesToCheck){

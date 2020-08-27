@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
@@ -963,7 +962,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             nameRecord.put("famName",familyNode.getTaxon().getName().getNameCache());
             nameRecord.put("accFamName","");
 
-
 			//nameRecord.put("famName",(String)row[0]);
 
 			nameRecord.put("accFamName",(String)row[1]);
@@ -998,9 +996,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 		return nameRecords;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
@@ -1022,11 +1017,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         return result;
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet,
             Optional<String> specificEpithet, Optional<String> infraSpecificEpithet, Rank rank, Collection<UUID> excludedNamesUUIDs) {
@@ -1044,9 +1034,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         return (Long) count;
     }
 
-    /**
-     * @return
-     */
     private StringBuilder prepareFindTaxonNameParts(boolean doCount, Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
             Optional<String> infraSpecificEpithet, Rank rank, Collection<UUID> excludedNamesUuids) {
@@ -1155,6 +1142,4 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
         return results;
     }
-
-
 }

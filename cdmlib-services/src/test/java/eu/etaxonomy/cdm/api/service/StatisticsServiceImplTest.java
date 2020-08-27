@@ -244,10 +244,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				&& classiCounter < NO_OF_CLASSIFICATIONS; /* see below */) {
 
 			// compute no of taxa to be created in this classification
-			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last
-																// classification
-																// gets all left
-																// taxa
+			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last classification gets all left taxa
 				taxaInClass = remainder;
 			} else { // take half of left taxa for this class:
 				taxaInClass = remainder / 2;

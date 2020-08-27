@@ -374,13 +374,6 @@ public class StatisticsDaoHibernateImpl
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
-	 * countNomenclaturalReferences()
-	 */
-	// @Override
 	@Override
     public Long countNomenclaturalReferences() {
 		Query query = getSession()
@@ -391,8 +384,7 @@ public class StatisticsDaoHibernateImpl
 		return (Long) query.uniqueResult();
 	}
 
-
-	 @Override
+	@Override
 	public Long countNomenclaturalReferences(
 			Classification classification) {
 
@@ -401,7 +393,7 @@ public class StatisticsDaoHibernateImpl
             return null; // or MAYDO: throw some Exception???
         }
 
-		Map<String, Object> parameters = new HashMap<String, Object>();
+		Map<String, Object> parameters = new HashMap<>();
 
 		parameters.put("classification", classification);
 		// so instead of "UNION" we use 2 queries
@@ -423,11 +415,9 @@ public class StatisticsDaoHibernateImpl
 				queryStrings, parameters).size());
 	}
 
-
 	@Override
 	public Long countReferencesInClassificationWithUuids(Classification classification) {
-		if (classification == null)
-         {
+		if (classification == null){
             return null; // or MAYDO: throw some Exception???
         }
 
@@ -435,8 +425,8 @@ public class StatisticsDaoHibernateImpl
 		// ---------------------------------------------
 
 		// preparation
-		List<String> queryStrings = new ArrayList<String>();
-		Map<String, Object> parameters = new HashMap<String, Object>();
+		List<String> queryStrings = new ArrayList<>();
+		Map<String, Object> parameters = new HashMap<>();
 
 		parameters.put("classification", classification);
 
@@ -445,7 +435,7 @@ public class StatisticsDaoHibernateImpl
 
 		//TODO
 		//Set<Integer> ids = listDescriptiveIds(true, classification);
-		Set<UUID> ids = new HashSet<UUID>();
+		Set<UUID> ids = new HashSet<>();
 
 		// get classification reference
 		queryStrings.add("select c.reference.uuid from Classification as c "

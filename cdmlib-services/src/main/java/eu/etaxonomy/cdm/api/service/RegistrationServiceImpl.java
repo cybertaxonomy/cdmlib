@@ -274,10 +274,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return reg;
     }
 
-    /**
-     * @param taxonNameId
-     * @return
-     */
     @Override
     @Transactional(readOnly=false)
     public Registration createRegistrationForName(UUID taxonNameUuid) {
@@ -293,9 +289,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return load(reg.getUuid(), Arrays.asList(new String []{"blockedBy"}));
     }
 
-    /**
-     * @param typeDesignationTarget
-     */
     @Override
     @Transactional(readOnly=false)
     public Registration assureIsPersisted(Registration reg) {

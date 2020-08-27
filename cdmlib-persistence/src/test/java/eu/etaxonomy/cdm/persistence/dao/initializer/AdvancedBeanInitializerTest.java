@@ -236,7 +236,6 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         TaxonName name = nameDao.load(nameUuid, Arrays.asList("*"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertTrue(Hibernate.isInitialized(name.getAnnotations()));
-
     }
 
     @DataSet
@@ -308,19 +307,12 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
     // ============================== end of tests ========================= //
 
-    /**
-     * @return
-     */
     protected Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> clearAutoinitializers() {
         Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> autoIntitializers = new HashMap<>(defaultBeanInitializer.getBeanAutoInitializers());
         defaultBeanInitializer.getBeanAutoInitializers().clear();
         return autoIntitializers;
     }
 
-
-    /**
-     *
-     */
     protected void assureSessionClear() {
         try {
             factory.getCurrentSession().clear();
@@ -342,15 +334,15 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         team.setUuid(teamUuid);
         team.addTeamMember(person1);
         team.addTeamMember(person2);
-        Set<Address> addresses = new HashSet<Address>();
+        Set<Address> addresses = new HashSet<>();
         addresses.add(Address.NewInstance(Country.GERMANY(), "locality", "pobox", "postcode", "region", "street", Point.NewInstance(50.02,33.3, ReferenceSystem.GOOGLE_EARTH(), 3)));
-        List<String> emailAddresses = new ArrayList<String>();
+        List<String> emailAddresses = new ArrayList<>();
         emailAddresses.add("My.email@web.de");
-        List<String> faxNumbers = new ArrayList<String>();
+        List<String> faxNumbers = new ArrayList<>();
         faxNumbers.add("0049-30-1234545");
-        List<String> phoneNumbers = new ArrayList<String>();
+        List<String> phoneNumbers = new ArrayList<>();
         phoneNumbers.add("0049-30-1234546");
-        List<URI> urls = new ArrayList<URI>();
+        List<URI> urls = new ArrayList<>();
         urls.add(URI.create("http://www.test.de"));
         Contact contact = Contact.NewInstance(addresses, emailAddresses, faxNumbers, phoneNumbers, urls);
 
@@ -395,7 +387,5 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
             fileNameAppendix, true );
-
     }
-
 }
