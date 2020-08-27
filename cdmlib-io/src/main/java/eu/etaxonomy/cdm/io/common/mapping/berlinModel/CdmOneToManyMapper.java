@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -42,14 +42,14 @@ public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGL
 		this.oneClass = oneClass;
 		this.singleAttributeName = singleAttributeName;
 	}
-	
+
 //	@Override
 //	public Set<String> getSourceAttributes(){
-//		Set<String> result = new HashSet<String>();
+//		Set<String> result = new HashSet<>();
 //		result.addAll(getSourceAttributeList());
 //		return result;
 //	}
-	
+
 	@Override
 	public List<String> getSourceAttributeList(){
 		List<String> result = new ArrayList<String>();
@@ -58,14 +58,14 @@ public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGL
 		}
 		return result;
 	}
-	
+
 //	@Override
 //	public Set<String> getDestinationAttributes(){
-//		Set<String> result = new HashSet<String>();
+//		Set<String> result = new HashSet<>();
 //		result.addAll(getDestinationAttributeList());
 //		return result;
 //	}
-	
+
 	@Override
 	public List<String> getDestinationAttributeList(){
 		List<String> result = new ArrayList<String>();
@@ -75,15 +75,15 @@ public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGL
 		return result;
 	}
 
-	
+
 	public Class<MANY> getManyClass(){
 		return manyClass;
 	}
-	
+
 	public Class<ONE> getOneClass(){
 		return oneClass;
 	}
-	
+
 	public String getDestinationAttribute(String sourceAttribute){
 		if (sourceAttribute == null){
 			return null;
@@ -95,7 +95,7 @@ public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGL
 		}
 		return null;
 	}
-	
+
 	public List<SINGLE_MAPPER> getSingleMappers(){
 		return singleMappers;
 	}
@@ -106,5 +106,5 @@ public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGL
 	public String getSingleAttributeName() {
 		return singleAttributeName;
 	}
-	
+
 }

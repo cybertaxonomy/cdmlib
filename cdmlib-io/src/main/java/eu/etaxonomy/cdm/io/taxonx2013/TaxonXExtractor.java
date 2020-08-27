@@ -75,18 +75,16 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
-
 /**
  * @author pkelbert
  * @since 2 avr. 2013
- *
  */
 public class TaxonXExtractor {
 
     protected TaxonXImport importer;
     protected TaxonXImportState state2;
-    private final Map<String,String> namesAsked = new HashMap<String, String>();
-    private final Map<String,Rank>ranksAsked = new HashMap<String, Rank>();
+    private final Map<String,String> namesAsked = new HashMap<>();
+    private final Map<String,Rank>ranksAsked = new HashMap<>();
 
     Logger logger = Logger.getLogger(TaxonXExtractor.class);
 
@@ -95,32 +93,18 @@ public class TaxonXExtractor {
         private boolean foundBibref=false;
         private final TaxonXAddSources sourceHandler;
 
-        /**
-         * @param sourceHandler
-         */
+
         public ReferenceBuilder(TaxonXAddSources sourceHandler) {
             this.sourceHandler=sourceHandler;
         }
 
-        /**
-         * @return the foundBibref
-         */
         public boolean isFoundBibref() {
             return foundBibref;
         }
-
-        /**
-         * @param foundBibref the foundBibref to set
-         */
         public void setFoundBibref(boolean foundBibref) {
             this.foundBibref = foundBibref;
         }
 
-
-        /**
-         * @param ref
-         * @param refMods
-         */
         public void builReference(String mref, String treatmentMainName, NomenclaturalCode nomenclaturalCode,
                 Taxon acceptedTaxon, Reference refMods) {
             // System.out.println("builReference "+mref);
@@ -167,7 +151,6 @@ public class TaxonXExtractor {
             nbRef++;
 
         }
-
     }
 
     public class MySpecimenOrObservation{
@@ -186,16 +169,8 @@ public class TaxonXExtractor {
         public void setDerivedUnitBase(DerivedUnit derivedUnitBase) {
             this.derivedUnitBase = derivedUnitBase;
         }
-
-
-
-
     }
 
-    /**
-     * @param item
-     * @return
-     */
     @SuppressWarnings({ "unused", "rawtypes" })
     protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnit derivedUnitBase,
             SpecimenOrObservationType defaultAssociation, TaxonName typifiableName) {
@@ -356,7 +331,7 @@ public class TaxonXExtractor {
         unitsGatheringArea.setParams(null, country, state2.getConfig(), importer.getTermService(), importer.getOccurrenceService(), importer.getVocabularyService());
         //TODO other areas
         if (StringUtils.isNotBlank(stateprov)){
-        	Map<String, String> namedAreas = new HashMap<String, String>();
+        	Map<String, String> namedAreas = new HashMap<>();
         	namedAreas.put(stateprov, null);
             unitsGatheringArea.setAreaNames(namedAreas, state2.getConfig(), importer.getTermService(), importer.getVocabularyService());
         }
@@ -391,7 +366,6 @@ public class TaxonXExtractor {
         //        }
         return specimenOrObservation;
     }
-
 
     private SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(
             String key) {
@@ -474,8 +448,6 @@ public class TaxonXExtractor {
         return derivedUnitFacade;
     }
 
-
-
     @SuppressWarnings("rawtypes")
     protected Feature makeFeature(SpecimenOrObservationBase unit) {
         if (unit == null){
@@ -500,9 +472,7 @@ public class TaxonXExtractor {
         return null;
     }
 
-
     protected final static String SPLITTER = ",";
-
 
     protected  int askQuestion(String question){
         Scanner scan = new Scanner(System.in);
@@ -511,11 +481,6 @@ public class TaxonXExtractor {
         return index;
     }
 
-
-    /**
-     * @param reftype
-     * @return
-     */
     protected Reference getReferenceWithType(int reftype) {
         Reference ref = null;
         switch (reftype) {
@@ -547,20 +512,17 @@ public class TaxonXExtractor {
         }
         return ref;
     }
-    /**
-     * @param unitsList
-     * @param state
-     */
+
     protected void prepareCollectors(TaxonXImportState state,IAgentService agentService) {
         //        logger.info("PREPARE COLLECTORS");
-        List<String> collectors = new ArrayList<String>();
+        List<String> collectors = new ArrayList<>();
         String tmp;
-        List<String> collectorsU = new ArrayList<String>(new HashSet<String>(collectors));
+        List<String> collectorsU = new ArrayList<>(new HashSet<>(collectors));
         Set<UUID> uuids = new HashSet<UUID>();
 
         //existing persons in DB
         List<UuidAndTitleCache<Person>> hiberPersons = agentService.getPersonUuidAndTitleCache();
-        Map<String,Person> titleCachePerson = new HashMap<String, Person>();
+        Map<String,Person> titleCachePerson = new HashMap<>();
         uuids = new HashSet<UUID>();
         for (UuidAndTitleCache<Person> hibernateP:hiberPersons){
             uuids.add(hibernateP.getUuid());
@@ -1182,7 +1144,7 @@ public class TaxonXExtractor {
     }
 
     protected boolean containsDistinctLetters(String word){
-        Set<Character> dl = new HashSet<Character>();
+        Set<Character> dl = new HashSet<>();
         for (char a: word.toCharArray()) {
             dl.add(a);
         }
@@ -1213,7 +1175,6 @@ public class TaxonXExtractor {
     		return null;
     	}
     }
-
 
     /** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
      */
@@ -1278,7 +1239,6 @@ public class TaxonXExtractor {
         }
     }
 
-
     //TypeDesignation
     protected  SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
         switch (typeStatusId){
@@ -1302,8 +1262,4 @@ public class TaxonXExtractor {
         }
         }
     }
-
-
 }
-
-

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class TaxonExcelImportState
 	private static final Logger logger = Logger.getLogger(TaxonExcelImportState.class);
 
     /** Already processed authors */
-	private Set<String> authors = new HashSet<String>();
+	private Set<String> authors = new HashSet<>();
 
 	private Map<String, TaxonBase> taxonMap= new HashMap<String, TaxonBase>();
 	/**
@@ -60,22 +59,13 @@ public class TaxonExcelImportState
 	private Taxon parent;
 	private Classification classification;
 
-
-
 	public TaxonExcelImportState(ExcelImportConfiguratorBase config) {
 		super(config);
 	}
 
-	/**
-	 * @return the author
-	 */
 	public Set<String> getAuthors() {
 		return authors;
 	}
-
-	/**
-	 * @param author the author to set
-	 */
 	public void setAuthors(Set<String> authors) {
 		this.authors = authors;
 	}
@@ -83,40 +73,21 @@ public class TaxonExcelImportState
 	public Taxon getParent(){
 	    return parent;
 	}
-
 	public void setParent(Taxon parent){
 	    this.parent = parent;
     }
 
-	/**
-	 * @param parentId
-	 * @return
-	 */
 	public TaxonBase getTaxonBase(String taxonId) {
 		return taxonMap.get(taxonId);
 	}
 
-
-	/**
-	 * @param parentId
-	 * @param taxon
-	 */
 	public void putTaxon(String taxonId, TaxonBase taxonBase) {
-
-
 	    taxonMap.put(taxonId, taxonBase);
 	}
 
-    /**
-     * @return the classification
-     */
     public Classification getClassification() {
         return classification;
     }
-
-    /**
-     * @param classification the classification to set
-     */
     public void setClassification(Classification classification) {
         this.classification = classification;
     }
@@ -137,18 +108,10 @@ public class TaxonExcelImportState
         this.nameMap = nameMap;
     }
 
-    /**
-     * @param name
-     * @param name2
-     */
     public void putName(String titleCache, TaxonName name) {
         if (nameMap == null){
-            nameMap = new HashMap<String, TaxonName>();
+            nameMap = new HashMap<>();
         }
-
         nameMap.put(titleCache, name);
     }
-
-
-
 }

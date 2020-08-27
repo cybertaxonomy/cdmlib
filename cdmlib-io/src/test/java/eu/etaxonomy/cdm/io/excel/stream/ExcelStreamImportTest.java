@@ -184,7 +184,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 //			}
 //		}
 //		Assert.assertEquals("Number of common names should be 2", 2, commonNames.size());
-//		Set<String> commonNameStrings = new HashSet<String>();
+//		Set<String> commonNameStrings = new HashSet<>();
 //		commonNameStrings.add(commonNames.get(0).getName());
 //		commonNameStrings.add(commonNames.get(1).getName());
 //		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));

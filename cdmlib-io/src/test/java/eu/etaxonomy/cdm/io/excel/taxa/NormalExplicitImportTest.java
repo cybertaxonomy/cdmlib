@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import static org.junit.Assert.assertEquals;
@@ -62,7 +61,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since 26.08.2009
  */
 public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NormalExplicitImportTest.class);
 
 	@SpringBeanByName
@@ -172,7 +172,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 			}
 		}
 		Assert.assertEquals("Number of common names should be 2", 2, commonNames.size());
-		Set<String> commonNameStrings = new HashSet<String>();
+		Set<String> commonNameStrings = new HashSet<>();
 		commonNameStrings.add(commonNames.get(0).getName());
 		commonNameStrings.add(commonNames.get(1).getName());
 		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));
@@ -233,7 +233,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 			}
 		}
 		Assert.assertEquals("Number of common names should be 2", 2, commonNames.size());
-		Set<String> commonNameStrings = new HashSet<String>();
+		Set<String> commonNameStrings = new HashSet<>();
 		commonNameStrings.add(commonNames.get(0).getName());
 		commonNameStrings.add(commonNames.get(1).getName());
 		Assert.assertTrue("Common names must include Yellow Underwing", commonNameStrings.contains("Large Sunshine Underwing"));

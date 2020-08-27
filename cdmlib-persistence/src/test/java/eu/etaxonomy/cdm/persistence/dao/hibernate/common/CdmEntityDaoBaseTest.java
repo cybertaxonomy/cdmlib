@@ -88,19 +88,11 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
 
 /************ TESTS ********************************/
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}.
-     * @throws Exception
-     */
     @Test
     public void testCdmEntityDaoBase() throws Exception {
         assertNotNull("cdmEntityDaoBase should exist",cdmEntityDaoBase);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
@@ -111,9 +103,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         commit();
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
@@ -126,9 +115,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         commit();
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
@@ -168,11 +154,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
             endTransaction();
             startNewTransaction();
         }
-
     }
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
+
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
@@ -181,10 +164,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         commit();
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testSaveWithAuthenticationFailedPermissionEvaluation() throws Exception {
@@ -203,12 +182,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
             startNewTransaction();
         }
         Assert.assertNotNull("evaluation must fail since the user has no permission", securityException);
-
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
@@ -230,9 +205,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#update(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet
@@ -265,12 +237,8 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
             startNewTransaction();
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
-
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#findById(int)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testFindById() {
@@ -278,9 +246,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         assertNotNull("There should be an entity with an id of 1",cdmBase);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#findByUuid(java.util.UUID)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testFindByUuid() {
@@ -288,9 +253,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         assertNotNull("testFindByUuid() an entity with a uuid of " + uuid.toString(),cdmBase);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#exists(java.util.UUID)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testExists() {
@@ -300,9 +262,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         assertFalse("exists() should return false for any other uuid", existsRandom);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(int, int)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testList() {
@@ -311,9 +270,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         assertEquals("list() should return a list with two entities in it",list.size(),2);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(Class, Integer, Integer, List, List)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testRandomOrder() {
@@ -324,9 +280,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         assertEquals("list() should return a list with two entities in it", list.size(), 2);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(java.util.Collection, Integer, Integer, List, List)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testListByUuids() {
@@ -338,9 +291,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         assertEquals("list() should return a list with two entities in it",list.size(),2);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#loadList(java.util.Collection, List)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testListByIds() {
@@ -352,9 +302,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         assertEquals("list() should return a list with two entities in it",2,list.size());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)}.
-     */
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     @ExpectedDataSet

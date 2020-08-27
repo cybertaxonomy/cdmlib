@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import static org.junit.Assert.assertEquals;
@@ -100,7 +99,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 //		loadDataSet(getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.xml"));
 //		printDataSet(System.err, TABLE_NAMES);
     }
-
 
     @Test
     public void testCountByDistribution() {
@@ -266,7 +264,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
         assert description != null : "description must exist";
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("multilanguageText");
         propertyPaths.add("media");
         propertyPaths.add("feature");
@@ -360,7 +358,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         assert taxonSphingidae != null : "taxon must exist";
 
         // 1.
-
         List<DescriptionElementBase> elements1 = descriptionDao.getDescriptionElementForTaxon(
                 taxonSphingidae.getUuid() , null, null, null, 0, null);
 
@@ -368,7 +365,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements1.size());
 
         // 2.
-
         List<DescriptionElementBase> elements2 = descriptionDao.getDescriptionElementForTaxon(
                 taxonSphingidae.getUuid() , null, DescriptionElementBase.class, null, 0, null);
 
@@ -376,7 +372,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         assertTrue("getDescriptionElementForTaxon should be empty",elements2.isEmpty());
 
         // 3.
-
         List<Distribution> elements3 = descriptionDao.getDescriptionElementForTaxon(
                 taxonSphingidae.getUuid() , null, Distribution.class, null, 0, null);
 
@@ -402,7 +397,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 //		printDataSet(System.err, new String[]{"TAXONBASE"});
 
         assertTrue(true);
-
     }
 
     //see #2592
@@ -419,7 +413,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         description.addScope(scope);
 
         this.descriptionDao.saveOrUpdate(description);
-
     }
 
     @Test
@@ -527,7 +520,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         Assert.assertNotNull("Third taxon should exist", thirdTaxon);
         Assert.assertEquals("There should be 6 descriptions in the database", 6, this.descriptionDao.count());
 
-
         //set parameter
         Set<MarkerType> markerTypes = null;
         Integer pageSize = null;
@@ -565,8 +557,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         //check deduplication
         mediaList = this.descriptionDao.listTaxonDescriptionMedia(null, false, markerTypes, pageSize, pageNumber, propertyPaths);
         Assert.assertEquals("media list size for any taxon without filter on image galleries should be 3", 3, mediaList.size());
-
-//        System.out.println(mediaList);
     }
 
     @Test
@@ -616,11 +606,9 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         //check deduplication
         mediaCount = this.descriptionDao.countTaxonDescriptionMedia(null, false, markerTypes);
         Assert.assertEquals("media list size for any taxon without filter on image galleries should be 3", 3, mediaCount);
-
     }
 
     @Test
-//    @DataSet
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
@@ -628,16 +616,13 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     })
     public void testListNamedAreasInUse(){
 
-        Collection<TermDto> list = null;
-
         DefinedTermBase<?> antarctica = definedTermDao.load(antarcticaUuid);
         antarctica.getRepresentations().add(Representation.NewInstance("Antarktis", "Antarktis", "An", Language.GERMAN()));
         definedTermDao.saveOrUpdate(antarctica);
         commitAndStartNewTransaction(null);
 
-        list = descriptionDao.listNamedAreasInUse(false, null, null);
+        Collection<TermDto> list = descriptionDao.listNamedAreasInUse(false, null, null);
         Assert.assertEquals(3, list.size());
-
     }
 
     @Test
@@ -645,16 +630,10 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     // @Ignore // the first query in listNamedAreasInUse is for some reason not working with h2
     public void testListNamedAreasInUseWithParents(){
 
-        Collection<TermDto> list = null;
-
-        list = descriptionDao.listNamedAreasInUse(true, null, null);
+        Collection<TermDto> list = descriptionDao.listNamedAreasInUse(true, null, null);
         Assert.assertEquals(3, list.size());
-
     }
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
 }

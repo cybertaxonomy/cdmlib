@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation.constraint;
 
 import java.util.HashSet;
@@ -28,7 +27,7 @@ public class NoDuplicateNamesValidator implements
 	private static Set<String> includeProperties;
 
 	static {
-		includeProperties = new HashSet<String>();
+		includeProperties = new HashSet<>();
 		includeProperties.add("genusOrUninomial");
 		includeProperties.add("infraGenericEpithet");
 		includeProperties.add("specificEpithet");

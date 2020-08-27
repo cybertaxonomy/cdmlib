@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.persistence.hibernate.replace.impl;
 
 import java.lang.reflect.Field;
@@ -27,21 +35,22 @@ import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFac
 
 @Component
 public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetadataFactory {
-	
+
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private Map<Class<? extends CdmBase>, Set<ReferringObjectMetadata>> referringObjectMap = new HashMap<Class<? extends CdmBase>, Set<ReferringObjectMetadata>>();
-	
-	public Set<ReferringObjectMetadata> get(Class<? extends CdmBase> toClass) {
+	private Map<Class<? extends CdmBase>, Set<ReferringObjectMetadata>> referringObjectMap = new HashMap<>();
+
+	@Override
+    public Set<ReferringObjectMetadata> get(Class<? extends CdmBase> toClass) {
 		if(!referringObjectMap.containsKey(toClass)) {
 			ClassMetadata toClassMetadata = sessionFactory.getClassMetadata(toClass);
-			Map<Class<?>,Set<String>> bidirectionalRelationships = new HashMap<Class<?>,Set<String>>();
+			Map<Class<?>,Set<String>> bidirectionalRelationships = new HashMap<>();
 			for(String propertyName : toClassMetadata.getPropertyNames()) {
 				Type propertyType = toClassMetadata.getPropertyType(propertyName);
 				if(propertyType.isAssociationType() && !propertyType.isAnyType()) {
 					AssociationType associationType = (AssociationType)propertyType;
-			
+
 					Field field = null;
 					try {
 					    field = toClass.getDeclaredField(propertyName);
@@ -68,22 +77,22 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 								try {
 									associatedEntity = Class.forName(associatedEntityName);
 									if(!bidirectionalRelationships.containsKey(associatedEntity)) {
-										bidirectionalRelationships.put(associatedEntity, new HashSet<String>());
+										bidirectionalRelationships.put(associatedEntity, new HashSet<>());
 									}
 									bidirectionalRelationships.get(associatedEntity).add(oneToMany.mappedBy());
 								} catch (ClassNotFoundException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
-								}	
+								}
 //						        System.out.println(oneToMany.mappedBy() + " " + associatedEntityName);
 					        }
 					    }
 					}
 				}
 			}
-			
+
             Map<String,ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
-            Set<ReferringObjectMetadata> referringObjectMetadata = new HashSet<ReferringObjectMetadata>();
+            Set<ReferringObjectMetadata> referringObjectMetadata = new HashSet<>();
 
             for(String entityName : allClassMetadata.keySet()) {
             	if(!entityName.endsWith("_AUD")) {
@@ -91,7 +100,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 //            			System.out.println(entityName);
 						Class<?> entityClass = Class.forName(entityName);
 						ClassMetadata classMetadata = allClassMetadata.get(entityName);
-						
+
 						for(String propertyName : classMetadata.getPropertyNames()) {
 							if(bidirectionalRelationships.containsKey(entityClass) && bidirectionalRelationships.get(entityClass).contains(propertyName)) {
 //                              System.out.println("Excluding " + entityClass.getName() + " " + propertyName);
@@ -111,7 +120,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 													if(associationType.isEntityType()) {
 
 														referringObjectMetadata.add(new ToOneReferringObjectMetadata(entityClass,propertyName, toClass));
-//														System.out.println(propertyName + " " + fromClass + " " + toClass);			
+//														System.out.println(propertyName + " " + fromClass + " " + toClass);
 													} else if(associationType.isCollectionType()) {
 														CollectionType collectionType = (CollectionType)propertyType;
 
@@ -126,21 +135,20 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 												} catch(NoSuchFieldException nsfe) { }
 											}
 										} catch(MappingException me) { }
-									} 
-								}								
-							} 
+									}
+								}
+							}
 						}
-						
+
 					} catch (ClassNotFoundException e) {
-						
+
 					}
-            	    
+
             	}
             }
             referringObjectMap.put(toClass, referringObjectMetadata);
         }
-		
+
         return referringObjectMap.get(toClass);
 	}
-
 }

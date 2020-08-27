@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
@@ -47,9 +46,6 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 
 	private static final String CORE_ID = "coreId";
 
-	/**
-	 * @param state
-	 */
 	public GbifDescriptionCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
@@ -115,10 +111,10 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		return new ListReader<>(resultList);
 	}
 
-
 	/**
 	 * Determines the feature by the dc:type attribute. Tries to reuse existing
 	 * features.
+	 *
 	 * @param item
 	 * @param resultList
 	 * @return
@@ -155,7 +151,6 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 			fireWarningEvent(message, item, 8);
 			return null;
 		}
-
 	}
 
 	@Override
@@ -163,7 +158,6 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		String id = item.get(CORE_ID);
 		return id;
 	}
-
 
 //********************** PARTITIONABLE **************************************/
 
@@ -178,10 +172,9 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		}
 	}
 
-
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
  		result.add(TermUri.DC_LANGUAGE.toString());
         return result;
@@ -193,6 +186,4 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
 }

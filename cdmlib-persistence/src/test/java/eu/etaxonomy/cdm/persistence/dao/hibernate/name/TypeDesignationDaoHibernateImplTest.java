@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import static org.junit.Assert.assertEquals;
@@ -60,18 +59,11 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	@SpringBeanByType
 	IOccurrenceDao occurrenceDao;
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationDaoHibernateImpl#TypeDesignationHibernateImpl()}.
-	 */
 	@Test
 	public void testInit() {
 		assertNotNull("Instance of ITypeDesignationDao expected", typeDesignationDao);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationDaoHibernateImpl#getAllTypeDesignations(java.lang.Integer, java.lang.Integer)}.
-	 */
 	@Test
 	@DataSet
 	public void testGetAllTypeDesignations() {
@@ -98,9 +90,6 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		Assert.assertEquals("", UUID.fromString("61b1dcae-8aa6-478a-bcd6-080cf0eb6ad7"), singleName.getUuid());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.name.TypeDesignationDaoHibernateImpl#saveOrUpdate(CdmBase)}.
-	 */
 	@Test
 	@DataSet
 	@ExpectedDataSet  //not yet necessary with current test
@@ -183,7 +172,6 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 //				"TypeDesignationBase","TypeDesignationBase_AUD",
 //				"TaxonName_TypeDesignationBase","TaxonName_TypeDesignationBase_AUD"
 //				});
-
 	}
 
 	@Test
@@ -211,7 +199,6 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 //				"TaxonName_TypeDesignationBase","TaxonName_TypeDesignationBase_AUD",
 //				"TaxonName_TypeDesignationBase","SpecimenOrObservationBase","SpecimenOrObservationBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD"});
-
 	}
 
 	@Test
@@ -233,9 +220,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 
 		occurrenceDao.saveOrUpdate(specimen);
 		commit();
-
 	}
-
 
 	@Test
 	@DataSet
@@ -243,7 +228,6 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 	    List<TypeDesignationStatusBase> statusTerms = typeDesignationDao.getTypeDesignationStatusInUse();
 	    assertEquals(2, statusTerms.size());
 	}
-
 
 	@Test
 //	@ExpectedDataSet
@@ -335,19 +319,12 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		this.setComplete();
 		this.endTransaction();
 
-
 //		printDataSet(System.out, new String[]{"TaxonName","TaxonName_AUD","TypeDesignationBase","TypeDesignationBase_AUD",
 //				"TaxonName_TypeDesignationBase","TaxonName_TypeDesignationBase_AUD",
 //				"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD",
 //				"HomotypicalGroup","HomotypicalGroup_AUD"});
 	}
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
+
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

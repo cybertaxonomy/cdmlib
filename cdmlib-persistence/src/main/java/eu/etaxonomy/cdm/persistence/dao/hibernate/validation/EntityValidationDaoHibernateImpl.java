@@ -29,10 +29,8 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationDao;
 
 /**
- *
  * @author ayco_holleman
  * @since 15 jan. 2015
- *
  */
 @Repository
 @Qualifier("EntityValidationDaoHibernateImpl")
@@ -90,7 +88,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
         Query query = getSession().createQuery(
                 "FROM EntityValidation vr "
                         + "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
-        @SuppressWarnings("unchecked")       
+        @SuppressWarnings("unchecked")
         List<EntityValidation> result = query.list();
         return result;
     }
@@ -147,7 +145,7 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
             return;
         }
         Set<Class<?>> validationGroupSet = new HashSet<Class<?>>(Arrays.asList(validationGroups));
-        Set<String> validationGroupNames = new HashSet<String>(validationGroupSet.size());
+        Set<String> validationGroupNames = new HashSet<>(validationGroupSet.size());
         for (Class<?> c : validationGroupSet) {
             validationGroupNames.add(c.getName());
         }
@@ -161,7 +159,6 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
         for (EntityConstraintViolation ecv : constraintsToDelete){
             fromResult.removeEntityConstraintViolation(ecv);
         }
-
     }
 
     private static <T extends ICdmBase> void addNewErrors(EntityValidation toResult, T validatedEntity,
@@ -199,5 +196,4 @@ public class EntityValidationDaoHibernateImpl extends CdmEntityDaoBase<EntityVal
             logger.debug("Deleted " + n + " error records");
         }
     }
-
 }

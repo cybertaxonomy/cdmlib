@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.NO_OVERWRITE;
@@ -102,17 +101,13 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 //			"created_When", "updated_When", "created_Who", "updated_Who", "notes"
 //	};
 
-	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{
-
-	};
-
-
+	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{};
 
 	private boolean makeStandardMapper(Statement resource, Reference ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
-			omitAttributes = new HashSet<String>();
+			omitAttributes = new HashSet<>();
 		}
-		boolean result = true;
+
 		for (IRdfMapper mapper : standardMappers){
 			if (mapper instanceof CdmSingleAttributeMapperBase){
 				makeSingleAttributeMapper((CdmSingleAttributeRDFMapperBase)mapper, resource, ref, omitAttributes);
@@ -143,12 +138,12 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 
 	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Statement parentElement, Reference ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
-			omitAttributes = new HashSet<String>();
+			omitAttributes = new HashSet<>();
 		}
 		boolean result = true;
 		String destinationAttribute = mapper.getSingleAttributeName();
-		List<Object> sourceValues = new ArrayList<Object>();
-		List<Class> classes = new ArrayList<Class>();
+		List<Object> sourceValues = new ArrayList<>();
+		List<Class> classes = new ArrayList<>();
 		for (CdmTextElementMapper singleMapper : mapper.getSingleMappers()){
 			String sourceAttribute = singleMapper.getSourceAttribute();
 			Object value = getValue(singleMapper, parentElement);
@@ -316,15 +311,10 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		//referenceService.saveReferenceAll(referenceMap.objects());
 		logger.info("end makeReferences ...");*/
 		return;
-
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(TcsRdfImportState state){
 		return (state.getConfig().getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
-
 }

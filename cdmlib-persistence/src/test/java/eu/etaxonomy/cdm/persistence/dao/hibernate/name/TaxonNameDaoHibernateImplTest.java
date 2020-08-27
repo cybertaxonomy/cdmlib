@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import static org.junit.Assert.assertEquals;
@@ -73,7 +72,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         acherontiaLachesisUuid = UUID.fromString("7969821b-a2cf-4d01-95ec-6a5ed0ca3f69");
         // Atropos Agassiz, 1846
         atroposUuid = UUID.fromString("27004fcc-14d4-47d4-a3e1-75750fdb5b79");
-
     }
 
     @Test
@@ -290,7 +288,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
     public void testCountNamesByExample() {
         TaxonName zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
         zoologicalName.setGenusOrUninomial("Atropos");
-        Set<String> includedProperties = new HashSet<String>();
+        Set<String> includedProperties = new HashSet<>();
         includedProperties.add("genusOrUninomial");
         includedProperties.add("specificEpithet");
         includedProperties.add("infraSpecificEpithet");
@@ -344,12 +342,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

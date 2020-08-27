@@ -1,9 +1,17 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.namecatalogue;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
@@ -12,21 +20,17 @@ import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
  * The class representing the response from the CDM Remote Web Service API to a single name search query.
  * All information contained in this class originates from a call to {@link TaxonName taxon names}
  * <P>
- * 
+ *
  * @author c.mathew
- * @version 1.0
  * @since 17-Apr-2012 13:00:43
  */
-
-
 public class NameSearch implements RemoteResponse {
 
     private NameSearch.NameSearchRequest request;
     private List<NameSearch.NameSearchResponse> response;
 
-
-    public NameSearch() {		
-        this.response = new ArrayList<NameSearch.NameSearchResponse>();
+    public NameSearch() {
+        this.response = new ArrayList<>();
     }
 
     public void setRequest(String q) {
@@ -56,11 +60,11 @@ public class NameSearch implements RemoteResponse {
             res.addToAcceptedTaxontUuids(acctb.getUuid().toString());
         }
     }
-    
-    public void addToResponseList(String title, 
-    		String name, 
-    		float score, 
-    		String nameUuid, 
+
+    public void addToResponseList(String title,
+    		String name,
+    		float score,
+    		String nameUuid,
     		String[] taxonBaseUuids,
     		String[] accTaxonUuids) {
 
@@ -121,9 +125,9 @@ public class NameSearch implements RemoteResponse {
             title = "";
             name = "";
             score = 0;
-            nameUuids = new HashSet<String>();
-            taxonConceptUuids = new HashSet<String>();
-            acceptedTaxontUuids = new HashSet<String>();
+            nameUuids = new HashSet<>();
+            taxonConceptUuids = new HashSet<>();
+            acceptedTaxontUuids = new HashSet<>();
         }
 
         public void setTitle(String title) {
@@ -149,7 +153,7 @@ public class NameSearch implements RemoteResponse {
 		public void setScore(float score) {
 			this.score = score;
 		}
-		
+
         public void addToNameUuids(String nameUuid) {
             nameUuids.add(nameUuid);
         }
@@ -165,7 +169,7 @@ public class NameSearch implements RemoteResponse {
         public Set<String> getTaxonConceptUuids() {
             return this.taxonConceptUuids;
         }
-        
+
         public void addToAcceptedTaxontUuids(String taxonUuid) {
             acceptedTaxontUuids.add(taxonUuid);
         }
@@ -174,8 +178,4 @@ public class NameSearch implements RemoteResponse {
             return this.acceptedTaxontUuids;
         }
     }
-
 }
-
-
-

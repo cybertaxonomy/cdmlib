@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>
 						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
@@ -58,9 +57,6 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 
 	private static final String CORE_ID = "coreId";
 
-	/**
-	 * @param state
-	 */
 	public GbifReferenceCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
@@ -112,10 +108,8 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		//type
 		handleType(reference, strType, taxon, resultList, item);
 
-
 		return new ListReader<>(resultList);
 	}
-
 
 	private void handleType(Reference reference, String strType, TaxonBase<?> taxon,
 	        List<MappedCdmBase<? extends CdmBase>> resultList, StreamItem item) {
@@ -166,7 +160,6 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 							//TODO not yet handled by CDM
 						}
 					}
-
 				}
 			}
 			if (config.isHandleAllRefsAsCitation()){
@@ -183,12 +176,8 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
     					resultList.add(new MappedCdmBase<CdmBase>(desc));
 					}
 				}
-
 			}
-
 		}
-
-
 	}
 
 	private void createCitation(TaxonDescription desc, Reference ref, TaxonName nameUsedInSource) {
@@ -219,7 +208,6 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			logger.debug("Reference is not an URI");
 		}
 		//TODO further identifier types
-
 	}
 
 	private Reference handleInRef(String strSource) {
@@ -230,7 +218,6 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 			return inRef;
 		}
 	}
-
 
 	private VerbatimTimePeriod handleDate(String strDate) {
 	    VerbatimTimePeriod tp = TimePeriodParser.parseStringVerbatim(strDate);
@@ -248,7 +235,6 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		return id;
 	}
 
-
 //********************** PARTITIONABLE **************************************/
 
 	@Override
@@ -262,10 +248,9 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 		}
 	}
 
-
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
  		result.add(TermUri.DWC_TAXON.toString());
  		return result;
 	}
@@ -276,6 +261,4 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
 }

@@ -34,11 +34,14 @@ import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
 import org.apache.lucene.search.join.ScoreMode;
 import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.spatial.impl.Rectangle;
 
+import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -62,7 +65,6 @@ import eu.etaxonomy.cdm.model.common.Language;
  *
  * @author a.kohlbecker
  * @since Sep 14, 2012
- *
  */
 public class QueryFactory {
 
@@ -70,7 +72,7 @@ public class QueryFactory {
 
     protected ILuceneIndexToolProvider toolProvider;
 
-    Set<String> textFieldNames = new HashSet<String>();
+    Set<String> textFieldNames = new HashSet<>();
 
     Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<>();
 
@@ -237,19 +239,10 @@ public class QueryFactory {
         return idInQueryBuilder.build();
     }
 
-    /**
-     * @param idFieldName
-     * @return
-     */
     public Query newIsNotNullQuery(String idFieldName){
         return new TermQuery(new Term(NotNullAwareIdBridge.notNullField(idFieldName), NotNullAwareIdBridge.NOT_NULL_VALUE));
     }
 
-    /**
-     * @param uuidFieldName
-     * @param entity
-     * @return
-     */
     public Query newEntityUuidQuery(String uuidFieldName, IdentifiableEntity entity) {
         return newTermQuery(uuidFieldName, entity.getUuid().toString(), false);
     }
@@ -389,7 +382,6 @@ public class QueryFactory {
      */
     public static BooleanQuery.Builder addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
 
-        BooleanQuery fullQuery;
         Builder filteredQueryBuilder = new Builder();
         Builder classFilterBuilder = new Builder();
 
@@ -406,10 +398,6 @@ public class QueryFactory {
         return filteredQueryBuilder;
     }
 
-    /**
-     * @param clazz
-     * @return
-     */
     private IndexSearcher indexSearcherFor(Class<? extends CdmBase> clazz) {
 
         if(indexSearcherMap.get(clazz) == null){
@@ -420,5 +408,4 @@ public class QueryFactory {
         IndexSearcher indexSearcher = indexSearcherMap.get(clazz);
         return indexSearcher;
     }
-
 }

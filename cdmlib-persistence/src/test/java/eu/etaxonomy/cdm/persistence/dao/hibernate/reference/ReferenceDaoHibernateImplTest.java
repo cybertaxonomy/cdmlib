@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import static org.junit.Assert.assertEquals;
@@ -44,7 +43,6 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	private UUID proceedingsUuid;
 	private UUID bookSectionUuid;
 	private UUID nomenclaturalReferenceBookUuid;
-
 
 	@Before
 	public void setUp() {
@@ -141,9 +139,6 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	    assertEquals(0, referenceUuidAndTitleCacheList.size());
 	}
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
 }
