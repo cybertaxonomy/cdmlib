@@ -8,8 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.taxonGraph;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -41,7 +43,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
     private String[] NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
-    private String[] NOMREF_PROP = new String[]{"nomenclaturalSource.citation"};
+    private String NOMREF_PROP = "nomenclaturalSource.citation";
 
     private Session temporarySession;
 
@@ -92,7 +94,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                     onNameOrRankChange(entity);
                     getSession().flush();
                 }
-                int changedNomRefIndex = checkStateChange(NOMREF_PROP);
+                int changedNomRefIndex = checkStateChangeNomRef(NOMREF_PROP);
                 if(changedNomRefIndex > -1){
                     createTempSession(session);
                     onNomReferenceChange(entity, (Reference)oldState[changedNomRefIndex]);
@@ -131,6 +133,41 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         }
         // this exception should be raised during the unit tests already and thus will never occur in production
         throw new RuntimeException("TaxonName class misses at least one property of: " + ArrayUtils.toString(propertyNamesToCheck));
+    }
+
+    private int checkStateChangeNomRef(String propertyPath){
+
+        if(oldState == null){
+            return -1;
+        }
+
+        try {
+            String[] path = propertyPath.split("\\.");
+            for (int i=1; i < propertyNames.length; i++) {
+                if(propertyNames[i].equals(path[0])){
+                    if (oldState[i] == null && state[i] == null){
+                        return -1;
+                    }else{
+                        //TODO make it recursive (until now only a 2 step path is allowed, but should be enough for the given use-case)
+                        Object oldStatePathObj = (oldState[i]==null) ? null: BeanUtils.getProperty(oldState[i],path[1]);
+                        Object newStatePathObj = (state[i]==null) ? null: BeanUtils.getProperty(state[i],path[1]);
+                        if (oldStatePathObj == null && newStatePathObj == null){
+                            return -1;
+                        }else{
+                            if(!Objects.equals(oldStatePathObj, newStatePathObj)){
+                                return 0;
+                            }else{
+                                return -1;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException("The nomenclatural reference path seems to be invalid: " + propertyPath);
+        }
+        // this exception should be raised during the unit tests already and thus will never occur in production
+        throw new RuntimeException("TaxonName class misses at least one property of: " + propertyPath);
     }
 
     /**
