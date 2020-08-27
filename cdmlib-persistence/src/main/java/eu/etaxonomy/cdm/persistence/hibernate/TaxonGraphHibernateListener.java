@@ -89,14 +89,9 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     class ProcessConstructorData<T extends BeforeTransactionCompletionProcess> {
 
         Constructor<T> postInsertEventConstructor;
-
         Constructor<T> postUpdateEventConstructor;
-
         Object[] constructorArgs;
-        /**
-         * @param constructor
-         * @param constructorArgs
-         */
+
         public ProcessConstructorData(Class<T> type, Object[] constructorArgs, Class<?>[] paramterTypes) throws NoSuchMethodException, SecurityException {
 
             this.constructorArgs = constructorArgs;
@@ -123,9 +118,5 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
             }
             return cargs;
         }
-
     }
-
-
-
 }

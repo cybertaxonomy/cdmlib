@@ -104,15 +104,11 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class, new Object[]{new RunAsAdmin(runAsAuthenticationProvider)}, new Class[]{IRunAs.class});
     }
 
-
     @After
     public void inactivateListener() {
         taxonGraphHibernateListener.unRegisterProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class);
     }
 
-    /**
-     *
-     */
     protected void setUuidPref() {
         PrefKey key = TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID;
         prefDao.set(new CdmPreference(key.getSubject(), key.getPredicate(), uuid_secRef.toString()));

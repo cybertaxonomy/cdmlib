@@ -37,7 +37,8 @@ public class TaxonGraphEdgeDTO {
         this.citationTitleCache = citationTitleCache;
     }
 
-    public TaxonGraphEdgeDTO(UUID fromTaxonUuid, String fromName, String fromRank, Integer fromRankOrderId, UUID toTaxonUuid, String toName, String toRank, Integer toRankOrderId, UUID citationUuid,
+    public TaxonGraphEdgeDTO(UUID fromTaxonUuid, String fromName, String fromRank, Integer fromRankOrderId,
+            UUID toTaxonUuid, String toName, String toRank, Integer toRankOrderId, UUID citationUuid,
             String citationTitleCache) {
         super();
         this.from = new TaxonGraphNodeDTO(null, fromTaxonUuid, fromName, fromRank, fromRankOrderId);
