@@ -270,8 +270,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     @Override
 	public List<Reference> getSubordinateReferences(Reference reference) {
 
-		List<Reference> references = new ArrayList();
-		List<Reference> subordinateReferences = new ArrayList<Reference>();
+		List<Reference> references = new ArrayList<>();
+		List<Reference> subordinateReferences = new ArrayList<>();
 
 		Query query = getSession().createQuery("select r from Reference r where r.inReference = (:reference)");
 		query.setParameter("reference", reference);
@@ -287,7 +287,8 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	}
 
     @Override
-	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<TaxonBase> listCoveredTaxa(Reference reference, boolean includeSubordinateReferences,
+	        List<OrderHint> orderHints, List<String> propertyPaths) {
 
 		/*
 		 * <li>taxon.name.nomenclaturalreference</li>

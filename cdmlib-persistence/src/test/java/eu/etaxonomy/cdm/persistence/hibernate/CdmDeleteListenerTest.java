@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import static org.junit.Assert.assertNotNull;
@@ -36,7 +35,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 17.09.2009
  */
 public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDeleteListenerTest.class);
 
 	@SpringBeanByType
@@ -44,17 +44,11 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 
 	private UUID uuid;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		uuid = UUID.fromString("44415fc0-1703-11df-8a39-0800200c9a66");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.hibernate.CdmDeleteListener#onDelete(org.hibernate.event.DeleteEvent, java.util.Set)}.
-	 */
 	@Test
 	@DataSet("CdmDeleteListenerTest.xml")
 	@ExpectedDataSet
@@ -82,15 +76,8 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 
 //		nRels = taxonDao.countAllRelationships();
 //		Assert.assertEquals("There should be 1 relationship now", 1, nRels);
-
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

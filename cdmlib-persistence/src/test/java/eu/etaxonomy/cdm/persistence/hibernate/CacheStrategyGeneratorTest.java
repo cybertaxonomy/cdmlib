@@ -129,9 +129,6 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 //		printDataSet(System.err, new String[]{"TaxonName", "Reference"});
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
 	@ExpectedDataSet
@@ -255,4 +252,3 @@ public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest 
 	@Override
 	public void createTestDataSet() throws FileNotFoundException {}
 }
-

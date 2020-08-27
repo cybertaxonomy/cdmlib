@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.FileNotFoundException;
@@ -26,7 +31,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- *
  */
 public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
@@ -35,10 +39,6 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 	@SpringBeanByType
 	private OccurrenceDaoHibernateImpl occurrenceDao;
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -81,11 +81,8 @@ public class SaveOrUpdateEntityListenerTest extends CdmTransactionalIntegrationT
 				Assert.fail("All cases should be handled");
 			}
 		}
-
 	}
-
 
 	@Override
 	public void createTestDataSet() throws FileNotFoundException {}
-
 }

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao;
 
 import static org.junit.Assert.assertFalse;
@@ -36,17 +35,17 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
-public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest {
+public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
-	ITaxonNameDao taxonNameDao;
+	private ITaxonNameDao taxonNameDao;
 
 	@SpringBeanByType
-	IDescriptionElementDao descriptionElementDao;
+	private IDescriptionElementDao descriptionElementDao;
 
-	UUID sphingidaeUuid;
-	UUID textDataUuid;
-	AuditEvent previousAuditEvent;
+	private UUID sphingidaeUuid;
+	private UUID textDataUuid;
+	private AuditEvent previousAuditEvent;
 
 	@Before
 	public void setUp() {
@@ -153,12 +152,6 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		assertTrue("LanguageString.language should be initialized",Hibernate.isInitialized(languageString.getLanguage()));
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

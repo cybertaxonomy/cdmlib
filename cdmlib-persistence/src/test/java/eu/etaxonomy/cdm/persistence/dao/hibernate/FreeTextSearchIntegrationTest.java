@@ -6,8 +6,8 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,10 +36,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
 @Ignore //TODO indexing does not work at all, even before the unitils upgrade
-public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
+public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTest {
 
 	@SuppressWarnings("unused")
-	private static Log log = LogFactory.getLog(FreeTextSearchIntegration.class);
+	private static Log log = LogFactory.getLog(FreeTextSearchIntegrationTest.class);
 
 	@SpringBeanByType
 	ITaxonDao taxonDao;
@@ -69,10 +69,10 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void testSearchTextData() {
-		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		List<OrderHint> orderHints = new ArrayList<>();
 		orderHints.add(new OrderHint("inDescription.titleCache",SortOrder.ASCENDING));
 
-		List<String> propertyPaths = new ArrayList<String>();
+		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("inDescription");
 		propertyPaths.add("inDescription.taxon");
 		List<DescriptionElementBase> results = descriptionElementDao.search(TextData.class,"Lorem",null,null,orderHints,propertyPaths);
@@ -96,9 +96,9 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testSearchWord() {
-    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	List<OrderHint> orderHints = new ArrayList<>();
     	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
-    	List<String> propertyPaths = new ArrayList<String>();
+    	List<String> propertyPaths = new ArrayList<>();
     	propertyPaths.add("name");
 
     	List<TaxonBase> results = taxonDao.search(null,"Arum", null, null, orderHints, propertyPaths);
@@ -110,14 +110,13 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     public void testSearchCount() {
 		long numberOfResults = taxonDao.count(null,"Arum");
 		assertEquals("countTaxa should return 46",46,numberOfResults);
-
     }
 
     @Test
     public void testSearchPaged() {
-    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	List<OrderHint> orderHints = new ArrayList<>();
     	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
-    	List<String> propertyPaths = new ArrayList<String>();
+    	List<String> propertyPaths = new ArrayList<>();
     	propertyPaths.add("name");
 		List<TaxonBase> page1 = taxonDao.search(null,"Arum", 30, 0,orderHints,propertyPaths);
 		List<TaxonBase> page2 = taxonDao.search(null,"Arum", 30, 1,orderHints,propertyPaths);
@@ -132,9 +131,9 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testSearchPhrase() {
-    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	List<OrderHint> orderHints = new ArrayList<>();
     	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
-    	List<String> propertyPaths = new ArrayList<String>();
+    	List<String> propertyPaths = new ArrayList<>();
     	propertyPaths.add("name");
 
 		List<TaxonBase> results = taxonDao.search(null,"\"Arum italicum\"", null, null,orderHints,propertyPaths);
@@ -143,9 +142,9 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testSearchWildcard()  {
-    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	List<OrderHint> orderHints = new ArrayList<>();
     	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
-    	List<String> propertyPaths = new ArrayList<String>();
+    	List<String> propertyPaths = new ArrayList<>();
     	propertyPaths.add("name");
 
 		List<TaxonBase> results = taxonDao.search(null,"Aroph*",  null, null,orderHints,propertyPaths);
@@ -184,12 +183,6 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     	assertEquals("The spelling suggestion for \"Aram AND italocum\" should be \"+arum +italicum\"","+arum +italicum",suggestion);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

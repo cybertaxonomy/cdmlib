@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static org.junit.Assert.assertEquals;
@@ -98,7 +97,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         AuditEventContextHolder.clearContext();
     }
 
-
     @Test
     @DataSet
     public void testInit() {
@@ -128,7 +126,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
 
-
         @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.list(10, 0);
         assertEquals("there should be 7 taxa", 7, taxa.size());
@@ -154,7 +151,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
        // classificationDao.flush();
         classification = classificationDao.findByUuid(ClassificationUuid);
         assertEquals("The tree should be null", null, classification);
-
     }
 
     @Test
@@ -361,7 +357,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("4f73adcc-a535-4fbe-a97a-c05ee8b12191", result.get(0).getUuid().toString()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
-
     }
 
     @Test
@@ -376,7 +371,6 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertEquals("770239f6-4fa8-496b-8738-fe8f7b2ad519", result.get(2).getUuid().toString()); // titleCache:Acherontia styx Westwood, 1847 sec. cate-sphingidae.org rank: Species
         assertEquals("4f73adcc-a535-4fbe-a97a-c05ee8b12191", result.get(3).getUuid().toString()); // titleCache:Acherontia kohlbeckeri rank: Unknown Rank
     }
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
