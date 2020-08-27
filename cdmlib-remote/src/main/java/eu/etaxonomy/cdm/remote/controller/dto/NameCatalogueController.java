@@ -168,16 +168,16 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     private static final List<String> NAME_INFORMATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "taxonBases",
             "status",
-            "nomenclaturalReference.$",
+            "nomenclaturalSource.citation.$",
             "combinationAuthorship.$",
             "exCombinationAuthorship.$",
             "basionymAuthorship.$",
             "exBasionymAuthorship.$",
             "relationsToThisName.fromName.$",
-            "relationsToThisName.nomenclaturalReference.$",
+            "relationsToThisName.nomenclaturalSource.citation.$",
             "relationsToThisName.type.$",
             "relationsFromThisName.toName.$",
-            "relationsFromThisName.nomenclaturalReference.$",
+            "relationsFromThisName.nomenclaturalSource.citation.$",
             "relationsFromThisName.type.$"});
 
     /** Hibernate taxon information initialisation strategy */

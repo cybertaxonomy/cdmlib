@@ -110,7 +110,7 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
         List<String> nodePaths = new ArrayList<String>();
         nodePaths.add("$");//initialize all to 1 relations e.g. subkey, statement
         nodePaths.add("statement.$");
-        //nodePaths.add("taxon.name.nomenclaturalReference");
+        //nodePaths.add("taxon.name.nomenclaturalSource.citation");
         nodePaths.add("taxon.name.$");
 
         List<String> propertyPaths = new ArrayList<String>();

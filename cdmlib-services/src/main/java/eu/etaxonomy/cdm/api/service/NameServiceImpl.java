@@ -891,7 +891,7 @@ public class NameServiceImpl
     @Override
     public List<TypeDesignationBase> getTypeDesignationsInHomotypicalGroup(UUID nameUuid, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths){
-        TaxonName name = load(nameUuid, Arrays.asList("nomenclaturalReference.authorship"));
+        TaxonName name = load(nameUuid, Arrays.asList("nomenclaturalSource.citation.authorship"));
         Set<TypeDesignationBase<?>> typeDesignations = name.getHomotypicalGroup().getTypeDesignations();
         List<TypeDesignationBase> result = defaultBeanInitializer.initializeAll(new ArrayList(typeDesignations), propertyPaths);
         return result;

@@ -77,7 +77,7 @@ public class AgentController extends AbstractIdentifiableController<AgentBase, I
     private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
             // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
             // which is using join fetches
-            "taxonNode.taxon.name.nomenclaturalReference",
+            "taxonNode.taxon.name.nomenclaturalSource.citation",
             });
 
     public List<String> getTaxonNodeAgentRelationsInitStrategy() {

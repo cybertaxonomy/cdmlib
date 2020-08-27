@@ -262,7 +262,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
     public List<Reference> getAllNomenclaturalReferences() {
 		@SuppressWarnings("unchecked")
         List<Reference> references = getSession().createQuery(
-				"SELECT DISTINCT t.nomenclaturalReference FROM TaxonName t").list();
+				  " SELECT DISTINCT ns.citation "
+				+ " FROM TaxonName n"
+				+ " JOIN n.nomenclaturalSource ns ").list();
 		return references;
 	}
 
@@ -291,7 +293,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 	        List<OrderHint> orderHints, List<String> propertyPaths) {
 
 		/*
-		 * <li>taxon.name.nomenclaturalreference</li>
+		 * <li>taxon.name.nomenclaturalSource.citation</li>
 		 * <li>taxon.descriptions.descriptionElement.sources.citation</li>
 		 * <li>taxon.descriptions.descriptionSources</li>
 		 * <li>taxon.name.descriptions.descriptionElement.sources</li>

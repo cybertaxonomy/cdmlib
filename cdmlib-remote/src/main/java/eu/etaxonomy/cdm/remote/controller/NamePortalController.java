@@ -79,10 +79,10 @@ public class NamePortalController extends BaseController<TaxonName, INameService
     });
 
     private static final EntityInitStrategy NOMREF_INIT_STRATEGY = new EntityInitStrategy(
-            "nomenclaturalReference.authorship.$",
-            "nomenclaturalReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.inReference.authorship.$"
+            "nomenclaturalSource.citation.authorship.$",
+            "nomenclaturalSource.citation.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.inReference.authorship.$"
             );
 
     private static EntityInitStrategy nameRelationsInitStrategy = null;

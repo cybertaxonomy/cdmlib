@@ -48,7 +48,7 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
     private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "titleCache",
             "name.titleCache",
-            "name.nomenclaturalReference.titleCache",
+            "name.nomenclaturalSource.citation.titleCache",
             "$"
             });
 

@@ -69,8 +69,8 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	@Test
 	@Ignore //FIXME homotypicalGroup is initialized even if it shouldn't
 	public void testInitializeManyToOneProperty() {
-		List<String> propertyPaths = new ArrayList<String>();
-		propertyPaths.add("nomenclaturalReference");
+		List<String> propertyPaths = new ArrayList<>();
+		propertyPaths.add("nomenclaturalSource.citation");   //changed for #6581, may destroy test
 
 		TaxonName sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
 		setComplete();
@@ -78,7 +78,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 
 		assertNotNull("Sphingidae should not be null",sphingidae);
 		assertFalse("TaxonName.homotypicalGroup should not be initialized",Hibernate.isInitialized(sphingidae.getHomotypicalGroup()));
-		assertTrue("TaxonName.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getNomenclaturalReference()));
+		assertTrue("TaxonName.nomenclaturalSource.citation should be initialized",Hibernate.isInitialized(sphingidae.getNomenclaturalReference()));
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 		endTransaction();
 
 		assertNotNull("Sphingidae should not be null",sphingidae);
-		assertTrue("TaxonName.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorship()));
+		assertTrue("TaxonName.combinationAuthorship should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorship()));
 	}
 
 	/**

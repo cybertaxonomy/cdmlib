@@ -79,7 +79,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
             // name
             "name.$",
-            "name.nomenclaturalReference",
+            "name.nomenclaturalSource.citation",
             "name.rank",
             "name.homotypicalGroup.typifiedNames",
             "name.status.type",
@@ -89,7 +89,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             }
             ))
             .extend("typeDesignations.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false)
-            .extend("name.nomenclaturalReference", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+            .extend("name.nomenclaturalSource.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
     public  EntityInitStrategy DERIVEDUNIT_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
@@ -120,8 +120,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           "blockedBy.typeDesignations.typeStatus",
 //          "typeDesignations.typifiedNames.typeDesignations", // important !?
 //          "blockedBy.name.$",
-          "blockedBy.name.nomenclaturalReference.authorship",
-          "blockedBy.name.nomenclaturalReference.inReference",
+          "blockedBy.name.nomenclaturalSource.citation.authorship",
+          "blockedBy.name.nomenclaturalSource.citation.inReference",
           "blockedBy.name.rank",
           // institution
           "blockedBy.institution",

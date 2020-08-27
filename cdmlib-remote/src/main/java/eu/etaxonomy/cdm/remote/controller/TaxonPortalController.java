@@ -117,8 +117,8 @@ public class TaxonPortalController extends TaxonController{
 //            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
-            "name.nomenclaturalReference.authorship",
-            "name.nomenclaturalReference.inReference",
+            "name.nomenclaturalSource.citation.authorship",
+            "name.nomenclaturalSource.citation.inReference",
             "name.rank.representations",
             "name.status.type.representations",
             "sec.authorship"
@@ -138,8 +138,8 @@ public class TaxonPortalController extends TaxonController{
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference.authorship",
-            "name.nomenclaturalReference.inReference.authorship",
+            "name.nomenclaturalSource.citation.authorship",
+            "name.nomenclaturalSource.citation.inReference.authorship",
             "taxonNodes.classification",
             "sec.authorship"
             }));
@@ -148,8 +148,8 @@ public class TaxonPortalController extends TaxonController{
             // initialize homotypical and heterotypical groups; needs synonyms
             "synonyms.$",
             "synonyms.name.status.type.representations",
-            "synonyms.name.nomenclaturalReference.authorship",
-            "synonyms.name.nomenclaturalReference.inReference",
+            "synonyms.name.nomenclaturalSource.citation.authorship",
+            "synonyms.name.nomenclaturalSource.citation.inReference",
 //            "synonyms.name.homotypicalGroup.typifiedNames.$",
 //            "synonyms.name.homotypicalGroup.typifiedNames.taxonBases.$",
             "synonyms.name.combinationAuthorship.$",
@@ -158,8 +158,8 @@ public class TaxonPortalController extends TaxonController{
 
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
-            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorship",
-            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalSource.citation.authorship",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalSource.citation.inReference",
 //            "name.homotypicalGroup.typifiedNames.taxonBases.$"
     }));
 
@@ -178,11 +178,11 @@ public class TaxonPortalController extends TaxonController{
             "type.inverseRepresentations",
             "citation",
             "toName.$",
-            "toName.nomenclaturalReference.authorship",
-            "toName.nomenclaturalReference.inReference",
+            "toName.nomenclaturalSource.citation.authorship",
+            "toName.nomenclaturalSource.citation.inReference",
             "fromName.$",
-            "fromName.nomenclaturalReference.authorship",
-            "fromName.nomenclaturalReference.inReference",
+            "fromName.nomenclaturalSource.citation.authorship",
+            "fromName.nomenclaturalSource.citation.inReference",
 
     }));
 

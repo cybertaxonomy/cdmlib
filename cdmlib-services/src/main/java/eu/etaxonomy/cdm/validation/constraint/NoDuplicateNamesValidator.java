@@ -33,8 +33,8 @@ public class NoDuplicateNamesValidator implements
 		includeProperties.add("specificEpithet");
 		includeProperties.add("infraSpecificEpithet");
 		includeProperties.add("rank");
-		includeProperties.add("nomenclaturalReference");
-		includeProperties.add("nomenclaturalMicroReference");
+		includeProperties.add("nomenclaturalSource.citation");   //TODO still correct after #6851?
+		includeProperties.add("nomenclaturalSource.citationMicroReference"); //TODO still correct after #6851?
 		includeProperties.add("basionymAuthorship");
 		includeProperties.add("exBasionymAuthorship");
 		includeProperties.add("combinationAuthorship");

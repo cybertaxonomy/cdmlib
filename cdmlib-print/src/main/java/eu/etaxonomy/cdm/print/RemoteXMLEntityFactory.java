@@ -271,8 +271,8 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 	 * JDOMException {
 	 * 
 	 * //get the references from the taxonElement String referencePattern =
-	 * "//name/nomenclaturalReference";
-	 * 
+	 * "//name/nomenclaturalSource.citation";
+	 *
 	 * //but there could be many references Element referenceElement = (Element)
 	 * XPath.selectSingleNode(taxonElement, referencePattern); //List<Element>
 	 * descriptionElementElements = XPath.selectNodes(context, featurePattern +

@@ -385,7 +385,9 @@ public class StatisticsDaoHibernateImpl
     public Long countNomenclaturalReferences() {
 		Query query = getSession()
 				.createQuery(
-						"select count(distinct nomenclaturalReference) from TaxonName ");
+						" SELECT COUNT(DISTINCT ns.citation) "
+						+ " FROM TaxonName n"
+						+ " JOIN n.nomenclaturalSource ns ");
 		return (Long) query.uniqueResult();
 	}
 
@@ -406,16 +408,16 @@ public class StatisticsDaoHibernateImpl
 		// and count the names manually
 		List<String> queryStrings = new ArrayList<String>();
 		queryStrings
-				.add("SELECT DISTINCT tn.taxon.name.nomenclaturalReference.uuid "
+				.add("SELECT DISTINCT tn.taxon.name.nomenclaturalSource.citation.uuid "
 				        + " FROM TaxonNode tn "
 						+ " WHERE tn.classification=:classification "
-						+ " AND tn.taxon.name.nomenclaturalReference IS NOT NULL ");
+						+ " AND tn.taxon.name.nomenclaturalSource.citation IS NOT NULL ");
 		queryStrings
-				.add("SELECT DISTINCT s.name.nomenclaturalReference.uuid as c "
+				.add("SELECT DISTINCT s.name.nomenclaturalSource.citation.uuid as c "
 				        + " FROM TaxonNode tn "
 						+ " JOIN tn.taxon.synonyms as s "
 						+ " WHERE tn.classification=:classification "
-						+ "    AND s.name.nomenclaturalReference is not null ");
+						+ "    AND s.name.nomenclaturalSource.citation is NOT NULL ");
 
 		return Long.valueOf(processQueriesWithIdDistinctListResult(
 				queryStrings, parameters).size());

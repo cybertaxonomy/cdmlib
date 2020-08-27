@@ -34,14 +34,14 @@ import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
  * @since Sep 26, 2018
  *
  */
-public class TaxonGraphBeforeTransactionCompleteProcess extends AbstractHibernateTaxonGraphProcessor implements BeforeTransactionCompletionProcess {
-
-
-    private String[] NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
-    private String[] NOMREF_PROP = new String[]{"nomenclaturalReference"};
+public class TaxonGraphBeforeTransactionCompleteProcess
+        extends AbstractHibernateTaxonGraphProcessor
+        implements BeforeTransactionCompletionProcess {
 
     private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
+    private String[] NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
+    private String[] NOMREF_PROP = new String[]{"nomenclaturalSource.citation"};
 
     private Session temporarySession;
 

@@ -285,7 +285,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         Registration reg = Registration.NewInstance(
                 null,
                 null,
-                taxonNameUuid != null ? nameService.load(taxonNameUuid, Arrays.asList("nomenclaturalReference.inReference")) : null,
+                taxonNameUuid != null ? nameService.load(taxonNameUuid, Arrays.asList("nomenclaturalSource.citation.inReference")) : null,
                         null);
 
         reg = assureIsPersisted(reg);

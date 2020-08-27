@@ -70,7 +70,7 @@ public class PolytomousKeyPortalController extends BaseController<PolytomousKey,
 
         List<String> nodePaths = new ArrayList<String>();
         nodePaths.add("subkey");
-        nodePaths.add("taxon.name.nomenclaturalReference");
+        nodePaths.add("taxon.name.nomenclaturalSource.citation");
 
         List<String> propertyPaths = new ArrayList<String>();
         propertyPaths.add("sources");

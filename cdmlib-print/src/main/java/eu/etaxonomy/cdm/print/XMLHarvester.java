@@ -195,7 +195,7 @@ public class XMLHarvester {
 					Element parentOfParent = (Element) node.getParent().getParent().getParent();
 					
 					if (parentOfParent.getName().equals("inReference")) {
-					List<Element> parentNodes = XPath.selectNodes(parentOfParent, "//nomenclaturalReference/titleCache");					
+					List<Element> parentNodes = XPath.selectNodes(parentOfParent, "//nomenclaturalReference/titleCache");
 					for(Element parentNode : parentNodes){
 					logger.error("Problem with date for node  with titleCache: " + parentNode.getText());
 					}
@@ -216,89 +216,89 @@ public class XMLHarvester {
 
 	/**
 	 * Get all additional content that is not included in taxon node initialization
-	 * 
+	 *
 	 * @param container
 	 */
 	private void populateTreeNodeContainer(Element taxonNodeElement){
-		
+
 		// get the taxon from the generic service to have the uuid for further processing
 		Element taxonElement = factory.getTaxonForTaxonNode(taxonNodeElement);
-		
+
 		progressMonitor.subTask("Gathering data for taxon: " + XMLHelper.getTitleCache(taxonElement));
-		
+
 		// get initialized accepted taxon
 		// TODO right now we are getting that from the portal service but should consider to use the generic service
 		// as the portal service is more likely to change
 		Element fullTaxonElement = factory.getAcceptedTaxonElement(taxonElement);
-		
+
 		//populateTypeDesignations(fullTaxonElement);
-	
+
 		// get descriptions
 		if(configurator.isDoDescriptions()){
 			populateDescriptions(fullTaxonElement);
 		}
-		
+
 		// get polytomous key
-		
+
 		if(configurator.isDoPolytomousKey()){
 			populatePolytomousKey(fullTaxonElement);
 		}
-		
+
 		// get synonym
 		if(configurator.isDoSynonymy()){
 			populateSynonyms(fullTaxonElement);
 		}
-		
+
 		// get media
 		if(configurator.isDoImages()){
 			populateImages(fullTaxonElement);
 		}
-		
+
 		// add taxon element to the node element
 		XMLHelper.addContent(fullTaxonElement, taxonNodeElement);
-		
+
 		// get taxonomically included taxa
 		if(configurator.isDoPublishEntireBranches()){
 			populateChildren(taxonNodeElement);
 		}
-		
+
 		try {
 			populateReferences(fullTaxonElement);
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		populateTypeDesignations(fullTaxonElement);
-		
+
 		progressMonitor.worked(1);
-		
-	}	
-	
+
+	}
+
 	// the name isn't populated in the taxonNode http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/taxonNode/de808dae-e50a-42f2-a4da-bd12f2c2faaf/taxon.json
 	// but can get the name from http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/portal/taxon/8f6d5498-1f4b-420f-a1ae-3f0ed9406bb1.json
 	private void populateTypeDesignations(Element fullTaxonElement) {
-		
+
 		Element nameElement = fullTaxonElement.getChild("name");
 		Element uuidElement = fullTaxonElement.getChild("uuid");
-		
+
 		List<Element> typeDesignations = factory.getTypeDesignations(nameElement);
-		
+
 		nameElement.removeChild("typeDesignations");
-		
+
 		for(Element typeDesignation: typeDesignations){
 			XMLHelper.addContent(typeDesignation, "typeDesignations", nameElement);
 		}
 	}
-	
+
 	private void populateReferences(Element fullTaxonElement) throws JDOMException {
 
 		//get the references from the taxonElement
 		//String referencePattern = "//name/nomenclaturalReference";
-		String referencePattern = "/Taxon/name/nomenclaturalReference";
+		String referencePattern = "/Taxon/name/nomenclaturalSource/citation";
 
 		//but there could be many references
-		Element referenceElement = (Element) XPath.selectSingleNode(fullTaxonElement, referencePattern); //Mon 1st july do we get the /Taxon/name/nomenclaturalReference from the taxon node - is this working
+		Element referenceElement = (Element) XPath.selectSingleNode(fullTaxonElement, referencePattern); //Mon 1st july do we get the /Taxon/name/nomenclaturalSource/citation from the taxon node - is this working
 		//List<Element> descriptionElementElements = XPath.selectNodes(context, featurePattern + "/..");
 
 		List<Element> elementList = null;
@@ -307,10 +307,10 @@ public class XMLHarvester {
 
 			List<Element> refs = factory.getReferences(referenceElement);//getReferences
 
-			fullTaxonElement.removeChild("nomenclaturalReference");//remove the references
+			fullTaxonElement.removeChild("nomenclaturalSource");//remove the references  ;TODO after #6851 do we need to handle nomenclaturalSource.citation somehow?
 
 			for(Element ref: refs){
-				XMLHelper.addContent(ref, "nomenclaturalReference", fullTaxonElement);
+				XMLHelper.addContent(ref, "nomenclaturalSource", fullTaxonElement);   //TODO after #6851 do we need to handle nomenclaturalSource.citation somehow?
 			}
 		}		
 

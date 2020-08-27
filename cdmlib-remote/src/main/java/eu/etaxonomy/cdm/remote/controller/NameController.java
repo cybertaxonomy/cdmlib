@@ -69,10 +69,10 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "relationsFromThisName.$",
             "relationsToThisName.$",
             "status.$",
-            "nomenclaturalReference.authorship.$",
-            "nomenclaturalReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.inReference.authorship.$"
+            "nomenclaturalSource.citation.authorship.$",
+            "nomenclaturalSource.citation.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.inReference.authorship.$"
     }));
 
     public static final EntityInitStrategy NAME_RELATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
