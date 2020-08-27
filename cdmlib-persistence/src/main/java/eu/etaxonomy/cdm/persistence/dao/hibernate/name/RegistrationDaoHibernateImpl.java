@@ -274,7 +274,12 @@ public class RegistrationDaoHibernateImpl
                 + "     LEFT JOIN r.name n "
                 + (doNameFilter ?  " LEFT JOIN desig.typifiedNames typifiedNames ":"")
                 + (doTypeStatusFilter ? " LEFT JOIN desig.typeStatus typeStatus":"")  // without this join hibernate would make a cross join here
-                + (doReferenceFilter ? " LEFT JOIN desig.citation typeDesignationCitation LEFT JOIN n.nomenclaturalReference nomRef":"")
+                + (doReferenceFilter
+                        ?   " LEFT JOIN desig.source typeDesignationSource "
+                          + " LEFT JOIN typeDesignationSource.citation typeDesignationCitation "
+                          + " LEFT JOIN n.nomenclaturalSource nomSource "
+                          + " LEFT JOIN nomSource.citation nomRef "
+                        : "")
             ;
         // further JOIN
         String where = " WHERE (1=1) ";
