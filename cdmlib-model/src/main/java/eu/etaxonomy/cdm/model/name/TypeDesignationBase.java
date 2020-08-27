@@ -39,6 +39,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -115,7 +116,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private IdentifiableSource source;
+    private DescriptionElementSource source;
 
     @XmlElementWrapper(name = "TypifiedNames")
     @XmlElement(name = "TypifiedName")
@@ -177,7 +178,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
-        this(IdentifiableSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
+        this(DescriptionElementSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
     }
 
     /**
@@ -194,7 +195,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see                         #isNotDesignated()
      * @see                         TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(IdentifiableSource source, String originalNameString, boolean notDesignated){
+    protected TypeDesignationBase(DescriptionElementSource source, String originalNameString, boolean notDesignated){
         super();
         this.notDesignated = notDesignated;
         this.source = source;
@@ -263,25 +264,17 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         checkNullSource();
     }
 
-    /**
-     * @param createNew
-     * @return the source
-     */
-    public IdentifiableSource getSource(boolean createIfNotExist) {
+    public DescriptionElementSource getSource(boolean createIfNotExist) {
         if (this.source == null && createIfNotExist){
-            this.source = IdentifiableSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
         }
         return source;
     }
 
-    public IdentifiableSource getSource(){
+    public DescriptionElementSource getSource(){
         return source;
     }
-
-    /**
-     * @param source the source to set
-     */
-    public void setSource(IdentifiableSource source) {
+    public void setSource(DescriptionElementSource source) {
         this.source = source;
     }
 
