@@ -305,28 +305,29 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 			referenceSet.addAll(getSubordinateReferences(reference));
 		}
 
-
 		StringBuilder taxonDescriptionSql = new StringBuilder();
 		taxonDescriptionSql.append(
-			"select distinct t from Taxon t " +
+			"SELECT DISTINCT t from Taxon t " +
 			// TaxonDescription
-			"left join t.descriptions td " +
-			"left join td.descriptionSources td_s " +
-			"left join td.descriptionElements td_e " +
-			"left join td_e.sources td_e_s " +
+			"LEFT JOIN t.descriptions td " +
+			"LEFT JOIN td.descriptionSources td_s " +
+			"LEFT JOIN td.descriptionElements td_e " +
+			"LEFT JOIN td_e.sources td_e_s " +
 			// TaxonNameDescription
-			"left join t.name n " +
-			"left join n.descriptions nd " +
-			"left join nd.descriptionSources nd_s " +
-			"left join nd.descriptionElements nd_e " +
-			"left join nd_e.sources nd_e_s " +
+			"LEFT JOIN t.name n " +
+			"LEFT JOIN n.descriptions nd " +
+			"LEFT JOIN nd.descriptionSources nd_s " +
+			"LEFT JOIN nd.descriptionElements nd_e " +
+			"LEFT JOIN nd_e.sources nd_e_s " +
+			//nomenclatural citation
+			"LEFT JOIN n.nomenclaturalSource ns " +
 
-			"where td_e_s.citation in (:referenceBase_1) " +
-			"or td_s in (:referenceBase_2) " +
-			"or nd_e_s.citation in (:referenceBase_3) " +
-			"or nd_s in (:referenceBase_4) or " +
-			"n.nomenclaturalReference in (:referenceBase_5) or " +
-			"t.sec in (:referenceBase_6)"
+			"WHERE td_e_s.citation IN (:referenceBase_1) " +
+			  " OR td_s IN (:referenceBase_2) " +
+			  " OR nd_e_s.citation IN (:referenceBase_3) " +
+			  " OR nd_s IN (:referenceBase_4) " +
+			  " OR ns.citation IN (:referenceBase_5) " +
+			  " OR t.sec IN (:referenceBase_6)"
 			);
 
 		if (orderHints != null && orderHints.size() > 0){
