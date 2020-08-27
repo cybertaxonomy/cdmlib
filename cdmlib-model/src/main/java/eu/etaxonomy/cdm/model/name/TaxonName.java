@@ -125,8 +125,6 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @XmlType(name = "TaxonName", propOrder = {
     "nameType",
     "appendedPhrase",
-    "nomenclaturalMicroReference",
-    "nomenclaturalReference",
     "nomenclaturalSource",
     "rank",
     "fullTitleCache",
