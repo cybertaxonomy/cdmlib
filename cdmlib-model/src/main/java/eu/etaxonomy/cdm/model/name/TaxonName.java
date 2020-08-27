@@ -2233,8 +2233,12 @@ public class TaxonName
     @Transient
     public void setNomenclaturalReference(Reference nomenclaturalReference){
         //#6581
-        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
-        checkNullSource();
+        if (nomenclaturalReference == null && this.getNomenclaturalSource()==null){
+            return;
+        }else{
+            getNomenclaturalSource(true).setCitation(nomenclaturalReference);
+            checkNullSource();
+        }
     }
 
     @Override
