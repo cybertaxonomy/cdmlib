@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.kohlbecker
  * @since Feb 16, 2018
- *
  */
 @RunWith(AlternativeUnitilsJUnit4TestClassRunner.class)
 @Ignore
@@ -66,7 +65,6 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
     private static final String SUBMITTER = "submitter";
 
     private static final String EMAIL_DOMAIN = "@localhost.bgbm.fu-berlin.de";
-
 
     private static final int REGISTRATION_1_ID = 5000;
     private static final int REGISTRATION_2_ID = 5001;
@@ -90,9 +88,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
     @SpringBeanByType
     public void setIRegistrationMessageService(IRegistrationMessageService messageService) throws Exception {
-
         this.messageService = SpringProxyBeanHelper.getTargetObject(messageService, RedmineRegistrationMessageService.class);
-
     }
 
 
@@ -128,7 +124,7 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
     @Test
     @DataSet
-    public void testCreateUser() throws RedmineException, ExternalServiceException{
+    public void testCreateUser() throws ExternalServiceException{
 
         User submitter = (User) userService.loadUserByUsername(SUBMITTER);
 
@@ -145,7 +141,6 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         Extension extension = submitterReloaded.getPerson().getExtensions().iterator().next();
         assertEquals(RedmineRegistrationMessageService.EXTTYPE_REGMESG_REDMINEUID_UUID, extension.getType().getUuid());
         assertEquals(createdUser.getId(), Integer.valueOf(extension.getValue()));
-
     }
 
     /**
@@ -177,8 +172,6 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         messageService.updateIssueStatus(reg);
         issue = messageService.findIssue(reg, false);
         assertEquals("ready", issue.getStatusName());
-
-
     }
 
     @Test
@@ -264,15 +257,8 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
         assertEquals(messageText3, messages.get(2).getText());
         assertEquals(curator, messages.get(2).getFrom());
-
-
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
 //    @Test
     public void createTestDataSet() throws FileNotFoundException {
@@ -285,7 +271,6 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
 
         submitter = userService.save(submitter);
         userService.save(curator);
-
 
         Team team = Team.NewTitledInstance("Novis, Braidwood & Kilroy", "Novis, Braidwood & Kilroy");
         Reference nomRef = ReferenceFactory.newArticle();
@@ -309,7 +294,6 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         reg.setIdentifier("http://phycotest.com/10815");
         reg = registrationService.save(reg);
 
-
         Registration reg2 = Registration.NewInstance();
         reg2.setName(name2);
         reg2.setSubmitter(submitter);
@@ -321,7 +305,5 @@ public class RedmineRegistrationMessageServiceTest extends CdmTransactionalInteg
         commit();
 
         writeDbUnitDataSetFile(includeTableNames_create);
-
     }
-
 }
