@@ -448,9 +448,11 @@ public class StatisticsDaoHibernateImpl
 
 		// get node relations references:
 		queryStrings
-				.add("select distinct tn.referenceForParentChildRelation.uuid as c from TaxonNode tn "
-						+ "where tn.classification=:classification "
-						+ "and tn.referenceForParentChildRelation is not null ");
+				.add(" SELECT DISTINCT ts.citation.uuid AS c "
+				   + " FROM TaxonNode tn "
+				   + " LEFT JOIN tn.source ts "
+                   + " WHERE tn.classification = :classification "
+				   + "     AND ts.citation IS NOT NULL ");
 
 		// get sec references
 		// -------------------------------------------------------------------
@@ -816,10 +818,11 @@ public class StatisticsDaoHibernateImpl
 
 		// get node relations references:
 		queryStrings
-				.add("SELECT COUNT(DISTINCT tn.referenceForParentChildRelation.id) as c "
+				.add("SELECT COUNT(DISTINCT ts.citation.id) as c "
 				    + "FROM TaxonNode tn "
-					+ "WHERE tn.classification=:classification "
-					+ "  AND tn.referenceForParentChildRelation is not null ");
+				    + "   LEFT JOIN tn.source ts "
+                    + "WHERE tn.classification = :classification "
+					+ "  AND tn.source.citation is not null ");
 
 		// get sec references
 		// -------------------------------------------------------------------
@@ -827,7 +830,7 @@ public class StatisticsDaoHibernateImpl
 		queryStrings
 				.add("SELECT COUNT(DISTINCT tn.taxon.sec.id) as c "
 				        + "from TaxonNode tn "
-						+ "where tn.classification=:classification "
+						+ "where tn.classification = :classification "
 						+ " and tn.taxon.sec is not null ");
 
 		// synonyms
