@@ -96,7 +96,8 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
      * org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade ...
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class,
+            value="DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
     public void cascadeDelete() throws DerivedUnitConversionException{
 
         // NOTE:
