@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -85,7 +84,6 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "treeIndex",
     "sortIndex",
     "childNodes",
-//    "source",
     "countChildren",
     "agentRelations",
     "synonymToBeUsed",
@@ -159,18 +157,6 @@ public class TaxonNode
 //    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
 //    private DescriptionElementSource source;
-
-//    @XmlElement(name = "reference")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-    @XmlTransient
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference referenceForParentChildRelation;
-
-//    @XmlElement(name = "microReference")
-    @XmlTransient
-    private String microReferenceForParentChildRelation;
 
     @XmlElement(name = "countChildren")
     private int countChildren;

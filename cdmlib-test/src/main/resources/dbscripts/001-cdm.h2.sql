@@ -5787,14 +5787,12 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATED timestamp,
         UUID varchar(36),
         UPDATED timestamp,
-        CITATIONMICROREFERENCE varchar(255),
         NOTDESIGNATED boolean not null,
         CONSERVEDTYPE boolean,
         REJECTEDTYPE boolean,
         ISVERBATIM boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        CITATION_ID integer,
         SOURCE_ID integer,
         TYPESTATUS_ID integer,
         TYPENAME_ID integer,
@@ -5824,11 +5822,9 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATED timestamp,
         UUID varchar(36),
         UPDATED timestamp,
-        CITATIONMICROREFERENCE varchar(255),
         NOTDESIGNATED boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        CITATION_ID integer,
         SOURCE_ID integer,
         TYPESTATUS_ID integer,
         ISVERBATIM boolean,
@@ -11475,11 +11471,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.TAXONNODE;
 
     alter table PUBLIC.TAXONNODE 
-        add constraint FK1guh0aaewj0yf51vbdfvd21r3 
-        foreign key (REFERENCEFORPARENTCHILDRELATION_ID) 
-        references PUBLIC.REFERENCE;
-
-    alter table PUBLIC.TAXONNODE 
         add constraint FKlavpp8ifuvhyl94hhy8l2n2cj 
         foreign key (SYNONYMTOBEUSED_ID) 
         references PUBLIC.TAXONBASE;
@@ -11898,11 +11889,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FKl734949swou8f4ilj0um66fpu 
         foreign key (UPDATEDBY_ID) 
         references PUBLIC.USERACCOUNT;
-
-    alter table PUBLIC.TYPEDESIGNATIONBASE 
-        add constraint FK5cyjrla19d3shyk955shg27gm 
-        foreign key (CITATION_ID) 
-        references PUBLIC.REFERENCE;
 
     alter table PUBLIC.TYPEDESIGNATIONBASE 
         add constraint FKi3ordjfuma9u820pch23lcvu7 

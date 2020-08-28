@@ -65,8 +65,6 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
     "typeStatus",
     "notDesignated",
     "typifiedNames",
-    "citation",
-    "citationMicroReference",
     "source",
     "registrations",
 })
@@ -97,18 +95,6 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = TypeDesignationStatusBase.class)
     private T typeStatus;
-
-    //the lectotype (or similar) reference
-    @XmlElement(name = "Citation")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference citation;
-
-    //Details of the lectotype reference.
-    @XmlElement(name = "CitationMicroReference")
-    private String citationMicroReference;
 
     //the source for the lectotypification (or similar)
     @XmlElement(name = "source")
