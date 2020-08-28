@@ -47,3 +47,15 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 !cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v35_36/.settings
 workbench.xmi
 cdmlib-ext/KmlJaxbMarshallerTest.kml
+cdmlib-cache/eu.etaxonomy.cdm.model.description.DescriptionElementBase/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.description.DescriptionElementBase/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.name.TaxonName/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.name.TaxonName/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.Classification/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.Classification/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonBase/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonBase/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonRelationship/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonRelationship/write.lock
