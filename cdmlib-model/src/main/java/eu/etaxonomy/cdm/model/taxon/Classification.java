@@ -396,13 +396,13 @@ public class Classification
     private boolean handleCitationOverwrite(TaxonNode childNode, Reference citation, String microCitation){
         if (citation != null){
             if (childNode.getReference() != null && ! childNode.getReference().equals(citation)){
-                logger.warn("ReferenceForParentChildRelation will be overwritten");
+                logger.warn("TaxonNode source will be overwritten");
             }
             childNode.setCitation(citation);
         }
         if (microCitation != null){
             if (childNode.getMicroReference() != null && ! childNode.getMicroReference().equals(microCitation)){
-                logger.warn("MicroReferenceForParentChildRelation will be overwritten");
+                logger.warn("TaxonNode source detail will be overwritten");
             }
             childNode.setCitationMicroReference(microCitation);
         }
