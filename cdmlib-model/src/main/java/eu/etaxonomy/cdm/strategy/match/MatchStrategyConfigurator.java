@@ -73,7 +73,7 @@ public class MatchStrategyConfigurator {
 	public static IMatchStrategyEqual getDefaultNonViralNameMatchStrategy() throws MatchException{
 		IMatchStrategyEqual strategy = DefaultMatchStrategy.NewInstance(TaxonName.class);
 
-		strategy.setMatchMode("nomenclaturalReference", MatchMode.IGNORE);
+		strategy.setMatchMode("nomenclaturalSource", MatchMode.IGNORE);
 		strategy.setMatchMode("combinationAuthorship", MatchMode.IGNORE);
 		strategy.setMatchMode("exCombinationAuthorship", MatchMode.IGNORE);
 		strategy.setMatchMode("basionymAuthorship", MatchMode.IGNORE);
