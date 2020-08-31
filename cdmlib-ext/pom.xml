@@ -40,6 +40,7 @@
       <artifactId>ezmorph</artifactId>
     </dependency>
     <dependency>
+      <!-- required by GbifJsonOccurrenceParser and KmlJaxbMarshallerTest) -->
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
