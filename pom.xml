@@ -43,7 +43,7 @@
     <jackson.version>2.11.2</jackson.version>           <!-- checked 2020-08 -->
 	<commons-logging.version>1.2</commons-logging.version> <!-- checked 2020-08 -->
 	<slf4j.version>1.7.30</slf4j.version>               <!-- checked 2020-08 -->
-	<jaxb.version>2.2.11</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
+	<jaxb.version>2.3.3</jaxb.version>                 <!-- checked 2020-08, there is a newer version 3.0.0-MX, not checked if compatible -->
 	<cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.6</aspectj.version>            <!-- checked 2020-08 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
@@ -706,38 +706,22 @@
 	  </dependency>
 	  <dependency>
 		<groupId>org.glassfish.jaxb</groupId>
-		<artifactId>jaxb-core</artifactId>
-		<version>${jaxb.version}</version>
-	  </dependency>
-	  <dependency>
-		<groupId>org.glassfish.jaxb</groupId>
 		<artifactId>jaxb-jxc</artifactId>
 		<version>${jaxb.version}</version>
 	  </dependency>
       <dependency>
-         <!-- jaxb-core dependency -->
-         <groupId>com.sun.istack</groupId>
-         <artifactId>istack-commons-runtime</artifactId>
-         <version>3.0.11</version>
+          <!-- currently required as xsom references older version -->
+          <groupId>com.sun.xml.bind.external</groupId>
+          <artifactId>relaxng-datatype</artifactId>
+          <version>${jaxb.version}</version>
       </dependency>
       <dependency>
-          <!-- jaxb-core dependency -->
-          <groupId>jakarta.xml.bind</groupId>
-          <artifactId>jakarta.xml.bind-api</artifactId>
-          <version>2.3.3</version>
-      </dependency>
-      <dependency>
-          <!-- jaxb-core dependency -->
-          <groupId>org.glassfish.jaxb</groupId>
-          <artifactId>txw2</artifactId>
-          <version>2.3.3</version>
-      </dependency>
-      <dependency>
-          <!-- jaxb-core transitive dependency -->
+          <!-- jaxb-runtime dependency -->
           <groupId>jakarta.activation</groupId>
           <artifactId>jakarta.activation-api</artifactId>
           <version>1.2.2</version>
       </dependency>
+      <!--  JAB END -->
       
 	  <dependency>
 	    <!-- only for version management org.apache.ant:ant depends in different versions from 
