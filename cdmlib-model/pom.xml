@@ -167,6 +167,16 @@
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
     </dependency>
+<!-- these 2 are also required for hibernate validator according to http://hibernate.org/validator/documentation/getting-started/
+     but cdmlib-model tests require only for javax.el -->
+    <dependency>
+       <groupId>org.glassfish.web</groupId>
+       <artifactId>javax.el</artifactId>
+    </dependency>
+<!--     <dependency> -->
+<!--        <groupId>org.hibernate.validator</groupId> -->
+<!--        <artifactId>hibernate-validator-cdi</artifactId> -->
+<!--     </dependency> -->
 <!-- end validator -->    
     <dependency>
       <groupId>org.slf4j</groupId>
