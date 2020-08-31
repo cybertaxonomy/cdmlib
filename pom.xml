@@ -37,7 +37,6 @@
     <lucene.version>5.4.1</lucene.version>
 	<unitils.version>3.4.6</unitils.version>
     <hsqldb.version>2.5.1</hsqldb.version>
-	<!-- 1.8.0.10, 1.9.0-rc6 (manually build only for debugging) -->
     <httpcomponents.version>4.5.12</httpcomponents.version>
     <doxia.version>1.9.1</doxia.version>                <!-- checked 2020-08 -->
     <poi.version>4.1.2</poi.version>                    <!-- checked 2020-08 -->
@@ -685,6 +684,7 @@
         <artifactId>cdmlib-print</artifactId>
         <version>${project.version}</version>
       </dependency>
+      
       <!--*********** JAXB********* -->
       <dependency>
         <groupId>javax.xml.bind</groupId>
@@ -698,12 +698,6 @@
          <artifactId>javax.activation-api</artifactId>
          <version>1.2.0</version>
          <!-- checked 2020-08 -->
-      </dependency>
-      <dependency>
-        <groupId>xml-resolver</groupId>
-        <artifactId>xml-resolver</artifactId>
-        <version>1.2</version>
-        <!-- checked 2020-08 -->
       </dependency>
  	  <dependency>
 		<groupId>org.glassfish.jaxb</groupId>
@@ -898,6 +892,13 @@
         <version>${aspectj.version}</version>
       </dependency>
       <!-- ******* VARIOUS ******* -->
+      <dependency>
+        <groupId>xml-resolver</groupId>
+        <artifactId>xml-resolver</artifactId>
+        <version>1.2</version>
+        <!-- checked 2020-08 -->
+      </dependency>
+      
       <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
