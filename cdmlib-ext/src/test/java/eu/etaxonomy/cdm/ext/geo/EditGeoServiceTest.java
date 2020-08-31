@@ -34,7 +34,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -67,7 +66,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 08.10.2008
  */
-@Ignore //preliminary ignore sometimes failing tests
 public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 

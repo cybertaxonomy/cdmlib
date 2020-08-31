@@ -52,10 +52,11 @@
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
     </dependency>
-    <dependency>
+<!--     <dependency>
+    ## see https://poi.apache.org/help/faq.html  question 3 on when to use ooxml-schemas and when poi-ooxml-schemas
       <groupId>org.apache.poi</groupId>
       <artifactId>ooxml-schemas</artifactId>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>

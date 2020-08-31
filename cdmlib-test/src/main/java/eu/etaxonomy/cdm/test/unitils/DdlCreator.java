@@ -56,7 +56,7 @@ public class DdlCreator {
 
         String outputFileName = String.format("%s.%s.%s ", new Object[] {"001-cdm", lowerCaseDialectName, "sql" });
         String templateFile = "dbscripts/" + outputFileName + "-template";
-        String outputPath = "src/main/resources/dbscripts/" + outputFileName;
+        String outputPath = "cdmlib-test/src/main/resources/dbscripts/" + outputFileName;
 
 //      String classPath = "eu/etaxonomy/cdm/hibernate.cfg.xml";
 //      ClassPathResource resource = new ClassPathResource(classPath);

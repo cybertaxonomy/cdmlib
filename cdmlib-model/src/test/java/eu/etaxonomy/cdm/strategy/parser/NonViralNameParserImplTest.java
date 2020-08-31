@@ -1780,6 +1780,7 @@ public class NonViralNameParserImplTest {
     }
 
     @Test
+    @Ignore
     public final void testRussian(){
         String parseStr = "Cortusa turkestanica Losinsk. in Тр. Бот. инст. Aкад. наук СССР, сер. 1, 3: 239. 1936";
         INonViralName name = parser.parseReferencedName(parseStr);
