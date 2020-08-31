@@ -34,7 +34,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -121,7 +120,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore   //preliminary ignore
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
         Set<Distribution> distributions = new HashSet<>();
@@ -167,7 +165,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @Ignore  //preliminary ignore
     public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException {
         makeCyprusAreas();
         Set<Distribution> distributions = new HashSet<Distribution>();
