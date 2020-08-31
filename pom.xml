@@ -1234,14 +1234,6 @@
         <artifactId>fop</artifactId>
         <version>2.5</version>
       </dependency>
-      <!-- not directly required, but fix mentioned to force correct version 
-        number 4.3.1. Required by org.apache.xmlgraphics/fop 1.1 Remove when dependency 
-        in fop in corrected. -->
-      <dependency>
-        <groupId>org.apache.avalon.framework</groupId>
-        <artifactId>avalon-framework-api</artifactId>
-        <version>4.3.1</version>
-      </dependency>
       <dependency>
         <groupId>org.odftoolkit</groupId>
         <artifactId>odfdom-java</artifactId>
