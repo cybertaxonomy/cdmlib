@@ -202,7 +202,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
-        testQuantitativeData(uuidFeatureLeafLength, null, 0f, 7f, null, aggrDescLapsanaCommunisAlpina);
+        testQuantitativeData(uuidFeatureLeafLength, null, new BigDecimal("0.0"), new BigDecimal("7.0"), null, aggrDescLapsanaCommunisAlpina);
     }
 
     @Test
@@ -265,7 +265,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina);
         testState(sdAlpinaLeafColor, uuidLeafColorBlue, 2);
         testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
-        testQuantitativeData(uuidFeatureLeafLength, 2f, 5f, 7f, 6f, aggrDescLapsanaCommunisAlpina);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("2"), new BigDecimal("5.0"),
+                new BigDecimal("7.0"), new BigDecimal("6.0"), aggrDescLapsanaCommunisAlpina);
 
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
@@ -273,7 +274,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         List<StateData> sdAdenophoraLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAdenophora);
         testState(sdAdenophoraLeafColor, uuidLeafColorBlue, 0);
         testState(sdAdenophoraLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, 1f, 12f, 12f, 12f, aggrDescLapsanaCommunisAdenophora);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("1"), new BigDecimal("12.0"),
+                new BigDecimal("12.0"), new BigDecimal("12.0"), aggrDescLapsanaCommunisAdenophora);
 
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
         TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
@@ -281,7 +283,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis);
         testState(sdCommunisLeafColor, uuidLeafColorBlue, 2);
         testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsanaCommunis);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("3"), new BigDecimal("5.0"),
+                new BigDecimal("12.0"), new BigDecimal("8.0"), aggrDescLapsanaCommunis);
 
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
         TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
@@ -289,7 +292,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana);
         testState(sdLapsanLeafColor, uuidLeafColorBlue, 2);
         testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, 3f, 5f, 12f, 8f, aggrDescLapsana);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("3"), new BigDecimal("5.0"),
+                new BigDecimal("12.0"), new BigDecimal("8.0"), aggrDescLapsana);
     }
 
     private StructuredDescriptionAggregationConfiguration createConfig(DescriptiveDataSet dataSet) {
@@ -343,7 +347,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         return aggrDesc;
     }
 
-    private void testQuantitativeData(UUID featureUuid, Float sampleSize, Float min, Float max, Float avg, TaxonDescription aggrDesc) {
+    private void testQuantitativeData(UUID featureUuid, BigDecimal sampleSize, BigDecimal min,
+            BigDecimal max, BigDecimal avg, TaxonDescription aggrDesc) {
         List<QuantitativeData> quantitativeDatas = aggrDesc.getElements().stream()
                 .filter(element->element.getFeature().getUuid().equals(featureUuid))
                 .map(catData->CdmBase.deproxy(catData, QuantitativeData.class))
