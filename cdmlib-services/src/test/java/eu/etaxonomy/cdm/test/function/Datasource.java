@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
@@ -74,16 +73,16 @@ public class Datasource {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-//		server = "localhost";
-//		database = "cdm_test";
-////		database = "cdm_production_edaphobase";
-//		username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-		server = "160.45.63.171";
-		database = "cdm_production_euromed";
+		server = "localhost";
+		database = "cdm_test";
+//		database = "cdm_production_edaphobase";
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		String server = "160.45.63.171";
+//		String database = "cdm_production_xxx";
+//		String username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
 //		server = "test.e-taxonomy.eu";
@@ -132,10 +131,6 @@ public class Datasource {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
-
-		List<TaxonBase> list = appCtr.getTaxonService().list(null, 1, 101472, null, Arrays.asList(new String []{"$"}));
-
-		System.out.println(list);
 
 ////		TransactionStatus tx = appCtr.startTransaction(true);
 ////

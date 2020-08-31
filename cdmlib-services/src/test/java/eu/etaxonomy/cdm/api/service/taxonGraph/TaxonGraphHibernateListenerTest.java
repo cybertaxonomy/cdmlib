@@ -173,9 +173,9 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
     }
 
     @Test
-    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
-    @Ignore
-    public void testChangeNomRef() throws TaxonGraphException {
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    @Ignore //FIXME preliminary   #6581
+    public void testChangeNomRef() throws TaxonGraphException{
         try {
             setUuidPref();
 

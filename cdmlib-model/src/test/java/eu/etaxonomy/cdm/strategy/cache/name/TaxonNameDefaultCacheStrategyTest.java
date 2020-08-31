@@ -305,7 +305,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     //TODO add more tests when specification is clearer
     //3665
     @Test
-    @Ignore
+    @Ignore //preliminary ignore test #6851
     public void testOriginalSpelling() {
     	NameRelationshipType origSpellingType = NameRelationshipType.ORIGINAL_SPELLING();
     	TaxonName originalName = (TaxonName)speciesName.clone();
