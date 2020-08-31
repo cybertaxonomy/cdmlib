@@ -51,6 +51,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     HYBRIDRELATIONSHIP("HybridRelationship"),
     IDENTIFIABLESOURCE("IdentifiableSource"),
     IDENTIFIER("Identifier"),
+    KEYSTATEMENT("KeyStatement"),
     LANGUAGE("Language"),
     LANGUAGESTRING("LanguageString"),
     MARKER("Marker"),
