@@ -1606,12 +1606,7 @@
         <artifactId>h2</artifactId>
         <version>1.4.190</version>
       </dependency>
-      <!--for sqlserver -->
-<!--       <dependency> -->
-<!--         <groupId>com.microsoft.sqlserver</groupId> -->
-<!--         <artifactId>jdbc4</artifactId> -->
-<!--         <version>2.0</version> -->
-<!--       </dependency> -->
+      <!-- SQL Server -->
       <dependency>
         <groupId>com.microsoft.sqlserver</groupId>
         <artifactId>mssql-jdbc</artifactId>

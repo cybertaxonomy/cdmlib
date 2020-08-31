@@ -22,15 +22,12 @@
       <artifactId>c3p0</artifactId>
 <!--       <version>0.9.5.5</version> -->
     </dependency>
-
     <dependency>
         <groupId>com.mchange</groupId>
         <artifactId>mchange-commons-java</artifactId>
         <!-- mchange-commons-java needs to match the version as defined in the c3p0/pom.xml -->
         <version>0.2.11</version>
     </dependency>
-    
-
 
     <!-- ******* DATABASES DRIVER ******* -->
       <!-- 
@@ -69,17 +66,12 @@
       <artifactId>h2</artifactId>
 <!--       <version>1.4.190</version> -->
     </dependency>
-    <!--for sqlserver-->
-<!--     <dependency> -->
-<!--       <groupId>com.microsoft.sqlserver</groupId> -->
-<!--       <artifactId>jdbc4</artifactId> -->
-<!--     </dependency> -->
+    <!-- SQL Server-->
     <dependency>
        <groupId>com.microsoft.sqlserver</groupId>
        <artifactId>mssql-jdbc</artifactId>
-       <version>8.4.1.jre8</version>
+<!--        <version>8.4.1.jre8</version> -->
     </dependency>
-    
     <!-- SQL Server and Sybase -->
     <dependency>
       <groupId>net.sourceforge.jtds</groupId>
