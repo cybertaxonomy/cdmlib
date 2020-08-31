@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class MatchStrategyConfigurator {
 
-
     public enum MatchStrategy {
         NonViralName,
         TeamOrPerson,
@@ -95,7 +94,6 @@ public class MatchStrategyConfigurator {
 		return strategy;
 	}
 
-
 	/**
 	 * <p>getDefaultReferenceMatchStrategy</p>
 	 *
@@ -110,6 +108,4 @@ public class MatchStrategyConfigurator {
 
 		return strategy;
 	}
-
-
 }
