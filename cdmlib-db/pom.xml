@@ -20,7 +20,7 @@
    <dependency>
       <groupId>com.mchange</groupId>
       <artifactId>c3p0</artifactId>
-<!--       <version>0.9.5.2</version> -->
+<!--       <version>0.9.5.5</version> -->
     </dependency>
 
     <dependency>
@@ -69,11 +69,16 @@
       <artifactId>h2</artifactId>
 <!--       <version>1.4.190</version> -->
     </dependency>
-    <!--for sqlserver2008 and sqlserver2005 and probably higher-->
+    <!--for sqlserver-->
+<!--     <dependency> -->
+<!--       <groupId>com.microsoft.sqlserver</groupId> -->
+<!--       <artifactId>jdbc4</artifactId> -->
+<!-- <!--       <version>2.0</version> --> -->
+<!--     </dependency> -->
     <dependency>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>jdbc4</artifactId>
-<!--       <version>2.0</version> -->
+       <groupId>com.microsoft.sqlserver</groupId>
+       <artifactId>mssql-jdbc</artifactId>
+       <version>8.4.1.jre8</version>
     </dependency>
     
     <!-- SQL Server and Sybase -->
