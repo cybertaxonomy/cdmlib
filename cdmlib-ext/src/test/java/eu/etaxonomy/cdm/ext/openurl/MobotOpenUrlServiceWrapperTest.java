@@ -18,12 +18,11 @@ import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
  * @author a.mueller
- *
  */
 public class MobotOpenUrlServiceWrapperTest {
-	public static final Logger logger = Logger.getLogger(MobotOpenUrlServiceWrapperTest.class);
-	public static final String baseUrl = "http://www.biodiversitylibrary.org/openurl";
 
+    public static final Logger logger = Logger.getLogger(MobotOpenUrlServiceWrapperTest.class);
+	public static final String baseUrl = "http://www.biodiversitylibrary.org/openurl";
 
 	private MobotOpenUrlServiceWrapper openUrlServiceWrapper;
 	private static boolean internetIsAvailable = true;
@@ -33,9 +32,6 @@ public class MobotOpenUrlServiceWrapperTest {
 		internetIsAvailable = true;
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		openUrlServiceWrapper = new MobotOpenUrlServiceWrapper();
@@ -43,7 +39,6 @@ public class MobotOpenUrlServiceWrapperTest {
 	}
 
 // ******************************* TESTS ******************************************************/
-
 
 	@Test
 	public void testDoResolveAndPage_1() {
@@ -66,7 +61,6 @@ public class MobotOpenUrlServiceWrapperTest {
 		List<OpenUrlReference> refList = openUrlServiceWrapper.doResolve(query);
 
 		if (testInternetConnectivity(refList)){
-
 
 			// Assert.assertEquals("There should be exactly 2 result for 'Linnaei Species Plantarum Europae'",
 			// 2, refList.size());
@@ -102,7 +96,6 @@ public class MobotOpenUrlServiceWrapperTest {
 	@Ignore // it seems as if oclc number are no longer supported by the api. Email send to mobot to clarify (a.kohlbecker 2016-07-11)
 	public void testDoResolveAndPage_2() {
 
-
 	    try {
             if(!UriUtils.isServiceAvailable(new URI(baseUrl), 1000)) {
                 logger.error("Test skipped due to " + baseUrl + " being unavailable");
@@ -118,7 +111,6 @@ public class MobotOpenUrlServiceWrapperTest {
 		List<OpenUrlReference> refList = openUrlServiceWrapper.doResolve(query);
 
 		if (testInternetConnectivity(refList)){
-
 
 			// Assert.assertEquals("There should be exactly 2 result for 'Linnaei Species Plantarum Europae'",
 			// 2, refList.size());
@@ -149,23 +141,18 @@ public class MobotOpenUrlServiceWrapperTest {
 		query.startPage = "813";
 
 		List<OpenUrlReference> refList = openUrlServiceWrapper.doResolve(query);
-
 		if (testInternetConnectivity(refList)){
-
 			Assert.assertTrue("There should be at least one result", refList.size() > 0);
 			OpenUrlReference reference = refList.get(0);
 		}
 	}
-
 
 	private boolean testInternetConnectivity(List<?> list) {
 		if (list == null || list.isEmpty()){
 			boolean result = internetIsAvailable && UriUtils.isInternetAvailable(null);
 			internetIsAvailable = result;
 			return result;
-
 		}
 		return true;
 	}
-
 }
