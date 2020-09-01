@@ -18,7 +18,7 @@
         <!-- TODO do we need this? At all or move it in cdmlib-test? -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <goals>
@@ -158,5 +158,4 @@
 <!-- 		<scope>test</scope> -->
 <!-- 	</dependency> -->
   </dependencies>
-  
 </project>
