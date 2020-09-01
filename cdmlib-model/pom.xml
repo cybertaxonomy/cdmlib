@@ -70,12 +70,12 @@
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.8.8</version>
+            <version>${aspectj.version}</version>
           </dependency>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.8.8</version>
+            <version>${aspectj.version}</version>
           </dependency>
       </dependencies>
       </plugin>
@@ -95,13 +95,10 @@
         <artifactId>jaxb-runtime</artifactId>
     </dependency>
 <!--     <dependency> -->
-<!--         <groupId>org.glassfish.jaxb</groupId> -->
-<!--         <artifactId>jaxb-jxc</artifactId> -->
+<!--       aspectjrt is subset of aspectjweaver which comes as dependency with spring-aspects  -->
+<!--       <groupId>org.aspectj</groupId> -->
+<!--       <artifactId>aspectjrt</artifactId> -->
 <!--     </dependency> -->
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-envers</artifactId>

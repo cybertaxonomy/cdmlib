@@ -866,6 +866,7 @@
 	  </dependency>
       <!-- ******* aspect ******* -->
       <dependency>
+        <!-- not really needed as long as aspectjweaver is on classpath which is a superset of aspectjrt -->
         <groupId>org.aspectj</groupId>
         <artifactId>aspectjrt</artifactId>
         <version>${aspectj.version}</version>
