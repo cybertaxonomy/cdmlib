@@ -60,13 +60,6 @@
       <artifactId>cdmlib-test</artifactId>
       <scope>test</scope>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>eu.etaxonomy</groupId> -->
-<!--       <artifactId>cdmlib-persistence</artifactId> -->
-<!--       <type>test-jar</type> -->
-<!--       <scope>test</scope> -->
-<!--       <version>${project.version}</version> -->
-<!--      </dependency> -->
     <dependency>
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-highlighter</artifactId>
