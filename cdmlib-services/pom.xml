@@ -45,10 +45,11 @@
    </plugins>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>1.0.0</version>
+  <dependency>
+   <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>6.0.0</version>
+        <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
@@ -86,10 +87,10 @@
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse</groupId>
-      <artifactId>osgi</artifactId>
-    </dependency>
+<!--     <dependency> -->
+<!--       <groupId>org.eclipse</groupId> -->
+<!--       <artifactId>osgi</artifactId> -->
+<!--     </dependency> -->
     <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
