@@ -603,7 +603,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 } catch (Exception e) {
                     // should not happen, but just in case we fall back to explicit initialization
                     // and log the error
-                    logger.error(e);
+                    logger.error("error in fetch join processing, falling back to explicit initialization", e);
                     autoInit.initlializers.add(init);
                 }
 
