@@ -156,10 +156,6 @@
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>stax</groupId>
-      <artifactId>stax</artifactId>
-    </dependency>
 
     <!-- JsonView -->
     <dependency>

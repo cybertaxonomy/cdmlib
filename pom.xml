@@ -1252,11 +1252,12 @@
         <artifactId>xpp3</artifactId>
         <version>1.1.4c</version>
       </dependency>
-      <dependency>
-        <groupId>stax</groupId>
-        <artifactId>stax</artifactId>
-        <version>1.2.0</version>
-      </dependency>
+<!--       <dependency> -->
+<!--        stax is part of java8 and therefore not needed anymore -->
+<!--         <groupId>stax</groupId> -->
+<!--         <artifactId>stax</artifactId> -->
+<!--         <version>1.2.0</version> -->
+<!--       </dependency> -->
       <dependency>
         <groupId>xom</groupId>
         <artifactId>xom</artifactId>
