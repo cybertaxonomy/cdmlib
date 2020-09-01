@@ -196,8 +196,6 @@ public class SDDDocumentBuilder {
 	private static final Logger logger = Logger
 			.getLogger(SDDDocumentBuilder.class);
 
-	private final String NEWLINE = System.getProperty("line.separator");
-
 	public SDDDocumentBuilder() throws SAXException, IOException {
 		document = new DocumentImpl();
 	}
