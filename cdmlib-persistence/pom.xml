@@ -15,37 +15,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>hibernate3-maven-plugin</artifactId>
-        <version>3.0</version>
-        <configuration>
-          <components>
-            <component>
-              <name>hbm2ddl</name>
-              <implementation>annotationconfigurationX</implementation>
-            </component>
-          </components>
-          <componentProperties>
-            <namingstrategy>org.hibernate.cfg.DefaultComponentSafeNamingStrategy</namingstrategy>
-            <propertyfile>/src/test/resources/dbscripts/hibernate.properties</propertyfile>
-            <outputfilename>001_cdm.ddl</outputfilename>
-            <configurationfile>/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml</configurationfile>
-          </componentProperties>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>eu.etaxonomy</groupId>
-            <artifactId>cdmlib-db</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.5.6-FINAL</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
+        <!-- TODO do we need this? At all or move it in cdmlib-test? -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.3.2</version>
