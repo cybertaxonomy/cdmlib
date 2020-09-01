@@ -20,7 +20,34 @@
     the common data model via webservices in the wider sense</description>
   <!-- Revert this back to "war" before committing -->
   <packaging>jar</packaging>
-
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>../src/site/apt/remote</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <dependencies>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
@@ -158,31 +185,5 @@
       <artifactId>iiif-apis</artifactId>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.5</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>../src/site/apt/remote</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
 
