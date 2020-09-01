@@ -64,7 +64,7 @@
           </configuration>
         </execution>
       </executions>
-      <dependencies>
+        <dependencies>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
