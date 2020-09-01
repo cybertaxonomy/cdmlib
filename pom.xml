@@ -250,7 +250,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M4</version>
+        <version>3.0.0-M5</version>  <!-- updated 2020-09 -->
         <configuration>
           <argLine>-Xmx512M -Dfile.encoding=${project.build.sourceEncoding}</argLine>
           <runOrder>alphabetical</runOrder>
