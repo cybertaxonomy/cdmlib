@@ -173,7 +173,6 @@
 <!--       <scope>compile</scope> -->
 <!--     </dependency> -->
 
-  
 	<!-- Profiling -->
 	<dependency>
 		<groupId>com.yourkit</groupId>

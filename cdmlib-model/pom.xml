@@ -15,6 +15,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <!-- to upgrade to 3.0.0 the <task> needs to be updated to <target>, see Major Version Upgrade to version 3.0.0<< on the plugin site -->
         <executions>
           <execution>
             <id>aspectj-main</id>
