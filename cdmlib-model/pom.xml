@@ -87,13 +87,14 @@
       <artifactId>cdmlib-commons</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-    </dependency>
-    <dependency>
         <groupId>org.glassfish.jaxb</groupId>
         <artifactId>jaxb-runtime</artifactId>
     </dependency>
+<!--     <dependency> -->
+<!--       replaced by jakarta.xml.bind-api, dependency of jaxb-runtime -->
+<!--       <groupId>javax.xml.bind</groupId> -->
+<!--       <artifactId>jaxb-api</artifactId> -->
+<!--     </dependency> -->
 <!--     <dependency> -->
 <!--       aspectjrt is subset of aspectjweaver which comes as dependency with spring-aspects  -->
 <!--       <groupId>org.aspectj</groupId> -->

@@ -687,11 +687,17 @@
       
       <!--*********** JAXB********* -->
       <dependency>
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-        <version>2.3.1</version>
-        <!-- checked 2020-08 -->
+        <groupId>jakarta.xml.bind</groupId>
+        <artifactId>jakarta.xml.bind-api</artifactId>
+        <version>${jaxb.version}</version>  <!-- not sure if jaxb.version is always the same -->
       </dependency>
+<!--       <dependency> -->
+<!--         replaced by jakarta.xml.bind-api -->
+<!--         <groupId>javax.xml.bind</groupId> -->
+<!--         <artifactId>jaxb-api</artifactId> -->
+<!--         <version>2.3.1</version> -->
+<!--         checked 2020-08 -->
+<!--       </dependency> -->
       <dependency>
          <!-- dependency for jaxb-api -->
          <groupId>javax.activation</groupId>
@@ -976,12 +982,12 @@
         <version>3.4.1.Final</version>
         <!-- checked 2020-08 -->
       </dependency>
-	  <dependency>
-	    <!-- since hibernate 5.0.4 Dialect throws exception if jta is missing  -->
-        <groupId>javax.transaction</groupId>
-        <artifactId>jta</artifactId>
-        <version>1.1</version>
-      </dependency>  
+<!-- 	  <dependency> -->
+<!-- 	    see note in cdmib-persistence pom  -->
+<!--         <groupId>javax.transaction</groupId> -->
+<!--         <artifactId>jta</artifactId> -->
+<!--         <version>1.1</version> -->
+<!--       </dependency>   -->
 		
       <!-- TODO xerces xmlParserAPIs duplicates many classes from jre and 
         xml-apis. It is a dependency that comes with xom:xom -->

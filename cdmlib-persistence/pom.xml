@@ -69,11 +69,12 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <!-- Since hibernate 5.0.4 the logging for a Dialect throws ClassDefNotFound for javax.transaction.SystemException if jta is missing  -->
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
-    </dependency>  
+<!--     <dependency> -->
+<!--       Since hibernate 5.0.4 the logging for a Dialect throws ClassDefNotFound for javax.transaction.SystemException if jta is missing  -->
+<!--       Update: since geronimo-jta (dependency of hibernate-core is on the classpath this should not be an issue anymore 
+            <groupId>javax.transaction</groupId> -->
+<!--       <artifactId>jta</artifactId> -->
+<!--     </dependency>   -->
     <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>

@@ -64,10 +64,6 @@
         <groupId>org.docx4j</groupId>
         <artifactId>docx4j</artifactId>
     </dependency>
-    <dependency> 
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
-    </dependency>
     <dependency>
       <groupId>xml-resolver</groupId>
       <artifactId>xml-resolver</artifactId>
