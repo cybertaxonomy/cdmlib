@@ -256,7 +256,6 @@ public class SchemaUpdater_5151_5152 extends SchemaUpdaterBase {
         referencedTables = new String[]{"TermCollection","ExternalLink",null};
         step = TableCreator.NewInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
         step.setPrimaryKeyParams("TermCollection_id,links_id", "REV,TermCollection_id,links_id");
-
     }
 
     @Override

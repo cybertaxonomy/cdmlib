@@ -90,7 +90,6 @@ public class Classification
     @IndexedEmbedded
     private LanguageString name;
 
-
     @XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
