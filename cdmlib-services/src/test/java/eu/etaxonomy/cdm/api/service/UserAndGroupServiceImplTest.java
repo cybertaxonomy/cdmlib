@@ -85,7 +85,6 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         }
     }
 
-
     @Test
     public void testUpdateUser(){
 

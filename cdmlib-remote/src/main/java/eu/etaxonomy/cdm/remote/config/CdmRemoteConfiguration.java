@@ -27,6 +27,4 @@ public class CdmRemoteConfiguration {
     public IMediaToolbox mediaToolbox() {
         return new MediaToolbox();
     }
-
-
 }
