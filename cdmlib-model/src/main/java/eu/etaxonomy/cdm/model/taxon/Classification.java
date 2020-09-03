@@ -129,7 +129,8 @@ public class Classification
 //    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     private Map<Language,LanguageString> description = new HashMap<>();
 
-    //the source for this single classification
+	//TODO remove, due to #9211
+	//the source for this single classification
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
