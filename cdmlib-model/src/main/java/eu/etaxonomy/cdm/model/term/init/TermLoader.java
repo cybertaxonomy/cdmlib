@@ -63,6 +63,7 @@ public class TermLoader implements ITermLoader {
 				UUID uuidTerm = UUID.fromString(nextLine[0]);
 				termSet.add(uuidTerm);
 			}
+			reader.close();
 			return uuidVocabulary;
 
 		} catch (Exception e) {
@@ -111,6 +112,7 @@ public class TermLoader implements ITermLoader {
 				handleSingleTerm(nextLine, terms, termClass, voc,
 						abbrevAsId, classDefiningTermInstance);
 			}
+	        reader.close();
 			return voc;
 		} catch (Exception e) {
 			logger.error(e + " " + e.getCause() + " " + e.getMessage());
