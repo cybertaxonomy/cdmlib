@@ -179,6 +179,7 @@ public class Classification
     }
 
 //********************** xxxxxxxxxxxxx ******************************************/
+
     /**
      * Returns the topmost {@link TaxonNode taxon node} (root node) of <i>this</i>
      * classification. The root node does not have any parent and no taxon. Since taxon nodes
@@ -237,7 +238,6 @@ public class Classification
 
         return childNode;
     }
-
 
     @Override
     public boolean deleteChildNode(TaxonNode node) {
@@ -535,7 +535,6 @@ public class Classification
         this.reference = reference;
     }
 
-
     @Override
     public String getMicroReference() {
         return microReference;
@@ -544,7 +543,6 @@ public class Classification
         this.microReference = microReference;
     }
 
-
     /**
 	 * The point in time, the time period or the season for which this description element
 	 * is valid. A season may be expressed by not filling the year part(s) of the time period.
@@ -552,7 +550,6 @@ public class Classification
 	public TimePeriod getTimeperiod() {
 		return timeperiod;
 	}
-
 	/**
 	 * @see #getTimeperiod()
 	 */
@@ -562,7 +559,6 @@ public class Classification
 		}
 		this.timeperiod = timeperiod;
 	}
-
 
     /**
      * Returns the set of {@link NamedArea named areas} indicating the geospatial
@@ -594,7 +590,6 @@ public class Classification
     public void removeGeoScope(NamedArea geoScope){
         this.geoScopes.remove(geoScope);
     }
-
 
 	/**
 	 * Returns the i18n description used to describe
@@ -646,7 +641,6 @@ public class Classification
 		this.description.remove(language);
 	}
 
-
     @Override
     public String generateTitle() {
         //TODO implement as cache strategy
@@ -665,7 +659,6 @@ public class Classification
         //TODO needs to be implemented
         return 0;
     }
-
 
     @Override
     public boolean hasChildNodes() {
@@ -689,7 +682,6 @@ public class Classification
             //result.rootNode.childNodes = new ArrayList<TaxonNode>();
             List<TaxonNode> rootNodes = new ArrayList<>();
             TaxonNode rootNodeClone;
-
 
             rootNodes.addAll(rootNode.getChildNodes());
             TaxonNode rootNode;
@@ -718,8 +710,5 @@ public class Classification
             e.printStackTrace();
             return null;
         }
-
     }
-
-
 }

@@ -6,10 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
-
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -107,8 +104,6 @@ public class DeterminationEvent extends EventBase {
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<Reference> references = new HashSet<>();
 
-
-
 	/**
 	 * Factory method
 	 * @return
@@ -147,25 +142,20 @@ public class DeterminationEvent extends EventBase {
 	public DefinedTerm getModifier() {
 		return modifier;
 	}
-
 	public void setModifier(DefinedTerm modifier) {
 		this.modifier = modifier;
 	}
 
-	public TaxonBase getTaxon(){
-		return this.taxon;
-	}
-
-	/*** @param taxon    the */
 	public void setTaxonName(TaxonName taxonName){
 		this.taxonName = taxonName;
 	}
-
 	public TaxonName getTaxonName(){
 		return this.taxonName;
 	}
 
-	/*** @param taxon    the */
+    public TaxonBase getTaxon(){
+        return this.taxon;
+    }
 	public void setTaxon(TaxonBase taxon){
 		this.taxon = taxon;
 	}
@@ -174,11 +164,6 @@ public class DeterminationEvent extends EventBase {
 	public Partial getIdentificationDate(){
 		return this.getTimeperiod().getStart();
 	}
-
-	/**
-	 *
-	 * @param identificationDate    identificationDate
-	 */
 	public void setIdentificationDate(Partial identificationDate){
 		this.getTimeperiod().setStart(identificationDate);
 	}
@@ -187,7 +172,6 @@ public class DeterminationEvent extends EventBase {
 	public AgentBase getDeterminer() {
 		return this.getActor();
 	}
-
 	public void setDeterminer(AgentBase determiner) {
 		this.setActor(determiner);
 	}
@@ -195,7 +179,6 @@ public class DeterminationEvent extends EventBase {
 	public SpecimenOrObservationBase getIdentifiedUnit() {
 		return identifiedUnit;
 	}
-
 	public void setIdentifiedUnit(SpecimenOrObservationBase identifiedUnit) {
 		this.identifiedUnit = identifiedUnit;
 	}
@@ -249,5 +232,4 @@ public class DeterminationEvent extends EventBase {
 			return null;
 		}
 	}
-
 }

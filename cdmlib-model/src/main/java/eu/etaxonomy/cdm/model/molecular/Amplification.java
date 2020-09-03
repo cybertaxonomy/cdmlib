@@ -90,7 +90,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @XmlRootElement(name = "Amplification")
 @Entity
 @Audited
-public class Amplification extends EventBase implements Cloneable{
+public class Amplification extends EventBase {
 	private static final long serialVersionUID = -6382383300974316261L;
 
 	private static final Logger logger = Logger.getLogger(Amplification.class);

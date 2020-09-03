@@ -42,11 +42,6 @@ public class CdmMetaData extends CdmBase{
 
 	private static final String UNNAMED = "- UNNAMED -";
 
-
-	/* It is a little bit confusing that this specific information is located in
-	 * a generic class for metadata. Think about moving the schema version
-	 *
-	 */
 	/**
 	 * The database schema version number.
 	 * It is recommended to have the first two numbers equal to the CDM Library version number.
@@ -74,9 +69,6 @@ public class CdmMetaData extends CdmBase{
 	        return versionString;
 	    }
 	}
-
-
-	/* END OF CONFUSION */
 
 	   /**
      * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}

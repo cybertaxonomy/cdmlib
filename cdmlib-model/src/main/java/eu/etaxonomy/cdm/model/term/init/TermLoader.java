@@ -65,7 +65,6 @@ public class TermLoader implements ITermLoader {
 			}
 			return uuidVocabulary;
 
-
 		} catch (Exception e) {
 			logger.error(e + " " + e.getCause() + " " + e.getMessage());
 			for(StackTraceElement ste : e.getStackTrace()) {
@@ -73,7 +72,6 @@ public class TermLoader implements ITermLoader {
 			}
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	@Override
@@ -183,9 +181,6 @@ public class TermLoader implements ITermLoader {
 
 	/**
 	 * Returns the {@link CSVReader} for the given {@link VocabularyEnum}.
-	 * @param vocType
-	 * @return
-	 * @throws IOException
 	 */
 	private CSVReader getCsvReader(VocabularyEnum vocType) throws IOException {
 		String filename = vocType.name()+".csv";
@@ -222,5 +217,4 @@ public class TermLoader implements ITermLoader {
 		}
 		return csvTermAttributeList;
 	}
-
 }

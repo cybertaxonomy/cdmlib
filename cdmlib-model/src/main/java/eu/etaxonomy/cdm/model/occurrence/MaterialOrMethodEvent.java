@@ -58,8 +58,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
-public class MaterialOrMethodEvent extends EventBase implements Cloneable{
-	private static final long serialVersionUID = -4799205199942053585L;
+public class MaterialOrMethodEvent extends EventBase {
+
+    private static final long serialVersionUID = -4799205199942053585L;
 	private static final Logger logger = Logger.getLogger(MaterialOrMethodEvent.class);
 
     @XmlElement(name = "DefinedMaterialOrMethod")
