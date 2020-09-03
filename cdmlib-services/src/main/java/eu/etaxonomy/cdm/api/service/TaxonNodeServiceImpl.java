@@ -77,6 +77,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
@@ -114,7 +115,8 @@ public class TaxonNodeServiceImpl
     private INameService nameService;
 
     @Autowired
-    private IReferenceService refService;
+    private IOriginalSourceDao sourceDao;
+
 
     @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;
@@ -181,7 +183,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
-        return dao.getUuidAndTitleCache(limit, pattern, classificationUuid);
+        return dao.getUuidAndTitleCache(limit, pattern, classificationUuid, true);
     }
 
     @Override
@@ -850,6 +852,9 @@ public class TaxonNodeServiceImpl
        TaxonNode child = null;
        Reference ref = null;
        if (source != null){
+           if (source.isPersited()){
+               source = (DescriptionElementSource) sourceDao.load(source.getUuid());
+           }
            if (source.getCitation() != null){
                source.setCitation(referenceService.load(source.getCitation().getUuid()));
            }
@@ -998,7 +1003,7 @@ public class TaxonNodeServiceImpl
         TreeIndex subTreeIndex = null;
         Reference newSec = null;
         if (config.getNewSecundum() != null){
-            newSec = refService.load(config.getNewSecundum().getUuid());
+            newSec = referenceService.load(config.getNewSecundum().getUuid());
         }
 
         if (config.getSubtreeUuid() == null){
