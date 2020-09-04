@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import static org.junit.Assert.assertEquals;
@@ -20,11 +19,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.term.OrderedTermBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.term.TermType;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class OrderedTermBaseTest extends EntityTestBase {
@@ -127,5 +121,4 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		int after = otb1.orderIndex;
 		assertEquals(before, after);
 	}
-
 }

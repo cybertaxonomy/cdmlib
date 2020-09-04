@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @since 12.06.2020
  */
-public class Reference2SourceMover  extends SchemaUpdaterStepBase {
+public class Reference2SourceMover extends SchemaUpdaterStepBase {
 
 
     @SuppressWarnings("unused")

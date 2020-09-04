@@ -168,9 +168,6 @@ public abstract class IoResultBase implements Serializable{
 
     public abstract void setAborted();
 
-    /**
-     * @return
-     */
     public StringBuffer createReport() {
         StringBuffer report = new StringBuffer("");
         addShortDescription(report);

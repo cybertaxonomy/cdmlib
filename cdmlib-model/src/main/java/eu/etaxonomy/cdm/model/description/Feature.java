@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
-
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -53,7 +51,6 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-
 
 /**
  * The class for individual properties (also designed as character, type or
@@ -133,7 +130,6 @@ public class Feature extends DefinedTermBase<Feature> {
     )
     private EnumSet<CdmClass> supportedDataTypes = EnumSet.of(CdmClass.TEXT_DATA);  //by default TextData should always be supported
 
-
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
@@ -148,11 +144,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<>();
 
-
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
 	private final Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<>();
-
 
     //copy from RelationshipTermBase
 	@XmlElementWrapper(name = "InverseRepresentations")
@@ -265,7 +259,6 @@ public class Feature extends DefinedTermBase<Feature> {
 		termMap = null;
 	}
 
-
 	/**
      * If this feature is available for {@link TaxonDescription taxon descriptions}.
      */
@@ -279,7 +272,6 @@ public class Feature extends DefinedTermBase<Feature> {
     public void setAvailableForTaxon(boolean availableForTaxon) {
         setAvailableFor(CdmClass.TAXON, availableForTaxon);
     }
-
 
     /**
      * If this feature is available for {@link NameDescription name descriptions}.
@@ -309,7 +301,6 @@ public class Feature extends DefinedTermBase<Feature> {
         setAvailableFor(CdmClass.OCCURRENCE, availableForOccurrence);
     }
 
-
 	/**
 	 * Returns the boolean value of the flag indicating whether <i>this</i>
 	 * feature can be described with {@link QuantitativeData quantitative data} (true)
@@ -322,7 +313,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsQuantitativeData() {
 	    return supportedDataTypes.contains(CdmClass.QUANTITATIVE_DATA);
 	}
-
 	/**
 	 * @see	#isSupportsQuantitativeData()
 	 */
@@ -341,7 +331,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsTextData() {
 	    return supportedDataTypes.contains(CdmClass.TEXT_DATA);
 	}
-
 	/**
 	 * @see	#isSupportsTextData()
 	 */
@@ -361,7 +350,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsDistribution() {
 	      return supportedDataTypes.contains(CdmClass.DISTRIBUTION);
 	}
-
 	/**
 	 * @see	#isSupportsDistribution()
 	 */
@@ -380,7 +368,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsIndividualAssociation() {
 	      return supportedDataTypes.contains(CdmClass.INDIVIDUALS_ASSOCIATION);
 	}
-
 	/**
 	 * @see	#isSupportsIndividualAssociation()
 	 */
@@ -400,7 +387,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsTaxonInteraction() {
 	      return supportedDataTypes.contains(CdmClass.TAXON_INTERACTION);
 	}
-
 	/**
 	 * @see	#isSupportsTaxonInteraction()
 	 */
@@ -420,7 +406,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsCommonTaxonName() {
 	      return supportedDataTypes.contains(CdmClass.COMMON_TAXON_NAME);
 	}
-
 	/**
 	 * @see	#isSupportsTaxonInteraction()
 	 */
@@ -439,7 +424,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsCategoricalData() {
 		return supportedDataTypes.contains(CdmClass.CATEGORICAL_DATA);
 	}
-
 	/**
 	 * @see	#supportsCategoricalData()
 	 */
@@ -458,7 +442,6 @@ public class Feature extends DefinedTermBase<Feature> {
     public boolean isSupportsTemporalData() {
           return supportedDataTypes.contains(CdmClass.TEMPORAL_DATA);
     }
-
     /**
      * @see #isSupportsTemporalData()
      */

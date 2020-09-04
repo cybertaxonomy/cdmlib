@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term.init;
 
 import java.io.IOException;
@@ -33,6 +32,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 
 @Component
 public class TermLoader implements ITermLoader {
+
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
 	@Override

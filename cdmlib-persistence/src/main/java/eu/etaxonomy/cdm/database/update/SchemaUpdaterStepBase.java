@@ -34,7 +34,6 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 
 	private boolean ignoreErrors;
 
-
 //************************ CONSTRUCTOR ***********************************/
 
 	protected <T extends ISchemaUpdaterStep> SchemaUpdaterStepBase(List<T> stepList, String stepName){

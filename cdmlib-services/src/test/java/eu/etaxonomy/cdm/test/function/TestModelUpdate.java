@@ -123,8 +123,6 @@ public class TestModelUpdate {
         }
     }
 
-
-
 	/**
 	 * Updates the H2 test database in remote web-app.
 	 * Requires that the local path to the database is adapted
@@ -142,7 +140,6 @@ public class TestModelUpdate {
     @SuppressWarnings("unused")  //enable only if needed
     private void updateTaxEditorH2(){
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
-
         updateH2(pathToProject);
     }
 
@@ -153,20 +150,14 @@ public class TestModelUpdate {
     @SuppressWarnings("unused")  //enable only if needed
     private void updateVaadinH2(){
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
-
         updateH2(pathToProject);
     }
 
-
-    /**
-     * @param pathToProject
-     */
     private void updateH2(String pathToProject) {
         String pathInProject = "src\\test\\resources\\h2";
 
 	    String path = pathToProject + pathInProject;
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path);
-
 
  		try {
 			CdmUpdater updater = new CdmUpdater();
@@ -183,7 +174,6 @@ public class TestModelUpdate {
 		System.out.println("\nEnd Datasource");
     }
 
-
     @SuppressWarnings("unused")  //enable only if needed
     private void updateEdaphobasePostgres(){
        String serverSql = "130.133.70.26";
@@ -194,7 +184,6 @@ public class TestModelUpdate {
 
        ICdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(serverSql,
                 database, port, username, password);
-
         try {
             CdmUpdater updater = new CdmUpdater();
             SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
@@ -209,7 +198,6 @@ public class TestModelUpdate {
         appCtr.close();
         System.out.println("\nEnd Datasource");
     }
-
 
 	private void test(){
 		System.out.println("Start TestModelUpdate");
@@ -236,5 +224,4 @@ public class TestModelUpdate {
 		cc.test();
     	System.exit(0);
 	}
-
 }
