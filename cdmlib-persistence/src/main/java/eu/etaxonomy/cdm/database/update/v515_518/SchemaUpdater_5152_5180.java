@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -147,6 +148,13 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         tableName = "Reference";
         columnName ="datePublished";
         fixEmptyPartialsHandling(stepList, tableName, columnName);
+
+        //#9062
+        //remove StatisticalMeasurementValue.value_old
+        stepName = "remove StatisticalMeasurementValue.value_old";
+        tableName = "StatisticalMeasurementValue";
+        String oldColumnName = "value_old";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 
         return stepList;
     }
