@@ -94,15 +94,4 @@ public class Reference2SourceMover extends SchemaUpdaterStepBase {
 
         }
     }
-
-    protected Integer nullSafeInt(ResultSet rs, String columnName) throws SQLException {
-        Object intObject = rs.getObject(columnName);
-        if (intObject == null){
-            return null;
-        }else{
-            return Integer.valueOf(intObject.toString());
-        }
-    }
-
-
 }

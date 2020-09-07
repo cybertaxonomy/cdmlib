@@ -156,6 +156,23 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
         return param == null ? "NULL" : "'" + param + "'";
     }
 
+    protected Integer nullSafeInt(ResultSet rs, String columnName) throws SQLException {
+        Object intObject = rs.getObject(columnName);
+        if (intObject == null){
+            return null;
+        }else{
+            return Integer.valueOf(intObject.toString());
+        }
+    }
+
+    protected boolean isNotBlank(String str) {
+        return StringUtils.isNotBlank(str);
+    }
+
+    protected boolean isBlank(String str) {
+        return StringUtils.isBlank(str);
+    }
+
 	@Override
 	public String toString(){
 		if (StringUtils.isNotBlank(stepName)){

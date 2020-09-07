@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.v512_515.Reference2SourceMover;
 import eu.etaxonomy.cdm.database.update.v512_515.SchemaUpdater_5151_5152;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -49,8 +50,63 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
-		return stepList;
+        //6581
+        //move nomenclatural status reference to source
+        stepName = "move nomenclatural status reference to source";
+        tableName = "NomenclaturalStatus";
+        String referenceColumnName = "citation_id";
+        String microReferenceColumnName = "citationMicroReference";
+        String sourceColumnName = "source_id";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+
+        //6581
+        //move name relationship reference to source
+        stepName = "move name relationship reference to source";
+        tableName = "NameRelationship";
+        referenceColumnName = "citation_id";
+        microReferenceColumnName = "citationMicroReference";
+        sourceColumnName = "source_id";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+
+        //6581
+        //move taxon relationship reference to source
+        stepName = "move taxon relationship reference to source";
+        tableName = "TaxonRelationship";
+        referenceColumnName = "citation_id";
+        microReferenceColumnName = "citationMicroReference";
+        sourceColumnName = "source_id";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+
+        //6581
+        //move hybrid relationship reference to source
+        stepName = "move hybrid relationship reference to source";
+        tableName = "HybridRelationship";
+        referenceColumnName = "citation_id";
+        microReferenceColumnName = "citationMicroReference";
+        sourceColumnName = "source_id";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+
+        //6581
+        //move type designation reference to source
+        stepName = "move type designation reference to source";
+        tableName = "TypeDesignationBase";
+        referenceColumnName = "citation_id";
+        microReferenceColumnName = "citationMicroReference";
+        sourceColumnName = "source_id";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+
+        //6581
+        //move nomenclatural reference to nomenclatural source
+        stepName = "move nomenclatural reference to nomenclatural source";
+        tableName = "TaxonName";
+        referenceColumnName = "nomenclaturalReference_id";
+        microReferenceColumnName = "nomenclaturalMicroReference";
+        sourceColumnName = "nomenclaturalSource_id";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+
+        return stepList;
     }
+
 
     @Override
     public ISchemaUpdater getPreviousUpdater() {
