@@ -153,7 +153,7 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	}
 
     protected String nullSafeParam(String param) {
-        return param == null ? "NULL" : "'" + param + "'";
+        return param == null ? "NULL" : "'" + param.replace("'", "''") + "'";
     }
 
     protected Integer nullSafeInt(ResultSet rs, String columnName) throws SQLException {
