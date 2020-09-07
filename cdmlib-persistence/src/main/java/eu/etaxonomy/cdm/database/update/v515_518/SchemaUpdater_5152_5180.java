@@ -113,10 +113,60 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
                    + " WHERE id IN (SELECT source_id FROM TaxonNode tn)";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
 
+        //9082
+        //fix empty partials_start and partials_end handling
+        tableName = "AgentBase";
+        String columnName ="lifespan";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "Amplification";
+        columnName ="timeperiod";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "DerivationEvent";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "DeterminationEvent";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "GatheringEvent";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "SingleRead";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "MaterialOrMethodEvent";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "DescriptionElementBase";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "Classification";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "DescriptionElementBase";
+        columnName ="period";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "DefinedTermBase";
+        columnName ="validPeriod";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "Media";
+        columnName ="mediaCreated";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
+        tableName = "Reference";
+        columnName ="datePublished";
+        fixEmptyPartialsHandling(stepList, tableName, columnName);
 
         return stepList;
     }
 
+    //9082
+    private void fixEmptyPartialsHandling(List<ISchemaUpdaterStep> stepList,
+            String tableName, String columnName) {
+
+        String stepName = "fix empty partials_start handling for " + tableName;
+        String sql = "UPDATE @@"+tableName+"@@ "
+                   + " SET "+columnName+"_start = NULL "
+                   + " WHERE "+columnName+"_start = '00000000' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
+        stepName = "fix empty partials_end handling for " + tableName;
+        sql = "UPDATE @@"+tableName+"@@ "
+                   + " SET "+columnName+"_end = NULL "
+                   + " WHERE "+columnName+"_end = '00000000'";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+    }
 
     @Override
     public ISchemaUpdater getPreviousUpdater() {
