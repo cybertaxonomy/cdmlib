@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.term;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -43,5 +45,9 @@ public class DefaultTermInitializerTest {
 		assertNotNull("Default language should be english but is null", Language.DEFAULT());
 		TermVocabulary<Language> voc = Language.DEFAULT().getVocabulary();
 		assertNotNull("language for language vocabulary representation was null but must be default language", voc.getRepresentation(Language.DEFAULT()));
+
+		Set<MeasurementUnit> units = Feature.ALTITUDE().getRecommendedMeasurementUnits();
+		Assert.assertEquals("Recommended measurement unit should exist", 1, units.size());
+		Assert.assertEquals(MeasurementUnit.uuidMeter, units.iterator().next().getUuid());
 	}
 }

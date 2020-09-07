@@ -744,8 +744,13 @@ public class Feature extends DefinedTermBase<Feature> {
 	        @SuppressWarnings("rawtypes") Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
-		//supported datatypes
 		String text = csvLine.get(4);
+		if (isNotBlank(text)){
+		    newInstance.setSymbol(text);
+		}
+
+		//supported datatypes
+		text = csvLine.get(5);
 		if (text != null && text.length() == 8){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);}
 			if ("1".equals(text.substring(1, 2))){newInstance.setSupportsQuantitativeData(true);}
@@ -760,7 +765,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		}
 
 		//availableFor
-        text = csvLine.get(5);
+        text = csvLine.get(6);
         if (text != null && text.length() == 3){
             if ("1".equals(text.substring(0, 1))){newInstance.setAvailableForTaxon(true);}
             if ("1".equals(text.substring(1, 2))){newInstance.setAvailableForOccurrence(true);}
@@ -769,8 +774,21 @@ public class Feature extends DefinedTermBase<Feature> {
             throw new IllegalStateException("AvailableFor XXX must exist for all 3 classes");
         }
 
-        //abbrev label - there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
-        newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
+        //recommended measurement unit
+        text = csvLine.get(7);
+        if (isNotBlank(text) && text.length() == 36){
+            if (text.length() != 36){
+                throw new IllegalStateException("Recommended measurement unit must be a UUID");
+            }
+            UUID uuid = UUID.fromString(text);
+            MeasurementUnit recommendedMeasurementUnit = MeasurementUnit.getTermByUuid(uuid);
+            if (recommendedMeasurementUnit == null){
+                throw new IllegalArgumentException("Required recommended measurement unit not found for '"+text+"'");
+            }else{
+                newInstance.addRecommendedMeasurementUnit(recommendedMeasurementUnit);
+            }
+        }
+
 		return newInstance;
 	}
 
