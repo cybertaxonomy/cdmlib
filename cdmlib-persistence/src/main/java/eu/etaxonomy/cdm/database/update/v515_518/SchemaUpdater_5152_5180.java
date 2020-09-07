@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v515_518;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -20,6 +21,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.v512_515.Reference2SourceMover;
 import eu.etaxonomy.cdm.database.update.v512_515.SchemaUpdater_5151_5152;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -193,6 +195,13 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
                 + " SET supportedDataTypes = CONCAT(supportedDataTypes, 'TED#') "
                 + " WHERE uuid = '03710cb5-606e-444a-a3e6-594268e3cc47' AND supportedDataTypes NOT LIKE '%#TED#%' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
+        //#9124
+        //add meter to altitude
+        stepName = "Add measurement unit [m] to feature altitude";
+        UUID uuidAltitude = Feature.uuidAltitude;
+        UUID uuidMeter = MeasurementUnit.uuidMeter;
+        RecommendedMeasurementUnitAdder.NewInstance(stepList, stepName, uuidAltitude, uuidMeter);
 
         return stepList;
     }
