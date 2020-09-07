@@ -19,8 +19,11 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v512_515.Reference2SourceMover;
 import eu.etaxonomy.cdm.database.update.v512_515.SchemaUpdater_5151_5152;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -202,6 +205,21 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         UUID uuidAltitude = Feature.uuidAltitude;
         UUID uuidMeter = MeasurementUnit.uuidMeter;
         RecommendedMeasurementUnitAdder.NewInstance(stepList, stepName, uuidAltitude, uuidMeter);
+
+        //8326
+        //update label for blocking name and isonym relationships
+        stepName = "Update label for 'is blocking name for' relationship";
+        UUID uuidTerm = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
+        String label = "is blocking name for";
+        String abbrev = null;
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
+                label, label, abbrev, Language.uuidEnglish);
+
+        stepName = "Update label for 'is isonym for' relationship";
+        uuidTerm = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
+        label = "is later isonym of";
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
+                label, label, abbrev, Language.uuidEnglish);
 
         return stepList;
     }
