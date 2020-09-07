@@ -12,10 +12,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.term.init.TermLoader;
 
 /**
  * @author a.mueller
@@ -25,9 +29,14 @@ public class DefaultTermInitializerTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializerTest.class);
 
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        TermLoader termLoader = new TermLoader();
+        termLoader.unloadAllTerms();
+    }
+
 	@Test
-	@Ignore // does not run yet in a test suite as the Language.DEFAULT() is not null then
-	public void testInitialize() {
+	public void testInitialize(){
 		assertNull("At the beginning of the initialization test the default language should still be null but is not", Language.DEFAULT());
 		DefaultTermInitializer initalizer = new DefaultTermInitializer();
 		initalizer.initialize();
