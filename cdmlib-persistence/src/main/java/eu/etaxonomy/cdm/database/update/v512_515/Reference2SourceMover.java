@@ -91,7 +91,6 @@ public class Reference2SourceMover extends SchemaUpdaterStepBase {
             id++;
 
             datasource.executeUpdate(caseType.replaceTableNames(sql));
-
         }
     }
 }

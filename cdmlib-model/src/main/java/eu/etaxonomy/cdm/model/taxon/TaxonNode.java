@@ -494,7 +494,6 @@ public class TaxonNode
         return addChildTaxon(taxon, index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
     }
 
-
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source) {
         Classification classification = CdmBase.deproxy(this.getClassification());
@@ -535,7 +534,6 @@ public class TaxonNode
     @Override
     public TaxonNode addChildNode(TaxonNode child, int index, Reference reference, String microReference){
         return addChildNode(child, index, DescriptionElementSource.NewPrimarySourceInstance(reference, microReference));
-
     }
 
 

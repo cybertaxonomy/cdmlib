@@ -114,7 +114,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         //9094
         // update TaxonNode.source from IdentifiableSource to DescriptionElementSource
         stepName = "update TaxonNode.source from IdentifiableSource to DescriptionElementSource";
-        String sql = "UPDATE @@OriginalSourceBase@@ "
+        String sql = " UPDATE @@OriginalSourceBase@@ "
                    + " SET DTYPE = 'DescriptionElementSource' "
                    + " WHERE id IN (SELECT source_id FROM TaxonNode tn)";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);

@@ -27,7 +27,6 @@
         <property name="permissionEvaluator" ref="cdmPermissionEvaluator" />
     </bean>
 
-
     <bean id="daoAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
         <property name="userDetailsService" ref="userService"/>
         <property name="saltSource" ref="saltSource"/>
@@ -47,7 +46,6 @@
             </list>
         </constructor-arg>
     </bean>
-
 
     <!--
         Run-As Authentication Replacement for system operations
