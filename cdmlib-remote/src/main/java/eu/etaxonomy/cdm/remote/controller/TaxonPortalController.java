@@ -223,6 +223,7 @@ public class TaxonPortalController extends TaxonController{
 
     protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.classification",
+            "taxonNodes.parent",
             "taxonNodes.statusNote.*",
             "taxonNodes.source.citation",
             "acceptedTaxon.taxonNodes.classification",

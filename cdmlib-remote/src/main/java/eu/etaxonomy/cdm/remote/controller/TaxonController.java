@@ -101,6 +101,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
     protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.classification",
+            "taxonNodes.parent",
             "acceptedTaxon.taxonNodes.classification"
     }));
 
