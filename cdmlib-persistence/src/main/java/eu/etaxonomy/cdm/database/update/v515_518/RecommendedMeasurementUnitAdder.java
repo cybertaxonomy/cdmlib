@@ -64,6 +64,9 @@ public class RecommendedMeasurementUnitAdder  extends SchemaUpdaterStepBase {
                 + " FROM "+caseType.transformTo("DefinedTermBase")+" t "
                 + " WHERE t.uuid = '"+uuidFeature+"'";
         Integer idFeature = (Integer)datasource.getSingleValue(sql);
+        if (idFeature == null){
+            return;
+        }
 
         sql = "SELECT id "
                 + " FROM "+caseType.transformTo("DefinedTermBase")+" smv "
