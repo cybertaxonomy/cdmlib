@@ -185,6 +185,15 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
                    + " WHERE uuid='04aa8993-24b4-43e3-888c-5afaa733376e' ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
 
+        //#9120
+        //update flowering period as supports temporal data
+        stepName = "update flowering period as supports temporal data";
+        tableName = "DefinedTermBase";
+        sql = "UPDATE @@DefinedTermBase@@ "
+                + " SET supportedDataTypes = CONCAT(supportedDataTypes, 'TED#') "
+                + " WHERE uuid = '03710cb5-606e-444a-a3e6-594268e3cc47' AND supportedDataTypes NOT LIKE '%#TED#%' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
         return stepList;
     }
 
