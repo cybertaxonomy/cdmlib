@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.v512_515.Reference2SourceMover;
 import eu.etaxonomy.cdm.database.update.v512_515.SchemaUpdater_5151_5152;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
@@ -103,6 +104,15 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         microReferenceColumnName = "nomenclaturalMicroReference";
         sourceColumnName = "nomenclaturalSource_id";
         Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+
+        //9094
+        // update TaxonNode.source from IdentifiableSource to DescriptionElementSource
+        stepName = "update TaxonNode.source from IdentifiableSource to DescriptionElementSource";
+        String sql = "UPDATE @@OriginalSourceBase@@ "
+                   + " SET DTYPE = 'DescriptionElementSource' "
+                   + " WHERE id IN (SELECT source_id FROM TaxonNode tn)";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
 
         return stepList;
     }
