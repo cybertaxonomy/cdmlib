@@ -156,6 +156,35 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         String oldColumnName = "value_old";
         ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 
+        //#9121
+        //add abbrevLabel to feature flowering
+        stepName = "add abbreviated label to feature flowering";
+        sql = "UPDATE @@Representation@@ "
+                   + " SET abbreviatedlabel = 'Fl.' "
+                   + " WHERE abbreviatedlabel IS NULL AND label = 'Flowering Period' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
+        //add abbrevLabel to feature fruiting
+        stepName = "add abbreviated label to feature fruiting";
+        sql = "UPDATE @@Representation@@ "
+                   + " SET abbreviatedlabel = 'Fr.' "
+                   + " WHERE abbreviatedlabel IS NULL AND label = 'Fruiting Period' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
+        //add symbol to feature flowering
+        stepName = "add abbreviated label to feature flowering";
+        sql = "UPDATE @@DefinedTermBase@@ "
+                   + " SET symbol = 'Fl.' "
+                   + " WHERE uuid='03710cb5-606e-444a-a3e6-594268e3cc47' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
+        //add symbol to feature fruiting
+        stepName = "add abbreviated label to feature fruiting";
+        sql = "UPDATE @@DefinedTermBase@@ "
+                   + " SET symbol = 'Fr.' "
+                   + " WHERE uuid='04aa8993-24b4-43e3-888c-5afaa733376e' ";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+
         return stepList;
     }
 
