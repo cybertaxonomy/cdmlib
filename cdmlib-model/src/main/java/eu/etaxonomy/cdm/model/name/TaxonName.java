@@ -582,6 +582,7 @@ public class TaxonName
     }
 
 // ************* CONSTRUCTORS *************/
+
     /**
      * Class constructor: creates a new empty taxon name.
      * @param code
@@ -591,9 +592,8 @@ public class TaxonName
      * @see #TaxonName(Rank, HomotypicalGroup)
      */
     protected TaxonName() {
-        rectifyNameCacheStrategy();
+        this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
     }
-
 
     /**
      * Class constructor: creates a new taxon name instance
@@ -663,17 +663,6 @@ public class TaxonName
         setCombinationAuthorship(combinationAuthorship);
         setNomenclaturalReference(nomenclaturalReference);
         this.setNomenclaturalMicroReference(nomenclMicroRef);
-    }
-
-    /**
-     * This method was originally needed to distinguish cache strategies
-     * depending on the name type. Now we have a unified cache strategy
-     * which does not require this anymore. Maybe we could even further remove this method.
-     */
-    private void rectifyNameCacheStrategy(){
-        if (this.cacheStrategy == null){
-            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-        }
     }
 
     @Override
@@ -1374,7 +1363,6 @@ public class TaxonName
 
     @Override
     public INameCacheStrategy getCacheStrategy() {
-        rectifyNameCacheStrategy();
         return this.cacheStrategy;
     }
 
@@ -1387,7 +1375,6 @@ public class TaxonName
             return cacheStrategy.getFullTitleCache(this);
         }
     }
-
 
     @Override
     public void setFullTitleCache(String fullTitleCache){
@@ -1426,7 +1413,6 @@ public class TaxonName
         }
     }
 
-
     @Override
     @Transient
     public List<TaggedText> getTaggedName(){
@@ -1453,7 +1439,6 @@ public class TaxonName
         }
         return fullTitleCache;
     }
-
 
     @Override
     public String getTitleCache(){
@@ -1495,11 +1480,6 @@ public class TaxonName
         return authorshipCache;
     }
 
-
-
-
-
-
     /**
      * Assigns an authorshipCache string to <i>this</i> non viral taxon name. Sets the isProtectedAuthorshipCache
      * flag to <code>true</code>.
@@ -1511,7 +1491,6 @@ public class TaxonName
     public void setAuthorshipCache(String authorshipCache) {
         setAuthorshipCache(authorshipCache, true);
     }
-
 
     /**
      * Assigns an authorshipCache string to <i>this</i> non viral taxon name.
@@ -1546,8 +1525,6 @@ public class TaxonName
         }
     }
 
-
-
     /**
      * Tests if the given name has any authors.
      * @return false if no author ((ex)combination or (ex)basionym) exists, true otherwise
@@ -1562,7 +1539,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the combination authors title cache. Returns null if no combination author exists.
-     * @return
      */
     @Override
     public String computeCombinationAuthorNomenclaturalTitle() {
@@ -1571,7 +1547,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the basionym authors title cache. Returns null if no basionym author exists.
-     * @return
      */
     @Override
     public String computeBasionymAuthorNomenclaturalTitle() {
@@ -1581,7 +1556,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the ex-combination authors title cache. Returns null if no ex-combination author exists.
-     * @return
      */
     @Override
     public String computeExCombinationAuthorNomenclaturalTitle() {
@@ -1590,7 +1564,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the ex-basionym authors title cache. Returns null if no exbasionym author exists.
-     * @return
      */
     @Override
     public String computeExBasionymAuthorNomenclaturalTitle() {
@@ -1742,7 +1715,6 @@ public class TaxonName
         }
     }
 
-
     /**
      * If relation is of type NameRelationship, addNameRelationship is called;
      * if relation is of type HybridRelationship addHybridRelationship is called,
@@ -1855,8 +1827,7 @@ public class TaxonName
 
     public void setStatus(Set<NomenclaturalStatus> nomStatus) throws SetterAdapterException {
         new EntityCollectionSetterAdapter<TaxonName, NomenclaturalStatus>(TaxonName.class, NomenclaturalStatus.class, "status", "addStatus", "removeStatus").setCollection(this, status);
-   }
-
+    }
 
     /**
      * Generates the composed name string of <i>this</i> non viral taxon name without author
@@ -3554,14 +3525,14 @@ public class TaxonName
             //status
             result.status = new HashSet<>();
             for (NomenclaturalStatus nomenclaturalStatus : getStatus()){
-                NomenclaturalStatus newStatus = (NomenclaturalStatus)nomenclaturalStatus.clone();
+                NomenclaturalStatus newStatus = nomenclaturalStatus.clone();
                 result.status.add(newStatus);
             }
 
             //to relations
             result.relationsToThisName = new HashSet<>();
             for (NameRelationship toRelationship : getRelationsToThisName()){
-                NameRelationship newRelationship = (NameRelationship)toRelationship.clone();
+                NameRelationship newRelationship = toRelationship.clone();
                 newRelationship.setRelatedTo(result);
                 result.relationsToThisName.add(newRelationship);
             }
@@ -3569,7 +3540,7 @@ public class TaxonName
             //from relations
             result.relationsFromThisName = new HashSet<>();
             for (NameRelationship fromRelationship : getRelationsFromThisName()){
-                NameRelationship newRelationship = (NameRelationship)fromRelationship.clone();
+                NameRelationship newRelationship = fromRelationship.clone();
                 newRelationship.setRelatedFrom(result);
                 result.relationsFromThisName.add(newRelationship);
             }
@@ -3577,7 +3548,7 @@ public class TaxonName
             //type designations
             result.typeDesignations = new HashSet<>();
             for (TypeDesignationBase<?> typeDesignation : getTypeDesignations()){
-                TypeDesignationBase<?> newDesignation = (TypeDesignationBase<?>)typeDesignation.clone();
+                TypeDesignationBase<?> newDesignation = typeDesignation.clone();
                 this.removeTypeDesignation(newDesignation);
                 result.addTypeDesignation(newDesignation, false);
             }
@@ -3590,7 +3561,7 @@ public class TaxonName
             //HybridChildRelations
             result.hybridChildRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridChildRelations()){
-                HybridRelationship newChildRelationship = (HybridRelationship)hybridRelationship.clone();
+                HybridRelationship newChildRelationship = hybridRelationship.clone();
                 newChildRelationship.setRelatedTo(result);
                 result.hybridChildRelations.add(newChildRelationship);
             }
@@ -3598,7 +3569,7 @@ public class TaxonName
             //HybridParentRelations
             result.hybridParentRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridParentRelations()){
-                HybridRelationship newParentRelationship = (HybridRelationship)hybridRelationship.clone();
+                HybridRelationship newParentRelationship = hybridRelationship.clone();
                 newParentRelationship.setRelatedFrom(result);
                 result.hybridParentRelations.add(newParentRelationship);
             }
