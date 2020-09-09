@@ -121,6 +121,7 @@ public class TaxonPortalController extends TaxonController{
             "name.nomenclaturalSource.citation.inReference",
             "name.rank.representations",
             "name.status.type.representations",
+            "name.status.source.citation",
             "sec.authorship"
 //            "descriptions" // TODO remove
 
@@ -138,6 +139,7 @@ public class TaxonPortalController extends TaxonController{
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
+            "name.status.source.citation",
             "name.nomenclaturalSource.citation.authorship",
             "name.nomenclaturalSource.citation.inReference.authorship",
             "taxonNodes.classification",
@@ -148,6 +150,7 @@ public class TaxonPortalController extends TaxonController{
             // initialize homotypical and heterotypical groups; needs synonyms
             "synonyms.$",
             "synonyms.name.status.type.representations",
+            "synonyms.name.status.source.citation",
             "synonyms.name.nomenclaturalSource.citation.authorship",
             "synonyms.name.nomenclaturalSource.citation.inReference",
 //            "synonyms.name.homotypicalGroup.typifiedNames.$",
@@ -176,7 +179,7 @@ public class TaxonPortalController extends TaxonController{
     public static final EntityInitStrategy NAMERELATIONSHIP_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "type.inverseRepresentations",
-            "citation",
+            "source.citation",
             "toName.$",
             "toName.nomenclaturalSource.citation.authorship",
             "toName.nomenclaturalSource.citation.inReference",

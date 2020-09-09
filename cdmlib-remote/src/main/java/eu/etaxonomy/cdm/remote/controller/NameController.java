@@ -77,6 +77,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
 
     public static final EntityInitStrategy NAME_RELATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
+            "source.citation",
             "relationsFromThisName.$",
             "relationsFromThisName.toName.registrations",
             "relationsToThisName.$",

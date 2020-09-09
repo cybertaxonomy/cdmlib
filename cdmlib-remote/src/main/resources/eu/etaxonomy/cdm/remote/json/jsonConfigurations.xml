@@ -25,7 +25,8 @@
              <value>TermNode.children</value>
              <value>TermNode.feature</value>
 
-            <value>NomenclaturalStatus.citation</value>
+             <value>NomenclaturalStatus.source</value>
+             <value>DescriptionElementSource.citation</value>
 
              <value>TreeNode.data</value>
              <value>TreeNode.data</value>

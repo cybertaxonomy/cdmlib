@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,6 +71,8 @@ public class NamePortalController extends BaseController<TaxonName, INameService
 
     private static final Logger logger = Logger.getLogger(NamePortalController.class);
 
+    private static final EntityInitStrategy DEFAULT_INIT_STRATEGY =  new EntityInitStrategy("$", "nomenclaturalSource.citation");
+
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = TypeDesignationPortalController.DEFAULT_INIT_STRATEGY;
 
 
@@ -88,9 +91,6 @@ public class NamePortalController extends BaseController<TaxonName, INameService
 
     private static EntityInitStrategy nameRelationsInitStrategy = null;
 
-    /**
-     * @return the nameRelationsInitStrategy
-     */
     public static EntityInitStrategy getNameRelationsInitStrategy() {
         if(nameRelationsInitStrategy == null){
             nameRelationsInitStrategy = extendNameRelationsInitStrategies(NameController.NAME_RELATIONS_INIT_STRATEGY.getPropertyPaths(), true);
@@ -98,6 +98,9 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         return nameRelationsInitStrategy;
     }
 
+    public NamePortalController() {
+        setInitializationStrategy(DEFAULT_INIT_STRATEGY.getPropertyPaths());
+    }
 
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
@@ -106,16 +109,10 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         if(pathProperties == null){
             return pathProperties;
         }
-
         EntityInitStrategy initStrategy = extendNameRelationsInitStrategies(pathProperties, false);
-
         return initStrategy.getPropertyPaths();
     }
 
-    /**
-     * @param pathProperties
-     * @return
-     */
     static EntityInitStrategy extendNameRelationsInitStrategies(List<String> pathProperties, boolean addNomrefInitStrategy) {
 
         EntityInitStrategy initStrategy = new EntityInitStrategy(pathProperties);
@@ -127,27 +124,30 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             nameRelInitExtendet.extend("fromName", NOMREF_INIT_STRATEGY.getPropertyPaths(), false);
         }
 
-        if(pathProperties.contains("nameRelations")){
+        List<String> transtientNameRelationsInitstrategies = initStrategy.getPropertyPaths()
+                .stream()
+                .filter(s -> s.startsWith("nameRelations"))
+                .collect(Collectors.toList());
+        if(!transtientNameRelationsInitstrategies.isEmpty()){
             // nameRelations is a transient property! replace it by relationsFromThisName and relationsToThisName
-            initStrategy.getPropertyPaths().remove("nameRelations");
+            for(String remove : transtientNameRelationsInitstrategies) {
+                initStrategy.getPropertyPaths().remove(remove);
+            }
             initStrategy.extend("relationsFromThisName", nameRelInitExtendet.getPropertyPaths(), true);
             initStrategy.extend("relationsToThisName", nameRelInitExtendet.getPropertyPaths(), true);
         } else {
-            if(pathProperties.contains("relationsFromThisName")){
-                initStrategy.getPropertyPaths().remove("relationsFromThisName");
+            if(pathProperties.stream().anyMatch(s -> s.startsWith("relationsFromThisName"))){
+                initStrategy.getPropertyPaths().remove("relationsFromThisName"); // remove the very simple one
                 initStrategy.extend("relationsFromThisName", nameRelInitExtendet.getPropertyPaths(), true);
             }
-            if(pathProperties.contains("relationsToThisName")){
-                initStrategy.getPropertyPaths().remove("relationsToThisName");
+            if(pathProperties.stream().anyMatch(s -> s.startsWith("relationsToThisName"))){
+                initStrategy.getPropertyPaths().remove("relationsToThisName"); // remove the very simple one
                 initStrategy.extend("relationsToThisName", nameRelInitExtendet.getPropertyPaths(), true);
             }
         }
         return initStrategy;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(INameService service) {
