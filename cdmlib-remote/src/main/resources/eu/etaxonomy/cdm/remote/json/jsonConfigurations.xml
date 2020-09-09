@@ -477,6 +477,9 @@
                 <property name="replaceMultilanguageText" value="true" />
             </bean>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
+        </entry>
       </map>
     </property>
         <property name="jsonPropertyFilter">

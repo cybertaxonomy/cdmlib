@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -118,7 +119,7 @@ public class TaxonPortalController extends TaxonController{
             // the name
             "name.$",
             "name.nomenclaturalSource.citation.authorship",
-            "name.nomenclaturalSource.citation.inReference",
+            "name.nomenclaturalSource.citation.inReference.authorship",
             "name.rank.representations",
             "name.status.type.representations",
             "name.status.source.citation",
@@ -152,7 +153,7 @@ public class TaxonPortalController extends TaxonController{
             "synonyms.name.status.type.representations",
             "synonyms.name.status.source.citation",
             "synonyms.name.nomenclaturalSource.citation.authorship",
-            "synonyms.name.nomenclaturalSource.citation.inReference",
+            "synonyms.name.nomenclaturalSource.citation.inReference.authorship",
 //            "synonyms.name.homotypicalGroup.typifiedNames.$",
 //            "synonyms.name.homotypicalGroup.typifiedNames.taxonBases.$",
             "synonyms.name.combinationAuthorship.$",
@@ -162,7 +163,7 @@ public class TaxonPortalController extends TaxonController{
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalSource.citation.authorship",
-            "name.homotypicalGroup.typifiedNames.nomenclaturalSource.citation.inReference",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalSource.citation.inReference.authorship",
 //            "name.homotypicalGroup.typifiedNames.taxonBases.$"
     }));
 
@@ -182,10 +183,10 @@ public class TaxonPortalController extends TaxonController{
             "source.citation",
             "toName.$",
             "toName.nomenclaturalSource.citation.authorship",
-            "toName.nomenclaturalSource.citation.inReference",
+            "toName.nomenclaturalSource.citation.inReference.authorship",
             "fromName.$",
             "fromName.nomenclaturalSource.citation.authorship",
-            "fromName.nomenclaturalSource.citation.inReference",
+            "fromName.nomenclaturalSource.citation.inReference.authorship",
 
     }));
 
@@ -194,6 +195,7 @@ public class TaxonPortalController extends TaxonController{
     protected static final EntityInitStrategy DESCRIPTION_ELEMENT_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
             "sources.citation.authorship",
+            "sources.citation.inReference.authorship",
             "sources.nameUsedInSource",
             "multilanguageText",
             "media",
@@ -228,12 +230,25 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.classification",
             "taxonNodes.parent",
             "taxonNodes.statusNote.*",
-            "taxonNodes.source.citation",
+            "taxonNodes.source.citation.authorship",
+            "taxonNodes.source.inReference.authorship",
             "acceptedTaxon.taxonNodes.classification",
     }));
 
     private static final String termTreeUuidPattern = "^/taxon(?:(?:/)([^/?#&\\.]+))+.*";
 
+    @Override
+    protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
+            List<String> pathProperties) {
+
+        List<String> complemented = new ArrayList<>(pathProperties);
+        if(pathProperties.contains("name")) {
+            // pathProperties for web service request for portal/taxon/{uuid}/name
+            complemented.add("name.nomenclaturalSource.citation.authorship");
+            complemented.add("name.nomenclaturalSource.citation.inReference.authorship");
+        }
+        return complemented;
+    }
 
     public TaxonPortalController(){
         super();
