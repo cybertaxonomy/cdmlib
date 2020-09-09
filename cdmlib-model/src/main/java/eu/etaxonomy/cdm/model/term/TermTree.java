@@ -274,7 +274,7 @@ public class TermTree <T extends DefinedTermBase>
 	 * @see java.lang.Object#clone()
 	 */
     @Override
-	public Object clone() {
+	public TermTree<T> clone() {
 		try {
 		    @SuppressWarnings("unchecked")
 		    TermTree<T> result = (TermTree<T>)super.clone();

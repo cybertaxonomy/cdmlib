@@ -214,11 +214,9 @@ public class MediaRepresentation extends VersionableEntity {
 	}
 
 //************************* CLONE **************************/
-		/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
+
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public MediaRepresentation clone() throws CloneNotSupportedException{
 		MediaRepresentation result = (MediaRepresentation)super.clone();
 
 		//media representations
@@ -233,7 +231,4 @@ public class MediaRepresentation extends VersionableEntity {
 		//no changes to: mimeType, suffix
 		return result;
 	}
-
-
-
 }

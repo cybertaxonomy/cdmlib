@@ -541,7 +541,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 //    }
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
+    public CdmBase clone() throws CloneNotSupportedException{
         CdmBase result = (CdmBase)super.clone();
         result.propertyChangeSupport=new PropertyChangeSupport(result);
 

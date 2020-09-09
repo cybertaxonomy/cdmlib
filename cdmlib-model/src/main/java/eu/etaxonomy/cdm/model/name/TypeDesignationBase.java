@@ -349,8 +349,10 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        TypeDesignationBase<?> result = (TypeDesignationBase<?>)super.clone();
+    public TypeDesignationBase<T> clone() throws CloneNotSupportedException {
+
+        @SuppressWarnings("unchecked")
+        TypeDesignationBase<T> result = (TypeDesignationBase<T>)super.clone();
 
 		//registrations
 		result.registrations = new HashSet<>();

@@ -110,13 +110,11 @@ public class FeatureState extends VersionableEntity {
 
 //*********************************** CLONE ********************************************/
 
-
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public FeatureState clone() throws CloneNotSupportedException {
         FeatureState result = (FeatureState)super.clone();
 
         //no changes to: feature, state
         return result;
     }
-
 }

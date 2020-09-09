@@ -170,14 +170,11 @@ public class Amplification extends EventBase {
 	    return new Amplification();
 	}
 
-
 // ******************* CONSTRUCTOR *******************************/
 
 	protected Amplification(){}
 
-
 //********************* GETTER / SETTER ************/
-
 
 	/**
 	 * The {@link TermType#DnaMarker DNA marker} used for this amplification.
@@ -221,7 +218,6 @@ public class Amplification extends EventBase {
 	public void setReversePrimer(Primer reversePrimer) {
 		this.reversePrimer = reversePrimer;
 	}
-
 
 	/**
 	 * The material and/or method used for purification.
@@ -286,7 +282,6 @@ public class Amplification extends EventBase {
 		this.gelRunningTime = gelRunningTime;
 	}
 
-
 	/**
 	 * The gel concentration used for the electrophoresis.
 	 * Base unit is [%]
@@ -322,8 +317,6 @@ public class Amplification extends EventBase {
 		this.ladderUsed = ladderUsed;
 	}
 
-
-
 	/**
 	 * Returns the labelCache
 	 * @return
@@ -331,7 +324,6 @@ public class Amplification extends EventBase {
 	public String getLabelCache() {
 		return labelCache;
 	}
-
 
 	/**
 	 * This method pushes the {@link Amplification#labelCache label cache} update.
@@ -350,8 +342,6 @@ public class Amplification extends EventBase {
          this.labelCache = isBlank(designation) ? "<Amplification:" + getUuid() + ">" : designation ;
 	}
 
-
-
 	// ********************** CLONE ***********************************/
 	/**
 	 * Clones <i>this</i> amplification. This is a shortcut that enables to create
@@ -363,7 +353,7 @@ public class Amplification extends EventBase {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public Amplification clone()  {
 		try{
 			Amplification result = (Amplification)super.clone();
 
@@ -377,6 +367,4 @@ public class Amplification extends EventBase {
 			return null;
 		}
 	}
-
-
 }

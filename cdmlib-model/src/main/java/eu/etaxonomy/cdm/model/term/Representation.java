@@ -155,7 +155,7 @@ public class Representation extends LanguageStringBase {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public Representation clone() {
         try{
             Representation result = (Representation) super.clone();
             //no changes to abbreviatedLabel and label

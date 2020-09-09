@@ -326,7 +326,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public MediaKey clone() {
 		MediaKey result;
 
 		try{

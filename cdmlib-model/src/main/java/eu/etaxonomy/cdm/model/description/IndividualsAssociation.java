@@ -190,7 +190,7 @@ public class IndividualsAssociation extends DescriptionElementBase
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public IndividualsAssociation clone() {
 
 		try {
 			IndividualsAssociation result = (IndividualsAssociation)super.clone();

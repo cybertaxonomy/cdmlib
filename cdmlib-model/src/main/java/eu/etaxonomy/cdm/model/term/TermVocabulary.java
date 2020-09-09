@@ -248,7 +248,7 @@ public class TermVocabulary<T extends DefinedTermBase>
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public TermVocabulary<T> clone() {
 		TermVocabulary<T> result;
 		try {
 			result = (TermVocabulary<T>) super.clone();

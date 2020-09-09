@@ -105,10 +105,9 @@ public class Extension extends VersionableEntity implements Cloneable {
 //****************** CLONE ************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public Extension clone() throws CloneNotSupportedException{
 		Extension result = (Extension)super.clone();
 		//no changes to: type, value
 		return result;
 	}
-
 }

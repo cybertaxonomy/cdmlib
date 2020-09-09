@@ -240,7 +240,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public DerivationEvent clone() throws CloneNotSupportedException {
 		try{
 			DerivationEvent result = (DerivationEvent)super.clone();
 			//type

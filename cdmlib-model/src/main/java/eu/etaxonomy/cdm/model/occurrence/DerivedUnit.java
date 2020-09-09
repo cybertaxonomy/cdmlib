@@ -436,7 +436,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public DerivedUnit clone() {
 		try{
 			DerivedUnit result = (DerivedUnit)super.clone();
 			//collection

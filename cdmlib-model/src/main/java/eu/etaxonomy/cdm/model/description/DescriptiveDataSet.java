@@ -377,7 +377,7 @@ public class DescriptiveDataSet
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public DescriptiveDataSet clone() {
 		DescriptiveDataSet result;
 		try {
 			result = (DescriptiveDataSet)super.clone();

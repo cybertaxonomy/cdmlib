@@ -505,7 +505,7 @@ public class PolytomousKey
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public PolytomousKey clone() {
         PolytomousKey result;
 
         try {

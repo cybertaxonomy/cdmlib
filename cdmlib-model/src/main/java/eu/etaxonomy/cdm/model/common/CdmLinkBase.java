@@ -52,10 +52,9 @@ public abstract class CdmLinkBase extends VersionableEntity {
 // ************************* CLONE *******************/
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public CdmLinkBase clone() throws CloneNotSupportedException {
         CdmLinkBase result = (CdmLinkBase)super.clone();
 
         return result;
-  }
-
+    }
 }

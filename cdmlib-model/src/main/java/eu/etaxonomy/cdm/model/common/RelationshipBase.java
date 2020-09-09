@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.MappedSuperclass;
@@ -56,7 +55,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
     @XmlAttribute(name = "isDoubtful")
     private boolean doubtful;
-
 
     /**
      * Enumeration and String representation of the <code>relatedFrom</code> (invers) and
@@ -169,7 +167,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 //        return this.getRelatedFrom() == null || this.getRelatedTo() == null;
 //    }
 
-
 //*********************** CLONE ********************************************************/
 
     /**
@@ -182,7 +179,9 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public RelationshipBase<FROM,TO,TYPE> clone() throws CloneNotSupportedException {
+
+        @SuppressWarnings("unchecked")
         RelationshipBase<FROM,TO,TYPE> result = (RelationshipBase<FROM,TO,TYPE>)super.clone();
 
         //no changes to: doubtful

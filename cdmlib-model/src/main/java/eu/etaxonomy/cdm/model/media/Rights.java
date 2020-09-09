@@ -156,7 +156,7 @@ public class Rights extends LanguageStringBase {
 //************************* CLONE **************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public Rights clone() throws CloneNotSupportedException{
 		Rights result = (Rights)super.clone();
 		//no changes to: type, agent
 		return result;

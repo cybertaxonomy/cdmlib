@@ -863,11 +863,11 @@ public class TaxonNode
      */
     protected TaxonNode cloneDescendants(){
 
-        TaxonNode clone = (TaxonNode)this.clone();
+        TaxonNode clone = this.clone();
         TaxonNode childClone;
 
         for(TaxonNode childNode : getChildNodes()){
-            childClone = (TaxonNode) childNode.clone();
+            childClone = childNode.clone();
             for (TaxonNode childChild:childNode.getChildNodes()){
                 childClone.addChildNode(childChild.cloneDescendants(), childChild.getReference(), childChild.getMicroReference());
             }
@@ -1087,7 +1087,8 @@ public class TaxonNode
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone()  {
+    public TaxonNode clone()  {
+
         try{
             TaxonNode result = (TaxonNode)super.clone();
             result.getTaxon().addTaxonNode(result);
@@ -1099,7 +1100,7 @@ public class TaxonNode
             //agents
             result.agentRelations = new HashSet<>();
             for (TaxonNodeAgentRelation rel : this.agentRelations){
-                result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
+                result.addAgentRelation(rel.clone());
             }
 
             //statusNote
@@ -1107,7 +1108,6 @@ public class TaxonNode
             for(Language lang : this.statusNote.keySet()){
                 result.statusNote.put(lang, this.statusNote.get(lang));
             }
-
 
             return result;
         }catch (CloneNotSupportedException e) {
@@ -1130,5 +1130,4 @@ public class TaxonNode
     public String getMicroReference() {
         return getCitationMicroReference();
     }
-
 }

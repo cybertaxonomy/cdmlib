@@ -676,7 +676,7 @@ public class Classification
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public Classification clone() {
         Classification result;
         try{
             result = (Classification)super.clone();

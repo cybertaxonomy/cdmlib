@@ -348,7 +348,7 @@ public class AmplificationResult extends AnnotatableEntity implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public AmplificationResult clone()  {
 		try{
 			AmplificationResult result = (AmplificationResult)super.clone();
 

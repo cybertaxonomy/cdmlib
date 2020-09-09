@@ -322,7 +322,6 @@ public class StateData
 
 //*********************************** CLONE *****************************************/
 
-
     /**
      * Clones <i>this</i> state data. This is a shortcut that enables to create
      * a new instance that differs only slightly from <i>this</i> state data by
@@ -332,7 +331,7 @@ public class StateData
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public StateData clone() {
 
         try {
             StateData result = (StateData)super.clone();
@@ -354,5 +353,4 @@ public class StateData
             return null;
         }
     }
-
 }

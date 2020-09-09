@@ -374,7 +374,7 @@ public class Media
 //************************* CLONE **************************/
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
+    public Media clone() throws CloneNotSupportedException{
         Media result = (Media)super.clone();
         //description
         result.description = cloneLanguageString(this.description);

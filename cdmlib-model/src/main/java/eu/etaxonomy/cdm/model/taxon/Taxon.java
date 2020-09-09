@@ -1739,7 +1739,7 @@ public class Taxon
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public Taxon clone() {
         Taxon result;
         result = (Taxon)super.clone();
 
@@ -1761,13 +1761,13 @@ public class Taxon
         //clone synonyms (is this wanted or should we remove synonyms
         result.synonyms = new HashSet<>();
         for (Synonym synonym : this.getSynonyms()){
-            Synonym newSyn = (Synonym)synonym.clone();
+            Synonym newSyn = synonym.clone();
             newSyn.setAcceptedTaxon(result);
         }
 
         result.descriptions = new HashSet<>();
         for (TaxonDescription description : this.getDescriptions()){
-            TaxonDescription newDescription = (TaxonDescription)description.clone();
+            TaxonDescription newDescription = description.clone();
             result.addDescription(newDescription);
         }
 

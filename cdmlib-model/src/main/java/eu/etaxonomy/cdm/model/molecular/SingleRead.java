@@ -283,16 +283,15 @@ public class SingleRead extends EventBase implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public SingleRead clone()  {
 		try{
-		SingleRead result = (SingleRead)super.clone();
+    		SingleRead result = (SingleRead)super.clone();
 
-		//sequences
-		result.sequence = (SequenceString)this.sequence.clone();
+    		//sequences
+    		result.sequence = (SequenceString)this.sequence.clone();
 
-
-		//Don't change amplification, pherogram, primer, sequence, direction
-		return result;
+    		//don't change amplification, pherogram, primer, sequence, direction
+    		return result;
 
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
@@ -300,5 +299,4 @@ public class SingleRead extends EventBase implements Cloneable{
 			return null;
 		}
 	}
-
 }

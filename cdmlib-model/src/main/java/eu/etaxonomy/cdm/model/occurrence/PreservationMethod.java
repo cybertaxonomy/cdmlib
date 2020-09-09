@@ -70,7 +70,6 @@ public class PreservationMethod extends MaterialOrMethodEvent implements Cloneab
 	@NumericField
 	private Double temperature;
 
-
 	// ******************** FACTORY METHOD ******************/
 
 	public static PreservationMethod NewInstance(){
@@ -84,7 +83,6 @@ public class PreservationMethod extends MaterialOrMethodEvent implements Cloneab
 	public static PreservationMethod NewInstance(DefinedTerm definedMaterialOrMethod, String methodText, DefinedTerm preservationMedium, Double temperature){
 		return new PreservationMethod(definedMaterialOrMethod, methodText, preservationMedium, temperature);
 	}
-
 
 	// ********************* CONSTRUCTOR ********************/
 
@@ -102,23 +100,19 @@ public class PreservationMethod extends MaterialOrMethodEvent implements Cloneab
 	public DefinedTerm getMedium() {
 		return medium;
 	}
-
-
 	public void setMedium(DefinedTerm medium) {
 		this.medium = medium;
 	}
 
-
 	public Double getTemperature() {
 		return temperature;
 	}
-
-
 	public void setTemperature(Double temperature) {
 		this.temperature = temperature;
 	}
 
-	// ********************* CLONE ********************/
+// ************************** CLONE ********************/
+
 	/**
 	 * Clones <i>this</i> {@link Cloning}. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> cloning by
@@ -128,7 +122,7 @@ public class PreservationMethod extends MaterialOrMethodEvent implements Cloneab
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public PreservationMethod clone()  {
 		PreservationMethod result = (PreservationMethod)super.clone();
 
 		//don't change medium, temperature

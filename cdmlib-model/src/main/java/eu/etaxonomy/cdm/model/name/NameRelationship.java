@@ -308,7 +308,7 @@ public class NameRelationship
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public NameRelationship clone() {
 		NameRelationship result;
 		try {
 			result = (NameRelationship)super.clone();

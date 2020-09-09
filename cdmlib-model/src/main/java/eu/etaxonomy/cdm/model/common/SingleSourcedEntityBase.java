@@ -132,7 +132,7 @@ public abstract class SingleSourcedEntityBase
 //****************** CLONE ************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public SingleSourcedEntityBase clone() throws CloneNotSupportedException{
 		SingleSourcedEntityBase result = (SingleSourcedEntityBase)super.clone();
 
 		if (this.source != null){
@@ -144,8 +144,6 @@ public abstract class SingleSourcedEntityBase
 	}
 
 //*********************************** EQUALS *********************************************************/
-
-
 
 
 }

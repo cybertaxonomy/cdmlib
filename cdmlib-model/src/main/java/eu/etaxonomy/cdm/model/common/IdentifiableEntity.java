@@ -284,6 +284,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         if (this.protectedTitleCache == false){
             String oldTitleCache = this.titleCache;
 
+            @SuppressWarnings("unchecked")
             String newTitleCache = cacheStrategy.getTitleCache(this);
 
             if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
@@ -671,8 +672,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 //****************** CLONE ************************************************/
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
-        IdentifiableEntity<?> result = (IdentifiableEntity<?>)super.clone();
+    public IdentifiableEntity<S> clone() throws CloneNotSupportedException{
+
+        @SuppressWarnings("unchecked")
+        IdentifiableEntity<S> result = (IdentifiableEntity<S>)super.clone();
 
         //Extensions
         result.extensions = new HashSet<>();
@@ -718,6 +721,4 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         result.initListener();
         return result;
     }
-
-
 }

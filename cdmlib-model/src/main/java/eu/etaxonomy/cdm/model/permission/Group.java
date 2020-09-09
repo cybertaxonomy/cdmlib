@@ -174,10 +174,9 @@ public class Group extends CdmBase {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        Group result;
+    public Group clone() {
         try{
-            result = (Group)super.clone();
+            Group result = (Group)super.clone();
             result.grantedAuthorities = new HashSet<>();
             for (GrantedAuthority grantedauthority: this.grantedAuthorities){
                 result.addGrantedAuthority(grantedauthority);

@@ -149,7 +149,7 @@ public class Cloning extends MaterialOrMethodEvent implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public Cloning clone()  {
 		Cloning result = (Cloning)super.clone();
 
 		//don't change strain, forwardPrimer, backwardPrimer

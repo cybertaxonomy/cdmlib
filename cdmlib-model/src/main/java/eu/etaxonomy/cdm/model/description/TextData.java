@@ -448,7 +448,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public TextData clone() {
 
         try {
             TextData result = (TextData)super.clone();

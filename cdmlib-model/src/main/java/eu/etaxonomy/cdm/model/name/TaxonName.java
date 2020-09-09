@@ -137,7 +137,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "descriptions",
     "taxonBases",
     "registrations",
-
+    //non-viral names
     "nameCache",
     "genusOrUninomial",
     "infraGenericEpithet",
@@ -156,20 +156,20 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "monomHybrid",
     "binomHybrid",
     "trinomHybrid",
-
+    //viral name
     "acronym",
-
+    //bacterial names
     "subGenusAuthorship",
     "nameApprobation",
-
+    //zoological name
     "breed",
     "publicationYear",
     "originalPublicationYear",
     "inCombinationAuthorship",
     "inBasionymAuthorship",
-
+    //fungi
     "anamorphic",
-
+    //cultivar plant names
     "cultivarName"
 })
 @XmlRootElement(name = "TaxonName")
@@ -193,7 +193,6 @@ public class TaxonName
 
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
-
 
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
@@ -573,20 +572,7 @@ public class TaxonName
         return result;
     }
 
-
-    /**
-     * @param icnafp
-     * @param rank2
-     * @param genusOrUninomial2
-     * @param infraGenericEpithet2
-     * @param specificEpithet2
-     * @param infraSpecificEpithet2
-     * @param combinationAuthorship2
-     * @param nomenclaturalReference2
-     * @param nomenclMicroRef
-     * @param homotypicalGroup2
-     * @return
-     */
+    //TODO move to TaxonNameFactory
     public static TaxonName NewInstance(NomenclaturalCode code, Rank rank, String genusOrUninomial,
             String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
             TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
@@ -594,7 +580,6 @@ public class TaxonName
         TaxonName result = new TaxonName(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
         return result;
     }
-
 
 // ************* CONSTRUCTORS *************/
     /**
@@ -606,7 +591,6 @@ public class TaxonName
      * @see #TaxonName(Rank, HomotypicalGroup)
      */
     protected TaxonName() {
-        super();
         rectifyNameCacheStrategy();
     }
 
@@ -635,7 +619,6 @@ public class TaxonName
         homotypicalGroup.addTypifiedName(this);
         this.homotypicalGroup = homotypicalGroup;
     }
-
 
     /**
      * Class constructor: creates a new non viral taxon name instance
@@ -682,7 +665,6 @@ public class TaxonName
         this.setNomenclaturalMicroReference(nomenclMicroRef);
     }
 
-
     /**
      * This method was originally needed to distinguish cache strategies
      * depending on the name type. Now we have a unified cache strategy
@@ -693,7 +675,6 @@ public class TaxonName
             this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
         }
     }
-
 
     @Override
     public void initListener(){
@@ -3550,7 +3531,7 @@ public class TaxonName
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public TaxonName clone() {
         TaxonName result;
         try {
             result = (TaxonName)super.clone();
@@ -3566,7 +3547,7 @@ public class TaxonName
             //descriptions
             result.descriptions = new HashSet<>();
             for (TaxonNameDescription taxonNameDescription : getDescriptions()){
-                TaxonNameDescription newDescription = (TaxonNameDescription)taxonNameDescription.clone();
+                TaxonNameDescription newDescription = taxonNameDescription.clone();
                 result.descriptions.add(newDescription);
             }
 

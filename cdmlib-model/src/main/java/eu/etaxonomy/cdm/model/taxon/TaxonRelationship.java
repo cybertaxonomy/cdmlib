@@ -210,11 +210,10 @@ public class TaxonRelationship
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        TaxonRelationship result;
+    public TaxonRelationship clone() {
 
         try{
-            result = (TaxonRelationship) super.clone();
+            TaxonRelationship result = (TaxonRelationship) super.clone();
             //no changes to relatedFrom, relatedTo, type
 
             return result;

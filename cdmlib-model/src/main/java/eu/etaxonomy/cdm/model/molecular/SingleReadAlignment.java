@@ -182,11 +182,10 @@ public class SingleReadAlignment extends VersionableEntity implements Serializab
 
 // ******************* CLONE *********************/
 
-
-
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		SingleReadAlignment result = (SingleReadAlignment)super.clone();
+	public SingleReadAlignment clone() throws CloneNotSupportedException {
+
+	    SingleReadAlignment result = (SingleReadAlignment)super.clone();
 
 		//deep copy shifts
 		Shift[] oldShifts = this.getShifts();

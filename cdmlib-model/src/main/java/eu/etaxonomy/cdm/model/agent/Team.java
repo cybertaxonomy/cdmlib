@@ -385,7 +385,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Team clone() {
 		try{
 			Team result = (Team)super.clone();
 			result.teamMembers = new ArrayList<>();

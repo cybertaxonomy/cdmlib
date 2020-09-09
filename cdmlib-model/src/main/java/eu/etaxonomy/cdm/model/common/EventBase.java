@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.FetchType;
@@ -98,7 +97,6 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 		this.description = description;
 	}
 
-
 //*********** CLONE **********************************/
 
 	/**
@@ -111,18 +109,16 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		EventBase result = (EventBase)super.clone();
+	public EventBase clone() throws CloneNotSupportedException{
+
+	    EventBase result = (EventBase)super.clone();
 		//Actor  //is this needed??
 		result.setActor(this.getActor());
 		//time period
 		if(this.getTimeperiod()!=null){
-		    result.setTimeperiod((TimePeriod)this.getTimeperiod().clone());
+		    result.setTimeperiod(this.getTimeperiod().clone());
 		}
 		//no changes to: description
 		return result;
 	}
-
-
-
 }

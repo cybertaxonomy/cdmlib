@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
@@ -28,7 +27,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 /**
- * This class is an instantiatable class for the base class {@link LanguageStringBase}.
+ * This class is an instantiable class for the base class {@link LanguageStringBase}.
  * No further functionality is added.
  *
  * @author m.doering
@@ -105,8 +104,8 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 		super(text, language);
 	}
 
-
 //*************** TO STRING ***********************************/
+
 	@Override
 	public String toString() {
 		if (text == null){
@@ -126,8 +125,9 @@ public class LanguageString  extends LanguageStringBase implements Cloneable, II
 
 // ************************ CLONE ********************************/
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		LanguageString result = (LanguageString)super.clone();
+	public LanguageString clone() throws CloneNotSupportedException {
+
+	    LanguageString result = (LanguageString)super.clone();
 		result.setIntextReferences(new HashSet<>());
 
 		for (IntextReference ref : this.intextReferences) {

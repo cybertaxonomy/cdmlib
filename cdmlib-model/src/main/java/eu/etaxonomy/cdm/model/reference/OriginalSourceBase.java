@@ -255,8 +255,10 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 //********************** CLONE ************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		OriginalSourceBase<?> result = (OriginalSourceBase<?>)super.clone();
+	public OriginalSourceBase<T> clone() throws CloneNotSupportedException{
+
+	    @SuppressWarnings("unchecked")
+        OriginalSourceBase<T> result = (OriginalSourceBase<T>)super.clone();
 
 		Set<ExternalLink> links = new HashSet<>();
 		result.setLinks(links);
@@ -329,7 +331,6 @@ public abstract class OriginalSourceBase<T extends ISourceable>
             return false;
         }
 
-        @SuppressWarnings("unchecked")
         OriginalSourceBase<T> theOther = other;
         if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
                 || !CdmUtils.nullSafeEqual(this.getIdNamespace(), theOther.getIdNamespace())
@@ -341,5 +342,4 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
         return true;
     }
-
 }

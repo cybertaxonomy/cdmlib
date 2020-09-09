@@ -189,7 +189,7 @@ public class CommonTaxonName extends DescriptionElementBase {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public CommonTaxonName clone() {
 
         try {
             CommonTaxonName result = (CommonTaxonName)super.clone();

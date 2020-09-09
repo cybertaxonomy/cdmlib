@@ -158,7 +158,7 @@ public class NomenclaturalStatus
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public NomenclaturalStatus clone() {
 		try {
 			NomenclaturalStatus result = (NomenclaturalStatus)super.clone();
 	         result.ruleConsidered = this.ruleConsidered == null? null : this.ruleConsidered.clone();
@@ -170,5 +170,4 @@ public class NomenclaturalStatus
 			return null;
 		}
 	}
-
 }

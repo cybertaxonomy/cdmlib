@@ -1172,7 +1172,7 @@ public class Reference
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Reference clone() {
 		try {
 			Reference result = (Reference)super.clone();
 			result.setDatePublished(datePublished != null? (VerbatimTimePeriod)datePublished.clone(): null);

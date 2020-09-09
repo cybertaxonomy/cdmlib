@@ -172,7 +172,7 @@ public class Primer extends AnnotatableEntity {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public Primer clone()  {
 		try{
 		Primer result = (Primer)super.clone();
 

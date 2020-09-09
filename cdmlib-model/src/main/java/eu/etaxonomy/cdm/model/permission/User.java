@@ -303,11 +303,11 @@ public class User extends CdmBase implements UserDetails {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public User clone() {
         try{
             User result = (User)super.clone();
             if (this.person != null){
-                result.setPerson((Person)this.person.clone());
+                result.setPerson(this.person.clone());
             }
             return result;
         } catch (CloneNotSupportedException e){
@@ -315,8 +315,6 @@ public class User extends CdmBase implements UserDetails {
             e.printStackTrace();
             return null;
         }
-
-
     }
 
 //************************************** toString ***************************************

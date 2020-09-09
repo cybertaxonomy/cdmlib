@@ -401,10 +401,10 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone()  {
-        DescriptionBase<?> result;
+    public DescriptionBase<S> clone()  {
+        DescriptionBase<S> result;
         try{
-            result = (DescriptionBase<?>)super.clone();
+            result = (DescriptionBase<S>)super.clone();
 
             //working set
             result.descriptiveDataSets = new HashSet<>();

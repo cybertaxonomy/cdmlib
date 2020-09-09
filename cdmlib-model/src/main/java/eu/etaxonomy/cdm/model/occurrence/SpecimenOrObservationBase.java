@@ -588,34 +588,10 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return states;
     }
 
-    @Override
-    public boolean updateCaches(){
-        boolean result = super.updateCaches();
-//        if (this.protectedIdentityCache == false){
-//            String oldIdentityCache = this.identityCache;
-//
-//            String newIdentityCache = cacheStrategy.getIdentityCache(this);
-//
-//            if ( oldIdentityCache == null   || ! oldIdentityCache.equals(newIdentityCache) ){
-//                 this.setIdentityCache(null, false);
-//                 String newCache = this.getIdentityCache();
-//
-//                 if (newCache == null){
-//                     logger.warn("New identityCache should never be null");
-//                 }
-//                 if (oldIdentityCache == null){
-//                     logger.info("Old abbrevTitleCache should never be null");
-//                 }
-//                 result = true;
-//             }
-//         }
-        return result;
-    }
-
 //******************** CLONE **********************************************/
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public SpecimenOrObservationBase<S> clone() throws CloneNotSupportedException {
         SpecimenOrObservationBase<S> result = (SpecimenOrObservationBase<S>)super.clone();
 
         //defininion (description, languageString)
@@ -629,7 +605,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         result.descriptions = new HashSet<>();
         //Descriptions
         for(DescriptionBase<S> description : this.descriptions) {
-            result.addDescription((SpecimenDescription)description.clone());
+            result.addDescription(description.clone());
         }
 
         result.determinations = new HashSet<>();

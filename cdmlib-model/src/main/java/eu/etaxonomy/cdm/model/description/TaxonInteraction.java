@@ -205,7 +205,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public TaxonInteraction clone() {
 
 		try {
 			TaxonInteraction result = (TaxonInteraction)super.clone();

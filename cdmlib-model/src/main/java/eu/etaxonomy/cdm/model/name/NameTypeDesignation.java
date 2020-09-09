@@ -230,8 +230,9 @@ public class NameTypeDesignation
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
-		NameTypeDesignation result;
+	public NameTypeDesignation clone() {
+
+	    NameTypeDesignation result;
 		try {
 			result = (NameTypeDesignation)super.clone();
 			//no changes to: rejectedType, conservedType, typeName
@@ -242,5 +243,4 @@ public class NameTypeDesignation
 			return null;
 		}
 	}
-
 }

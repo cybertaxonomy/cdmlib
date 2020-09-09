@@ -632,7 +632,7 @@ public class TermNode <T extends DefinedTermBase>
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public TermNode<T> clone() {
 		TermNode<T> result;
 		try {
 			result = (TermNode<T>)super.clone();
@@ -646,11 +646,11 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
     public TermNode<T> cloneDescendants(){
-        TermNode<T> clone = (TermNode<T>)this.clone();
+        TermNode<T> clone = this.clone();
         TermNode<T> childClone;
 
         for(TermNode<T> childNode : this.getChildNodes()){
-            childClone = (TermNode<T>) childNode.clone();
+            childClone = childNode.clone();
             for (TermNode<T> childChild:childNode.getChildNodes()){
                 childClone.addChild(childChild.cloneDescendants());
             }
@@ -679,7 +679,6 @@ public class TermNode <T extends DefinedTermBase>
 	public void setTreeIndex(String newTreeIndex) {
 		this.treeIndex = newTreeIndex;
 	}
-
 
 	@Override
 	@Deprecated

@@ -170,7 +170,6 @@ public class SpecimenTypeDesignation
 		this.typeSpecimen = typeSpecimen;
 	}
 
-
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -182,7 +181,8 @@ public class SpecimenTypeDesignation
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public SpecimenTypeDesignation clone() {
+
 		SpecimenTypeDesignation result;
 		try {
 			result = (SpecimenTypeDesignation)super.clone();
@@ -194,6 +194,4 @@ public class SpecimenTypeDesignation
 			return null;
 		}
 	}
-
-
 }

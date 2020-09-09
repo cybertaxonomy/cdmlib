@@ -102,8 +102,9 @@ public class Credit extends LanguageStringBase implements Cloneable{
 //************************* CLONE **************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		Credit result = (Credit)super.clone();
+	public Credit clone() throws CloneNotSupportedException{
+
+	    Credit result = (Credit)super.clone();
 		//no changes to: agent
 		return result;
 	}

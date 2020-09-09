@@ -115,13 +115,11 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
 
 //************************ to String **********************************/
 
-
     @Override
     public String toString() {
         return "TaxonNodeAgentRelation [taxonNode=" + taxonNode +
                 ", agent=" + agent + ", type=" + type + "]";
     }
-
 
 //************************** clone *******************************************/
 
@@ -133,7 +131,7 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone()  {
+    public TaxonNodeAgentRelation clone()  {
         try{
             TaxonNodeAgentRelation result = (TaxonNodeAgentRelation)super.clone();
 
@@ -145,5 +143,4 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
             return null;
         }
     }
-
 }

@@ -185,13 +185,14 @@ public abstract class AnnotatableEntity
 //********************** CLONE *****************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		AnnotatableEntity result = (AnnotatableEntity)super.clone();
+	public AnnotatableEntity clone() throws CloneNotSupportedException{
+
+	    AnnotatableEntity result = (AnnotatableEntity)super.clone();
 
 		//Annotations
 		result.annotations = new HashSet<>();
 		for (Annotation annotation : getAnnotations()){
-			Annotation newAnnotation = (Annotation)annotation.clone();
+			Annotation newAnnotation = annotation.clone();
 			result.addAnnotation(newAnnotation);
 		}
 

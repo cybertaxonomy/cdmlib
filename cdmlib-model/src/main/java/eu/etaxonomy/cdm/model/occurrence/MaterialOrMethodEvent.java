@@ -174,7 +174,7 @@ public class MaterialOrMethodEvent extends EventBase {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public MaterialOrMethodEvent clone()  {
 		try{
 			MaterialOrMethodEvent result = (MaterialOrMethodEvent)super.clone();
 

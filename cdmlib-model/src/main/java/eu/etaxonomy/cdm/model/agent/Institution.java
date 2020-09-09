@@ -214,7 +214,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Institution clone() {
 		try{
 			Institution result = (Institution) super.clone();
 			//no changes to code, isPartOf, name, types

@@ -417,7 +417,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Person clone() {
 		try{
 			Person result = (Person)super.clone();
 			//no changes to givenname, familyname, lifespan, prefix, suffix

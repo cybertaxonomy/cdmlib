@@ -106,10 +106,9 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        GrantedAuthority result;
+    public GrantedAuthorityImpl clone() {
         try {
-            result = (GrantedAuthority) super.clone();
+            GrantedAuthorityImpl result = (GrantedAuthorityImpl) super.clone();
             // no changes to authority
             return result;
         } catch (CloneNotSupportedException e) {

@@ -114,7 +114,7 @@ public class PhylogeneticTree extends Media implements Cloneable{
 	 */
 	@Override
 
-	public Object clone(){
+	public PhylogeneticTree clone(){
 		PhylogeneticTree result;
 		try{
 			result= (PhylogeneticTree) super.clone();

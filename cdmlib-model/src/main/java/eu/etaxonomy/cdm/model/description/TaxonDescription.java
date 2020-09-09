@@ -260,7 +260,7 @@ public class TaxonDescription
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public TaxonDescription clone() {
         TaxonDescription result = (TaxonDescription)super.clone();
 
         //scopes
