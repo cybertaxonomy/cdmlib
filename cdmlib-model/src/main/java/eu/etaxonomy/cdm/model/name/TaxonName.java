@@ -2623,7 +2623,8 @@ public class TaxonName
     @Override
     @Transient
     public String getCitationString(){
-        return getNomenclaturalReference().getNomenclaturalCitation(getNomenclaturalMicroReference());
+        Reference nomRef = getNomenclaturalReference();
+        return nomRef == null ? null : nomRef.getNomenclaturalCitation(getNomenclaturalMicroReference());
     }
 
     /**

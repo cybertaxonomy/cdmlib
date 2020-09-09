@@ -289,7 +289,8 @@ public class TaxonNameTest {
 
 	@Test
 	public void testGetCitationString() {
-		logger.warn("not yet implemented");
+		String citation = nameBase1.getCitationString();
+	    logger.warn("not yet implemented");
 	}
 
 	@Test
