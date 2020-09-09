@@ -711,7 +711,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      */
     List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid);
+            UUID associatedTaxonUuid, List<String> propertyPaths);
 
     /**
      * @param derivedUnitUuid

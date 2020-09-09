@@ -654,7 +654,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<UuidAndTitleCache<SpecimenOrObservationBase>> listUuidAndTitleCacheByAssociatedTaxon(Class<T> clazz, Taxon associatedTaxon,
             Integer limit, Integer start, List<OrderHint> orderHints){
-        Query query = createSpecimenQuery("sob.uuid, sob.id, sob.titleCache", clazz, associatedTaxon, limit, start, orderHints, null);
+        Query query = createSpecimenQuery("sob.uuid, sob.id, sob.titleCache", clazz, associatedTaxon, limit, start, orderHints);
         if(query==null){
             return Collections.emptyList();
         }
@@ -670,7 +670,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> clazz,
             Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Query query = createSpecimenQuery("sob", clazz, associatedTaxon, limit, start, orderHints, propertyPaths);
+        Query query = createSpecimenQuery("sob", clazz, associatedTaxon, limit, start, orderHints);
         if(query==null){
             return Collections.emptyList();
         }
@@ -681,7 +681,7 @@ public class OccurrenceDaoHibernateImpl
     }
 
     private <T extends SpecimenOrObservationBase> Query createSpecimenQuery(String select, Class<T> clazz,
-            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
+            Taxon associatedTaxon, Integer limit, Integer start, List<OrderHint> orderHints){
 //        Set<SpecimenOrObservationBase> setOfAll = new HashSet<>();
         Set<Integer> setOfAllIds = new HashSet<>();
 

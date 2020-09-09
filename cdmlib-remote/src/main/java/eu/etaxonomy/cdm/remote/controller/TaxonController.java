@@ -322,7 +322,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
 
-        List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid);
+        List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
         return fieldUnitDtos;
     }

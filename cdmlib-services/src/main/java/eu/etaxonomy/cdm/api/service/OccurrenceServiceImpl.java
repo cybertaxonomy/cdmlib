@@ -158,16 +158,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     private static final String SEPARATOR_STRING = ", ";
 
-    private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
-            "derivedFrom.derivatives",
-            "derivedFrom.originals",
-            "specimenTypeDesignations.*",
-            "specimenTypeDesignations.citation.*",
-            "specimenTypeDesignations.homotypicalGroup.*",
-            "specimenTypeDesignations.typifiedNames",
-            "collection.$"
-    });
-
     public OccurrenceServiceImpl() {
         logger.debug("Load OccurrenceService Bean");
     }
@@ -849,7 +839,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid) {
+            UUID associatedTaxonUuid, List<String> propertyPaths) {
 
         Set<Taxon> taxa = new HashSet<>();
         Set<Integer> occurrenceIds = new HashSet<>();
@@ -871,7 +861,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         taxa.add(associatedTaxon);
 
         for (Taxon taxon : taxa) {
-            List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null,taxon, null, null, null, DERIVED_UNIT_INIT_STRATEGY);
+            List<SpecimenOrObservationBase> perTaxonOccurrences = dao.listByAssociatedTaxon(null,taxon, null, null, null, propertyPaths);
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 if (o.isInstanceOf(DerivedUnit.class)){
                     DerivedUnit derivedUnit;

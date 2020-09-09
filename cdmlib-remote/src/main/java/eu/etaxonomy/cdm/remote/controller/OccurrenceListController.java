@@ -55,7 +55,6 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/occurrence"})
 public class OccurrenceListController extends AbstractIdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
 
-
     @Autowired
     private ITaxonService taxonService;
 
@@ -127,7 +126,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             HttpServletResponse response) {
         logger.info("doListOccurrencesByAssociatedTaxon() - " + requestPathAndQuery(request));
 
-        List<FieldUnitDTO> fieldUnitDtos = service.findFieldUnitDTOByAssociatedTaxon(null, uuid);
+        List<FieldUnitDTO> fieldUnitDtos = service.findFieldUnitDTOByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
         return fieldUnitDtos;
     }
 

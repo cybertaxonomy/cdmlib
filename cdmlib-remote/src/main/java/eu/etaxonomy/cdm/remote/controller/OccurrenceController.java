@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -52,11 +53,11 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             "sequences.$",
     });
 
-    private static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
+    public static final List<String> DERIVED_UNIT_INIT_STRATEGY =  Arrays.asList(new String []{
             "derivedFrom.derivatives",
             "derivedFrom.originals",
             "specimenTypeDesignations.*",
-            "specimenTypeDesignations.citation.*",
+            "specimenTypeDesignations.source.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
             "specimenTypeDesignations.typifiedNames",
             "collection.$"
@@ -76,6 +77,22 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     public void setService(IOccurrenceService service) {
         this.service = service;
     }
+
+
+
+    @Override
+    protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
+            List<String> pathProperties) {
+
+        if(pathProperties.stream().anyMatch(s -> s.startsWith("specimenTypeDesignations"))) {
+            List<String> complemented = new ArrayList<>(pathProperties);
+            complemented.add("specimenTypeDesignations.source.citation.*");
+            return complemented;
+        }
+        return pathProperties;
+    }
+
+
 
     @RequestMapping(value = { "derivedFrom" }, method = RequestMethod.GET)
     public DerivationEvent doGetDerivedFrom(
