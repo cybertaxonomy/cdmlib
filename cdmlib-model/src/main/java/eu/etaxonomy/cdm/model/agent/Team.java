@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.agent;
 
 import java.beans.PropertyChangeEvent;
@@ -136,7 +135,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
 	 */
 	public Team() {
-		super();
 		this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
 		addListenersToMembers();
 	}
@@ -242,7 +240,6 @@ public class Team extends TeamOrPersonBase<Team> {
         return replaceInList(this.teamMembers, newObject, oldObject);
     }
 
-
 	/**
 	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.
 	 * This method overrides {@link TeamOrPersonBase#getNomenclaturalTitle() getNomenclaturalTitle}.
@@ -347,7 +344,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void setHasMoreMembers(boolean hasMoreMembers) {
 		this.hasMoreMembers = hasMoreMembers;
 	}
-
 
     @Override
     public boolean updateCaches(){

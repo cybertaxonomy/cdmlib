@@ -669,10 +669,10 @@ public class TaxonName
     public void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent e) {
+            public void propertyChange(PropertyChangeEvent event) {
                 boolean protectedByLowerCache = false;
                 //authorship cache
-                if (fieldHasCacheUpdateProperty(e.getPropertyName(), "authorshipCache")){
+                if (fieldHasCacheUpdateProperty(event.getPropertyName(), "authorshipCache")){
                     if (protectedAuthorshipCache){
                         protectedByLowerCache = true;
                     }else{
@@ -681,7 +681,7 @@ public class TaxonName
                 }
 
                 //nameCache
-                if (fieldHasCacheUpdateProperty(e.getPropertyName(), "nameCache")){
+                if (fieldHasCacheUpdateProperty(event.getPropertyName(), "nameCache")){
                     if (protectedNameCache){
                         protectedByLowerCache = true;
                     }else{
@@ -689,7 +689,7 @@ public class TaxonName
                     }
                 }
                 //title cache
-                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "titleCache")){
+                if (! fieldHasNoUpdateProperty(event.getPropertyName(), "titleCache")){
                     if (isProtectedTitleCache()|| protectedByLowerCache == true ){
                         protectedByLowerCache = true;
                     }else{
@@ -697,7 +697,7 @@ public class TaxonName
                     }
                 }
                 //full title cache
-                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "fullTitleCache")){
+                if (! fieldHasNoUpdateProperty(event.getPropertyName(), "fullTitleCache")){
                     if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
                         protectedByLowerCache = true;
                     }else{
@@ -723,9 +723,8 @@ public class TaxonName
      * @return
      */
     private boolean fieldHasCacheUpdateProperty(String propertyName, String cacheName) {
-        java.lang.reflect.Field field;
         try {
-            field = getAllFields().get(propertyName);
+            java.lang.reflect.Field field = getAllFields().get(propertyName);
             if (field != null){
                 CacheUpdate updateAnnotation = field.getAnnotation(CacheUpdate.class);
                 if (updateAnnotation != null){
