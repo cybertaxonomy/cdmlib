@@ -242,7 +242,7 @@ public class DefaultMatchStrategyTest {
 		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1).isSuccessful());
 
-		IBook bookClone = (IBook) ((Reference) book1).clone();
+		IBook bookClone = ((Reference) book1).clone();
 		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone).isSuccessful());
 		bookClone.setTitle("Any title");
 		Assert.assertFalse("Books with differing titles should not match", matchStrategy.invoke(book1, bookClone).isSuccessful());
@@ -258,7 +258,7 @@ public class DefaultMatchStrategyTest {
 
 		bookClone.setInSeries(printSeries2);
 		Assert.assertFalse("Cloned book with differing print series should not match", matchStrategy.invoke(book1, bookClone).isSuccessful());
-		IPrintSeries seriesClone = (IPrintSeries)((Reference)printSeries1).clone();
+		IPrintSeries seriesClone = ((Reference)printSeries1).clone();
 		bookClone.setInSeries(seriesClone);
 		Assert.assertTrue("Cloned book with cloned bookSeries should match", matchStrategy.invoke(book1, bookClone).isSuccessful());
 		seriesClone.setTitle("Another title");
@@ -323,7 +323,7 @@ public class DefaultMatchStrategyTest {
 
 		person1.setPrefix("pre1");
 		person2.setPrefix("pre2");
-		book2= (IBook) ((Reference) book1).clone();
+		book2= ((Reference) book1).clone();
 
 		Assert.assertTrue("Equal books should match", matchStrategy.invoke(book1, book2).isSuccessful());
 

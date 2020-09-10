@@ -282,6 +282,15 @@ public abstract class OriginalSourceBase<T extends ISourceable>
         return checkEmpty(false);
     }
 
+    /**
+     * Checks if the source is completely empty.
+     *
+     * @param excludeType if <code>true</code> the source type
+     * is ignored for the check.
+     *
+     * @see #checkEmpty()
+     * @return <code>true</code> if empty
+     */
     public boolean checkEmpty(boolean excludeType){
 	   return super.checkEmpty()
 	        && (excludeType || this.type == null)

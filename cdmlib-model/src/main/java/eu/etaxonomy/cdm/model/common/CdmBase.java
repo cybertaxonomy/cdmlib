@@ -524,8 +524,17 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
 // **************** EMPTY ************************/
 
+    /**
+     * Checks if the entity is completely empty
+     * and therefore can be removed.<BR>
+     *
+     * To be implemented by subclasses if used
+     *
+     * @return <code>true</code> if empty
+     */
     protected boolean checkEmpty(){
-       return true;
+        //nothing to check; id, uuid, created and createdBy are not relevant
+        return true;
     }
 
 //********************** CLONE *****************************************/

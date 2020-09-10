@@ -184,7 +184,7 @@ public abstract class AnnotatableEntity
 
 //********************** CLONE *****************************************/
 
-	@Override
+    @Override
 	public AnnotatableEntity clone() throws CloneNotSupportedException{
 
 	    AnnotatableEntity result = (AnnotatableEntity)super.clone();
@@ -199,7 +199,7 @@ public abstract class AnnotatableEntity
 		//Markers
 		result.markers = new HashSet<>();
 		for (Marker marker : getMarkers()){
-			Marker newMarker = (Marker)marker.clone();
+			Marker newMarker = marker.clone();
 			result.addMarker(newMarker);
 		}
 

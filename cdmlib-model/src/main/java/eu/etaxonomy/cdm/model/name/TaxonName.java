@@ -2230,12 +2230,14 @@ public class TaxonName
     }
 
     //#6581
+    /**
+     * Checks if the source is completely empty and if empty removes it from the name.
+     */
     private void checkNullSource() {
         if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty(true)){
             this.nomenclaturalSource = null;
         }
     }
-
 
     /**
      * Returns the appended phrase string assigned to <i>this</i> taxon name.

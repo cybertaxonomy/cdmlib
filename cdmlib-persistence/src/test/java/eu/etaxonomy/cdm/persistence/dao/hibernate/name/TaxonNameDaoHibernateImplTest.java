@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -318,28 +318,22 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testDeleteTaxon(){
-        TaxonName acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
-        HibernateProxyHelper.deproxy(acherontiaLachesis, TaxonName.class);
+        TaxonName acherontiaLachesis = CdmBase.deproxy(taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid));
         Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
         HomotypicalGroup group = acherontiaLachesis.getHomotypicalGroup();
         UUID groupUuid = group.getUuid();
         taxonNameDao.delete(acherontiaLachesis);
 
         Iterator<TaxonBase> taxa= taxonBases.iterator();
-        TaxonBase taxon = taxa.next();
+        TaxonBase<?> taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
 
-        //int numbOfTaxa = taxonDao.count(TaxonBase.class);
-        List<TaxonBase> taxaList = taxonDao.list(100, 0);
-
-        acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
+        acherontiaLachesis = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
         taxon = taxonDao.findByUuid(taxonUuid);
-        group = homotypicalGroupDao.findByUuid(groupUuid);
-        group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
+        group = CdmBase.deproxy(homotypicalGroupDao.findByUuid(groupUuid));
         assertNull("There should be no taxonName with the deleted uuid", acherontiaLachesis);
         assertNull("There should be no taxon with the deleted uuid", taxon);
         assertNull("There should be no homotypicalGroup with the deleted uuid", group);
-
     }
 
     @Override

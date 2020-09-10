@@ -122,7 +122,7 @@ public abstract class VersionableEntity
 	@Override
     protected boolean checkEmpty(){
        return super.checkEmpty()
-               //nothing to do
+               //nothing to do; updated and updatedBy are not relevant
            ;
     }
 
