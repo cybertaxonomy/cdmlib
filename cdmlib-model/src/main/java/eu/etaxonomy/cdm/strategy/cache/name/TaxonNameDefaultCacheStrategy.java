@@ -308,7 +308,7 @@ public class TaxonNameDefaultCacheStrategy
             referenceCache = reference.getNomenclaturalCitation(microReference);
         }
             //add to tags
-        if (isNotBlank(referenceCache)){
+        if (referenceCache!= null && isNotBlank(referenceCache)){
             if (! referenceCache.trim().startsWith("in ")){
                 String refConcat = ", ";
                 tags.add(new TaggedText(TagEnum.separator, refConcat));
@@ -321,15 +321,8 @@ public class TaxonNameDefaultCacheStrategy
         //nomenclatural status
         tags.addAll(getNomStatusTags(nonViralName, true, false));
         return tags;
-
     }
 
-
-    /**
-     * @param nonViralName
-     * @param tags
-     * @return
-     */
     @Override
     public List<TaggedText> getNomStatusTags(TaxonName nonViralName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {

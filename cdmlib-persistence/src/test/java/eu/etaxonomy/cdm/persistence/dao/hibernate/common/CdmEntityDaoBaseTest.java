@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.assertEquals;
@@ -62,7 +61,6 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     private TestingAuthenticationToken adminToken;
     private TestingAuthenticationToken testerToken;
 
-
     @Before
     public void setUp() throws Exception {
         uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
@@ -73,13 +71,12 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
         adminToken = new TestingAuthenticationToken("admin", "password",  "ALL.ADMIN");
         testerToken = new TestingAuthenticationToken("tester", "password");
 
-
         // Clear the context prior to each test
         SecurityContextHolder.clearContext();
     }
 
     private void setAuthentication(TestingAuthenticationToken token) {
-         Authentication authentication = authenticationManager.authenticate(token);
+        Authentication authentication = authenticationManager.authenticate(token);
 
         SecurityContextImpl secureContext = new SecurityContextImpl();
         SecurityContextHolder.setContext(secureContext);

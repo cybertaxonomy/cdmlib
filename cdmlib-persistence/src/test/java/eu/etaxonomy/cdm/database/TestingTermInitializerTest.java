@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import static org.junit.Assert.assertEquals;
@@ -69,8 +68,8 @@ public class TestingTermInitializerTest extends CdmIntegrationTest {
      */
     @Test
     public final void testTermsAreLoaded() {
-        assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized",TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
-        assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(),taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
+        assertNotNull("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have been initialized", TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
+        assertEquals("TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN should have a uuid of " + taxonomicallyIncludedInUuid.toString(), taxonomicallyIncludedInUuid, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN().getUuid());
         assertNotNull("SynonymType.INFERREDEPITHET should be loaded" + SynonymType.INFERRED_EPITHET_OF());
     }
 
