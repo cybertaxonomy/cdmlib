@@ -53,6 +53,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -678,6 +679,9 @@ public class TaxonName
     public void initListener(){
         PropertyChangeListener nameListener = event-> {
             String propName = event.getPropertyName();
+            if (Objects.equals(event.getOldValue(), event.getNewValue())){
+                return;
+            }
 
             boolean protectedByLowerCache = false;
             //authorship cache
@@ -2191,25 +2195,29 @@ public class TaxonName
     @Override
     public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
         //check state
-        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
-            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+        if (! (nomenclaturalSource instanceof HibernateProxy && ((HibernateProxy)nomenclaturalSource).getHibernateLazyInitializer().isUninitialized())){
+            if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
+                    ){
+                throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+            }
+            //send change event
+            DescriptionElementSource source = this.nomenclaturalSource != null ? this.nomenclaturalSource : nomenclaturalSource;
+            Reference oldReference = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitation() : null;
+            Reference newReference = nomenclaturalSource != null ? nomenclaturalSource.getCitation() : null;
+            if (!Objects.equals(oldReference, newReference)){
+                PropertyChangeEvent event = new PropertyChangeEvent(source, "citation", oldReference, newReference);
+                sourceListener.propertyChange(event);
+            }
+            //    detail
+            String oldDetail = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitationMicroReference() : null;
+            String newDetail = nomenclaturalSource != null ? nomenclaturalSource.getCitationMicroReference() : null;
+            if (!Objects.equals(oldDetail, newDetail)){
+                PropertyChangeEvent event = new PropertyChangeEvent(source, "citationMicroReference", oldDetail, newDetail);
+                sourceListener.propertyChange(event);
+            }
         }
         //listener
         //   reference
-        DescriptionElementSource source = this.nomenclaturalSource != null ? this.nomenclaturalSource : nomenclaturalSource;
-        Reference oldReference = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitation() : null;
-        Reference newReference = nomenclaturalSource != null ? nomenclaturalSource.getCitation() : null;
-        if (Objects.equals(oldReference, newReference)){
-            PropertyChangeEvent event = new PropertyChangeEvent(source, "citation", oldReference, newReference);
-            sourceListener.propertyChange(event);
-        }
-        //    detail
-        String oldDetail = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitationMicroReference() : null;
-        String newDetail = nomenclaturalSource != null ? nomenclaturalSource.getCitationMicroReference() : null;
-        if (Objects.equals(oldDetail, newDetail)){
-            PropertyChangeEvent event = new PropertyChangeEvent(source, "citationMicroReference", oldDetail, newDetail);
-            sourceListener.propertyChange(event);
-        }
 
         if (this.nomenclaturalSource != null){
             this.nomenclaturalSource.removePropertyChangeListener(sourceListener);
