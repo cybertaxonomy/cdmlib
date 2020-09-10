@@ -308,7 +308,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     @Ignore //preliminary ignore test #6851
     public void testOriginalSpelling() {
     	NameRelationshipType origSpellingType = NameRelationshipType.ORIGINAL_SPELLING();
-    	TaxonName originalName = (TaxonName)speciesName.clone();
+    	TaxonName originalName = speciesName.clone();
     	originalName.setSpecificEpithet("alpa");
     	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
@@ -445,7 +445,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertNull("NameCache should be null", subSpeciesName.getNameCache());
         subSpeciesName.setProtectedNameCache(false);
         subSpeciesName.setAppendedPhrase(null);
-
 
         //ref + nomRef
         Reference book = ReferenceFactory.newBook();

@@ -670,9 +670,11 @@ public class TaxonName
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent event) {
+                String propName = event.getPropertyName();
+
                 boolean protectedByLowerCache = false;
                 //authorship cache
-                if (fieldHasCacheUpdateProperty(event.getPropertyName(), "authorshipCache")){
+                if (fieldHasCacheUpdateProperty(propName, "authorshipCache")){
                     if (protectedAuthorshipCache){
                         protectedByLowerCache = true;
                     }else{
@@ -681,7 +683,7 @@ public class TaxonName
                 }
 
                 //nameCache
-                if (fieldHasCacheUpdateProperty(event.getPropertyName(), "nameCache")){
+                if (fieldHasCacheUpdateProperty(propName, "nameCache")){
                     if (protectedNameCache){
                         protectedByLowerCache = true;
                     }else{
@@ -689,7 +691,7 @@ public class TaxonName
                     }
                 }
                 //title cache
-                if (! fieldHasNoUpdateProperty(event.getPropertyName(), "titleCache")){
+                if (! fieldHasNoUpdateProperty(propName, "titleCache")){
                     if (isProtectedTitleCache()|| protectedByLowerCache == true ){
                         protectedByLowerCache = true;
                     }else{
@@ -697,7 +699,7 @@ public class TaxonName
                     }
                 }
                 //full title cache
-                if (! fieldHasNoUpdateProperty(event.getPropertyName(), "fullTitleCache")){
+                if (! fieldHasNoUpdateProperty(propName, "fullTitleCache")){
                     if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
                         protectedByLowerCache = true;
                     }else{
