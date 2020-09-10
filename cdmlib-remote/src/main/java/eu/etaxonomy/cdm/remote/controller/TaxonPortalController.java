@@ -241,13 +241,16 @@ public class TaxonPortalController extends TaxonController{
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
             List<String> pathProperties) {
 
-        List<String> complemented = new ArrayList<>(pathProperties);
-        if(pathProperties.contains("name")) {
-            // pathProperties for web service request for portal/taxon/{uuid}/name
-            complemented.add("name.nomenclaturalSource.citation.authorship");
-            complemented.add("name.nomenclaturalSource.citation.inReference.authorship");
+        if(pathProperties != null) {
+            List<String> complemented = new ArrayList<>(pathProperties);
+            if(pathProperties.contains("name")) {
+                // pathProperties for web service request for portal/taxon/{uuid}/name
+                complemented.add("name.nomenclaturalSource.citation.authorship");
+                complemented.add("name.nomenclaturalSource.citation.inReference.authorship");
+                return complemented;
+            }
         }
-        return complemented;
+        return pathProperties;
     }
 
     public TaxonPortalController(){
