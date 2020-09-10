@@ -147,6 +147,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         assert acherontiaLachesis != null : "name must exist";
 
+        @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> result1 = taxonNameDao.getTypeDesignations(acherontiaLachesis, null, null, null, null, null);
 
         assertNotNull("getTypeDesignations should return a list",result1);
@@ -319,11 +320,13 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
     @Test
     public void testDeleteTaxon(){
         TaxonName acherontiaLachesis = CdmBase.deproxy(taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid));
+        @SuppressWarnings("rawtypes")
         Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
         HomotypicalGroup group = acherontiaLachesis.getHomotypicalGroup();
         UUID groupUuid = group.getUuid();
         taxonNameDao.delete(acherontiaLachesis);
 
+        @SuppressWarnings("rawtypes")
         Iterator<TaxonBase> taxa= taxonBases.iterator();
         TaxonBase<?> taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
