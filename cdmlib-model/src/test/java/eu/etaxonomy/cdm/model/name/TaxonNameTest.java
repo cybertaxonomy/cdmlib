@@ -17,6 +17,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -43,6 +45,7 @@ public class TaxonNameTest {
 
 	private TaxonName nameBase1;
 	private TaxonName nameBase2;
+	private Reference ref1;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -54,13 +57,72 @@ public class TaxonNameTest {
 	public void setUp() throws Exception {
 		nameBase1 = TaxonNameFactory.NewNameInstance(NomenclaturalCode.NonViral, null);
 		nameBase2 = TaxonNameFactory.NewNameInstance(NomenclaturalCode.NonViral, Rank.GENUS());
+	    ref1 = ReferenceFactory.newBook();
+	    ref1.setTitle("My book");
+	    ref1.setAbbrevTitle("M. bk.");
+	    ref1.setDatePublished(TimePeriodParser.parseStringVerbatim("1988"));
 	}
 
 /** *************************  TESTS ******************************************************/
 
 	@Test
-	public void testGenerateFullTitle() {
-		//abstract
+	public void testSetReferenceWithListener(){
+	    //prepare
+	    nameBase1.setGenusOrUninomial("Abies");
+	    nameBase1.setAuthorshipCache("Auth.");
+
+	    //before
+	    Assert.assertEquals("Abies Auth.", nameBase1.getFullTitleCache());
+
+	    //after
+	    //add ref
+	    nameBase1.setNomenclaturalReference(ref1);
+	    Assert.assertEquals("Using transient setNomenclaturalReference should reset the fullTitleCache",
+	            "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+	    //add detail
+        nameBase1.setNomenclaturalMicroReference("55");
+        Assert.assertEquals("Using transient setNomenclaturalMicroReference should reset the fullTitleCache",
+                "Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache());
+
+        //remove detail
+        nameBase1.setNomenclaturalMicroReference(null);
+        Assert.assertEquals("Using the source microcitation setter should reset the fullTitleCache",
+                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+        //remove ref
+        nameBase1.setNomenclaturalReference(null);
+        Assert.assertEquals("Using the source citation setter should reset the fullTitleCache",
+                "Abies Auth.", nameBase1.getFullTitleCache());
+
+        Assert.assertNull("Full emptying the source should remove it from the name (by method checkNullSource)",
+                nameBase1.getNomenclaturalSource());
+
+        //do the same again with setters on source
+        //after
+        //add ref
+        nameBase1.getNomenclaturalSource(true).setCitation(ref1);
+        Assert.assertEquals("Using transient setNomenclaturalReference should reset the fullTitleCache",
+                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+        //add detail
+        nameBase1.getNomenclaturalSource().setCitationMicroReference("55");
+        Assert.assertEquals("Using transient setNomenclaturalMicroReference should reset the fullTitleCache",
+                "Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache());
+
+        //remove detail
+        nameBase1.getNomenclaturalSource().setCitationMicroReference(null);
+        Assert.assertEquals("Using the source microcitation setter should reset the fullTitleCache",
+                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+        //remove ref
+        nameBase1.getNomenclaturalSource().setCitation(null);;
+        Assert.assertEquals("Using the source citation setter should reset the fullTitleCache",
+                "Abies Auth.", nameBase1.getFullTitleCache());
+
+        Assert.assertNull("Full emptying the source should remove it from the name (by method checkNullSource)",
+                nameBase1.getNomenclaturalSource());
+
 	}
 
 	@Test

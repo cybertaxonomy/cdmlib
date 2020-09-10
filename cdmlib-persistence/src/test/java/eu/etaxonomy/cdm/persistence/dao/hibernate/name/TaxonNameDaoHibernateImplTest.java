@@ -339,6 +339,22 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         assertNull("There should be no homotypicalGroup with the deleted uuid", group);
     }
 
+    /**
+     * Test if the listener on nomenclatural source also works if the name is retrieved
+     * from the database
+     */
+    @Test
+    public void testNomenclaturalSourceListener(){
+        UUID uuidAusAus = UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975");
+        TaxonName ausAus = taxonNameDao.findByUuid(uuidAusAus);
+        //start condition
+        assertEquals("Aus aus, Sp. Pl.", ausAus.getFullTitleCache());
+
+        ausAus.getNomenclaturalSource().setCitationMicroReference("23");
+        assertEquals("Here the full cache should show the cache as stored in the database but did not",
+                "Aus aus, Sp. Pl.: 23", ausAus.getFullTitleCache());
+    }
+
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }

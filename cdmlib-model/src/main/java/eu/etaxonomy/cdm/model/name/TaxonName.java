@@ -17,8 +17,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,6 +45,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -194,6 +198,10 @@ public class TaxonName
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
 
+    @XmlTransient
+    @Transient
+    private PropertyChangeListener sourceListener;
+
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
      */
@@ -325,6 +333,7 @@ public class TaxonName
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
+    @Access(AccessType.PROPERTY)
     private DescriptionElementSource nomenclaturalSource;
 
     @XmlElementWrapper(name = "Registrations")
@@ -667,48 +676,66 @@ public class TaxonName
 
     @Override
     public void initListener(){
-        PropertyChangeListener listener = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                String propName = event.getPropertyName();
+        PropertyChangeListener nameListener = event-> {
+            String propName = event.getPropertyName();
 
-                boolean protectedByLowerCache = false;
-                //authorship cache
-                if (fieldHasCacheUpdateProperty(propName, "authorshipCache")){
-                    if (protectedAuthorshipCache){
-                        protectedByLowerCache = true;
-                    }else{
-                        authorshipCache = null;
-                    }
+            boolean protectedByLowerCache = false;
+            //authorship cache
+            if (fieldHasCacheUpdateProperty(propName, "authorshipCache")){
+                if (protectedAuthorshipCache){
+                    protectedByLowerCache = true;
+                }else{
+                    authorshipCache = null;
                 }
+            }
 
-                //nameCache
-                if (fieldHasCacheUpdateProperty(propName, "nameCache")){
-                    if (protectedNameCache){
-                        protectedByLowerCache = true;
-                    }else{
-                        nameCache = null;
-                    }
+            //nameCache
+            if (fieldHasCacheUpdateProperty(propName, "nameCache")){
+                if (protectedNameCache){
+                    protectedByLowerCache = true;
+                }else{
+                    nameCache = null;
                 }
-                //title cache
-                if (! fieldHasNoUpdateProperty(propName, "titleCache")){
-                    if (isProtectedTitleCache()|| protectedByLowerCache == true ){
-                        protectedByLowerCache = true;
-                    }else{
-                        titleCache = null;
-                    }
+            }
+            //title cache
+            if (! fieldHasNoUpdateProperty(propName, "titleCache")){
+                if (isProtectedTitleCache()|| protectedByLowerCache == true ){
+                    protectedByLowerCache = true;
+                }else{
+                    titleCache = null;
                 }
-                //full title cache
-                if (! fieldHasNoUpdateProperty(propName, "fullTitleCache")){
-                    if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
-                        protectedByLowerCache = true;
-                    }else{
-                        fullTitleCache = null;
-                    }
+            }
+            //full title cache
+            if (! fieldHasNoUpdateProperty(propName, "fullTitleCache")){
+                if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
+                    protectedByLowerCache = true;
+                }else{
+                    fullTitleCache = null;
+                }
+            }
+
+        };
+        addPropertyChangeListener(nameListener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
+
+        sourceListener = event->{
+            String propName = event.getPropertyName();
+            //full title cache
+            if (propName.equals("citation")){
+                if (!isProtectedFullTitleCache()){
+                    fullTitleCache = null;
+                }
+                checkNullSource();
+            }
+            if (propName.equals("citationMicroReference")){
+                if (!isProtectedFullTitleCache()){
+                    fullTitleCache = null;
+                }
+                if (event.getNewValue() == null) {
+                    checkNullSource();
                 }
             }
         };
-        addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
+        addPropertyChangeListener(sourceListener);
     }
 
     private static Map<String, java.lang.reflect.Field> allFields = null;
@@ -2120,13 +2147,7 @@ public class TaxonName
         }
     }
 
-
-    /**
-     * @param direction
-     * @return
-     */
     protected Set<NameRelationship> relationsWithThisName(Direction direction) {
-
         switch(direction) {
             case relatedTo:
                 return this.getRelationsToThisName();
@@ -2162,17 +2183,41 @@ public class TaxonName
 
     protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
         if (this.nomenclaturalSource == null && createIfNotExist){
-            this.nomenclaturalSource = DescriptionElementSource.NewInstance(OriginalSourceType.NomenclaturalReference);
+            setNomenclaturalSource(DescriptionElementSource.NewInstance(OriginalSourceType.NomenclaturalReference));
         }
         return nomenclaturalSource;
     }
 
     @Override
     public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
+        //check state
         if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
             throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
         }
+        //listener
+        //   reference
+        DescriptionElementSource source = this.nomenclaturalSource != null ? this.nomenclaturalSource : nomenclaturalSource;
+        Reference oldReference = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitation() : null;
+        Reference newReference = nomenclaturalSource != null ? nomenclaturalSource.getCitation() : null;
+        if (Objects.equals(oldReference, newReference)){
+            PropertyChangeEvent event = new PropertyChangeEvent(source, "citation", oldReference, newReference);
+            sourceListener.propertyChange(event);
+        }
+        //    detail
+        String oldDetail = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitationMicroReference() : null;
+        String newDetail = nomenclaturalSource != null ? nomenclaturalSource.getCitationMicroReference() : null;
+        if (Objects.equals(oldDetail, newDetail)){
+            PropertyChangeEvent event = new PropertyChangeEvent(source, "citationMicroReference", oldDetail, newDetail);
+            sourceListener.propertyChange(event);
+        }
+
+        if (this.nomenclaturalSource != null){
+            this.nomenclaturalSource.removePropertyChangeListener(sourceListener);
+        }
         this.nomenclaturalSource = nomenclaturalSource;
+        if (this.nomenclaturalSource != null){
+            this.nomenclaturalSource.addPropertyChangeListener(sourceListener);
+        }
     }
 
     @Override
@@ -2185,12 +2230,10 @@ public class TaxonName
     @Override
     @Transient
     public void setNomenclaturalReference(Reference nomenclaturalReference){
-        //#6581
         if (nomenclaturalReference == null && this.getNomenclaturalSource()==null){
             return;
         }else{
             getNomenclaturalSource(true).setCitation(nomenclaturalReference);
-            checkNullSource();
         }
     }
 
@@ -2225,7 +2268,6 @@ public class TaxonName
             return;
         }else{
             this.getNomenclaturalSource(true).setCitationMicroReference(isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
-            checkNullSource();
         }
     }
 
