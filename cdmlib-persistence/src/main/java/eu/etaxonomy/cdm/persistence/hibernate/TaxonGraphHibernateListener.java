@@ -19,10 +19,18 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
+import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
- * see https://dev.e-taxonomy.eu/redmine/issues/7648
+ * The {@code TaxonGraphHibernateListener} it the implementation of the
+ * according interface. The listener in initially empty and thus will do nothing
+ * unless configured with the {@link TaxonGraphBeforeTransactionCompleteProces}
+ *
+ * @see <a href=
+ *      "https://dev.e-taxonomy.eu/redmine/issues/7648">https://dev.e-taxonomy.eu/redmine/issues/7648</a>
+ * @see {@link TaxonGraphBeforeTransactionCompleteProcess}
+ * @see {@link CdmHibernateListenerConfiguration}
  *
  * @author a.kohlbecker
  * @since Sep 27, 2018

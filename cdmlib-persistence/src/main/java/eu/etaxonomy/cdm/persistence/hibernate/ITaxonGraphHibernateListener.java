@@ -16,7 +16,8 @@ import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 
 /**
- * see https://dev.e-taxonomy.eu/redmine/issues/7648
+ * Interface for {@link TaxonGraphHibernateListener}.
+ * Please refer to that class for more information.
  *
  * @author a.kohlbecker
  * @since Oct 10, 2018

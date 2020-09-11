@@ -19,6 +19,17 @@ import org.springframework.context.annotation.Configuration;
 import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 
 /**
+ * Spring configuration to provide the {@link TaxonGraphHibernateListener} bean.
+ * This configuration can be activated by adding {@code @CdmHibernateListener}
+ * to a java spring configuration see
+ * <code>eu.etaxonomy.cdm.addon.config.CdmVaadinConfiguration</code> in <a href=
+ * "https://github.com/cybertaxonomy/cdm-vaadin">https://github.com/cybertaxonomy/cdm-vaadin</a>
+ * for an example.
+ *
+ * @see {@link CdmHibernateListener}
+ * @see <a href=
+ *      "https://dev.e-taxonomy.eu/redmine/issues/7648">https://dev.e-taxonomy.eu/redmine/issues/7648</a>
+ *
  * @author a.kohlbecker
  * @since Oct 10, 2018
  *

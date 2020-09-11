@@ -23,14 +23,52 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
 
 import eu.etaxonomy.cdm.api.application.IRunAs;
+import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxonGraph.AbstractHibernateTaxonGraphProcessor;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
+import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 
 /**
- * see https://dev.e-taxonomy.eu/redmine/issues/7648
+ * A {@link BeforeTransactionCompletionProcess} implementation which manages
+ * graphs of taxon relationships automatically. The graph consists of nodes
+ * ({@link Taxon}) and edges ({@link TaxonRelationship}) where the taxa all have
+ * the same {@link Taxon#getSec() sec reference}. The concept reference of a
+ * classification is being projected onto the edge
+ * ({@link TaxonRelationship}) having that reference as
+ * {@link TaxonRelationship#getSource() TaxonRelationship.source.citation}.
+ * <p>
+ * The conceptual idea for the resulting graph is described in <a href=
+ * "https://dev.e-taxonomy.eu/redmine/issues/6173#6-N1T-Higher-taxon-graphs-with-includedIn-relations-taxon-relationships">#6173
+ * 6) [N1T] Higher taxon-graphs with includedIn relations taxon
+ * relationships}</a> The
+ * <code>TaxonGraphBeforeTransactionCompleteProcess</code> is instantiated and
+ * used in the {@link TaxonGraphHibernateListener}
+ * <p>
+ * To activate this <code>BeforeTransactionCompletionProcess</code> class it needs to be registered at the
+ * {@link TaxonGraphHibernateListener} like:
+ * {@code taxonGraphHibernateListener.registerProcessClass(TaxonGraphBeforeTransactionCompleteProcess.class); }
+ * <p>
+ * On insert, update and delete events a new temporary session is being created
+ * ({@link {@link #createTempSession(SessionImplementor)} to create, remove or
+ * modify the nodes ({@link Taxon}) and edges ({@link TaxonRelationship}) of the
+ * graph. The events on which the graph is modified are (see method descriptions
+ * for more details on the processes being performed):
+ * <ul>
+ * <li>Change of a name or a names rank
+ * ({@link #onNameOrRankChange(TaxonName)})</li>
+ * <li>Creation of a new name ({@link #onNewTaxonName(TaxonName)})</li>
+ * <li>Change of a nomenclatural reference
+ * ({@link #onNomReferenceChange(TaxonName, Reference)})</li>
+ *
+ *
+ * @see {@link TaxonGraphHibernateListener}
+ * @see {@link CdmHibernateListenerConfiguration}
+ * @see <a href=
+ *      "https://dev.e-taxonomy.eu/redmine/issues/7648">https://dev.e-taxonomy.eu/redmine/issues/7648</a>
  *
  * @author a.kohlbecker
  * @since Sep 26, 2018
@@ -171,7 +209,8 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     }
 
     /**
-     * Concept of creation of sub-sessions found in AuditProcess.doBeforeTransactionCompletion(SessionImplementor session)
+     * Concept of creation of sub-sessions found in
+     * AuditProcess.doBeforeTransactionCompletion(SessionImplementor session)
      * and adapted to make it work for this case.
      *
      * @param session
@@ -192,10 +231,25 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         }
     }
 
+    /**
+     * Same as {@link #onNameOrRankChange(TaxonName)}
+     */
     public void onNewTaxonName(TaxonName taxonName) throws TaxonGraphException {
         onNameOrRankChange(taxonName);
     }
 
+    /**
+     * Create a taxon with graph sec reference {@link #secReference()) for the
+     * <code>taxonName</code> if not yet existing and updates the edges
+     * from and to this taxon by creating missing and removing obsolete ones.
+     *
+     * @throws TaxonGraphException
+     *             A <code>TaxonGraphException</code> is thrown when more than
+     *             one taxa with the default sec reference
+     *             ({@link #getSecReferenceUUID()}) are found for the given name
+     *             (<code>taxonName</code>). Originates from
+     *             {@link #assureSingleTaxon(TaxonName, boolean)}
+     */
     public void onNameOrRankChange(TaxonName taxonName) throws TaxonGraphException {
         boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
         // TODO use audit event to check for deletion?
@@ -215,7 +269,30 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         }
     }
 
-
+    /**
+     * This method manages updates to the edges from and to a taxon which
+     * reflects the concept reference of the original classification. The
+     * concept reference of each classification is being projected onto the
+     * graph as edge ({@link TaxonRelationship}) having that reference as
+     * {@link TaxonRelationship#getSource() TaxonRelationship.source.citation}.
+     * <p>
+     * Delegates to {@link #onNewTaxonName(TaxonName)} in case the
+     * <code>oldNomReference</code> is <code>null</code>. Otherwise the
+     * {@link #assureSingleTaxon(TaxonName)} check is performed to create the
+     * taxon if missing and the concept reference in the edges
+     * <code>source</code> field is finally updated.
+     *
+     * @param taxonName
+     *   The updated taxon name having a new nomenclatural reference
+     * @param oldNomReference
+     *   The nomenclatural reference as before the update of the <code>taxonName</code>
+     * @throws TaxonGraphException
+     *             A <code>TaxonGraphException</code> is thrown when more than
+     *             one taxa with the default sec reference
+     *             ({@link #getSecReferenceUUID()}) are found for the given name
+     *             (<code>taxonName</code>). Originates from
+     *             {@link #assureSingleTaxon(TaxonName, boolean)}
+     */
     public void onNomReferenceChange(TaxonName taxonName, Reference oldNomReference) throws TaxonGraphException {
         if(oldNomReference == null){
             onNewTaxonName(taxonName);

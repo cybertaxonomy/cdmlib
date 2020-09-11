@@ -28,14 +28,26 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.ITaxonGraphDao;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
 import eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO;
+import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 
-/**Ta
- * Provides the business logic to manage multiple classifications as
- * classification fragments in a graph of
- * {@link eu.etaxonomy.cdm.model.taxon.Taxon Taxa} and {@link eu.etaxonomy.cdm.model.taxon.TaxonRelationship TaxonRelationships}.
+/**
+ * Implementation of the abstract {@link AbstractHibernateTaxonGraphProcessor}
+ * business logic to provide a <b>purely read only access</b> to graphs
+ * consisting of {@link eu.etaxonomy.cdm.model.taxon.Taxon Taxa} and
+ * {@link eu.etaxonomy.cdm.model.taxon.TaxonRelationship TaxonRelationships}.
+ * These graphs allow for managing classification fragments in a graph
+ * structure. All <code>write operation</code>, that is all modification of the
+ * graph is done automatically solely by
+ * {@link eu.etaxonomy.cdm.api.service.taxonGraph.TaxonGraphBeforeTransactionCompleteProcess}.
+ * <p>
+ * The conceptual idea for the resulting graph is described in <a href=
+ * "https://dev.e-taxonomy.eu/redmine/issues/6173#6-N1T-Higher-taxon-graphs-with-includedIn-relations-taxon-relationships">#6173
+ * 6) [N1T] Higher taxon-graphs with includedIn relations taxon
+ * relationships}</a>. The
+ * <code>TaxonGraphBeforeTransactionCompleteProcess</code> is instantiated and
+ * used in the {@link TaxonGraphHibernateListener}.
  *
- * For further details on the concept and related discussion see https://dev.e-taxonomy.eu/redmine/issues/6173
- *
+ * 
  * @author a.kohlbecker
  * @since Sep 26, 2018
  */

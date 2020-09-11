@@ -46,6 +46,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
+ * Tests the business logic of {@link TaxonGraphBeforeTransactionCompleteProcess}.
+ *
  * @author a.kohlbecker
  * @since Oct 1, 2018
  */
