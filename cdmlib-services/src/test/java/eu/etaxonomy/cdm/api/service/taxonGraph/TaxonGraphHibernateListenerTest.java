@@ -19,7 +19,6 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.unitils.dbunit.annotation.DataSet;
@@ -176,7 +175,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
-    @Ignore //FIXME preliminary   #6581
+    // @Ignore //FIXME preliminary   #6581
     public void testChangeNomRef() throws TaxonGraphException{
         try {
             setUuidPref();

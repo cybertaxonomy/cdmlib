@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service.taxonGraph;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -186,14 +186,14 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                     if (oldState[i] == null && state[i] == null){
                         return -1;
                     }else{
-                        //TODO make it recursive (until now only a 2 step path is allowed, but should be enough for the given use-case)
-                        Object oldStatePathObj = (oldState[i]==null) ? null: BeanUtils.getProperty(oldState[i],path[1]);
-                        Object newStatePathObj = (state[i]==null) ? null: BeanUtils.getProperty(state[i],path[1]);
+                        //TODO make it recursive (until now only a 2 step path is allowed, but should be enough for the given use-case
+                        Object oldStatePathObj = (oldState[i]==null) ? null: PropertyUtils.getProperty(oldState[i], path[1]);
+                        Object newStatePathObj = (state[i]==null) ? null: PropertyUtils.getProperty(state[i], path[1]);
                         if (oldStatePathObj == null && newStatePathObj == null){
                             return -1;
                         }else{
                             if(!Objects.equals(oldStatePathObj, newStatePathObj)){
-                                return 0;
+                                return i;
                             }else{
                                 return -1;
                             }
