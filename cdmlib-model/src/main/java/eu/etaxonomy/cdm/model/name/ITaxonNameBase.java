@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -414,13 +413,13 @@ public interface ITaxonNameBase
      * @see #getNomenclaturalReference()
      * @see #getNomenclaturalMicroReference()
      */
-    public DescriptionElementSource getNomenclaturalSource();
+    public NomenclaturalSource getNomenclaturalSource();
 
     /**
      * Sets the nomenclatural source
      * @param nomenclaturalSource
      */
-    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource);
+    public void setNomenclaturalSource(NomenclaturalSource nomenclaturalSource);
 
 
     /**

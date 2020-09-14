@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,8 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,6 +28,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
@@ -45,7 +43,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -53,7 +50,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -199,9 +195,9 @@ public class TaxonName
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
 
-    @XmlTransient
-    @Transient
-    private PropertyChangeListener sourceListener;
+//    @XmlTransient
+//    @Transient
+//    private PropertyChangeListener sourceListener;
 
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
@@ -330,12 +326,12 @@ public class TaxonName
     @XmlElement(name = "NomenclaturalSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
-    @Access(AccessType.PROPERTY)
-    private DescriptionElementSource nomenclaturalSource;
+//    @Access(AccessType.PROPERTY)
+    private NomenclaturalSource nomenclaturalSource;
 
     @XmlElementWrapper(name = "Registrations")
     @XmlElement(name = "Registration")
@@ -720,26 +716,6 @@ public class TaxonName
 
         };
         addPropertyChangeListener(nameListener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
-
-        sourceListener = event->{
-            String propName = event.getPropertyName();
-            //full title cache
-            if (propName.equals("citation")){
-                if (!isProtectedFullTitleCache()){
-                    fullTitleCache = null;
-                }
-                checkNullSource();
-            }
-            if (propName.equals("citationMicroReference")){
-                if (!isProtectedFullTitleCache()){
-                    fullTitleCache = null;
-                }
-                if (event.getNewValue() == null) {
-                    checkNullSource();
-                }
-            }
-        };
-        addPropertyChangeListener(sourceListener);
     }
 
     private static Map<String, java.lang.reflect.Field> allFields = null;
@@ -2181,51 +2157,54 @@ public class TaxonName
 //*************** nom ref/source *******************/
 
     @Override
-    public DescriptionElementSource getNomenclaturalSource(){
+    public NomenclaturalSource getNomenclaturalSource(){
         return this.nomenclaturalSource;
     }
 
     protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
         if (this.nomenclaturalSource == null && createIfNotExist){
-            setNomenclaturalSource(DescriptionElementSource.NewInstance(OriginalSourceType.NomenclaturalReference));
+            setNomenclaturalSource(NomenclaturalSource.NewNomenclaturalInstance(this));
         }
         return nomenclaturalSource;
     }
 
     @Override
-    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
+    public void setNomenclaturalSource(NomenclaturalSource nomenclaturalSource) throws IllegalArgumentException {
+        if (this.nomenclaturalSource == nomenclaturalSource){
+            return;
+        }
         //check state
-        if (! (nomenclaturalSource instanceof HibernateProxy && ((HibernateProxy)nomenclaturalSource).getHibernateLazyInitializer().isUninitialized())){
+//        if (! (nomenclaturalSource instanceof HibernateProxy && ((HibernateProxy)nomenclaturalSource).getHibernateLazyInitializer().isUninitialized())){
             if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
                     ){
                 throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
             }
-            //send change event
-            DescriptionElementSource source = this.nomenclaturalSource != null ? this.nomenclaturalSource : nomenclaturalSource;
-            Reference oldReference = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitation() : null;
-            Reference newReference = nomenclaturalSource != null ? nomenclaturalSource.getCitation() : null;
-            if (!Objects.equals(oldReference, newReference)){
-                PropertyChangeEvent event = new PropertyChangeEvent(source, "citation", oldReference, newReference);
-                sourceListener.propertyChange(event);
-            }
-            //    detail
-            String oldDetail = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitationMicroReference() : null;
-            String newDetail = nomenclaturalSource != null ? nomenclaturalSource.getCitationMicroReference() : null;
-            if (!Objects.equals(oldDetail, newDetail)){
-                PropertyChangeEvent event = new PropertyChangeEvent(source, "citationMicroReference", oldDetail, newDetail);
-                sourceListener.propertyChange(event);
-            }
-        }
+//            //send change event
+//            DescriptionElementSource source = this.nomenclaturalSource != null ? this.nomenclaturalSource : nomenclaturalSource;
+//            Reference oldReference = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitation() : null;
+//            Reference newReference = nomenclaturalSource != null ? nomenclaturalSource.getCitation() : null;
+//            if (!Objects.equals(oldReference, newReference)){
+//                PropertyChangeEvent event = new PropertyChangeEvent(source, "citation", oldReference, newReference);
+//                sourceListener.propertyChange(event);
+//            }
+//            //    detail
+//            String oldDetail = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitationMicroReference() : null;
+//            String newDetail = nomenclaturalSource != null ? nomenclaturalSource.getCitationMicroReference() : null;
+//            if (!Objects.equals(oldDetail, newDetail)){
+//                PropertyChangeEvent event = new PropertyChangeEvent(source, "citationMicroReference", oldDetail, newDetail);
+//                sourceListener.propertyChange(event);
+//            }
+//        }
         //listener
         //   reference
 
-        if (this.nomenclaturalSource != null){
-            this.nomenclaturalSource.removePropertyChangeListener(sourceListener);
-        }
+//        if (this.nomenclaturalSource != null){
+//            this.nomenclaturalSource.removePropertyChangeListener(sourceListener);
+//        }
         this.nomenclaturalSource = nomenclaturalSource;
-        if (this.nomenclaturalSource != null){
-            this.nomenclaturalSource.addPropertyChangeListener(sourceListener);
-        }
+//        if (this.nomenclaturalSource != null){
+//            this.nomenclaturalSource.addPropertyChangeListener(sourceListener);
+//        }
     }
 
     @Override
@@ -2283,7 +2262,7 @@ public class TaxonName
     /**
      * Checks if the source is completely empty and if empty removes it from the name.
      */
-    private void checkNullSource() {
+    protected void checkNullSource() {
         if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty(true)){
             this.nomenclaturalSource = null;
         }
