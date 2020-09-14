@@ -120,7 +120,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.EAGER, orphanRemoval=true)  //EAGER to avoid LIEs cdmSource should always be part of the OriginalSource itself
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private CdmLinkSource cdmSource;
 
     @XmlElementWrapper(name = "Links", nillable = true)
@@ -134,7 +134,6 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 	//for hibernate use only
 	protected OriginalSourceBase() {
-
 	}
 
 	/**

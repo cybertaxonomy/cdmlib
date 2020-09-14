@@ -53,7 +53,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
     @Override
     public void initialize(Object bean, List<String> propertyPaths) {
-        List<Object> beanList = new ArrayList<Object>(1);
+        List<Object> beanList = new ArrayList<>(1);
         beanList.add(bean);
         initializeAll(beanList, propertyPaths);
     }

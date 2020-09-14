@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.assertEquals;
@@ -1094,8 +1093,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		book1.setAuthorship(team1);
 
 
-		IBook book2 = (IBook) ((Reference)book1).clone();
-		IBook book3 = (IBook) ((Reference)book1).clone();
+		IBook book2 = ((Reference)book1).clone();
+		IBook book3 = ((Reference)book1).clone();
 
 //		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 //		book1.setTitleCache("cache1");

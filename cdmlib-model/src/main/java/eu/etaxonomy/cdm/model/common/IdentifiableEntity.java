@@ -680,14 +680,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         //Extensions
         result.extensions = new HashSet<>();
         for (Extension extension : getExtensions() ){
-            Extension newExtension = (Extension)extension.clone();
+            Extension newExtension = extension.clone();
             result.addExtension(newExtension);
         }
 
         //Identifier
         result.identifiers = new ArrayList<>();
         for (Identifier<?> identifier : getIdentifiers() ){
-        	Identifier<?> newIdentifier = (Identifier<?>)identifier.clone();
+        	Identifier<?> newIdentifier = identifier.clone();
             result.addIdentifier(newIdentifier);
         }
 
@@ -700,7 +700,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         //Credits
         result.credits = new ArrayList<>();
         for(Credit credit : getCredits()) {
-            Credit newCredit = (Credit)credit.clone();
+            Credit newCredit = credit.clone();
             result.addCredit(newCredit);
         }
 
@@ -718,7 +718,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             result.titleCache = null;
         }
 
-        result.initListener();
+        result.initListener();  //TODO why do we need this, isnt't the listener in constructor enough?
         return result;
     }
 }

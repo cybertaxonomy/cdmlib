@@ -76,28 +76,21 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     private UUID southernAmericaUuid;
     private UUID antarcticaUuid;
 
-    private UUID uuid;
+    private UUID uuidTaxonDescription1;
 
     private UUID taxonSphingidaeUuid;
 
-    @SuppressWarnings("unused")
-    private static final String[] TABLE_NAMES = new String[] {"DESCRIPTIONBASE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONELEMENTBASE_LANGUAGESTRING", "HOMOTYPICALGROUP","LANGUAGESTRING"
-            , "ORIGINALSOURCEBASE", "REFERENCE", "TAXONBASE", "TAXONNAME", "HIBERNATE_SEQUENCES" };
-
     @Before
     public void setUp() {
-        uuid = UUID.fromString("5f3265ed-68ad-4ec3-826f-0d29d25986b9");
+        uuidTaxonDescription1 = UUID.fromString("5f3265ed-68ad-4ec3-826f-0d29d25986b9");
 
-        namedAreas = new HashSet<NamedArea>();
+        namedAreas = new HashSet<>();
         northernAmericaUuid = UUID.fromString("2757e726-d897-4546-93bd-7951d203bf6f");
         southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
         antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
         taxonSphingidaeUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 
-        features = new HashSet<Feature>();
-
-//		loadDataSet(getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.xml"));
-//		printDataSet(System.err, TABLE_NAMES);
+        features = new HashSet<>();
     }
 
     @Test
@@ -151,7 +144,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         namedAreas.add(southernAmerica);
         namedAreas.add(antarctica);
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxon");
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
@@ -195,9 +188,9 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
     @Test
     public void testListDescriptionsWithText() {
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("taxon");
         List<DescriptionBase> descriptions = descriptionDao.listDescriptions(TaxonDescription.class, null, true, null,null,null,orderHints,propertyPaths);
 
@@ -238,7 +231,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(null, TaxonDescription.class, null, TextData.class);
         assertEquals("expecting 3 description elements of type TextData", 3, numberOfDescriptionElements);
 
-        DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
+        DescriptionBase<?> description = descriptionDao.findByUuid(uuidTaxonDescription1);
         assert description != null : "description must exist";
 
         numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, null, null, TextData.class);
@@ -261,7 +254,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         elements = descriptionDao.getDescriptionElements(null, SpecimenDescription.class, null, TextData.class, null, null, null);
         assertEquals("expecting 1 description elements of type TextData", 1, elements.size());
 
-        DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
+        DescriptionBase<?> description = descriptionDao.findByUuid(uuidTaxonDescription1);
         assert description != null : "description must exist";
 
         List<String> propertyPaths = new ArrayList<>();
@@ -276,7 +269,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
             if (descElB instanceof TextData){
                 Map<Language, LanguageString> multiLanguage = ((TextData)descElB).getMultilanguageText();
                 LanguageString defaultString = multiLanguage.get(Language.DEFAULT());
-
             }
         }
         Iterator<DescriptionElementBase> elements2 = description.getElements().iterator();
@@ -316,7 +308,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     public void testCountDescriptionElementsFeature() {
         features.add(Feature.ECOLOGY());
-        DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
+        DescriptionBase<?> description = descriptionDao.findByUuid(uuidTaxonDescription1);
         assert description != null : "description must exist";
 
         long numberOfDescriptionElements = descriptionDao.countDescriptionElements(description, features, TextData.class);
@@ -329,7 +321,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
         // 2. search for one Feature: ECOLOGY
         features.add(Feature.ECOLOGY());
-        DescriptionBase<?> description = descriptionDao.findByUuid(uuid);
+        DescriptionBase<?> description = descriptionDao.findByUuid(uuidTaxonDescription1);
         assert description != null : "description must exist";
 
         List<TextData> elements = descriptionDao.getDescriptionElements(null, null, features, TextData.class, null, null,null);
@@ -383,8 +375,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
     @Test
     public void testSaveClonedDescription() {
 
-//		printDataSet(System.err, new String[]{"TAXONBASE"});
-
         Taxon taxon = Taxon.NewInstance(null, null);
         taxon.setTitleCache("##### created in testSaveClonedDescription()", true);
         taxonDao.save(taxon);
@@ -392,9 +382,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         this.descriptionDao.saveOrUpdate(description);
-//		TaxonDescription clonedDescription = (TaxonDescription)description.clone();
-//		this.descriptionDao.saveOrUpdate(clonedDescription);
-//		printDataSet(System.err, new String[]{"TAXONBASE"});
 
         assertTrue(true);
     }
@@ -427,7 +414,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         //complete
         MarkerType completeMarkerType = (MarkerType)this.definedTermDao.findByUuid(UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433")); //Marker "complete"
         Assert.assertNotNull("MarkerType for 'complete' should exist", completeMarkerType);
-        Set<MarkerType> markerTypes = new HashSet<MarkerType>();
+        Set<MarkerType> markerTypes = new HashSet<>();
         markerTypes.add(completeMarkerType);
         long n1 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
         Assert.assertEquals("There should be 1 description marked 'complete'", 1, n1);
@@ -437,7 +424,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         //doubtful
         MarkerType isDoubtfulMarkerType = (MarkerType)this.definedTermDao.findByUuid(UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e")); //Marker "doubtful"
         Assert.assertNotNull("MarkerType for 'doubtful' should exist", isDoubtfulMarkerType);
-        markerTypes = new HashSet<MarkerType>();  //reset
+        markerTypes = new HashSet<>();  //reset
         markerTypes.add(isDoubtfulMarkerType);
         long n2 = this.descriptionDao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, null);
         Assert.assertEquals("There should be no description marked 'doubtful'", 0, n2);
@@ -627,7 +614,6 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
 
     @Test
     @DataSet
-    // @Ignore // the first query in listNamedAreasInUse is for some reason not working with h2
     public void testListNamedAreasInUseWithParents(){
 
         Collection<TermDto> list = descriptionDao.listNamedAreasInUse(true, null, null);

@@ -145,7 +145,6 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	 */
 	@Deprecated
 	protected DescriptionElementSource(){
-		super();
 	}
 
 	private DescriptionElementSource(OriginalSourceType type){

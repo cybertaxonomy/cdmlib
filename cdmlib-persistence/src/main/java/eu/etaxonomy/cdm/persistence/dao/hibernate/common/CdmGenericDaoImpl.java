@@ -333,9 +333,7 @@ public class CdmGenericDaoImpl
 		if (allCdmClasses == null){
 			allCdmClasses = getAllPersistedClasses(false); //findAllCdmClasses();
 		}
-		//referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 		SessionFactory sessionFactory = getSession().getSessionFactory();
-
 
 		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
@@ -346,7 +344,6 @@ public class CdmGenericDaoImpl
 				makePropertyType(result, referencedClass, sessionFactory, cdmClass, propertyType, propertyName, false);
 				propertyNr++;
 			}
-
 		}
 		return result;
 	}
@@ -378,7 +375,7 @@ public class CdmGenericDaoImpl
 				logger.debug("There is an interface");
 			}
 			if (entityClass.isAssignableFrom(referencedClass)){
-				makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
+			    makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
 			}
 		}else if (propertyType.isCollectionType()){
 			CollectionType collectionType = (CollectionType)propertyType;
