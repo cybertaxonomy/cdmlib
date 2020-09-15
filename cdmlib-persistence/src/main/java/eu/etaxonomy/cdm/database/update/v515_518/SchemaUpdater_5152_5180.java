@@ -64,7 +64,9 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         String referenceColumnName = "citation_id";
         String microReferenceColumnName = "citationMicroReference";
         String sourceColumnName = "source_id";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+        String dtype = "NomenclaturalSource";
+        String sourceType = "NOR";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
         //6581
         //move name relationship reference to source
@@ -263,6 +265,6 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_5180_5181.NewInstance();
 	}
 }

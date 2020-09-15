@@ -2169,41 +2169,12 @@ public class TaxonName
 
     @Override
     public void setNomenclaturalSource(NomenclaturalSource nomenclaturalSource) throws IllegalArgumentException {
-        if (this.nomenclaturalSource == nomenclaturalSource){
-            return;
-        }
         //check state
-//        if (! (nomenclaturalSource instanceof HibernateProxy && ((HibernateProxy)nomenclaturalSource).getHibernateLazyInitializer().isUninitialized())){
-            if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
-                    ){
-                throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
-            }
-//            //send change event
-//            DescriptionElementSource source = this.nomenclaturalSource != null ? this.nomenclaturalSource : nomenclaturalSource;
-//            Reference oldReference = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitation() : null;
-//            Reference newReference = nomenclaturalSource != null ? nomenclaturalSource.getCitation() : null;
-//            if (!Objects.equals(oldReference, newReference)){
-//                PropertyChangeEvent event = new PropertyChangeEvent(source, "citation", oldReference, newReference);
-//                sourceListener.propertyChange(event);
-//            }
-//            //    detail
-//            String oldDetail = this.nomenclaturalSource != null ? this.nomenclaturalSource.getCitationMicroReference() : null;
-//            String newDetail = nomenclaturalSource != null ? nomenclaturalSource.getCitationMicroReference() : null;
-//            if (!Objects.equals(oldDetail, newDetail)){
-//                PropertyChangeEvent event = new PropertyChangeEvent(source, "citationMicroReference", oldDetail, newDetail);
-//                sourceListener.propertyChange(event);
-//            }
-//        }
-        //listener
-        //   reference
-
-//        if (this.nomenclaturalSource != null){
-//            this.nomenclaturalSource.removePropertyChangeListener(sourceListener);
-//        }
+        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
+                ){
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+        }
         this.nomenclaturalSource = nomenclaturalSource;
-//        if (this.nomenclaturalSource != null){
-//            this.nomenclaturalSource.addPropertyChangeListener(sourceListener);
-//        }
     }
 
     @Override
