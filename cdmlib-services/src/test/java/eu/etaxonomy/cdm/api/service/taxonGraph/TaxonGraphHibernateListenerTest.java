@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.taxonGraph;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +31,7 @@ import eu.etaxonomy.cdm.api.application.IRunAs;
 import eu.etaxonomy.cdm.api.application.RunAsAdmin;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -146,6 +149,74 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         }
     }
 
+    /**
+     * Test for TaxonGraphException when TaxonName.nomenclaturalSource == nulll
+     */
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    public void testNewTaxonNameMissingNomRef1() {
+
+        TaxonGraphBeforeTransactionCompleteProcess.setFailOnMissingNomRef(true);
+
+        try {
+            setUuidPref();
+
+            TaxonName n_t_argentinensis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Trachelomonas", null,
+                    "argentinensis", null, null, null, null, null);
+            n_t_argentinensis = nameDao.save(n_t_argentinensis);
+            Throwable expectedException = null;
+            try {
+                commitAndStartNewTransaction();
+            } catch (Exception e) {
+                expectedException = e;
+                while(expectedException != null && !(expectedException instanceof TaxonGraphException) ) {
+                    expectedException = expectedException.getCause();
+                }
+            }
+            assertNotNull(expectedException);
+
+        } finally {
+            rollback();
+        }
+    }
+
+    /**
+     * Test for TaxonGraphException when TaxonName.nomenclaturalSource.citation == nulll
+     */
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
+    public void testNewTaxonNameMissingNomRef2() {
+
+        TaxonGraphBeforeTransactionCompleteProcess.setFailOnMissingNomRef(true);
+
+        try {
+            setUuidPref();
+
+            Reference refX = ReferenceFactory.newBook();
+            refX.setTitleCache("Ref-X", true);
+
+            TaxonName n_t_argentinensis = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES(), "Trachelomonas", null,
+                    "argentinensis", null, null, refX, null, null);
+
+            n_t_argentinensis.getNomenclaturalSource().setCitation(null);
+            n_t_argentinensis = nameDao.save(n_t_argentinensis);
+            Throwable expectedException = null;
+            try {
+                commitAndStartNewTransaction();
+            } catch (Exception e) {
+                expectedException = e;
+                while(expectedException != null && !(expectedException instanceof TaxonGraphException) ) {
+                    expectedException = expectedException.getCause();
+                }
+            }
+            assertNotNull(expectedException);
+
+        } finally {
+            rollback();
+        }
+    }
+
+
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "TaxonGraphTest.xml")
     public void testNewGenusName() throws TaxonGraphException {
@@ -173,9 +244,12 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         }
     }
 
+    /**
+     * exactly the same as {@link #testChangeNomenclaturalsSourceCitation()}
+     * but modifying the citation of the source indirectly via setNomenclaturalReference()
+     */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
-    // @Ignore //FIXME preliminary   #6581
     public void testChangeNomRef() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -186,7 +260,136 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             // printDataSet(System.err,"TaxonRelationship");
             TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
             n_trachelomonas_a.setNomenclaturalReference(refX);
-            nameDao.saveOrUpdate(n_trachelomonas_a);
+            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            commitAndStartNewTransaction();
+
+            // printDataSet(System.err,"TaxonRelationship");
+
+            List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a),
+                    nameDao.load(uuid_n_trachelomonas), true);
+            Assert.assertEquals(1, edges.size());
+            Assert.assertEquals(refX.getUuid(), edges.get(0).getCitationUuid());
+        } finally {
+            rollback();
+        }
+    }
+
+    /**
+     * Test swapping the nomenclaturalSource.ctation from name A and name B
+     */
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testSwapNomenclaturalSourceCitation() throws TaxonGraphException{
+        try {
+            setUuidPref();
+
+            TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
+            TaxonName n_trachelomonas_s  = nameDao.load(uuid_n_trachelomonas_s);
+            Reference ref_ta = n_trachelomonas_a.getNomenclaturalSource().getCitation();
+            Reference ref_ts = n_trachelomonas_s.getNomenclaturalSource().getCitation();
+            n_trachelomonas_a.getNomenclaturalSource().setCitation(ref_ts);
+            n_trachelomonas_s.getNomenclaturalSource().setCitation(ref_ta);
+            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            commitAndStartNewTransaction();
+            // printDataSet(System.err,"TaxonRelationship");
+
+            List<TaxonGraphEdgeDTO> edgesFrom_ta = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a),
+                    nameDao.load(uuid_n_trachelomonas), true);
+            Assert.assertEquals(1, edgesFrom_ta.size());
+            Assert.assertEquals(ref_ts.getUuid(), edgesFrom_ta.get(0).getCitationUuid());
+
+            List<TaxonGraphEdgeDTO> edgesFrom_ts = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_s),
+                    nameDao.load(uuid_n_trachelomonas), true);
+            Assert.assertEquals(1, edgesFrom_ts.size());
+            Assert.assertEquals(ref_ta.getUuid(), edgesFrom_ts.get(0).getCitationUuid());
+        } finally {
+            rollback();
+        }
+    }
+
+    /**
+     * Test swapping the nomenclaturalSource from name A and name B
+     */
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testSwapNomenclaturalSource() throws TaxonGraphException{
+        try {
+            setUuidPref();
+
+            TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
+            TaxonName n_trachelomonas_s  = nameDao.load(uuid_n_trachelomonas_s);
+            NomenclaturalSource nomSource_ta = n_trachelomonas_a.getNomenclaturalSource();
+            NomenclaturalSource nomSource_ts = n_trachelomonas_s.getNomenclaturalSource();
+            n_trachelomonas_a.setNomenclaturalSource(nomSource_ts);
+            n_trachelomonas_s.setNomenclaturalSource(nomSource_ta);
+            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            commitAndStartNewTransaction();
+            // printDataSet(System.err,"TaxonRelationship");
+
+            List<TaxonGraphEdgeDTO> edgesFrom_ta = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a),
+                    nameDao.load(uuid_n_trachelomonas), true);
+            Assert.assertEquals(1, edgesFrom_ta.size());
+            Assert.assertEquals(nomSource_ts.getCitation().getUuid(), edgesFrom_ta.get(0).getCitationUuid());
+
+            List<TaxonGraphEdgeDTO> edgesFrom_ts = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_s),
+                    nameDao.load(uuid_n_trachelomonas), true);
+            Assert.assertEquals(1, edgesFrom_ts.size());
+            Assert.assertEquals(nomSource_ta.getCitation().getUuid(), edgesFrom_ts.get(0).getCitationUuid());
+        } finally {
+            rollback();
+        }
+    }
+
+    /**
+     * Same as {@link #testSwapNomenclaturalSource()} swapping the nomenclaturalSource from name A and name B,
+     * the nomenclaturalSource of name B, however will be set null,
+     * This should raise TaxonGraphException
+     */
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testSwapNomenclaturalSourceIncomplete() {
+        try {
+            setUuidPref();
+
+            TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
+            TaxonName n_trachelomonas_s  = nameDao.load(uuid_n_trachelomonas_s);
+            NomenclaturalSource nomSource_ta = n_trachelomonas_a.getNomenclaturalSource();
+            NomenclaturalSource nomSource_ts = n_trachelomonas_s.getNomenclaturalSource();
+            n_trachelomonas_a.setNomenclaturalSource(nomSource_ts);
+            n_trachelomonas_s.setNomenclaturalSource(null);
+            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            Throwable expectedException = null;
+            try {
+                commitAndStartNewTransaction();
+            } catch (Exception e) {
+                expectedException = e;
+                while(expectedException != null && !(expectedException instanceof TaxonGraphException) ) {
+                    expectedException = expectedException.getCause();
+                }
+            }
+            assertNotNull(expectedException);
+        } finally {
+            rollback();
+        }
+    }
+
+    /**
+     * exactly the same as {@link #testChangeNomRef()}
+     * but modifying the citation of the source directly
+     */
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testChangeNomenclaturalSource() throws TaxonGraphException{
+        try {
+            setUuidPref();
+
+            Reference refX = ReferenceFactory.newBook();
+            refX.setTitleCache("Ref-X", true);
+
+            // printDataSet(System.err,"TaxonRelationship");
+            TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
+            n_trachelomonas_a.getNomenclaturalSource().setCitation(refX);
+            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
 
             // printDataSet(System.err,"TaxonRelationship");

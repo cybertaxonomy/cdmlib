@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.taxonGraph;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -24,6 +24,7 @@ import org.hibernate.event.spi.PostUpdateEvent;
 
 import eu.etaxonomy.cdm.api.application.IRunAs;
 import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -80,8 +81,27 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonGraphBeforeTransactionCompleteProcess.class);
 
-    private String[] NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
-    private String NOMREF_PROP = "nomenclaturalSource.citation";
+    private static final String[] TAXONNAME_NAMEPARTS_OR_RANK_PROPS = new String[]{"genusOrUninomial", "specificEpithet", "rank"};
+    private static final String[] TAXONNAME_NOMENCLATURALSOURCE = new String[]{"nomenclaturalSource"};
+    private static final String NOMENCLATURALSOURCE_CITATION = "citation";
+    private static final String NOMENCLATURALSOURCE_SOURCEDNAME = "sourcedName";
+    private static final String[] CITATION_OR_SOURCEDNAME = new String[] {NOMENCLATURALSOURCE_CITATION, NOMENCLATURALSOURCE_SOURCEDNAME};
+
+    private static boolean failOnMissingNomRef = false;
+
+    /**
+     * @return the failOnMissingNomRef
+     */
+    public static boolean isFailOnMissingNomRef() {
+        return failOnMissingNomRef;
+    }
+
+    /**
+     * @param failOnMissingNomRef the failOnMissingNomRef to set
+     */
+    public static void setFailOnMissingNomRef(boolean failOnMissingNomRef) {
+        TaxonGraphBeforeTransactionCompleteProcess.failOnMissingNomRef = failOnMissingNomRef;
+    }
 
     private Session temporarySession;
 
@@ -89,7 +109,9 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private Session parentSession;
 
-    private TaxonName entity;
+    private TaxonName taxonName;
+
+    private NomenclaturalSource nomenclaturalSource;
 
     private String[] propertyNames;
 
@@ -97,22 +119,40 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private Object[] state;
 
+    private int[] dirtyProperties;
+
     private boolean isInsertEvent;
 
     private IRunAs runAs = null;
 
     public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event, IRunAs runAs){
-        entity = (TaxonName) event.getEntity();
+        if(event.getEntity() instanceof TaxonName) {
+            taxonName = (TaxonName) event.getEntity();
+        } else
+        if(event.getEntity() instanceof NomenclaturalSource) {
+            nomenclaturalSource = (NomenclaturalSource) event.getEntity();
+        } else {
+            throw new RuntimeException("Either " + TaxonName.class.getName() + " or " + NomenclaturalSource.class.getName() + " are accepted");
+        }
         propertyNames = event.getPersister().getPropertyNames();
+        dirtyProperties = event.getDirtyProperties();
         oldState = event.getOldState();
         state = event.getState();
         this.runAs = runAs;
     }
 
-    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs){
+    public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs) {
         isInsertEvent = true;
-        entity = (TaxonName) event.getEntity();
+        if(event.getEntity() instanceof TaxonName) {
+            taxonName = (TaxonName) event.getEntity();
+        } else
+        if(event.getEntity() instanceof NomenclaturalSource) {
+            nomenclaturalSource = (NomenclaturalSource) event.getEntity();
+        } else {
+            throw new RuntimeException("Either " + TaxonName.class.getName() + " or " + NomenclaturalSource.class.getName() + " are accepted");
+        }
         propertyNames = event.getPersister().getPropertyNames();
+        dirtyProperties = null;
         oldState = null;
         state = event.getState();
         this.runAs = runAs;
@@ -123,20 +163,79 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
         try {
             if(isInsertEvent){
-                createTempSession(session);
-                onNewTaxonName(entity);
-                getSession().flush();
-            } else {
-                if(checkStateChange(NAMEPARTS_OR_RANK_PROPS) > -1){
+                // ---- INSERT ----
+                if(taxonName != null) {
+                    // 1. do the sanity checks first
+                    if(taxonName.getNomenclaturalSource() == null || taxonName.getNomenclaturalSource().getCitation() == null) {
+                        if(failOnMissingNomRef) {
+                            throw new TaxonGraphException("TaxonName.nomenclaturalSource or TaxonName.nomenclaturalSource.citation must never be null.");
+                        } else {
+                            logger.warn("TaxonName.nomenclaturalSource or TaxonName.nomenclaturalSource.citation must never be null. (" + taxonName.toString() + ")");
+                        }
+                    }
                     createTempSession(session);
-                    onNameOrRankChange(entity);
+                    onNewTaxonName(taxonName);
                     getSession().flush();
                 }
-                int changedNomRefIndex = checkStateChangeNomRef(NOMREF_PROP);
-                if(changedNomRefIndex > -1){
-                    createTempSession(session);
-                    onNomReferenceChange(entity, (Reference)oldState[changedNomRefIndex]);
-                    getSession().flush();
+            } else {
+                // ---- UPDATE ----
+                // either taxonName or nomenclaturalSource not null, never both!
+                if(taxonName != null) {
+                    // 1. do the sanity checks first
+                    Map<String, PropertyStateChange> changedNomenclaturalSourceProp = checkStateChange(TAXONNAME_NOMENCLATURALSOURCE);
+                    if(!changedNomenclaturalSourceProp.isEmpty()) {
+                         if(changedNomenclaturalSourceProp.get(TAXONNAME_NOMENCLATURALSOURCE[0]).newState == null) {
+                             throw new TaxonGraphException("TaxonName.nomenclaturalSource must never be reverted to null.");
+                         }
+                         if(((NomenclaturalSource)changedNomenclaturalSourceProp.get(TAXONNAME_NOMENCLATURALSOURCE[0]).newState).getCitation() == null){
+                             throw new TaxonGraphException("TaxonName.nomenclaturalSource.citation must never be reverted to null.");
+                         }
+                         createTempSession(session);
+                         NomenclaturalSource oldNomenclaturalSource = (NomenclaturalSource)changedNomenclaturalSourceProp.get(TAXONNAME_NOMENCLATURALSOURCE[0]).oldState;
+                         onNomReferenceChange(taxonName, oldNomenclaturalSource.getCitation());
+                         getSession().flush();
+                    }
+                    // 2. update the graph
+                    Map<String, PropertyStateChange> changedProps = checkStateChange(TAXONNAME_NAMEPARTS_OR_RANK_PROPS);
+                    if(!changedProps.isEmpty()){
+                        createTempSession(session);
+                        onNameOrRankChange(taxonName);
+                        getSession().flush();
+                    }
+                } else
+                if(nomenclaturalSource != null) {
+                    Map<String, PropertyStateChange> changedProps = checkStateChange(CITATION_OR_SOURCEDNAME);
+                    if(!changedProps.isEmpty()){
+                        TaxonName newTaxonNameState = null;
+                        Reference newCitationState = null;
+                        TaxonName oldTaxonNameState = null;
+                        Reference oldCitationState = null;
+                        if(changedProps.containsKey(NOMENCLATURALSOURCE_SOURCEDNAME)) {
+                            newTaxonNameState = (TaxonName) changedProps.get(NOMENCLATURALSOURCE_SOURCEDNAME).newState;
+                            oldTaxonNameState = (TaxonName) changedProps.get(NOMENCLATURALSOURCE_SOURCEDNAME).oldState;
+                        }
+                        if(changedProps.containsKey(NOMENCLATURALSOURCE_CITATION)) {
+                            newCitationState = (Reference) changedProps.get(NOMENCLATURALSOURCE_CITATION).newState;
+                            oldCitationState = (Reference) changedProps.get(NOMENCLATURALSOURCE_CITATION).oldState;
+                        }
+                        // 1. do the sanity checks first
+                        if(oldTaxonNameState != null && oldTaxonNameState.getNomenclaturalSource() == null) {
+                            createTempSession(session);
+                            onNomReferenceChange(oldTaxonNameState, null);
+                            getSession().flush();
+                        }
+                        // 2. update the graph
+                        if(newTaxonNameState != null && newCitationState == null) {
+                            createTempSession(session);
+                            onNomReferenceChange(newTaxonNameState, nomenclaturalSource.getCitation());
+                            getSession().flush();
+                        }
+                        if(newTaxonNameState == null && newCitationState != null) {
+                            createTempSession(session);
+                            onNomReferenceChange(nomenclaturalSource.getSourcedName(), oldCitationState);
+                            getSession().flush();
+                        }
+                    }
                 }
             }
       } catch (TaxonGraphException e) {
@@ -152,60 +251,25 @@ public class TaxonGraphBeforeTransactionCompleteProcess
       }
     }
 
-    private int checkStateChange(String[] propertyNamesToCheck){
+    private Map<String, PropertyStateChange> checkStateChange(String[] propertyNamesToCheck){
 
-        if(oldState == null){
-            return -1;
+        Map<String, PropertyStateChange> changedProps = new HashMap<>();
+
+        if(dirtyProperties == null){
+            return changedProps;
         }
-        int propsCheckedCnt = 0;
-        for(int i = 0; i < propertyNames.length; i++){
+        for(int i : dirtyProperties){
             if(ArrayUtils.contains(propertyNamesToCheck, propertyNames[i])){
-                propsCheckedCnt++;
+
                 if(!Objects.equals(oldState[i], state[i])){
-                    return i;
-                }
-                if(propsCheckedCnt == propertyNamesToCheck.length){
-                    return -1;
-                }
-            }
-        }
-        // this exception should be raised during the unit tests already and thus will never occur in production
-        throw new RuntimeException("TaxonName class misses at least one property of: " + ArrayUtils.toString(propertyNamesToCheck));
-    }
-
-    private int checkStateChangeNomRef(String propertyPath){
-
-        if(oldState == null){
-            return -1;
-        }
-
-        try {
-            String[] path = propertyPath.split("\\.");
-            for (int i=1; i < propertyNames.length; i++) {
-                if(propertyNames[i].equals(path[0])){
-                    if (oldState[i] == null && state[i] == null){
-                        return -1;
-                    }else{
-                        //TODO make it recursive (until now only a 2 step path is allowed, but should be enough for the given use-case
-                        Object oldStatePathObj = (oldState[i]==null) ? null: PropertyUtils.getProperty(oldState[i], path[1]);
-                        Object newStatePathObj = (state[i]==null) ? null: PropertyUtils.getProperty(state[i], path[1]);
-                        if (oldStatePathObj == null && newStatePathObj == null){
-                            return -1;
-                        }else{
-                            if(!Objects.equals(oldStatePathObj, newStatePathObj)){
-                                return i;
-                            }else{
-                                return -1;
-                            }
-                        }
-                    }
+                    // here we check again, this should not be needed as we should
+                    // be able to rely on that this check is true for all
+                    // indices in dirtyProperties
+                    changedProps.put(propertyNames[i], (new PropertyStateChange(oldState[i], state[i], i)));
                 }
             }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException("The nomenclatural reference path seems to be invalid: " + propertyPath);
         }
-        // this exception should be raised during the unit tests already and thus will never occur in production
-        throw new RuntimeException("TaxonName class misses at least one property of: " + propertyPath);
+        return changedProps;
     }
 
     /**
@@ -322,6 +386,27 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     @Override
     public Session getSession() {
         return temporarySession;
+    }
+
+    public static class PropertyStateChange {
+
+        Object oldState;
+        Object newState;
+        int index;
+        /**
+         * @param oldState
+         * @param newState
+         * @param index
+         */
+        public PropertyStateChange(Object oldState, Object newState, int index) {
+            super();
+            this.oldState = oldState;
+            this.newState = newState;
+            this.index = index;
+        }
+
+
+
     }
 
 

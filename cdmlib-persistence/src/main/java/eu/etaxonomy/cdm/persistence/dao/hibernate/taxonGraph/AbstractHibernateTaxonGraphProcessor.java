@@ -153,6 +153,10 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      * Create all missing edges from the <code>taxon</code> to names with higher
      * rank and edges from names with lower rank to this taxon. No longer needed
      * relations (edges) are removed.
+     * <p>
+     * {@link #conceptReference(Reference) concept references} which are null are ignored.
+     * This means no edges are created.
+     *
      *
      * @param taxon
      *            The taxon to update the edges for.
@@ -321,6 +325,11 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return taxon != null ? session.load(Taxon.class, taxon.getId()) : null;
     }
 
+    /**
+     * Provides the concept reference for a given <code>nomenclaturalReference</code>.
+     * For references which are {@link ReferenceType#Section} or {@link ReferenceType#BookSection} the in-reference is returned,
+     * otherwise the passed  <code>nomenclaturalReference</code> itself.
+     */
     protected Reference conceptReference(Reference nomenclaturalReference) {
 
         Reference conceptRef = nomenclaturalReference;

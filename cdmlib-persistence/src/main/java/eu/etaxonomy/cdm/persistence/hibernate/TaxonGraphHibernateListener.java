@@ -20,6 +20,7 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
@@ -58,7 +59,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
 
-        if(event.getEntity() instanceof TaxonName){
+        if(event.getEntity() instanceof TaxonName || event.getEntity() instanceof NomenclaturalSource){
             for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
                 try {
                     ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
@@ -75,7 +76,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     @Override
     public void onPostInsert(PostInsertEvent event) {
 
-        if(event.getEntity() instanceof TaxonName){
+        if(event.getEntity() instanceof TaxonName || event.getEntity() instanceof NomenclaturalSource){
             for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
                 try {
                     ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
