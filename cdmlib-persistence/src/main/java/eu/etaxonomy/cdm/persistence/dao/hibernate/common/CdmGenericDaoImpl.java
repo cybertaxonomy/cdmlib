@@ -821,9 +821,6 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#saveMetaData(eu.etaxonomy.cdm.model.common.CdmMetaData)
-	 */
 	@Override
     public void saveMetaData(CdmMetaData cdmMetaData) {
 		getSession().saveOrUpdate(cdmMetaData);
@@ -892,7 +889,6 @@ public class CdmGenericDaoImpl
         return 0;
     }
 
-
     @Override
     public Object get(UUID ownerUuid, String fieldName, int index) {
         Object col = initializeCollection(ownerUuid, fieldName);
@@ -923,8 +919,6 @@ public class CdmGenericDaoImpl
         }
     }
 
-
-
     @Override
     public boolean containsValue(UUID ownerUuid, String fieldName, Object value) {
         Object col = initializeCollection(ownerUuid, fieldName);
@@ -949,7 +943,4 @@ public class CdmGenericDaoImpl
         List<UUID> list = query.list();
         return list;
     }
-
-
-
 }
