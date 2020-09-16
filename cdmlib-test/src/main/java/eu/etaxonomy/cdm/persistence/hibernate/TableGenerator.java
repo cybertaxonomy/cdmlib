@@ -69,9 +69,6 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 		super.configure(type, params, serviceRegistry);
 	}
 
-//	/**
-//	 * {@inheritDoc}
-//	 */
 //	@Override
 //	public synchronized Serializable generate(final SessionImplementor session, Object obj) {
 //
