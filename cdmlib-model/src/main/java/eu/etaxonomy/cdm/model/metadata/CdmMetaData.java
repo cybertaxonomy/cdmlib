@@ -73,7 +73,7 @@ public class CdmMetaData extends CdmBase{
 	    }
 	}
 
-	   /**
+	/**
      * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
      * and in it's {@link TermVocabulary vocabulary}.
      */
@@ -104,7 +104,6 @@ public class CdmMetaData extends CdmBase{
 
 // ******************** STATIC **********************************/
 
-
     /**
      * @return a list of default metadata objects
      */
@@ -118,8 +117,6 @@ public class CdmMetaData extends CdmBase{
         result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_NAME, UNNAMED));
         return result;
     }
-
-
 
 //****************** instance methods ****************************/
 
@@ -214,5 +211,4 @@ public class CdmMetaData extends CdmBase{
 	public static String getDbSchemaVersion() {
 		return dbSchemaVersion;
 	}
-
 }

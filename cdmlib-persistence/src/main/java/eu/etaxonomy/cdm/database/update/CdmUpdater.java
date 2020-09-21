@@ -68,19 +68,10 @@ public class CdmUpdater {
         return new CdmUpdater();
     }
 
-    /**
-     * Returns the current CDM updater.
-     * @return the current CDM updater
-     */
     private ISchemaUpdater getCurrentSchemaUpdater() {
         return SchemaUpdater_5181_5182.NewInstance();
     }
 
-    /**
-     * @param datasource
-     * @param monitor may be <code>null</code>
-     * @return
-     */
     public SchemaUpdateResult updateToCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor){
         SchemaUpdateResult result = new SchemaUpdateResult();
         if (monitor == null){
@@ -108,7 +99,6 @@ public class CdmUpdater {
             }else{
                 datasource.commitTransaction();
             }
-
         } catch (Exception e) {
             String message = "Stopped schema updater";
             result.addException(e, message, "CdmUpdater");
@@ -234,7 +224,6 @@ public class CdmUpdater {
             System.out.println(dnName + " DONE " + (result.isSuccess() ? "successfully" : "with ERRORS"));
             System.out.println(result.createReport().toString());
             System.out.println("====================================================================");
-
         }
     }
 }

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../database/schema/dataset.xsd">
   <AUTHORITY DTYPE="CdmAuthority" ID="1" UUID="596b1325-be50-4b0a-9aa2-3ecd610215f2" PROPERTY="property" PERMISSIONCLASS="Agent" OPERATIONS="#C#" TARGETUUID="037a06cd-a17c-43f8-8bfb-b7ed87e266dd"/>
   <USERACCOUNT_AUTHORITY USER_ID="1" AUTHORITIES_ID="1"/>
   <USERACCOUNT ID="1" UUID="ccfe2f2f-920f-4e49-831b-8c60cdf3741c" PASSWORD="pwd" USERNAME="username" ACCOUNTNONEXPIRED="true" ACCOUNTNONLOCKED="true" CREDENTIALSNONEXPIRED="true" ENABLED="true" />

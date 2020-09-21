@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../database/schema/dataset.xsd">
   <TAXONBASE DTYPE="Taxon" ID="10" UUID="7598f5d4-1cf2-4269-ae99-2adb79ae167c" PROTECTEDTITLECACHE="true" TITLECACHE="Dummy taxon" DOUBTFUL="false" PUBLISH="true" USENAMECACHE="false" TAXONSTATUSUNKNOWN="false" />
   <DESCRIPTIONBASE DTYPE="TaxonDescription" ID="10" UUID="9c362630-08ef-4e2f-95d8-57b1cebd1197" PROTECTEDTITLECACHE="false" TITLECACHE="Taxon description for Dummy taxon" IMAGEGALLERY="false" ISDEFAULT="false" TAXON_ID="10"/>
   <DESCRIPTIONELEMENTBASE DTYPE="Distribution" ID="10" UUID="43b69cdb-ef08-41b2-9f25-32dce86e260d" FEATURE_ID="986" INDESCRIPTION_ID="10" AREA_ID="572" />
