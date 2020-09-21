@@ -325,8 +325,8 @@ public class TaxonName
     @XmlElement(name = "NomenclaturalSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedName")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE,CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
 //    @Access(AccessType.PROPERTY)
@@ -2175,6 +2175,9 @@ public class TaxonName
             throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
         }
         this.nomenclaturalSource = nomenclaturalSource;
+        if (nomenclaturalSource != null && nomenclaturalSource.getSourcedName() != this){
+            nomenclaturalSource.setSourcedName(null);
+        }
     }
 
     @Override

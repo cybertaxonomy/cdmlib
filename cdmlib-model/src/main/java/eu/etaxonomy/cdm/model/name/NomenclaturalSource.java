@@ -59,7 +59,7 @@ public class NomenclaturalSource extends DescriptionElementSource {
     @XmlElement(name = "sourcedName")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, mappedBy="nomenclaturalSource")
+    @OneToOne(fetch = FetchType.LAZY /*, mappedBy="nomenclaturalSource"*/)
     @Merge(value=MergeMode.MERGE)  //TODO maybe there is a better solution
     private TaxonName sourcedName;
 
@@ -103,7 +103,26 @@ public class NomenclaturalSource extends DescriptionElementSource {
     public void setSourcedName(TaxonName sourcedName) {
         if (this.sourcedName != sourcedName){
             this.sourcedName = sourcedName;
-            sourcedName.setNomenclaturalSource(this);
+            if (sourcedName != null){
+                sourcedName.setNomenclaturalSource(this);
+            }
+        }
+    }
+
+//************************* CLONE() ************************/
+
+    @Override
+    public NomenclaturalSource clone() {
+        NomenclaturalSource result;
+        try {
+            result = (NomenclaturalSource)super.clone();
+            //a name may only have 1 single nomenclatural source at time
+            result.sourcedName = null;
+
+            //no changes
+            return result;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);  //this should not happen
         }
     }
 }

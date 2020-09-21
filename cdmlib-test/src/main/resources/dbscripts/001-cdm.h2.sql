@@ -3474,6 +3474,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CDMSOURCE_ID integer,
         CITATION_ID integer,
         NAMEUSEDINSOURCE_ID integer,
+        SOURCEDNAME_ID integer,
         primary key (ID)
     );
 
@@ -3509,6 +3510,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CDMSOURCE_ID integer,
         CITATION_ID integer,
         NAMEUSEDINSOURCE_ID integer,
+        SOURCEDNAME_ID integer,
         primary key (ID, REV)
     );
 
@@ -5115,7 +5117,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         HOMOTYPICALGROUP_ID integer,
         INBASIONYMAUTHORSHIP_ID integer,
         INCOMBINATIONAUTHORSHIP_ID integer,
-        NOMENCLATURALSOURCE_ID integer,
         RANK_ID integer,
         primary key (ID)
     );
@@ -5184,7 +5185,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         HOMOTYPICALGROUP_ID integer,
         INBASIONYMAUTHORSHIP_ID integer,
         INCOMBINATIONAUTHORSHIP_ID integer,
-        NOMENCLATURALSOURCE_ID integer,
         RANK_ID integer,
         primary key (ID, REV)
     );
@@ -9786,6 +9786,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         foreign key (NAMEUSEDINSOURCE_ID) 
         references PUBLIC.TAXONNAME;
 
+    alter table PUBLIC.ORIGINALSOURCEBASE 
+        add constraint FKcfyx4vfln4xi61ebxjc3q37aw 
+        foreign key (SOURCEDNAME_ID) 
+        references PUBLIC.TAXONNAME;
+
     alter table PUBLIC.ORIGINALSOURCEBASE_ANNOTATION 
         add constraint FK82rq53k1sbkqxuxuh5eyuels9 
         foreign key (ANNOTATIONS_ID) 
@@ -11275,11 +11280,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FKhx788pclwci5ly3drr3ldx752 
         foreign key (INCOMBINATIONAUTHORSHIP_ID) 
         references PUBLIC.AGENTBASE;
-
-    alter table PUBLIC.TAXONNAME 
-        add constraint FKle80w71xca5aftjkqxfvgjdq6 
-        foreign key (NOMENCLATURALSOURCE_ID) 
-        references PUBLIC.ORIGINALSOURCEBASE;
 
     alter table PUBLIC.TAXONNAME 
         add constraint FKbahuh06c80i1imdnymk5kb6ry 
