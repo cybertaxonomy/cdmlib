@@ -257,6 +257,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
      */
     @DataSet
     @Test
+    @Ignore
     public void testTitleAndNameCacheAutoInitializer() {
 
         assureSessionClear();
