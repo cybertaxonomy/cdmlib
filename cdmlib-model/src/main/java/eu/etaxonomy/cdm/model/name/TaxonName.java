@@ -329,7 +329,6 @@ public class TaxonName
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE,CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
-//    @Access(AccessType.PROPERTY)
     private NomenclaturalSource nomenclaturalSource;
 
     @XmlElementWrapper(name = "Registrations")
@@ -2183,7 +2182,6 @@ public class TaxonName
     @Override
     @Transient
     public Reference getNomenclaturalReference(){
-        //#6581
         return this.nomenclaturalSource == null? null:this.nomenclaturalSource.getCitation();
     }
 
@@ -2214,7 +2212,6 @@ public class TaxonName
     @Override
     @Transient
     public String getNomenclaturalMicroReference(){
-        //#6581
         return this.nomenclaturalSource == null? null: this.nomenclaturalSource.getCitationMicroReference();
     }
 
@@ -2223,18 +2220,19 @@ public class TaxonName
      */
     @Override
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        //#6581
+        nomenclaturalMicroReference = isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference;
         if (nomenclaturalMicroReference == null && this.getNomenclaturalSource()==null){
             return;
         }else{
-            this.getNomenclaturalSource(true).setCitationMicroReference(isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
+            this.getNomenclaturalSource(true).setCitationMicroReference(nomenclaturalMicroReference);
         }
     }
 
-    //#6581
     /**
      * Checks if the source is completely empty and if empty removes it from the name.
      */
+    //TODO maybe this should be moved to a hibernate listener, but the listener solution may
+    //work only for nomenclatural single sources as they are the only which are bidirectional
     protected void checkNullSource() {
         if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty(true)){
             this.nomenclaturalSource = null;
