@@ -67,18 +67,23 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	 * entity
 	 */
 	@Test
-	@Ignore //FIXME homotypicalGroup is initialized even if it shouldn't
+	@Ignore //FIXME homotypicalGroup is initialized even though it shouldn't
+	//this seems to be a general feature when using hibernate criteria which is the case here.
 	public void testInitializeManyToOneProperty() {
 		List<String> propertyPaths = new ArrayList<>();
-		propertyPaths.add("nomenclaturalSource.citation");   //changed for #6581, may corrupt test
+		propertyPaths.add("nomenclaturalSource.citation");
 
 		TaxonName sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
 		setComplete();
 		endTransaction();
 
-		assertNotNull("Sphingidae should not be null",sphingidae);
-		assertFalse("TaxonName.homotypicalGroup should not be initialized",Hibernate.isInitialized(sphingidae.getHomotypicalGroup()));
-		assertTrue("TaxonName.nomenclaturalSource.citation should be initialized",Hibernate.isInitialized(sphingidae.getNomenclaturalReference()));
+		assertNotNull("Sphingidae should not be null", sphingidae);
+		//TODO this does not fail due to property path, but it does even not fail without property path which is unexpected
+		//there is a very similar test (AdvancedBeanInitializerTest.testTitleAndNameCacheAutoInitializer) which loads the taxon
+		//and not the name and there it works.
+		assertTrue("TaxonName.nomenclaturalSource.citation should be initialized", Hibernate.isInitialized(sphingidae.getNomenclaturalReference()));
+
+		assertFalse("TaxonName.homotypicalGroup should not be initialized", Hibernate.isInitialized(sphingidae.getHomotypicalGroup()));
 	}
 
 	/**
