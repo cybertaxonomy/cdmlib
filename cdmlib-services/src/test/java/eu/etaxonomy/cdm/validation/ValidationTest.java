@@ -160,10 +160,9 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 		//name.setNomenclaturalMicroReference(" ");
 
         Set<ConstraintViolation<IBotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class);
-        assertTrue("There should not be a constraint violation as this name is valid at the default and second level",constraintViolations.isEmpty());
+        assertTrue("There should not be a constraint violation as this name is valid at the default and second level", constraintViolations.isEmpty());
         constraintViolations  = validator.validate(name, Default.class,Level2.class, Level3.class);
-        assertFalse("There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level",constraintViolations.isEmpty());
-
+        assertFalse("There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level as duplicates exist", constraintViolations.isEmpty());
 	}
 
     @Override

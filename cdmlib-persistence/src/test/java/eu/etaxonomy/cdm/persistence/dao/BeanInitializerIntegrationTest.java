@@ -70,7 +70,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	@Ignore //FIXME homotypicalGroup is initialized even if it shouldn't
 	public void testInitializeManyToOneProperty() {
 		List<String> propertyPaths = new ArrayList<>();
-		propertyPaths.add("nomenclaturalSource.citation");   //changed for #6581, may destroy test
+		propertyPaths.add("nomenclaturalSource.citation");   //changed for #6581, may corrupt test
 
 		TaxonName sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
 		setComplete();

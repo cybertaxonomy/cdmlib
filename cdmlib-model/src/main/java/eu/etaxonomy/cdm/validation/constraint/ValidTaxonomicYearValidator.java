@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation.constraint;
 
 import javax.validation.ConstraintValidator;
@@ -16,7 +15,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 
-public class ValidTaxonomicYearValidator implements ConstraintValidator<ValidTaxonomicYear, String> {
+public class ValidTaxonomicYearValidator
+        implements ConstraintValidator<ValidTaxonomicYear, String> {
 
 	@Override
     public void initialize(ValidTaxonomicYear correctEpithetsForRank) { }
@@ -32,6 +32,4 @@ public class ValidTaxonomicYearValidator implements ConstraintValidator<ValidTax
 		}
 		return valid;
 	}
-
-
 }
