@@ -35,26 +35,26 @@ import eu.etaxonomy.cdm.persistence.dao.IMethodCache;
  * @since 26.03.2009
  *
  */
-public abstract class AbstractBeanInitializer implements IBeanInitializer{
+public abstract class AbstractBeanInitializer<CDM extends CdmBase> implements IBeanInitializer{
 
     public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
 
     @Autowired
     private IMethodCache methodCache;
 
-    private Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers = null;
+    private  Map<Class<CDM>, AutoPropertyInitializer<CDM>> beanAutoInitializers = null;
 
     /**
      * @param beanAutoInitializers the beanAutoInitializers to set
      */
-    public void setBeanAutoInitializers(Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers) {
+    public void setBeanAutoInitializers(Map<Class<CDM>, AutoPropertyInitializer<CDM>> beanAutoInitializers) {
         this.beanAutoInitializers = beanAutoInitializers;
     }
 
     /**
      * @return the beanAutoInitializers
      */
-    public Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> getBeanAutoInitializers() {
+    public Map<Class<CDM>, AutoPropertyInitializer<CDM>> getBeanAutoInitializers() {
         return beanAutoInitializers;
     }
 
@@ -338,7 +338,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         CdmBase cdmBaseBean = (CdmBase)bean;
         for(Class<? extends CdmBase> superClass : beanAutoInitializers.keySet()){
             if(superClass.isAssignableFrom(bean.getClass())){
-                beanAutoInitializers.get(superClass).initialize(cdmBaseBean);
+                beanAutoInitializers.get(superClass).initialize((CDM)cdmBaseBean);
             }
         }
     }

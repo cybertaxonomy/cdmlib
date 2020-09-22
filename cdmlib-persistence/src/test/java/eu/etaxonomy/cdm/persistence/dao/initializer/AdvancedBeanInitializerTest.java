@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 16.11.2015
  */
-public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest {
+public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = Logger.getLogger(AdvancedBeanInitializerTest.class);
 
@@ -88,15 +88,15 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
     private ITaxonDao taxonDao;
 
     @SpringBeanByType
-    private AdvancedBeanInitializer initializer;
+    private AdvancedBeanInitializer<CDM> initializer;
 
     @SpringBeanByType
-    private AdvancedBeanInitializer defaultBeanInitializer;
+    private AdvancedBeanInitializer<CDM> defaultBeanInitializer;
 
     @SpringBeanByType
     private SessionFactory factory;
 
-    private Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> deacivatedAutoIntitializers;
+    private Map<Class<CDM>, AutoPropertyInitializer<CDM>> deacivatedAutoIntitializers;
 
     /**
      * Checks that the AdvancedBeanInitializer is available and that the expected set of beanAutoInitializers is configured
@@ -120,7 +120,8 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
         Set<Class<?>> checkSet = new HashSet<>(Arrays.asList(expectedAutoInitializers));
 
-        for(AutoPropertyInitializer<?> api : defaultBeanInitializer.getBeanAutoInitializers().values()){
+        Map<Class<CDM>, AutoPropertyInitializer<CDM>> beanAutoInitializers = defaultBeanInitializer.getBeanAutoInitializers();
+        for(AutoPropertyInitializer<CDM> api : beanAutoInitializers.values()){
             assert checkSet.remove(api.getClass()) == true;
         }
         assert checkSet.size() == 0;
@@ -303,9 +304,9 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         assertFalse("members should not intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
 
         // activate the teamAutoInitializer again
-        AutoPropertyInitializer<CdmBase> teamAutoInitializer = deacivatedAutoIntitializers.get(TeamOrPersonBase.class);
+        AutoPropertyInitializer<CDM> teamAutoInitializer = deacivatedAutoIntitializers.get(TeamOrPersonBase.class);
         deacivatedAutoIntitializers.remove(teamAutoInitializer);
-        defaultBeanInitializer.getBeanAutoInitializers().put(TeamOrPersonBase.class, teamAutoInitializer);
+        defaultBeanInitializer.getBeanAutoInitializers().put((Class<CDM>) TeamOrPersonBase.class, teamAutoInitializer);
 
         taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalSource.citation.authorship"));
 
@@ -316,8 +317,8 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
     // ============================== end of tests ========================= //
 
-    protected Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> clearAutoinitializers() {
-        Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> autoIntitializers = new HashMap<>(defaultBeanInitializer.getBeanAutoInitializers());
+    protected Map<Class<CDM>, AutoPropertyInitializer<CDM>> clearAutoinitializers() {
+        Map<Class<CDM>, AutoPropertyInitializer<CDM>> autoIntitializers = new HashMap<>(defaultBeanInitializer.getBeanAutoInitializers());
         defaultBeanInitializer.getBeanAutoInitializers().clear();
         return autoIntitializers;
     }

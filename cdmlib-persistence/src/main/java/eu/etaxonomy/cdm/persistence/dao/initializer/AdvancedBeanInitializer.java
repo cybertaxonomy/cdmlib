@@ -44,7 +44,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
  * @since 2013-10-25
  *
  */
-public class AdvancedBeanInitializer extends HibernateBeanInitializer {
+public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanInitializer<CDM> {
 
     public static final Logger logger = Logger.getLogger(AdvancedBeanInitializer.class);
 
@@ -612,7 +612,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
         Set<AutoPropertyInitializer<CdmBase>> result = new HashSet<AutoPropertyInitializer<CdmBase>>();
         for(Class<? extends CdmBase> superClass : getBeanAutoInitializers().keySet()){
             if(superClass.isAssignableFrom(clazz)){
-                result.add(getBeanAutoInitializers().get(superClass));
+                result.add((AutoPropertyInitializer<CdmBase>) getBeanAutoInitializers().get(superClass));
             }
         }
         return result;

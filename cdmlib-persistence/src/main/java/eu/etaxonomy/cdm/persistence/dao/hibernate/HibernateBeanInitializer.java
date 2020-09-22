@@ -15,6 +15,7 @@ import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.Collect
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 
 /**
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
  *
  */
 //@Component("defaultBeanInitializer")
-public class HibernateBeanInitializer extends AbstractBeanInitializer{
+public class HibernateBeanInitializer<CDM extends CdmBase> extends AbstractBeanInitializer<CDM>{
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
