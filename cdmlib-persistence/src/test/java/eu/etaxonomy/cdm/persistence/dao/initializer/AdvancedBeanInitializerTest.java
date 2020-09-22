@@ -257,14 +257,13 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
      */
     @DataSet
     @Test
-    @Ignore
     public void testTitleAndNameCacheAutoInitializer() {
 
         assureSessionClear();
 
         //Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
-
-        Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("$"));
+        List<String> propertyPath = Arrays.asList("$");    //property path is actually not needed, test also succeeds with property path = null
+        Taxon taxon = (Taxon)taxonDao.load(taxonUuid, propertyPath);
         assertTrue(Hibernate.isInitialized(taxon.getName()));
         TaxonName name = taxon.getName();
         // the TitleAndNameCacheAutoInitializer must not initialize the nomenclaturalReference
@@ -274,7 +273,8 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         // the authorship fields, not the nomenclatural reference. In case of the taxon.name use in the test
         // the combinationAutors are sufficient for creating the titlecache. The nomenclatural reference
         // is not included into the initialization done by the TitleAndNameCacheAutoInitializer
-        assertFalse(Hibernate.isInitialized(name.getNomenclaturalSource()));
+        //
+        assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference()));
     }
 
     @DataSet
