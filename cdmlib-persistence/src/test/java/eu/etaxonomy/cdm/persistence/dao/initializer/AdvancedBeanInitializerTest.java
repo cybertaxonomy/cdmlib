@@ -273,7 +273,6 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         // the authorship fields, not the nomenclatural reference. In case of the taxon.name use in the test
         // the combinationAutors are sufficient for creating the titlecache. The nomenclatural reference
         // is not included into the initialization done by the TitleAndNameCacheAutoInitializer
-        //
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference()));
     }
 

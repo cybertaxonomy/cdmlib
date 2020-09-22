@@ -75,16 +75,13 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             return beanList;
         }
 
-
         //new
-         BeanInitNode rootPath = BeanInitNode.createInitTree(propertyPaths);
+        BeanInitNode rootPath = BeanInitNode.createInitTree(propertyPaths);
         if (logger.isTraceEnabled()){logger.trace(rootPath.toStringTree());}
-
 
         if(logger.isDebugEnabled()){ logger.debug(">> starting to initialize beanlist ; class(e.g.):" + beanList.iterator().next().getClass().getSimpleName());}
         rootPath.addBeans(beanList);
         initializeNodeRecursive(rootPath);
-
 
         //old - keep for safety (this may help to initialize those beans that are not yet correctly initialized by the AdvancedBeanInitializer
         if(logger.isTraceEnabled()){logger.trace("Start old initalizer ... ");};
@@ -97,7 +94,6 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
         if(logger.isDebugEnabled()){ logger.debug("   Completed initialization of beanlist "); }
         return beanList;
-
     }
 
 
