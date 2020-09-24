@@ -52,14 +52,6 @@ public class SchemaUpdater_5181_5182 extends SchemaUpdaterBase {
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 //        //6581
-//        //move nomenclatural status reference to source
-//        stepName = "rename NomenclaturalSource";
-//        String sql = "UPDATE @@OriginalSourceBase@@ "
-//                + " SET DTYPE = 'NomenclaturalSource', sourceType='NOR' "
-//                + " WHERE id IN (SELECT nomenclaturalSource_id FROM @@TaxonName@@ WHERE nomenclaturalSource_id IS NOT NULL) ";
-//        String sql_aud = "UPDATE @@OriginalSourceBase_AUD@@  SET DTYPE = 'NomenclaturalSource', sourceType='NOR'  WHERE id IN (SELECT nomenclaturalSource_id FROM @@TaxonName_AUD@@ WHERE nomenclaturalSource_id IS NOT NULL)";
-//        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
-
 		stepName = "Add sourcedName column to NomenclaturalSource";
 		tableName = "OriginalSourceBase";
 		newColumnName = "sourcedName_id";
