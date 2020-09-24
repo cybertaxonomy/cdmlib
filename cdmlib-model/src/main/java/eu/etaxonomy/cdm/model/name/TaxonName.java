@@ -2175,7 +2175,7 @@ public class TaxonName
         }
         this.nomenclaturalSource = nomenclaturalSource;
         if (nomenclaturalSource != null && nomenclaturalSource.getSourcedName() != this){
-            nomenclaturalSource.setSourcedName(null);
+            nomenclaturalSource.setSourcedName(this);
         }
     }
 
