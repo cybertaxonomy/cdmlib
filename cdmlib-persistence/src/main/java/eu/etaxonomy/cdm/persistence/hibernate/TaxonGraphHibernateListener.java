@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
+import org.hibernate.event.spi.PreDeleteEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
 import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
@@ -91,6 +92,24 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     }
 
     @Override
+    public boolean onPreDelete(PreDeleteEvent event) {
+
+        if(event.getEntity() instanceof TaxonName || event.getEntity() instanceof NomenclaturalSource){
+            for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
+                try {
+                    ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
+                    BeforeTransactionCompletionProcess processorInstance = pcd.preDeleteEventConstructor.newInstance(pcd.buildConstructorArgs(event));
+                    event.getSession().getActionQueue().registerProcess(processorInstance);
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException | SecurityException e) {
+                    Logger.getLogger(TaxonGraphHibernateListener.class).error("Error creating new instance of " + type.toString(), e);
+                }
+            }
+        }
+        return false; // no veto
+    }
+
+    @Override
     public boolean requiresPostCommitHanding(EntityPersister persister) {
         return true;
     }
@@ -99,6 +118,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
 
         Constructor<T> postInsertEventConstructor;
         Constructor<T> postUpdateEventConstructor;
+        Constructor<T> preDeleteEventConstructor;
         Object[] constructorArgs;
 
         public ProcessConstructorData(Class<T> type, Object[] constructorArgs, Class<?>[] paramterTypes) throws NoSuchMethodException, SecurityException {
@@ -107,15 +127,19 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
 
             Class<?>[] postInsertEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
             Class<?>[] postUpdateEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
+            Class<?>[] preDeleteEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
             postInsertEventConstructorArgTypes[0] = PostInsertEvent.class;
             postUpdateEventConstructorArgTypes[0] = PostUpdateEvent.class;
+            preDeleteEventConstructorArgTypes[0] = PreDeleteEvent.class;
             int i = 1;
             for(Class<?> ptype : paramterTypes){
                 postInsertEventConstructorArgTypes[i] = ptype;
                 postUpdateEventConstructorArgTypes[i] = ptype;
+                preDeleteEventConstructorArgTypes[i] = ptype;
             }
             postInsertEventConstructor = type.getConstructor(postInsertEventConstructorArgTypes);
             postUpdateEventConstructor = type.getConstructor(postUpdateEventConstructorArgTypes);
+            preDeleteEventConstructor = type.getConstructor(preDeleteEventConstructorArgTypes);
         }
 
         public Object[] buildConstructorArgs(Object firstArg){

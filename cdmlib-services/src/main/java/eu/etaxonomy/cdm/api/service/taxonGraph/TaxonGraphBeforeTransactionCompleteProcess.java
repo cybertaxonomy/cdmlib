@@ -8,9 +8,11 @@
 */
 package eu.etaxonomy.cdm.api.service.taxonGraph;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
@@ -21,6 +23,7 @@ import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
+import org.hibernate.event.spi.PreDeleteEvent;
 
 import eu.etaxonomy.cdm.api.application.IRunAs;
 import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
@@ -121,11 +124,16 @@ public class TaxonGraphBeforeTransactionCompleteProcess
 
     private int[] dirtyProperties;
 
-    private boolean isInsertEvent;
+    private EventType eventType;
+
+    enum EventType {
+        INSERT, UPDATE, DELETE,
+    }
 
     private IRunAs runAs = null;
 
     public TaxonGraphBeforeTransactionCompleteProcess(PostUpdateEvent event, IRunAs runAs){
+        eventType = EventType.UPDATE;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();
         } else
@@ -142,7 +150,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     }
 
     public TaxonGraphBeforeTransactionCompleteProcess(PostInsertEvent event, IRunAs runAs) {
-        isInsertEvent = true;
+        eventType = EventType.INSERT;
         if(event.getEntity() instanceof TaxonName) {
             taxonName = (TaxonName) event.getEntity();
         } else
@@ -158,11 +166,37 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         this.runAs = runAs;
     }
 
+    public TaxonGraphBeforeTransactionCompleteProcess(PreDeleteEvent event, IRunAs runAs) {
+        eventType = EventType.DELETE;
+        if(event.getEntity() instanceof TaxonName) {
+            taxonName = (TaxonName) event.getEntity();
+        } else
+        if(event.getEntity() instanceof NomenclaturalSource) {
+            nomenclaturalSource = (NomenclaturalSource) event.getEntity();
+        } else {
+            throw new RuntimeException("Either " + TaxonName.class.getName() + " or " + NomenclaturalSource.class.getName() + " are accepted");
+        }
+        propertyNames = event.getPersister().getPropertyNames();
+        dirtyProperties = null;
+        oldState = event.getDeletedState();
+        this.runAs = runAs;
+    }
+
     @Override
     public void doBeforeTransactionCompletion(SessionImplementor session) {
 
+        if(logger.isDebugEnabled()) {
+            String message = eventType.name() + " for ";
+            message += taxonName != null ? taxonName.toString() : "";
+            message += nomenclaturalSource != null ? nomenclaturalSource.toString() : "";
+            if(eventType.equals(EventType.UPDATE)){
+                message += " with dirty properties: " + Arrays.stream(dirtyProperties).mapToObj(i -> propertyNames[i]).collect(Collectors.joining(", "));
+            }
+            logger.debug(message);
+        }
+
         try {
-            if(isInsertEvent){
+            if(eventType.equals(EventType.INSERT)){
                 // ---- INSERT ----
                 if(taxonName != null) {
                     // 1. do the sanity checks first
@@ -176,7 +210,38 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                     createTempSession(session);
                     onNewTaxonName(taxonName);
                     getSession().flush();
+                } else if(nomenclaturalSource != null) {
+                    TaxonName taxonName =  (TaxonName)findValueByName(state, NOMENCLATURALSOURCE_SOURCEDNAME);
+                    Reference reference =  (Reference)findValueByName(state, NOMENCLATURALSOURCE_CITATION);
+                    if(taxonName != null && reference != null) {
+                        createTempSession(session);
+                        // load name and reference also into this session
+                        taxonName = getSession().load(TaxonName.class, taxonName.getId());
+                        reference = getSession().load(Reference.class, reference.getId());
+                        onNewNomenClaturalSource(taxonName, reference);
+                        getSession().flush();
+                    }
                 }
+            } else if(eventType.equals(EventType.DELETE)) {
+                if(taxonName != null) {
+                    // handling this case explicitly should not be needed as this is expectd to be done by orphan removal in
+                    // hibernate
+                    Reference reference =  (Reference)oldState[Arrays.binarySearch(propertyNames, TAXONNAME_NOMENCLATURALSOURCE)];
+                    if(reference != null) {
+                        createTempSession(session);
+                        onTaxonNameDeleted(taxonName, reference);
+                        getSession().flush();
+                    }
+                } else if(nomenclaturalSource != null) {
+                   TaxonName taxonName =  (TaxonName)findValueByName(oldState, NOMENCLATURALSOURCE_SOURCEDNAME);
+                   Reference reference =  (Reference)findValueByName(oldState, NOMENCLATURALSOURCE_CITATION);
+                   if(taxonName != null && reference != null) {
+                       createTempSession(session);
+                       onNomReferenceRemoved(taxonName, reference);
+                       getSession().flush();
+                   }
+                }
+
             } else {
                 // ---- UPDATE ----
                 // either taxonName or nomenclaturalSource not null, never both!
@@ -272,6 +337,20 @@ public class TaxonGraphBeforeTransactionCompleteProcess
         return changedProps;
     }
 
+    private Object findValueByName(Object[] states, String propertyName) {
+        int key = -1;
+        for(int i = 0; i < propertyNames.length; i++) {
+            if(propertyNames[i].equals(propertyName)) {
+                key = i;
+                break;
+            }
+        }
+        if(key > -1) {
+            return states[key];
+        }
+        return null;
+    }
+
     /**
      * Concept of creation of sub-sessions found in
      * AuditProcess.doBeforeTransactionCompletion(SessionImplementor session)
@@ -334,7 +413,7 @@ public class TaxonGraphBeforeTransactionCompleteProcess
     }
 
     /**
-     * This method manages updates to the edges from and to a taxon which
+     * This method manages updates to edges from and to a taxon which
      * reflects the concept reference of the original classification. The
      * concept reference of each classification is being projected onto the
      * graph as edge ({@link TaxonRelationship}) having that reference as
@@ -375,6 +454,102 @@ public class TaxonGraphBeforeTransactionCompleteProcess
                 if(runAs != null){
                     runAs.restore();
                 }
+            }
+        }
+    }
+
+    /**
+     * This method manages updates to edges from and to a taxon which
+     * reflects the concept reference of the original classification. The
+     * concept reference of each classification is being projected onto the
+     * graph as edge ({@link TaxonRelationship}) having that reference as
+     * {@link TaxonRelationship#getSource() TaxonRelationship.source.citation}.
+     *
+     *
+     * @param taxonName
+     *   The updated taxon name having a new nomenclatural reference
+     * @param nomReference
+     *   The new nomenclatural reference to be assigned to the <code>taxonName</code>
+     * @throws TaxonGraphException
+     *             A <code>TaxonGraphException</code> is thrown when more than
+     *             one taxa with the default sec reference
+     *             ({@link #getSecReferenceUUID()}) are found for the given name
+     *             (<code>taxonName</code>). Originates from
+     *             {@link #assureSingleTaxon(TaxonName, boolean)}
+     */
+    public void onNewNomenClaturalSource(TaxonName taxonName, Reference nomReference) throws TaxonGraphException {
+
+        try {
+            if(runAs != null){
+                runAs.apply();
+            }
+            Taxon taxon = assureSingleTaxon(taxonName);
+            updateEdges(taxon, nomReference);
+            getSession().saveOrUpdate(taxon);
+        } finally {
+            if(runAs != null){
+                runAs.restore();
+            }
+        }
+    }
+
+    /**
+     * Manages removals of references which require the deletion of edges from and to
+     * the taxon which reflects the concept reference of the original classification.
+     *
+     * @param taxonName
+     *   The taxon name which formerly had the the nomenclatural reference
+     * @param oldNomReference
+     *   The nomenclatural reference which was removed from the <code>taxonName</code>
+     * @throws TaxonGraphException
+     */
+    public void onNomReferenceRemoved(TaxonName taxonName, Reference oldNomReference) throws TaxonGraphException {
+
+        boolean isNotDeleted = parentSession.contains(taxonName) && taxonName.isPersited();
+        // TODO use audit event to check for deletion?
+        if(isNotDeleted){
+            try {
+                if(runAs != null){
+                    runAs.apply();
+                }
+                Taxon taxon = assureSingleTaxon(taxonName, false);
+                if(taxon != null) {
+                    removeEdges(taxon, oldNomReference);
+                }
+                getSession().saveOrUpdate(taxon);
+            } finally {
+                if(runAs != null){
+                    runAs.restore();
+                }
+            }
+        }
+    }
+
+    /**
+     * Manages deletions of taxonNames which requires the deletion of edges and the
+     * taxon which reflects the concept reference of the original classification.
+     *
+     * @param taxonName
+     *   The taxon name which formerly had the the nomenclatural reference
+     * @param oldNomReference
+     *   The nomenclatural reference which was removed from the <code>taxonName</code>
+     * @throws TaxonGraphException
+     */
+    private void onTaxonNameDeleted(TaxonName taxonName, Reference reference) throws TaxonGraphException {
+
+        try {
+            if(runAs != null){
+                runAs.apply();
+            }
+            Taxon taxon = assureSingleTaxon(taxonName, false);
+            if(taxon != null) {
+                removeEdges(taxon, reference);
+                getSession().delete(taxon);
+            }
+            getSession().saveOrUpdate(taxon);
+        } finally {
+            if(runAs != null){
+                runAs.restore();
             }
         }
     }

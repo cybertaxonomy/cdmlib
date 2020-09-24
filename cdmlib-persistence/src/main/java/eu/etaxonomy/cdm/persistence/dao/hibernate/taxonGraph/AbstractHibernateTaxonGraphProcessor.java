@@ -163,7 +163,28 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      */
     public void updateEdges(Taxon taxon) throws TaxonGraphException {
 
-        Reference conceptReference = conceptReference(taxon.getName().getNomenclaturalReference());
+        Reference nomenclaturalReference = taxon.getName().getNomenclaturalReference();
+
+        updateEdges(taxon, nomenclaturalReference);
+    }
+
+    /**
+     * Create all missing edges from the <code>taxon</code> to names with higher
+     * rank and edges from names with lower rank to this taxon. No longer needed
+     * relations (edges) are removed.
+     * <p>
+     * {@link #conceptReference(Reference) concept references} which are null are ignored.
+     * This means no edges are created.
+     *
+     *
+     * @param taxon
+     *            The taxon to update the edges for.
+     * @param nomenclaturalReference
+     *           The nomenclatural reference to update the edged with.
+     */
+    protected void updateEdges(Taxon taxon, Reference nomenclaturalReference) throws TaxonGraphException {
+
+        Reference conceptReference = conceptReference(nomenclaturalReference);
 
         if(conceptReference != null){
             // update edges to higher names

@@ -49,6 +49,8 @@ public class CdmHibernateListenerConfiguration {
 
         listenerRegistry.appendListeners(EventType.POST_UPDATE, taxonGraphHibernateListener);
         listenerRegistry.appendListeners(EventType.POST_INSERT, taxonGraphHibernateListener);
+        listenerRegistry.appendListeners(EventType.PRE_DELETE, taxonGraphHibernateListener);
+
         return taxonGraphHibernateListener;
     }
 

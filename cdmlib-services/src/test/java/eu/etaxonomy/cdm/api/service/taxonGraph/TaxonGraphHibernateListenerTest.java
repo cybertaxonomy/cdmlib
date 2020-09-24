@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.taxonGraph;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
@@ -21,7 +22,6 @@ import org.hibernate.internal.SessionFactoryImpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.unitils.dbunit.annotation.DataSet;
@@ -105,6 +105,7 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
                     .getService(EventListenerRegistry.class);
             listenerRegistry.appendListeners(EventType.POST_UPDATE, taxonGraphHibernateListener);
             listenerRegistry.appendListeners(EventType.POST_INSERT, taxonGraphHibernateListener);
+            listenerRegistry.appendListeners(EventType.PRE_DELETE, taxonGraphHibernateListener);
             TaxonGraphHibernateListenerTest.isRegistered = true;
         }
         //
@@ -313,8 +314,6 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
      */
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
-    @Ignore //AM: set to ignore because swapping a source is generally not allowed due to orphanRemoval and therefore this test does not make sense
-    //Update: I use clone now for the sources so we now get "only" an assertion error
     public void testSwapNomenclaturalSource() throws TaxonGraphException{
         try {
             setUuidPref();
@@ -323,11 +322,24 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
             TaxonName n_trachelomonas_s  = nameDao.load(uuid_n_trachelomonas_s);
             NomenclaturalSource nomSource_ta = n_trachelomonas_a.getNomenclaturalSource();
             NomenclaturalSource nomSource_ts = n_trachelomonas_s.getNomenclaturalSource();
-            n_trachelomonas_a.setNomenclaturalSource(nomSource_ts.clone());
-            n_trachelomonas_s.setNomenclaturalSource(nomSource_ta.clone());
+            NomenclaturalSource nomSource_ts_clone = nomSource_ts.clone();
+            NomenclaturalSource nomSource_ta_clone = nomSource_ta.clone();
+            assertEquals("cloning must not alter the citation", nomSource_ta.getCitation(), nomSource_ta_clone.getCitation());
+            assertEquals("cloning must not alter the citation", nomSource_ts.getCitation(), nomSource_ts_clone.getCitation());
+            n_trachelomonas_a.setNomenclaturalSource(nomSource_ts_clone);
+            n_trachelomonas_s.setNomenclaturalSource(nomSource_ta_clone);
+            assertEquals("nomref should be set to the cloned one", nomSource_ts_clone.getCitation().getUuid(), n_trachelomonas_a.getNomenclaturalReference().getUuid());
+            assertEquals("nomref should be set to the cloned one", nomSource_ta_clone.getCitation().getUuid(), n_trachelomonas_s.getNomenclaturalReference().getUuid());
+            assertEquals("nomref was not swapped as expected", n_trachelomonas_a.getNomenclaturalReference(), nomSource_ts.getCitation());
+            assertEquals("nomref was not swapped as expected", n_trachelomonas_s.getNomenclaturalReference(), nomSource_ta.getCitation());
             // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
             commitAndStartNewTransaction();
-            // printDataSet(System.err,"TaxonRelationship");
+            //printDataSet(System.err,"TaxonRelationship");
+
+            n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
+            n_trachelomonas_s = nameDao.load(uuid_n_trachelomonas_s);
+            assertEquals(nomSource_ts_clone.getCitation().getUuid(), n_trachelomonas_a.getNomenclaturalReference().getUuid());
+            assertEquals(nomSource_ta_clone.getCitation().getUuid(), n_trachelomonas_s.getNomenclaturalReference().getUuid());
 
             List<TaxonGraphEdgeDTO> edgesFrom_ta = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a),
                     nameDao.load(uuid_n_trachelomonas), true);
@@ -338,40 +350,6 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
                     nameDao.load(uuid_n_trachelomonas), true);
             Assert.assertEquals(1, edgesFrom_ts.size());
             Assert.assertEquals(nomSource_ta.getCitation().getUuid(), edgesFrom_ts.get(0).getCitationUuid());
-        } finally {
-            rollback();
-        }
-    }
-
-    /**
-     * Same as {@link #testSwapNomenclaturalSource()} swapping the nomenclaturalSource from name A and name B,
-     * the nomenclaturalSource of name B, however will be set null,
-     * This should raise TaxonGraphException
-     */
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
-    @Ignore  //TODO preliminary set to ignore
-    public void testSwapNomenclaturalSourceIncomplete() {
-        try {
-            setUuidPref();
-
-            TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
-            TaxonName n_trachelomonas_s  = nameDao.load(uuid_n_trachelomonas_s);
-            NomenclaturalSource nomSource_ta = n_trachelomonas_a.getNomenclaturalSource();
-            NomenclaturalSource nomSource_ts = n_trachelomonas_s.getNomenclaturalSource();
-            n_trachelomonas_a.setNomenclaturalSource(nomSource_ts);
-            n_trachelomonas_s.setNomenclaturalSource(null);
-            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
-            Throwable expectedException = null;
-            try {
-                commitAndStartNewTransaction();
-            } catch (Exception e) {
-                expectedException = e;
-                while(expectedException != null && !(expectedException instanceof TaxonGraphException) ) {
-                    expectedException = expectedException.getCause();
-                }
-            }
-            assertNotNull(expectedException);
         } finally {
             rollback();
         }
@@ -402,6 +380,59 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
                     nameDao.load(uuid_n_trachelomonas), true);
             Assert.assertEquals(1, edges.size());
             Assert.assertEquals(refX.getUuid(), edges.get(0).getCitationUuid());
+        } finally {
+            rollback();
+        }
+    }
+
+
+    /**
+     * exactly the same as {@link #testRemoveNomenclaturalSource()}
+     * but removing the citation of the source indirectly via setNomenclaturalReference()
+     */
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testRemoveNomRef() throws TaxonGraphException{
+        try {
+            setUuidPref();
+
+            // printDataSet(System.err,"TaxonRelationship");
+            TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
+            n_trachelomonas_a.setNomenclaturalReference(null);
+            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            commitAndStartNewTransaction();
+
+            // printDataSet(System.err,"TaxonRelationship");
+
+            List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a),
+                    nameDao.load(uuid_n_trachelomonas), true);
+            Assert.assertEquals(0, edges.size());
+        } finally {
+            rollback();
+        }
+    }
+
+    /**
+     * exactly the same as {@link #testRemoveNomRef()}
+     * but removing the citation of the source directly
+     */
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonGraphTest.xml")
+    public void testRemoveNomenclaturalSource() throws TaxonGraphException{
+        try {
+            setUuidPref();
+
+            // printDataSet(System.err,"TaxonRelationship");
+            TaxonName n_trachelomonas_a = nameDao.load(uuid_n_trachelomonas_a);
+            n_trachelomonas_a.getNomenclaturalSource().setCitation(null);
+            // !!!! >>>> nameDao.saveOrUpdate(n_trachelomonas_a); <<<< no save or update here, testing with pure session flush!!! This must never be changed
+            commitAndStartNewTransaction();
+
+            // printDataSet(System.err,"TaxonRelationship");
+
+            List<TaxonGraphEdgeDTO> edges = taxonGraphDao.edges(nameDao.load(uuid_n_trachelomonas_a),
+                    nameDao.load(uuid_n_trachelomonas), true);
+            Assert.assertEquals(0, edges.size());
         } finally {
             rollback();
         }

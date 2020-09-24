@@ -13,6 +13,8 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
+import org.hibernate.event.spi.PreDeleteEvent;
+import org.hibernate.event.spi.PreDeleteEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 
 /**
@@ -23,7 +25,7 @@ import org.hibernate.persister.entity.EntityPersister;
  * @since Oct 10, 2018
  *
  */
-public interface ITaxonGraphHibernateListener extends PostInsertEventListener, PostUpdateEventListener {
+public interface ITaxonGraphHibernateListener extends PostInsertEventListener, PostUpdateEventListener, PreDeleteEventListener {
 
     @Override
     boolean requiresPostCommitHanding(EntityPersister persister);
@@ -33,6 +35,9 @@ public interface ITaxonGraphHibernateListener extends PostInsertEventListener, P
 
     @Override
     void onPostUpdate(PostUpdateEvent event);
+
+    @Override
+    public boolean onPreDelete(PreDeleteEvent event);
 
     void registerProcessClass(Class<? extends BeforeTransactionCompletionProcess> processClass, Object[] constructorArgs, Class<?>[] paramterTypes) throws NoSuchMethodException, SecurityException;
 
