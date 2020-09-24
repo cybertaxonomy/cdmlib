@@ -53,7 +53,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = CdmVersion.V_05_18_02.versionString;
+	private static final String dbSchemaVersion = CdmVersion.V_05_18_03.versionString;
 
 	public enum CdmVersion {
 	    V_05_12_00("5.12.0.0.20191202"),
@@ -62,7 +62,8 @@ public class CdmMetaData extends CdmBase{
 	    V_05_15_02("5.15.2.0.20200611"),
 	    V_05_18_00("5.18.0.0.20200902"),
         V_05_18_01("5.18.1.0.20200914"),
-        V_05_18_02("5.18.2.0.20200921")
+        V_05_18_02("5.18.2.0.20200921"),
+        V_05_18_03("5.18.3.0.20200924")
         ;
         private String versionString;
 	    private CdmVersion(String versionString){
@@ -81,7 +82,7 @@ public class CdmMetaData extends CdmBase{
     @Column(name="propertyName", length=20)
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName")}
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName")}
     )
 	private CdmMetaDataPropertyName propertyName;
 	private String value;

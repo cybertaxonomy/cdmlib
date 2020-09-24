@@ -74,15 +74,15 @@ public class RecommendedMeasurementUnitAdder  extends SchemaUpdaterStepBase {
         Integer idUnit = (Integer)datasource.getSingleValue(sql);
 
         sql = "SELECT count(*) "
-                + "FROM @@DefinedTermBase_StatisticalMeasure@@ "
-                + " WHERE Feature_id = "+idFeature+" AND recommendedStatisticalMeasures_id = " + idUnit;
+                + "FROM @@DefinedTermBase_MeasurementUnit@@ "
+                + " WHERE Feature_id = "+idFeature+" AND recommendedMeasurementUnits_id = " + idUnit;
         Long count = (Long)datasource.getSingleValue(caseType.replaceTableNames(sql));
         if (count > 0){
             return;
         }
 
         //insert records
-        sql = "INSERT INTO @@DefinedTermBase_StatisticalMeasure@@ (Feature_id, recommendedStatisticalMeasures_id)"
+        sql = "INSERT INTO @@DefinedTermBase_MeasurementUnit@@ (Feature_id, recommendedMeasurementUnits_id)"
            + " VALUES (" + idFeature + "," + idUnit + ")";
         datasource.executeUpdate(caseType.replaceTableNames(sql));
 
@@ -99,7 +99,7 @@ public class RecommendedMeasurementUnitAdder  extends SchemaUpdaterStepBase {
                 includeAudit = false;
                 return;
             }
-            sql = "INSERT INTO @@DefinedTermBase_StatisticalMeasure_AUD@@ (REV, Feature_id, recommendedStatisticalMeasures_id, REVTYPE)"
+            sql = "INSERT INTO @@DefinedTermBase_MeasurementUnit_AUD@@ (REV, Feature_id, recommendedMeasurementUnits_id, REVTYPE)"
                     + " VALUES ("+rev+"," + idFeature + "," + idUnit + ","+0+")";
             datasource.executeUpdate(caseType.replaceTableNames(sql));
         }
