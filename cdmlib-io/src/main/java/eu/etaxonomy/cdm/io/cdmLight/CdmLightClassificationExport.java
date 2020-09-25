@@ -1233,6 +1233,7 @@ public class CdmLightClassificationExport
         for (NameRelationship rel : rels) {
             NameRelationshipType type = rel.getType();
             TaxonName name2 = rel.getToName();
+            name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
             if (!state.getNameStore().containsKey(name2.getId())) {
                 handleName(state, name2);
             }
@@ -1243,6 +1244,20 @@ public class CdmLightClassificationExport
             state.getProcessor().put(table, name, csvLine);
         }
 
+        rels = name.getRelationsToThisName();
+
+        csvLine = new String[table.getSize()];
+
+        for (NameRelationship rel : rels) {
+            NameRelationshipType type = rel.getType();
+            TaxonName name2 = rel.getFromName();
+            name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
+            if (!state.getNameStore().containsKey(name2.getId())) {
+                handleName(state, name2);
+            }
+
+
+        }
     }
 
     private String createCollatation(TaxonName name) {
