@@ -395,6 +395,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit) {
 
+        load(fieldUnit.getUuid()); // reload since this is also called from a web service controller
+
         if (!getSession().contains(fieldUnit)) {
             fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
         }
@@ -536,6 +538,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (!getSession().contains(derivedUnit)) {
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
+        derivedUnit = (DerivedUnit) load(derivedUnit.getUuid(), Arrays.asList(
+                "$",
+                "specimenTypeDesignations.source",
+                "specimenTypeDesignations.typeSpecimen.media.title",
+                "specimenTypeDesignations.typeSpecimen.derivedFrom.originals.derivationEvents.derivatives.derivationEvents.derivatives.mediaSpecimen"
+                )
+        );
         PreservedSpecimenDTO preservedSpecimenDTO = new PreservedSpecimenDTO(derivedUnit);
 
         //specimen identifier

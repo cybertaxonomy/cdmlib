@@ -387,6 +387,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
                 for (DescriptionElementBase element : specimenDesc.getElements()){
                     if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
                         for (Media media :element.getMedia()){
+                            media.getAllTitles(); // initialize all titles!!!
                             for (MediaRepresentation rep :media.getRepresentations()){
                                 for(MediaRepresentationPart p : rep.getParts()){
                                     if(p.getUri() != null){
