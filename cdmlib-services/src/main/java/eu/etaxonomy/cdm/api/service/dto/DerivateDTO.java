@@ -63,7 +63,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
     private String preservationMethod;
     private Set<DerivateDTO> derivates;
 
-    private Set<SpecimenTypeDesignation> specimenTypeDesignations;
+    private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
     private DerivationEventDTO derivationEvent;
 
@@ -153,7 +153,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
         this.preservationMethod = preservationMethod;
     }
 
-    public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
+    public Set<SpecimenTypeDesignationDTO> getSpecimenTypeDesignations() {
         return specimenTypeDesignations;
     }
 
@@ -161,7 +161,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
         this.specimenTypeDesignations = new HashSet<>();
         for (SpecimenTypeDesignation typeDes: specimenTypeDesignations){
             if (typeDes != null){
-                this.specimenTypeDesignations.add(typeDes);
+                this.specimenTypeDesignations.add(new SpecimenTypeDesignationDTO(typeDes, null));
             }
         }
 
