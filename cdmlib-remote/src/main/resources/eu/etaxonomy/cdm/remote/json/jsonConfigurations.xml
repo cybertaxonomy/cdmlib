@@ -185,6 +185,9 @@
          <entry key="org.apache.lucene.document.Document">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
          </entry>
+         <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
+        </entry>
       </map>
     </property>
     <property name="jsonPropertyFilter">
@@ -479,6 +482,9 @@
         </entry>
         <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
         </entry>
       </map>
     </property>

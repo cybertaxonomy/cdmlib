@@ -12,6 +12,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+
 /**
  * @author a.kohlbecker
  * @since Jun 12, 2017
@@ -35,6 +38,20 @@ public class TypedEntityReference<T> extends EntityReference {
     public TypedEntityReference(Class<T> type, UUID uuid) {
         super(uuid, null);
         this.type = type;
+    }
+
+    public static <T> TypedEntityReference<T> fromCdmBase(CdmBase entity) {
+        if(entity == null) {
+            return null;
+        }
+        return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
+    }
+
+    public static <T> TypedEntityReference<T> fromIdentifiableEntity(IdentifiableEntity<?> entity) {
+        if(entity == null) {
+            return null;
+        }
+        return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
     }
 
     public Class<T> getType() {

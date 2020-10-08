@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
@@ -27,9 +29,11 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
     private static final long serialVersionUID = -2397286652498492934L;
 
     private List<EntityReference> names;
-    private DerivateDTO typeSpecimen;
+    private TypedEntityReference<DerivedUnit> typeSpecimen;
     private String typeStatus;
     private String typeStatus_L10n;
+    private SourceDTO source;
+    private List<RegistrationDTO> registrations;
 
     /**
      *
@@ -37,7 +41,7 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
      * @param typeSpecimenDTO
      *      Can be null
      */
-    public SpecimenTypeDesignationDTO(SpecimenTypeDesignation typeDesignation, DerivateDTO typeSpecimenDTO)  {
+    public SpecimenTypeDesignationDTO(SpecimenTypeDesignation typeDesignation)  {
 
         super(SpecimenTypeDesignation.class, typeDesignation.getUuid());
 
@@ -51,7 +55,9 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
         for (TaxonName name:typeDesignation.getTypifiedNames()){
             names.add(new EntityReference(name.getUuid(), name.getTitleCache()));
         }
-        this.typeSpecimen = typeSpecimenDTO;
+        this.setSource(SourceDTO.fromDescriptionElementSource(typeDesignation.getSource()));
+        this.typeSpecimen = TypedEntityReference.fromIdentifiableEntity(typeDesignation.getTypeSpecimen());
+        setRegistrations(typeDesignation.getRegistrations().stream().map(reg -> new RegistrationDTO(reg)).collect(Collectors.toList()));
 
     }
 
@@ -63,11 +69,11 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
         this.names = names;
     }
 
-    public DerivateDTO getTypeSpecimen() {
+    public TypedEntityReference<DerivedUnit> getTypeSpecimen() {
         return typeSpecimen;
     }
 
-    public void setTypeSpecimen(DerivateDTO typeSpecimen) {
+    public void setTypeSpecimen(TypedEntityReference<DerivedUnit> typeSpecimen) {
         this.typeSpecimen = typeSpecimen;
     }
 
@@ -94,6 +100,22 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
 
     public String getTypeStatus_L10n() {
         return typeStatus_L10n;
+    }
+
+    public SourceDTO getSource() {
+        return source;
+    }
+
+    public void setSource(SourceDTO source) {
+        this.source = source;
+    }
+
+    public List<RegistrationDTO> getRegistrations() {
+        return registrations;
+    }
+
+    public void setRegistrations(List<RegistrationDTO> registrations) {
+        this.registrations = registrations;
     }
 
 

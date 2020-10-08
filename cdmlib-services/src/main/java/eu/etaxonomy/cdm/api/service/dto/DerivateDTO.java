@@ -78,6 +78,9 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
      * @return
      */
     public static DerivateDTO newInstance(SpecimenOrObservationBase sob){
+        if(sob == null) {
+            return null;
+        }
         DerivateDTO derivateDto;
         if (sob.isInstanceOf(FieldUnit.class)){
             derivateDto = new FieldUnitDTO(HibernateProxyHelper.deproxy(sob, FieldUnit.class));
@@ -161,7 +164,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
         this.specimenTypeDesignations = new HashSet<>();
         for (SpecimenTypeDesignation typeDes: specimenTypeDesignations){
             if (typeDes != null){
-                this.specimenTypeDesignations.add(new SpecimenTypeDesignationDTO(typeDes, null));
+                this.specimenTypeDesignations.add(new SpecimenTypeDesignationDTO(typeDes));
             }
         }
 

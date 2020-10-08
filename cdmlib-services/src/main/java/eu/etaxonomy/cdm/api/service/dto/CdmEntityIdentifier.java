@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.io.Serializable;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
+ * TODO replace by {@link TypedEntityReference} ?
  * @author cmathew
  * @since 24 Jun 2015
  */
