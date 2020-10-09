@@ -26,10 +26,7 @@ public class RegistrationDtoBeanProcessor extends AbstractBeanProcessor<Registra
         return Arrays.asList(
                 "blockedBy",
                 "blocked",
-                "orderdTypeDesignationWorkingSets",
-                "submitterUserName",
-                "specificIdentifier",
-                "typifiedName"
+                "submitterUserName"
                 );
     }
 
