@@ -97,7 +97,7 @@ public class TermNode <T extends DefinedTermBase>
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class)
-//	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<TermNode<T>> children = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
