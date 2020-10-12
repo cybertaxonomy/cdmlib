@@ -96,7 +96,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         TermNode<Feature> newNode = node2.addChild(feature);
 		featureNodeService.saveOrUpdate(node2);
 
-		commitAndStartNewTransaction(new String[]{"FeatureNode"});
+		commitAndStartNewTransaction();
 		newNode = featureNodeService.load(newNode.getUuid());
 		Assert.assertEquals("", oldTreeIndex + newNode.getId() + sep, newNode.treeIndex());
 	}
