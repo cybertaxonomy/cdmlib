@@ -122,7 +122,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = featureNodeService.load(node2Uuid);
 		featureTree2.getRoot().addChild(node2);
 		featureNodeService.saveOrUpdate(node2);
-		commitAndStartNewTransaction(new String[]{"FeatureNode"});
+		commitAndStartNewTransaction();
 		node2 = featureNodeService.load(node2Uuid);
 		Assert.assertEquals("Node2 treeindex is not correct", "#t5002#7#2#", node2.treeIndex());
 		node6 = featureNodeService.load(node6Uuid);
@@ -133,7 +133,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		TermNode<Feature> node5 = featureNodeService.load(node5Uuid);
 		node5.addChild(node3);
 		featureNodeService.saveOrUpdate(node5);
-		commitAndStartNewTransaction(new String[]{"FeatureNode"});
+		commitAndStartNewTransaction();
 		node3 = featureNodeService.load(node3Uuid);
 		Assert.assertEquals("Node3 treeindex is not correct", "#t5002#7#2#5#3#", node3.treeIndex());
 
@@ -150,7 +150,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		config.setDeleteElement(false);
         config.setChildHandling(ChildHandling.MOVE_TO_PARENT);
         DeleteResult result = featureNodeService.deleteFeatureNode(node2Uuid, config);
-        commitAndStartNewTransaction(new String[]{"TaxonNode"});
+        commitAndStartNewTransaction(new String[]{"FeatureNode"});
         TermTree<Feature> tree1 = featureTreeService.load(featureTreeUuid);
         assertNotNull(tree1);
         node2 = featureNodeService.load(node2Uuid);
@@ -162,7 +162,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		config.setDeleteElement(false);
 		config.setChildHandling(ChildHandling.DELETE);
 		result = featureNodeService.deleteFeatureNode(node4Uuid, config);
-		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		commitAndStartNewTransaction(new String[]{"FeatureNode"});
 		tree1 = featureTreeService.load(featureTreeUuid);
 		node4 = featureNodeService.load(node4Uuid);
         assertNull(node4);
