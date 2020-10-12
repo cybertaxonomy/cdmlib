@@ -133,9 +133,9 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		TermNode<Feature> node5 = featureNodeService.load(node5Uuid);
 		node5.addChild(node3);
 		featureNodeService.saveOrUpdate(node5);
-		commitAndStartNewTransaction();
+		commitAndStartNewTransaction(new String[]{"FeatureNode"});
 		node3 = featureNodeService.load(node3Uuid);
-		Assert.assertEquals("Node3 treeindex is not correct", "#t5002#7#2#5#3#", node3.treeIndex());
+		Assert.assertEquals("Node3 treeindex is not correct", node5.treeIndex() + sep + node3.getId(), node3.treeIndex());
 
 	}
 
