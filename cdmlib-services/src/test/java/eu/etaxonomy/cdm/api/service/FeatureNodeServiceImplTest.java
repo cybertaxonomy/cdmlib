@@ -122,7 +122,7 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = featureNodeService.load(node2Uuid);
 		featureTree2.getRoot().addChild(node2);
 		featureNodeService.saveOrUpdate(node2);
-		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		commitAndStartNewTransaction(new String[]{"FeatureNode"});
 		node2 = featureNodeService.load(node2Uuid);
 		Assert.assertEquals("Node2 treeindex is not correct", "#t5002#7#2#", node2.treeIndex());
 		node6 = featureNodeService.load(node6Uuid);
