@@ -26,17 +26,20 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
 
     private static final long serialVersionUID = -7160319884811828125L;
 
-    private final UUID uuid;
+    private UUID uuid;
     private URI uri;
     private TermType termType;
     private final Set<Representation> representations;
     private String representation_L10n = null;
     private String representation_L10n_abbreviatedLabel = null;
     private String representation_L10n_text = null;
+    private String titleCache;
 
-    public AbstractTermDto(UUID uuid, Set<Representation> representations) {
-        this.representations = representations;
+    public AbstractTermDto(UUID uuid, Set<Representation> representations, String titleCache) {
         this.uuid = uuid;
+        this.titleCache = titleCache;
+        this.representations = representations;
+
     }
 
     /**
@@ -104,12 +107,23 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     }
 
 
+
     public UUID getUuid() {
         return uuid;
     }
 
     public Set<Representation> getRepresentations() {
         return representations;
+    }
+
+
+    public String getTitleCache() {
+        return titleCache;
+    }
+
+
+    public void setTitleCache(String titleCache) {
+        this.titleCache = titleCache;
     }
 
     @Override

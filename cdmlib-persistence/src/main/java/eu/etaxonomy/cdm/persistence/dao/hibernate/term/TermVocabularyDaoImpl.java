@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -365,11 +363,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 //        Query query1 =  getSession().createQuery(queryVocWithFittingTerms);
 //        List<Object[]> result1 = query1.list();
 
-        String queryString = ""
-                + "SELECT v.uuid, v.termType, r "
-                + "FROM TermCollection v LEFT JOIN v.representations AS r "
-                + "LEFT JOIN v.representations AS r "
-                + "WHERE v.uuid in "
+        String queryString = TermCollectionDto.getTermCollectionDtoSelect()
+                + " WHERE v.uuid in "
                 + " (" + queryVocWithFittingTerms + ")";
 
 
@@ -381,24 +376,10 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
-        for (Object[] elements : result) {
-            UUID uuid = (UUID)elements[0];
-            TermType termType = (TermType)elements[1];
-            if(dtoMap.containsKey(uuid)){
-                dtoMap.get(uuid).addRepresentation((Representation)elements[2]);
-            } else {
-                Set<Representation> representations = new HashSet<>();
-                if(elements[2] instanceof Representation) {
-                    representations = new HashSet<Representation>();
-                    representations.add((Representation)elements[2]);
-                } else {
-                    representations = (Set<Representation>)elements[2];
-                }
-                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType));
-            }
-        }
-        return new ArrayList<>(dtoMap.values());
+//        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
+        List<TermVocabularyDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+
+        return dtos;
     }
 
 
@@ -418,20 +399,16 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
                 }
             }
         }
-        String queryString = ""
-                + "select v.uuid, v.termType, r "
-                + "from TermVocabulary as v LEFT JOIN v.representations AS r "
-
-                ;
+        String queryString = TermVocabularyDto.getTermCollectionDtoSelect();
 
         if (!termTypeWithSubType.isEmpty()){
-            queryString += "where v.termType in (:termTypes) ";
+            queryString += " where a.termType in (:termTypes) ";
             if (pattern != null){
-                queryString += "AND v.titleCache like :pattern";
+                queryString += " AND a.titleCache like :pattern";
             }
         }else{
             if (pattern != null){
-                queryString += "WHERE v.titleCache like :pattern";
+                queryString += " WHERE a.titleCache like :pattern";
             }
         }
 
@@ -446,25 +423,27 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         }
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
+        List<TermVocabularyDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
+        return dtos;
 
-        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
-        for (Object[] elements : result) {
-            UUID uuid = (UUID)elements[0];
-            TermType termType = (TermType)elements[1];
-            if(dtoMap.containsKey(uuid)){
-                dtoMap.get(uuid).addRepresentation((Representation)elements[2]);
-            } else {
-                Set<Representation> representations = new HashSet<>();
-                if(elements[2] instanceof Representation) {
-                    representations = new HashSet<Representation>();
-                    representations.add((Representation)elements[2]);
-                } else {
-                    representations = (Set<Representation>)elements[2];
-                }
-                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType));
-            }
-        }
-        return new ArrayList<>(dtoMap.values());
+//        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
+//        for (Object[] elements : result) {
+//            UUID uuid = (UUID)elements[0];
+//            TermType termType = (TermType)elements[1];
+//            if(dtoMap.containsKey(uuid)){
+//                dtoMap.get(uuid).addRepresentation((Representation)elements[2]);
+//            } else {
+//                Set<Representation> representations = new HashSet<>();
+//                if(elements[2] instanceof Representation) {
+//                    representations = new HashSet<Representation>();
+//                    representations.add((Representation)elements[2]);
+//                } else {
+//                    representations = (Set<Representation>)elements[2];
+//                }
+//                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType, (String)elements[3]));
+//            }
+//        }
+//        return new ArrayList<>(dtoMap.values());
     }
 
     @Override
@@ -509,8 +488,8 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
             return null;
         }
 
-        String queryString = TermCollectionDto.getTermDtoSelect()
-                + "where a.uuid like :uuid ";
+        String queryString = TermCollectionDto.getTermCollectionDtoSelect()
+                + " where a.uuid like :uuid ";
 //                + "order by a.titleCache";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("uuid", vocUuid);
@@ -532,7 +511,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         List<TermVocabularyDto> list = new ArrayList<>();
 
 
-        String queryString = TermCollectionDto.getTermDtoSelect()
+        String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + "where a.uuid in :uuidList ";
 //                + "order by a.titleCache";
         Query query =  getSession().createQuery(queryString);

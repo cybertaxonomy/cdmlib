@@ -97,7 +97,7 @@ public class TermNode <T extends DefinedTermBase>
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<TermNode<T>> children = new ArrayList<>();
 
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
@@ -179,6 +179,7 @@ public class TermNode <T extends DefinedTermBase>
 	 */
 	@Override
     public List<TermNode<T>> getChildNodes() {
+	    removeNullValueFromChildren();
 	    return children;
 	}
 
@@ -260,7 +261,9 @@ public class TermNode <T extends DefinedTermBase>
 	    children.add(index, child);
 	    //TODO workaround (see sortIndex doc)
 	    for(int i = 0; i < children.size(); i++){
-	        children.get(i).setSortIndex(i);
+	        if (children.get(i) != null){
+	            children.get(i).setSortIndex(i);
+	        }
 	    }
 	    child.setSortIndex(index);
 	    return child;
@@ -341,7 +344,9 @@ public class TermNode <T extends DefinedTermBase>
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
 				TermNode<T> childAt = children.get(i);
-				childAt.setSortIndex(i);
+				if (childAt != null){
+				    childAt.setSortIndex(i);
+				}
 			}
 			child.setSortIndex(null);
 		}
@@ -690,7 +695,7 @@ public class TermNode <T extends DefinedTermBase>
 		}
 	}
 
-	private void updateSortIndex(){
+	void updateSortIndex(){
 	 // TODO workaround (see sortIndex doc)
         for (int i = 0; i < children.size(); i++) {
             children.get(i).setSortIndex(i);
@@ -699,6 +704,7 @@ public class TermNode <T extends DefinedTermBase>
 
 	public void removeNullValueFromChildren(){
 	    HHH_9751_Util.removeAllNull(children);
-	    updateSortIndex();
+        updateSortIndex();
+
 	}
 }

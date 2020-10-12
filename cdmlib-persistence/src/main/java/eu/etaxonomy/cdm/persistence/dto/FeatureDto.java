@@ -37,9 +37,9 @@ public class FeatureDto extends TermDto {
     boolean isAvailableForOccurrence = true;
 
     public FeatureDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations, boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence){
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations, boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache){
         super(uuid, representations, TermType.Feature, partOfUuid, kindOfUuid,
-                vocabularyUuid, orderIndex, idInVocabulary, vocRepresentations);
+                vocabularyUuid, orderIndex, idInVocabulary, vocRepresentations, titleCache);
         this.isAvailableForOccurrence = isAvailableForOccurrence;
         this.isAvailableForTaxon = isAvailableForTaxon;
         this.isAvailableForTaxonName = isAvailableForTaxonName;
@@ -115,9 +115,10 @@ public class FeatureDto extends TermDto {
                 + "a.termType,  "
                 + "a.uri,  "
                 + "m,  "
-                + "a.availableFor ";
+                + "a.availableFor, "
+                + "a.titleCache ";
 
-        String sqlFromString =   "from "+fromTable+" as a ";
+        String sqlFromString =   " from "+fromTable+" as a ";
 
         String sqlJoinString =  "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
@@ -197,7 +198,8 @@ public class FeatureDto extends TermDto {
                         vocRepresentations,
                         isAvailableForTaxon,
                         isAvailableForTaxonName,
-                        isAvailableForOccurrence)
+                        isAvailableForOccurrence,
+                        (String)elements[12])
                         ;
                 termDto.setUri((URI)elements[9]);
                 termDto.setMedia(mediaUuids);

@@ -27,10 +27,17 @@ public class TermCollectionDto extends AbstractTermDto {
 
     private Set<TermDto> terms;
 
-    public TermCollectionDto(UUID uuid, Set<Representation> representations, TermType termType) {
-        super(uuid, representations);
+    private boolean isAllowDuplicate;
+    private boolean isOrderRelevant;
+    private boolean isFlat;
+
+    public TermCollectionDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
+        super(uuid, representations, titleCache);
         terms = new HashSet<>();
         setTermType(termType);
+        this.isAllowDuplicate = isAllowDuplicate;
+        this.isOrderRelevant = isOrderRelevant;
+        this.isFlat = isFlat;
     }
 
     public Set<TermDto> getTerms() {
@@ -44,15 +51,61 @@ public class TermCollectionDto extends AbstractTermDto {
         terms.add(term);
     }
 
-    public static String getTermDtoSelect(){
-        return getTermDtoSelect("TermVocabulary");
+    /**
+     * @return the isAllowDuplicate
+     */
+    public boolean isAllowDuplicate() {
+        return isAllowDuplicate;
     }
 
-    public static String getTermDtoSelect(String fromTable){
+    /**
+     * @param isAllowDuplicate the isAllowDuplicate to set
+     */
+    public void setAllowDuplicate(boolean isAllowDuplicate) {
+        this.isAllowDuplicate = isAllowDuplicate;
+    }
+
+    /**
+     * @return the isOrderRelevant
+     */
+    public boolean isOrderRelevant() {
+        return isOrderRelevant;
+    }
+
+    /**
+     * @param isOrderRelevant the isOrderRelevant to set
+     */
+    public void setOrderRelevant(boolean isOrderRelevant) {
+        this.isOrderRelevant = isOrderRelevant;
+    }
+
+    /**
+     * @return the isFlat
+     */
+    public boolean isFlat() {
+        return isFlat;
+    }
+
+    /**
+     * @param isFlat the isFlat to set
+     */
+    public void setFlat(boolean isFlat) {
+        this.isFlat = isFlat;
+    }
+
+    public static String getTermCollectionDtoSelect(){
+        return getTermCollectionDtoSelect("TermVocabulary");
+    }
+
+    public static String getTermCollectionDtoSelect(String fromTable){
         return ""
                 + "select a.uuid, "
                 + "r, "
-                + "a.termType "
+                + "a.termType,"
+                + "a.titleCache,"
+                + "a.allowDuplicates,"
+                + "a.orderRelevant,"
+                + "a.isFlat "
 
                 + "FROM "+fromTable+" as a "
                 + "LEFT JOIN a.representations AS r ";

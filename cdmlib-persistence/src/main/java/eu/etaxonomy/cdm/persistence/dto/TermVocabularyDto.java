@@ -31,8 +31,8 @@ public class TermVocabularyDto extends TermCollectionDto {
      * @param representations
      * @param termType
      */
-    public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType) {
-        super(uuid, representations, termType);
+    public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
+        super(uuid, representations, termType, titleCache, isAllowDuplicate, isOrderRelevant, isFlat);
         // TODO Auto-generated constructor stub
     }
 
@@ -60,7 +60,11 @@ public class TermVocabularyDto extends TermCollectionDto {
                 TermVocabularyDto termVocDto = new TermVocabularyDto(
                         uuid,
                         representations,
-                        (TermType)elements[2]);
+                        (TermType)elements[2],
+                        (String)elements[3],
+                        (boolean)elements[4],
+                        (boolean)elements[5],
+                        (boolean)elements[6]);
 
 
                 dtoMap.put(uuid, termVocDto);

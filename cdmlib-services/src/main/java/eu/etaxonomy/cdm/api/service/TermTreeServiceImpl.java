@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
+import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -170,6 +171,11 @@ public class TermTreeServiceImpl
            filterRestrictions = Arrays.asList(new Restriction<>("termType", null, termTypes.toArray()));
         }
         return filterRestrictions;
+    }
+
+    @Override
+    public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType) {
+        return dao.listTermTreeDtosByTermType(termType);
     }
 
 

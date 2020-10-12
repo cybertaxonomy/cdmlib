@@ -32,6 +32,7 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	private Integer id;
 	private String titleCache;
 	private String abbrevTitleCache;
+	private boolean isProtectedTitleCache = true;
 
 
     private boolean isOrphaned;
@@ -109,6 +110,12 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 
 //************************** toString **********************************/
 
+    public boolean isProtectedTitleCache() {
+        return isProtectedTitleCache;
+    }
+    public void setProtectedTitleCache(boolean isProtectedTitleCache) {
+        this.isProtectedTitleCache = isProtectedTitleCache;
+    }
     @Override
     public String toString() {
         return "UuidAndTitleCache [type= " + type + ", uuid= " + uuid + ", id=" + id + ", titleCache= " + getTitleCache()

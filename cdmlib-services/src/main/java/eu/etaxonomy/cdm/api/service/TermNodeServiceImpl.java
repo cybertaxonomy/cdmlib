@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -182,9 +184,15 @@ public class TermNodeServiceImpl
     @Override
     public UpdateResult moveNode(UUID movedNodeUuid, UUID targetNodeUuid, int position) {
         UpdateResult result = new UpdateResult();
-        TermNode movedNode = CdmBase.deproxy(load(movedNodeUuid));
-        TermNode targetNode = CdmBase.deproxy(load(targetNodeUuid));
+        List<String> propertyPaths = new ArrayList<>();
+        propertyPaths.add("parent");
+        propertyPaths.add("parent.children");
+        propertyPaths.add("children");
+        TermNode test = load(movedNodeUuid, propertyPaths);
+        TermNode movedNode = CdmBase.deproxy(load(movedNodeUuid, propertyPaths), TermNode.class);
+        TermNode targetNode = CdmBase.deproxy(load(targetNodeUuid, propertyPaths));
         TermNode parent = CdmBase.deproxy(movedNode.getParent());
+        parent.removeChild(movedNode);
         if(position < 0){
             targetNode.addChild(movedNode);
         }
@@ -205,6 +213,35 @@ public class TermNodeServiceImpl
     @Override
     public UpdateResult moveNode(UUID movedNodeUuid, UUID targetNodeUuid) {
         return moveNode(movedNodeUuid, targetNodeUuid, -1);
+    }
+
+
+    @Override
+    public UpdateResult saveTermNodeDtoList(List<TermNodeDto> dtos){
+        UpdateResult result = new UpdateResult();
+        List<UUID> uuids = new ArrayList<>();
+        dtos.stream().forEach(dto -> uuids.add(dto.getUuid()));
+        List<TermNode> nodes = dao.list(uuids, null, 0, null, null);
+        //check all attributes for changes and adapt
+        Iterator<TermNodeDto> dtoIterator = dtos.iterator();
+        for (TermNode node: nodes){
+            TermNodeDto dto = dtoIterator.next();
+            if (dto.getUuid().equals(node.getUuid())){
+//                only node changes, everything else will be handled by the operations/service methods
+                if (!dto.getInapplicableIf().equals(node.getInapplicableIf())){
+                    node.getInapplicableIf().clear();
+                    node.getInapplicableIf().addAll(dto.getInapplicableIf());
+                }
+                if (!dto.getOnlyApplicableIf().equals(node.getOnlyApplicableIf())){
+                    node.getOnlyApplicableIf().clear();
+                    node.getOnlyApplicableIf().addAll(dto.getOnlyApplicableIf());
+                }
+            }
+
+        }
+        dao.saveOrUpdateAll(nodes);
+        //saveOrUpdate all nodes
+        return result;
     }
 
 }

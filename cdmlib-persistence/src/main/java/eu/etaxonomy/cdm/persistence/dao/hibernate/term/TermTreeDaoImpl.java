@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 /**
@@ -127,6 +128,21 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
            query.setMaxResults(limit);
         }
         return getUuidAndTitleCache(query);
+    }
+
+    @Override
+    public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType) {
+        String queryString = TermTreeDto.getTermTreeDtoSelect()
+                + " WHERE a.termType = :termType"
+                + " ORDER BY a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("termType", termType);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermTreeDto> list = TermTreeDto.termTreeDtoListFrom(result);
+        return list;
     }
 
 }
