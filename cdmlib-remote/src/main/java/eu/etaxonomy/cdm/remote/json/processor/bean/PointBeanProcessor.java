@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.location.Point;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
-import eu.etaxonomy.cdm.model.location.Point;
 
 /**
  * @author a.kohlbecker
@@ -36,7 +36,7 @@ public class PointBeanProcessor extends AbstractBeanProcessor<Point> {
     @Override
     public JSONObject processBeanSecondStep(Point bean, JSONObject json,
             JsonConfig jsonConfig) {
-        json.element("sexagesimalString", bean.toSexagesimalString(false, true));
+        json.element("sexagesimalString", bean.toSexagesimalString(false, false));
         return json;
     }
 
