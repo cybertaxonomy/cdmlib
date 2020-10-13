@@ -33,7 +33,7 @@ public class TermTreeDto extends TermCollectionDto {
     TermNodeDto root;
 
     public TermTreeDto(TermTree<DefinedTermBase<DefinedTermBase>> tree){
-        super(tree.getUuid(), tree.getRepresentations(), tree.getTermType(), tree.getTitleCache(), tree.isAllowDuplicates(), tree.isOrderRelevant(), tree.isFlat() );
+        this(tree.getUuid(), tree.getRepresentations(), tree.getTermType(), tree.getRoot(), tree.getTitleCache(), tree.isAllowDuplicates(), tree.isOrderRelevant(), tree.isFlat() );
     }
 
 
@@ -49,12 +49,12 @@ public class TermTreeDto extends TermCollectionDto {
 
     public TermTreeDto(UUID uuid, Set<Representation> representations, TermType termType, TermNode root, String titleCache, boolean isAllowDuplicates, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicates, isOrderRelevant, isFlat);
-        this.root = new TermNodeDto(root);
+        this.root = new TermNodeDto(null, null, 0, this);
 
     }
 
     public TermNodeDto getRoot() {
-        return root;
+       return root;
     }
 
     public void setRoot(TermNodeDto root) {

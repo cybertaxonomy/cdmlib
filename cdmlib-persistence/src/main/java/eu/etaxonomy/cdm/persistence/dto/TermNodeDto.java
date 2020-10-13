@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
@@ -43,7 +45,8 @@ public class TermNodeDto<T extends DefinedTermBase> implements Serializable{
         if (node.getParent() != null){
             parentUuid = node.getParent().getUuid();
         }
-        tree = new TermTreeDto(node.getGraph());
+        TermTree termTree = HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class);
+        tree = new TermTreeDto(termTree);
         treeIndex = node.treeIndex();
         children = new ArrayList();
         for (TermNode<T> child: node.getChildNodes()){
@@ -66,9 +69,11 @@ public class TermNodeDto<T extends DefinedTermBase> implements Serializable{
         }
         treeIndex = null;
         term = termDto;
-        type = termDto.getTermType();
+        type = termDto!= null? termDto.getTermType(): null;
         children = new ArrayList<>();
-        parent.getChildren().add(position, this);
+        if (parent != null){
+            parent.getChildren().add(position, this);
+        }
         tree = treeDto;
     }
 
