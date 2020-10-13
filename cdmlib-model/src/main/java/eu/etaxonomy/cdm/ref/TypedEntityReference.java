@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * @since Jun 12, 2017
  *
  */
-public class TypedEntityReference<T> extends EntityReference {
+public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private static final long serialVersionUID = -4619590272174606288L;
 
@@ -40,18 +40,15 @@ public class TypedEntityReference<T> extends EntityReference {
         this.type = type;
     }
 
-    public static <T> TypedEntityReference<T> fromCdmBase(CdmBase entity) {
+    public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
         if(entity == null) {
             return null;
         }
-        return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
-    }
-
-    public static <T> TypedEntityReference<T> fromIdentifiableEntity(IdentifiableEntity<?> entity) {
-        if(entity == null) {
-            return null;
+        if(IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
+            return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid(), ((IdentifiableEntity)entity).getTitleCache());
+        } else {
+            return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
         }
-        return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
     }
 
     public Class<T> getType() {
