@@ -305,28 +305,22 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
 
     /**
      * @return the collection
+     *
+     * @deprecated TODO remove as it only duplicates the information contained in the collectionDTO
      */
-    public String getCollection() {
+    @Deprecated
+    public String getCollectionCode() {
         if (collection != null){
             return collection.getCode();
         } else {
             return null;
         }
     }
-    /**
-     * @param collection the collection to set
-     */
-    public void setCollection(String herbarium) {
-        if (collection == null){
-            collection = new CollectionDTO(herbarium, null, null, null);
-        }else{
-            this.collection.setCode(herbarium);
-        }
-    }
+
     /**
      * @return the collection
      */
-    public CollectionDTO getCollectionDTO() {
+    public CollectionDTO getCollection() {
         return collection;
     }
     /**

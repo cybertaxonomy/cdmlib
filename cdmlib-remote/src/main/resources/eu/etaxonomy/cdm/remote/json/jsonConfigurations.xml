@@ -153,6 +153,9 @@
          <entry key="eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDtoBeanProcessor" />
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.location.Point">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.PointBeanProcessor"/>
+        </entry>
          <entry key="eu.etaxonomy.cdm.model.reference.Reference">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
          </entry>

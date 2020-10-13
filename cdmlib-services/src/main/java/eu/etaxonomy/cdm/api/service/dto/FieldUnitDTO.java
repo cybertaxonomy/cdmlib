@@ -18,7 +18,7 @@ public class FieldUnitDTO extends DerivateDTO {
 	private String country;
 	private String collectingString;
 	private String date;
-	private String collectionString;
+	private String collectionsStatistics;
 
 	private boolean hasType;
 
@@ -40,13 +40,12 @@ public class FieldUnitDTO extends DerivateDTO {
         this.country = country;
     }
 
-    @Override
-    public String getCollection() {
-        return collectionString;
+    public String getCollectionStatistics() {
+        return collectionsStatistics;
     }
-    @Override
-    public void setCollection(String collection) {
-        this.collectionString = collection;
+
+    public void setCollectionStatistics(String collection) {
+        this.collectionsStatistics = collection;
     }
 
     public String getCollectingString() {
