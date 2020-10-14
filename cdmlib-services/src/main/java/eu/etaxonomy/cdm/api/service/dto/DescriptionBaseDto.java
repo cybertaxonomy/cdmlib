@@ -29,6 +29,8 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  */
 public class DescriptionBaseDto implements Serializable{
 
+    private static final long serialVersionUID = -1578895619195062502L;
+
     private UuidAndTitleCache<Taxon> taxonUuid;
     private DerivateDTO specimenDto;
 
@@ -43,7 +45,7 @@ public class DescriptionBaseDto implements Serializable{
             taxonUuid = new UuidAndTitleCache<>(taxon.getUuid(), taxon.getId(), taxon.getTitleCache());
         }else if (description instanceof SpecimenDescription){
             SpecimenOrObservationBase sob = ((SpecimenDescription)description).getDescribedSpecimenOrObservation();
-            specimenDto = SpecimenOrObservationDTOFactory.fromEntity((FieldUnit)sob);
+            specimenDto = SpecimenOrObservationDTOFactory.fromEntity(sob);
         }else if (description instanceof TaxonNameDescription){
             TaxonName name = ((TaxonNameDescription)description).getTaxonName();
             nameUuid = new UuidAndTitleCache<>(name.getUuid(), name.getId(), name.getTitleCache());
