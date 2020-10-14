@@ -26,9 +26,9 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -428,11 +428,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit);
 
     /**
-     * Assembles a {@link PreservedSpecimenDTO} for the given derived unit.
+     * Assembles a {@link DerivedUnitDTO} for the given derived unit.
      * @param derivedUnit
      * @return a DTO with all the assembled information
      */
-    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
+    public DerivedUnitDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
 
     /**
      * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>
@@ -681,13 +681,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             FindOccurrencesConfigurator config);
 
     /**
-     * Returns a list of {@link PreservedSpecimenDTO} for the specimens found with the
+     * Returns a list of {@link DerivedUnitDTO} for the specimens found with the
      * given configurator
      * @param config the configurator for the search
-     * @return a list of {@link PreservedSpecimenDTO} object
+     * @return a list of {@link DerivedUnitDTO} object
      */
     @Transactional(readOnly = true)
-    public List<PreservedSpecimenDTO> findByTitlePreservedSpecimenDTO(
+    public List<DerivedUnitDTO> findByTitlePreservedSpecimenDTO(
             FindOccurrencesConfigurator config);
 
     /**
@@ -719,8 +719,8 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      */
 
-    FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
-            HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen);
+    FieldUnitDTO findFieldUnitDTO(SpecimenOrObservationBaseDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
+            HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen);
 
 
     /**

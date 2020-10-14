@@ -32,7 +32,7 @@ public class DescriptionBaseDto implements Serializable{
     private static final long serialVersionUID = -1578895619195062502L;
 
     private UuidAndTitleCache<Taxon> taxonUuid;
-    private DerivateDTO specimenDto;
+    private SpecimenOrObservationBaseDTO specimenDto;
 
     private UuidAndTitleCache<TaxonName> nameUuid;
     private DescriptionBase description; // TODO use DTO instead
@@ -60,7 +60,7 @@ public class DescriptionBaseDto implements Serializable{
         if(specimen instanceof FieldUnit) {
             specimenDto = FieldUnitDTO.fromEntity((FieldUnit)specimen);
         } else {
-            specimenDto = PreservedSpecimenDTO.fromEntity((DerivedUnit)specimen);
+            specimenDto = DerivedUnitDTO.fromEntity((DerivedUnit)specimen);
         }
     }
 
@@ -83,7 +83,7 @@ public class DescriptionBaseDto implements Serializable{
         return taxonUuid;
     }
 
-    public DerivateDTO getSpecimenDto() {
+    public SpecimenOrObservationBaseDTO getSpecimenDto() {
         return specimenDto;
     }
 

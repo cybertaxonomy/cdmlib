@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @since Mar 26, 2015
  *
  */
-public class PreservedSpecimenDTO extends DerivateDTO{
+public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     private static final long serialVersionUID = 2345864166579381295L;
 
@@ -43,7 +43,7 @@ public class PreservedSpecimenDTO extends DerivateDTO{
     private List<AbstractMap.SimpleEntry<UUID, String>> determinedNames;
 
 
-//    public PreservedSpecimenDTO(DerivedUnit derivedUnit){
+//    public DerivedUnitDTO(DerivedUnit derivedUnit){
 //        super();
 //        this.setUuid(derivedUnit.getUuid());
 //        this.setTitleCache(derivedUnit.getTitleCache());
@@ -72,11 +72,11 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 //        return newInstance;
 //    }
 
-    public static PreservedSpecimenDTO fromEntity(DerivedUnit entity){
+    public static DerivedUnitDTO fromEntity(DerivedUnit entity){
         if(entity == null) {
             return null;
         }
-        return new PreservedSpecimenDTO(entity);
+        return new DerivedUnitDTO(entity);
 
     }
 
@@ -84,7 +84,7 @@ public class PreservedSpecimenDTO extends DerivateDTO{
     /**
      * @param derivedUnit
      */
-    public PreservedSpecimenDTO(DerivedUnit derivedUnit) {
+    public DerivedUnitDTO(DerivedUnit derivedUnit) {
         super(derivedUnit);
         accessionNumber = derivedUnit.getAccessionNumber();
         preferredStableUri = derivedUnit.getPreferredStableUri();

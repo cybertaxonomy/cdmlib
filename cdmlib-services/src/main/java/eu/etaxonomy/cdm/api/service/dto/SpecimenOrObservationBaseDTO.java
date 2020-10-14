@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  * @author pplitzner
  * @since Mar 27, 2015
  */
-public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservationBase>{
+public abstract class SpecimenOrObservationBaseDTO extends UuidAndTitleCache<SpecimenOrObservationBase>{
 
     private static final long serialVersionUID = -7597690654462090732L;
 
@@ -58,7 +58,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
     private String collectorsNumber;
     private String barcode;
     private String preservationMethod;
-    private Set<DerivateDTO> derivates;
+    private Set<SpecimenOrObservationBaseDTO> derivates;
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
@@ -67,7 +67,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
     private Set<IdentifiableSource> sources;
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
-    protected DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
+    protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase specimenOrObservation) {
         super(specimenOrObservation.getUuid(), specimenOrObservation.getId(), specimenOrObservation.getTitleCache());
         addMedia(specimenOrObservation);
         if (specimenOrObservation.getKindOfUnit() != null){
@@ -307,21 +307,21 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
 
 
 
-    public Set<DerivateDTO> getDerivates() {
+    public Set<SpecimenOrObservationBaseDTO> getDerivates() {
         return derivates;
     }
 
-    public void setDerivates(Set<DerivateDTO> derivates) {
+    public void setDerivates(Set<SpecimenOrObservationBaseDTO> derivates) {
         this.derivates = derivates;
     }
 
-    public void addDerivate(DerivateDTO derivate){
+    public void addDerivate(SpecimenOrObservationBaseDTO derivate){
         if (this.derivates == null){
             this.derivates = new HashSet<>();
         }
         this.derivates.add(derivate);
     }
-    public void addAllDerivates(Set<DerivateDTO> derivates){
+    public void addAllDerivates(Set<SpecimenOrObservationBaseDTO> derivates){
         if (this.derivates == null){
             this.derivates = new HashSet<>();
         }

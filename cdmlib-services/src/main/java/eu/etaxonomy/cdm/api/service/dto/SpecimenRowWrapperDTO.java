@@ -27,7 +27,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     private static final long serialVersionUID = 5198447592554976471L;
 
     private TaxonRowWrapperDTO defaultDescription;
-    private DerivateDTO specimen;
+    private SpecimenOrObservationBaseDTO specimen;
     private UuidAndTitleCache<FieldUnit> fieldUnit;
     private SpecimenOrObservationType type;
     private String identifier;
@@ -70,7 +70,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     this.type = specimen.getRecordBasis();
 
 }
-    public DerivateDTO getSpecimen() {
+    public SpecimenOrObservationBaseDTO getSpecimen() {
         return specimen;
     }
 

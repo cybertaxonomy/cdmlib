@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -115,7 +115,7 @@ public class OccurrencePortalController extends OccurrenceController
     }
 
     @RequestMapping(value = { "specimenDerivates" }, method = RequestMethod.GET)
-    public PreservedSpecimenDTO doGetSpecimenDerivates(
+    public DerivedUnitDTO doGetSpecimenDerivates(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -127,7 +127,7 @@ public class OccurrencePortalController extends OccurrenceController
         if(sob instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit) sob;
             if(derivedUnit.isPublish()){
-                PreservedSpecimenDTO dto = service.assemblePreservedSpecimenDTO(derivedUnit);
+                DerivedUnitDTO dto = service.assemblePreservedSpecimenDTO(derivedUnit);
                 return dto;
             }
         }

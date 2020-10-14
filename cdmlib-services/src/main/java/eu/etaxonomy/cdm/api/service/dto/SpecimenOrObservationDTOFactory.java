@@ -22,14 +22,14 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 public class SpecimenOrObservationDTOFactory {
 
-    public static DerivateDTO fromEntity(SpecimenOrObservationBase entity) {
+    public static SpecimenOrObservationBaseDTO fromEntity(SpecimenOrObservationBase entity) {
         if(entity == null) {
             return null;
         }
         if (entity instanceof FieldUnit) {
             return FieldUnitDTO.fromEntity((FieldUnit) entity);
         } else {
-            return PreservedSpecimenDTO.fromEntity((DerivedUnit) entity);
+            return DerivedUnitDTO.fromEntity((DerivedUnit) entity);
         }
     }
 
@@ -40,11 +40,11 @@ public class SpecimenOrObservationDTOFactory {
         return FieldUnitDTO.fromEntity(entity);
     }
 
-    public static PreservedSpecimenDTO fromDerivedUnit(DerivedUnit entity){
+    public static DerivedUnitDTO fromDerivedUnit(DerivedUnit entity){
         if(entity == null) {
             return null;
         }
-        return PreservedSpecimenDTO.fromEntity(entity);
+        return DerivedUnitDTO.fromEntity(entity);
     }
 
 }

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  * @since 02.08.2018
  *
  */
-public class DNASampleDTO extends PreservedSpecimenDTO{
+public class DNASampleDTO extends DerivedUnitDTO{
 
     private static final long serialVersionUID = -1050277075084265067L;
 

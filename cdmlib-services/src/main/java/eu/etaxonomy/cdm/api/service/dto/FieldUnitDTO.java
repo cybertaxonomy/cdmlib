@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 
-public class FieldUnitDTO extends DerivateDTO {
+public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
     private static final long serialVersionUID = 3981843956067273220L;
 
