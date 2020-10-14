@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -27,10 +26,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
-import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
@@ -70,29 +67,7 @@ public abstract class DerivateDTO extends UuidAndTitleCache<SpecimenOrObservatio
     private Set<IdentifiableSource> sources;
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
-    /**
-     * Factory method to create a new instance of the passed <code>SpecimenOrObservationBase</code> with the matching sub
-     * type of <code>DerivateDTO</code>
-     *
-     * @param sob
-     * @return
-     */
-    public static DerivateDTO newInstance(SpecimenOrObservationBase sob){
-        if(sob == null) {
-            return null;
-        }
-        DerivateDTO derivateDto;
-        if (sob.isInstanceOf(FieldUnit.class)){
-            derivateDto = new FieldUnitDTO(HibernateProxyHelper.deproxy(sob, FieldUnit.class));
-        } else if (sob instanceof DnaSample){
-            derivateDto = new DNASampleDTO(HibernateProxyHelper.deproxy(sob, DnaSample.class));
-        } else {
-            derivateDto = new PreservedSpecimenDTO(HibernateProxyHelper.deproxy(sob, DerivedUnit.class));
-        }
-        return derivateDto;
-    }
-
-    public DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
+    protected DerivateDTO(SpecimenOrObservationBase specimenOrObservation) {
         super(specimenOrObservation.getUuid(), specimenOrObservation.getId(), specimenOrObservation.getTitleCache());
         addMedia(specimenOrObservation);
         if (specimenOrObservation.getKindOfUnit() != null){

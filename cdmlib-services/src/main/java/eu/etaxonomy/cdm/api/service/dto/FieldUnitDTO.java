@@ -24,7 +24,14 @@ public class FieldUnitDTO extends DerivateDTO {
 
 	private GatheringEventDTO gatheringEvent;
 
-    public FieldUnitDTO(FieldUnit fieldUnit) {
+	public static FieldUnitDTO fromEntity(FieldUnit entity){
+        if(entity == null) {
+            return null;
+        }
+        return new FieldUnitDTO(entity);
+	}
+
+    private FieldUnitDTO(FieldUnit fieldUnit) {
         super(fieldUnit);
         if (fieldUnit.getGatheringEvent() != null){
             gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());

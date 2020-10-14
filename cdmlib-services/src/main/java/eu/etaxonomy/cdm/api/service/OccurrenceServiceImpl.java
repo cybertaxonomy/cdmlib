@@ -399,7 +399,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
         }
 
-        FieldUnitDTO fieldUnitDTO = new FieldUnitDTO(fieldUnit);
+        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit);
 
         if (fieldUnit.getGatheringEvent() != null) {
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
@@ -1052,7 +1052,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 //            }
         }else{
             if (specimen.isInstanceOf(FieldUnit.class)){
-                fieldUnitDto = new FieldUnitDTO((FieldUnit)specimen);
+                fieldUnitDto = FieldUnitDTO.fromEntity((FieldUnit)specimen);
                 fieldUnitDto.addDerivate(derivedUnitDTO);
                 fieldUnits.add(fieldUnitDto);
 
@@ -1088,60 +1088,62 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         Map<UUID, DerivateDTO> cycleDetectionMap = new HashMap<>();
         SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
         if(derivative != null){
-            derivedUnitDTO = DerivateDTO.newInstance(derivative);
             if (derivative instanceof FieldUnit){
-                fieldUnitDTO = new FieldUnitDTO((FieldUnit)derivative);
+                fieldUnitDTO = FieldUnitDTO.fromEntity((FieldUnit)derivative);
                 return fieldUnitDTO;
-            }
-            while(true){
+            } else {
+                // must be a DerivedUnit otherwise
+                derivedUnitDTO = PreservedSpecimenDTO.fromEntity((DerivedUnit)derivative);
+                while(true){
 
-                Set<DerivateDTO> originals = originalDTOs(derivedUnitDTO.getUuid());
+                    Set<DerivateDTO> originals = originalDTOs(derivedUnitDTO.getUuid());
 
-                if(originals.isEmpty()){
-                    break;
-                }
-                if (originals.size() > 1){
-                    logger.debug("The derived unit with uuid " + derivedUnitUuid + "has more than one orginal, ignoring all but the first one.");
-                }
-
-                DerivateDTO originalDTO = originals.iterator().next();
-
-                // cycle detection and handling
-                if(cycleDetectionMap.containsKey(originalDTO.getUuid())){
-                    // cycle detected!!!
-                    try {
-                        throw new Exception();
-                    } catch(Exception e){
-                        logger.error("Cycle in derivate graph detected at DerivedUnit with uuid=" + originalDTO.getUuid() , e);
+                    if(originals.isEmpty()){
+                        break;
                     }
-                    // to solve the situation for the output we remove the derivate from the more distant graph node
-                    // by removing it from the derivatives of its original
-                    // but let the derivate to be added to the original which is closer to the FieldUnit (below at originalDTO.addDerivate(derivedUnitDTO);)
-                    for(DerivateDTO seenOriginal: cycleDetectionMap.values()){
-                        for(DerivateDTO derivateDTO : seenOriginal.getDerivates()){
-                            if(derivateDTO.equals(originalDTO)){
-                                seenOriginal.getDerivates().remove(originalDTO);
+                    if (originals.size() > 1){
+                        logger.debug("The derived unit with uuid " + derivedUnitUuid + "has more than one orginal, ignoring all but the first one.");
+                    }
+
+                    DerivateDTO originalDTO = originals.iterator().next();
+
+                    // cycle detection and handling
+                    if(cycleDetectionMap.containsKey(originalDTO.getUuid())){
+                        // cycle detected!!!
+                        try {
+                            throw new Exception();
+                        } catch(Exception e){
+                            logger.error("Cycle in derivate graph detected at DerivedUnit with uuid=" + originalDTO.getUuid() , e);
+                        }
+                        // to solve the situation for the output we remove the derivate from the more distant graph node
+                        // by removing it from the derivatives of its original
+                        // but let the derivate to be added to the original which is closer to the FieldUnit (below at originalDTO.addDerivate(derivedUnitDTO);)
+                        for(DerivateDTO seenOriginal: cycleDetectionMap.values()){
+                            for(DerivateDTO derivateDTO : seenOriginal.getDerivates()){
+                                if(derivateDTO.equals(originalDTO)){
+                                    seenOriginal.getDerivates().remove(originalDTO);
+                                }
                             }
                         }
-                    }
 
-                } else {
-                    cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
-                }
-
-
-                if (originalDTO instanceof FieldUnitDTO){
-                    fieldUnitDTO = (FieldUnitDTO)originalDTO;
-                    if(derivedUnitDTO != null){
-                        fieldUnitDTO.addDerivate(derivedUnitDTO);
-                    }
-                    break;
-                }else{
-                    if (derivedUnitDTO == null){
-                        derivedUnitDTO = originalDTO;
                     } else {
-                        originalDTO.addDerivate(derivedUnitDTO);
-                        derivedUnitDTO = originalDTO;
+                        cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
+                    }
+
+
+                    if (originalDTO instanceof FieldUnitDTO){
+                        fieldUnitDTO = (FieldUnitDTO)originalDTO;
+                        if(derivedUnitDTO != null){
+                            fieldUnitDTO.addDerivate(derivedUnitDTO);
+                        }
+                        break;
+                    }else{
+                        if (derivedUnitDTO == null){
+                            derivedUnitDTO = originalDTO;
+                        } else {
+                            originalDTO.addDerivate(derivedUnitDTO);
+                            derivedUnitDTO = originalDTO;
+                        }
                     }
                 }
             }
@@ -1157,12 +1159,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private Set<DerivateDTO> originalDTOs(UUID derivativeUuid) {
 
         Set<DerivateDTO> dtos = new HashSet<>();
-
         List<SpecimenOrObservationBase> specimens = dao.findOriginalsForDerivedUnit(derivativeUuid, null);
         for(SpecimenOrObservationBase sob : specimens){
-            dtos.add(DerivateDTO.newInstance(sob));
+            if(sob instanceof FieldUnit) {
+                dtos.add(FieldUnitDTO.fromEntity((FieldUnit)sob));
+            } else {
+                dtos.add(PreservedSpecimenDTO.fromEntity((DerivedUnit)sob));
+            }
         }
-
         return dtos;
     }
 

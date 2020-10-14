@@ -43,9 +43,6 @@ public class PreservedSpecimenDTO extends DerivateDTO{
     private List<AbstractMap.SimpleEntry<UUID, String>> determinedNames;
 
 
-
-
-
 //    public PreservedSpecimenDTO(DerivedUnit derivedUnit){
 //        super();
 //        this.setUuid(derivedUnit.getUuid());
@@ -74,6 +71,14 @@ public class PreservedSpecimenDTO extends DerivateDTO{
 //
 //        return newInstance;
 //    }
+
+    public static PreservedSpecimenDTO fromEntity(DerivedUnit entity){
+        if(entity == null) {
+            return null;
+        }
+        return new PreservedSpecimenDTO(entity);
+
+    }
 
 
     /**

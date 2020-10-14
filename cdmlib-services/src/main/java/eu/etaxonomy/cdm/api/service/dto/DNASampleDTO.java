@@ -34,7 +34,12 @@ public class DNASampleDTO extends PreservedSpecimenDTO{
     private DnaQuality dnaQuality;
 
 
-
+    public static DNASampleDTO fromEntity(DnaSample entity){
+        if(entity == null) {
+            return null;
+        }
+        return new DNASampleDTO(HibernateProxyHelper.deproxy(entity, DnaSample.class));
+    }
 
     public DNASampleDTO(DerivedUnit derivedUnit) {
         super(derivedUnit);

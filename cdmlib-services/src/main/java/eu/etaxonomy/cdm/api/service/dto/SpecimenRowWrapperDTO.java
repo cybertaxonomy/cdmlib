@@ -54,7 +54,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
         }
         this.identifier = identifier;
         this.country = country;
-        this.specimen = DerivateDTO.newInstance(specimen);
+        this.specimen = SpecimenOrObservationDTOFactory.fromEntity(specimen);
         this.type = specimen.getRecordBasis();
     }
 
@@ -66,7 +66,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     }
     this.identifier = identifier;
     this.country = country;
-    this.specimen = DerivateDTO.newInstance(specimen);
+    this.specimen = SpecimenOrObservationDTOFactory.fromEntity(specimen);
     this.type = specimen.getRecordBasis();
 
 }

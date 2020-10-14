@@ -113,7 +113,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         SpecimenOrObservationBase sob = service.load(occurrenceUuid, Arrays.asList(new String []{"descriptions", "descriptions.descriptionElements.$", "descriptions.descriptionElements.media", "kindOfUnit","gatheringEvent.*"}));
         FieldUnitDTO dto;
         if (sob instanceof FieldUnit){
-            dto = new FieldUnitDTO((FieldUnit)sob);
+            dto = FieldUnitDTO.fromEntity((FieldUnit)sob);
             mv.addObject(dto.getListOfMedia());
         }
 
