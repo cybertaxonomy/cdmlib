@@ -121,7 +121,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
         logger.info("doGetFieldUnitDTO()" + requestPathAndQuery(request));
 
-        DerivedUnit sob = (DerivedUnit) getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
+        SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
 
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 

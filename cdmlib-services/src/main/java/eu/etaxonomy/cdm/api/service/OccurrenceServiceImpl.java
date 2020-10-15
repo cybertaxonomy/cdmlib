@@ -690,7 +690,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 fieldUnitDto = FieldUnitDTO.fromEntity((FieldUnit)specimen);
                 fieldUnitDto.addDerivate(derivedUnitDTO);
                 fieldUnits.add(fieldUnitDto);
-
             }else{
                 SpecimenOrObservationBaseDTO originalDTO;
                 if (specimen instanceof DnaSample){
