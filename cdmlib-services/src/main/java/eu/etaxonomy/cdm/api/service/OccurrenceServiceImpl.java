@@ -662,6 +662,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         List<SpecimenOrObservationBase> specimens = new ArrayList<>();
         List<String> propertyPaths = new ArrayList<>();
 
+        // FIXME defining propertyPaths inside of transactional service method makes no sense. see also #9253
         propertyPaths.add("descriptions.elements.media.title");
         propertyPaths.add("kindOfUnit");
         propertyPaths.add("derivedFrom");

@@ -680,47 +680,24 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(
             FindOccurrencesConfigurator config);
 
-    /**
-     * @param queryString
-     * @param propertyPaths
-     * @return
-     * @throws IOException
-     */
+
     FieldUnitDTO findByAccessionNumber(
              String accessionNumberString, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
-    /**
-     * @param includedRelationships
-     * @param associatedTaxon
-     * @param maxDepth
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
+
     List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid, List<String> propertyPaths);
-
-    /**
-     * @param derivedUnitUuid
-     * @param propertyPaths
-     * @return
-     */
 
     FieldUnitDTO findFieldUnitDTO(SpecimenOrObservationBaseDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
             HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen);
 
 
-    /**
-     * @param fieldUnitUuids
-     * @return
-     */
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 
     /**
      * Load the FieldUnitDTO for the given <code>derivedUnitUuid</code> with all intermediate derivatives and {@link eu.etaxonomy.cdm.api.service.dto.GatheringEventDTO}
+
      * @param derivedUnitUuid
      * @return
      */
