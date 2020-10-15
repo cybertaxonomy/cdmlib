@@ -674,7 +674,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         specimens = dao.findOriginalsForDerivedUnit(derivedUnitDTO.getUuid(), propertyPaths);
 
         if (specimens.size() > 1){
-            logger.debug("The derived unit with uuid " + derivedUnitDTO.getUuid() + "has more than one orginal");
+            logger.warn("The derived unit with uuid " + derivedUnitDTO.getUuid() + "has more than one orginal");
         }
       //  for (SpecimenOrObservationBase specimen: specimens){
         SpecimenOrObservationBase specimen = null;
@@ -684,7 +684,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             return null;
         }
         FieldUnitDTO fieldUnitDto = null;
-        if (alreadyCollectedSpecimen.get(specimen.getUuid()) != null){
+        if (alreadyCollectedSpecimen.containsKey(specimen.getUuid())){
             alreadyCollectedSpecimen.get(specimen.getUuid()).addDerivate(derivedUnitDTO);
 //            if ( alreadyCollectedSpecimen.get(specimen.getUuid()) instanceof FieldUnitDTO){
 //                ((FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid())).getTaxonRelatedDerivedUnits().add(derivedUnitDTO.getUuid());
