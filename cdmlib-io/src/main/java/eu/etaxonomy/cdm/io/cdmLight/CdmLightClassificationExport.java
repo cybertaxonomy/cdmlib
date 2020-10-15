@@ -1160,7 +1160,7 @@ public class CdmLightClassificationExport
                 }
             }
             TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
-            String typeDesignationString = createTypeDesignationString(manager.toTaggedText(), false);
+            String typeDesignationString = createTypeDesignationString(manager.toTaggedText(), false, name.isSpecies() || name.isInfraSpecific());
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = typeDesignationString;
 
             StringBuilder stringbuilder = new StringBuilder();
@@ -1602,7 +1602,7 @@ public class CdmLightClassificationExport
             if (StringUtils.isNotBlank(typeTextDesignations)) {
             	typeTextDesignations = typeTextDesignations.substring(0, typeTextDesignations.length()-2);
             }
-            String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true):"";
+            String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true, typifiedNames.get(0).isSpecies() || typifiedNames.get(0).isInfraSpecific()):"";
 
             // typeDesignations = typeDesignationString.toString();
             if (StringUtils.isNotBlank(specimenTypeString)) {
@@ -1631,7 +1631,7 @@ public class CdmLightClassificationExport
         }
     }
 
-    private String createTypeDesignationString(List<TaggedText> list, boolean isHomotypicGroup) {
+    private String createTypeDesignationString(List<TaggedText> list, boolean isHomotypicGroup, boolean isSpecimenTypeDesignation) {
         StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
 
         for (TaggedText text : list) {
@@ -1641,8 +1641,14 @@ public class CdmLightClassificationExport
             } else if (text.getType().equals(TagEnum.reference)) {
                 homotypicalGroupTypeDesignationString.append(text.getText());
             } else if (text.getType().equals(TagEnum.typeDesignation) ) {
-                homotypicalGroupTypeDesignationString
-                        .append(text.getText().replace(").", "").replace("(", "").replace(")", ""));
+                if(isSpecimenTypeDesignation){
+                    homotypicalGroupTypeDesignationString
+                    .append(text.getText().replace(").", "").replace("(", "").replace(")", ""));
+                }else{
+                    homotypicalGroupTypeDesignationString
+                    .append(text.getText());
+                }
+
             } else {
                 homotypicalGroupTypeDesignationString.append(text.getText());
             }
@@ -1651,9 +1657,13 @@ public class CdmLightClassificationExport
         String typeDesignations = homotypicalGroupTypeDesignationString.toString();
         typeDesignations = typeDesignations.trim();
 
+        if (typeDesignations.endsWith(";")){
+            typeDesignations = typeDesignations.substring(0, typeDesignations.length()-1);
+        }
         typeDesignations += ".";
         typeDesignations = typeDesignations.replace("..", ".");
         typeDesignations = typeDesignations.replace(". .", ".");
+
         if (typeDesignations.trim().equals(".")) {
             typeDesignations = null;
         }
