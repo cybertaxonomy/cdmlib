@@ -30,14 +30,10 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 
-/**
- * @author pplitzner
- * @since Mar 27, 2015
- */
-public abstract class SpecimenOrObservationBaseDTO extends UuidAndTitleCache<SpecimenOrObservationBase>{
+public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<SpecimenOrObservationBase<?>>{
 
     private static final long serialVersionUID = -7597690654462090732L;
 
@@ -68,8 +64,8 @@ public abstract class SpecimenOrObservationBaseDTO extends UuidAndTitleCache<Spe
     private Set<IdentifiableSource> sources;
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
-    protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase specimenOrObservation) {
-        super(specimenOrObservation.getUuid(), specimenOrObservation.getId(), specimenOrObservation.getTitleCache());
+    protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
+        super((Class<SpecimenOrObservationBase<?>>) specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
         addMedia(specimenOrObservation);
         if (specimenOrObservation.getKindOfUnit() != null){
             setKindOfUnit(specimenOrObservation.getKindOfUnit().getTitleCache());
