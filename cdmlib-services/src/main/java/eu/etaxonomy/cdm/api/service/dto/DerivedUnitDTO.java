@@ -11,17 +11,33 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.net.URI;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.CdmFormatterFactory;
+import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
+import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;
+import eu.etaxonomy.cdm.format.description.DefaultQuantitativeDescriptionBuilder;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -66,18 +82,50 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 //
 //    }
 //
-//    public static PreservedSpecimenDTO newInstance(DerivedUnit derivedUnit ){
+//    public static DerivedUnitDTO newInstance(DerivedUnit derivedUnit ){
 //        PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO(derivedUnit);
 //
 //        return newInstance;
 //    }
 
     public static DerivedUnitDTO fromEntity(DerivedUnit entity){
+        return fromEntity(entity, null);
+    }
+    /**
+
+     * @param entity
+     *   The entity to create the dto for
+     * @param individualsAssociations
+     *    <b>WARNING</b> This parameter will be removed in future versions. IndividualsAssociation should better retrieved in a separate
+     *    action, since individualsAssociations are not accessible from the DerivedUnit side. A service level method call is needed to
+     *    retrieve them, so it would be required to access the OccurrenceServiceImpl from inside of this DTO factory method, which is
+     *    bad OO design. The other option is implemented here, requires all calling Objects to pass the IndividualsAssociations as parameter.
+     * @return
+     *
+     * @deprecated see comment on the parameter <code>individualsAssociations</code>
+     */
+    @Deprecated
+    public static DerivedUnitDTO fromEntity(DerivedUnit entity, Collection<IndividualsAssociation> individualsAssociations){
         if(entity == null) {
             return null;
         }
-        return new DerivedUnitDTO(entity);
+        DerivedUnitDTO dto =  new DerivedUnitDTO(entity);
 
+        // individuals associations
+        if(individualsAssociations != null) {
+            for (IndividualsAssociation individualsAssociation : individualsAssociations) {
+                if (individualsAssociation.getInDescription() != null) {
+                    if (individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)) {
+                        TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
+                        Taxon taxon = taxonDescription.getTaxon();
+                        if (taxon != null) {
+                            dto.addAssociatedTaxon(taxon);
+                        }
+                    }
+                }
+            }
+        }
+        return dto;
     }
 
 
@@ -105,6 +153,76 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         setSources(derivedUnit.getSources());
         setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
         addDeterminedNames(derivedUnit.getDeterminations());
+
+        // -------------------------------------------------------------
+
+
+        //specimen identifier
+        FormatKey collectionKey = FormatKey.COLLECTION_CODE;
+        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, collectionKey);
+        if (CdmUtils.isBlank(specimenIdentifier)) {
+            collectionKey = FormatKey.COLLECTION_NAME;
+        }
+        if(CdmUtils.isNotBlank(derivedUnit.getMostSignificantIdentifier())){
+            specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
+                    collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
+                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+        }
+        if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getTitleCache();
+        }
+        if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getUuid().toString();
+        }
+        setAccessionNumber(specimenIdentifier);
+
+
+        //preferred stable URI
+        setPreferredStableUri(derivedUnit.getPreferredStableUri());
+
+        // citation
+        Collection<FieldUnit> fieldUnits = derivedUnit.collectFieldUnits();
+        if (fieldUnits.size() == 1) {
+            setCitation(fieldUnits.iterator().next().getTitleCache());
+        }
+        else{
+            setCitation("No Citation available. This specimen either has no or multiple field units.");
+        }
+
+        // character state data
+        if(derivedUnit.characterData() != null) {
+            Collection<DescriptionElementBase> characterDataForSpecimen = derivedUnit.characterData();
+            for (DescriptionElementBase descriptionElementBase : characterDataForSpecimen) {
+                String character = descriptionElementBase.getFeature().getLabel();
+                ArrayList<Language> languages = new ArrayList<>(Collections.singleton(Language.DEFAULT()));
+                if (descriptionElementBase instanceof QuantitativeData) {
+                    QuantitativeData quantitativeData = (QuantitativeData) descriptionElementBase;
+                    DefaultQuantitativeDescriptionBuilder builder = new DefaultQuantitativeDescriptionBuilder();
+                    String state = builder.build(quantitativeData, languages).getText(Language.DEFAULT());
+                    addCharacterData(character, state);
+                }
+                else if(descriptionElementBase instanceof CategoricalData){
+                    CategoricalData categoricalData = (CategoricalData) descriptionElementBase;
+                    DefaultCategoricalDescriptionBuilder builder = new DefaultCategoricalDescriptionBuilder();
+                    String state = builder.build(categoricalData, languages).getText(Language.DEFAULT());
+                    addCharacterData(character, state);
+                }
+            }
+        }
+        // check type designations
+        Collection<SpecimenTypeDesignation> specimenTypeDesignations = derivedUnit.getSpecimenTypeDesignations();
+        for (SpecimenTypeDesignation specimenTypeDesignation : specimenTypeDesignations) {
+            TypeDesignationStatusBase<?> typeStatus = specimenTypeDesignation.getTypeStatus();
+            Set<TaxonName> typifiedNames = specimenTypeDesignation.getTypifiedNames();
+            List<String> typedTaxaNames = new ArrayList<>();
+            for (TaxonName taxonName : typifiedNames) {
+                typedTaxaNames.add(taxonName.getTitleCache());
+            }
+            addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
+        }
+
+        // assemble sub derivatives
+        setDerivateDataDTO(DerivateDataDTO.fromEntity(derivedUnit, getAccessionNumber()));
     }
 
 

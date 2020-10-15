@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -398,6 +399,29 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
             return getCatalogNumber();
         }
         return null;
+    }
+
+    /**
+     * Collects all FieldUnits in the parent branches of the derivation graph.
+     * <p>
+     * <b>NOTE:</b> As this method walks the derivation graph it should only be used in a transactional context or
+     * it must be assured that the whole graph is initialized.
+     */
+    public java.util.Collection<FieldUnit> collectFieldUnits() {
+        java.util.Collection<FieldUnit> fieldUnits = new HashSet<>();
+        Set<SpecimenOrObservationBase> originals = getOriginals();
+        if (originals != null && !originals.isEmpty()) {
+            for (SpecimenOrObservationBase<?> original : originals) {
+                if (original.isInstanceOf(FieldUnit.class)) {
+                    fieldUnits.add(HibernateProxyHelper.deproxy(original, FieldUnit.class));
+                }
+                else if(original.isInstanceOf(DerivedUnit.class)){
+                    DerivedUnit originalDerivedUnit = HibernateProxyHelper.deproxy(original, DerivedUnit.class);
+                    fieldUnits.addAll(originalDerivedUnit.collectFieldUnits());
+                }
+            }
+        }
+        return fieldUnits;
     }
 
 // ******* GETTER / SETTER for preserved specimen only ******************/

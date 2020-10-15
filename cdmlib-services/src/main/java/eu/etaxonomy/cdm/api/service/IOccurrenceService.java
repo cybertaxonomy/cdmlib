@@ -26,9 +26,9 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -432,7 +432,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @param derivedUnit
      * @return a DTO with all the assembled information
      */
-    public DerivedUnitDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
+    public DerivedUnitDTO assembleDerivedUnitDTO(DerivedUnit derivedUnit);
 
     /**
      * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>
@@ -586,18 +586,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * Gets all description elements that are used for describing the character
      * states of the given specimen
      *
-     * @param specimen
-     *            the specimen for which the character state description
-     *            elements should be retrieved
-     * @return a collection of all character state description elements for this
-     *         specimen
-     */
-    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen);
-
-    /**
-     * Gets all description elements that are used for describing the character
-     * states of the given specimen
-     *
      * @param specimenUuid
      *            the specimen {@link UUID} for which the character state description
      *            elements should be retrieved
@@ -610,7 +598,9 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * Returns the most significant identifier for the given {@link DerivedUnit}.
      * @param derivedUnit the derived unit to check
      * @return the identifier string
+     * @deprecated use {@link DerivedUnit#getMostSignificantIdentifier()} instead
      */
+    @Deprecated
     public String getMostSignificantIdentifier(DerivedUnit derivedUnit);
 
     /**
@@ -687,7 +677,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a list of {@link DerivedUnitDTO} object
      */
     @Transactional(readOnly = true)
-    public List<DerivedUnitDTO> findByTitlePreservedSpecimenDTO(
+    public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(
             FindOccurrencesConfigurator config);
 
     /**

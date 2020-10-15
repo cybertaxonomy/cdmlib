@@ -10,9 +10,27 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * @author pplitzner
@@ -23,11 +41,116 @@ public class DerivateDataDTO implements Serializable {
 
     private static final long serialVersionUID = 8329871164348514709L;
 
-    private List<Link> specimenScans;
-    private List<MolecularData> molecularDataList;
-    private List<Link> detailImages;
-    private List<UUID> specimenScanUuids;
-    private List<UUID> detailImageUuids;
+    private static final Logger logger = Logger.getLogger(DerivateDataDTO.class);
+
+    private List<Link> specimenScans = new ArrayList<>();
+    private List<MolecularData> molecularDataList = new ArrayList<>();
+    private List<Link> detailImages = new ArrayList<>();
+    private List<UUID> specimenScanUuids = new ArrayList<>();
+    private List<UUID> detailImageUuids = new ArrayList<>();
+
+    public static DerivateDataDTO fromEntity(SpecimenOrObservationBase<?> specimenOrObservation, String accessionNumber) {
+
+        DerivateDataDTO derivateDataDTO = new DerivateDataDTO();
+
+        Collection<DerivedUnit> childDerivates = specimenOrObservation.collectDerivedUnits();
+        for (DerivedUnit childDerivate : childDerivates) {
+            // assemble molecular data
+            //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
+            if (childDerivate.isInstanceOf(DnaSample.class)) {
+                if (childDerivate.getRecordBasis() == SpecimenOrObservationType.TissueSample) {
+                    // TODO implement TissueSample assembly for web service
+                }
+                if (childDerivate.getRecordBasis() == SpecimenOrObservationType.DnaSample) {
+
+                    DnaSample dna = HibernateProxyHelper.deproxy(childDerivate, DnaSample.class);
+                    if (!dna.getSequences().isEmpty()) {
+
+                    }
+                    for (Sequence sequence : dna.getSequences()) {
+                        URI boldUri = null;
+                        try {
+                            boldUri = sequence.getBoldUri();
+                        } catch (URISyntaxException e1) {
+                            // TODO consider better reporting of this incident
+                            logger.error("Could not create BOLD URI", e1);
+                        }
+                        final DefinedTerm dnaMarker = sequence.getDnaMarker();
+                        Link providerLink = null;
+                        if(boldUri!=null && dnaMarker!=null){
+                            providerLink = new DerivateDataDTO.Link(boldUri, dnaMarker.getLabel());
+                        }
+                        MolecularData molecularData = derivateDataDTO.addProviderLink(providerLink);
+
+                        //contig file
+                        ContigFile contigFile = null;
+                        if (sequence.getContigFile() != null) {
+                            MediaRepresentationPart contigMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(sequence.getContigFile());
+                            if (contigMediaRepresentationPart != null) {
+                                contigFile = molecularData.addContigFile(new Link(contigMediaRepresentationPart.getUri(), "contig"));
+                            }
+                        }
+                        else{
+                            contigFile = molecularData.addContigFile(null);
+                        }
+                        // primer files
+                        if (sequence.getSingleReads() != null) {
+                            int readCount = 1;
+                            for (SingleRead singleRead : sequence.getSingleReads()) {
+                                MediaRepresentationPart pherogramMediaRepresentationPart = MediaUtils.getFirstMediaRepresentationPart(singleRead.getPherogram());
+                                if (pherogramMediaRepresentationPart != null && contigFile != null) {
+                                    contigFile.addPrimerLink(pherogramMediaRepresentationPart.getUri(), "read"+readCount++);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // assemble media data
+            else if (childDerivate.isInstanceOf(MediaSpecimen.class)) {
+                MediaSpecimen media = HibernateProxyHelper.deproxy(childDerivate, MediaSpecimen.class);
+
+                URI mediaUri = getMediaUri(media);
+                if (media.getKindOfUnit() != null) {
+                    // specimen scan
+                    if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
+                        derivateDataDTO.addSpecimenScanUuid(media.getMediaSpecimen().getUuid());
+                        String imageLinkText = "scan";
+                        imageLinkText = accessionNumber;
+                        derivateDataDTO.addSpecimenScan(mediaUri, imageLinkText);
+                    }
+                    // detail image
+                    else if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidDetailImage)) {
+                        derivateDataDTO.addDetailImageUuid(media.getMediaSpecimen().getUuid());
+                        String motif = "detail image";
+                        if (media.getMediaSpecimen()!=null){
+                            if(CdmUtils.isNotBlank(media.getMediaSpecimen().getTitleCache())) {
+                                motif = media.getMediaSpecimen().getTitleCache();
+                            }
+                        }
+                        derivateDataDTO.addDetailImage(mediaUri, motif);
+                    }
+                }
+            }
+        }
+        return derivateDataDTO;
+    }
+
+    @Deprecated
+    private static URI getMediaUri(MediaSpecimen mediaSpecimen) {
+        URI mediaUri = null;
+        Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
+        if (mediaRepresentations != null && !mediaRepresentations.isEmpty()) {
+            Collection<MediaRepresentationPart> mediaRepresentationParts = mediaRepresentations.iterator().next().getParts();
+            if (mediaRepresentationParts != null && !mediaRepresentationParts.isEmpty()) {
+                MediaRepresentationPart part = mediaRepresentationParts.iterator().next();
+                if (part.getUri() != null) {
+                    mediaUri = part.getUri();
+                }
+            }
+        }
+        return mediaUri;
+    }
 
     /**
      * @return the molecularData
@@ -37,9 +160,6 @@ public class DerivateDataDTO implements Serializable {
     }
 
     public MolecularData addProviderLink(Link providerLink) {
-        if(this.molecularDataList==null){
-            molecularDataList = new ArrayList<MolecularData>();
-        }
         MolecularData molecularData = new MolecularData(providerLink);
         this.molecularDataList.add(molecularData);
         return molecularData;
@@ -53,9 +173,6 @@ public class DerivateDataDTO implements Serializable {
     }
 
     public void addSpecimenScan(URI uri, String linkText){
-        if(specimenScans==null){
-            specimenScans = new ArrayList<Link>();
-        }
         specimenScans.add(new Link(uri, linkText));
     }
 
@@ -67,9 +184,6 @@ public class DerivateDataDTO implements Serializable {
     }
 
     public void addDetailImage(URI uri, String motif){
-        if(detailImages==null){
-            detailImages = new ArrayList<Link>();
-        }
         detailImages.add(new Link(uri, motif));
     }
 
@@ -81,9 +195,6 @@ public class DerivateDataDTO implements Serializable {
     }
 
     public void addSpecimenScanUuid(UUID uuid){
-        if(specimenScanUuids==null){
-            specimenScanUuids = new ArrayList<UUID>();
-        }
         specimenScanUuids.add(uuid);
     }
 
@@ -95,9 +206,6 @@ public class DerivateDataDTO implements Serializable {
     }
 
     public void addDetailImageUuid(UUID uuid){
-        if(detailImageUuids==null){
-            detailImageUuids = new ArrayList<UUID>();
-        }
         detailImageUuids.add(uuid);
     }
 
@@ -194,9 +302,7 @@ public class DerivateDataDTO implements Serializable {
         public synchronized void setUri(URI uri) {
             this.uri = uri;
         }
-        /* (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
+
         @Override
         public int hashCode() {
             final int prime = 31;
@@ -205,9 +311,7 @@ public class DerivateDataDTO implements Serializable {
             result = prime * result + ((uri == null) ? 0 : uri.hashCode());
             return result;
         }
-        /* (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
+
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {

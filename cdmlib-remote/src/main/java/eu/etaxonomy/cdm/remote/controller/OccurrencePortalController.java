@@ -127,7 +127,7 @@ public class OccurrencePortalController extends OccurrenceController
         if(sob instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit) sob;
             if(derivedUnit.isPublish()){
-                DerivedUnitDTO dto = service.assemblePreservedSpecimenDTO(derivedUnit);
+                DerivedUnitDTO dto = service.assembleDerivedUnitDTO(derivedUnit);
                 return dto;
             }
         }
