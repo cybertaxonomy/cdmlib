@@ -550,14 +550,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
         DerivedUnitDTO derivedUnitDTO;
         HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen = new HashMap<>();
-        List<FieldUnitDTO> fieldUnitDTOs = new ArrayList<>();
+
         if (dnaSample != null){
             derivedUnitDTO = new DNASampleDTO(dnaSample);
             alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
             derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
-            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, fieldUnitDTOs,
-                    alreadyCollectedSpecimen);
-
+            FieldUnitDTO fieldUnit = this.findFieldUnitDTO(derivedUnitDTO, null, alreadyCollectedSpecimen);
             return fieldUnit;
         }
         return null;
