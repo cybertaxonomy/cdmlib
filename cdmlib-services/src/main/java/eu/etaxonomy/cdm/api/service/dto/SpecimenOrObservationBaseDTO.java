@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -58,7 +59,7 @@ public abstract class SpecimenOrObservationBaseDTO extends UuidAndTitleCache<Spe
     private String collectorsNumber;
     private String barcode;
     private String preservationMethod;
-    private Set<SpecimenOrObservationBaseDTO> derivates;
+    private Set<DerivedUnitDTO> derivates;
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
@@ -79,13 +80,7 @@ public abstract class SpecimenOrObservationBaseDTO extends UuidAndTitleCache<Spe
                 setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
             }
         }
-
-
     }
-//    @Override
-//    public String getTitleCache() {
-//        return getLabel();
-//    }
 
 
     public String getListLabel() {
@@ -312,25 +307,50 @@ public abstract class SpecimenOrObservationBaseDTO extends UuidAndTitleCache<Spe
 
 
 
-    public Set<SpecimenOrObservationBaseDTO> getDerivates() {
+    public Set<DerivedUnitDTO> getDerivates() {
+        if (this.derivates == null){
+            this.derivates = new HashSet<>();
+        }
         return derivates;
     }
 
-    public void setDerivates(Set<SpecimenOrObservationBaseDTO> derivates) {
+    public void setDerivates(Set<DerivedUnitDTO> derivates) {
         this.derivates = derivates;
     }
 
-    public void addDerivate(SpecimenOrObservationBaseDTO derivate){
+    public void addDerivate(DerivedUnitDTO derivate){
         if (this.derivates == null){
             this.derivates = new HashSet<>();
         }
         this.derivates.add(derivate);
     }
-    public void addAllDerivates(Set<SpecimenOrObservationBaseDTO> derivates){
+    public void addAllDerivates(Set<DerivedUnitDTO> derivates){
         if (this.derivates == null){
             this.derivates = new HashSet<>();
         }
         this.derivates.addAll(derivates);
+    }
+
+    /**
+     * collects all derivatives from this an derivatives of this.
+     */
+    public Collection<DerivedUnitDTO> collectDerivatives() {
+        return collectDerivatives(new HashSet<>());
+    }
+
+    /**
+     * private partner method to {@link #collectDerivatives()} for recursive calls.
+     *
+     * @param dtos
+     */
+    private Collection<DerivedUnitDTO> collectDerivatives(Set<DerivedUnitDTO> dtos) {
+        dtos.addAll(getDerivates());
+        if(derivates != null) {
+            for(SpecimenOrObservationBaseDTO subDto : derivates) {
+                dtos.addAll(subDto.collectDerivatives(dtos));
+            }
+        }
+        return dtos;
     }
 
     public DerivationEventDTO getDerivationEvent() {

@@ -689,7 +689,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid, List<String> propertyPaths);
 
-    FieldUnitDTO findFieldUnitDTO(SpecimenOrObservationBaseDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
+    FieldUnitDTO findFieldUnitDTO(DerivedUnitDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
             HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen);
 
 

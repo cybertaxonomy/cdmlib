@@ -399,9 +399,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return derivedUnitDTO;
     }
 
-    private Set<SpecimenOrObservationBaseDTO> getDerivedUnitDTOsFor(SpecimenOrObservationBaseDTO specimenDto, DerivedUnit specimen, HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
-        Set<SpecimenOrObservationBaseDTO> derivedUnits = new HashSet<>();
-//        load
+    private Set<DerivedUnitDTO> getDerivedUnitDTOsFor(SpecimenOrObservationBaseDTO specimenDto, DerivedUnit specimen, HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
+        Set<DerivedUnitDTO> derivedUnits = new HashSet<>();
+
         for (DerivationEvent derivationEvent : specimen.getDerivationEvents()) {
             for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 if (!alreadyCollectedSpecimen.containsKey(specimenDto.getUuid())){
@@ -517,7 +517,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
                 if (o.isInstanceOf(DerivedUnit.class)){
                     DerivedUnit derivedUnit;
-                    SpecimenOrObservationBaseDTO derivedUnitDTO;
+                    DerivedUnitDTO derivedUnitDTO;
                     if (o.isInstanceOf(DnaSample.class)) {
                          derivedUnit = HibernateProxyHelper.deproxy(o, DnaSample.class);
                         derivedUnitDTO = new DNASampleDTO(derivedUnit);
@@ -548,7 +548,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             List<String> propertyPaths)  {
 
         DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
-        SpecimenOrObservationBaseDTO derivedUnitDTO;
+        DerivedUnitDTO derivedUnitDTO;
         HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen = new HashMap<>();
         List<FieldUnitDTO> fieldUnitDTOs = new ArrayList<>();
         if (dnaSample != null){
@@ -659,7 +659,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional(readOnly=true)
-    public FieldUnitDTO findFieldUnitDTO(SpecimenOrObservationBaseDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
+    public FieldUnitDTO findFieldUnitDTO(DerivedUnitDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
             HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
@@ -695,7 +695,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 fieldUnitDto.addDerivate(derivedUnitDTO);
                 fieldUnits.add(fieldUnitDto);
             }else{
-                SpecimenOrObservationBaseDTO originalDTO;
+                DerivedUnitDTO originalDTO;
                 if (specimen instanceof DnaSample){
                     originalDTO = new DNASampleDTO((DnaSample)specimen);
                 } else {
@@ -721,7 +721,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     public FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid) {
 
         FieldUnitDTO fieldUnitDTO = null;
-        SpecimenOrObservationBaseDTO derivedUnitDTO = null;
+        DerivedUnitDTO derivedUnitDTO = null;
 
         Map<UUID, SpecimenOrObservationBaseDTO> cycleDetectionMap = new HashMap<>();
         SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
@@ -776,11 +776,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         }
                         break;
                     }else{
+                        // So this must be a DerivedUnitDTO
                         if (derivedUnitDTO == null){
-                            derivedUnitDTO = originalDTO;
+                            derivedUnitDTO = (DerivedUnitDTO)originalDTO;
                         } else {
                             originalDTO.addDerivate(derivedUnitDTO);
-                            derivedUnitDTO = originalDTO;
+                            derivedUnitDTO = (DerivedUnitDTO)originalDTO;
                         }
                     }
                 }

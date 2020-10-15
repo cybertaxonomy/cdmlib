@@ -39,8 +39,6 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	private String date;
 	private String collectionsStatistics;
 
-	private boolean hasType;
-
 	private GatheringEventDTO gatheringEvent;
 
 	public static FieldUnitDTO fromEntity(FieldUnit entity){
@@ -71,6 +69,10 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	 */
     private FieldUnitDTO(FieldUnit fieldUnit, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter ) {
         super(fieldUnit);
+
+        if(specimenOrObservationTypeFilter == null) {
+            specimenOrObservationTypeFilter = EnumSet.allOf(SpecimenOrObservationType.class);
+        }
         if (fieldUnit.getGatheringEvent() != null){
             gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
         }
@@ -235,10 +237,10 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
     }
 
     public boolean isHasType() {
+        boolean hasType = collectDerivatives()
+                .stream()
+                .anyMatch(derivedUnitDTO -> derivedUnitDTO.getSpecimenTypeDesignations() != null && !derivedUnitDTO.getSpecimenTypeDesignations().isEmpty());
         return hasType;
-    }
-    public void setHasType(boolean hasType) {
-        this.hasType = hasType;
     }
 
     public GatheringEventDTO getGatheringEvent() {
