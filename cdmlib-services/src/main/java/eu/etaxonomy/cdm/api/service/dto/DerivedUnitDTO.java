@@ -88,11 +88,19 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 //        return newInstance;
 //    }
 
+    /**
+     * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
+     * added as DerivedUnitDTO to the {@link SpecimenOrObservationBaseDTO#getDerivates() derivative DTOs}.
+     *
+     * @param entity
+     *   The entity to create the dto for
+     *
+     * @return <code>null</code> or the new DerivedUnitDTO
+     */
     public static DerivedUnitDTO fromEntity(DerivedUnit entity){
         return fromEntity(entity, null);
     }
     /**
-
      * @param entity
      *   The entity to create the dto for
      * @param individualsAssociations
@@ -100,8 +108,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      *    action, since individualsAssociations are not accessible from the DerivedUnit side. A service level method call is needed to
      *    retrieve them, so it would be required to access the OccurrenceServiceImpl from inside of this DTO factory method, which is
      *    bad OO design. The other option is implemented here, requires all calling Objects to pass the IndividualsAssociations as parameter.
-     * @return
-     *
+     * @return <code>null</code> or the new DerivedUnitDTO
      * @deprecated see comment on the parameter <code>individualsAssociations</code>
      */
     @Deprecated

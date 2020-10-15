@@ -114,7 +114,10 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
         // List of accession numbers for citation
         List<String> preservedSpecimenAccessionNumbers = new ArrayList<>();
 
-        // assemble preserved specimen DTOs
+        // NOTE!
+        // the derivation graph seems to be walked two time in here
+        // 1. below in the for
+        // assemble DerivedUnitDTOs
         Set<DerivationEvent> derivationEvents = fieldUnit.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
@@ -142,6 +145,8 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
                     collectionToCountMap.put(collection, herbariumCount + 1);
                 }
                 if (specimenOrObservationTypeFilter.contains(derivedUnit.getRecordBasis())) {
+                    // FIXME should'nt the specimenOrObservationTypeFilter be also passed
+                    // to the DerivedUnitDTO factory method?
                     DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null);
                     addDerivate(derivedUnitDTO);
                     setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
