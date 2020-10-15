@@ -168,9 +168,9 @@ public abstract class SpecimenOrObservationBaseDTO extends UuidAndTitleCache<Spe
     public void setDerivateDataDTO(DerivateDataDTO derivateDataDTO) {
         this.derivateDataDTO = derivateDataDTO;
         if(derivateDataDTO != null) {
-            setHasSpecimenScan(!derivateDataDTO.getSpecimenScans().isEmpty());
-            setHasDetailImage(!derivateDataDTO.getDetailImages().isEmpty());
-            setHasDna(!derivateDataDTO.getMolecularDataList().isEmpty());
+            setHasSpecimenScan(isHasSpecimenScan() || !derivateDataDTO.getSpecimenScans().isEmpty());
+            setHasDetailImage(isHasDetailImage() || !derivateDataDTO.getDetailImages().isEmpty());
+            setHasDna(isHasDna() || !derivateDataDTO.getMolecularDataList().isEmpty());
         }
     }
 

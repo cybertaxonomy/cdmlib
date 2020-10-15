@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -372,7 +373,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (!getSession().contains(fieldUnit)) {
             fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
         }
-        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit);
+        // FIXME the filter for SpecimenOrObservationType.PreservedSpecimen has been preserved from the former implementation (see commit 07e3f63c7d  and older)
+        // it is questionable if this filter makes sense for all use cases or if it is only a sensible default for the
+        // compressed specimen table in the cdm-dataportal (see #6816, #6870)
+        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit, EnumSet.of(SpecimenOrObservationType.PreservedSpecimen));
         return fieldUnitDTO;
     }
 

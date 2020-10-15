@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +44,32 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	private GatheringEventDTO gatheringEvent;
 
 	public static FieldUnitDTO fromEntity(FieldUnit entity){
+        return FieldUnitDTO.fromEntity(entity, null);
+	}
+
+	/**
+     * Factory method for the construction of a FieldUnitDTO.
+     *
+     *
+     * @param fieldUnit
+     *     The FieldUnit entity to create a DTO for. Is null save.
+     * @param specimenOrObservationTypeFilter
+     *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivates() derivative DTOs}
+     */
+	public static FieldUnitDTO fromEntity(FieldUnit entity, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter){
         if(entity == null) {
             return null;
         }
-        return new FieldUnitDTO(entity);
-	}
+        return new FieldUnitDTO(entity, specimenOrObservationTypeFilter);
+    }
 
-    private FieldUnitDTO(FieldUnit fieldUnit) {
+	/**
+	 * @param fieldUnit
+	 *     The FieldUnit entity to create a DTO for
+	 * @param specimenOrObservationTypeFilter
+	 *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivates() derivative DTOs}
+	 */
+    private FieldUnitDTO(FieldUnit fieldUnit, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter ) {
         super(fieldUnit);
         if (fieldUnit.getGatheringEvent() != null){
             gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
@@ -121,16 +141,19 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
                     }
                     collectionToCountMap.put(collection, herbariumCount + 1);
                 }
-                if (derivedUnit.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen)) {
-                    DerivedUnitDTO preservedSpecimenDTO = DerivedUnitDTO.fromEntity(derivedUnit, null);
-                    addDerivate(preservedSpecimenDTO);
-                    setHasCharacterData(isHasCharacterData() || preservedSpecimenDTO.isHasCharacterData());
-                    setHasDetailImage(isHasDetailImage() || preservedSpecimenDTO.isHasDetailImage());
-                    setHasDna(isHasDna() || preservedSpecimenDTO.isHasDna());
-                    setHasSpecimenScan(isHasSpecimenScan() || preservedSpecimenDTO.isHasSpecimenScan());
+                if (specimenOrObservationTypeFilter.contains(derivedUnit.getRecordBasis())) {
+                    DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null);
+                    addDerivate(derivedUnitDTO);
+                    setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
+                    // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in
+                    // setDerivateDataDTO(), see below
+                    setHasDetailImage(isHasDetailImage() || derivedUnitDTO.isHasDetailImage());
+                    setHasDna(isHasDna() || derivedUnitDTO.isHasDna());
+                    setHasSpecimenScan(isHasSpecimenScan() || derivedUnitDTO.isHasSpecimenScan());
                 }
             }
         }
+
         // assemble derivate data DTO
         DerivateDataDTO derivateDataDTO = DerivateDataDTO.fromEntity(fieldUnit, null);
         setDerivateDataDTO(derivateDataDTO);
