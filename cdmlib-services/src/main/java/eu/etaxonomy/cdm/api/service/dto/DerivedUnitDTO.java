@@ -236,7 +236,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         }
 
         // assemble sub derivatives
-        setDerivateDataDTO(DerivateDataDTO.fromEntity(derivedUnit, getAccessionNumber()));
+        setDerivateDataDTO(DerivateDataDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
     }
 
 

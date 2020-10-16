@@ -49,7 +49,7 @@ public class DerivateDataDTO implements Serializable {
     private List<UUID> specimenScanUuids = new ArrayList<>();
     private List<UUID> detailImageUuids = new ArrayList<>();
 
-    public static DerivateDataDTO fromEntity(SpecimenOrObservationBase<?> specimenOrObservation, String accessionNumber) {
+    public static DerivateDataDTO fromEntity(SpecimenOrObservationBase<?> specimenOrObservation, String specimenIdentifier) {
 
         DerivateDataDTO derivateDataDTO = new DerivateDataDTO();
 
@@ -112,7 +112,7 @@ public class DerivateDataDTO implements Serializable {
                     if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
                         derivateDataDTO.addSpecimenScanUuid(media.getMediaSpecimen().getUuid());
                         String imageLinkText = "scan";
-                        imageLinkText = accessionNumber;
+                        imageLinkText = specimenIdentifier;
                         derivateDataDTO.addSpecimenScan(mediaUri, imageLinkText);
                     }
                     // detail image

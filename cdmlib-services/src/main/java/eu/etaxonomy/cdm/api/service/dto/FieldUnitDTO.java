@@ -36,7 +36,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
 	private String country;
 	private String collectingString;
-	private String date;
+	private Partial date;
 	private String collectionsStatistics;
 
 	private GatheringEventDTO gatheringEvent;
@@ -103,16 +103,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
                 collectionString.trim();
             }
             setCollectingString(collectionString);
-            // Date
-            Partial gatheringDate = gatheringEvent.getGatheringDate();
-            String dateString = null;
-            if (gatheringDate != null) {
-                dateString = gatheringDate.toString();
-            }
-            else if(gatheringEvent.getTimeperiod()!=null && gatheringEvent.getTimeperiod().getFreeText()!=null){
-                dateString = gatheringEvent.getTimeperiod().getFreeText();
-            }
-            setDate(dateString);
+            setDate(gatheringEvent.getGatheringDate());
         }
 
         // Herbaria map
@@ -231,10 +222,10 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
         this.collectingString = collectingString;
     }
 
-    public String getDate() {
+    public Partial getDate() {
         return date;
     }
-    public void setDate(String date) {
+    public void setDate(Partial date) {
         this.date = date;
     }
 
