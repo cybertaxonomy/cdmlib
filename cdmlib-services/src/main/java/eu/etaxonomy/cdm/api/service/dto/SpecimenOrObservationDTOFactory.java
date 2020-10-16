@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -26,10 +27,14 @@ public class SpecimenOrObservationDTOFactory {
         if(entity == null) {
             return null;
         }
-        if (entity instanceof FieldUnit) {
+        if (entity.isInstanceOf(FieldUnit.class)) {
             return FieldUnitDTO.fromEntity((FieldUnit) entity);
         } else {
-            return DerivedUnitDTO.fromEntity((DerivedUnit) entity);
+            if (entity.isInstanceOf(DnaSample.class)){
+                return new DNASampleDTO((DnaSample)entity); // FIXME use factory method
+            } else {
+                return DerivedUnitDTO.fromEntity((DerivedUnit) entity);
+            }
         }
     }
 

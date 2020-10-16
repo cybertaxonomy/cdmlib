@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +27,6 @@ import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurato
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -688,10 +686,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 
     List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid, List<String> propertyPaths);
-
-    FieldUnitDTO findFieldUnitDTO(DerivedUnitDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
-            HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen);
-
 
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 

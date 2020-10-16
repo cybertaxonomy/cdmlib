@@ -62,11 +62,7 @@ public class DerivateDataDTO implements Serializable {
                     // TODO implement TissueSample assembly for web service
                 }
                 if (childDerivate.getRecordBasis() == SpecimenOrObservationType.DnaSample) {
-
                     DnaSample dna = HibernateProxyHelper.deproxy(childDerivate, DnaSample.class);
-                    if (!dna.getSequences().isEmpty()) {
-
-                    }
                     for (Sequence sequence : dna.getSequences()) {
                         URI boldUri = null;
                         try {

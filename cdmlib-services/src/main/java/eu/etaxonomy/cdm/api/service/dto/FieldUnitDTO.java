@@ -47,6 +47,8 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
 	/**
      * Factory method for the construction of a FieldUnitDTO.
+     * <p>
+     * The direct derivatives are added to the field {@link #getDerivates() derivates}.
      *
      *
      * @param fieldUnit
@@ -62,6 +64,8 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
     }
 
 	/**
+     * The direct derivatives are added to the field {@link #getDerivates() derivates}.
+	 *
 	 * @param fieldUnit
 	 *     The FieldUnit entity to create a DTO for
 	 * @param specimenOrObservationTypeFilter
@@ -117,9 +121,9 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
         List<String> preservedSpecimenAccessionNumbers = new ArrayList<>();
 
         // NOTE!
-        // the derivation graph seems to be walked two time in here
-        // 1. below in the for
-        // assemble DerivedUnitDTOs
+        // the derivation graph seems to be walked two times in here
+        // 1. below in the for loop
+        // 2. in the call to DerivateDataDTO.fromEntity below
         Set<DerivationEvent> derivationEvents = fieldUnit.getDerivationEvents();
         for (DerivationEvent derivationEvent : derivationEvents) {
             Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
@@ -147,8 +151,6 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
                     collectionToCountMap.put(collection, herbariumCount + 1);
                 }
                 if (specimenOrObservationTypeFilter.contains(derivedUnit.getRecordBasis())) {
-                    // FIXME should'nt the specimenOrObservationTypeFilter be also passed
-                    // to the DerivedUnitDTO factory method?
                     DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null);
                     addDerivate(derivedUnitDTO);
                     setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
