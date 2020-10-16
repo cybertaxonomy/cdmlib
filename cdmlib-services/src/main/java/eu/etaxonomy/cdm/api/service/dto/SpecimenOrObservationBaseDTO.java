@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -49,7 +50,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private boolean hasSpecimenScan;
 
     private String recordBase;
-    private String kindOfUnit;
+    private String kindOfUnit_L10n;
     private CollectionDTO collection;
     private String catalogNumber;
     private String collectorsNumber;
@@ -68,7 +69,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         super((Class<SpecimenOrObservationBase<?>>) specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
         addMedia(specimenOrObservation);
         if (specimenOrObservation.getKindOfUnit() != null){
-            setKindOfUnit(specimenOrObservation.getKindOfUnit().getTitleCache());
+            setKindOfUnit_L10n(TermRepresentation_L10n.from(specimenOrObservation.getKindOfUnit()).getLabel());
         }
         if (specimenOrObservation instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
@@ -396,11 +397,11 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
             }
         }
     }
-    public String getKindOfUnit() {
-        return kindOfUnit;
+    public String getKindOfUnit_L10n() {
+        return kindOfUnit_L10n;
     }
-    public void setKindOfUnit(String kindOfUnit) {
-        this.kindOfUnit = kindOfUnit;
+    public void setKindOfUnit_L10n(String kindOfUnit) {
+        this.kindOfUnit_L10n = kindOfUnit;
     }
 
 

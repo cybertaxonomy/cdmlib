@@ -43,6 +43,23 @@ public class TermRepresentation_L10n implements ITermRepresentation_L10n {
         localize(term, useInverseRepresentation);
     }
 
+    /**
+     * Shortcut for {@link #from(TermBase, boolean)} with <code>useInverseRepresentation = false</code>.
+     *
+     * @param term
+     * @return
+     */
+    public static TermRepresentation_L10n from(TermBase term) {
+        return TermRepresentation_L10n.from(term, false);
+    }
+
+    public static TermRepresentation_L10n from(TermBase term, boolean useInverseRepresentation) {
+        if(term == null) {
+            return null;
+        }
+        return new TermRepresentation_L10n(term, useInverseRepresentation);
+    }
+
     @Override
     public void localize(TermBase term, boolean useInverseRepresentation) {
 
