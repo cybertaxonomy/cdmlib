@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.CdmFormatterFactory;
@@ -51,6 +52,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private static final long serialVersionUID = 2345864166579381295L;
 
     private String accessionNumber;
+    private String specimenIdentifier;
     private URI preferredStableUri;
 
     private List<AbstractMap.SimpleEntry<UUID, String>> associatedTaxa;
@@ -141,10 +143,15 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      */
     public DerivedUnitDTO(DerivedUnit derivedUnit) {
         super(derivedUnit);
+        // experimental feature, not yet exposed in method signature
+        boolean cleanAccessionNumber = false;
         accessionNumber = derivedUnit.getAccessionNumber();
         preferredStableUri = derivedUnit.getPreferredStableUri();
         if (derivedUnit.getCollection() != null){
             setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+            if(cleanAccessionNumber && getCollection().getCode() != null) {
+                accessionNumber = accessionNumber.replaceFirst("^" + Pattern.quote(getCollection().getCode()) + "-", "");
+            }
         }
         setBarcode(derivedUnit.getBarcode());
         setCatalogNumber(derivedUnit.getCatalogNumber());
@@ -181,7 +188,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         if(CdmUtils.isBlank(specimenIdentifier)){
             specimenIdentifier = derivedUnit.getUuid().toString();
         }
-        setAccessionNumber(specimenIdentifier);
+        setSpecimenIdentifier(specimenIdentifier);
 
 
         //preferred stable URI
@@ -289,6 +296,12 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     public URI getPreferredStableUri() {
         return preferredStableUri;
+    }
+    public String getSpecimenIdentifier() {
+        return specimenIdentifier;
+    }
+    public void setSpecimenIdentifier(String specimenIdentifier) {
+        this.specimenIdentifier = specimenIdentifier;
     }
 
 }
