@@ -31,8 +31,8 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import io.swagger.annotations.Api;
@@ -101,23 +101,17 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
     }
 
     @RequestMapping(value = {"fieldObjectMediaDTO"}, method = RequestMethod.GET)
-    public ModelAndView doGetFieldObjectMediaDTO(
+    public List<MediaDTO> doGetFieldObjectMediaDTO(
         @PathVariable("uuid") UUID occurrenceUuid,
         HttpServletRequest request,
         HttpServletResponse response) throws IOException {
 
-        logger.info("doGetFieldObjectMedia() - " + request.getRequestURI());
-        ModelAndView mv = new ModelAndView();
-//        DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
-//                "fieldObjectMedia", "fieldObjectMedia.title"}));
-        SpecimenOrObservationBase sob = service.load(occurrenceUuid, Arrays.asList(new String []{"descriptions", "descriptions.descriptionElements.$", "descriptions.descriptionElements.media", "kindOfUnit","gatheringEvent.*"}));
-        FieldUnitDTO dto;
-        if (sob instanceof FieldUnit){
-            dto = FieldUnitDTO.fromEntity((FieldUnit)sob);
-            mv.addObject(dto.getListOfMedia());
+        logger.info("doGetFieldObjectMedia() - " + readPathParameter(request, null));
+        FieldUnitDTO dto = service.loadFieldUnitDTO(occurrenceUuid);
+        if (dto != null){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
-
-        return mv;
+        return dto.getListOfMedia();
     }
 
     @RequestMapping(value = {"fieldObjectMedia"}, method = RequestMethod.GET)
