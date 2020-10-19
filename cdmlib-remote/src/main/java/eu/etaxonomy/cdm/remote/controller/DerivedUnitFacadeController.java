@@ -108,7 +108,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
 
         logger.info("doGetFieldObjectMedia() - " + readPathParameter(request, null));
         FieldUnitDTO dto = service.loadFieldUnitDTO(occurrenceUuid);
-        if (dto != null){
+        if (dto == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
         return dto.getListOfMedia();
