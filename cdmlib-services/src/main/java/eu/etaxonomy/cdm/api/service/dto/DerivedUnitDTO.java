@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 
 /**
@@ -53,42 +54,18 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     private String accessionNumber;
     private String specimenIdentifier;
+    private TypedEntityReference<TaxonName> storedUnder;
     private URI preferredStableUri;
 
     private List<AbstractMap.SimpleEntry<UUID, String>> associatedTaxa;
     private Map<String, List<String>> types;
 
-    private List<AbstractMap.SimpleEntry<UUID, String>> determinedNames;
+    private List<TypedEntityReference<TaxonName>> determinedNames;
 
+    private String originalLabelInfo;
 
-//    public DerivedUnitDTO(DerivedUnit derivedUnit){
-//        super();
-//        this.setUuid(derivedUnit.getUuid());
-//        this.setTitleCache(derivedUnit.getTitleCache());
-//        this.setAccessionNumber(derivedUnit.getAccessionNumber());
-//        this.setPreferredStableUri(derivedUnit.getPreferredStableUri());
-//
-//        this.setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
-//        this.setBarcode(derivedUnit.getBarcode());
-//        this.setCatalogNumber(derivedUnit.getCatalogNumber());
-//        this.setCollectorsNumber(derivedUnit.getCollectorsNumber());
-//        if (derivedUnit.getDerivedFrom() != null){
-//            this.setDerivationEvent(new DerivationEventDTO(derivedUnit.getDerivedFrom() ));
-//        }
-//        if (derivedUnit.getPreservation()!= null){
-//            this.setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
-//        }
-//        this.setRecordBase(derivedUnit.getRecordBasis().getMessage());
-//        this.setSources(derivedUnit.getSources());
-//        this.setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
-//
-//    }
-//
-//    public static DerivedUnitDTO newInstance(DerivedUnit derivedUnit ){
-//        PreservedSpecimenDTO newInstance = new PreservedSpecimenDTO(derivedUnit);
-//
-//        return newInstance;
-//    }
+    private String exsiccatum;
+
 
     /**
      * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
@@ -237,6 +214,13 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
         // assemble sub derivatives
         setDerivateDataDTO(DerivateDataDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
+
+        if(derivedUnit.getStoredUnder() != null) {
+            storedUnder = TypedEntityReference.fromEntity(derivedUnit.getStoredUnder());
+        }
+        originalLabelInfo = derivedUnit.getOriginalLabelInfo();
+        exsiccatum = derivedUnit.getExsiccatum();
+
     }
 
 
@@ -268,12 +252,12 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         associatedTaxa.add(new AbstractMap.SimpleEntry<UUID, String>(taxon.getUuid(), taxon.getTitleCache()));
     }
 
-    public List<AbstractMap.SimpleEntry<UUID, String>> getDeterminedNames() {
+    public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
         return determinedNames;
     }
     public void addDeterminedNames(Set<DeterminationEvent> determinations){
         if(determinedNames==null){
-            determinedNames = new ArrayList<AbstractMap.SimpleEntry<UUID, String>>();
+            determinedNames = new ArrayList<>();
         }
         TaxonName preferredName = null;
         for (DeterminationEvent event:determinations){
@@ -282,10 +266,10 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
             }
         }
         if (preferredName != null){
-            determinedNames.add(new AbstractMap.SimpleEntry<UUID, String>(preferredName.getUuid(), preferredName.getTitleCache()));
+            determinedNames.add(TypedEntityReference.fromEntity(preferredName));
         }else{
             for (DeterminationEvent event:determinations){
-                determinedNames.add(new AbstractMap.SimpleEntry<UUID, String>(event.getTaxonName().getUuid(), event.getTaxonName().getTitleCache()));
+                determinedNames.add(TypedEntityReference.fromEntity(event.getTaxonName()));
             }
         }
     }
@@ -302,6 +286,25 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     }
     public void setSpecimenIdentifier(String specimenIdentifier) {
         this.specimenIdentifier = specimenIdentifier;
+    }
+    public TypedEntityReference<TaxonName> getStoredUnder() {
+        return storedUnder;
+    }
+    public void setStoredUnder(TypedEntityReference<TaxonName> storedUnder) {
+        this.storedUnder = storedUnder;
+    }
+
+    public String getOriginalLabelInfo() {
+        return originalLabelInfo;
+    }
+    public void setOriginalLabelInfo(String originalLabelInfo) {
+        this.originalLabelInfo = originalLabelInfo;
+    }
+    public String getExsiccatum() {
+        return exsiccatum;
+    }
+    public void setExsiccatum(String exsiccatum) {
+        this.exsiccatum = exsiccatum;
     }
 
 }

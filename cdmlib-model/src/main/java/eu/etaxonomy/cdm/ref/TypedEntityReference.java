@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
@@ -44,6 +45,7 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         if(entity == null) {
             return null;
         }
+        entity = HibernateProxyHelper.deproxy(entity);
         if(IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
             return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid(), ((IdentifiableEntity)entity).getTitleCache());
         } else {

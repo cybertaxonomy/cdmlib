@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -31,6 +31,8 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 
@@ -50,7 +52,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private boolean hasSpecimenScan;
 
     private String recordBase;
-    private String kindOfUnit_L10n;
+    private TermBase kindOfUnit;
     private CollectionDTO collection;
     private String catalogNumber;
     private String collectorsNumber;
@@ -65,12 +67,16 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private Set<IdentifiableSource> sources;
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
+    private DefinedTerm sex;
+
+    private DefinedTerm lifeStage;
+
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
         super((Class<SpecimenOrObservationBase<?>>) specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
         addMedia(specimenOrObservation);
-        if (specimenOrObservation.getKindOfUnit() != null){
-            setKindOfUnit_L10n(TermRepresentation_L10n.from(specimenOrObservation.getKindOfUnit()).getLabel());
-        }
+        setKindOfUnit(specimenOrObservation.getKindOfUnit());
+        setSex(specimenOrObservation.getSex());
+        lifeStage = specimenOrObservation.getLifeStage();
         if (specimenOrObservation instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
             if (derivedUnit.getSpecimenTypeDesignations() != null){
@@ -397,11 +403,23 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
             }
         }
     }
-    public String getKindOfUnit_L10n() {
-        return kindOfUnit_L10n;
+    public TermBase getKindOfUnit() {
+        return kindOfUnit;
     }
-    public void setKindOfUnit_L10n(String kindOfUnit) {
-        this.kindOfUnit_L10n = kindOfUnit;
+    public void setKindOfUnit(TermBase kindOfUnit) {
+        this.kindOfUnit = HibernateProxyHelper.deproxy(kindOfUnit);
+    }
+    public DefinedTerm getSex() {
+        return sex;
+    }
+    public void setSex(DefinedTerm sex) {
+        this.sex = sex;
+    }
+    public DefinedTerm getLifeStage() {
+        return lifeStage;
+    }
+    public void setLifeStage(DefinedTerm lifeStage) {
+        this.lifeStage = lifeStage;
     }
 
 
