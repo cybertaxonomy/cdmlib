@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.net.URI;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -57,7 +55,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private TypedEntityReference<TaxonName> storedUnder;
     private URI preferredStableUri;
 
-    private List<AbstractMap.SimpleEntry<UUID, String>> associatedTaxa;
+    private List<TypedEntityReference<Taxon>> associatedTaxa;
     private Map<String, List<String>> types;
 
     private List<TypedEntityReference<TaxonName>> determinedNames;
@@ -242,14 +240,14 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         types.put(typeStatus, typedTaxa);
     }
 
-    public List<AbstractMap.SimpleEntry<UUID, String>> getAssociatedTaxa() {
+    public List<TypedEntityReference<Taxon>> getAssociatedTaxa() {
         return associatedTaxa;
     }
     public void addAssociatedTaxon(Taxon taxon){
         if(associatedTaxa==null){
-            associatedTaxa = new ArrayList<AbstractMap.SimpleEntry<UUID, String>>();
+            associatedTaxa = new ArrayList<>();
         }
-        associatedTaxa.add(new AbstractMap.SimpleEntry<UUID, String>(taxon.getUuid(), taxon.getTitleCache()));
+        associatedTaxa.add(TypedEntityReference.fromEntity(taxon));
     }
 
     public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
