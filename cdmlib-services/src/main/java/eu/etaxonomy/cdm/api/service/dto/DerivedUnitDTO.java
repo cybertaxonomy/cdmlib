@@ -64,6 +64,8 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     private String exsiccatum;
 
+    private String mostSignificantIdentifier;
+
 
     /**
      * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
@@ -145,6 +147,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
         // -------------------------------------------------------------
 
+        mostSignificantIdentifier = derivedUnit.getMostSignificantIdentifier();
 
         //specimen identifier
         FormatKey collectionKey = FormatKey.COLLECTION_CODE;
@@ -284,6 +287,12 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     }
     public void setSpecimenIdentifier(String specimenIdentifier) {
         this.specimenIdentifier = specimenIdentifier;
+    }
+    public String getMostSignificantIdentifier() {
+        return mostSignificantIdentifier;
+    }
+    public void setMostSignificantIdentifier(String mostSignificantIdentifier) {
+        this.mostSignificantIdentifier = mostSignificantIdentifier;
     }
     public TypedEntityReference<TaxonName> getStoredUnder() {
         return storedUnder;
