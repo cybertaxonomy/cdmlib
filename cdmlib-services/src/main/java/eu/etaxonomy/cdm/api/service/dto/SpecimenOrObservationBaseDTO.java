@@ -40,6 +40,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private static final long serialVersionUID = -7597690654462090732L;
 
+    private int id;
     private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
@@ -73,6 +74,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
         super((Class<SpecimenOrObservationBase<?>>) specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
+        this.id = specimenOrObservation.getId();
         addMedia(specimenOrObservation);
         setKindOfUnit(specimenOrObservation.getKindOfUnit());
         setSex(specimenOrObservation.getSex());
@@ -420,6 +422,11 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     }
     public void setLifeStage(DefinedTerm lifeStage) {
         this.lifeStage = lifeStage;
+    }
+
+
+    public int getId() {
+        return id;
     }
 
 
