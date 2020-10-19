@@ -622,6 +622,14 @@
     </repository>
   </distributionManagement>
   <!-- **** DEPENDENCIES **** -->
+  <dependencies>
+    <dependency>
+      <!-- junit is required for all module tests, also those not depending on cdmlib-test, so it is added here on parent level with test scope -->
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <dependencyManagement>
     <dependencies>
       <dependency>
