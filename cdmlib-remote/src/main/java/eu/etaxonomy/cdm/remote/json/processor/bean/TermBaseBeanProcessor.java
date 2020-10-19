@@ -35,7 +35,12 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
     private static final List<String> IGNORE_LIST = Arrays.asList(new String[] {
             "representations",
             "inverseRepresentations",
-            "terms"
+            "terms",
+            "updated",
+            "created",
+            "protectedTitleCache",
+            "titleCache",
+            "uri"
             });
 
     private boolean replaceRepresentations = false;
