@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.molecular;
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -60,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
-public class DnaSample extends DerivedUnit implements Cloneable {
+public class DnaSample extends DerivedUnit {
 	private static final long serialVersionUID = -2978411330023671805L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
@@ -69,12 +67,11 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 
 	/**
 	 * Factory method
-	 * @return
+	 * @return a new and empty DnaSample
 	 */
 	public static DnaSample NewInstance(){
 		return new DnaSample();
 	}
-
 
 // ************** ATTRIBUTES ****************************/
 
@@ -87,15 +84,14 @@ public class DnaSample extends DerivedUnit implements Cloneable {
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Set<Sequence> sequences = new HashSet<Sequence>();
-
+    private Set<Sequence> sequences = new HashSet<>();
 
 	@XmlElementWrapper(name = "AmplificationResults")
 	@XmlElement(name = "AmplificationResult")
 	@OneToMany(mappedBy="dnaSample", fetch = FetchType.LAZY)
 	@Cascade( { CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
-	private final Set<AmplificationResult> amplificationResults = new HashSet<AmplificationResult>();
+	private final Set<AmplificationResult> amplificationResults = new HashSet<>();
 
     @XmlElement(name = "DnaQuality", required = true)
     @XmlIDREF
@@ -105,12 +101,8 @@ public class DnaSample extends DerivedUnit implements Cloneable {
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     private DnaQuality dnaQuality;
 
-
 // ******************* CONSTRUCTOR *************************/
 
-	/**
-	 * Constructor
-	 */
 	protected DnaSample() {  //protected for Javassist, otherwise private
 		super(SpecimenOrObservationType.DnaSample);
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
@@ -122,7 +114,6 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}
-
 	public void addSequence(Sequence sequence) {
 		if (sequence.getDnaSample() != null){
 			sequence.getDnaSample().removeSequence(sequence);
@@ -130,29 +121,23 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 		this.sequences.add(sequence);
 		sequence.setDnaSample(this);
 	}
-
 	public void removeSequence(Sequence sequence) {
 		sequence.setDnaSample(null);
 		this.sequences.remove(sequence);
 	}
 
-
-
 	//amplifications
 	public Set<AmplificationResult> getAmplificationResults() {
 		return amplificationResults;
 	}
-
 	public void addAmplificationResult(AmplificationResult amplificationResult) {
 		this.amplificationResults.add(amplificationResult);
 		amplificationResult.setDnaSample(this);
 	}
-
 	public void removeAmplificationResult(AmplificationResult amplificationResult) {
 		this.amplificationResults.remove(amplificationResult);
 		amplificationResult.setDnaSample(null);
 	}
-
 
 	public DnaQuality getDnaQuality() {
 		return dnaQuality;
@@ -161,15 +146,12 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 		this.dnaQuality = dnaQuality;
 	}
 
-
 // ************* Convenience Getter / Setter ************/
-
 
 	@Transient
 	public Collection getStoredAt(){
 		return this.getCollection();
 	}
-
 	public void setStoredAt(Collection storedAt){
 		this.setCollection(storedAt);
 	}
@@ -183,11 +165,9 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public String getBankNumber(){
 		return this.getCatalogNumber();
 	}
-
 	public void setBankNumber(String bankNumber){
 		this.setCatalogNumber(bankNumber);
 	}
-
 
 //*********** CLONE **********************************/
 
@@ -207,9 +187,9 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public DnaSample clone() {
 		DnaSample result = (DnaSample)super.clone();
 		//sequenceSet
-		result.sequences = new HashSet<Sequence>();
+		result.sequences = new HashSet<>();
 		for(Sequence sequence : this.sequences) {
-			result.addSequence((Sequence)sequence.clone());
+			result.addSequence(sequence.clone());
 		}
 		//no changes to: bankNumber
 		return result;
