@@ -44,10 +44,6 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.taskadapter</groupId>
-      <artifactId>redmine-java-api</artifactId>
-    </dependency>
     <!-- GIS/KML -->
 	<dependency>
 	    <groupId>de.micromata.jak</groupId>
