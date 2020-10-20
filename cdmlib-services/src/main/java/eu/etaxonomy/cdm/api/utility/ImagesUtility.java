@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.utility;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -237,43 +236,7 @@ public class ImagesUtility {
 		// remove the empty description elements
 		for(DescriptionElementBase descriptionElement : descriptionElementsToRemove){
 			imageGallery.removeElement(descriptionElement);
-		}		
-	}
-
-	public static final int UP = 1;
-	public static final int DOWN = -1;
-	
-	/**
-	 * @deprecated not used by EDITor anymore
-	 * @param input
-	 * @param selectedImage
-	 * @param direction
-	 */
-	@Deprecated
-	public static void moveImage(DescriptionElementBase element, ImageFile image,
-			int direction) {
-		
-		MediaRepresentation representation = getImageMediaRepresentation(element);
-		int index = representation.getParts().indexOf(image);
-		if (index == -1) {
-			return;
-		}		
-		if (direction == UP && index != 0) {
-			Collections.swap(representation.getParts(), index, index - 1);
 		}
-		if (direction == DOWN && index < representation.getParts().size() - 1) {
-			Collections.swap(representation.getParts(), index, index + 1);
-		}
-	}
-
-	/**
-	 * @deprecated not used by EDITor anymore
-	 * @param input
-	 * @param selectedImage
-	 */
-	@Deprecated
-	public static void removeImage(DescriptionElementBase element, ImageFile image) {
-		getImageMediaRepresentation(element).getParts().remove(image);
 	}
 
 	/**
