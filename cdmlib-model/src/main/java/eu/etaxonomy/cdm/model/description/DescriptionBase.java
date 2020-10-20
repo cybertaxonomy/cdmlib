@@ -397,7 +397,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * {@link TypeDesignationBase Type designations} are cloned as XXX.<BR>
      * {@link NameRelationship Name relation} are cloned as XXX.<BR>
      *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override
@@ -421,7 +420,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             //elements
             result.descriptionElements = new HashSet<>();
             for (DescriptionElementBase element : getElements()){
-                DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
+                DescriptionElementBase newElement = element.clone();
                 result.addElement(newElement);
             }
 

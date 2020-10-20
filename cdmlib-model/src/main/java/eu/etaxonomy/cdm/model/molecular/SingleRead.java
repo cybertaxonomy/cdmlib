@@ -278,8 +278,6 @@ public class SingleRead extends EventBase implements Cloneable{
 	 * a new instance that differs only slightly from <i>this</i> sequencing by
 	 * modifying only some of the attributes.<BR><BR>
 	 *
-	 *
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

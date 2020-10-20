@@ -413,7 +413,6 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * Clones <i>this</i> Person. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> Person.
 	 *
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
@@ -428,5 +427,4 @@ public class Person extends TeamOrPersonBase<Person>{
 			return null;
 		}
 	}
-
 }

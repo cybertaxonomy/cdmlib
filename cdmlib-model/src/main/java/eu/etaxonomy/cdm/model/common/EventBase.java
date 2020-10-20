@@ -105,7 +105,6 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link AnnotatableEntity AnnotatableEntity}.
 	 *
-	 * @see eu.etaxonomy.cdm.model.media.AnnotatableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

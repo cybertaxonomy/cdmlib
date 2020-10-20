@@ -377,7 +377,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * a new instance that differs only slightly from <i>this</i> Team.
 	 * The corresponding person is cloned.
 	 *
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

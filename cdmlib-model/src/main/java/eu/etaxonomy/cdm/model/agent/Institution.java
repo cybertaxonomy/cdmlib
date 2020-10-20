@@ -210,7 +210,6 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * Clones <i>this</i> Institution. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> Institution.
 	 *
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

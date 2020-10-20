@@ -1083,7 +1083,6 @@ public class TaxonNode
      * The child nodes are not copied.<BR>
      * The taxon and parent are the same as for the original taxon node. <BR>
      *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override

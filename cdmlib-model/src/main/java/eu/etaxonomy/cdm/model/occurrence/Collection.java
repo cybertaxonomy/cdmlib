@@ -240,7 +240,6 @@ public class Collection
 		this.superCollection = superCollection;
 	}
 
-
 //*********** CLONE **********************************/
 
 	/**
@@ -268,8 +267,6 @@ public class Collection
 			return null;
 		}
 	}
-
-
 
 // *********************** toString() **************************************
 

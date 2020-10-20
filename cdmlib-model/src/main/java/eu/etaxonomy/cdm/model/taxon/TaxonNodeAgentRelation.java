@@ -127,7 +127,6 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
      * Clones <i>this</i> taxon node agent relation. This is a shortcut that enables to create
      * a new instance that differs only slightly from <i>this</i> relation.
      *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override
