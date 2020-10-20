@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v33_34.UsernameConstraintUpdater;
+import eu.etaxonomy.cdm.database.update.v30_40.UsernameConstraintUpdater;
 
 /**
  * Adds an Index on a string column.
