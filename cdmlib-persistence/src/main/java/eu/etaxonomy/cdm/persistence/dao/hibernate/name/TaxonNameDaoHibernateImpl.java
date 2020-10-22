@@ -933,10 +933,8 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     	        + " LEFT OUTER JOIN taxonBase.acceptedTaxon as accTaxon "
     	        + " LEFT OUTER JOIN accTaxon.taxonNodes as accTaxonNodes";
 
-
     	Query hqlQuery = getSession().createQuery(hqlQueryStringFrom);
     	List<?> hqlResult = hqlQuery.list();
-
 
 		List<HashMap<String,String>> nameRecords = new ArrayList<>();
 		HashMap<String,String> nameRecord = new HashMap<>();

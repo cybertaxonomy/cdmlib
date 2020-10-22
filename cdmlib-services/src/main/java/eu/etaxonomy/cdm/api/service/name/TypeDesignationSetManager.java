@@ -67,15 +67,12 @@ import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
  *
  * @author a.kohlbecker
  * @since Mar 10, 2017
- *
  */
 public class TypeDesignationSetManager {
 
     enum NameTypeBaseEntityType{
-
         NAME_TYPE_DESIGNATION,
         TYPE_NAME;
-
     }
 
     private static final String TYPE_STATUS_SEPARATOR = "; ";
@@ -115,22 +112,10 @@ public class TypeDesignationSetManager {
 
     private List<TaggedText> taggedText;
 
-    /**
-     * @param containgEntity
-     * @param taxonName
-     * @throws RegistrationValidationException
-     *
-     */
     public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException{
     	this(typeDesignations, null);
     }
-    
-    /**
-     * @param containgEntity
-     * @param taxonName
-     * @throws RegistrationValidationException
-     *
-     */
+
     public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName) throws RegistrationValidationException {
         if (this.typeDesignations == null){
             this.typeDesignations = new HashMap<>();
@@ -147,16 +132,10 @@ public class TypeDesignationSetManager {
         	this.typifiedName = typifiedName;
             this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
         }
-        
+
         mapAndSort();
     }
 
-    /**
-     * @param containgEntity
-     * @param taxonName
-     * @throws RegistrationValidationException
-     *
-     */
     public TypeDesignationSetManager(HomotypicalGroup group) throws RegistrationValidationException {
         if (this.typeDesignations == null){
             this.typeDesignations = new HashMap<>();
@@ -168,9 +147,6 @@ public class TypeDesignationSetManager {
         mapAndSort();
     }
 
-    /**
-     * @param typifiedName2
-     */
     public TypeDesignationSetManager(TaxonName typifiedName) {
         this.typeDesignations = new HashMap<>();
         this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
@@ -203,11 +179,6 @@ public class TypeDesignationSetManager {
         orderedByTypesByBaseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
     }
 
-
-    /**
-     * @param byBaseEntityByTypeStatus
-     * @param td
-     */
     private void mapTypeDesignation(Map<TypedEntityReference<?>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus,
             TypeDesignationBase<?> td){
 
@@ -232,11 +203,6 @@ public class TypeDesignationSetManager {
         }
     }
 
-    /**
-     * @param td
-     * @return
-     * @throws DataIntegrityException
-     */
     protected VersionableEntity baseEntity(TypeDesignationBase<?> td) throws DataIntegrityException {
 
         VersionableEntity baseEntity = null;
@@ -767,23 +733,13 @@ public class TypeDesignationSetManager {
     }
 
 
-    /**
-     * @return the printCitation
-     */
     public boolean isPrintCitation() {
         return printCitation;
     }
-
-    /**
-     * @param printCitation the printCitation to set
-     */
     public void setPrintCitation(boolean printCitation) {
         this.printCitation = printCitation;
     }
 
-    /**
-     * @return the typifiedName
-     */
     public TaxonName getTypifiedName() {
         return typifiedName;
     }
@@ -818,13 +774,13 @@ public class TypeDesignationSetManager {
 
         private static final long serialVersionUID = -1329007606500890729L;
 
-        String workingSetRepresentation = null;
+        private String workingSetRepresentation = null;
 
         TypedEntityReference<VersionableEntity> baseEntityReference;
 
-        VersionableEntity baseEntity;
+        private VersionableEntity baseEntity;
 
-        List<DerivedUnit> derivedUnits = null;
+        private List<DerivedUnit> derivedUnits = null;
 
         /**
          * @param baseEntityReference
@@ -834,9 +790,6 @@ public class TypeDesignationSetManager {
             this.baseEntityReference = baseEntityReference;
         }
 
-        /**
-         * @return
-         */
         public VersionableEntity getBaseEntity() {
             return baseEntity;
         }
@@ -847,12 +800,6 @@ public class TypeDesignationSetManager {
             return typeDesignations;
         }
 
-
-
-        /**
-         * @param status
-         * @param typeDesignationEntityReference
-         */
         public void insert(TypeDesignationStatusBase<?> status, TypedEntityReference typeDesignationEntityReference) {
 
             if(status == null){
@@ -864,11 +811,9 @@ public class TypeDesignationSetManager {
             get(status).add(typeDesignationEntityReference);
         }
 
-
         public String getRepresentation() {
             return workingSetRepresentation;
         }
-
         public void setRepresentation(String representation){
             this.workingSetRepresentation = representation;
         }
@@ -893,9 +838,6 @@ public class TypeDesignationSetManager {
             }
         }
 
-        /**
-         * @return
-         */
         public boolean isSpecimenTypeDesigationWorkingSet() {
             return SpecimenOrObservationBase.class.isAssignableFrom(baseEntityReference.getType());
         }
@@ -924,16 +866,12 @@ public class TypeDesignationSetManager {
         public boolean hasDesignationSource() {
             return false;
         }
-
     }
 
     class DataIntegrityException extends Exception {
 
         private static final long serialVersionUID = 1464726696296824905L;
 
-        /**
-         * @param string
-         */
         public DataIntegrityException(String string) {
             super(string);
         }

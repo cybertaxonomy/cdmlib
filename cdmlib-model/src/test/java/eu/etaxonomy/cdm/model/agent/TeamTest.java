@@ -14,7 +14,6 @@ import java.beans.PropertyChangeListener;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -30,11 +29,6 @@ public class TeamTest {
 	private Person member2;
 	private Person member3;
 	private boolean eventWasFired = false;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-
-	}
 
 	@Before
 	public void setUp() throws Exception {

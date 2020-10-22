@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 /**
  * @author a.kohlbecker
  * @since Jun 12, 2017
- *
  */
 public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
@@ -27,10 +26,6 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private Class<T> type;
 
-    /**
-     * @param uuid
-     * @param label
-     */
     public TypedEntityReference(Class<T> type, UUID uuid, String label) {
         super(uuid, label);
         this.type = type;
@@ -60,9 +55,6 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         this.type = type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31)
@@ -71,9 +63,6 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
                 .hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("rawtypes")
     @Override
     public boolean equals(Object obj) {
@@ -89,7 +78,5 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
     @Override
     public String toString(){
         return type.getSimpleName() + "#" + uuid;
-
     }
-
 }

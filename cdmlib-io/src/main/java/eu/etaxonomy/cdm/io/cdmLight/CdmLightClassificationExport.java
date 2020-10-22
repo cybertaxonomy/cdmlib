@@ -174,16 +174,14 @@ public class CdmLightClassificationExport
                         OrderHelper childHelper = new OrderHelper(child.getTaxonUuid());
                         helper.addChild(childHelper);
                         childHelper.setOrderIndex(state.getActualOrderIndexAndUpdate());
-                        childHelper
-                                .addChildren(createOrderHelper(state.getNodeChildrenMap().get(child.getUuid()), state));
-
+                        childHelper.addChildren(
+                                createOrderHelper(state.getNodeChildrenMap().get(child.getUuid()), state));
                     }
                 }
 
                 state.getNodeChildrenMap().clear();
                 for (OrderHelper order : state.getOrderHelperMap().values()) {
                     setOrderIndex(state, order);
-
                 }
             }
 
@@ -215,7 +213,6 @@ public class CdmLightClassificationExport
         for (OrderHelper helper : order.getChildren()) {
             setOrderIndex(state, helper);
         }
-
     }
 
     private List<OrderHelper> createOrderHelper(List<TaxonNodeDto> nodes, CdmLightExportState state) {
@@ -273,7 +270,7 @@ public class CdmLightClassificationExport
                 if (children != null && !children.contains(rootDto)) {
                     state.getNodeChildrenMap().get(parentUuid).add(rootDto);
                 } else if (state.getNodeChildrenMap().get(parentUuid) == null) {
-                    List<TaxonNodeDto> rootList = new ArrayList();
+                    List<TaxonNodeDto> rootList = new ArrayList<>();
                     rootList.add(rootDto);
                     state.getNodeChildrenMap().put(parentUuid, rootList);
 
@@ -434,7 +431,6 @@ public class CdmLightClassificationExport
                     if (description.getElements() != null) {
                         for (DescriptionElementBase element : description.getElements()) {
                             simpleFacts.add(element);
-
                         }
                     }
                 }
@@ -635,7 +631,6 @@ public class CdmLightClassificationExport
          * intextId='1352d42c-e201-4155-a02a-55360d3b563e'>Ridley in Fl. Malay
          * Pen. 3 (1924) 22</cdm:reference>)
          */
-
         String newText = text.replaceAll("<cdm:reference cdmId='[a-z0-9\\-]*' intextId='[a-z0-9\\-]*'>", "");
         newText = newText.replaceAll("</cdm:reference>", "");
 
@@ -675,7 +670,6 @@ public class CdmLightClassificationExport
                             handleSpecimen(state, specimenBase);
                             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state,
                                     indAssociation.getAssociatedSpecimenOrObservation());
-
                         }
                     }
                 } else if (element instanceof TextData) {
