@@ -139,10 +139,6 @@ public class TypeDesignationSetManagerTest extends CdmTransactionalIntegrationTe
 
         }
 
-        /**
-         * @param fu_1
-         * @param specimen_IT_2
-         */
         protected void createDerivationEvent(FieldUnit fu_1, DerivedUnit specimen_IT_2) {
             DerivationEvent derivationEvent_3 = DerivationEvent.NewInstance();
             derivationEvent_3.addOriginal(fu_1);
@@ -191,7 +187,7 @@ public class TypeDesignationSetManagerTest extends CdmTransactionalIntegrationTe
         }
 
         @Test
-        public void test2() throws RegistrationValidationException{
+        public void test2() {
 
             TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
             typifiedName.setTitleCache("Prionus coriatius L.", true);
@@ -220,14 +216,12 @@ public class TypeDesignationSetManagerTest extends CdmTransactionalIntegrationTe
                     "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; NameType: Prionus L. Species Plantarum"
                     , typeDesignationManager.print()
                     );
-
         }
 
         @Test
         public void test_mediaType(){
 
             for(int i = 0; i < 10; i++ ){
-
                 init();
                 // repeat 10 times to assure the order of typedesignations is fix in the representations
                 TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());

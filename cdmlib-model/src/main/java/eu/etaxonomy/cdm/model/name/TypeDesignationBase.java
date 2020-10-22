@@ -257,6 +257,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         return source;
     }
 
+    //TODO should we rename this to better distinguish the lectotype source from the general sources?
     public DescriptionElementSource getSource(){
         return source;
     }

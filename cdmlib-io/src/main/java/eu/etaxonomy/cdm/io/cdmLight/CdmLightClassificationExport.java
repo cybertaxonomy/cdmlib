@@ -120,7 +120,6 @@ public class CdmLightClassificationExport
     public CdmLightClassificationExport() {
         super();
         this.ioName = this.getClass().getSimpleName();
-
     }
 
     @Override
@@ -146,7 +145,6 @@ public class CdmLightClassificationExport
             @SuppressWarnings("unchecked")
             TaxonNodeOutStreamPartitioner<XmlExportState> partitioner = TaxonNodeOutStreamPartitioner.NewInstance(this,
                     state, state.getConfig().getTaxonNodeFilter(), 100, monitor, null);
-
 
             handleMetaData(state);
             monitor.subTask("Start partitioning");

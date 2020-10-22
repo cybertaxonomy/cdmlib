@@ -444,14 +444,9 @@ public class TypeDesignationSetManager {
         }
     }
 
-    /**
-     * @param typeDesignationWorkingSet
-     * @param typeStatus
-     * @return
-     */
     private List<TypedEntityReference<TypeDesignationBase<?>>> createSortedList(
             TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
-        List<TypedEntityReference<TypeDesignationBase<?>>> typeDesignationEntityReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
+        List<TypedEntityReference<TypeDesignationBase<?>>> typeDesignationEntityReferences = new ArrayList<>(typeDesignationWorkingSet.get(typeStatus));
         Collections.sort(typeDesignationEntityReferences, new TypedEntityComparator());
         return typeDesignationEntityReferences;
     }
@@ -794,7 +789,7 @@ public class TypeDesignationSetManager {
             return typeDesignations;
         }
 
-        public void insert(TypeDesignationStatusBase<?> status, TypedEntityReference typeDesignationEntityReference) {
+        public void insert(TypeDesignationStatusBase<?> status, TypedEntityReference<?> typeDesignationEntityReference) {
 
             if(status == null){
                 status = NULL_STATUS;
