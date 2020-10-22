@@ -479,7 +479,8 @@ public class TypeDesignationSetManager {
 
     private List<TypedEntityReference<TypeDesignationBase<?>>> createSortedList(
             TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
-        List<TypedEntityReference<TypeDesignationBase<?>>> typeDesignationEntityReferences = new ArrayList<>(typeDesignationWorkingSet.get(typeStatus));
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        List<TypedEntityReference<TypeDesignationBase<?>>> typeDesignationEntityReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
         Collections.sort(typeDesignationEntityReferences, new TypedEntityComparator());
         return typeDesignationEntityReferences;
     }
