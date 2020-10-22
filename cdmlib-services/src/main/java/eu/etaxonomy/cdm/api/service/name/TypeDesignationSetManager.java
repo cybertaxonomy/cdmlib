@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.ref.EntityReference;
@@ -80,12 +81,15 @@ public class TypeDesignationSetManager {
     private static final String TYPE_SEPARATOR = "; ";
 
     private static final String TYPE_DESIGNATION_SEPARATOR = ", ";
-    private static final String TYPE_STATUS_SEPARATOR_WITHCITATION = ": ";
+    private static final String TYPE_STATUS_SEPARATOR_WITH_CITATION = ": ";
     private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
     private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ") ";
-    private static final String REFERENCE_PARENTHESIS_RIGHT = "] ";
+    private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
     private static final String REFERENCE_PARENTHESIS_LEFT = " [";
+    private static final String REFERENCE_DESIGNATED_BY = "designated by ";
     private static final String REFERENCE_FIDE = "fide ";
+    private static final String SOURCE_SEPARATOR = ", ";
+    private static final String REFERENCE_DESIGNATED_FIDE_SEPERATOR = " ";
 
     private Map<UUID,TypeDesignationBase<?>> typeDesignations;
 
@@ -116,7 +120,7 @@ public class TypeDesignationSetManager {
     	this(typeDesignations, null);
     }
 
-    public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName) throws RegistrationValidationException {
+    public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName) throws RegistrationValidationException  {
         if (this.typeDesignations == null){
             this.typeDesignations = new HashMap<>();
         }
@@ -334,7 +338,7 @@ public class TypeDesignationSetManager {
                     if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType()) ){
                         workingsetBuilder.add(TagEnum.label, "Type:");
                     } else{
-                        workingsetBuilder.add(TagEnum.label, "NameType:");
+                        workingsetBuilder.add(TagEnum.label, "Nametype:");
                         isNameTypeDesignation = true;
                     }
                     if(!baseEntityRef.getLabel().isEmpty()){
@@ -415,18 +419,31 @@ public class TypeDesignationSetManager {
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
                             TypeDesignationBase<?> typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
-                            if (typeDes.getCitation() != null){
+                            if (hasSources(typeDes)){
                                 workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
-                                workingsetBuilder.add(TagEnum.separator, REFERENCE_FIDE);
-                                String shortCitation = ((DefaultReferenceCacheStrategy)typeDes.getCitation().getCacheStrategy()).createShortCitation(typeDes.getCitation());
-                                workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
+                                OriginalSourceBase<?> lectoSource = typeDes.getSource();
+                                if (hasLectoSource(typeDes)){
+                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
+                                    addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
+                                }
+                                if (!typeDes.getSources().isEmpty()) {
+                                    if (hasLectoSource(typeDes)){
+                                        workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_FIDE_SEPERATOR);
+                                    }
+                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_FIDE);
+                                    int count = 0;
+                                    for (IdentifiableSource source: typeDes.getSources()){
+                                        if (count++ > 0){
+                                            workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
+                                        }
+                                        addSource(workingsetBuilder, typeDesignationEntityReference, source);                                    }
+                                }
                                 workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
                             }
                             if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
                                 workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
                             }
                         }
-
                     }
                     typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
                     finalString += typeDesignationWorkingSet.getRepresentation();
@@ -436,6 +453,28 @@ public class TypeDesignationSetManager {
             finalString = finalString.trim();
             taggedText = finalBuilder.getTaggedText();
         }
+    }
+
+    /**
+     * Adds the taggs for the given source.
+     */
+    private void addSource(TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntityReference,
+            OriginalSourceBase<?> source) {
+        Reference ref = source.getCitation();
+        String shortCitation = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy()).createShortCitation(ref);
+        //TODO still need to add detail
+        workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
+    }
+
+    private boolean hasSources(TypeDesignationBase<?> typeDes) {
+        return hasLectoSource(typeDes) || !typeDes.getSources().isEmpty();
+    }
+
+    private boolean hasLectoSource(TypeDesignationBase<?> typeDes) {
+        return typeDes.getSource() != null &&
+                    (typeDes.getSource().getCitation() != null
+                      || isNotBlank(typeDes.getSource().getCitationMicroReference())
+                     );
     }
 
     private List<TypedEntityReference<TypeDesignationBase<?>>> createSortedList(
@@ -595,9 +634,9 @@ public class TypeDesignationSetManager {
                         MediaSpecimen msp = (MediaSpecimen)du;
                         if(msp.getMediaSpecimen() != null){
                             for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
-                                String refDetailStr = source.getCitationMicroReference();
                                 String referenceStr = source.getCitation() == null? "": source.getCitation().getTitleCache();
-                                if(StringUtils.isNotBlank(source.getCitationMicroReference())){
+                                String refDetailStr = source.getCitationMicroReference();
+                                if(isNotBlank(refDetailStr)){
                                     typeSpecimenTitle += refDetailStr;
                                 }
                                 if(!typeSpecimenTitle.isEmpty() && !referenceStr.isEmpty()){
@@ -796,7 +835,10 @@ public class TypeDesignationSetManager {
         public TypeDesignationWorkingSetType getWorkingsetType() {
             return isSpecimenTypeDesigationWorkingSet() ? TypeDesignationWorkingSetType.SPECIMEN_TYPE_DESIGNATION_WORKINGSET : TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET;
         }
+    }
 
+    private boolean isNotBlank(String str){
+        return StringUtils.isNotBlank(str);
     }
 
     public enum TypeDesignationWorkingSetType {
