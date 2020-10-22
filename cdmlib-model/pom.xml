@@ -23,15 +23,17 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target classpathref="maven.plugin.classpath" >
-                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
-                <path id="aspectPath">
-                  <pathelement location="${spring.aspects.jar}" />
-                </path>
-                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc" />
-                <iajc verbose="false" source="${java.codelevel}" destDir="target/classes" aspectPathRef="aspectPath">
+              <target>
+                <path id="aspectPath" location="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
                   <classpath refid="maven.plugin.classpath" />
-                  <classpath refid="maven.compile.classpath" />
+                </taskdef>
+                <iajc verbose="false" source="${java.codelevel}" destDir="target/classes" aspectPathRef="aspectPath">
+                <!--  see https://www.eclipse.org/aspectj/doc/released/devguide/antTasks-iajc.html#antTasks-iajc-paths -->
+                <classpath>
+                    <path refid="maven.compile.classpath" />
+                    <path refid="maven.plugin.classpath" />
+                </classpath>
                   <sourceroots>
                     <pathelement location="src/main/java" />
                   </sourceroots>
@@ -47,11 +49,17 @@
             </goals>
             <configuration>
               <target>
-                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc" classpathref="maven.plugin.classpath" />
-                <iajc verbose="false" source="${java.codelevel}" destDir="target/test-classes">
+                <path id="aspectPath" location="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
                   <classpath refid="maven.plugin.classpath" />
-                  <classpath refid="maven.compile.classpath" />
-                  <classpath refid="maven.test.classpath" />
+                </taskdef>
+                <iajc verbose="false" source="${java.codelevel}" destDir="target/test-classes" aspectPathRef="aspectPath">
+                <!--  see https://www.eclipse.org/aspectj/doc/released/devguide/antTasks-iajc.html#antTasks-iajc-paths -->
+                  <classpath>
+                    <path refid="maven.compile.classpath" />
+                    <path refid="maven.plugin.classpath" />
+                    <path refid="maven.test.classpath" />
+                </classpath>
                   <sourceroots>
                     <pathelement location="src/test/java" />
                   </sourceroots>
