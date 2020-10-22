@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
 
@@ -196,7 +197,8 @@ public class TaxonDescription
 
 
     /**
-     * Returns the set of {@link Scope scopes} (this covers mostly terms for <code>life stage</code> or <code>sex</code> or both)
+     * Returns the set of {@link Scope scopes} (this covers mostly terms for {@link TermType#Stage life stage}
+     * or {@link TermType#Sex sex} or both)
      * restricting the validity of <i>this</i> taxon description. This set
      * of scopes should contain no more than one "sex" and one "life stage".
      */
