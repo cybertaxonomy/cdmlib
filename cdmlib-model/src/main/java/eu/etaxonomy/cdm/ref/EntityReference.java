@@ -28,7 +28,6 @@ public class EntityReference implements Serializable{
         this.label = label;
     }
 
-
     public UUID getUuid() {
         return uuid;
     }
@@ -37,9 +36,6 @@ public class EntityReference implements Serializable{
         return label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31)
@@ -48,9 +44,6 @@ public class EntityReference implements Serializable{
                 .toHashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         try {

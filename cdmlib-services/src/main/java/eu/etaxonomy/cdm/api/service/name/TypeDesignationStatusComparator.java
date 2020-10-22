@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.term.OrderedTermComparator;
  * @author a.kohlbecker
  *
  */
-public class TypeDesignationStatusComparator <T extends TypeDesignationStatusBase<T>>  extends OrderedTermComparator<T> {
+public class TypeDesignationStatusComparator<T extends TypeDesignationStatusBase<T>>  extends OrderedTermComparator<T> {
     @Override
     public int compare(T o1, T o2) {
         // fix inverted order of cdm terms by -1*

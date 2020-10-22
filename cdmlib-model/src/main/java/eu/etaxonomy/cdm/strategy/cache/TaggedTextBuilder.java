@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 /**
  * @author a.kohlbecker
  * @since Jul 12, 2018
- *
  */
 public class TaggedTextBuilder {
 
@@ -50,9 +49,6 @@ public class TaggedTextBuilder {
         taggedText.clear();
     }
 
-    /**
-     * @param workingsetBuilder
-     */
     public void addAll(TaggedTextBuilder ttb) {
         taggedText.addAll(ttb.taggedText);
     }
@@ -65,11 +61,8 @@ public class TaggedTextBuilder {
         return taggedText;
     }
 
-
     @Override
     public String toString(){
         return TaggedCacheHelper.createString(taggedText);
     }
-
-
 }

@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 /**
  * @author a.kohlbecker
  * @since Feb 21, 2018
- *
  */
 public class TermTestBase {
 

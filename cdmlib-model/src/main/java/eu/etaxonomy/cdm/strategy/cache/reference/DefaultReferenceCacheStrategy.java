@@ -286,7 +286,6 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
                 }else{
                     shortCitation += concat + teamMember.getTitleCache();
                 }
-
             }
             if (isBlank(shortCitation)){
                 shortCitation = authorTeam.getTitleCache();
