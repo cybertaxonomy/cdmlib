@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
-import javafx.stage.Stage;
 
 
 /**
@@ -197,7 +196,7 @@ public class TaxonDescription
 
 
     /**
-     * Returns the set of {@link Scope scopes} (this covers mostly {@link Stage life stage} or {@link Sex sex} or both)
+     * Returns the set of {@link Scope scopes} (this covers mostly terms for <code>life stage</code> or <code>sex</code> or both)
      * restricting the validity of <i>this</i> taxon description. This set
      * of scopes should contain no more than one "sex" and one "life stage".
      */
@@ -206,7 +205,7 @@ public class TaxonDescription
     }
 
     /**
-     * Adds a {@link Scope scope} (mostly a {@link Stage life stage} or a {@link Sex sex})
+     * Adds a {@link Scope scope} (mostly a <code>life stage</code> or <code>sex</code> term)
      * to the set of {@link #getScopes() scopes} restricting the validity of
      * <i>this</i> taxon description.
      *
