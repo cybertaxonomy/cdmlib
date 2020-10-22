@@ -256,41 +256,43 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return stringBuilder.toString();
     }
 
+    //TODO this method seems to be used only for type designations and/or cdmlight, it should be unified with getCitation()
     public String createShortCitation(Reference reference) {
+        if(reference.isProtectedTitleCache()){
+            return reference.getTitleCache();
+        }
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String shortCitation = "";
         if (authorship == null) {
-            return null;
+            return reference.getTitleCache();
         }
         authorship = HibernateProxyHelper.deproxy(authorship);
         if (authorship instanceof Person){
-            shortCitation = ((Person)authorship).getFamilyName();
-            if (isBlank(shortCitation) ){
-                shortCitation = ((Person)authorship).getTitleCache();
-            }
+            shortCitation = getPersonString((Person)authorship);
         }
         else if (authorship instanceof Team){
 
-            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
-            int index = 0;
-
-            for (Person teamMember : authorTeam.getTeamMembers()){
-                index++;
-                if (index == 3){
-                    shortCitation += " & al.";
-                    break;
+            Team team = HibernateProxyHelper.deproxy(authorship, Team.class);
+            if (team.isProtectedTitleCache()){
+                shortCitation = team.getTitleCache();
+            }else{
+                List<Person> teamMembers = team.getTeamMembers();
+                int etAlPosition = 2;
+                for (int i = 1; i <= teamMembers.size() && i < etAlPosition; i++){
+                    Person teamMember = teamMembers.get(i-1);
+                    if(teamMember == null){
+                        // this can happen in UIs in the process of adding new members
+                        continue;
+                    }
+                    String concat = TeamDefaultCacheStrategy.concatString(team, teamMembers, i);
+                    shortCitation += concat + getPersonString(teamMember);
                 }
-                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index, ", ", " & ");
-                if (teamMember.getFamilyName() != null){
-                    shortCitation += concat + teamMember.getFamilyName();
-                }else{
-                    shortCitation += concat + teamMember.getTitleCache();
+                if (teamMembers.size() == 0){
+                    shortCitation = TeamDefaultCacheStrategy.EMPTY_TEAM;
+                } else if (team.isHasMoreMembers() || teamMembers.size() >= etAlPosition){
+                    shortCitation += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
                 }
             }
-            if (isBlank(shortCitation)){
-                shortCitation = authorTeam.getTitleCache();
-            }
-
         }
         if (reference.getDatePublished() != null) {
             if (isNotBlank(reference.getDatePublished().getFreeText())){
@@ -300,6 +302,15 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
             }
         }
 
+        return shortCitation;
+    }
+
+    private String getPersonString(Person person) {
+        String shortCitation;
+        shortCitation = person.getFamilyName();
+        if (isBlank(shortCitation) ){
+            shortCitation = person.getTitleCache();
+        }
         return shortCitation;
     }
 
