@@ -15,8 +15,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
-        <!-- to upgrade to 3.0.0 the <task> needs to be updated to <target>, see Major Version Upgrade to version 3.0.0<< on the plugin site -->
         <executions>
           <execution>
             <id>aspectj-main</id>
@@ -25,14 +23,12 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/spring-aspects/${spring.version}/spring-aspects-${spring.version}.jar" />
                 <path id="aspectPath">
                   <pathelement location="${spring.aspects.jar}" />
                 </path>
-                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
-                  <classpath refid="maven.plugin.classpath" />
-                </taskdef>
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc" classpathref="maven.plugin.classpath" />
                 <iajc verbose="false" source="${java.codelevel}" destDir="target/classes" aspectPathRef="aspectPath">
                   <classpath refid="maven.plugin.classpath" />
                   <classpath refid="maven.compile.classpath" />
@@ -40,7 +36,7 @@
                     <pathelement location="src/main/java" />
                   </sourceroots>
                 </iajc>
-              </tasks>
+              </target>
             </configuration>
           </execution>
           <execution>
@@ -50,7 +46,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <tasks>
+              <target>
                 <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
                   <classpath refid="maven.plugin.classpath" />
                 </taskdef>
@@ -62,7 +58,7 @@
                     <pathelement location="src/test/java" />
                   </sourceroots>
                 </iajc>
-              </tasks>
+              </target>
           </configuration>
         </execution>
       </executions>

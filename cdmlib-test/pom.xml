@@ -35,7 +35,6 @@
 <!--       </plugin> -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.0.0</version>
             <executions>
               <execution>
                   <!-- Generate DDL for test -->
@@ -54,11 +53,7 @@
                              tofile="src/main/resources/dbscripts/001-cdm.h2.sql">
                           </copy>
                           <!-- run DdlCreator -->
-                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator"
-                              fork="false" failonerror="true">
-<!--                               reference to the passed-in classpath reference -->
-                              <classpath refid="maven.compile.classpath" />
-                          </java>
+                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator" fork="false" failonerror="true" classpathref="maven.plugin.classpath" />
                       </target>
                   </configuration>
               </execution>
