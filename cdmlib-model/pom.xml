@@ -46,8 +46,8 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target classpathref="maven.plugin.classpath">
-                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc" />
+              <target>
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc" classpathref="maven.plugin.classpath" />
                 <iajc verbose="false" source="${java.codelevel}" destDir="target/test-classes">
                   <classpath refid="maven.plugin.classpath" />
                   <classpath refid="maven.compile.classpath" />
