@@ -46,14 +46,14 @@
                       <goal>run</goal>
                   </goals>
                   <configuration>
-                      <target>
+                      <target classpathref="maven.plugin.classpath">
                          <!-- copy template file -->
                          <copy 
                              file="src/main/resources/dbscripts/001-cdm.h2.sql-template" 
                              tofile="src/main/resources/dbscripts/001-cdm.h2.sql">
                           </copy>
                           <!-- run DdlCreator -->
-                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator" fork="false" failonerror="true" classpathref="maven.plugin.classpath" />
+                          <java classname="eu.etaxonomy.cdm.test.unitils.DdlCreator" fork="false" failonerror="true" />
                       </target>
                   </configuration>
               </execution>
