@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -37,6 +38,8 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
@@ -224,6 +227,16 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     }
 
+    @Override
+    protected Set<Media> collectMedia(SpecimenOrObservationBase<?> specimenOrObservation){
+        Set<Media> collectedMedia = super.collectMedia(specimenOrObservation);
+        if(specimenOrObservation instanceof MediaSpecimen) {
+            if(((MediaSpecimen)specimenOrObservation).getMediaSpecimen() != null) {
+            collectedMedia.add(((MediaSpecimen)specimenOrObservation).getMediaSpecimen());
+            }
+        }
+        return collectedMedia;
+    }
 
 
     public String getAccessionNumber() {

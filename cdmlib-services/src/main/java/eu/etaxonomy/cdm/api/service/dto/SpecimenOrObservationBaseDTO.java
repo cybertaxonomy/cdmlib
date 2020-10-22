@@ -75,7 +75,8 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
         super((Class<SpecimenOrObservationBase<?>>) specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
         this.id = specimenOrObservation.getId();
-        addMedia(specimenOrObservation);
+        Set<Media> collectedMedia = collectMedia(specimenOrObservation);
+        addMediaAsDTO(collectedMedia);
         setKindOfUnit(specimenOrObservation.getKindOfUnit());
         setSex(specimenOrObservation.getSex());
         lifeStage = specimenOrObservation.getLifeStage();
@@ -381,30 +382,40 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.listOfMedia = listOfMedia;
     }
 
-    public void addMedia(SpecimenOrObservationBase specimenOrObservation){
-        Set<DescriptionBase> descriptions = specimenOrObservation.getSpecimenDescriptionImageGallery();
-        for (DescriptionBase desc : descriptions){
+
+    protected Set<Media> collectMedia(SpecimenOrObservationBase<?> specimenOrObservation){
+        Set<Media> collectedMedia = new HashSet<>();
+        Set<SpecimenDescription> descriptions = specimenOrObservation.getSpecimenDescriptionImageGallery();
+        for (DescriptionBase<?> desc : descriptions){
             if (desc instanceof SpecimenDescription){
                 SpecimenDescription specimenDesc = (SpecimenDescription)desc;
                 for (DescriptionElementBase element : specimenDesc.getElements()){
                     if (element.isInstanceOf(TextData.class)&& element.getFeature().equals(Feature.IMAGE())) {
                         for (Media media :element.getMedia()){
-                            media.getAllTitles(); // initialize all titles!!!
-                            for (MediaRepresentation rep :media.getRepresentations()){
-                                for(MediaRepresentationPart p : rep.getParts()){
-                                    if(p.getUri() != null){
-                                        MediaDTO dto = new MediaDTO(media.getUuid());
-                                        dto.setUri(p.getUri().toString());
-                                        this.getListOfMedia().add(dto);
-                                    }
-                                }
-                            }
+                            collectedMedia.add(media);
                         }
                     }
                 }
             }
         }
+        return collectedMedia;
     }
+
+    private void addMediaAsDTO(Set<Media> media) {
+        for(Media m : media) {
+            m.getAllTitles(); // initialize all titles!!!
+            for (MediaRepresentation rep :m.getRepresentations()){
+                for(MediaRepresentationPart p : rep.getParts()){
+                    if(p.getUri() != null){
+                        MediaDTO dto = new MediaDTO(m.getUuid());
+                        dto.setUri(p.getUri().toString());
+                        getListOfMedia().add(dto);
+                    }
+                }
+            }
+        }
+    }
+
     public TermBase getKindOfUnit() {
         return kindOfUnit;
     }
