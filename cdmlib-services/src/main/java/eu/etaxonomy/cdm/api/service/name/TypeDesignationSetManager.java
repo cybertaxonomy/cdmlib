@@ -159,7 +159,7 @@ public class TypeDesignationSetManager {
      * @param containgEntity
      * @param typeDesignations
      */
-    public void addTypeDesigations(CdmBase containgEntity, TypeDesignationBase ... typeDesignations){
+    public void addTypeDesigations(CdmBase containgEntity, TypeDesignationBase<?> ... typeDesignations){
         for (TypeDesignationBase<?> typeDes: typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
@@ -186,7 +186,7 @@ public class TypeDesignationSetManager {
 
         try {
             final VersionableEntity baseEntity = baseEntity(td);
-            final TypedEntityReference<VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
+            final TypedEntityReference<? extends VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
 
             TypedEntityReference<?> typeDesignationEntityReference = new TypedEntityReference<>(
                     HibernateProxyHelper.deproxy(td).getClass(),
@@ -228,11 +228,7 @@ public class TypeDesignationSetManager {
         return baseEntity;
     }
 
-    /**
-     * @param td
-     * @return
-     */
-    protected TypedEntityReference<VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
+    protected TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
 
         baseEntity = (VersionableEntity) HibernateHelper.unproxy(baseEntity);
         String label = "";
@@ -240,7 +236,8 @@ public class TypeDesignationSetManager {
                 label = ((FieldUnit)baseEntity).getTitleCache();
         }
 
-        TypedEntityReference<VersionableEntity> baseEntityReference = new TypedEntityReference(baseEntity.getClass(), baseEntity.getUuid(), label);
+        TypedEntityReference<? extends VersionableEntity> baseEntityReference =
+                new TypedEntityReference<>((Class<? extends VersionableEntity>)baseEntity.getClass(), baseEntity.getUuid(), label);
 
         return baseEntityReference;
     }
@@ -776,16 +773,13 @@ public class TypeDesignationSetManager {
 
         private String workingSetRepresentation = null;
 
-        TypedEntityReference<VersionableEntity> baseEntityReference;
+        private TypedEntityReference<? extends VersionableEntity> baseEntityReference;
 
         private VersionableEntity baseEntity;
 
         private List<DerivedUnit> derivedUnits = null;
 
-        /**
-         * @param baseEntityReference
-         */
-        public TypeDesignationWorkingSet(VersionableEntity baseEntity, TypedEntityReference<VersionableEntity> baseEntityReference) {
+        public TypeDesignationWorkingSet(VersionableEntity baseEntity, TypedEntityReference<? extends VersionableEntity> baseEntityReference) {
             this.baseEntity = baseEntity;
             this.baseEntityReference = baseEntityReference;
         }
@@ -825,7 +819,7 @@ public class TypeDesignationSetManager {
          *
          * @return the baseEntityReference
          */
-        public TypedEntityReference<VersionableEntity> getBaseEntityReference() {
+        public TypedEntityReference<? extends VersionableEntity> getBaseEntityReference() {
             return baseEntityReference;
         }
 
