@@ -1855,8 +1855,6 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.REF_TYPE)] = reference.getType().getKey();
 
             state.getProcessor().put(table, reference, csvLine);
-
-
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling reference "
                     + cdmBaseStr(reference) + ": " + e.getMessage());

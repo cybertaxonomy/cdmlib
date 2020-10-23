@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.OrderIndexComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -21,7 +20,6 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 /**
  * @author k.luther
  * @since 18.03.2010
- *
  */
 public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Comparator<TaxonNodeDto> {
 	private static final long serialVersionUID = 2596641007876609704L;
@@ -33,7 +31,6 @@ public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Compar
 	    boolean node2Excluded = node2.isExcluded();
 	    boolean node1Unplaced = node1.isUnplaced();
 	    boolean node2Unplaced = node2.isUnplaced();
-
 
 		if (node1.getUuid().equals(node2.getUuid())){
 			return 0;
@@ -59,9 +56,6 @@ public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Compar
         if (node2Unplaced && node1Excluded){
             return 1;
         }
-
-
-
 
 		Integer rankTax1 = node1.getRankOrderIndex();
 		Integer rankTax2 = node2.getRankOrderIndex();
@@ -101,23 +95,7 @@ public class TaxonNodeDtoByRankAndNameComparator implements Serializable, Compar
 		}
 	}
 
-    /**
-     * @param taxon1
-     * @return
-     */
     public String getTaxonTitle(TaxonBase<?> taxon, TaxonNode node) {
         return (taxon == null) ? node.getUuid().toString(): taxon.getTitleCache();
     }
-
-    /**
-     * @param taxon
-     * @param node
-     * @return
-     */
-    private UUID getTaxonUuid(TaxonBase<?> taxon, TaxonNode node) {
-        return (taxon == null) ? node.getUuid(): taxon.getUuid();
-    }
-
-
-
 }
