@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 public class TypeDesignationSetManagerTest extends TermTestBase{
 
         private NameTypeDesignation ntd;
+        private NameTypeDesignation ntd_LT;
         private SpecimenTypeDesignation std_IT;
         private SpecimenTypeDesignation std_HT;
         private SpecimenTypeDesignation std_LT;
@@ -62,6 +64,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
         private SpecimenTypeDesignation std_IT_3;
         private SpecimenTypeDesignation mtd_HT_published;
         private SpecimenTypeDesignation mtd_IT_unpublished;
+        private Reference book;
         private Team team;
 
         @Before
@@ -72,6 +75,10 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             Person person3 = Person.NewInstance("Moler", "Moler", "A.P.", null);
             team = Team.NewInstance(person1, person2, person3);
 
+            book = ReferenceFactory.newBook();
+            book.setAuthorship(team);
+            book.setDatePublished(TimePeriodParser.parseStringVerbatim("11 Apr 1962"));
+
             ntd = NameTypeDesignation.NewInstance();
             ntd.setId(1);
             TaxonName typeName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
@@ -81,6 +88,13 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 //            citation.setTitleCache("Species Plantarum", true);
 //            ntd.setCitation(citation);
 //          ntd.addPrimaryTaxonomicSource(citation, null);
+
+            ntd_LT = NameTypeDesignation.NewInstance();
+            ntd_LT.setTypeStatus(NameTypeDesignationStatus.LECTOTYPE());
+            TaxonName typeName2 = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
+            typeName2.setTitleCache("Prionus arealus L.", true);
+            ntd_LT.setTypeName(typeName2);
+            ntd_LT.setCitation(book);
 
             FieldUnit fu_1 = FieldUnit.NewInstance();
             fu_1.setId(1);
@@ -113,10 +127,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             createDerivationEvent(fu_1, specimen_LT);
             std_LT.setTypeSpecimen(specimen_LT);
             std_LT.setTypeStatus(SpecimenTypeDesignationStatus.LECTOTYPE());
-            Reference lectoCitation = ReferenceFactory.newBook();
-            lectoCitation.setAuthorship(team);
-            lectoCitation.setDatePublished(TimePeriodParser.parseStringVerbatim("11 Apr 1962"));
-            std_LT.setCitation(lectoCitation);
+            std_LT.setCitation(book);
 
             std_IT_2 = SpecimenTypeDesignation.NewInstance();
             std_IT_2.setId(3);
@@ -249,6 +260,16 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             std_LT.addPrimaryTaxonomicSource(citation, "55");
             typeDesignationManager.buildStringWithCitation();
             assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (Lectotype:  LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
+                    typeDesignationManager.print());
+
+            typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
+            typifiedName.setTitleCache("Prionus L.", true);
+            typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            typeDesignationManager.addTypeDesigations(null, ntd_LT);
+            ntd_LT.addPrimaryTaxonomicSource(citation, "66");
+            typeDesignationManager.buildStringWithCitation();
+            //TODO capital letter or not still needs to be discussed, currently it differs for SpecimenTD and NameTD in original csv data
+            assertEquals("Prionus L. (lectotype:  Prionus arealus L. designated by Decandolle & al. (1962) [fide Miller (1989)])",
                     typeDesignationManager.print());
         }
 
