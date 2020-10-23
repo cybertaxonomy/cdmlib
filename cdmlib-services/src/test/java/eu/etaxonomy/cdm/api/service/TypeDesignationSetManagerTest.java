@@ -248,7 +248,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             citation.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
             std_LT.addPrimaryTaxonomicSource(citation, "55");
             typeDesignationManager.buildStringWithCitation();
-            assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (Lectotype:  LEC [designated by Decandolle & al. (1962) fide Miller (1989)])",
+            assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (Lectotype:  LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
                     typeDesignationManager.print());
         }
 

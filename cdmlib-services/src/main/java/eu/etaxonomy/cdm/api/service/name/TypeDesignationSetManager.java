@@ -81,15 +81,13 @@ public class TypeDesignationSetManager {
     private static final String TYPE_SEPARATOR = "; ";
 
     private static final String TYPE_DESIGNATION_SEPARATOR = ", ";
-    private static final String TYPE_STATUS_SEPARATOR_WITH_CITATION = ": ";
     private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
     private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ") ";
     private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
     private static final String REFERENCE_PARENTHESIS_LEFT = " [";
-    private static final String REFERENCE_DESIGNATED_BY = "designated by ";
+    private static final String REFERENCE_DESIGNATED_BY = " designated by ";
     private static final String REFERENCE_FIDE = "fide ";
     private static final String SOURCE_SEPARATOR = ", ";
-    private static final String REFERENCE_DESIGNATED_FIDE_SEPERATOR = " ";
 
     private Map<UUID,TypeDesignationBase<?>> typeDesignations;
 
@@ -413,33 +411,32 @@ public class TypeDesignationSetManager {
                         int typeDesignationCount = 0;
                         for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
                             if(typeDesignationCount++  > 0){
-                               workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
+                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
                             }
 
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
                             TypeDesignationBase<?> typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
-                            if (hasSources(typeDes)){
-                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT);
-                                OriginalSourceBase<?> lectoSource = typeDes.getSource();
-                                if (hasLectoSource(typeDes)){
-                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
-                                    addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
-                                }
-                                if (!typeDes.getSources().isEmpty()) {
-                                    if (hasLectoSource(typeDes)){
-                                        workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_FIDE_SEPERATOR);
+
+                            //lectotype source
+                            OriginalSourceBase<?> lectoSource = typeDes.getSource();
+                            if (hasLectoSource(typeDes)){
+                                workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
+                                addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
+                            }
+                            //general sources
+                            if (!typeDes.getSources().isEmpty()) {
+                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT + REFERENCE_FIDE);
+                                int count = 0;
+                                for (IdentifiableSource source: typeDes.getSources()){
+                                    if (count++ > 0){
+                                        workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
                                     }
-                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_FIDE);
-                                    int count = 0;
-                                    for (IdentifiableSource source: typeDes.getSources()){
-                                        if (count++ > 0){
-                                            workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
-                                        }
-                                        addSource(workingsetBuilder, typeDesignationEntityReference, source);                                    }
+                                    addSource(workingsetBuilder, typeDesignationEntityReference, source);
                                 }
                                 workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
                             }
+
                             if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
                                 workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
                             }
@@ -464,10 +461,6 @@ public class TypeDesignationSetManager {
         String shortCitation = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy()).createShortCitation(ref);
         //TODO still need to add detail
         workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
-    }
-
-    private boolean hasSources(TypeDesignationBase<?> typeDes) {
-        return hasLectoSource(typeDes) || !typeDes.getSources().isEmpty();
     }
 
     private boolean hasLectoSource(TypeDesignationBase<?> typeDes) {
