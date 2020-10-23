@@ -27,7 +27,6 @@ import org.hibernate.search.hcore.util.impl.HibernateHelper;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -90,7 +89,7 @@ public class TypeDesignationSetManager {
     private static final String SOURCE_SEPARATOR = ", ";
     private static final String POST_STATUS_SEPARATOR = ": ";
 
-    private Map<UUID,TypeDesignationBase<?>> typeDesignations;
+    private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
 
     private NameTypeBaseEntityType nameTypeBaseEntityType = NameTypeBaseEntityType.NAME_TYPE_DESIGNATION;
 
@@ -120,9 +119,6 @@ public class TypeDesignationSetManager {
     }
 
     public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName) throws RegistrationValidationException  {
-        if (this.typeDesignations == null){
-            this.typeDesignations = new HashMap<>();
-        }
         for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
@@ -140,10 +136,7 @@ public class TypeDesignationSetManager {
     }
 
     public TypeDesignationSetManager(HomotypicalGroup group) {
-        if (this.typeDesignations == null){
-            this.typeDesignations = new HashMap<>();
-        }
-        for (TypeDesignationBase<?> typeDes:group.getTypeDesignations()){
+        for (TypeDesignationBase<?> typeDes: group.getTypeDesignations()){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
         //findTypifiedName();
@@ -151,7 +144,6 @@ public class TypeDesignationSetManager {
     }
 
     public TypeDesignationSetManager(TaxonName typifiedName) {
-        this.typeDesignations = new HashMap<>();
         this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
     }
 
@@ -162,7 +154,7 @@ public class TypeDesignationSetManager {
      * @param containgEntity
      * @param typeDesignations
      */
-    public void addTypeDesigations(CdmBase containingEntity, TypeDesignationBase<?> ... typeDesignations){
+    public void addTypeDesigations(TypeDesignationBase<?> ... typeDesignations){
         for (TypeDesignationBase<?> typeDes: typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }
@@ -209,7 +201,7 @@ public class TypeDesignationSetManager {
     protected VersionableEntity baseEntity(TypeDesignationBase<?> td) throws DataIntegrityException {
 
         VersionableEntity baseEntity = null;
-        if(td  instanceof SpecimenTypeDesignation){
+        if(td instanceof SpecimenTypeDesignation){
             SpecimenTypeDesignation std = (SpecimenTypeDesignation) td;
             FieldUnit fu = findFieldUnit(std.getTypeSpecimen());
             if(fu != null){
@@ -362,7 +354,7 @@ public class TypeDesignationSetManager {
                             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
                         }
                         boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
-                        if(!typeStatus.equals(NULL_STATUS)) {
+                        if(typeStatus != NULL_STATUS){
                             if (withCitation){
                                 //TODO maybe
                                 workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
@@ -401,7 +393,7 @@ public class TypeDesignationSetManager {
                                     workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
                                 }
 
-                                if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
+                                if ((typeStatus != NULL_STATUS) &&(typeDesignationCount == typeDesignationWorkingSet.get(typeStatus).size())){
                                     workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
                                 }
 
@@ -724,8 +716,6 @@ public class TypeDesignationSetManager {
         private TypedEntityReference<? extends VersionableEntity> baseEntityReference;
 
         private VersionableEntity baseEntity;
-
-        private List<DerivedUnit> derivedUnits = null;
 
         public TypeDesignationWorkingSet(VersionableEntity baseEntity, TypedEntityReference<? extends VersionableEntity> baseEntityReference) {
             this.baseEntity = baseEntity;

@@ -234,7 +234,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                     );
 
             typifiedName.addTypeDesignation(ntd, false);
-            typeDesignationManager.addTypeDesigations(null, ntd);
+            typeDesignationManager.addTypeDesigations(ntd);
 
             assertEquals(
                     "Prionus L. Nametype: Prionus coriatius L."
@@ -242,7 +242,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                     );
 
             typifiedName.addTypeDesignation(std_HT, false);
-            typeDesignationManager.addTypeDesigations(null, std_HT);
+            typeDesignationManager.addTypeDesigations(std_HT);
 
             assertEquals(
                     "Prionus L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: OHA; Nametype: Prionus coriatius L."
@@ -256,7 +256,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
             typifiedName.setTitleCache("Prionus coriatius L.", true);
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
-            typeDesignationManager.addTypeDesigations(null, std_LT);
+            typeDesignationManager.addTypeDesigations(std_LT);
             Reference citation = ReferenceFactory.newBook();
             citation.setDatePublished(TimePeriodParser.parseStringVerbatim("1989"));
             citation.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
@@ -268,7 +268,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
             typifiedName.setTitleCache("Prionus L.", true);
             typeDesignationManager = new TypeDesignationSetManager(typifiedName);
-            typeDesignationManager.addTypeDesigations(null, ntd_LT);
+            typeDesignationManager.addTypeDesigations(ntd_LT);
             ntd_LT.addPrimaryTaxonomicSource(citation, "66");
             typeDesignationManager.buildStringWithCitation();
             //TODO capital letter or not still needs to be discussed, currently it differs for SpecimenTD and NameTD in original csv data
@@ -288,8 +288,8 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                 typifiedName.addTypeDesignation(mtd_IT_unpublished, false);
 
                 TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
-                typeDesignationManager.addTypeDesigations(null, mtd_HT_published);
-                typeDesignationManager.addTypeDesigations(null, mtd_IT_unpublished);
+                typeDesignationManager.addTypeDesigations(mtd_HT_published);
+                typeDesignationManager.addTypeDesigations(mtd_IT_unpublished);
 
                 assertEquals("failed after repreating " + i + " times",
                         "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; Isotype: [icon] B Slide A565656."
