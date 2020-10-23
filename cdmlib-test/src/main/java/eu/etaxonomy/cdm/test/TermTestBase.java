@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 public class TermTestBase {
 
     @BeforeClass
-    public final static void intitializeTermsIfneeded() {
+    public final static void intitializeTermsIfNeeded() {
         DefaultTermInitializer defaultTermInitializer = new DefaultTermInitializer();
         if(Language.DEFAULT() == null){
             defaultTermInitializer.initialize();
