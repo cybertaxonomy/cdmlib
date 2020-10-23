@@ -639,13 +639,8 @@ public class TypeDesignationSetManager {
         return finalString;
     }
 
-    public List<TaggedText> toTaggedText() {
-        buildString(false);
-        return taggedText;
-    }
-
-    public List<TaggedText> toTaggedTextWithCitation() {
-        buildString(true);
+    public List<TaggedText> toTaggedText(boolean withCitation) {
+        buildString(withCitation);
         return taggedText;
     }
 

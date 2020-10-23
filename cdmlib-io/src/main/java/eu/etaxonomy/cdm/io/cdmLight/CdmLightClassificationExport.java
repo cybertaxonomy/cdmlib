@@ -1152,7 +1152,7 @@ public class CdmLightClassificationExport
                 }
             }
             TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
-            String typeDesignationString = createTypeDesignationString(manager.toTaggedText(), false, name.isSpecies() || name.isInfraSpecific());
+            String typeDesignationString = createTypeDesignationString(manager.toTaggedText(false), false, name.isSpecies() || name.isInfraSpecific());
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = typeDesignationString;
 
             StringBuilder stringbuilder = new StringBuilder();
@@ -1578,7 +1578,7 @@ public class CdmLightClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
-                list.addAll(manager.toTaggedTextWithCitation());
+                list.addAll(manager.toTaggedText(true));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
