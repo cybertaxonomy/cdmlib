@@ -77,9 +77,9 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             TaxonName typeName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
             typeName.setTitleCache("Prionus L.", true);
             ntd.setTypeName(typeName);
-            Reference citation = ReferenceFactory.newGeneric();
-            citation.setTitleCache("Species Plantarum", true);
-            ntd.setCitation(citation);
+//            Reference citation = ReferenceFactory.newGeneric();
+//            citation.setTitleCache("Species Plantarum", true);
+//            ntd.setCitation(citation);
 //          ntd.addPrimaryTaxonomicSource(citation, null);
 
             FieldUnit fu_1 = FieldUnit.NewInstance();
@@ -189,7 +189,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 //            Logger.getLogger(this.getClass()).debug(result);
             assertNotNull(result);
             assertEquals(
-                    "Prionus coriatius L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype, M; Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Isotypes: BER, KEW; Nametype: Prionus L. Species Plantarum"
+                    "Prionus coriatius L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype, M; Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Isotypes: BER, KEW; Nametype: Prionus L."
                     , result
                     );
 
@@ -224,7 +224,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(null, ntd);
 
             assertEquals(
-                    "Prionus coriatius L. Nametype: Prionus L. Species Plantarum"
+                    "Prionus coriatius L. Nametype: Prionus L."
                     , typeDesignationManager.print()
                     );
 
@@ -232,7 +232,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(null, std_HT);
 
             assertEquals(
-                    "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Nametype: Prionus L. Species Plantarum"
+                    "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Nametype: Prionus L."
                     , typeDesignationManager.print()
                     );
         }

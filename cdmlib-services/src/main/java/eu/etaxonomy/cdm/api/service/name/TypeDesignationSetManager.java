@@ -585,12 +585,12 @@ public class TypeDesignationSetManager {
         if(td.getTypeName() != null){
             sb.append(td.getTypeName().getTitleCache());
         }
-        if(td.getCitation() != null){
-            sb.append(" ").append(td.getCitation().getTitleCache());
-            if(td.getCitationMicroReference() != null){
-                sb.append(":").append(td.getCitationMicroReference());
-            }
-        }
+//        if(td.getCitation() != null){
+//            sb.append(" ").append(td.getCitation().getTitleCache());
+//            if(td.getCitationMicroReference() != null){
+//                sb.append(":").append(td.getCitationMicroReference());
+//            }
+//        }
         if(td.isNotDesignated()){
             sb.append(" not designated");
         }
