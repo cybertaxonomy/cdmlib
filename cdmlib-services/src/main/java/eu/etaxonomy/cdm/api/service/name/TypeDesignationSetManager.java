@@ -210,7 +210,7 @@ public class TypeDesignationSetManager {
         VersionableEntity baseEntity = null;
         if(td  instanceof SpecimenTypeDesignation){
             SpecimenTypeDesignation std = (SpecimenTypeDesignation) td;
-            FieldUnit fu = findFieldUnit(std);
+            FieldUnit fu = findFieldUnit(std.getTypeSpecimen());
             if(fu != null){
                 baseEntity = fu;
             } else if(((SpecimenTypeDesignation) td).getTypeSpecimen() != null){
@@ -645,7 +645,6 @@ public class TypeDesignationSetManager {
                         // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                         titleCache = titleCache.replaceAll("[\\(\\)]", "");
                         typeSpecimenTitle += titleCache;
-
                     }
 
                     result += (isMediaSpecimen ? "[icon] " : "") + typeSpecimenTitle.trim();
@@ -669,13 +668,6 @@ public class TypeDesignationSetManager {
         }
 
         return result;
-    }
-
-    @Deprecated
-    private FieldUnit findFieldUnit(SpecimenTypeDesignation td) {
-
-        DerivedUnit du = td.getTypeSpecimen();
-        return findFieldUnit(du);
     }
 
     private FieldUnit findFieldUnit(DerivedUnit du) {
