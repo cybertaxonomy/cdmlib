@@ -82,7 +82,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             ntd = NameTypeDesignation.NewInstance();
             ntd.setId(1);
             TaxonName typeName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
-            typeName.setTitleCache("Prionus L.", true);
+            typeName.setTitleCache("Prionus coriatius L.", true);
             ntd.setTypeName(typeName);
 //            Reference citation = ReferenceFactory.newGeneric();
 //            citation.setTitleCache("Species Plantarum", true);
@@ -185,8 +185,8 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             tds.add(std_IT_2);
             tds.add(std_IT_3);
 
-            TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
-            typifiedName.setTitleCache("Prionus coriatius L.", true);
+            TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
+            typifiedName.setTitleCache("Prionus L.", true);
 
             typifiedName.addTypeDesignation(ntd, false);
             typifiedName.addTypeDesignation(std_HT, false);
@@ -200,7 +200,9 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 //            Logger.getLogger(this.getClass()).debug(result);
             assertNotNull(result);
             assertEquals(
-                    "Prionus coriatius L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype, M; Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Isotypes: BER, KEW; Nametype: Prionus L."
+                    "Prionus L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype, M;"
+                    + " Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Isotypes: BER, KEW;"
+                    + " Nametype: Prionus coriatius L."
                     , result
                     );
 
@@ -219,15 +221,15 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
         @Test
         public void test2() {
 
-            TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
-            typifiedName.setTitleCache("Prionus coriatius L.", true);
+            TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
+            typifiedName.setTitleCache("Prionus L.", true);
 
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
             String result = typeDesignationManager.print();
 //            Logger.getLogger(this.getClass()).debug(result);
             assertNotNull(result);
             assertEquals(
-                    "Prionus coriatius L."
+                    "Prionus L."
                     , result
                     );
 
@@ -235,7 +237,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(null, ntd);
 
             assertEquals(
-                    "Prionus coriatius L. Nametype: Prionus L."
+                    "Prionus L. Nametype: Prionus coriatius L."
                     , typeDesignationManager.print()
                     );
 
@@ -243,7 +245,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(null, std_HT);
 
             assertEquals(
-                    "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Nametype: Prionus L."
+                    "Prionus L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Nametype: Prionus coriatius L."
                     , typeDesignationManager.print()
                     );
         }
