@@ -109,9 +109,6 @@ public class TypeDesignationSetManager {
 
     private List<String> problems = new ArrayList<>();
 
-    private boolean printCitation = false;
-    private boolean useShortCitation = false;
-
     private List<TaggedText> taggedText;
 
     public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException{
@@ -305,14 +302,7 @@ public class TypeDesignationSetManager {
     }
 */
 
-    public void buildStringWithCitation(){
-        buildString(true);
-    }
-    public void buildString(){
-        buildString(false);
-    }
-
-    private void buildString(boolean withCitation){
+    public void buildString(boolean withCitation){
 
         if(finalString == null){
 
@@ -610,17 +600,6 @@ public class TypeDesignationSetManager {
             }
         }
 
-        if(isPrintCitation() && td.getCitation() != null){
-            Reference citation = HibernateProxyHelper.deproxy(td.getCitation());
-            if(citation.getAbbrevTitle() != null){
-                result += " " + citation.getAbbrevTitle();
-            } else {
-                result += " " + citation.getTitleCache();
-            }
-            if(td.getCitationMicroReference() != null){
-                result += " :" + td.getCitationMicroReference();
-            }
-        }
         if(td.isNotDesignated()){
             result += " not designated";
         }
@@ -656,25 +635,18 @@ public class TypeDesignationSetManager {
     }
 
     public String print() {
-        buildString();
+        buildString(false);
         return finalString;
     }
 
     public List<TaggedText> toTaggedText() {
-        buildString();
+        buildString(false);
         return taggedText;
     }
 
     public List<TaggedText> toTaggedTextWithCitation() {
-        buildStringWithCitation();
+        buildString(true);
         return taggedText;
-    }
-
-    public boolean isPrintCitation() {
-        return printCitation;
-    }
-    public void setPrintCitation(boolean printCitation) {
-        this.printCitation = printCitation;
     }
 
     public TaxonName getTypifiedName() {
@@ -687,14 +659,6 @@ public class TypeDesignationSetManager {
 
     public NameTypeBaseEntityType getNameTypeBaseEntityType(){
         return nameTypeBaseEntityType;
-    }
-
-    public boolean isUseShortCitation() {
-        return useShortCitation;
-    }
-
-    public void setUseShortCitation(boolean useShortCitation) {
-        this.useShortCitation = useShortCitation;
     }
 
     /**

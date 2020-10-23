@@ -261,7 +261,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             citation.setDatePublished(TimePeriodParser.parseStringVerbatim("1989"));
             citation.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
             std_LT.addPrimaryTaxonomicSource(citation, "55");
-            typeDesignationManager.buildStringWithCitation();
+            typeDesignationManager.buildString(true);
             assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (Lectotype: LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
                     typeDesignationManager.print());
 
@@ -270,7 +270,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typeDesignationManager = new TypeDesignationSetManager(typifiedName);
             typeDesignationManager.addTypeDesigations(ntd_LT);
             ntd_LT.addPrimaryTaxonomicSource(citation, "66");
-            typeDesignationManager.buildStringWithCitation();
+            typeDesignationManager.buildString(true);
             //TODO capital letter or not still needs to be discussed, currently it differs for SpecimenTD and NameTD in original csv data
             assertEquals("Prionus L. (lectotype: Prionus arealus L. designated by Decandolle & al. (1962) [fide Miller (1989)])",
                     typeDesignationManager.print());
