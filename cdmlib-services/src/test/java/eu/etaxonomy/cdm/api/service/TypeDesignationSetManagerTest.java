@@ -250,6 +250,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                     );
         }
 
+        //see #9262
         @Test
         public void test_desigby_fide(){
             TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
