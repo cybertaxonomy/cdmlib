@@ -200,8 +200,8 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 //            Logger.getLogger(this.getClass()).debug(result);
             assertNotNull(result);
             assertEquals(
-                    "Prionus L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype, M;"
-                    + " Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Isotypes: BER, KEW;"
+                    "Prionus L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype: M;"
+                    + " Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: OHA; Isotypes: BER, KEW;"
                     + " Nametype: Prionus coriatius L."
                     , result
                     );
@@ -245,7 +245,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(null, std_HT);
 
             assertEquals(
-                    "Prionus L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, OHA; Nametype: Prionus coriatius L."
+                    "Prionus L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: OHA; Nametype: Prionus coriatius L."
                     , typeDesignationManager.print()
                     );
         }
@@ -262,7 +262,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             citation.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
             std_LT.addPrimaryTaxonomicSource(citation, "55");
             typeDesignationManager.buildStringWithCitation();
-            assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (Lectotype:  LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
+            assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (Lectotype: LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
                     typeDesignationManager.print());
 
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
@@ -272,7 +272,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             ntd_LT.addPrimaryTaxonomicSource(citation, "66");
             typeDesignationManager.buildStringWithCitation();
             //TODO capital letter or not still needs to be discussed, currently it differs for SpecimenTD and NameTD in original csv data
-            assertEquals("Prionus L. (lectotype:  Prionus arealus L. designated by Decandolle & al. (1962) [fide Miller (1989)])",
+            assertEquals("Prionus L. (lectotype: Prionus arealus L. designated by Decandolle & al. (1962) [fide Miller (1989)])",
                     typeDesignationManager.print());
         }
 
@@ -292,7 +292,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                 typeDesignationManager.addTypeDesigations(null, mtd_IT_unpublished);
 
                 assertEquals("failed after repreating " + i + " times",
-                        "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype, [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; Isotype, [icon] B Slide A565656."
+                        "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; Isotype: [icon] B Slide A565656."
                         , typeDesignationManager.print()
                         );
             }

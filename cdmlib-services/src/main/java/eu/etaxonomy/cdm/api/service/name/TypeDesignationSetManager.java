@@ -88,6 +88,7 @@ public class TypeDesignationSetManager {
     private static final String REFERENCE_DESIGNATED_BY = " designated by ";
     private static final String REFERENCE_FIDE = "fide ";
     private static final String SOURCE_SEPARATOR = ", ";
+    private static final String POST_STATUS_SEPARATOR = ": ";
 
     private Map<UUID,TypeDesignationBase<?>> typeDesignations;
 
@@ -312,66 +313,14 @@ public class TypeDesignationSetManager {
     }
 */
 
+    public void buildStringWithCitation(){
+        buildString(true);
+    }
     public void buildString(){
-
-        if(finalString == null){
-
-            TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
-            finalString = "";
-
-            if(getTypifiedNameCache() != null){
-                finalString += getTypifiedNameCache() + " ";
-                finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedNameRef().getUuid()));
-            }
-
-            int typeCount = 0;
-            if(orderedByTypesByBaseEntity != null){
-                for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
-
-                    TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
-                    if(typeCount++ > 0){
-                        workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
-                    }
-                    boolean isNameTypeDesignation = false;
-                    if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType()) ){
-                        workingsetBuilder.add(TagEnum.label, "Type:");
-                    } else{
-                        workingsetBuilder.add(TagEnum.label, "Nametype:");
-                        isNameTypeDesignation = true;
-                    }
-                    if(!baseEntityRef.getLabel().isEmpty()){
-                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
-                    }
-                    TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
-                    int typeStatusCount = 0;
-                    for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
-                        if(typeStatusCount++ > 0){
-                            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
-                        }
-                        boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
-                        if(!typeStatus.equals(NULL_STATUS)) {
-                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s:" : ","));
-                        }
-
-                        int typeDesignationCount = 0;
-                        for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
-                            if(typeDesignationCount++  > 0){
-                               workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
-                            }
-                            workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
-                        }
-                    }
-                    typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
-                    finalString += typeDesignationWorkingSet.getRepresentation();
-                    finalBuilder.addAll(workingsetBuilder);
-                }
-            }
-            finalString = finalString.trim();
-            taggedText = finalBuilder.getTaggedText();
-        }
+        buildString(false);
     }
 
-    public void buildStringWithCitation(){
+    private void buildString(boolean withCitation){
 
         if(finalString == null){
 
@@ -392,6 +341,16 @@ public class TypeDesignationSetManager {
                         workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
                     }
                     boolean isNameTypeDesignation = false;
+                    if (!withCitation){
+                        //TODO unclear why only without citation, it probably should be another parameter like
+                        //"with generic type" or so and comes from different requirements in cdmlight an phycobank
+                        if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType()) ){
+                            workingsetBuilder.add(TagEnum.label, "Type:");
+                        } else{
+                            workingsetBuilder.add(TagEnum.label, "Nametype:");
+                            isNameTypeDesignation = true;
+                        }
+                    }
 
                     if(!baseEntityRef.getLabel().isEmpty()){
                         workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
@@ -401,13 +360,17 @@ public class TypeDesignationSetManager {
                     for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
                         if(typeStatusCount++  > 0){
                             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
-
                         }
                         boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
                         if(!typeStatus.equals(NULL_STATUS)) {
-                            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
-                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s: " : ": "));
-                         }
+                            if (withCitation){
+                                //TODO maybe
+                                workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
+                            }
+                            //END
+                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s" : ""));
+                            workingsetBuilder.add(TagEnum.postSeparator, POST_STATUS_SEPARATOR);
+                        }
                         int typeDesignationCount = 0;
                         for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
                             if(typeDesignationCount++  > 0){
@@ -416,29 +379,32 @@ public class TypeDesignationSetManager {
 
                             workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
-                            TypeDesignationBase<?> typeDes =  typeDesignations.get(typeDesignationEntityReference.getUuid());
+                            if (withCitation){
+                                TypeDesignationBase<?> typeDes = typeDesignations.get(typeDesignationEntityReference.getUuid());
 
-                            //lectotype source
-                            OriginalSourceBase<?> lectoSource = typeDes.getSource();
-                            if (hasLectoSource(typeDes)){
-                                workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
-                                addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
-                            }
-                            //general sources
-                            if (!typeDes.getSources().isEmpty()) {
-                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT + REFERENCE_FIDE);
-                                int count = 0;
-                                for (IdentifiableSource source: typeDes.getSources()){
-                                    if (count++ > 0){
-                                        workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
-                                    }
-                                    addSource(workingsetBuilder, typeDesignationEntityReference, source);
+                                //lectotype source
+                                OriginalSourceBase<?> lectoSource = typeDes.getSource();
+                                if (hasLectoSource(typeDes)){
+                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
+                                    addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
                                 }
-                                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
-                            }
+                                //general sources
+                                if (!typeDes.getSources().isEmpty()) {
+                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT + REFERENCE_FIDE);
+                                    int count = 0;
+                                    for (IdentifiableSource source: typeDes.getSources()){
+                                        if (count++ > 0){
+                                            workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
+                                        }
+                                        addSource(workingsetBuilder, typeDesignationEntityReference, source);
+                                    }
+                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
+                                }
 
-                            if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
-                                workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
+                                if ((!typeStatus.equals(NULL_STATUS)) &&(typeDesignationCount ==  typeDesignationWorkingSet.get(typeStatus).size())){
+                                    workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
+                                }
+
                             }
                         }
                     }
