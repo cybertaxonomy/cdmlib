@@ -1057,14 +1057,14 @@ public class CdmLightClassificationExport
                     }
                     if (inReference.getAbbrevTitle() == null) {
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
-                                .Nz(inReference.getAbbrevTitleCache());
+                                .Nz(inReference.getTitle());
                     } else {
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
                                 .Nz(inReference.getAbbrevTitle());
                     }
                     if (inReference.getTitle() == null) {
                         csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils
-                                .Nz(inReference.getTitleCache());
+                                .Nz(inReference.getAbbrevTitle()!= null? inReference.getAbbrevTitle(): inReference.getTitleCache());
                     } else {
                         csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils.Nz(inReference.getTitle());
                     }
@@ -1083,13 +1083,14 @@ public class CdmLightClassificationExport
                 } else {
                     if (nomRef.getAbbrevTitle() == null) {
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
-                                .Nz(nomRef.getAbbrevTitleCache());
+                                .Nz(nomRef.getTitle()!= null? nomRef.getTitle():nomRef.getAbbrevTitleCache());
                     } else {
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_TITLE)] = CdmUtils
                                 .Nz(nomRef.getAbbrevTitle());
                     }
                     if (nomRef.getTitle() == null) {
-                        csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils.Nz(nomRef.getTitleCache());
+                        csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] =  CdmUtils
+                                .Nz(nomRef.getAbbrevTitle()!= null? nomRef.getAbbrevTitle(): nomRef.getTitleCache());
                     } else {
                         csvLine[table.getIndex(CdmLightExportTable.FULL_TITLE)] = CdmUtils.Nz(nomRef.getTitle());
                     }
