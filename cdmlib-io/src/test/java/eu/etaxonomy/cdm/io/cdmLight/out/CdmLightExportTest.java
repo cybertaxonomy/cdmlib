@@ -138,7 +138,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertNotNull("Scientific Name table must not be null", scientificName);
             expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
             Assert.assertTrue(scientificNameString.contains(expected));
-            expected ="\"Book\",\"The book of botany\",\"Mill., The book of botany 3. 1804\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
+            expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
             Assert.assertTrue(scientificNameString.contains(expected));
 
             byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
@@ -219,7 +219,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertNotNull("Scientific Name table must not be null", scientificName);
             expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
             Assert.assertTrue(scientificNameString.contains(expected));
-            expected ="\"Book\",\"The book of botany\",\"Mill., The book of botany 3. 1804\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
+            expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
             Assert.assertTrue(scientificNameString.contains(expected));
 
             byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
