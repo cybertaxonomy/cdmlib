@@ -87,6 +87,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -1558,12 +1559,35 @@ public class CdmLightClassificationExport
             typifiedNames.addAll(group.getTypifiedNames());
             Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(null, true));
             String typifiedNamesString = "";
+            String typifiedNamesWithSecString = "";
+            String typifiedNamesWithoutAcceptedName = "";
             for (TaxonName name : typifiedNames) {
                 // Concatenated output string for homotypic group (names and
                 // citations) + status + some name relations (e.g. “non”)
                 // TODO: nameRelations, which and how to display
+                Set<TaxonBase> taxonBases = name.getTaxonBases();
+                TaxonBase taxonBase;
+                String sec = null;
+                if (taxonBases.size() == 1){
+                     taxonBase = taxonBases.iterator().next();
+                     Reference secRef = taxonBase.getSec();
+                     if (secRef != null){
+                         sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
+                             .createShortCitation(secRef);
+                     }
+                     if (taxonBase instanceof Synonym){
+                         if (StringUtils.isNotBlank(sec)){
+                             sec = " syn sec. " + sec;
+                         }
+                         typifiedNamesWithoutAcceptedName += name.getTitleCache() + extractStatusString(state, name, true) + "; ";
+                     }
+
+                }else{
+                    //TODO: handle missapplied names, proparte synonyms etc..
+                }
 
                 typifiedNamesString += name.getTitleCache() + extractStatusString(state, name, true) + "; ";
+                typifiedNamesWithSecString += name.getTitleCache() + extractStatusString(state, name, true) + sec + "; ";
             }
             typifiedNamesString = typifiedNamesString.substring(0, typifiedNamesString.length() - 2);
             if (typifiedNamesString != null) {
