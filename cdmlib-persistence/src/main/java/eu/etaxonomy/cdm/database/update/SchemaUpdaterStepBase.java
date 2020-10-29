@@ -101,22 +101,48 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
 	}
 
     /**
-     * Returns the smallest next free id, if includeAudit is <code>true</code> the audit table is also considered in computation
+     * Returns the smallest next free id, if includeAudit is <code>true</code> the audit
+     * table is also considered in computation
      * @throws NumberFormatException
      * @throws SQLException
      */
     protected int getMaxId1(ICdmDataSource datasource, String tableName, boolean includeAudit, IProgressMonitor monitor, CaseType caseType,
             SchemaUpdateResult result) throws SQLException {
 
-        String sql = "SELECT max(id) FROM " +caseType.transformTo(tableName);
+        return getMaxIdentifier(datasource, tableName, "id", includeAudit, monitor, caseType, result);
+    }
+
+    protected int getMaxIdentifier(ICdmDataSource datasource, String tableName, String idAttrName, boolean includeAudit, IProgressMonitor monitor, CaseType caseType,
+            SchemaUpdateResult result) throws SQLException {
+
+        String sql = "SELECT max("+idAttrName+") FROM " +caseType.transformTo(tableName);
         Integer maxId = getInteger(datasource, sql, 0);
 
         Integer maxIdAud = -1;
         if(includeAudit){
-            sql = "SELECT max(id) FROM " +caseType.transformTo(tableName + "_AUD");
+            sql = "SELECT max("+idAttrName+") FROM " +caseType.transformTo(tableName + "_AUD");
             maxIdAud = getInteger(datasource, sql, 0);
         }
         return Math.max(maxId, maxIdAud) + 1;
+    }
+
+
+    /**
+     * Creates a new entry in the AuditEvent table
+     * @return the revision number of the the new audit event
+     */
+    protected long createAuditEvent(ICdmDataSource datasource, CaseType caseType, IProgressMonitor monitor,
+            SchemaUpdateResult result) throws SQLException {
+        String sql;
+        long rev;
+        sql = "INSERT INTO @@AuditEvent@@ (revisionnumber, date, timestamp, uuid) "
+                + " VALUES (%d, '%s', %d, '%s') ";
+        int newId = this.getMaxIdentifier(datasource, "AuditEvent", "revisionNumber", false, monitor, caseType, result);
+        long timeStamp = System.currentTimeMillis();
+        sql = caseType.replaceTableNames(String.format(sql, newId, this.getNowString(), timeStamp, UUID.randomUUID()));
+        datasource.executeUpdate(sql);
+        rev =  newId;
+        return rev;
     }
 
     private Integer getInteger(ICdmDataSource datasource, String sql, int nullReplace) throws SQLException {

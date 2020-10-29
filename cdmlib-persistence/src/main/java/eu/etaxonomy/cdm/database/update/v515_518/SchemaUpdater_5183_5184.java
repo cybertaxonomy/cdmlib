@@ -45,6 +45,8 @@ public class SchemaUpdater_5183_5184 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+		ProtologMover.NewInstance(stepList);
+
         return stepList;
     }
 
