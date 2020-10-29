@@ -130,7 +130,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         @XmlElement(name = "IndividualsAssociation", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = IndividualsAssociation.class),
         @XmlElement(name = "QuantitativeData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = QuantitativeData.class),
         @XmlElement(name = "TaxonInteraction", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TaxonInteraction.class),
-        @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class)
+        @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class),
+        @XmlElement(name = "TemporalData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TemporalData.class)
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
