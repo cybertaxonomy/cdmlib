@@ -11,9 +11,12 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 
@@ -29,7 +32,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     private UUID uuid;
     private URI uri;
     private TermType termType;
-    private final Set<Representation> representations;
+    private Set<Representation> representations = new HashSet<>();
     private String representation_L10n = null;
     private String representation_L10n_abbreviatedLabel = null;
     private String representation_L10n_text = null;
@@ -38,7 +41,11 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     public AbstractTermDto(UUID uuid, Set<Representation> representations, String titleCache) {
         this.uuid = uuid;
         this.titleCache = titleCache;
-        this.representations = representations;
+
+        for(Representation rep: representations){
+            this.representations.add(rep.clone());
+        }
+
 
     }
 
@@ -114,6 +121,41 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
 
     public Set<Representation> getRepresentations() {
         return representations;
+    }
+    public Representation getPreferredRepresentation(Language lang){
+
+        Language language = lang;
+        if(lang != null){
+            language = Language.DEFAULT();
+        }
+        for (Representation rep: representations){
+            if(rep != null && rep.getLanguage().equals(language)){
+                return rep;
+            }
+        }
+        language = Language.DEFAULT();
+        for (Representation rep: representations){
+            if(rep != null && rep.getLanguage().equals(language)){
+                return rep;
+            }
+        }
+
+        Iterator<Representation> it = getRepresentations().iterator();
+        if(it.hasNext()){
+            return getRepresentations().iterator().next();
+        }
+
+        return null;
+    }
+
+    public Representation getRepresentation(Language lang) {
+        for (Representation repr : representations){
+            Language reprLanguage = repr.getLanguage();
+            if (reprLanguage != null && reprLanguage.equals(lang)){
+                return repr;
+            }
+        }
+        return null;
     }
 
 

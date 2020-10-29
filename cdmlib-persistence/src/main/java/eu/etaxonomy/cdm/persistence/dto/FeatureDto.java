@@ -20,9 +20,14 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author k.luther
@@ -35,14 +40,31 @@ public class FeatureDto extends TermDto {
     boolean isAvailableForTaxon = true;
     boolean isAvailableForTaxonName = true;
     boolean isAvailableForOccurrence = true;
+    boolean isSupportsCategoricalData = false;
+    boolean isSupportsQuantitativeData = false;
+
+    Set<TermDto> recommendedMeasurementUnits = new HashSet<>();
+    Set<TermDto> recommendedStatisticalMeasures = new HashSet<>();
+    Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
+    Set<TermVocabularyDto> recommendedModifierEnumeration = new HashSet<>();
 
     public FeatureDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations, boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache){
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations, boolean isAvailableForTaxon,
+            boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache, boolean isSupportsCategoricalData, boolean isSupportsQuantitativeData,
+            Set<TermVocabularyDto> supportedCategoricalEnumerations, Set<TermVocabularyDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures){
         super(uuid, representations, TermType.Feature, partOfUuid, kindOfUuid,
                 vocabularyUuid, orderIndex, idInVocabulary, vocRepresentations, titleCache);
         this.isAvailableForOccurrence = isAvailableForOccurrence;
         this.isAvailableForTaxon = isAvailableForTaxon;
         this.isAvailableForTaxonName = isAvailableForTaxonName;
+
+        this.isSupportsCategoricalData = isSupportsCategoricalData;
+        this.isSupportsQuantitativeData = isSupportsQuantitativeData;
+
+        this.recommendedMeasurementUnits = recommendedMeasurementUnits;
+        this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
+        this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
+        this.recommendedModifierEnumeration = recommendedModifierEnumeration;
 
     }
 
@@ -51,6 +73,35 @@ public class FeatureDto extends TermDto {
         result.isAvailableForOccurrence = term.isAvailableForOccurrence();
         result.isAvailableForTaxon = term.isAvailableForTaxon();
         result.isAvailableForTaxonName = term.isAvailableForTaxonName();
+        result.isSupportsCategoricalData = term.isSupportsCategoricalData();
+        result.isSupportsQuantitativeData = term.isSupportsQuantitativeData();
+        if (term.getRecommendedMeasurementUnits() != null && !term.getRecommendedMeasurementUnits().isEmpty()){
+            result.recommendedMeasurementUnits = new HashSet<>();
+        }
+        for (MeasurementUnit unit: term.getRecommendedMeasurementUnits()){
+            result.recommendedMeasurementUnits.add(TermDto.fromTerm(unit));
+        }
+
+        if (term.getRecommendedStatisticalMeasures() != null && !term.getRecommendedStatisticalMeasures().isEmpty()){
+            result.recommendedStatisticalMeasures = new HashSet<>();
+        }
+        for (StatisticalMeasure unit: term.getRecommendedStatisticalMeasures()){
+            result.recommendedStatisticalMeasures.add(TermDto.fromTerm(unit));
+        }
+
+        if (term.getSupportedCategoricalEnumerations() != null && !term.getSupportedCategoricalEnumerations().isEmpty()){
+            result.supportedCategoricalEnumerations = new HashSet<>();
+        }
+        for (TermVocabulary<State> voc: term.getSupportedCategoricalEnumerations()){
+            result.supportedCategoricalEnumerations.add(new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat()));
+        }
+
+        if (term.getRecommendedModifierEnumeration() != null && !term.getRecommendedModifierEnumeration().isEmpty()){
+            result.recommendedModifierEnumeration = new HashSet<>();
+        }
+        for (TermVocabulary<DefinedTerm> voc: term.getRecommendedModifierEnumeration()){
+            result.recommendedModifierEnumeration.add(new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat()));
+        }
         return result;
     }
 
@@ -96,6 +147,90 @@ public class FeatureDto extends TermDto {
         this.isAvailableForOccurrence = isAvailableForOccurrence;
     }
 
+    /**
+     * @return the isSupportsCategoricalData
+     */
+    public boolean isSupportsCategoricalData() {
+        return isSupportsCategoricalData;
+    }
+
+    /**
+     * @param isSupportsCategoricalData the isSupportsCategoricalData to set
+     */
+    public void setSupportsCategoricalData(boolean isSupportsCategoricalData) {
+        this.isSupportsCategoricalData = isSupportsCategoricalData;
+    }
+
+    /**
+     * @return the isSupportsQuantitativeData
+     */
+    public boolean isSupportsQuantitativeData() {
+        return isSupportsQuantitativeData;
+    }
+
+    /**
+     * @param isSupportsQuantitativeData the isSupportsQuantitativeData to set
+     */
+    public void setSupportsQuantitativeData(boolean isSupportsQuantitativeData) {
+        this.isSupportsQuantitativeData = isSupportsQuantitativeData;
+    }
+
+    /**
+     * @return the recommendedMeasurementUnits
+     */
+    public Set<TermDto> getRecommendedMeasurementUnits() {
+        return recommendedMeasurementUnits;
+    }
+
+    /**
+     * @param recommendedMeasurementUnits the recommendedMeasurementUnits to set
+     */
+    public void setRecommendedMeasurementUnits(Set<TermDto> recommendedMeasurementUnits) {
+        this.recommendedMeasurementUnits = recommendedMeasurementUnits;
+    }
+
+    /**
+     * @return the recommendedStatisticalMeasures
+     */
+    public Set<TermDto> getRecommendedStatisticalMeasures() {
+        return recommendedStatisticalMeasures;
+    }
+
+    /**
+     * @param recommendedStatisticalMeasures the recommendedStatisticalMeasures to set
+     */
+    public void setRecommendedStatisticalMeasures(Set<TermDto> recommendedStatisticalMeasures) {
+        this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
+    }
+
+    /**
+     * @return the supportedCategoricalEnumerations
+     */
+    public Set<TermVocabularyDto> getSupportedCategoricalEnumerations() {
+        return supportedCategoricalEnumerations;
+    }
+
+    /**
+     * @param supportedCategoricalEnumerations the supportedCategoricalEnumerations to set
+     */
+    public void setSupportedCategoricalEnumerations(Set<TermVocabularyDto> supportedCategoricalEnumerations) {
+        this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
+    }
+
+    /**
+     * @return the recommendedModifierEnumeration
+     */
+    public Set<TermVocabularyDto> getRecommendedModifierEnumeration() {
+        return recommendedModifierEnumeration;
+    }
+
+    /**
+     * @param recommendedModifierEnumeration the recommendedModifierEnumeration to set
+     */
+    public void setRecommendedModifierEnumeration(Set<TermVocabularyDto> recommendedModifierEnumeration) {
+        this.recommendedModifierEnumeration = recommendedModifierEnumeration;
+    }
+
     public static String getTermDtoSelect(){
         String[] result = createSqlParts("DefinedTermBase");
 
@@ -116,7 +251,12 @@ public class FeatureDto extends TermDto {
                 + "a.uri,  "
                 + "m,  "
                 + "a.availableFor, "
-                + "a.titleCache ";
+                + "a.titleCache, "
+                + "a.supportedDataTypes, "
+                + "recommendedModifierEnumeration, "
+                + "recommendedStatisticalMeasures, "
+                + "supportedCategoricalEnumerations, "
+                + "recommendedMeasurementUnits ";
 
         String sqlFromString =   " from "+fromTable+" as a ";
 
@@ -126,6 +266,10 @@ public class FeatureDto extends TermDto {
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
                 + "LEFT JOIN v.representations as voc_rep "
+                + "LEFT JOIN a.recommendedModifierEnumeration as recommendedModifierEnumeration "
+                + "LEFT JOIN a.recommendedStatisticalMeasures as recommendedStatisticalMeasures "
+                + "LEFT JOIN a.supportedCategoricalEnumerations as supportedCategoricalEnumerations "
+                + "LEFT JOIN a.recommendedMeasurementUnits as recommendedMeasurementUnits "
                 ;
 
         String[] result = new String[3];
@@ -177,15 +321,86 @@ public class FeatureDto extends TermDto {
 
                 EnumSet<CdmClass> availableForString = (EnumSet<CdmClass>)elements[11];
 
-                    if (availableForString.contains(CdmClass.TAXON)){
-                        isAvailableForTaxon = true;
+                if (availableForString.contains(CdmClass.TAXON)){
+                    isAvailableForTaxon = true;
+                }
+                if (availableForString.contains(CdmClass.TAXON_NAME)){
+                    isAvailableForTaxonName = true;
+                }
+                if (availableForString.contains(CdmClass.OCCURRENCE)){
+                    isAvailableForOccurrence = true;
+                }
+                boolean isSupportsCategoricalData = false;
+                boolean isSupportsQuantitativeData = false;
+
+                EnumSet<CdmClass> supportsString = (EnumSet<CdmClass>)elements[13];
+
+                if (supportsString.contains(CdmClass.CATEGORICAL_DATA)){
+                    isSupportsCategoricalData = true;
+                }
+                if (supportsString.contains(CdmClass.QUANTITATIVE_DATA)){
+                    isSupportsQuantitativeData = true;
+                }
+
+                Object o = elements[14];
+                Set<TermVocabularyDto> recommendedModifierDtos = new HashSet<>();
+                if (o instanceof TermVocabulary){
+                    recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
+                }else if (o instanceof Set){
+                    Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = (Set<TermVocabulary<DefinedTerm>>) o;
+                    if (recommendedModifierEnumeration != null){
+                        for (TermVocabulary<DefinedTerm> voc: recommendedModifierEnumeration){
+                            recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary(voc));
+                        }
                     }
-                    if (availableForString.contains(CdmClass.TAXON_NAME)){
-                        isAvailableForTaxonName = true;
+                }
+
+
+
+                o = elements[15];
+                Set<TermDto> recommendedStatisticalMeasuresDtos = new HashSet<>();
+                if (o instanceof StatisticalMeasure){
+                    recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm((StatisticalMeasure)o));
+                }else if (o instanceof Set){
+                    Set<StatisticalMeasure> recommendedStatisticalMeasures = (Set<StatisticalMeasure>) o;
+                    if (recommendedStatisticalMeasures != null) {
+                        for (StatisticalMeasure term: recommendedStatisticalMeasures){
+                            recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm(term));
+                        }
                     }
-                    if (availableForString.contains(CdmClass.OCCURRENCE)){
-                        isAvailableForOccurrence = true;
+                }
+                o =  elements[16];
+                Set<TermVocabularyDto> supportedCategoricalDtos = new HashSet<>();
+                if (o instanceof TermVocabulary){
+                    supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
+                }else if (o instanceof Set){
+                    Set<TermVocabulary> supportedCategoricalEnumerations = (Set<TermVocabulary>)o;
+                    for (TermVocabulary<State> voc: supportedCategoricalEnumerations){
+                        supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(voc));
                     }
+                }
+
+//                if (supportedCategoricalEnumerations != null){
+//                    for (TermVocabulary<State> voc: supportedCategoricalEnumerations){
+//                        supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(voc));
+//                    }
+//                }
+                o = elements[17];
+                Set<TermDto> recommendedMeasurementUnitsDtos = new HashSet<>();
+                if (o instanceof MeasurementUnit){
+                    recommendedMeasurementUnitsDtos.add(TermDto.fromTerm((MeasurementUnit)o));
+                }else if (o instanceof Set){
+                    Set<MeasurementUnit> recommendedMeasurementUnits = (Set<MeasurementUnit>) elements[17];
+                    for (MeasurementUnit term: recommendedMeasurementUnits){
+                        recommendedMeasurementUnitsDtos.add(TermDto.fromTerm(term));
+                    }
+                }
+
+//                if (recommendedMeasurementUnits != null){
+//                    for (MeasurementUnit term: recommendedMeasurementUnits){
+//                        recommendedMeasurementUnitsDtos.add(TermDto.fromTerm(term));
+//                    }
+//                }
 
                 TermDto termDto = new FeatureDto(
                         uuid,
@@ -199,7 +414,13 @@ public class FeatureDto extends TermDto {
                         isAvailableForTaxon,
                         isAvailableForTaxonName,
                         isAvailableForOccurrence,
-                        (String)elements[12])
+                        (String)elements[12],
+                        isSupportsCategoricalData,
+                        isSupportsQuantitativeData,
+                        supportedCategoricalDtos,
+                        recommendedModifierDtos,
+                        recommendedMeasurementUnitsDtos,
+                        recommendedStatisticalMeasuresDtos)
                         ;
                 termDto.setUri((URI)elements[9]);
                 termDto.setMedia(mediaUuids);

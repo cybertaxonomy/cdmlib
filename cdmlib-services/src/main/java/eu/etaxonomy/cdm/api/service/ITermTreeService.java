@@ -50,4 +50,12 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
     public List<Restriction<?>> buildTermTypeFilterRestrictions(TermType termType);
 
     public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType);
+
+    /**
+     * @param uuid
+     * @return
+     */
+    public TermTreeDto getTermTreeDtoByUuid(UUID uuid);
+
+
 }

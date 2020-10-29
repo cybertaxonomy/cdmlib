@@ -178,6 +178,9 @@ public class TermTreeServiceImpl
         return dao.listTermTreeDtosByTermType(termType);
     }
 
-
+    @Override
+    public TermTreeDto getTermTreeDtoByUuid(UUID uuid) {
+        return dao.getTermTreeDtosByUuid(uuid);
+    }
 
 }

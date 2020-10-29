@@ -41,4 +41,10 @@ public interface ITermTreeDao extends IIdentifiableDao<TermTree> {
 
     public <S extends TermTree> List<TermTreeDto> listTermTreeDtosByTermType(TermType termType);
 
+    /**
+     * @param uuid
+     * @return
+     */
+    TermTreeDto getTermTreeDtosByUuid(UUID uuid);
+
 }

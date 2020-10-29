@@ -17,11 +17,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermType;;
 
 /**
  * @author k.luther
@@ -32,9 +32,10 @@ public class TermTreeDto extends TermCollectionDto {
 
     TermNodeDto root;
 
-    public TermTreeDto(TermTree<DefinedTermBase<DefinedTermBase>> tree){
-        this(tree.getUuid(), tree.getRepresentations(), tree.getTermType(), tree.getRoot(), tree.getTitleCache(), tree.isAllowDuplicates(), tree.isOrderRelevant(), tree.isFlat() );
-    }
+    public static TermTreeDto fromTree(TermTree tree){
+        TermTreeDto dto = new TermTreeDto(tree.getUuid(), tree.getRepresentations(), tree.getTermType(), tree.getRoot(), tree.getTitleCache(), tree.isAllowDuplicates(), tree.isOrderRelevant(), tree.isFlat() );
+        return dto;
+        }
 
 
     /**
@@ -49,7 +50,7 @@ public class TermTreeDto extends TermCollectionDto {
 
     public TermTreeDto(UUID uuid, Set<Representation> representations, TermType termType, TermNode root, String titleCache, boolean isAllowDuplicates, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicates, isOrderRelevant, isFlat);
-        this.root = new TermNodeDto(null, null, 0, this);
+        this.root = new TermNodeDto(null, null, 0, this, root.getUuid(), root.treeIndex(), root.getPath());
 
     }
 
@@ -129,8 +130,12 @@ public class TermTreeDto extends TermCollectionDto {
                         (boolean)elements[7],
                         (boolean)elements[8]);
                 termDto.setUri((URI)elements[3]);
+                if (termDto.getTermType().equals(TermType.Character)){
+                    termDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[4]));
+                }else {
+                    termDto.setRoot(TermNodeDto.fromNode(((TermNode)elements[4])));
+                }
 
-                termDto.setRoot(new TermNodeDto((TermNode)elements[4]));
 
 
                 dtoMap.put(uuid, termDto);

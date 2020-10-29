@@ -15,9 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.util.Assert;
+
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.FeatureState;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -26,48 +27,65 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * @author k.luther
  * @since Mar 18, 2020
  */
-public class TermNodeDto<T extends DefinedTermBase> implements Serializable{
+public class TermNodeDto implements Serializable{
 
     private static final long serialVersionUID = 7568459208397248126L;
 
     UUID parentUuid;
     String treeIndex;
-    List<TermNodeDto<T>> children;
+    List<TermNodeDto> children;
     Set<FeatureState> onlyApplicableIf = new HashSet<>();
     Set<FeatureState> inapplicableIf = new HashSet<>();
     UUID uuid;
     TermDto term;
     TermType type;
     TermTreeDto tree;
+    String path;
 
-    public TermNodeDto(TermNode<T> node){
-        uuid = node.getUuid();
+    public static TermNodeDto fromNode(TermNode node){
+        Assert.notNull(node, "Node should not be null");
+        TermDto term = node.getTerm() != null?TermDto.fromTerm(node.getTerm()): null;
+        TermTreeDto tree = node.getGraph() != null? TermTreeDto.fromTree(HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class)):null;
+        TermNodeDto dto = new TermNodeDto(term, null, node.getParent() != null? node.getParent().getIndex(node): 0, tree, node.getUuid(), node.treeIndex(), node.getPath());
+//        uuid = node.getUuid();
         if (node.getParent() != null){
-            parentUuid = node.getParent().getUuid();
+            dto.setParentUuid(node.getParent().getUuid());
         }
-        TermTree termTree = HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class);
-        tree = new TermTreeDto(termTree);
-        treeIndex = node.treeIndex();
-        children = new ArrayList();
-        for (TermNode<T> child: node.getChildNodes()){
+//        TermTree termTree = HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class);
+//        tree = TermTreeDto.fromTree(termTree);
+//        treeIndex = node.treeIndex();
+        List<TermNodeDto> children = new ArrayList();
+        for (Object o: node.getChildNodes()){
+            if (o instanceof TermNode){
+                TermNode child = (TermNode)o;
 
-            children.add(new TermNodeDto(child));
+                if (child != null){
+                    if(child.getTermType().equals(TermType.Character)){
+                        children.add(CharacterNodeDto.fromTermNode(child));
+                    }else{
+                        children.add(TermNodeDto.fromNode(child));
+                    }
+                }
+            }
         }
-        onlyApplicableIf = node.getOnlyApplicableIf();
-        inapplicableIf = node.getInapplicableIf();
-        if (node.getTerm() != null){
-            term = TermDto.fromTerm(node.getTerm());
-        }
-        type = node.getTermType();
+        dto.setChildren(children);
+        dto.setOnlyApplicableIf(node.getOnlyApplicableIf());
+        dto.setInapplicableIf(node.getInapplicableIf());
+//        if (node.getTerm() != null){
+//            term = TermDto.fromTerm(node.getTerm());
+//        }
+        dto.setTermType(node.getTermType());
+//        path = node.getPath();
+        return dto;
     }
 
 
-    public TermNodeDto(TermDto termDto, TermNodeDto parent, int position, TermTreeDto treeDto){
-        uuid = null;
+    public TermNodeDto(TermDto termDto, TermNodeDto parent, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
+        this.uuid = uuid;
         if (parent != null){
             parentUuid = parent.getUuid();
         }
-        treeIndex = null;
+        this.treeIndex = treeIndex;
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
         children = new ArrayList<>();
@@ -75,6 +93,8 @@ public class TermNodeDto<T extends DefinedTermBase> implements Serializable{
             parent.getChildren().add(position, this);
         }
         tree = treeDto;
+        this.path = path;
+
     }
 
 /*--------Getter and Setter ---------------*/
@@ -103,11 +123,11 @@ public class TermNodeDto<T extends DefinedTermBase> implements Serializable{
         this.tree = tree;
     }
 
-    public List<TermNodeDto<T>> getChildren() {
+    public List<TermNodeDto> getChildren() {
         return children;
     }
 
-    public void setChildren(List<TermNodeDto<T>> children) {
+    public void setChildren(List<TermNodeDto> children) {
         this.children = children;
     }
 
@@ -162,7 +182,23 @@ public class TermNodeDto<T extends DefinedTermBase> implements Serializable{
         return -1;
    }
 
-   public boolean removeChild(TermNodeDto nodeDto){
+   /**
+     * @return the path
+     */
+    public String getPath() {
+        return path;
+    }
+
+
+    /**
+     * @param path the path to set
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+
+public boolean removeChild(TermNodeDto nodeDto){
        int index = this.getIndex(nodeDto);
        if (index > -1){
            this.getChildren().remove(index);
@@ -176,6 +212,41 @@ public class TermNodeDto<T extends DefinedTermBase> implements Serializable{
            }
        }
        return false;
+   }
+
+
+   public static String getTermNodeDtoSelect(){
+       String[] result = createSqlParts();
+
+       return result[0]+result[1]+result[2];
+   }
+
+   /**
+    * @param fromTable
+    * @return
+    */
+   private static String[] createSqlParts() {
+       String sqlSelectString = ""
+               + "select a.uuid, "
+               + "r, "
+               + "a.termType,  "
+               + "a.uri,  "
+               + "root,  "
+               + "a.titleCache, "
+               + "a.allowDuplicates, "
+               + "a.orderRelevant, "
+               + "a.isFlat ";
+       String sqlFromString =   "from TermNode as a ";
+
+       String sqlJoinString =  "LEFT JOIN a.tree "
+              + "LEFT JOIN a.representations AS r "
+               ;
+
+       String[] result = new String[3];
+       result[0] = sqlSelectString;
+       result[1] = sqlFromString;
+       result[2] = sqlJoinString;
+       return result;
    }
 
 

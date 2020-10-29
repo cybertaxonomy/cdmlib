@@ -145,4 +145,19 @@ public class TermTreeDaoImpl extends IdentifiableDaoBase<TermTree> implements IT
         return list;
     }
 
+    @Override
+    public TermTreeDto getTermTreeDtosByUuid(UUID uuid) {
+        String queryString = TermTreeDto.getTermTreeDtoSelect()
+                + " WHERE a.uuid = :uuid"
+                + " ORDER BY a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermTreeDto> list = TermTreeDto.termTreeDtoListFrom(result);
+        return !list.isEmpty()? list.get(0): null;
+    }
+
 }

@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dto.CharacterNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -81,5 +82,11 @@ public interface ITermNodeService extends IVersionableService<TermNode>{
      * @return
      */
     UpdateResult saveTermNodeDtoList(List<TermNodeDto> dtos);
+
+    /**
+     * @param dtos
+     * @return
+     */
+    public UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos);
 
 }

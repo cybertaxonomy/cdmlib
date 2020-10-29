@@ -179,7 +179,6 @@ public class TermNode <T extends DefinedTermBase>
 	 */
 	@Override
     public List<TermNode<T>> getChildNodes() {
-	    removeNullValueFromChildren();
 	    return children;
 	}
 
@@ -575,6 +574,17 @@ public class TermNode <T extends DefinedTermBase>
 		return terms;
 	}
 
+
+	public String getPath(){
+	    String result = "";
+	    if (parent != null && parent.getTerm() != null){
+	        result = parent.getPath() + "/" + parent.getTerm().getLabel();
+	    }
+	    if (getTerm()!= null){
+	        result += getTerm().getLabel();
+	    }
+	    return result;
+	}
     /**
      * Returns all terms that are contained in this node or a child node
      * as long as this node or the child nodes are not {@link #isDependent() dependent}
