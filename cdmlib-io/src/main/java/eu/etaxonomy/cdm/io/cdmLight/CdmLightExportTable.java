@@ -99,6 +99,7 @@ public enum CdmLightExportTable {
     protected static final String RANK = "Rank";
     protected static final String RANK_SEQUENCE = "RankSequence";
     protected static final String FULL_NAME_WITH_AUTHORS = "FullNameWithAuthors";
+    protected static final String FULL_NAME_WITH_REF = "FullNameWithRef";
     protected static final String FULL_NAME_NO_AUTHORS = "FullNameNoAuthors";
     protected static final String GENUS_UNINOMIAL = "GenusOrUninomial";
     protected static final String INFRAGENERIC_RANK = "InfragenericRank";
@@ -159,6 +160,10 @@ public enum CdmLightExportTable {
     //Homotypic Group
     protected static final String HOMOTYPIC_GROUP_ID = "HomotypicGroup_ID";
     protected static final String HOMOTYPIC_GROUP_STRING = "HomotypicGroupString";
+    protected static final String HOMOTYPIC_GROUP_WITH_SEC_STRING = "HomotypicGroupStringWithSec";
+    protected static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTED = "HomotypicGroupStringWithoutAccepted";
+    protected static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC = "HomotypicGroupStringWithoutAcceptedWithSec";
+
     protected static final String TYPE_STRING = "TypeSpecimenString";
     protected static final String TYPE_CACHE = "TypeStatementsString";
 
@@ -244,7 +249,8 @@ public enum CdmLightExportTable {
     protected static final String REF_TABLE = "ReferencedTable";
 
     final static String[] homotypicGroupColumns(){
-        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE};
+        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE, HOMOTYPIC_GROUP_WITH_SEC_STRING, HOMOTYPIC_GROUP_WITHOUT_ACCEPTED, HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC};
+
     }
 
     private static String[] compressedDistributionFactColumns() {
@@ -318,7 +324,7 @@ public enum CdmLightExportTable {
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
                 DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, VERBATIM_DATE, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
-                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT
+                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT, FULL_NAME_WITH_REF
         };
     }
 

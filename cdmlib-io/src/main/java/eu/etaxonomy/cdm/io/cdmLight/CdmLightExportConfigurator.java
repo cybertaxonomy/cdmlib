@@ -48,6 +48,8 @@ public class CdmLightExportConfigurator
     //private CondensedDistributionRecipe recipe = CondensedDistributionRecipe.EuroPlusMed;
     private boolean isFilterImportSources = true;
 
+    private final boolean isAddHTML = true;
+
     private Comparator<TaxonNodeDto> comparator;
 
 
@@ -352,5 +354,15 @@ public class CdmLightExportConfigurator
                 CdmLightClassificationExport.class
         };
     }
+
+
+    public boolean isAddHTML() {
+        return isAddHTML;
+    }
+
+
+//    public void setAddHTML(boolean isAddHTML) {
+//        this.isAddHTML = isAddHTML;
+//    }
 
 }
