@@ -79,7 +79,6 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         stepName = "Remove autoincrement from AuditEvent.revisionnumber";
         RevisionNumberUpdater.NewInstance(stepList, stepName);
 
-
         //#5734
         //Add symbol to terms
         stepName = "Add symbols to terms";

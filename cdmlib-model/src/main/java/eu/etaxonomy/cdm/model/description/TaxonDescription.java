@@ -233,7 +233,6 @@ public class TaxonDescription
     /**
      * Returns the first TextData element of feature type image. If no such element exists,
      * a new one is created.
-     * @return
      */
     @Transient
     public TextData getOrCreateImageTextData(){
@@ -248,7 +247,6 @@ public class TaxonDescription
         addElement(textData);
         return textData;
     }
-
 
 //*********************** CLONE ********************************************************/
 

@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * Special term trees:
  *
  * <B>Feature</B> trees are essential as interactive multiple-access keys for
- * determination process and for systematical output arrangement of
+ * determination process and for systematic output arrangement of
  * {@link DescriptionElementBase description elements} according to different goals
  * but may also be used to define flat feature subsets for filtering purposes.<BR>
  * <P>

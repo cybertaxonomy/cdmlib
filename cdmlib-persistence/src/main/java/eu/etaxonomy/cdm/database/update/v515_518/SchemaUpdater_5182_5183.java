@@ -43,10 +43,6 @@ public class SchemaUpdater_5182_5183 extends SchemaUpdaterBase {
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
 
-		String stepName;
-		String tableName;
-		String newColumnName;
-
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
 		//#9124
