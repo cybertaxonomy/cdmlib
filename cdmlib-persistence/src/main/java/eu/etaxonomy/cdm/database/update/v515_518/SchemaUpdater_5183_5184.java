@@ -20,23 +20,23 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
  * @author a.mueller
- * @date 02.09.2020
+ * @date 20.10.2020
  */
-public class SchemaUpdater_5182_5183 extends SchemaUpdaterBase {
+public class SchemaUpdater_5183_5184 extends SchemaUpdaterBase {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(SchemaUpdater_5182_5183.class);
+	private static final Logger logger = Logger.getLogger(SchemaUpdater_5183_5184.class);
 
-	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_18_02;
-	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_03;
+	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_18_03;
+	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_04;
 
 // ********************** FACTORY METHOD *************************************
 
-	public static SchemaUpdater_5182_5183 NewInstance() {
-		return new SchemaUpdater_5182_5183();
+	public static SchemaUpdater_5183_5184 NewInstance() {
+		return new SchemaUpdater_5183_5184();
 	}
 
-	protected SchemaUpdater_5182_5183() {
+	protected SchemaUpdater_5183_5184() {
 		super(startSchemaVersion.versionString(), endSchemaVersion.versionString());
 	}
 
@@ -45,19 +45,16 @@ public class SchemaUpdater_5182_5183 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
-		//#9124
-		AltitudeMeterCorrector.NewInstance(stepList);
-
         return stepList;
     }
 
     @Override
     public ISchemaUpdater getPreviousUpdater() {
-        return SchemaUpdater_5181_5182.NewInstance();
+        return SchemaUpdater_5182_5183.NewInstance();
     }
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_5183_5184.NewInstance();
+		return null;
 	}
 }
