@@ -1240,6 +1240,8 @@ public class CdmLightClassificationExport
         for (TaggedText taggedText: taggedName){
             if (taggedText.getType().equals(TagEnum.name)){
                 fullTitleWithHtml += "<i>" + taggedText.getText() + "</i> ";
+            }else if (taggedText.getType().equals(TagEnum.separator)){
+                fullTitleWithHtml = fullTitleWithHtml.trim() + taggedText.getText() ;
             }else{
                 fullTitleWithHtml += taggedText.getText() + " ";
             }
@@ -1603,6 +1605,7 @@ public class CdmLightClassificationExport
             String typifiedNamesWithSecString = "";
             String typifiedNamesWithoutAccepted = "";
             String typifiedNamesWithoutAcceptedWithSec = "";
+            int index = 0;
             for (TaxonName name : typifiedNames) {
                 // Concatenated output string for homotypic group (names and
                 // citations) + status + some name relations (e.g. “non”)
@@ -1612,8 +1615,24 @@ public class CdmLightClassificationExport
 
                 String sec = "";
                 String nameString = name.getFullTitleCache();
+
                 if (state.getConfig().isAddHTML()){
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
+                }
+
+                if (index > 0){
+                    boolean isInvalid = false;
+                    for (NomenclaturalStatus status: name.getStatus()){
+                        if (status.getType().isInvalidType()){
+                            isInvalid = true;
+                            break;
+                        }
+                    }
+                    if (isInvalid){
+                        nameString = "\u2212 " + nameString;
+                    }else{
+                        nameString = "\u2261 " + nameString;
+                    }
                 }
                 boolean isAccepted = false;
 
@@ -1632,8 +1651,8 @@ public class CdmLightClassificationExport
                          }
 
 //                         typifiedNamesWithoutAcceptedName += name.getTitleCache() + extractStatusString(state, name, true) + "; ";
-                         typifiedNamesWithoutAccepted += nameString + "; ";
-                         typifiedNamesWithoutAcceptedWithSec += nameString + sec + "; ";
+                         typifiedNamesWithoutAccepted += nameString ;
+                         typifiedNamesWithoutAcceptedWithSec += nameString + sec ;
                      }else{
                          sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
@@ -1644,7 +1663,7 @@ public class CdmLightClassificationExport
 
                 }else{
                     //there are names used more than once?
-                    state.getResult().addWarning("There are more than one taxonBase for name " + name.getUuid() + " - " + name.getTitleCache() + " it is not possible to decide which syn sec should be used in homotypical group strings");
+//                    state.getResult().addWarning("There are more than one taxonBase for name " + name.getUuid() + " - " + name.getTitleCache() + " it is not possible to decide which syn sec should be used in homotypical group strings");
                     for (TaxonBase tb: taxonBases){
                         Reference secRef = tb.getSec();
                         if (secRef != null){
@@ -1675,8 +1694,8 @@ public class CdmLightClassificationExport
                         typifiedNamesWithoutAcceptedWithSec += nameString + sec + "; ";
                     }
                 }
-                typifiedNamesString += nameString + "; ";
-                typifiedNamesWithSecString += nameString + sec + "; ";
+                typifiedNamesString += nameString ;
+                typifiedNamesWithSecString += nameString + sec;
 
 //                typifiedNamesString = typifiedNamesString.substring(0, typifiedNamesString.length() - 2);
 //                typifiedNamesWithSecString = typifiedNamesWithSecString.substring(0, typifiedNamesString.length() - 2);
@@ -1706,7 +1725,7 @@ public class CdmLightClassificationExport
                 } else {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
                 }
-
+                index++;
             }
 
             Set<TypeDesignationBase<?>> typeDesigantionSet = group.getTypeDesignations();

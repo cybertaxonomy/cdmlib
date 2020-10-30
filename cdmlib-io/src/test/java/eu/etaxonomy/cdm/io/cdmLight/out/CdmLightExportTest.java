@@ -138,13 +138,22 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertNotNull("Scientific Name table must not be null", scientificName);
             expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
             Assert.assertTrue(scientificNameString.contains(expected));
+            if (config.isAddHTML()){
+                expected = "\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\"";
+                Assert.assertTrue(scientificNameString.contains(expected));
+            }
+
             expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
             Assert.assertTrue(scientificNameString.contains(expected));
 
             byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
-            expected ="\"Genus species subsp. subspec Mill.\",\"\"";
+            if (config.isAddHTML()){
+                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
+            }else{
+                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
+            }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
 
@@ -225,7 +234,11 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
-            expected ="\"Genus species subsp. subspec Mill.\",\"\"";
+            if (config.isAddHTML()){
+                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\"";
+            }else{
+                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\",\"\"";
+            }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
 
