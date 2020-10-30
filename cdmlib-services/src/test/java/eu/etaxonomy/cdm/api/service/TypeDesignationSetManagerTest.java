@@ -199,9 +199,10 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 
 //            Logger.getLogger(this.getClass()).debug(result);
             assertNotNull(result);
+            //FIXME #9263
             assertEquals(
-                    "Prionus L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 Isotype: M;"
-                    + " Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: OHA; Isotypes: BER, KEW;"
+                    "Prionus L. Type: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 isotype: M;"
+                    + " Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 holotype: OHA; isotypes: BER, KEW;"
                     + " Nametype: Prionus coriatius L."
                     , result
                     );
@@ -212,10 +213,10 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             Map<TypeDesignationStatusBase<?>, Collection<TypedEntityReference>> byStatusMap_1 = byStatusMapIterator.next();
             Map<TypeDesignationStatusBase<?>, Collection<TypedEntityReference>> byStatusMap_2 = byStatusMapIterator.next();
             Iterator<TypeDesignationStatusBase<?>> keyIt_1 = byStatusMap_1.keySet().iterator();
-            assertEquals("Isotype", keyIt_1.next().getLabel());
+            assertEquals("isotype", keyIt_1.next().getLabel());
             Iterator<TypeDesignationStatusBase<?>> keyIt_2 = byStatusMap_2.keySet().iterator();
-            assertEquals("Holotype", keyIt_2.next().getLabel());
-            assertEquals("Isotype", keyIt_2.next().getLabel());
+            assertEquals("holotype", keyIt_2.next().getLabel());
+            assertEquals("isotype", keyIt_2.next().getLabel());
         }
 
         @Test
@@ -244,8 +245,9 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typifiedName.addTypeDesignation(std_HT, false);
             typeDesignationManager.addTypeDesigations(std_HT);
 
+            //FIXME #9263
             assertEquals(
-                    "Prionus L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: OHA; Nametype: Prionus coriatius L."
+                    "Prionus L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 holotype: OHA; Nametype: Prionus coriatius L."
                     , typeDesignationManager.print()
                     );
         }
@@ -262,7 +264,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             citation.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
             std_LT.addPrimaryTaxonomicSource(citation, "55");
             typeDesignationManager.buildString(true);
-            assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (Lectotype: LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
+            assertEquals("Prionus coriatius L. Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
                     typeDesignationManager.print());
 
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
@@ -291,8 +293,9 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                 typeDesignationManager.addTypeDesigations(mtd_HT_published);
                 typeDesignationManager.addTypeDesigations(mtd_IT_unpublished);
 
+                //FIXME #9263
                 assertEquals("failed after repreating " + i + " times",
-                        "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 Holotype: [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; Isotype: [icon] B Slide A565656."
+                        "Prionus coriatius L. Type: Testland, near Bughausen, A.Kohlbecker 81989, 2017 holotype: [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; isotype: [icon] B Slide A565656."
                         , typeDesignationManager.print()
                         );
             }
