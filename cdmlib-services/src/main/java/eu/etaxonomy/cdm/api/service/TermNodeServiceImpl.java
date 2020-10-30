@@ -297,6 +297,7 @@ public class TermNodeServiceImpl
                         oldRep.setLabel(rep.getLabel());
                         oldRep.setAbbreviatedLabel(rep.getAbbreviatedLabel());
                         oldRep.setText(rep.getText());
+                        oldRep.setPlural(rep.getPlural());
                     }
                     Set<Representation> deleteRepresentations = new HashSet<>();
                     if (character.getRepresentations().size() > dto.getTerm().getRepresentations().size()){
