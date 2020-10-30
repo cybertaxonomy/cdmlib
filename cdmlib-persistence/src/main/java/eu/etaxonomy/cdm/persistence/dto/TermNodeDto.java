@@ -60,7 +60,7 @@ public class TermNodeDto implements Serializable{
                 TermNode child = (TermNode)o;
 
                 if (child != null){
-                    if(child.getTermType().equals(TermType.Character)){
+                    if(child.getTerm().getTermType().equals(TermType.Character)){
                         children.add(CharacterNodeDto.fromTermNode(child));
                     }else{
                         children.add(TermNodeDto.fromNode(child));
