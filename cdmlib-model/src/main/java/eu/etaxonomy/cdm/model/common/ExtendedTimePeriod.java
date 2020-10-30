@@ -43,8 +43,9 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
  * @since 28.04.2020
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VerbatimTimePeriod", propOrder = {
-    "verbatimDate"
+@XmlType(name = "ExtendedTimePeriod", propOrder = {
+    "extremeStart",
+    "extremeEnd"
 })
 @XmlRootElement(name = "ExtendedTimePeriod")
 @Embeddable
