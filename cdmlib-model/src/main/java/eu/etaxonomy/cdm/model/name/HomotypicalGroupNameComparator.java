@@ -139,9 +139,9 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
             }else if (basionym.equals(name2)){
                 return 1;
             }else{
-                this.compare(name1, name2, false);
+                return this.compare(name1, name2, false);
             }
-            return 0;
+
         }
 
         /**
@@ -395,7 +395,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
                if (name.isZoological()){
                    result = name.getPublicationYear();
                }else{
-                   Reference ref = (Reference) name.getNomenclaturalReference();
+                   Reference ref = name.getNomenclaturalReference();
                    if (ref == null){
                        result = null;
                    }else{
