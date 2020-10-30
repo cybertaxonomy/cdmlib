@@ -57,7 +57,7 @@ public class ProtologMover  extends SchemaUpdaterStepBase {
 
         String sql =
             " SELECT n.titleCache, mrp.uri uri, osb.id sid, "
-                + "  n.id nameId, db.id dbid, deb.id debId, m.id AS 'mid', mr.id mrId, mrp.id mrpid, feature.id fid "
+                + "  n.id nameId, db.id dbid, deb.id debId, m.id AS mid, mr.id mrId, mrp.id mrpid, feature.id fid "
             + " FROM @@TaxonName@@ n "
             + " INNER JOIN @@DescriptionBase@@ db ON db.taxonName_id = n.id "
             + " INNER JOIN @@DescriptionElementBase@@ deb ON deb.inDescription_id = db.id "
