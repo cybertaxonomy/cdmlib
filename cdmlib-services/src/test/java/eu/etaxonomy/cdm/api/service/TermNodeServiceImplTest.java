@@ -17,9 +17,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import  eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -48,7 +50,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
 
 
     @Test
-    public void testSaveCharacterNode() {
+    public void testSaveCharacterNode_supportedData() {
         DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
         TermTree<DefinedTerm> structureTree = TermTree.NewInstance(TermType.Structure);
         TermNode<DefinedTerm> nodeStructure = structureTree.getRoot().addChild(structure);
@@ -84,7 +86,59 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
             characterTree = termTreeService.load(characterTreeUuid);
             List<TermNode<Feature>> childNodes = characterTree.getRoot().getChildNodes();
             TermNode<Feature> child = childNodes.get(0);
+
 //            Assert.assertTrue(child.getTerm().isSupportsCategoricalData());
+
+        }else{
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testSaveCharacterNode_representation() {
+        DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
+        TermTree<DefinedTerm> structureTree = TermTree.NewInstance(TermType.Structure);
+        TermNode<DefinedTerm> nodeStructure = structureTree.getRoot().addChild(structure);
+
+        DefinedTerm property = DefinedTerm.NewInstance(TermType.Property);
+        TermTree<DefinedTerm> propertyTree = TermTree.NewInstance(TermType.Property);
+        TermNode<DefinedTerm> nodeProperty = propertyTree.getRoot().addChild(property);
+        termService.saveOrUpdate(property);
+        termService.saveOrUpdate(structure);
+        termTreeService.saveOrUpdate(structureTree);
+        termTreeService.saveOrUpdate(propertyTree);
+
+        TermTree<Feature> characterTree = TermTree.NewInstance(TermType.Feature);
+        UUID characterTreeUuid = characterTree.getUuid();
+        Character character = Character.NewInstance(nodeStructure, nodeProperty);
+        character.setSupportsCategoricalData(false);
+
+        characterTree.getRoot().addChild(character);
+        termService.saveOrUpdate(character);
+        termTreeService.saveOrUpdate(characterTree);
+        termTreeService.getSession().flush();
+        TermTreeDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
+        List<TermNodeDto> children = dto.getRoot().getChildren();
+        CharacterNodeDto nodeDto = (CharacterNodeDto) children.get(0);
+        TermDto termDto = nodeDto.getTerm();
+        if (termDto instanceof CharacterDto){
+            CharacterDto characterDto = (CharacterDto) termDto;
+            Representation rep = characterDto.getPreferredRepresentation(Language.DEFAULT());
+            if (rep != null){
+                rep.setText("Test");
+            }else{
+                rep = Representation.NewInstance("Test", "", "", Language.DEFAULT());
+                characterDto.addRepresentation(rep);
+            }
+            List<CharacterNodeDto> dtos = new ArrayList<>();
+            dtos.add(nodeDto);
+            termNodeService.saveCharacterNodeDtoList(dtos);
+            commitAndStartNewTransaction();
+            characterTree = termTreeService.load(characterTreeUuid);
+            List<TermNode<Feature>> childNodes = characterTree.getRoot().getChildNodes();
+            TermNode<Feature> child = childNodes.get(0);
+
+            Assert.assertTrue(child.getTerm().getPreferredRepresentation(Language.DEFAULT()).getText().equals("Test"));
 
         }else{
             Assert.fail();
