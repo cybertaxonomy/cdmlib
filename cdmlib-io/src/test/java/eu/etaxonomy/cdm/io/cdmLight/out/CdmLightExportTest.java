@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
@@ -96,6 +97,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
         @Test
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @Ignore
         public void testSubTree(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
@@ -150,6 +152,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
         @Test
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @Ignore
         public void testFullTreeWithUnpublished(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
