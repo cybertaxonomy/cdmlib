@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author andreas
  * @since Mar 25, 2015
- *
  */
 public class TermDto extends AbstractTermDto{
 
@@ -83,9 +82,9 @@ public class TermDto extends AbstractTermDto{
     }
 
     static public TermDto fromTerm(DefinedTermBase term, Set<Representation> representations, boolean initializeToTop) {
-        DefinedTermBase partOf = term.getPartOf();
-        DefinedTermBase kindOf = term.getKindOf();
-        TermVocabulary vocabulary = term.getVocabulary();
+        DefinedTermBase<?> partOf = term.getPartOf();
+        DefinedTermBase<?> kindOf = term.getKindOf();
+        TermVocabulary<?> vocabulary = term.getVocabulary();
 
         TermDto dto = new TermDto(
                         term.getUuid(),

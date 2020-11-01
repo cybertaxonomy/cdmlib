@@ -48,7 +48,6 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     @SpringBeanByType
     private ITermService termService;
 
-
     @Test
     public void testSaveCharacterNode_supportedData() {
         DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
@@ -143,17 +142,9 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         }else{
             Assert.fail();
         }
-
-
-
-
     }
-
-
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

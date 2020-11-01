@@ -1176,7 +1176,7 @@ public class Feature extends DefinedTermBase<Feature> {
 
         result.inverseRepresentations = new HashSet<Representation>();
         for (Representation rep: this.inverseRepresentations){
-            result.addInverseRepresentation((Representation)rep.clone());
+            result.addInverseRepresentation(rep.clone());
         }
 
         //no changes to: symmetric, transitiv
