@@ -56,12 +56,12 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -1129,8 +1129,7 @@ public class CdmLightClassificationExport
              *
              * TitlePageYear
              */
-            Set<TaxonNameDescription> descriptions = name.getDescriptions();
-            String protologueUriString = extractURIs(state, descriptions, Feature.PROTOLOGUE());
+            String protologueUriString = extractProtologueURIs(state, name);
 
             csvLine[table.getIndex(CdmLightExportTable.PROTOLOGUE_URI)] = protologueUriString;
             Collection<TypeDesignationBase> specimenTypeDesignations = new ArrayList<>();
@@ -1432,26 +1431,24 @@ public class CdmLightClassificationExport
         return identifierString;
     }
 
-    private String extractURIs(CdmLightExportState state, Set<? extends DescriptionBase<?>> descriptionsSet,
+    private String extractProtologueURIs(CdmLightExportState state, TaxonName name) {
+        if (name.getNomenclaturalSource() != null){
+            Set<ExternalLink> links = name.getNomenclaturalSource().getLinks();
+            return extractLinkUris(links.iterator());
+        }else{
+            return null;
+        }
+    }
+
+    private String extractMediaURIs(CdmLightExportState state, Set<? extends DescriptionBase<?>> descriptionsSet,
             Feature feature) {
+
         String mediaUriString = "";
-        SpecimenDescription specimenDescription;
-        TaxonDescription taxonDescription;
-        TaxonNameDescription nameDescription;
         Set<DescriptionElementBase> elements = new HashSet<>();
         for (DescriptionBase<?> description : descriptionsSet) {
             try {
                 if (!description.getElements().isEmpty()) {
-                    if (description instanceof SpecimenDescription) {
-                        specimenDescription = (SpecimenDescription) description;
-                        elements = specimenDescription.getElements();
-                    } else if (description instanceof TaxonDescription) {
-                        taxonDescription = (TaxonDescription) description;
-                        elements = taxonDescription.getElements();
-                    } else if (description instanceof TaxonNameDescription) {
-                        nameDescription = (TaxonNameDescription) description;
-                        elements = nameDescription.getElements();
-                    }
+                    elements = description.getElements();
 
                     for (DescriptionElementBase element : elements) {
                         Feature entityFeature = HibernateProxyHelper.deproxy(element.getFeature());
@@ -2134,7 +2131,7 @@ public class CdmLightClassificationExport
             }
 
             csvLine[table.getIndex(CdmLightExportTable.PREFERREDSTABLE_ID)] = specimen.getPreferredStableUri() != null? specimen.getPreferredStableUri().toString(): null;
-            csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_IMAGE_URIS)] = extractURIs(state,
+            csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_IMAGE_URIS)] = extractMediaURIs(state,
                     specimen.getDescriptions(), Feature.IMAGE());
             if (specimen instanceof DerivedUnit) {
                 DerivedUnit derivedUnit = (DerivedUnit) specimen;
@@ -2240,6 +2237,26 @@ public class CdmLightClassificationExport
         }
 
         return mediaUriString;
+    }
+
+    private String extractLinkUris(Iterator<ExternalLink> it) {
+
+        String linkUriString = "";
+        boolean first = true;
+        while (it.hasNext()) {
+            ExternalLink link = it.next();
+            if (first) {
+                if (link.getUri() != null) {
+                    linkUriString += link.getUri().toString();
+                    first = false;
+                }
+            } else {
+                if (link.getUri() != null) {
+                    linkUriString += ", " + link.getUri().toString();
+                }
+            }
+        }
+        return linkUriString;
     }
 
     private String createCollectorString(CdmLightExportState state, GatheringEvent gathering, FieldUnit fieldUnit) {
