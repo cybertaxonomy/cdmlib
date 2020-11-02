@@ -24,10 +24,8 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -151,13 +149,9 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
             return;
         }
 
-        TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
-        this.getNameDescription(name, state).addElement(textData);
-        URI uri;
         try {
-            uri = new URI(bhlLink);
-            textData.addMedia(Media.NewInstance(uri, null, null, null));
-
+            URI uri = new URI(bhlLink);
+            name.addProtologue(uri, null, ExternalLinkType.WebSite);
         } catch (URISyntaxException e) {
             String message = "(BHL) Link could not be recognized as valid URI. Link was not added to %s: %s";
             message = String.format(message, name.getTitleCache(), bhlLink);

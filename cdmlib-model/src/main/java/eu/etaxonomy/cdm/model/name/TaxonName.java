@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -77,6 +78,8 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -2237,6 +2240,21 @@ public class TaxonName
         if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty(true)){
             this.nomenclaturalSource = null;
         }
+    }
+
+    /**
+     * Creates a new external link for given uri with default language description if description exists
+     * and adds it to the nomenclatural source.
+     * If no nomenclatural source exists a new one is created.
+     * @param uri the url to the protogue
+     * @param description an additional description for the link for the default language
+     * @param type see {@link ExternalLinkType}
+     * @return the newly created {@link ExternalLink external link}
+     */
+    public ExternalLink addProtologue(URI uri, String description, ExternalLinkType type){
+        ExternalLink newProtologue = ExternalLink.NewInstance(type, uri, description, null);
+        getNomenclaturalSource(true).addLink(newProtologue);
+        return newProtologue;
     }
 
     /**

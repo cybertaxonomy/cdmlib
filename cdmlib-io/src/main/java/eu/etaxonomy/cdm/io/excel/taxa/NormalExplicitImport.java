@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -344,13 +345,9 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 
 		//protologue
 		for (String protologue : taxonDataHolder.getProtologues()){
-			TextData textData = TextData.NewInstance(Feature.PROTOLOGUE());
-			this.getNameDescription(taxonBase.getName(), state).addElement(textData);
-			URI uri;
 			try {
-				uri = new URI(protologue);
-				textData.addMedia(Media.NewInstance(uri, null, null, null));
-
+				URI uri = new URI(protologue);
+				taxonBase.getName().addProtologue(uri, null, ExternalLinkType.Unknown);
 			} catch (URISyntaxException e) {
 				String warning = "URISyntaxException when trying to convert to URI: " + protologue;
 				logger.error(warning);
