@@ -480,8 +480,12 @@ public class Feature extends DefinedTermBase<Feature> {
      */
     private EnumSet<CdmClass> newEnumSet(@NotNull EnumSet<CdmClass> enumSet, CdmClass additionalClass, CdmClass classToRemove) {
         EnumSet<CdmClass> result = EnumSet.copyOf(enumSet);
-        result.add(additionalClass);
-        result.remove(classToRemove);
+        if (additionalClass != null){
+            result.add(additionalClass);
+        }
+        if (classToRemove != null){
+            result.remove(classToRemove);
+        }
         return result;
     }
 
