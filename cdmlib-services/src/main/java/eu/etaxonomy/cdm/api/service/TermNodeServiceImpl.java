@@ -189,9 +189,6 @@ public class TermNodeServiceImpl
 	     return result;
 	 }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UpdateResult moveNode(UUID movedNodeUuid, UUID targetNodeUuid, int position) {
         UpdateResult result = new UpdateResult();
@@ -218,14 +215,10 @@ public class TermNodeServiceImpl
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public UpdateResult moveNode(UUID movedNodeUuid, UUID targetNodeUuid) {
         return moveNode(movedNodeUuid, targetNodeUuid, -1);
     }
-
 
     @Override
     public UpdateResult saveTermNodeDtoList(List<TermNodeDto> dtos){
