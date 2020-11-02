@@ -49,7 +49,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     private ITermService termService;
 
     @Test
-    public void testSaveCharacterNode_supportedData() {
+    public void testSaveCharacterNode_supportedData_AvailableFor() {
         DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
         TermTree<DefinedTerm> structureTree = TermTree.NewInstance(TermType.Structure);
         TermNode<DefinedTerm> nodeStructure = structureTree.getRoot().addChild(structure);
@@ -66,6 +66,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         UUID characterTreeUuid = characterTree.getUuid();
         Character character = Character.NewInstance(nodeStructure, nodeProperty);
         character.setSupportsCategoricalData(false);
+        character.setAvailableForTaxonName(false);
 
         characterTree.getRoot().addChild(character);
         termService.saveOrUpdate(character);
@@ -78,16 +79,18 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         if (termDto instanceof CharacterDto){
             CharacterDto characterDto = (CharacterDto) termDto;
             characterDto.setSupportsCategoricalData(true);
+            characterDto.setAvailableForTaxonName(true);
             List<CharacterNodeDto> dtos = new ArrayList<>();
             dtos.add(nodeDto);
             termNodeService.saveCharacterNodeDtoList(dtos);
             commitAndStartNewTransaction();
-            characterTree = termTreeService.load(characterTreeUuid);
-            List<TermNode<Feature>> childNodes = characterTree.getRoot().getChildNodes();
+            @SuppressWarnings("unchecked")
+            TermTree<Feature> characterTree2 = termTreeService.load(characterTreeUuid);
+            List<TermNode<Feature>> childNodes = characterTree2.getRoot().getChildNodes();
             TermNode<Feature> child = childNodes.get(0);
 
-//            Assert.assertTrue(child.getTerm().isSupportsCategoricalData());
-
+            Assert.assertTrue(child.getTerm().isSupportsCategoricalData());
+            Assert.assertTrue(child.getTerm().isAvailableForTaxonName());
         }else{
             Assert.fail();
         }
