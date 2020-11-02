@@ -37,16 +37,9 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
 	@SpringBeanByType
 	private IVocabularyService vocabularyService;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {}
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getRankVocabulary()}.
-     */
     @Test
 //    @Ignore //FIXME assertSame does not work yet
     public void testGetRankVocabulary() {
@@ -62,9 +55,6 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
 //        assertSame(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank)); //as we do not use second level cache this is not required
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTypeDesignationVocabulary()}.
-     */
     @Test
 //    @Ignore  //not yet correctly implemented
     public void testGetTypeDesignationVocabulary() {
@@ -84,5 +74,4 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

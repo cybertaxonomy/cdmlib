@@ -48,11 +48,9 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     @SpringBeanByType
     private ITermService termService;
 
-    private UUID characterTreeUuid;
-
     @Test
     public void testSaveCharacterNode_supportedData() {
-        createAndSaveCharacterTree();
+        UUID characterTreeUuid = createAndSaveCharacterTree();
 
         TermTreeDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
         List<TermNodeDto> children = dto.getRoot().getChildren();
@@ -78,9 +76,8 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-    @Ignore
     public void testSaveCharacterNode_representation() {
-        createAndSaveCharacterTree();
+        UUID characterTreeUuid = createAndSaveCharacterTree();
 
         TermTreeDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
         List<TermNodeDto> children = dto.getRoot().getChildren();
@@ -111,7 +108,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         }
     }
 
-    private void createAndSaveCharacterTree() {
+    private UUID createAndSaveCharacterTree() {
         DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
         TermTree<DefinedTerm> structureTree = TermTree.NewInstance(TermType.Structure);
         TermNode<DefinedTerm> nodeStructure = structureTree.getRoot().addChild(structure);
@@ -125,13 +122,16 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         termTreeService.saveOrUpdate(propertyTree);
 
         TermTree<Feature> characterTree = TermTree.NewInstance(TermType.Feature);
-        characterTreeUuid= characterTree.getUuid();
+        UUID characterTreeUuid = characterTree.getUuid();
         Character character = Character.NewInstance(nodeStructure, nodeProperty);
         character.setSupportsCategoricalData(false);
 
         characterTree.getRoot().addChild(character);
         termService.saveOrUpdate(character);
         termTreeService.saveOrUpdate(characterTree);
+        commitAndStartNewTransaction();
+
+        return characterTreeUuid;
     }
 
     @Override
