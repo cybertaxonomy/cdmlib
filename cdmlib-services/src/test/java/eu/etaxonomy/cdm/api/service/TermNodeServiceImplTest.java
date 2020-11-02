@@ -48,30 +48,15 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     @SpringBeanByType
     private ITermService termService;
 
+    UUID characterTreeUuid;
+
     @Test
-    public void testSaveCharacterNode_supportedData_AvailableFor() {
-        DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
-        TermTree<DefinedTerm> structureTree = TermTree.NewInstance(TermType.Structure);
-        TermNode<DefinedTerm> nodeStructure = structureTree.getRoot().addChild(structure);
-
-        DefinedTerm property = DefinedTerm.NewInstance(TermType.Property);
-        TermTree<DefinedTerm> propertyTree = TermTree.NewInstance(TermType.Property);
-        TermNode<DefinedTerm> nodeProperty = propertyTree.getRoot().addChild(property);
-        termService.saveOrUpdate(property);
-        termService.saveOrUpdate(structure);
-        termTreeService.saveOrUpdate(structureTree);
-        termTreeService.saveOrUpdate(propertyTree);
-
-        TermTree<Feature> characterTree = TermTree.NewInstance(TermType.Feature);
-        UUID characterTreeUuid = characterTree.getUuid();
-        Character character = Character.NewInstance(nodeStructure, nodeProperty);
-        character.setSupportsCategoricalData(false);
-        character.setAvailableForTaxonName(false);
-
-        characterTree.getRoot().addChild(character);
-        termService.saveOrUpdate(character);
-        termTreeService.saveOrUpdate(characterTree);
-        termTreeService.getSession().flush();
+    public void testSaveCharacterNode_supportedData() {
+        try{
+            createTestDataSet();
+        }catch(FileNotFoundException e){
+            Assert.fail();
+        }
         TermTreeDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
         List<TermNodeDto> children = dto.getRoot().getChildren();
         CharacterNodeDto nodeDto = (CharacterNodeDto) children.get(0);
@@ -79,18 +64,16 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
         if (termDto instanceof CharacterDto){
             CharacterDto characterDto = (CharacterDto) termDto;
             characterDto.setSupportsCategoricalData(true);
-            characterDto.setAvailableForTaxonName(true);
             List<CharacterNodeDto> dtos = new ArrayList<>();
             dtos.add(nodeDto);
             termNodeService.saveCharacterNodeDtoList(dtos);
             commitAndStartNewTransaction();
-            @SuppressWarnings("unchecked")
-            TermTree<Feature> characterTree2 = termTreeService.load(characterTreeUuid);
-            List<TermNode<Feature>> childNodes = characterTree2.getRoot().getChildNodes();
+            TermTree characterTree = termTreeService.load(characterTreeUuid);
+            List<TermNode<Feature>> childNodes = characterTree.getRoot().getChildNodes();
             TermNode<Feature> child = childNodes.get(0);
 
             Assert.assertTrue(child.getTerm().isSupportsCategoricalData());
-            Assert.assertTrue(child.getTerm().isAvailableForTaxonName());
+
         }else{
             Assert.fail();
         }
@@ -98,27 +81,11 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
 
     @Test
     public void testSaveCharacterNode_representation() {
-        DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
-        TermTree<DefinedTerm> structureTree = TermTree.NewInstance(TermType.Structure);
-        TermNode<DefinedTerm> nodeStructure = structureTree.getRoot().addChild(structure);
-
-        DefinedTerm property = DefinedTerm.NewInstance(TermType.Property);
-        TermTree<DefinedTerm> propertyTree = TermTree.NewInstance(TermType.Property);
-        TermNode<DefinedTerm> nodeProperty = propertyTree.getRoot().addChild(property);
-        termService.saveOrUpdate(property);
-        termService.saveOrUpdate(structure);
-        termTreeService.saveOrUpdate(structureTree);
-        termTreeService.saveOrUpdate(propertyTree);
-
-        TermTree<Feature> characterTree = TermTree.NewInstance(TermType.Feature);
-        UUID characterTreeUuid = characterTree.getUuid();
-        Character character = Character.NewInstance(nodeStructure, nodeProperty);
-        character.setSupportsCategoricalData(false);
-
-        characterTree.getRoot().addChild(character);
-        termService.saveOrUpdate(character);
-        termTreeService.saveOrUpdate(characterTree);
-        termTreeService.getSession().flush();
+        try{
+            createTestDataSet();
+        }catch(FileNotFoundException e){
+            Assert.fail();
+        }
         TermTreeDto dto = termTreeService.getTermTreeDtoByUuid(characterTreeUuid);
         List<TermNodeDto> children = dto.getRoot().getChildren();
         CharacterNodeDto nodeDto = (CharacterNodeDto) children.get(0);
@@ -136,7 +103,7 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
             dtos.add(nodeDto);
             termNodeService.saveCharacterNodeDtoList(dtos);
             commitAndStartNewTransaction();
-            characterTree = termTreeService.load(characterTreeUuid);
+            TermTree characterTree = termTreeService.load(characterTreeUuid);
             List<TermNode<Feature>> childNodes = characterTree.getRoot().getChildNodes();
             TermNode<Feature> child = childNodes.get(0);
 
@@ -148,6 +115,27 @@ public class TermNodeServiceImplTest  extends CdmTransactionalIntegrationTest{
     }
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {}
+    public void createTestDataSet() throws FileNotFoundException {
+        DefinedTerm structure = DefinedTerm.NewInstance(TermType.Structure);
+        TermTree<DefinedTerm> structureTree = TermTree.NewInstance(TermType.Structure);
+        TermNode<DefinedTerm> nodeStructure = structureTree.getRoot().addChild(structure);
+
+        DefinedTerm property = DefinedTerm.NewInstance(TermType.Property);
+        TermTree<DefinedTerm> propertyTree = TermTree.NewInstance(TermType.Property);
+        TermNode<DefinedTerm> nodeProperty = propertyTree.getRoot().addChild(property);
+        termService.saveOrUpdate(property);
+        termService.saveOrUpdate(structure);
+        termTreeService.saveOrUpdate(structureTree);
+        termTreeService.saveOrUpdate(propertyTree);
+
+        TermTree<Feature> characterTree = TermTree.NewInstance(TermType.Feature);
+        characterTreeUuid= characterTree.getUuid();
+        Character character = Character.NewInstance(nodeStructure, nodeProperty);
+        character.setSupportsCategoricalData(false);
+
+        characterTree.getRoot().addChild(character);
+        termService.saveOrUpdate(character);
+        termTreeService.saveOrUpdate(characterTree);
+    }
 
 }
