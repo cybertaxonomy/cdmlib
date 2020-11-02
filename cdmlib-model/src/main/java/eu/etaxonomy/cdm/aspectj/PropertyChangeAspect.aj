@@ -55,22 +55,13 @@ public aspect PropertyChangeAspect {
 				Object oldValue = property.get(cb);
 				proceed( cb );
 				Object newValue = property.get(cb);
-//				logger.error ("Prop: " + propertyName);
-//				logger.warn("OLD:" + oldValue);
-//				logger.warn("New:" + newValue);
+                //logger.debug ("Prop: " + propertyName);
+                //logger.debug("OLD:" + oldValue);
+                //logger.debug("New:" + newValue);
 				if (! isPersistentSet(newValue) && ! isPersistentSet(oldValue)  ){
 					cb.firePropertyChange( propertyName, oldValue, newValue);
 				}
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-				proceed( cb );
-			}catch (IllegalArgumentException e) {
-				e.printStackTrace();
-				proceed( cb );
-			}catch (IllegalAccessException e) {
-				e.printStackTrace();
-				proceed( cb );
-			} catch (InvocationTargetException e) {
+			} catch (NoSuchMethodException |IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 				e.printStackTrace();
 				proceed( cb );
 			}
