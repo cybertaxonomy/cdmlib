@@ -51,7 +51,6 @@ public class TermDto extends AbstractTermDto{
     private Collection<UUID> media = null;
     private NamedAreaLevel level = null;
 
-
     private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
         this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null, titleCache);
@@ -120,7 +119,6 @@ public class TermDto extends AbstractTermDto{
         }
         return dto;
     }
-
 
     @Override
     public void localize(ITermRepresentation_L10n representation_L10n) {
@@ -253,17 +251,12 @@ public class TermDto extends AbstractTermDto{
         return level;
     }
 
-
     public static String getTermDtoSelect(String fromTable){
         String[] result = createSqlParts(fromTable);
 
         return result[0]+result[1]+result[2];
     }
 
-    /**
-     * @param fromTable
-     * @return
-     */
     private static String[] createSqlParts(String fromTable) {
         String sqlSelectString = ""
                 + "select a.uuid, "
@@ -299,9 +292,6 @@ public class TermDto extends AbstractTermDto{
         String[] result = createSqlParts("NamedArea");
         return result[0]+  ", level  " + result[1] + result[2]+ "LEFT JOIN a.level as level ";
     }
-
-
-
 
     public static List<TermDto> termDtoListFrom(List<Object[]> results) {
         List<TermDto> dtos = new ArrayList<>(); // list to ensure order
@@ -361,7 +351,4 @@ public class TermDto extends AbstractTermDto{
         }
         return dtos;
     }
-
-
-
 }
