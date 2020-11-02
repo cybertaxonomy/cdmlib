@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -111,6 +112,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -219,7 +221,7 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             acceptedTaxon.removeSynonym(syn);
         }
-        Taxon newTaxon = (Taxon)acceptedTaxon.clone();
+        Taxon newTaxon = acceptedTaxon.clone();
         newTaxon.setName(synonymName);
         newTaxon.setSec(synonym.getSec());
         for (Synonym syn: synonyms){
@@ -286,7 +288,7 @@ public class TaxonServiceImpl
             }
 
         }
-        Synonym newSynonym = (Synonym)synonym.clone();
+        Synonym newSynonym = synonym.clone();
         newSynonym.setName(taxonName);
         newSynonym.setSec(acceptedTaxon.getSec());
         if (sameHomotypicGroup){
@@ -327,7 +329,7 @@ public class TaxonServiceImpl
             return result;
         }
 
-        Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, acceptedTaxon.getSec());
+        Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, null);
         dao.save(newAcceptedTaxon);
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF();
@@ -1449,7 +1451,8 @@ public class TaxonServiceImpl
     }
 
     @Override
-    public <T extends TaxonBase> List<UuidAndTitleCache<T>> getUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern) {
+    public <T extends TaxonBase>List<UuidAndTitleCache<T>> getUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern) {
+
         return dao.getUuidAndTitleCache(clazz, limit, pattern);
     }
 
@@ -1498,7 +1501,7 @@ public class TaxonServiceImpl
              results = dao.findByTitleWithRestrictions(clazz, queryString, matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths);
              results.addAll(dao.findByTitleWithRestrictions(clazz, "?".concat(queryString), matchmode, restrictions, pageSize, pageNumber, orderHints, propertyPaths));
          }
-
+         Collections.sort(results, new TaxonComparator());
          return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
@@ -1519,7 +1522,7 @@ public class TaxonServiceImpl
                    results.addAll(dao.findByTitle(clazz, "?".concat(queryString), matchmode,  criteria, pageSize, pageNumber, orderHints, propertyPaths));
                }
         }
-
+        Collections.sort(results, new TaxonComparator());
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
