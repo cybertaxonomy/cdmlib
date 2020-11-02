@@ -455,11 +455,34 @@ public class Feature extends DefinedTermBase<Feature> {
      * @param value the value if it is supported (<code>true</code>) or not (<code>false</code>)
      */
     private void setSupportedClass(CdmClass cdmClass, boolean value) {
-        if (value){
-            this.supportedDataTypes.add(cdmClass);
+        if (value && !this.supportedDataTypes.contains(cdmClass)){
+            setSupportedDataTypes(newEnumSet(this.supportedDataTypes, cdmClass, null));
+        }else if (!value && this.supportedDataTypes.contains(cdmClass)){
+            setSupportedDataTypes(newEnumSet(this.supportedDataTypes, null, cdmClass));
         }else{
-            this.supportedDataTypes.remove(cdmClass);
+            return;
         }
+    }
+
+    /**
+     * for know it is private and the boolean getters and setters should be used instead.
+     * If you make it public make sure to guarantee that any change to the enum set results
+     * in a new enum set (see also {@link #newEnumSet(EnumSet, CdmClass, CdmClass)}
+     * and that the client is aware of the enum set being immutable.
+     */
+    private void setSupportedDataTypes(EnumSet<CdmClass> dataTypes){
+        this.supportedDataTypes = dataTypes;
+    }
+
+    /**
+     * EnumSets being part of the model should be immutable to make hibernate know if they have been changed.
+     * Therefore any change to the enum set should result in a new enum set.
+     */
+    private EnumSet<CdmClass> newEnumSet(@NotNull EnumSet<CdmClass> enumSet, CdmClass additionalClass, CdmClass classToRemove) {
+        EnumSet<CdmClass> result = EnumSet.copyOf(enumSet);
+        result.add(additionalClass);
+        result.remove(classToRemove);
+        return result;
     }
 
     /**
@@ -468,11 +491,23 @@ public class Feature extends DefinedTermBase<Feature> {
      * @param value the value if it is supported (<code>true</code>) or not (<code>false</code>)
      */
     private void setAvailableFor(CdmClass cdmClass, boolean value) {
-        if (value){
-            this.availableFor.add(cdmClass);
+        if (value && !this.availableFor.contains(cdmClass)){
+            setAvailableFor(newEnumSet(this.availableFor, cdmClass, null));
+        }else if (!value && this.availableFor.contains(cdmClass)){
+            setAvailableFor(newEnumSet(this.availableFor, null, cdmClass));
         }else{
-            this.availableFor.remove(cdmClass);
+            return;
         }
+    }
+
+    /**
+     * for know it is private and the boolean getters and setters should be used instead.
+     * If you make it public make sure to guarantee that any change to the enum set results
+     * in a new enum set (see also {@link #newEnumSet(EnumSet, CdmClass, CdmClass)}
+     * and that the client is aware of the enum set being immutable.
+     */
+    private void setAvailableFor(EnumSet<CdmClass> availableFor){
+        this.availableFor = availableFor;
     }
 
     /**

@@ -286,6 +286,17 @@ public class TermNodeServiceImpl
                     Character character = null;
                     CharacterDto characterDto = (CharacterDto) dto.getTerm();
                     character = HibernateProxyHelper.deproxy(node.getTerm(), Character.class);
+
+                    //supportsXXX
+                    //TODO add all other supportsXXX (6 are missing)
+                    character.setSupportsCategoricalData(characterDto.isSupportsCategoricalData());
+                    character.setSupportsQuantitativeData(characterDto.isSupportsQuantitativeData());
+
+                    //availableForXXX
+                    character.setAvailableForTaxon(characterDto.isAvailableForTaxon());
+                    character.setAvailableForOccurrence(characterDto.isAvailableForOccurrence());
+                    character.setAvailableForTaxonName(characterDto.isAvailableForTaxonName());
+
 //                  representations
                     for (Representation rep: dto.getTerm().getRepresentations()){
                         Representation oldRep = character.getRepresentation(rep.getLanguage());
@@ -322,8 +333,7 @@ public class TermNodeServiceImpl
                     }
 
 
-//                  supports quantitative data
-                    character.setSupportsQuantitativeData(characterDto.isSupportsQuantitativeData());
+
 //                  recommended measurement units
                     character.getRecommendedMeasurementUnits().clear();
                     List<UUID> uuids = new ArrayList<>();
@@ -375,9 +385,6 @@ public class TermNodeServiceImpl
                         }
                     }
 
-
-//                  supports categorical data
-                    character.setSupportsCategoricalData(characterDto.isSupportsCategoricalData());
 //                  supported state vocabularies
                     character.getSupportedCategoricalEnumerations().clear();
                     uuids = new ArrayList<>();
