@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.Representation;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author k.luther
@@ -61,6 +62,7 @@ public class CharacterDto extends FeatureDto {
         this.structureModifier = structureModifier;
         this.property = property;
         this.propertyModifier = propertyModifier;
+        this.setTermType(TermType.Character);
     }
 
     /**
