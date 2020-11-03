@@ -69,7 +69,7 @@ public class DefaultMediaTransformations {
         tr2.setMaxExtend(false);
 
         MediaUriTransformation tr3 = new MediaUriTransformation();
-        tr3.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", dataPortalPreviewImage));
+        tr3.setPathQueryFragment(new SearchReplace("digilib/Scaler/?\\?fn=([^\\\\/]+)/(\\w+)(.*)", dataPortalPreviewImage));
         tr3.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
         tr3.setMimeType("image/jpeg");
         tr3.setWidth(dataPortalPreviewImageSize.x);
@@ -77,7 +77,7 @@ public class DefaultMediaTransformations {
         tr3.setMaxExtend(true);
 
         MediaUriTransformation tr4 = new MediaUriTransformation();
-        tr4.setPathQueryFragment(new SearchReplace("digilib/Scaler/\\?fn=([^\\\\/]+)/(\\w+)(.*)", universalViewerThumbnail));
+        tr4.setPathQueryFragment(new SearchReplace("digilib/Scaler/?\\?fn=([^\\\\/]+)/(\\w+)(.*)", universalViewerThumbnail));
         tr4.setHost(new SearchReplace("pictures.bgbm.org", "pictures.bgbm.org")); // host part only used for matching, no replace!
         tr4.setMimeType("image/jpeg");
         tr4.setWidth(universalViewerThumbnailSize.x);
