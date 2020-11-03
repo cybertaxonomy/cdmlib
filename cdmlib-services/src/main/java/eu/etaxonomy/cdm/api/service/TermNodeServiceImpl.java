@@ -228,10 +228,9 @@ public class TermNodeServiceImpl
         dtos.stream().forEach(dto -> uuids.add(dto.getUuid()));
         List<TermNode> nodes = dao.list(uuids, null, 0, null, null);
         //check all attributes for changes and adapt
-//        Iterator<TermNodeDto> dtoIterator = dtos.iterator();
         for (TermNode node: nodes){
             for (TermNodeDto dto: dtos){
-    //            TermNodeDto dto = dtoIterator.next();
+
                 if (dto.getUuid().equals(node.getUuid())){
     //                only node changes, everything else will be handled by the operations/service methods
                     if (!dto.getInapplicableIf().equals(node.getInapplicableIf())){
@@ -247,8 +246,6 @@ public class TermNodeServiceImpl
                 result.addUpdatedObject(mergeResult.getMergedEntity());
             }
         }
-
-        //saveOrUpdate all nodes
         return result;
     }
 
@@ -266,7 +263,7 @@ public class TermNodeServiceImpl
             for (CharacterNodeDto dto: dtos){
     //            TermNodeDto dto = dtoIterator.next();
                 if (dto.getUuid().equals(node.getUuid())){
-    //                only node changes, everything else will be handled by the operations/service methods
+
                     if (!dto.getInapplicableIf().equals(node.getInapplicableIf())){
                         node.getInapplicableIf().clear();
                         node.getInapplicableIf().addAll(dto.getInapplicableIf());
@@ -323,10 +320,9 @@ public class TermNodeServiceImpl
                     if (characterDto.getStructureModifier() != null){
                         DefinedTerm structureModifier = (DefinedTerm) termService.load(characterDto.getStructureModifier().getUuid());
                         character.setStructureModifier(structureModifier);
+                    }else{
+                        character.setStructureModifier(null);
                     }
-
-
-
 //                  recommended measurement units
                     character.getRecommendedMeasurementUnits().clear();
                     List<UUID> uuids = new ArrayList<>();
@@ -344,9 +340,6 @@ public class TermNodeServiceImpl
                         }
                         character.getRecommendedMeasurementUnits().addAll(measurementUnits);
                     }
-
-
-
 //                  statistical measures
                     character.getRecommendedStatisticalMeasures().clear();
                     uuids = new ArrayList<>();
@@ -392,10 +385,9 @@ public class TermNodeServiceImpl
                         }
                     }
                     node.setTerm(character);
-                    UUID uuid = dao.saveOrUpdate(node);
-                    result.addUpdatedObject(load(uuid));
+                    mergeResult = dao.merge(node, true);
+                    result.addUpdatedObject(mergeResult.getMergedEntity());
 
-//                    result.addUpdatedObject(termService.merge(character, true).getMergedEntity());
                 }
 
             }

@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import org.springframework.util.Assert;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.FeatureState;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
@@ -42,11 +41,11 @@ public class TermNodeDto implements Serializable{
     TermTreeDto tree;
     String path;
 
-    public static TermNodeDto fromNode(TermNode node){
+    public static TermNodeDto fromNode(TermNode node, TermTreeDto treeDto){
         Assert.notNull(node, "Node should not be null");
         TermDto term = node.getTerm() != null?TermDto.fromTerm(node.getTerm()): null;
-        TermTreeDto tree = node.getGraph() != null? TermTreeDto.fromTree(HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class)):null;
-        TermNodeDto dto = new TermNodeDto(term, null, node.getParent() != null? node.getParent().getIndex(node): 0, tree, node.getUuid(), node.treeIndex(), node.getPath());
+//        TermTreeDto tree = node.getGraph() != null? TermTreeDto.fromTree(HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class)):null;
+        TermNodeDto dto = new TermNodeDto(term, null, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.treeIndex(), node.getPath());
 //        uuid = node.getUuid();
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
@@ -61,9 +60,9 @@ public class TermNodeDto implements Serializable{
 
                 if (child != null){
                     if(child.getTerm().getTermType().equals(TermType.Character)){
-                        children.add(CharacterNodeDto.fromTermNode(child));
+                        children.add(CharacterNodeDto.fromTermNode(child, treeDto));
                     }else{
-                        children.add(TermNodeDto.fromNode(child));
+                        children.add(TermNodeDto.fromNode(child, treeDto));
                     }
                 }
             }

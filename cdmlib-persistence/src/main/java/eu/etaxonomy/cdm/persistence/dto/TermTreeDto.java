@@ -121,7 +121,7 @@ public class TermTreeDto extends TermCollectionDto {
                     representations.add((Representation)elements[1]);
                 }
 
-                TermTreeDto termDto = new TermTreeDto(
+                TermTreeDto termTreeDto = new TermTreeDto(
                         uuid,
                         representations,
                         (TermType)elements[2],
@@ -129,17 +129,17 @@ public class TermTreeDto extends TermCollectionDto {
                         (boolean)elements[6],
                         (boolean)elements[7],
                         (boolean)elements[8]);
-                termDto.setUri((URI)elements[3]);
-                if (termDto.getTermType().equals(TermType.Character)){
-                    termDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[4]));
+                termTreeDto.setUri((URI)elements[3]);
+                if (termTreeDto.getTermType().equals(TermType.Character)){
+                    termTreeDto.setRoot(CharacterNodeDto.fromTermNode((TermNode<Character>) elements[4], termTreeDto));
                 }else {
-                    termDto.setRoot(TermNodeDto.fromNode(((TermNode)elements[4])));
+                    termTreeDto.setRoot(TermNodeDto.fromNode((TermNode)elements[4], termTreeDto));
                 }
 
 
 
-                dtoMap.put(uuid, termDto);
-                dtos.add(termDto);
+                dtoMap.put(uuid, termTreeDto);
+                dtos.add(termTreeDto);
             }
         }
         return dtos;

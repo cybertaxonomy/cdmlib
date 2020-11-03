@@ -35,9 +35,9 @@ public class CharacterNodeDto extends TermNodeDto {
         super(characterDto, parent, position, treeDto, uuid, treeIndex, path);
     }
 
-    public static CharacterNodeDto fromTermNode(TermNode<Character> child) {
+    public static CharacterNodeDto fromTermNode(TermNode<Character> child, TermTreeDto treeDto) {
         Assert.notNull(child, "Node should not be null");
-        CharacterNodeDto dto = new CharacterNodeDto(child.getTerm() != null?CharacterDto.fromCharacter(child.getTerm()): null, null, child.getParent() != null?child.getParent().getIndex(child): 0, TermTreeDto.fromTree(child.getGraph()), child.getUuid(), child.treeIndex(), child.getPath());
+        CharacterNodeDto dto = new CharacterNodeDto(child.getTerm() != null?CharacterDto.fromCharacter(child.getTerm()): null, null, child.getParent() != null?child.getParent().getIndex(child): 0, treeDto, child.getUuid(), child.treeIndex(), child.getPath());
 
         if (child.getParent() != null){
             dto.setParentUuid(child.getParent().getUuid());
@@ -50,9 +50,9 @@ public class CharacterNodeDto extends TermNodeDto {
 
                 if (childNode != null){
                     if(childNode.getTermType().equals(TermType.Character)){
-                        children.add(CharacterNodeDto.fromTermNode(childNode));
+                        children.add(CharacterNodeDto.fromTermNode(childNode, treeDto));
                     }else{
-                        children.add(TermNodeDto.fromNode(childNode));
+                        children.add(TermNodeDto.fromNode(childNode, treeDto));
                     }
                 }
             }

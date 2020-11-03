@@ -95,7 +95,7 @@ public class CharacterDto extends FeatureDto {
        }
        CharacterDto dto = new CharacterDto(character.getUuid(), character.getRepresentations(), character.getPartOf() != null? character.getPartOf().getUuid(): null, character.getKindOf() != null? character.getKindOf().getUuid(): null, voc != null? voc.getUuid(): null,
                null, character.getIdInVocabulary(), voc != null? voc.getRepresentations(): null, character.isAvailableForTaxon(), character.isAvailableForTaxonName(), character.isAvailableForOccurrence(), character.getTitleCache(),
-                       character.getStructure() !=null? TermNodeDto.fromNode(character.getStructure()): null, character.getStructureModifier() != null? TermDto.fromTerm(character.getStructureModifier()): null, character.getProperty() != null? TermNodeDto.fromNode(character.getProperty()): null,
+                       character.getStructure() !=null? TermNodeDto.fromNode(character.getStructure(), null): null, character.getStructureModifier() != null? TermDto.fromTerm(character.getStructureModifier()): null, character.getProperty() != null? TermNodeDto.fromNode(character.getProperty(), null): null,
                         character.getPropertyModifier() != null? TermDto.fromTerm(character.getPropertyModifier()): null, character.isSupportsCategoricalData(), character.isSupportsQuantitativeData(),supportedCategoricalDtos, recommendedModifierDtos, recommendedMeasurementUnitsDtos, recommendedStatisticalMeasuresDtos);
 
        return dto;
