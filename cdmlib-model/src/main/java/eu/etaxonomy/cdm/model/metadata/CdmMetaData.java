@@ -195,10 +195,6 @@ public class CdmMetaData extends CdmBase{
 	 * Compares two version string. If version1 is higher than version2 a positive result is returned.
 	 * If both are equal 0 is returned, otherwise -1 is returned.
 	 * @see Comparator#compare(Object, Object)
-	 * @param version1
-	 * @param version2
-	 * @param depth
-	 * @param monitor
 	 * @return
 	 */
 	public static int compareVersion(String version1, String version2, Integer depth, IProgressMonitor monitor){

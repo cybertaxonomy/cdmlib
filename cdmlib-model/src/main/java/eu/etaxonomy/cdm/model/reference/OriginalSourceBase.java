@@ -233,7 +233,6 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 
 //********************** External Links **********************************************
 
-
     public Set<ExternalLink> getLinks(){
         return this.links;
     }
