@@ -59,8 +59,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private String collectorsNumber;
     private String barcode;
     private String preservationMethod;
-    // TODO rename to derivatives!!!
-    private Set<DerivedUnitDTO> derivates;
+    private Set<DerivedUnitDTO> derivatives;
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
@@ -307,28 +306,28 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
 
 
-    public Set<DerivedUnitDTO> getDerivates() {
-        if (this.derivates == null){
-            this.derivates = new HashSet<>();
+    public Set<DerivedUnitDTO> getDerivatives() {
+        if (this.derivatives == null){
+            this.derivatives = new HashSet<>();
         }
-        return derivates;
+        return derivatives;
     }
 
-    public void setDerivates(Set<DerivedUnitDTO> derivates) {
-        this.derivates = derivates;
+    public void setDerivatives(Set<DerivedUnitDTO> derivatives) {
+        this.derivatives = derivatives;
     }
 
     public void addDerivate(DerivedUnitDTO derivate){
-        if (this.derivates == null){
-            this.derivates = new HashSet<>();
+        if (this.derivatives == null){
+            this.derivatives = new HashSet<>();
         }
-        this.derivates.add(derivate);
+        this.derivatives.add(derivate);
     }
-    public void addAllDerivates(Set<DerivedUnitDTO> derivates){
-        if (this.derivates == null){
-            this.derivates = new HashSet<>();
+    public void addAllDerivatives(Set<DerivedUnitDTO> derivatives){
+        if (this.derivatives == null){
+            this.derivatives = new HashSet<>();
         }
-        this.derivates.addAll(derivates);
+        this.derivatives.addAll(derivatives);
     }
 
     /**
@@ -344,9 +343,9 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
      * @param dtos
      */
     private Collection<DerivedUnitDTO> collectDerivatives(Set<DerivedUnitDTO> dtos) {
-        dtos.addAll(getDerivates());
-        if(derivates != null) {
-            for(SpecimenOrObservationBaseDTO subDto : derivates) {
+        dtos.addAll(getDerivatives());
+        if(derivatives != null) {
+            for(SpecimenOrObservationBaseDTO subDto : derivatives) {
                 dtos.addAll(subDto.collectDerivatives(dtos));
             }
         }

@@ -48,13 +48,13 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	/**
      * Factory method for the construction of a FieldUnitDTO.
      * <p>
-     * The direct derivatives are added to the field {@link #getDerivates() derivates}.
+     * The direct derivatives are added to the field {@link #getDerivatives() derivates}.
      *
      *
      * @param fieldUnit
      *     The FieldUnit entity to create a DTO for. Is null save.
      * @param specimenOrObservationTypeFilter
-     *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivates() derivative DTOs}
+     *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
      */
 	public static FieldUnitDTO fromEntity(FieldUnit entity, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter){
         if(entity == null) {
@@ -64,12 +64,12 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
     }
 
 	/**
-     * The direct derivatives are added to the field {@link #getDerivates() derivates}.
+     * The direct derivatives are added to the field {@link #getDerivatives() derivates}.
 	 *
 	 * @param fieldUnit
 	 *     The FieldUnit entity to create a DTO for
 	 * @param specimenOrObservationTypeFilter
-	 *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivates() derivative DTOs}
+	 *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
 	 */
     private FieldUnitDTO(FieldUnit fieldUnit, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter ) {
         super(fieldUnit);

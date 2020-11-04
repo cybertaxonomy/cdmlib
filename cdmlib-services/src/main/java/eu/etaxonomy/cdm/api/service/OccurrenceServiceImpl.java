@@ -415,7 +415,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         dto = new DerivedUnitDTO(derivative);
                     }
                     alreadyCollectedSpecimen.put(dto.getUuid(), dto);
-                    dto.addAllDerivates(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
+                    dto.addAllDerivatives(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
                     derivedUnits.add(dto);
                 }
             }
@@ -533,7 +533,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     if (alreadyCollectedSpecimen.get(derivedUnitDTO.getUuid()) == null){
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
                     }
-                    derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
+                    derivedUnitDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
                     fieldUnitDTOs.addAll(findFieldUnitDTO(derivedUnitDTO, alreadyCollectedSpecimen));
                 } else {
                     // FIXME FieldUnits are not yet handled here !!!
@@ -580,7 +580,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if (dnaSample != null){
             derivedUnitDTO = new DNASampleDTO(dnaSample);
             alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-            derivedUnitDTO.addAllDerivates(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
+            derivedUnitDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
             Collection<FieldUnitDTO> fieldUnitDTOs = this.findFieldUnitDTO(derivedUnitDTO, alreadyCollectedSpecimen);
             // FIXME change return type to Collection<FieldUnitDTO>
             if(fieldUnitDTOs.isEmpty()) {
@@ -793,9 +793,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                         // by removing it from the derivatives of its original
                         // but let the derivate to be added to the original which is closer to the FieldUnit (below at originalDTO.addDerivate(derivedUnitDTO);)
                         for(SpecimenOrObservationBaseDTO seenOriginal: cycleDetectionMap.values()){
-                            for(SpecimenOrObservationBaseDTO derivateDTO : seenOriginal.getDerivates()){
+                            for(SpecimenOrObservationBaseDTO derivateDTO : seenOriginal.getDerivatives()){
                                 if(derivateDTO.equals(originalDTO)){
-                                    seenOriginal.getDerivates().remove(originalDTO);
+                                    seenOriginal.getDerivatives().remove(originalDTO);
                                 }
                             }
                         }

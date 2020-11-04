@@ -72,7 +72,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     /**
      * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
-     * added as DerivedUnitDTO to the {@link SpecimenOrObservationBaseDTO#getDerivates() derivative DTOs}.
+     * added as DerivedUnitDTO to the {@link SpecimenOrObservationBaseDTO#getDerivatives() derivative DTOs}.
      *
      * @param entity
      *   The entity to create the dto for
