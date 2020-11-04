@@ -149,7 +149,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		        queryString += " AND (r.type = :type) ";// OR r.type = :genericType) " ;
 		    }
 		    if (pattern != null){
-		        queryString += " AND (r.titleCache LIKE :pattern) ";
+		        queryString += " AND (r.titleCache LIKE :pattern) OR (r.abbrevTitleCache LIKE :pattern) ";
 		    }
 		}
 
