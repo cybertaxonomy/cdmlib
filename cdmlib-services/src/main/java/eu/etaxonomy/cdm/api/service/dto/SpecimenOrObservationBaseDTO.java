@@ -45,8 +45,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
-    @Deprecated
-    protected String listLabel;
 
     protected String citation;
     protected boolean hasDetailImage;
@@ -92,22 +90,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         }
     }
 
-
-    /**
-     * @deprecated replaced by {@link #getLabel()}
-     */
-    @Deprecated
-    public String getListLabel() {
-        return listLabel;
-    }
-
-    /**
-     * @deprecated replaced by {@link #getLabel}
-     */
-    @Deprecated
-    public void setListLabel(String listLabel) {
-        this.listLabel = listLabel;
-    }
     public void setCollection(CollectionDTO collection) {
         this.collection = collection;
     }

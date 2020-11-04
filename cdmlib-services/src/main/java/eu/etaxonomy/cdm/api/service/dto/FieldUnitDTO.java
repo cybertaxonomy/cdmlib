@@ -81,7 +81,6 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
         }
         setRecordBase(fieldUnit.getRecordBasis());
-        setListLabel(fieldUnit.getTitleCache());
 
         // --------------------------------------
 

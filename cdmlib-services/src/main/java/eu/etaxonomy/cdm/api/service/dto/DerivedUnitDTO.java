@@ -135,7 +135,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         }
         setBarcode(derivedUnit.getBarcode());
         setCatalogNumber(derivedUnit.getCatalogNumber());
-        listLabel = derivedUnit.getCatalogNumber();
         setCollectorsNumber(derivedUnit.getCollectorsNumber());
         if (derivedUnit.getDerivedFrom() != null){
             setDerivationEvent(new DerivationEventDTO(HibernateProxyHelper.deproxy(derivedUnit.getDerivedFrom(), DerivationEvent.class )));
