@@ -143,7 +143,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         if (derivedUnit.getPreservation()!= null){
             setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
         }
-        setRecordBase(derivedUnit.getRecordBasis().getMessage());
+        setRecordBase(derivedUnit.getRecordBasis());
         setSources(derivedUnit.getSources());
         setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
         addDeterminedNames(derivedUnit.getDeterminations());

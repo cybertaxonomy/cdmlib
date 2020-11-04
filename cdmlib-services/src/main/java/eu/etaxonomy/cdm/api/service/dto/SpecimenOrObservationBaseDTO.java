@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -53,8 +54,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private boolean hasDna;
     private boolean hasSpecimenScan;
 
-    // TODO use IEnumTerm instead
-    private String recordBase;
+    private SpecimenOrObservationType recordBase;
     private TermBase kindOfUnit;
     private CollectionDTO collection;
     private String catalogNumber;
@@ -289,11 +289,11 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     }
 
 
-    public String getRecordBase() {
+    public SpecimenOrObservationType getRecordBase() {
         return recordBase;
     }
-    public void setRecordBase(String recordBase) {
-        this.recordBase = recordBase;
+    public void setRecordBase(SpecimenOrObservationType specimenOrObservationType) {
+        this.recordBase = specimenOrObservationType;
     }
 
     /**
