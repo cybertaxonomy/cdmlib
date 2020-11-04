@@ -302,7 +302,7 @@ public class CdmLightClassificationExport
 
                 try {
                     TaxonName name = taxon.getName();
-                    handleName(state, name);
+                    handleName(state, name, true);
                     for (Synonym syn : taxon.getSynonyms()) {
                         handleSynonym(state, syn);
                     }
@@ -935,7 +935,11 @@ public class CdmLightClassificationExport
 
     }
 
-    private void handleName(CdmLightExportState state, TaxonName name) {
+    private void handleName(CdmLightExportState state, TaxonName name){
+        handleName(state, name, false);
+    }
+
+    private void handleName(CdmLightExportState state, TaxonName name, boolean acceptedName) {
         if (name == null || state.getNameStore().containsKey(name.getId())) {
             return;
         }
@@ -1209,7 +1213,11 @@ public class CdmLightClassificationExport
             HomotypicalGroup group = HibernateProxyHelper.deproxy(name.getHomotypicalGroup(), HomotypicalGroup.class);
 
             if (!state.containsHomotypicalGroupFromStore(group.getUuid())) {
-                handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
+                if (acceptedName){
+                    handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
+                }else{
+                    handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
+                }
             }
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
@@ -1619,7 +1627,7 @@ public class CdmLightClassificationExport
                 if (index > 0){
                     boolean isInvalid = false;
                     for (NomenclaturalStatus status: name.getStatus()){
-                        if (status.getType().isInvalidType()){
+                        if (status != null && status.getType() != null && status.getType().isInvalidType()){
                             isInvalid = true;
                             break;
                         }
@@ -1641,12 +1649,10 @@ public class CdmLightClassificationExport
                      }
                      if (taxonBase instanceof Synonym){
                          if (StringUtils.isNotBlank(sec)){
-                             sec = " syn sec. " + sec;
+                             sec = " syn. sec. " + sec;
                          }else {
                              sec = "";
                          }
-
-//                         typifiedNamesWithoutAcceptedName += name.getTitleCache() + extractStatusString(state, name, true) + "; ";
                          typifiedNamesWithoutAccepted += nameString ;
                          typifiedNamesWithoutAcceptedWithSec += nameString + sec ;
                      }else{
@@ -1659,7 +1665,6 @@ public class CdmLightClassificationExport
 
                 }else{
                     //there are names used more than once?
-//                    state.getResult().addWarning("There are more than one taxonBase for name " + name.getUuid() + " - " + name.getTitleCache() + " it is not possible to decide which syn sec should be used in homotypical group strings");
                     for (TaxonBase tb: taxonBases){
                         Reference secRef = tb.getSec();
                         if (secRef != null){
@@ -1668,7 +1673,7 @@ public class CdmLightClassificationExport
                         }
                         if (tb instanceof Synonym){
                             if (StringUtils.isNotBlank(sec)){
-                                sec = " syn sec. " + sec;
+                                sec = " syn. sec. " + sec;
                             }else {
                                 sec = "";
                             }
@@ -1682,9 +1687,6 @@ public class CdmLightClassificationExport
 
                         }
                     }
-//                typifiedNamesString += name.getTitleCache() + extractStatusString(state, name, true) + "; ";
-//                typifiedNamesWithSecString += name.getTitleCache() + extractStatusString(state, name, true) + sec + "; ";
-
                     if (!isAccepted){
                         typifiedNamesWithoutAccepted += nameString + "; ";
                         typifiedNamesWithoutAcceptedWithSec += nameString + sec + "; ";
@@ -1693,10 +1695,7 @@ public class CdmLightClassificationExport
                 typifiedNamesString += nameString ;
                 typifiedNamesWithSecString += nameString + sec;
 
-//                typifiedNamesString = typifiedNamesString.substring(0, typifiedNamesString.length() - 2);
-//                typifiedNamesWithSecString = typifiedNamesWithSecString.substring(0, typifiedNamesString.length() - 2);
-//                typifiedNamesWithoutAccepted = typifiedNamesWithoutAccepted.substring(0, typifiedNamesString.length() - 2);
-//                typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.substring(0, typifiedNamesString.length() - 2);
+
                 if (typifiedNamesString != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
                 } else {
@@ -1710,13 +1709,13 @@ public class CdmLightClassificationExport
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = "";
                 }
 
-                if (typifiedNamesWithoutAccepted != null) {
+                if (typifiedNamesWithoutAccepted != null && firstname != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
                 } else {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = "";
                 }
 
-                if (typifiedNamesWithoutAcceptedWithSec != null) {
+                if (typifiedNamesWithoutAcceptedWithSec != null && firstname != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = typifiedNamesWithoutAcceptedWithSec.trim();
                 } else {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC)] = "";
