@@ -44,6 +44,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData;
     private DerivateDataDTO derivateDataDTO;
     protected String taxonName;
+    @Deprecated
     protected String listLabel;
 
     protected String citation;
@@ -52,6 +53,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private boolean hasDna;
     private boolean hasSpecimenScan;
 
+    // TODO use IEnumTerm instead
     private String recordBase;
     private TermBase kindOfUnit;
     private CollectionDTO collection;
@@ -59,12 +61,14 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private String collectorsNumber;
     private String barcode;
     private String preservationMethod;
+    // TODO rename to derivatives!!!
     private Set<DerivedUnitDTO> derivates;
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
     private DerivationEventDTO derivationEvent;
 
+    // TODO use DTO !!!
     private Set<IdentifiableSource> sources;
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
@@ -89,10 +93,18 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     }
 
 
+    /**
+     * @deprecated replaced by {@link #getLabel()}
+     */
+    @Deprecated
     public String getListLabel() {
         return listLabel;
     }
 
+    /**
+     * @deprecated replaced by {@link #getLabel}
+     */
+    @Deprecated
     public void setListLabel(String listLabel) {
         this.listLabel = listLabel;
     }
