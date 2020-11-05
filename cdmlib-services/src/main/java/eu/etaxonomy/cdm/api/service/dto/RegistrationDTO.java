@@ -115,8 +115,8 @@ public class RegistrationDTO{
         default:
             try {
                 typeDesignationManager = new TypeDesignationSetManager(reg.getTypeDesignations());
-                summary = typeDesignationManager.print();
-                summaryTaggedText = typeDesignationManager.toTaggedText(false);
+                summary = typeDesignationManager.print(true, true, true);
+                summaryTaggedText = typeDesignationManager.toTaggedText(true, true, true);
             } catch (RegistrationValidationException e) {
                 validationProblems.add("Validation errors: " + e.getMessage());
             }

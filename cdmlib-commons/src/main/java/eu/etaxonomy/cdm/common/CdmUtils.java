@@ -470,6 +470,18 @@ public class CdmUtils {
     }
 
     /**
+     * Adds a trailing dot to the given String
+     * if string is not blank and does not end with dot already.
+     * Otherwise str is returned.
+     */
+    public static String addTrailingDotIfNotExists(String str){
+        if (StringUtils.isNotBlank(str) && !str.endsWith(".")){
+            str += ".";
+         }
+        return str;
+    }
+
+    /**
      * Returns surrounding brackets "(",")". Trim the string if necessary.
      * @param text
      * @return

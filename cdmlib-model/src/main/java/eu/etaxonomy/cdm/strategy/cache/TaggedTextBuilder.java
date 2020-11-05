@@ -61,6 +61,10 @@ public class TaggedTextBuilder {
         return taggedText;
     }
 
+    public int size(){
+        return taggedText.size();
+    }
+
     @Override
     public String toString(){
         return TaggedCacheHelper.createString(taggedText);

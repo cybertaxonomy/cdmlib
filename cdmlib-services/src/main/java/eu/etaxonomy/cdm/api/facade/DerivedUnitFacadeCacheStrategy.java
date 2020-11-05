@@ -42,10 +42,10 @@ public class DerivedUnitFacadeCacheStrategy
 
 	@Override
     public String getTitleCache(DerivedUnit derivedUnit) {
-	    return getTitleCache(derivedUnit, false);
+	    return getTitleCache(derivedUnit, false, true);
 	}
 
-	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit) {
+	public String getTitleCache(DerivedUnit derivedUnit, boolean skipFieldUnit, boolean addTrailingDot) {
 
 	    String result = "";
 	    DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
@@ -78,6 +78,9 @@ public class DerivedUnitFacadeCacheStrategy
 			//result
 			result = fieldStrategy.addPlantDescription(result, facade);
 
+			if (addTrailingDot){
+			    result = CdmUtils.addTrailingDotIfNotExists(result);
+			}
 
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			e.printStackTrace();

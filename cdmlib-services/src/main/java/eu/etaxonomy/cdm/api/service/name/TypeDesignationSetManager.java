@@ -26,6 +26,7 @@ import org.hibernate.search.hcore.util.impl.HibernateHelper;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -300,104 +301,147 @@ public class TypeDesignationSetManager {
                 );
         return orderedRepresentations;
     }
-*/
+     */
 
-    public void buildString(boolean withCitation){
+    private void buildString(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable){
+        boolean withBrackets = true;  //still unclear if this should become a parameter or should be always true
 
-        if(finalString == null){
+        TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
+        finalString = "";
 
-            TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
-            finalString = "";
-
-            if(getTypifiedNameCache() != null){
-                finalString += getTypifiedNameCache() + " ";
-                finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedNameRef().getUuid()));
-            }
-
-            int typeCount = 0;
-            if(orderedByTypesByBaseEntity != null){
-                for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
-
-                    TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
-                    if(typeCount++ > 0){
-                        workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
-                    }
-                    boolean isNameTypeDesignation = false;
-                    if (!withCitation){
-                        //TODO unclear why only without citation, it probably should be another parameter like
-                        //"with generic type" or so and comes from different requirements in cdmlight an phycobank
-                        if(SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType()) ){
-                            workingsetBuilder.add(TagEnum.label, "Type:");
-                        } else{
-                            workingsetBuilder.add(TagEnum.label, "Nametype:");
-                            isNameTypeDesignation = true;
-                        }
-                    }
-
-                    if(!baseEntityRef.getLabel().isEmpty()){
-                        workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
-                    }
-                    TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
-                    int typeStatusCount = 0;
-                    for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
-                        if(typeStatusCount++  > 0){
-                            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
-                        }
-                        boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
-                        if(typeStatus != NULL_STATUS){
-                            if (withCitation){
-                                //TODO maybe
-                                workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
-                            }
-                            //END
-                            workingsetBuilder.add(TagEnum.label, typeStatus.getLabel() + (isPlural ? "s" : ""));
-                            workingsetBuilder.add(TagEnum.postSeparator, POST_STATUS_SEPARATOR);
-                        }
-                        int typeDesignationCount = 0;
-                        for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
-                            if(typeDesignationCount++  > 0){
-                                workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
-                            }
-
-                            workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
-
-                            if (withCitation){
-                                TypeDesignationBase<?> typeDes = typeDesignations.get(typeDesignationEntityReference.getUuid());
-
-                                //lectotype source
-                                OriginalSourceBase<?> lectoSource = typeDes.getSource();
-                                if (hasLectoSource(typeDes)){
-                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
-                                    addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
-                                }
-                                //general sources
-                                if (!typeDes.getSources().isEmpty()) {
-                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT + REFERENCE_FIDE);
-                                    int count = 0;
-                                    for (IdentifiableSource source: typeDes.getSources()){
-                                        if (count++ > 0){
-                                            workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
-                                        }
-                                        addSource(workingsetBuilder, typeDesignationEntityReference, source);
-                                    }
-                                    workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
-                                }
-
-                                if ((typeStatus != NULL_STATUS) &&(typeDesignationCount == typeDesignationWorkingSet.get(typeStatus).size())){
-                                    workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
-                                }
-
-                            }
-                        }
-                    }
-                    typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
-                    finalString += typeDesignationWorkingSet.getRepresentation();
-                    finalBuilder.addAll(workingsetBuilder);
-                }
-            }
-            finalString = finalString.trim();
-            taggedText = finalBuilder.getTaggedText();
+        if(withNameIfAvailable && getTypifiedNameCache() != null){
+            finalString += getTypifiedNameCache();
+            finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedNameRef().getUuid()));
         }
+
+        int typeSetCount = 0;
+        if(orderedByTypesByBaseEntity != null){
+            String separator = UTF8.EN_DASH_SPATIUM.toString();
+            finalString += separator;
+            finalBuilder.addSeparator(separator);
+            for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
+                buildStringForSingleTypeSet(withCitation, withStartingTypeLabel, withBrackets, finalBuilder,
+                        typeSetCount, baseEntityRef);
+                typeSetCount++;
+            }
+        }
+        finalString = finalString.trim();
+        taggedText = finalBuilder.getTaggedText();
+    }
+
+    private int buildStringForSingleTypeSet(boolean withCitation, boolean withStartingTypeLabel, boolean withBrackets,
+            TaggedTextBuilder finalBuilder, int typeSetCount, TypedEntityReference<?> baseEntityRef) {
+
+        TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
+        boolean isSpecimenTypeDesignation = SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType());
+        if(typeSetCount > 0){
+            workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
+        }else if (withStartingTypeLabel){
+            //TODO this is not really exact as we may want to handle specimen types and
+            //name types separately, but this is such a rare case (if at all) and
+            //increases complexity so it is not yet implemented
+            boolean isPlural = hasMultipleTypes(orderedByTypesByBaseEntity);
+            if(isSpecimenTypeDesignation){
+                workingsetBuilder.add(TagEnum.label, (isPlural? "Types:": "Type:"));
+            } else if (NameTypeDesignation.class.isAssignableFrom(baseEntityRef.getType())){
+                workingsetBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
+            } else {
+                //do nothing for now
+            }
+        }
+
+        if(!baseEntityRef.getLabel().isEmpty()){
+            workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
+        }
+        TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
+        int typeStatusCount = 0;
+        if (withBrackets && isSpecimenTypeDesignation){
+            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
+        }
+        for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
+            typeStatusCount = buildStringForSingleTypeStatus(withCitation, workingsetBuilder,
+                    typeDesignationWorkingSet, typeStatusCount, typeStatus, typeSetCount);
+        }
+        if (withBrackets && isSpecimenTypeDesignation){
+            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
+        }
+        typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
+        finalString += typeDesignationWorkingSet.getRepresentation();
+        finalBuilder.addAll(workingsetBuilder);
+        return typeSetCount;
+    }
+
+    private boolean hasMultipleTypes(
+            LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> typeWorkingSets) {
+        if (typeWorkingSets == null || typeWorkingSets.isEmpty()){
+            return false;
+        }else if (typeWorkingSets.keySet().size() > 1) {
+            return true;
+        }
+        TypeDesignationWorkingSet singleSet = typeWorkingSets.values().iterator().next();
+        return singleSet.getTypeDesignations().size() > 1;
+    }
+
+    private int buildStringForSingleTypeStatus(boolean withCitation, TaggedTextBuilder workingsetBuilder,
+            TypeDesignationWorkingSet typeDesignationWorkingSet, int typeStatusCount,
+            TypeDesignationStatusBase<?> typeStatus, int typeSetCount) {
+        //starting separator
+        if(typeStatusCount++ > 0){
+            workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
+        }
+
+        boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
+        if(typeStatus != NULL_STATUS){
+            String label = typeStatus.getLabel() + (isPlural ? "s" : "");
+            if (workingsetBuilder.size() == 0){
+                label = StringUtils.capitalize(label);
+            }
+            workingsetBuilder.add(TagEnum.label, label);
+            workingsetBuilder.add(TagEnum.postSeparator, POST_STATUS_SEPARATOR);
+        }else if (workingsetBuilder.size() > 0 && typeSetCount > 0){
+            workingsetBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
+        }
+
+        //designation + sources
+        int typeDesignationCount = 0;
+        for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+            typeDesignationCount = buildStringForSingleType(withCitation, workingsetBuilder, typeDesignationCount,
+                    typeDesignationEntityReference);
+        }
+        return typeStatusCount;
+    }
+
+    private int buildStringForSingleType(boolean withCitation, TaggedTextBuilder workingsetBuilder, int typeDesignationCount,
+            TypedEntityReference<?> typeDesignationEntityReference) {
+        if(typeDesignationCount++ > 0){
+            workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
+        }
+
+        workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
+
+        if (withCitation){
+            TypeDesignationBase<?> typeDes = typeDesignations.get(typeDesignationEntityReference.getUuid());
+
+            //lectotype source
+            OriginalSourceBase<?> lectoSource = typeDes.getSource();
+            if (hasLectoSource(typeDes)){
+                workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
+                addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
+            }
+            //general sources
+            if (!typeDes.getSources().isEmpty()) {
+                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_LEFT + REFERENCE_FIDE);
+                int count = 0;
+                for (IdentifiableSource source: typeDes.getSources()){
+                    if (count++ > 0){
+                        workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
+                    }
+                    addSource(workingsetBuilder, typeDesignationEntityReference, source);
+                }
+                workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
+            }
+        }
+        return typeDesignationCount;
     }
 
     /**
@@ -589,7 +633,7 @@ public class TypeDesignationSetManager {
                         }
                     } else {
                         DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
-                        String titleCache = cacheStrategy.getTitleCache(du, true);
+                        String titleCache = cacheStrategy.getTitleCache(du, true, false);
                         // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                         titleCache = titleCache.replaceAll("[\\(\\)]", "");
                         typeSpecimenTitle += titleCache;
@@ -634,13 +678,13 @@ public class TypeDesignationSetManager {
         return null;
     }
 
-    public String print() {
-        buildString(false);
+    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
+        buildString(withCitation, withStartingTypeLabel, withNameIfAvailable);
         return finalString;
     }
 
-    public List<TaggedText> toTaggedText(boolean withCitation) {
-        buildString(withCitation);
+    public List<TaggedText> toTaggedText(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
+        buildString(withCitation, withStartingTypeLabel, withNameIfAvailable);
         return taggedText;
     }
 

@@ -59,6 +59,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 		facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldUnit, config);
 		result = getFieldData(facade);
 		result = addPlantDescription(result, facade);
+		result = CdmUtils.addTrailingDotIfNotExists(result);
 		facade.close();
 		return result;
 	}
@@ -113,13 +114,8 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 	}
 
 	protected String addPlantDescription(String result, DerivedUnitFacade facade) {
-
 		//plant description
 		result = CdmUtils.concat("; ", result, facade.getPlantDescription());
-		if (StringUtils.isNotBlank(result) && !result.endsWith(".")){
-			result += ".";
-		}
-
 		return result;
 	}
 
