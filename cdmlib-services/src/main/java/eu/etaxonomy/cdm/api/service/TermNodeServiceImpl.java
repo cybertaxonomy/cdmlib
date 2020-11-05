@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -249,6 +251,8 @@ public class TermNodeServiceImpl
         return result;
     }
 
+
+
     @Override
     public UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos){
         MergeResult<TermNode> mergeResult;
@@ -395,6 +399,19 @@ public class TermNodeServiceImpl
         }
         return result;
     }
+
+    @Override
+    public UpdateResult saveNewCharacterNodeDtoMap(Map<Character, CharacterNodeDto> dtos, UUID vocabularyUuid){
+        UpdateResult result = new UpdateResult();
+        for (Entry<Character, CharacterNodeDto> dtoEntry: dtos.entrySet()){
+            result.includeResult(createChildNode(dtoEntry.getValue().getParentUuid(), dtoEntry.getKey(), vocabularyUuid));
+        }
+        List<CharacterNodeDto> dtoList = new ArrayList<>(dtos.values());
+        result.includeResult(saveCharacterNodeDtoList(dtoList));
+        return result;
+
+    }
+
 
 
 }

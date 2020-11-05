@@ -10,9 +10,11 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -85,8 +87,18 @@ public interface ITermNodeService extends IVersionableService<TermNode>{
 
     /**
      * @param dtos
+     * @param vocabularyUuid
      * @return
      */
-    public UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos);
+    UpdateResult saveNewCharacterNodeDtoMap(Map<Character, CharacterNodeDto> dtos, UUID vocabularyUuid);
+
+    /**
+     * @param dtos
+     * @return
+     */
+    UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos);
+
+
+
 
 }
