@@ -128,6 +128,12 @@ public class TermNodeServiceImpl
 	     }
 	     return result;
 	 }
+	 private UpdateResult createChildNode(UUID parentNodeUUID, UUID nodeUuid, DefinedTermBase term, UUID vocabularyUuid){
+	     UpdateResult result =  createChildNode(parentNodeUUID, term, vocabularyUuid);
+	     result.getCdmEntity().setUuid(nodeUuid);
+	     return result;
+	 }
+
 
 	 @Override
      public UpdateResult createChildNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid){
@@ -403,8 +409,11 @@ public class TermNodeServiceImpl
     @Override
     public UpdateResult saveNewCharacterNodeDtoMap(Map<Character, CharacterNodeDto> dtos, UUID vocabularyUuid){
         UpdateResult result = new UpdateResult();
+        UpdateResult resultLocal = new UpdateResult();
         for (Entry<Character, CharacterNodeDto> dtoEntry: dtos.entrySet()){
-            result.includeResult(createChildNode(dtoEntry.getValue().getParentUuid(), dtoEntry.getKey(), vocabularyUuid));
+            resultLocal = createChildNode(dtoEntry.getValue().getParentUuid(), dtoEntry.getKey(), vocabularyUuid);
+            dtoEntry.getValue().setUuid(resultLocal.getCdmEntity().getUuid());
+            result.includeResult(resultLocal);
         }
         List<CharacterNodeDto> dtoList = new ArrayList<>(dtos.values());
         result.includeResult(saveCharacterNodeDtoList(dtoList));
