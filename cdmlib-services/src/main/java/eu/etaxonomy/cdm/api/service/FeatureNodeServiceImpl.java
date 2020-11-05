@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -28,7 +29,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 
 /**
@@ -58,9 +58,11 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
 	 @Transactional(readOnly = false)
 	 public DeleteResult deleteFeatureNode(UUID nodeUuid, TermNodeDeletionConfigurator config) {
 	     DeleteResult result = new DeleteResult();
-         TermNode<Feature> node = CdmBase.deproxy(dao.load(nodeUuid));
+	     TermNode<Feature> node = dao.load(nodeUuid);
 	     result = isDeletable(nodeUuid, config);
+
 	     if (result.isOk()){
+	         node = HibernateProxyHelper.deproxy(node);
 	         TermNode<Feature> parent = node.getParent();
              parent = CdmBase.deproxy(parent);
 	         List<TermNode<Feature>> children = new ArrayList<>(node.getChildNodes());
@@ -104,14 +106,8 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
 	     return result;
 	 }
 
-	 @Override
-     public UpdateResult createChildFeatureNode(UUID parentNodeUuid, DefinedTermBase term, UUID vocabularyUuid){
-	     TermVocabulary vocabulary = vocabularyService.load(vocabularyUuid);
 
-	     vocabulary.addTerm(term);
-	     vocabularyService.save(vocabulary);
-	     return addChildFeatureNode(parentNodeUuid, term.getUuid());
-	 }
+
 
      @Override
      public UpdateResult addChildFeatureNode(UUID nodeUUID, UUID termChildUuid){
@@ -141,6 +137,11 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
 	 public DeleteResult isDeletable(UUID nodeUuid, TermNodeDeletionConfigurator config){
 	     TermNode<Feature> node = load(nodeUuid);
 	     DeleteResult result = new DeleteResult();
+	     if (node == null){
+	         result.addException(new DataChangeNoRollbackException("The object is not available anymore."));
+	         result.setAbort();
+	         return result;
+	     }
 	     Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(node);
 	     for (CdmBase ref:references){
 	         if (ref instanceof TermNode){
@@ -189,5 +190,8 @@ public class FeatureNodeServiceImpl extends VersionableServiceBase<TermNode, ITe
     public UpdateResult moveFeatureNode(UUID movedNodeUuid, UUID targetNodeUuid) {
         return moveFeatureNode(movedNodeUuid, targetNodeUuid, -1);
     }
+
+
+
 
 }
