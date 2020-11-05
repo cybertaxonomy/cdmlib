@@ -112,11 +112,13 @@ public class TypeDesignationSetManager {
 
     private List<TaggedText> taggedText;
 
-    public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations) throws RegistrationValidationException{
+    public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
+            throws RegistrationValidationException{
     	this(typeDesignations, null);
     }
 
-    public TypeDesignationSetManager(Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName) throws RegistrationValidationException  {
+    public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName)
+            throws RegistrationValidationException  {
         for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
         }

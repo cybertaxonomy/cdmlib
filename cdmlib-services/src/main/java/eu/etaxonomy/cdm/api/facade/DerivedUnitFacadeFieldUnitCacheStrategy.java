@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
+ * Cache strategy for {@link FieldUnit field units} handled in a DerivedUnitFacade.
+ *
  * @author a.mueller
  * @since 03.06.2010
  */

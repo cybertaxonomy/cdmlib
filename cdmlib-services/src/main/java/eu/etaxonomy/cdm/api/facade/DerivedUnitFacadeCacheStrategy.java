@@ -86,10 +86,8 @@ public class DerivedUnitFacadeCacheStrategy
 			e.printStackTrace();
 		}
 
-
 		return result;
 	}
-
 
     /**
      * Produces the collection barcode which is the combination of the collection code and

@@ -1236,10 +1236,6 @@ public class CdmLightClassificationExport
         }
     }
 
-    /**
-     * @param name
-     * @return
-     */
     private String createNameWithItalics(List<TaggedText> taggedName) {
 
         String fullTitleWithHtml = "";
@@ -1788,10 +1784,10 @@ public class CdmLightClassificationExport
             } else if (text.getType().equals(TagEnum.typeDesignation) ) {
                 if(isSpecimenTypeDesignation){
                     homotypicalGroupTypeDesignationString
-                    .append(text.getText().replace(").", "").replace("(", "").replace(")", ""));
+                        .append(text.getText().replace(").", "").replace("(", "").replace(")", ""));
                 }else{
                     homotypicalGroupTypeDesignationString
-                    .append(text.getText());
+                        .append(text.getText());
                 }
 
             } else {

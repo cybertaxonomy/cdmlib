@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  */
 public class TaggedTextBuilder {
 
-    List<TaggedText> taggedText = new ArrayList<>();
+    private List<TaggedText> taggedText = new ArrayList<>();
 
     public void add(TagEnum type, String text){
         taggedText.add(new TaggedText(type, text));

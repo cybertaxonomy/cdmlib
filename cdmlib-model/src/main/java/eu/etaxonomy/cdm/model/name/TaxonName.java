@@ -1993,11 +1993,6 @@ public class TaxonName
         return getRelatedNames(relationsWithThisName(direction), type);
     }
 
-    /**
-     * @param rels
-     * @param type
-     * @return
-     */
     private Set<TaxonName> getRelatedNames(Set<NameRelationship> rels, NameRelationshipType type) {
         Set<TaxonName> result = new HashSet<>();
         for (NameRelationship rel : rels){
