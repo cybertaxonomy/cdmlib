@@ -64,10 +64,5 @@ public class CharacterNodeDto extends TermNodeDto {
         dto.setTermType(child.getTermType());
 
         return dto;
-
-
     }
-
-
-
 }

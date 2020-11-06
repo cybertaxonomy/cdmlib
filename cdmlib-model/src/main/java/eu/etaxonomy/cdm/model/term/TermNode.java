@@ -551,7 +551,6 @@ public class TermNode <T extends DefinedTermBase>
 //		return null;
 //	}
 
-
 //*********************** Terms ************************************/
 
 	/**
@@ -587,6 +586,7 @@ public class TermNode <T extends DefinedTermBase>
 	    }
 	    return result;
 	}
+
     /**
      * Returns all terms that are contained in this node or a child node
      * as long as this node or the child nodes are not {@link #isDependent() dependent}
@@ -606,8 +606,6 @@ public class TermNode <T extends DefinedTermBase>
         }
         return terms;
     }
-
-
 
     /**
      * @return <code>true</code> if any of the sets {@link #getInapplicableIf() inapplicableIf}

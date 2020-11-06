@@ -30,10 +30,14 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class SingleTermRemover
         extends SchemaUpdaterStepBase{
 
+    private String uuidTerm ;
+    private List<String> checkUsedQueries = new ArrayList<>();
+
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermRemover.class);
 
-	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, List<String> checkUsedQueries, int adapt){
+	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
+	        String uuidTerm, List<String> checkUsedQueries, int adapt){
 		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries);
 	}
 
@@ -42,16 +46,12 @@ public class SingleTermRemover
 	 * if this term is used at the given place.
 	 * @return
 	 */
-	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, String firstCheckUsedQuery, int adapt){
+	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
+	        String uuidTerm, String firstCheckUsedQuery, int adapt){
 		List<String> checkUsedQueries = new ArrayList<>();
 		checkUsedQueries.add(firstCheckUsedQuery);
 		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries);
 	}
-
-
-	private String uuidTerm ;
-	private List<String> checkUsedQueries = new ArrayList<String>();
-
 
 	private SingleTermRemover(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, List<String> checkUsedQueries) {
 		super(stepList, stepName);
@@ -126,10 +126,8 @@ public class SingleTermRemover
 		sql = String.format(sql, mnRepresentationIdAttr, caseType.transformTo(mnTableName), id);
 		ResultSet rs = datasource.executeQuery(sql);
 		while (rs.next()){
-			Integer repId = rs.getInt("repId");  //TODO nullSafe, but should not happen
-			if (repId != null){
-				repIDs.add(repId);
-			}
+			int repId = rs.getInt("repId");  //TODO nullSafe, but should not happen
+			repIDs.add(repId);
 		}
 	}
 

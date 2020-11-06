@@ -300,8 +300,4 @@ public boolean removeChild(TermNodeDto nodeDto){
        result[2] = sqlJoinString;
        return result;
    }
-
-
-
-
 }

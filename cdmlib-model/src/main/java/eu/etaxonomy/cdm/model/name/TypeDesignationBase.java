@@ -187,9 +187,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         this.source = source;
     }
 
-
 // **************** METHODS *************************************/
-
 
     /**
      * Returns the {@link TypeDesignationStatusBase type designation status} for <i>this</i> specimen type
@@ -211,10 +209,11 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * Returns the boolean value "true" if it is known that a type does not
      * exist and therefore the {@link TaxonName taxon name} to which <i>this</i>
      * type designation is assigned must still be typified. Two
-     * cases must be differentiated: <BR><ul>
+     * cases must be differentiated: <BR>
+     * <ul>
      * <li> a) it is unknown whether a type exists and
      * <li> b) it is known that no type exists
-     *  </ul>
+     * </ul>
      * If a) is true there should be no TypeDesignation instance at all
      * assigned to the "typified" taxon name.<BR>
      * If b) is true there should be a TypeDesignation instance with the
@@ -241,15 +240,33 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
         checkNullSource();
     }
+    /**
+     * The reference for the designation's  {@link #getSource() source}.
+     */
     @Transient
     public Reference getCitation(){
         return source == null ? null : this.source.getCitation();
     }
+    /**
+     * The reference for the designation's {@link #getSource() source}.
+     * The source is created if reference is not <code>null</code>
+     * and the source does not yet exist.
+     *
+     * @see #getSource()
+     */
     public void setCitation(Reference citation) {
         this.getSource(true).setCitation(citation);
         checkNullSource();
     }
 
+    /**
+     * Returns the {@link #getSource() source}. If a source does not exist
+     * yet a new and empty one is created. A source should only be created for
+     * lectotype like type designations (see {@link #getSource()}.
+     *
+     * @param createIfNotExist
+     * @see #getSource()
+     */
     public DescriptionElementSource getSource(boolean createIfNotExist) {
         if (this.source == null && createIfNotExist){
             this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
@@ -257,10 +274,18 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         return source;
     }
 
+    /**
+     * The primary source of typification. This field should only be used if
+     * the {@link #getTypeStatus() status} is lectotype (or similar) which can be
+     * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}.
+     */
     //TODO should we rename this to better distinguish the lectotype source from the general sources?
     public DescriptionElementSource getSource(){
         return source;
     }
+    /**
+     * @see #getSource()
+     */
     public void setSource(DescriptionElementSource source) {
         this.source = source;
     }

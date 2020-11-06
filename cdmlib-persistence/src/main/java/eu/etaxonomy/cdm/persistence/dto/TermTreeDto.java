@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
-import eu.etaxonomy.cdm.model.term.TermType;;
+import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
  * @author k.luther
@@ -30,28 +30,20 @@ import eu.etaxonomy.cdm.model.term.TermType;;
 public class TermTreeDto extends TermCollectionDto {
     private static final long serialVersionUID = -7223363599985320531L;
 
-    TermNodeDto root;
+    private TermNodeDto root;
 
     public static TermTreeDto fromTree(TermTree tree){
         TermTreeDto dto = new TermTreeDto(tree.getUuid(), tree.getRepresentations(), tree.getTermType(), tree.getRoot(), tree.getTitleCache(), tree.isAllowDuplicates(), tree.isOrderRelevant(), tree.isFlat() );
         return dto;
-        }
+    }
 
-
-    /**
-     * @param uuid
-     * @param representations
-     * @param termType
-     */
     public TermTreeDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicates, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicates, isOrderRelevant, isFlat);
-
     }
 
     public TermTreeDto(UUID uuid, Set<Representation> representations, TermType termType, TermNode root, String titleCache, boolean isAllowDuplicates, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicates, isOrderRelevant, isFlat);
         this.root = new TermNodeDto(null, 0, this, root.getUuid(), root.treeIndex(), root.getPath());
-
     }
 
     public TermNodeDto getRoot() {
@@ -66,17 +58,12 @@ public class TermTreeDto extends TermCollectionDto {
         return this.root.removeChild(nodeDto);
     }
 
-
     public static String getTermTreeDtoSelect(){
         String[] result = createSqlParts();
 
         return result[0]+result[1]+result[2];
     }
 
-    /**
-     * @param fromTable
-     * @return
-     */
     private static String[] createSqlParts() {
         String sqlSelectString = ""
                 + "select a.uuid, "
@@ -112,12 +99,11 @@ public class TermTreeDto extends TermCollectionDto {
                 if(elements[1]!=null){
                     dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
                 }
-
             } else {
                 // term representation
                 Set<Representation> representations = new HashSet<>();
                 if(elements[1] instanceof Representation) {
-                    representations = new HashSet<Representation>(1);
+                    representations = new HashSet<>(1);
                     representations.add((Representation)elements[1]);
                 }
 
@@ -135,8 +121,6 @@ public class TermTreeDto extends TermCollectionDto {
                 }else {
                     termTreeDto.setRoot(TermNodeDto.fromNode((TermNode)elements[4], termTreeDto));
                 }
-
-
 
                 dtoMap.put(uuid, termTreeDto);
                 dtos.add(termTreeDto);

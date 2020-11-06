@@ -96,7 +96,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 	}
 
-
 //********************************** Constructor *********************************/
 
   	//for hibernate use only
