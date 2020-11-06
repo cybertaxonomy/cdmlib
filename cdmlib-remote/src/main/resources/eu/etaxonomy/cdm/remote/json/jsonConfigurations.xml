@@ -243,6 +243,9 @@
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
+        </entry>
       </map>
     </property>
     <property name="ignoreDefaultExcludes" value="true" />
@@ -330,6 +333,9 @@
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor" />
+        </entry>        
+        <entry key="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
         </entry>
       </map>
     </property>
@@ -534,6 +540,9 @@
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
         </entry>
       </map>
     </property>

@@ -74,7 +74,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private DefinedTerm lifeStage;
 
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
-        super((Class<SpecimenOrObservationBase<?>>) specimenOrObservation.getClass(), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
+        super(HibernateProxyHelper.getClassWithoutInitializingProxy(specimenOrObservation), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
         this.id = specimenOrObservation.getId();
         Set<Media> collectedMedia = collectMedia(specimenOrObservation);
         addMediaAsDTO(collectedMedia);
