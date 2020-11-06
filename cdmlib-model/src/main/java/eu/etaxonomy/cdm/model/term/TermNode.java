@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -578,10 +579,11 @@ public class TermNode <T extends DefinedTermBase>
 	public String getPath(){
 	    String result = "";
 	    if (parent != null && parent.getTerm() != null){
-	        result = parent.getPath() + "/" + parent.getTerm().getLabel();
+	        result = parent.getPath() ;
 	    }
 	    if (getTerm()!= null){
-	        result += getTerm().getLabel();
+	        String sep = StringUtils.isBlank(result)?"":"/";
+	        result += sep+ getTerm().getLabel();
 	    }
 	    return result;
 	}

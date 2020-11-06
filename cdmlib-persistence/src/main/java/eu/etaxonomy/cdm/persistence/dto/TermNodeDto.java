@@ -45,7 +45,7 @@ public class TermNodeDto implements Serializable{
         Assert.notNull(node, "Node should not be null");
         TermDto term = node.getTerm() != null?TermDto.fromTerm(node.getTerm()): null;
 //        TermTreeDto tree = node.getGraph() != null? TermTreeDto.fromTree(HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class)):null;
-        TermNodeDto dto = new TermNodeDto(term, null, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.treeIndex(), node.getPath());
+        TermNodeDto dto = new TermNodeDto(term, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.treeIndex(), node.getPath());
 //        uuid = node.getUuid();
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
@@ -91,6 +91,34 @@ public class TermNodeDto implements Serializable{
         if (parent != null){
             parent.getChildren().add(position, this);
         }
+        tree = treeDto;
+        this.path = path;
+
+    }
+
+    public TermNodeDto(TermDto termDto, UUID parentUuid, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
+        this.uuid = uuid;
+        this.parentUuid = parentUuid;
+
+        this.treeIndex = treeIndex;
+        term = termDto;
+        type = termDto!= null? termDto.getTermType(): null;
+        children = new ArrayList<>();
+//        if (parent != null){
+//            parent.getChildren().add(position, this);
+//        }
+        tree = treeDto;
+        this.path = path;
+
+    }
+
+    public TermNodeDto(TermDto termDto, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
+        this.uuid = uuid;
+        this.treeIndex = treeIndex;
+        term = termDto;
+        type = termDto!= null? termDto.getTermType(): null;
+        children = new ArrayList<>();
+
         tree = treeDto;
         this.path = path;
 
@@ -228,6 +256,31 @@ public boolean removeChild(TermNodeDto nodeDto){
        String sqlSelectString = ""
                + "select a.uuid, "
                + "r, "
+               + "a.termType,  "
+               + "a.uri,  "
+               + "root,  "
+               + "a.titleCache, "
+               + "a.allowDuplicates, "
+               + "a.orderRelevant, "
+               + "a.isFlat ";
+       String sqlFromString =   "from TermNode as a ";
+
+       String sqlJoinString =  "LEFT JOIN a.tree "
+              + "LEFT JOIN a.representations AS r "
+               ;
+
+       String[] result = new String[3];
+       result[0] = sqlSelectString;
+       result[1] = sqlFromString;
+       result[2] = sqlJoinString;
+       return result;
+   }
+
+   private static String[] createSqlPartsWithTerm() {
+       String sqlSelectString = ""
+               + "select a.uuid, "
+               + "r, "
+               + "a.term"
                + "a.termType,  "
                + "a.uri,  "
                + "root,  "
