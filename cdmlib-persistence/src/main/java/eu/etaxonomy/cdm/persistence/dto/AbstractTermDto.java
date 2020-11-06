@@ -38,6 +38,10 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     private String representation_L10n_text = null;
     private String titleCache;
 
+    protected AbstractTermDto(){
+
+    }
+
     public AbstractTermDto(UUID uuid, Set<Representation> representations, String titleCache) {
         this.uuid = uuid;
         this.titleCache = titleCache;

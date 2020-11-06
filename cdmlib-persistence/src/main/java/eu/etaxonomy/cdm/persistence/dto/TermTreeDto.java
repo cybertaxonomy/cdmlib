@@ -50,7 +50,7 @@ public class TermTreeDto extends TermCollectionDto {
 
     public TermTreeDto(UUID uuid, Set<Representation> representations, TermType termType, TermNode root, String titleCache, boolean isAllowDuplicates, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicates, isOrderRelevant, isFlat);
-        this.root = new TermNodeDto(null, null, 0, this, root.getUuid(), root.treeIndex(), root.getPath());
+        this.root = new TermNodeDto(null, 0, this, root.getUuid(), root.treeIndex(), root.getPath());
 
     }
 
