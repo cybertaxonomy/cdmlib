@@ -447,7 +447,7 @@ public class TypeDesignationSetManager {
     }
 
     /**
-     * Adds the taggs for the given source.
+     * Adds the tags for the given source.
      */
     private void addSource(TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntityReference,
             OriginalSourceBase<?> source) {

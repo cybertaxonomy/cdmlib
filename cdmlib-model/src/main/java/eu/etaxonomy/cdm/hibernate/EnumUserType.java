@@ -57,6 +57,8 @@ public class EnumUserType<E extends Enum<E>>
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnumUserType.class);
 
+    private static final int[] SQL_TYPES = { Types.VARCHAR };
+
 	private Class<E> clazz = null;
 
 	public EnumUserType(){}
@@ -74,9 +76,6 @@ public class EnumUserType<E extends Enum<E>>
 			throw new RuntimeException(e);
 		}
 	}
-
-	private static final int[] SQL_TYPES = { Types.VARCHAR };
-
 
 	@Override
 	public Object deepCopy(Object o) throws HibernateException {
@@ -178,6 +177,4 @@ public class EnumUserType<E extends Enum<E>>
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
-
-
 }

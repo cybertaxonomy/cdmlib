@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.function;
 
 import java.util.UUID;
@@ -49,6 +48,7 @@ public class TestModelUpdate {
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm515" : "cdm518");
+//		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
  		try {
@@ -98,6 +98,7 @@ public class TestModelUpdate {
         String server = "localhost";
         String username = "edit";
         String serverSql = "130.133.70.26";
+//        server = "160.45.63.175";
 
         if (dbType == DatabaseTypeEnum.MySQL){
             return CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));

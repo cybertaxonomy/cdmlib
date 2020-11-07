@@ -189,7 +189,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         Pager<Registration> regPager = pageByParamWithRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
                 restrictions, pageSize, pageIndex, null, propertyPaths);
 
-
         return regPager;
     }
 

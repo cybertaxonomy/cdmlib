@@ -180,22 +180,14 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return convertToDTOPager(regPager);
     }
 
-
-    /**
-     * @param regPager
-     * @return
-     */
     @Override
     public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager) {
         return new DefaultPagerImpl<RegistrationDTO>(regPager.getCurrentIndex(), regPager.getCount(), regPager.getPageSize(), makeDTOs(regPager.getRecords()));
     }
 
-
     @Override
     public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex) {
-
         return pageDTOs((UUID)null, null, null, null, null, null, pageSize, pageIndex, null);
-
     }
 
     /**
@@ -421,10 +413,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return blockingSet;
     }
 
-    /**
-     * @param regs
-     * @return
-     */
     @Override
     public List<RegistrationDTO> makeDTOs(Collection<Registration> regs) {
         initializeSpecimens(regs);
@@ -433,21 +421,12 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return dtos;
     }
 
-
-    /**
-     * @param regs
-     */
     public void initializeSpecimens(Collection<Registration> regs) {
         for(Registration reg : regs){
             inititializeSpecimen(reg);
         }
-
     }
 
-
-    /**
-     * @param reg
-     */
     public void inititializeSpecimen(Registration reg) {
 
         for(TypeDesignationBase<?> td : reg.getTypeDesignations()){

@@ -1665,7 +1665,7 @@ public class CdmLightClassificationExport
                 // citations) + status + some name relations (e.g. “non”)
                 // TODO: nameRelations, which and how to display
                 Set<TaxonBase> taxonBases = name.getTaxonBases();
-                TaxonBase taxonBase;
+                TaxonBase<?> taxonBase;
 
                 String sec = "";
                 String nameString = name.getFullTitleCache();
@@ -1716,7 +1716,7 @@ public class CdmLightClassificationExport
 
                 }else{
                     //there are names used more than once?
-                    for (TaxonBase tb: taxonBases){
+                    for (TaxonBase<?> tb: taxonBases){
                         Reference secRef = tb.getSec();
                         if (secRef != null){
                             sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
@@ -2005,7 +2005,7 @@ public class CdmLightClassificationExport
         try {
             state.addReferenceToStore(reference);
             CdmLightExportTable table = CdmLightExportTable.REFERENCE;
-            reference = HibernateProxyHelper.deproxy(reference, Reference.class);
+            reference = HibernateProxyHelper.deproxy(reference);
 
             handleIdentifier(state, reference);
             String[] csvLine = new String[table.getSize()];

@@ -93,7 +93,7 @@ public class RegistrationDTO{
         }
         if(hasTypifications(reg)){
             if(!reg.getTypeDesignations().isEmpty()){
-                for(TypeDesignationBase td : reg.getTypeDesignations()){
+                for(TypeDesignationBase<?> td : reg.getTypeDesignations()){
                     if(citation == null) {
                         citation = td.getCitation();
                         citationDetail = td.getCitationMicroReference();

@@ -285,6 +285,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		}
 	}
 
+
 	/**
 	 * Returns the nomenclatural status type "ambiguous". A "valid"
 	 * ("available") {@link TaxonName taxon name} is "ambiguous" if it has been used so long

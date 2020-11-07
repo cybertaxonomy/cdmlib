@@ -25,8 +25,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  * @author a.mueller
  * @since 06.09.2013
- *
- */
+  */
 public class SingleTermRemover
         extends SchemaUpdaterStepBase{
 
@@ -90,7 +89,7 @@ public class SingleTermRemover
             getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation", caseType );
             getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation", caseType);
 
-            //remove MN table
+            //remove from MN table
             String sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
             sql = String.format(sql, caseType.transformTo("DefinedTermBase_Representation"), id);
             datasource.executeUpdate(sql);
@@ -146,7 +145,4 @@ public class SingleTermRemover
 		this.checkUsedQueries.add(query);
 		return this;
 	}
-
-
-
 }
