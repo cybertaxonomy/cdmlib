@@ -364,7 +364,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 //        List<Object[]> result1 = query1.list();
 
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
-                + " WHERE v.uuid in "
+                + " WHERE a.uuid in "
                 + " (" + queryVocWithFittingTerms + ")";
 
 
