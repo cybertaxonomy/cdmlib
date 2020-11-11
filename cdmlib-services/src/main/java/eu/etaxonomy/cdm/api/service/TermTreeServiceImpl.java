@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -78,6 +79,32 @@ public class TermTreeServiceImpl
     @Override
     public Map<UUID, TermNode> saveOrUpdateNodesAll(Collection<TermNode> nodeCollection) {
         return termNodeDao.saveOrUpdateAll(nodeCollection);
+    }
+
+
+    @Override
+    public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos){
+        UpdateResult result = new UpdateResult();
+        MergeResult<TermTree> mergeResult;
+        List<UUID> uuids = new ArrayList<>();
+        dtos.stream().forEach(dto -> uuids.add(dto.getUuid()));
+        List<TermTree> trees = dao.list(uuids, null, 0, null, null);
+        //check all attributes for changes and adapt
+        for (TermTree tree: trees){
+            for (TermTreeDto dto: dtos){
+
+                if (dto.getUuid().equals(tree.getUuid())){
+                    tree.setTitleCache(dto.getTitleCache());
+                    tree.setAllowDuplicates(dto.isAllowDuplicate());
+                    tree.setFlat(dto.isFlat());
+                    tree.setOrderRelevant(dto.isOrderRelevant());
+                }
+
+                mergeResult = dao.merge(tree, true);
+                result.addUpdatedObject(mergeResult.getMergedEntity());
+            }
+        }
+        return result;
     }
 
     @Override

@@ -57,5 +57,11 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
      */
     public TermTreeDto getTermTreeDtoByUuid(UUID uuid);
 
+    /**
+     * @param dtos
+     * @return
+     */
+    UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos);
+
 
 }
