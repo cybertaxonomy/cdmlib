@@ -249,7 +249,7 @@ public enum CdmLightExportTable {
     protected static final String REF_TABLE = "ReferencedTable";
 
     final static String[] homotypicGroupColumns(){
-        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE, HOMOTYPIC_GROUP_WITH_SEC_STRING, HOMOTYPIC_GROUP_WITHOUT_ACCEPTED, HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC};
+        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE, HOMOTYPIC_GROUP_WITH_SEC_STRING, HOMOTYPIC_GROUP_WITHOUT_ACCEPTED, HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC, SORT_INDEX};
 
     }
 
@@ -334,7 +334,7 @@ public enum CdmLightExportTable {
 
     final static String[] synonymColumns(){
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SYN_SEC_REFERENCE_FK, SYN_SEC_REFERENCE, SEC_REFERENCE_FK, SEC_REFERENCE,
-                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED, PUBLISHED};
+                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED, PUBLISHED, SORT_INDEX};
     }
 
     final static String[] referenceColumns(){
