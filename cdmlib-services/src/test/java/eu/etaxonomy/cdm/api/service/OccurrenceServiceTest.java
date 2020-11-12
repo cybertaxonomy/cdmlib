@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -1160,15 +1159,6 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(ignoreAssignmentStatusSpecimens.contains(derivedUnit1));
         assertTrue(ignoreAssignmentStatusSpecimens.contains(tissue));
 
-        List<String> propertyPath = Arrays.asList(new String []{
-                "derivedFrom.derivatives",
-                "derivedFrom.originals",
-                "specimenTypeDesignations.*",
-                "specimenTypeDesignations.citation.*",
-                "specimenTypeDesignations.homotypicalGroup.*",
-                "specimenTypeDesignations.typifiedNames",
-                "collection.$"
-        });
         FieldUnitDTO findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null);
 
         assertNotNull(findByAccessionNumber);
@@ -1176,6 +1166,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
        // assertTrue(findByAccessionNumber.contains(derivedUnit1));
        // assertTrue(findByAccessionNumber.get(0).get.equals(dnaSampleWithSequence));
     }
+
 
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest-testAllKindsOfSpecimenAssociations.xml")
