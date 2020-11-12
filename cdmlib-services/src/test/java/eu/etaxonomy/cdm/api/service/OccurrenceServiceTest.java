@@ -1169,7 +1169,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
                 "specimenTypeDesignations.typifiedNames",
                 "collection.$"
         });
-        FieldUnitDTO findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null, propertyPath);
+        FieldUnitDTO findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null);
 
         assertNotNull(findByAccessionNumber);
         assertTrue(findByAccessionNumber.getDerivatives().size() == 1);

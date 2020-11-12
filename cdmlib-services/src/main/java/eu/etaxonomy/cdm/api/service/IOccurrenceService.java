@@ -679,9 +679,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             FindOccurrencesConfigurator config);
 
 
-    FieldUnitDTO findByAccessionNumber(
-             String accessionNumberString, List<OrderHint> orderHints,
-            List<String> propertyPaths);
+    FieldUnitDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
 
 
     List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,

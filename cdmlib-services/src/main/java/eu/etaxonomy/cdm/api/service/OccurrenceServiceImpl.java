@@ -569,11 +569,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     @Transactional
-    public  FieldUnitDTO findByAccessionNumber(
-            String accessionNumberString, List<OrderHint> orderHints,
-            List<String> propertyPaths)  {
+    public  FieldUnitDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
 
-        DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, propertyPaths);
+        DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, null);
         DerivedUnitDTO derivedUnitDTO;
         HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen = new HashMap<>();
 
