@@ -87,14 +87,14 @@ public class SingleTermRemover
             //get representation ids
             List<Integer> repIDs = new ArrayList<>();
             getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation", caseType );
-            getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation", caseType);
+            getRepIds(datasource, id, repIDs, "inverserepresentations_id", "DefinedTermBase_inverseRepresentation", caseType);
 
             //remove from MN table
             String sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
             sql = String.format(sql, caseType.transformTo("DefinedTermBase_Representation"), id);
             datasource.executeUpdate(sql);
             sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
-            sql = String.format(sql, caseType.transformTo("RelationshipTermBase_inverseRepresentation"), id);
+            sql = String.format(sql, caseType.transformTo("DefinedTermBase_inverseRepresentation"), id);
             datasource.executeUpdate(sql);
 
             //remove representations
