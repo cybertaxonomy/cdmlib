@@ -48,12 +48,12 @@ public class OriginalSpellingMover  extends SchemaUpdaterStepBase {
             SchemaUpdateResult result) throws SQLException {
 
         String sql =
-              " SELECT SELECT n1.id nameId1, nr.id nrId, n2.id nameId2, osb.id sourceId "
+              " SELECT n1.id nameId1, nr.id nrId, n2.id nameId2, osb.id sourceId "
             + " FROM @@TaxonName@@ n1 "
             + " INNER JOIN @@NameRelationship@@ nr ON n1.id = nr.relatedfrom_id "
             + " INNER JOIN @@TaxonName@@ n2 ON nr.relatedto_id = n2.id "
             + " INNER JOIN @@DefinedTermBase@@ nrType ON nrType.id = nr.type_id "
-            + " LEFT  JOIN @@OriginalSourceBase@@ osb ON n2.nomenclaturalSource_id = osb.id "
+            + " LEFT  JOIN @@OriginalSourceBase@@ osb ON n2.id = osb.sourcedName_id "
             + " WHERE nrType.uuid = '264d2be4-e378-4168-9760-a9512ffbddc4' ";
 
         ResultSet rs = datasource.executeQuery(caseType.replaceTableNames(sql));
