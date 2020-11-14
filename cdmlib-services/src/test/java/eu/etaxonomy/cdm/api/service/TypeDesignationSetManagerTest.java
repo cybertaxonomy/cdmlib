@@ -255,25 +255,29 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
         //see #9262
         @Test
         public void test_desigby_fide(){
+            //specimen types
             TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
             typifiedName.setTitleCache("Prionus coriatius L.", true);
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
             typeDesignationManager.addTypeDesigations(std_LT);
             Reference citation = ReferenceFactory.newBook();
+            Reference inRef = ReferenceFactory.newBookSection();
+            inRef.setInBook(citation);
             citation.setDatePublished(TimePeriodParser.parseStringVerbatim("1989"));
-            citation.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
-            std_LT.addPrimaryTaxonomicSource(citation, "55");
-            assertEquals("Prionus coriatius L.\u202F\u2013\u202FTestland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. (1962) [fide Miller (1989)])",
+            inRef.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
+            std_LT.addPrimaryTaxonomicSource(inRef, "55");
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FTestland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. 1962 [fide Miller 1989: 55])",
                     typeDesignationManager.print(true, false, true));
             assertEquals("Prionus coriatius L.\u202F\u2013\u202FTestland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
                     typeDesignationManager.print(false, false, true));
 
+            //name types
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
             typifiedName.setTitleCache("Prionus L.", true);
             typeDesignationManager = new TypeDesignationSetManager(typifiedName);
             typeDesignationManager.addTypeDesigations(ntd_LT);
-            ntd_LT.addPrimaryTaxonomicSource(citation, "66");
-            assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L. designated by Decandolle & al. (1962) [fide Miller (1989)]",
+            ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
+            assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L. designated by Decandolle & al. 1962 [fide Miller 1989: 66]",
                     typeDesignationManager.print(true, false, true));
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L.",
                     typeDesignationManager.print(false, false, true));

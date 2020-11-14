@@ -224,6 +224,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
+    //TODO see comment on createShortCitation(...)
     @Override
     public String getCitation(Reference reference) {
         // mostly copied from nomRefCacheStrat, refCache, journalCache
@@ -257,14 +258,23 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
     }
 
     //TODO this method seems to be used only for type designations and/or cdmlight, it should be unified with getCitation()
-    public String createShortCitation(Reference reference) {
+    /**
+     * Creates a citation in form Author (year: detail).
+     * If reference has protected titlecache only the titlecache is returned (may change in future)
+     *
+     * @param reference the reference to format
+     * @param citationDetail the microreference (page, figure, etc.), if <code>null</code> also the colon separator is not used
+     * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>true</code>)
+     * @return
+     */
+    public String createShortCitation(Reference reference, String citationDetail, boolean withYearBrackets) {
         if(reference.isProtectedTitleCache()){
-            return reference.getTitleCache();
+            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
         }
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String shortCitation = "";
         if (authorship == null) {
-            return reference.getTitleCache();
+            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
         }
         authorship = HibernateProxyHelper.deproxy(authorship);
         if (authorship instanceof Person){
@@ -294,15 +304,52 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
                 }
             }
         }
-        if (reference.getDatePublished() != null) {
-            if (isNotBlank(reference.getDatePublished().getFreeText())){
-                shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
-            }else if (isNotBlank(reference.getYear()) ){
-                shortCitation = shortCitation + " (" + reference.getYear() + ")";
-            }
-        }
+        shortCitation = CdmUtils.concat(" ", shortCitation, getShortCitationDate(reference, withYearBrackets, citationDetail));
 
         return shortCitation;
+    }
+
+
+    /**
+     * Adds the citationDetail to the titleCache string that is returned from a method as data is not
+     * accurately parsed.
+     * @return
+     */
+    private String handleCitationDetailInTitleCache(String titleCache, String citationDetail) {
+        if (StringUtils.isBlank(citationDetail)){
+            return titleCache;
+        }else if (StringUtils.isBlank(titleCache)){
+            return ": " + citationDetail;
+        }else if (citationDetail.length() <= 3){
+            if (titleCache.contains(": " + citationDetail)){
+                return titleCache;
+            }
+        }else{
+            if (titleCache.contains(citationDetail)){
+                return titleCache;
+            }
+        }
+        return titleCache + ": " + citationDetail;
+    }
+
+    private String getShortCitationDate(Reference reference, boolean withBrackets, String citationDetail) {
+        String result = null;
+        if (reference.getDatePublished() != null && !reference.getDatePublished().isEmpty()) {
+            if (isNotBlank(reference.getDatePublished().getFreeText())){
+                result = reference.getDatePublished().getFreeText();
+            }else if (isNotBlank(reference.getYear()) ){
+                result = reference.getYear();
+            }
+            if (StringUtils.isNotEmpty(citationDetail)){
+                result = CdmUtils.Nz(result) + ": " + citationDetail;
+            }
+            if (StringUtils.isNotBlank(result) && withBrackets){
+                result = "(" + result + ")";
+            }
+        }else if (reference.getInReference() != null){
+            result = getShortCitationDate(reference.getInReference(), withBrackets, citationDetail);
+        }
+        return result;
     }
 
     private String getPersonString(Person person) {

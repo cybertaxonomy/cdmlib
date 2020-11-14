@@ -1696,7 +1696,7 @@ public class CdmLightClassificationExport
                      Reference secRef = taxonBase.getSec();
                      if (secRef != null){
                          sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
-                             .createShortCitation(secRef);
+                             .createShortCitation(secRef, taxonBase.getSecMicroReference(), true);
                      }
                      if (taxonBase instanceof Synonym){
                          if (StringUtils.isNotBlank(sec)){
@@ -1720,7 +1720,7 @@ public class CdmLightClassificationExport
                         Reference secRef = tb.getSec();
                         if (secRef != null){
                             sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
-                                .createShortCitation(secRef);
+                                .createShortCitation(secRef, tb.getSecMicroReference(), true);
                         }
                         if (tb instanceof Synonym){
                             if (StringUtils.isNotBlank(sec)){
@@ -2012,7 +2012,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             // TODO short citations correctly
             String shortCitation = ((DefaultReferenceCacheStrategy) reference.getCacheStrategy())
-                    .createShortCitation(reference); // Should be Author(year)
+                    .createShortCitation(reference, null, true); // Should be Author(year)
                                                      // like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             // TODO get preferred title
