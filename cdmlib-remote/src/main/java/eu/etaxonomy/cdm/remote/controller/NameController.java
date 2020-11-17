@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
+import eu.etaxonomy.cdm.remote.service.RegistrableEntityFilter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import io.swagger.annotations.Api;
 
@@ -271,30 +272,8 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         Set<NameRelationship> nameRelations = tnb.getNameRelations();
 
         if(nameRelations != null && nameRelations.size() > 0){
-        Set<NameRelationship> nameRelationsFiltered = new HashSet<>(nameRelations.size());
-
-        if(!userHelper.userIsAutheticated() || userHelper.userIsAnnonymous()){
-            // need to filter out unpublished related names in this case
-                for(NameRelationship rel : nameRelations){
-                    // check if the name has been published ba any registration
-                    Set<Registration> regsToCheck = new HashSet<>();
-                    if(rel.getToName().equals(tnb) && rel.getFromName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getFromName().getRegistrations());
-                    }
-                    if(rel.getFromName().equals(tnb) && rel.getToName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getToName().getRegistrations());
-                    }
-                    // if there is no registration for this name we assume that it is published
-                    boolean nameIsPublished = regsToCheck.size() == 0;
-                    nameIsPublished |= regsToCheck.stream().anyMatch(reg -> reg.getStatus().equals(RegistrationStatus.PUBLISHED));
-                    if(nameIsPublished){
-                        nameRelationsFiltered.add(rel);
-                    }
-                }
-            }  else {
-                // no filtering needed
-                nameRelationsFiltered = nameRelations;
-            }
+            Set<NameRelationship> nameRelationsFiltered = RegistrableEntityFilter.
+                newInstance(userHelper).filterPublishedOnly(tnb, nameRelations);
             return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
         }
         return null;

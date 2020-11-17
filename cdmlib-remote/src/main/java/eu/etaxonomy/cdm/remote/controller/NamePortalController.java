@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -35,11 +34,10 @@ import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.Registration;
-import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
+import eu.etaxonomy.cdm.remote.service.RegistrableEntityFilter;
 import io.swagger.annotations.Api;
 
 /**
@@ -258,36 +256,13 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         Set<NameRelationship> nameRelations = tnb.getNameRelations();
 
         if(nameRelations != null && nameRelations.size() > 0){
-        Set<NameRelationship> nameRelationsFiltered = new HashSet<>(nameRelations.size());
-
-        if(userHelper.userIsAnnonymous()){
-            // need to filter out unpublished related names in this case
-                for(NameRelationship rel : nameRelations){
-                    // check if the name has been published ba any registration
-                    Set<Registration> regsToCheck = new HashSet<>();
-                    if(rel.getToName().equals(tnb) && rel.getFromName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getFromName().getRegistrations());
-                    }
-                    if(rel.getFromName().equals(tnb) && rel.getToName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getToName().getRegistrations());
-                    }
-                    // if there is no registration for this name we assume that it is published
-                    boolean nameIsPublished = regsToCheck.size() == 0;
-                    nameIsPublished |= regsToCheck.stream().anyMatch(reg -> reg.getStatus().equals(RegistrationStatus.PUBLISHED));
-                    if(nameIsPublished){
-                        nameRelationsFiltered.add(rel);
-                    } else {
-                        logger.debug("Hiding NameRelationship " + rel);
-                    }
-                }
-            }  else {
-                // no filtering needed
-                nameRelationsFiltered = nameRelations;
-            }
+            Set<NameRelationship> nameRelationsFiltered = RegistrableEntityFilter.
+                    newInstance(userHelper).filterPublishedOnly(tnb, nameRelations);
             return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
         }
         return null;
     }
+
 
 
 }
