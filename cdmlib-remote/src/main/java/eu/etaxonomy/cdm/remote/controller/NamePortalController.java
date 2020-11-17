@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -178,7 +179,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             return null;
         }
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return p.getRecords();
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(p.getRecords()));
     }
 
     /**
@@ -203,7 +204,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return result;
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
     }
 
     /**

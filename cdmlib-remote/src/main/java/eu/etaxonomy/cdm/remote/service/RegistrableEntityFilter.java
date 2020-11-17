@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,6 +86,40 @@ public class RegistrableEntityFilter {
             nameRelationsFiltered = nameRelations;
         }
         return nameRelationsFiltered;
+    }
+
+    /**
+     * Filters a set of TypeDesignationBase.
+     *
+     *
+     * @param typeDesignations
+     *  The collection of TypeDesignationBase to be filtered.
+     * @return
+     *  A Set of TypeDesignationBase which can be publicly visible.
+     */
+    public Set<TypeDesignationBase> filterPublishedOnly(Collection<TypeDesignationBase> typeDesignations) {
+        Set<TypeDesignationBase> typeDesignationsFiltered = new HashSet<>(typeDesignations.size());
+        if(!currentUserMaySeeUnpublished()){
+        // need to filter out unpublished related names in this case
+            for(TypeDesignationBase<?> td : typeDesignations){
+                Set<Registration> regsToCheck = new HashSet<>();
+                if(td.getRegistrations() != null) {
+                    regsToCheck.addAll(td.getRegistrations());
+                }
+                // if there is no registration for this type designation we assume that it is published
+                boolean isPublished = regsToCheck.size() == 0;
+                isPublished |= regsToCheck.stream().anyMatch(reg -> reg.getStatus().equals(RegistrationStatus.PUBLISHED));
+                if(isPublished){
+                    typeDesignationsFiltered.add(td);
+                } else {
+                    logger.debug("Hiding TypeDesignation " + td);
+                }
+            }
+        }  else {
+            // no filtering needed
+            typeDesignationsFiltered.addAll(typeDesignations);
+        }
+        return typeDesignationsFiltered;
     }
 
     /**

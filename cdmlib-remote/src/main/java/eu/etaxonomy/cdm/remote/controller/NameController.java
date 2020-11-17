@@ -162,7 +162,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return pager.getRecords();
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(pager.getRecords()));
     }
 
     /**
@@ -187,7 +187,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return result;
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
     }
 
 
