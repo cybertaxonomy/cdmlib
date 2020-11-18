@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
-public class RegistrationDTO{
+public class RegistrationDTO {
 
     private static final Logger logger = Logger.getLogger(RegistrationDTO.class);
 
@@ -70,10 +70,9 @@ public class RegistrationDTO{
 
     private String bibliographicInRefCitationString;
 
-
     /**
      * @param reg
-     * @param typifiedName should be provided in for Registrations for TypeDesignations
+     * @param typifiedName should be provided for registrations for TypeDesignations
      * @throws RegistrationValidationException
      */
     public RegistrationDTO(Registration reg) {
@@ -319,10 +318,6 @@ public class RegistrationDTO{
         return null;
     }
 
-    /**
-     * @param ref
-     * @return
-     */
     private TypeDesignationBase<?> findTypeDesignation(EntityReference ref) {
         return typeDesignationManager != null ? typeDesignationManager.findTypeDesignation(ref) : null;
     }
@@ -368,7 +363,6 @@ public class RegistrationDTO{
             } else {
                 bibliographicCitationString = citation.generateTitle();
             }
-
         }
     }
 
@@ -429,18 +423,11 @@ public class RegistrationDTO{
         return blockedBy;
     }
 
-    /**
-     * @return
-     */
     public List<String> getValidationProblems() {
         return validationProblems;
     }
 
-    /**
-     * @return
-     */
     public boolean isPersisted() {
         return reg.isPersited();
     }
-
 }

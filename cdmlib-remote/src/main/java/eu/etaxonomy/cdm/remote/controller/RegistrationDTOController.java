@@ -167,7 +167,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
             @RequestParam(value = "pageNumber", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doFind() " + requestPathAndQuery(request));
 
