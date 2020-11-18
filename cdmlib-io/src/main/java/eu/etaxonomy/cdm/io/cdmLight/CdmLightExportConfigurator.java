@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.cdmLight;
 import java.io.File;
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.format.description.CondensedDistributionRecipe;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
