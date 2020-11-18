@@ -181,7 +181,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     /**
      * The preferred stable identifier (URI) as discussed in
-     * {@link  http://dev.e-taxonomy.eu/trac/ticket/5606}
+     * {@link  https://dev.e-taxonomy.eu/redmine/issues/5606}
      */
     @XmlElement(name = "PreferredStableUri")
     @Field(analyze = Analyze.NO)

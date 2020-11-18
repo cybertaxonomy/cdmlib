@@ -68,7 +68,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * PCR itself is not persistent we do not store further information on it in the CDM and do not handle
  * {@link AmplificationResult} as a {@link DerivedUnit}.
  * <BR>
- * This may change in future: http://dev.e-taxonomy.eu/trac/ticket/3717.
+ * This may change in future: https://dev.e-taxonomy.eu/redmine/issues/3717.
  * <BR>
  *
  * @author a.mueller

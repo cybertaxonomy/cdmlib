@@ -1789,7 +1789,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     /**
      *
-     * See https://dev.e-taxonomy.eu/trac/ticket/2426
+     * See https://dev.e-taxonomy.eu/redmine/issues/2426
      * This test doesn't handle the above issue yet as it doesn't fire events as
      * expected (at least it does not reproduce the behaviour in the Taxonomic Editor).
      * In the meanwhile the property change framework for the facade has been changed

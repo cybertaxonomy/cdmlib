@@ -686,7 +686,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
                 result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
             }
         }
-        //FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862
+        //FIXME: vol. etc., https://dev.e-taxonomy.eu/redmine/issues/2862
 
         result = getInRefAuthorPart(thisRef.getInReference(), afterInRefAuthor) + result;
         result = "in " +  result;
@@ -711,7 +711,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
                         + " nomenclatural reference. This is not correct or not handled yet."
                         + " Generic titleWithoutYearAndAuthor used instead");
                 result = getTitleWithoutYearAndAuthorGeneric(inInRef, true);
-                //FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862  (comment taken from super.getTokenizedNomenclaturalTitel())
+                //FIXME: vol. etc., https://dev.e-taxonomy.eu/redmine/issues/2862  (comment taken from super.getTokenizedNomenclaturalTitel())
             }else{
                 result = getTitleWithoutYearAndAuthor(inRef, true);
             }

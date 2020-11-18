@@ -48,7 +48,7 @@ public interface ICdmBase {
 	 * Sets the timestamp this object was created.
 	 * Most databases cannot store milliseconds, so they are removed by this method.
 	 * Caution: We are planning to replace the Calendar class with a different datetime representation which is more suitable for hibernate
-	 * see {@link http://dev.e-taxonomy.eu/trac/ticket/247 TRAC ticket}
+	 * see {@link https://dev.e-taxonomy.eu/redmine/issues/247 TRAC ticket}
 	 *
 	 * @param created
 	 */

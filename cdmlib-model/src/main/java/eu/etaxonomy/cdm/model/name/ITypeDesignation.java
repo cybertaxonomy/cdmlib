@@ -40,7 +40,7 @@ public interface ITypeDesignation {
 //	 * @see   #getTypeSpecimen()
 //   * @deprecated homotypical group can not be set and always seems to be <code>null</code>.
 //   * Probably it is a relict of an old version.
-//   * See also http://dev.e-taxonomy.eu/trac/ticket/2173
+//   * See also https://dev.e-taxonomy.eu/redmine/issues/2173
 //	 */
 //	public HomotypicalGroup getHomotypicalGroup();
 

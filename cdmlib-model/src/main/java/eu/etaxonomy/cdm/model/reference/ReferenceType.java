@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @since 20.09.2009
  */
 
-//TODO hierarchies, see http://dev.e-taxonomy.eu/trac/ticket/3619
+//TODO hierarchies, see https://dev.e-taxonomy.eu/redmine/issues/3619
 @XmlEnum
 public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 

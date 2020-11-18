@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  *      the replacement name comes later as this reflects the order of publication</li>
  *  </ul>
  *
- * Details on ordering are explained at http://dev.e-taxonomy.eu/trac/ticket/3338<BR>
+ * Details on ordering are explained at https://dev.e-taxonomy.eu/redmine/issues/3338<BR>
  *
  * @author a.mueller
  * @since 02.03.2016

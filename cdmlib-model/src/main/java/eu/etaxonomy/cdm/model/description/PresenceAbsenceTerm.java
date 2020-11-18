@@ -59,7 +59,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  *  naturalized => non invasive - invasive<BR>
  *  invasive => not harmful - transformers - weeds
  *
- * @see http://dev.e-taxonomy.eu/redmine/issues/6000
+ * @see https://dev.e-taxonomy.eu/redmine/issues/6000
  *
  * @author m.doering
  * @since 08-Nov-2007 13:06:44

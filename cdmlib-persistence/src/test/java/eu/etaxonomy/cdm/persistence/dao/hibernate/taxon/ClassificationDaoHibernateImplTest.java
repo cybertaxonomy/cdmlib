@@ -66,7 +66,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
     }
 
     /**
-     * see http://dev.e-taxonomy.eu/trac/ticket/2778
+     * see https://dev.e-taxonomy.eu/redmine/issues/2778
      * Classification/{uuid}/childNodesAt/{rank-uuid} fails if only species in database
      */
     @Test
@@ -78,7 +78,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
         Classification classification = classificationDao.load(FLAT_CLASSIFICATION_UUID);
 
         includeUnpublished = true;
-        // test for the bug in http://dev.e-taxonomy.eu/trac/ticket/2778
+        // test for the bug in https://dev.e-taxonomy.eu/redmine/issues/2778
         Rank rank = Rank.GENUS();
         // run both queries in dao method since rank != null
         List<TaxonNode> rootNodes = classificationDao.listRankSpecificRootNodes(classification, null, rank, includeUnpublished,
@@ -340,7 +340,7 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
 
     /**
-     * At the moment the data created is special to the issue http://dev.e-taxonomy.eu/trac/ticket/2778
+     * At the moment the data created is special to the issue https://dev.e-taxonomy.eu/redmine/issues/2778
      * ClassificationDaoHibernateImplTest.issue2778.xml
      *
      * {@inheritDoc}

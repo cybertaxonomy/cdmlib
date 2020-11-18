@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * usually needed for correct formatting of taxon name text representations by using e.g.
  * {@link Rank#isSupraGeneric()} . Prior to v3.3 this was computed by comparison of ranks.
  * The current solution makes such methods less dependend on term loading.<BR>
- * @see http://dev.e-taxonomy.eu/trac/ticket/3521
+ * @see https://dev.e-taxonomy.eu/redmine/issues/3521
  *
  * @author a.mueller
  * @since 11.06.2013

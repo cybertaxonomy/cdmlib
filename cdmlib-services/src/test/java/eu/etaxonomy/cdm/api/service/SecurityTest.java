@@ -209,7 +209,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     @Test
     @DataSet
-    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/3098
+    @Ignore // FIXME https://dev.e-taxonomy.eu/redmine/issues/3098
     public void testHasPermissions(){
 
         Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.GENUS()),null);
@@ -912,7 +912,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     }
 
-//    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAME.[UPDATE])
+//    @Ignore // FIXME https://dev.e-taxonomy.eu/redmine/issues/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAME.[UPDATE])
     @Test
     public void testAcceptedTaxonToSynomym(){
 

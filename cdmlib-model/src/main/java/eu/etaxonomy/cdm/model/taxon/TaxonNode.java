@@ -139,15 +139,15 @@ public class TaxonNode
     @XmlElement(name = "childNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     //@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<TaxonNode> childNodes = new ArrayList<>();
 
-    //see https://dev.e-taxonomy.eu/trac/ticket/3722
-    //see https://dev.e-taxonomy.eu/trac/ticket/4200
+    //see https://dev.e-taxonomy.eu/redmine/issues/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/4200
     private Integer sortIndex = -1;
 
 //    //the source for this placement

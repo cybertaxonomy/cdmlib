@@ -546,7 +546,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	    /**
 	     * Very fast and dirty implementation to allow handling of transient objects as described in
-	     * https://dev.e-taxonomy.eu/trac/ticket/3726
+	     * https://dev.e-taxonomy.eu/redmine/issues/3726
 	     *
 	     * Not yet complete.
 	     *

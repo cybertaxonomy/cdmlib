@@ -167,7 +167,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             /* TODO set up work amount, currently the amount of work ticks is hard coded
              *      in {@link CdmApplicationControllersetNewDataSource}, but we need some means to register
              *      additional ticks.
-             *      see http://dev.e-taxonomy.eu/trac/ticket/3140 (generic way to obtain work ticks of application startup for monitoring)
+             *      see https://dev.e-taxonomy.eu/redmine/issues/3140 (generic way to obtain work ticks of application startup for monitoring)
              *
              */
         } else {

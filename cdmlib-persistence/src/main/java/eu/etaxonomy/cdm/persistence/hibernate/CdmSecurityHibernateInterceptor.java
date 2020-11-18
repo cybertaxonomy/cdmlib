@@ -64,7 +64,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<Class<? extends CdmBase>, Set<String>>();
 
     static{
-//        disabled since no longer needed, see https://dev.e-taxonomy.eu/trac/ticket/4111#comment:8
+//        disabled since no longer needed, see https://dev.e-taxonomy.eu/redmine/issues/4111#comment:8
 //        exculdeMap.put(TaxonName.class, new HashSet<>());
 
         Set<String> defaultExculdes = new HashSet<>();
