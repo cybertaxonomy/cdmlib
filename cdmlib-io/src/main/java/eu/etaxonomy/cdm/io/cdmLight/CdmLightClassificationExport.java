@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -807,23 +808,23 @@ public class CdmLightClassificationExport
                         + cdmBaseStr(element) + ": " + e.getMessage());
             }
         }
-        // if(state.getConfig().isCreateCondensedDistributionString()){
-        // List<Language> langs = new ArrayList<Language>();
-        // langs.add(Language.ENGLISH());
-        //
-        // CondensedDistribution conDis =
-        // geoService.getCondensedDistribution(distributions, true,
-        // null,null,state.getConfig().getCondensedDistributionRecipe(), langs
-        // );
-        // CdmLightExportTable tableCondensed =
-        // CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
-        // String[] csvLine = new String[table.getSize()];
-        // csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
-        // getId(state, taxon);
-        // csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
-        // conDis.toString();
-        // state.getProcessor().put(tableCondensed, taxon, csvLine);
-        // }
+         if(state.getConfig().isCreateCondensedDistributionString()){
+             List<Language> langs = new ArrayList<Language>();
+             langs.add(Language.ENGLISH());
+
+             CondensedDistribution conDis =
+             geoService.getCondensedDistribution(distributions, true,
+             null,null,state.getConfig().getCondensedDistributionRecipe(), langs
+             );
+             CdmLightExportTable tableCondensed =
+             CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
+             String[] csvLine = new String[table.getSize()];
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
+             getId(state, taxon);
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
+             conDis.toString();
+             state.getProcessor().put(tableCondensed, taxon, csvLine);
+         }
 
     }
 
@@ -1669,10 +1670,12 @@ public class CdmLightClassificationExport
 
                 String sec = "";
                 String nameString = name.getFullTitleCache();
+                String doubtful = "";
 
                 if (state.getConfig().isAddHTML()){
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
                 }
+
 
                 if (index > 0){
                     boolean isInvalid = false;
@@ -1698,14 +1701,21 @@ public class CdmLightClassificationExport
                          sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
                              .createShortCitation(secRef, taxonBase.getSecMicroReference(), true);
                      }
+                     if (taxonBase.isDoubtful()){
+                         doubtful = "?";
+                     }else{
+                         doubtful = "";
+                     }
                      if (taxonBase instanceof Synonym){
                          if (StringUtils.isNotBlank(sec)){
                              sec = " syn. sec. " + sec;
                          }else {
                              sec = "";
                          }
-                         typifiedNamesWithoutAccepted += nameString ;
-                         typifiedNamesWithoutAcceptedWithSec += nameString + sec ;
+
+
+                         typifiedNamesWithoutAccepted += doubtful + nameString ;
+                         typifiedNamesWithoutAcceptedWithSec += doubtful + nameString + sec ;
                      }else{
                          sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
@@ -1722,12 +1732,18 @@ public class CdmLightClassificationExport
                             sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
                                 .createShortCitation(secRef, tb.getSecMicroReference(), true);
                         }
+                        if (tb.isDoubtful()){
+                            doubtful = "?";
+                        }else{
+                            doubtful = "";
+                        }
                         if (tb instanceof Synonym){
                             if (StringUtils.isNotBlank(sec)){
                                 sec = " syn. sec. " + sec;
                             }else {
                                 sec = "";
                             }
+
                             break;
                         }else{
                             sec = "";
@@ -1739,12 +1755,12 @@ public class CdmLightClassificationExport
                         }
                     }
                     if (!isAccepted){
-                        typifiedNamesWithoutAccepted += nameString + "; ";
-                        typifiedNamesWithoutAcceptedWithSec += nameString + sec + "; ";
+                        typifiedNamesWithoutAccepted += doubtful + nameString + "; ";
+                        typifiedNamesWithoutAcceptedWithSec += doubtful + nameString + sec + "; ";
                     }
                 }
-                typifiedNamesString += nameString ;
-                typifiedNamesWithSecString += nameString + sec;
+                typifiedNamesString += doubtful + nameString ;
+                typifiedNamesWithSecString += doubtful + nameString + sec;
 
 
                 if (typifiedNamesString != null) {
