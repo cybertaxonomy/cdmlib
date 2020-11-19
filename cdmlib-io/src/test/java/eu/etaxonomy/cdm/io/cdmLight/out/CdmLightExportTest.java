@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -95,11 +96,14 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
         public void testSubTree(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
-            config.setCreateCondensedDistributionString(false);
+//            config.setCreateCondensedDistributionString(false);
             config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
 
             config.setTarget(TARGET.EXPORT_DATA);
@@ -159,13 +163,16 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
         public void testFullTreeWithUnpublished(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTarget(TARGET.EXPORT_DATA);
             config.getTaxonNodeFilter().setIncludeUnpublished(true);
-            config.setCreateCondensedDistributionString(false);
+
             ExportResult result = defaultExport.invoke(config);
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
@@ -245,12 +252,15 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
         public void testFullData(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTarget(TARGET.EXPORT_DATA);
-            config.setCreateCondensedDistributionString(false);
+
             ExportResult result = defaultExport.invoke(config);
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
