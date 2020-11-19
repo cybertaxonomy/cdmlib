@@ -20,10 +20,6 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
  */
 public class PreferenceResolver {
 
-
-    /**
-     *
-     */
     protected static final String MULTI_BEST_MATCHING = "There are 2 best matching preferences with equal key but differing values";
 
     /**
@@ -31,7 +27,7 @@ public class PreferenceResolver {
      * given preference list and for the given {@link PrefKey preference key}
      * or <code>null</code> if none is matching.<BR>
      * A preference is matching if the preference key is matching the given key.
-     * Keys are matching if their {@link PreferencePredicate predicates} are
+     * Keys are matching if they {@link PreferencePredicate predicates} are
      * equal and if the given {@link PreferenceSubject subject} matches
      * the preferences subject.<BR>
      * A subject A matches another subject B if all parts of A can also be found
@@ -101,7 +97,9 @@ public class PreferenceResolver {
      * @param subject2
      * @return
      */
-    private static int compare(PreferenceSubject subject1, PreferenceSubject subject2, PreferenceSubject compareAgainst) {
+    private static int compare(PreferenceSubject subject1, PreferenceSubject subject2,
+            PreferenceSubject compareAgainst) {
+
         String last = compareAgainst.getLastPart();
         String last1 = subject1.getLastPart();
         String last2 = subject2.getLastPart();

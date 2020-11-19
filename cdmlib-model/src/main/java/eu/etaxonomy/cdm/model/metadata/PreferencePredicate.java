@@ -16,6 +16,16 @@ import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
+ * Enumeration of cdmlib wide {@link PreferencePredicate}s. For the usage of
+ * PreferencesPredicates within {@link CdmPreference}s see the {@link CdmPreference
+ * CdmPreference documentation}.
+ *
+ * NOTE: Some of the below predicates do not clearly follow the rule of dividing
+ * subject and predicate defined in {@link CdmPreference}. Those holding subject
+ * information may be adapted in future.
+ * Also the string representation of the predicates does not follow a common rule.
+ * This may also be adapted in future.
+ *
  * @author a.mueller
  * @since 2013-09-09
  *

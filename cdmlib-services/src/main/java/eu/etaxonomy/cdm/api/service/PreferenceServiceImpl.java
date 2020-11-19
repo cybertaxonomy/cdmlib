@@ -30,6 +30,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 
 /**
+ * Service to store and access {@link CdmPreference cdm preferences}.
+ * On how to use cdm preferences see the documentation there.
+ *
  * @author a.mueller
  * @since 2013-09-09
  */
