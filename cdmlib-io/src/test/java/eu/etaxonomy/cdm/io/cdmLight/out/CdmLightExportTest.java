@@ -99,6 +99,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         public void testSubTree(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            config.setCreateCondensedDistributionString(false);
             config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
 
             config.setTarget(TARGET.EXPORT_DATA);
@@ -164,6 +165,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTarget(TARGET.EXPORT_DATA);
             config.getTaxonNodeFilter().setIncludeUnpublished(true);
+            config.setCreateCondensedDistributionString(false);
             ExportResult result = defaultExport.invoke(config);
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
@@ -248,7 +250,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTarget(TARGET.EXPORT_DATA);
-
+            config.setCreateCondensedDistributionString(false);
             ExportResult result = defaultExport.invoke(config);
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
