@@ -163,7 +163,7 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     MediaMetadataKeynameExcludes(UUID.fromString("f1375a03-259a-4cf3-b360-ac8339249464"), "Negative list of media metadata keywords", "media.metadataKeyword.excludes", null),
 
     CdmLightExportCondensedDistributionString(UUID.fromString("76e7951e-d213-4121-b0bb-18d4299102e2"), "Create condensed distribution string in CdmLight export", "io.cdmLight.createCondensedString", Boolean.FALSE),
-    CdmLightExportCondensedDistributionRecipe(UUID.fromString("b24349f6-c152-4dc2-ab7a-667f658f0c5f"), "The recipe for the condensed distribution string", "io.cdmLight.condensedStringRecipe", null)
+    CondensedDistributionRecipe(UUID.fromString("b24349f6-c152-4dc2-ab7a-667f658f0c5f"), "The recipe for the condensed distribution string", "condensedStringRecipe", null)
 
     ;
 
