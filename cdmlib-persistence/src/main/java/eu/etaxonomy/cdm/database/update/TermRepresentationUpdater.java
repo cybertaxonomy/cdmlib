@@ -43,7 +43,7 @@ public class TermRepresentationUpdater
                 abbrev, uuidLanguage, false, true);
     }
 
-	public static final TermRepresentationUpdater NewReverseInstance(List<ISchemaUpdaterStep> stepList,
+	public static final TermRepresentationUpdater NewInverseInstance(List<ISchemaUpdaterStep> stepList,
 	        String stepName, UUID uuidTerm, String description,  String label, String abbrev,
 	        UUID uuidLanguage){
 		return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
@@ -55,7 +55,7 @@ public class TermRepresentationUpdater
 	private String label;
 	private String abbrev;
 	private UUID uuidLanguage;
-	private boolean isReverse = false;
+	private boolean isInverse = false;
 	private boolean includeTitleCache = false;
 
 	private TermRepresentationUpdater(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description, String label, String abbrev, UUID uuidLanguage, boolean isReverse, boolean includeTitleCache) {
@@ -65,7 +65,7 @@ public class TermRepresentationUpdater
 		this.label = label;
 		this.uuidTerm = uuidTerm;
 		this.uuidLanguage = uuidLanguage;
-		this.isReverse = isReverse;
+		this.isInverse = isReverse;
 		this.includeTitleCache = includeTitleCache;
 	}
 
@@ -129,20 +129,12 @@ public class TermRepresentationUpdater
 		return;
 	}
 
-	/**
-	 * @param datasource
-	 * @param monitor
-	 * @param langId
-	 * @param caseType
-	 * @return
-	 * @throws SQLException
-	 */
 	private Integer getRepresentationId(ICdmDataSource datasource,
 			IProgressMonitor monitor, Integer langId, CaseType caseType) throws SQLException {
 		//representation
 
-		String tableName = isReverse ? "DefinedTermBase_InverseRepresentation" : "DefinedTermBase_Representation" ;
-		String repIdFkCol = isReverse ? "inverserepresentations_id" : "representations_id";
+		String tableName = isInverse ? "DefinedTermBase_InverseRepresentation" : "DefinedTermBase_Representation" ;
+		String repIdFkCol = isInverse ? "inverserepresentations_id" : "representations_id";
 		String sqlId = " SELECT rep.id " +
 			" FROM @@Representation@@ rep INNER JOIN %s MN ON MN.%s = rep.id " +
 			" INNER JOIN @@DefinedTermBase@@ dtb ON MN.DefinedTermBase_id = dtb.id " +
@@ -165,5 +157,4 @@ public class TermRepresentationUpdater
 		}
 		return repId;
 	}
-
 }

@@ -228,14 +228,14 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         uuidTerm = UUID.fromString("80f06f65-58e0-4209-b811-cb40ad7220a6");
         label = "is earlier homonym of";
         UUID uuidLanguage = Language.uuidEnglish;
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName,
                 uuidTerm, label, label, null, uuidLanguage);
 
         stepName = "update label for treated as later homonym";
         uuidTerm = UUID.fromString("2990a884-3302-4c8b-90b2-dfd31aaa2778");
         label = "is treated as earlier homonym of";
         uuidLanguage = Language.uuidEnglish;
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName,
                 uuidTerm, label, label, null, uuidLanguage);
 
         return stepList;

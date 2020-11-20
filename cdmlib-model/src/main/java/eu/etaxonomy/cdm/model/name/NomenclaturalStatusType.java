@@ -702,7 +702,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
      * "inedited" if it it has not yet been published.<BR>
      * An inedited taxon name is therefore also "invalid" (bot.) / "not available (zool.)
      *<BR>
-     * see also http://dev.e-taxonomy.eu/trac/ticket/5896
+     * see also https://dev.e-taxonomy.eu/redmine/issues/5896
      *
      * @see #PROVISIONAL()
      * @see  #isInvalidType()
@@ -794,10 +794,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return getTermByUuid(uuidZooSuppressed);
 	}
 
+	/**
+	 * TODO
+	 * @return
+	 */
 	public static final  NomenclaturalStatusType ZOO_OBLITUM (){
         return getTermByUuid(uuidZooOblitum);
     }
-
 
 	//TODO further Zoological status
 

@@ -721,7 +721,6 @@ public class TaxonNameTest {
 		assertSame("Relationship type should be cloned correctly", NameRelationshipType.BASIONYM(), nameRelation.getType());
 //		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
 
-
 		//homonym of clone
 		assertEquals("There should be exactly 1 relationship in which the clone takes the from role", 1, clone.getRelationsFromThisName().size());
 		nameRelation = clone.getRelationsFromThisName().iterator().next();

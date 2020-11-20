@@ -211,10 +211,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 	}
 
-	/**
-	 * @param type
-	 * @return
-	 */
 	@Transient
 	protected boolean isRelationshipType(NameRelationshipType type) {
 	    if (type == null){
@@ -363,7 +359,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 *  nomenclatural status. The name is always to be cited from its original
 	 *  place of valid publication, and later isonyms may be disregarded (but see Art. 14.15).</code>
 	 * <BR><BR>
-	 * See discussion at: <a href=http://dev.e-taxonomy.eu/trac/ticket/2901>#2901</a>
+	 * See discussion at: <a href=https://dev.e-taxonomy.eu/redmine/issues/2901>#2901</a>
 	 *
 	 */
 	public static final NameRelationshipType LATER_ISONYM(){
@@ -517,4 +513,5 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		}
 		return result;
 	}
+
 }

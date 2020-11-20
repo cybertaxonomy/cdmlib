@@ -163,7 +163,7 @@ public interface ITaxonNameBase
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
      * @param citation        the reference in which this relation was described
      * @param microCitation   the reference detail for this relation (e.g. page)
-     * @param codeEditrion    the nomenclatural code used for the considered rule
+     * @param codeEdition     the nomenclatural code used for the considered rule
      * @see                   #getRelationsFromThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)

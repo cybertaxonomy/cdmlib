@@ -48,12 +48,12 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
-        //#6591
-        OriginalSpellingMover.NewInstance(stepList);
+		//#6591
+		OriginalSpellingMover.NewInstance(stepList);
 
-        String stepName = "remove original spelling name relationship type";
-        String uuidTerm = "264d2be4-e378-4168-9760-a9512ffbddc4";
-        String checkUsedQueries = "SELECT count(*) FROM @@NameRelationship@@ nr "
+		String stepName = "remove original spelling name relationship type";
+		String uuidTerm = "264d2be4-e378-4168-9760-a9512ffbddc4";
+		String checkUsedQueries = "SELECT count(*) FROM @@NameRelationship@@ nr "
                 + " INNER JOIN @@DefinedTermBase@@ nrType ON nrType.id = nr.type_id "
                 + " WHERE nrType.uuid = '264d2be4-e378-4168-9760-a9512ffbddc4'";
         SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
