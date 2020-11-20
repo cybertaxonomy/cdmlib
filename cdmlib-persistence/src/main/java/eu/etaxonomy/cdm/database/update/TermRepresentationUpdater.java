@@ -34,20 +34,26 @@ public class TermRepresentationUpdater
 	        String stepName, UUID uuidTerm, String description,  String label, String abbrev,
 	        UUID uuidLanguage){
 		return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
-		        abbrev, uuidLanguage, false, false);
+		        abbrev, uuidLanguage, false, false, false);
 	}
+    public static final TermRepresentationUpdater NewInstance(List<ISchemaUpdaterStep> stepList,
+            String stepName, UUID uuidTerm, String description,  String label, String abbrev,
+            UUID uuidLanguage, boolean withIdInVoc){
+        return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
+                abbrev, uuidLanguage, false, false, withIdInVoc);
+    }
     public static final TermRepresentationUpdater NewInstanceWithTitleCache(List<ISchemaUpdaterStep> stepList,
             String stepName, UUID uuidTerm, String description,  String label, String abbrev,
             UUID uuidLanguage){
         return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
-                abbrev, uuidLanguage, false, true);
+                abbrev, uuidLanguage, false, true, false);
     }
 
 	public static final TermRepresentationUpdater NewInverseInstance(List<ISchemaUpdaterStep> stepList,
 	        String stepName, UUID uuidTerm, String description,  String label, String abbrev,
 	        UUID uuidLanguage){
 		return new TermRepresentationUpdater(stepList, stepName, uuidTerm, description, label,
-		        abbrev, uuidLanguage, true, false);
+		        abbrev, uuidLanguage, true, false, false);
 	}
 
 	private UUID uuidTerm ;
@@ -57,8 +63,11 @@ public class TermRepresentationUpdater
 	private UUID uuidLanguage;
 	private boolean isInverse = false;
 	private boolean includeTitleCache = false;
+	private boolean includeIdInVoc = false;
 
-	private TermRepresentationUpdater(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description, String label, String abbrev, UUID uuidLanguage, boolean isReverse, boolean includeTitleCache) {
+	private TermRepresentationUpdater(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm,
+	        String description, String label, String abbrev, UUID uuidLanguage, boolean isReverse,
+	        boolean includeTitleCache, boolean includeIdInVoc) {
 		super(stepList, stepName);
 		this.abbrev = abbrev;
 		this.description = description;
@@ -67,6 +76,7 @@ public class TermRepresentationUpdater
 		this.uuidLanguage = uuidLanguage;
 		this.isInverse = isReverse;
 		this.includeTitleCache = includeTitleCache;
+		this.includeIdInVoc = includeIdInVoc;
 	}
 
 	@Override
@@ -125,6 +135,13 @@ public class TermRepresentationUpdater
 		    sql = String.format(sql, caseType.transformTo("DefinedTermBase"), label, uuidTerm);
 		    datasource.executeUpdate(sql);
 		}
+        if (includeIdInVoc && abbrev != null){
+            String sql = "UPDATE %s SET idInVocabulary = '%s' WHERE uuid = '%s'";
+            sql = String.format(sql, caseType.transformTo("DefinedTermBase"), abbrev, uuidTerm);
+            datasource.executeUpdate(sql);
+        }
+
+
 
 		return;
 	}
