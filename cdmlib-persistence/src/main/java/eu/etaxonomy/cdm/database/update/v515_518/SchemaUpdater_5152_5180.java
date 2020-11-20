@@ -64,9 +64,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         String referenceColumnName = "citation_id";
         String microReferenceColumnName = "citationMicroReference";
         String sourceColumnName = "source_id";
-        String dtype = "NomenclaturalSource";
-        String sourceType = "NOR";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
 
         //6581
         //move name relationship reference to source
@@ -111,7 +109,9 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         referenceColumnName = "nomenclaturalReference_id";
         microReferenceColumnName = "nomenclaturalMicroReference";
         sourceColumnName = "nomenclaturalSource_id";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+        String sourceType = "NOR";
+        String dtype = "NomenclaturalSource";
+        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
         //9094
         // update TaxonNode.source from IdentifiableSource to DescriptionElementSource
@@ -245,17 +245,17 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
     private void fixEmptyPartialsHandling(List<ISchemaUpdaterStep> stepList,
             String tableName, String columnName) {
 
-        String stepName = "fix empty partials_start handling for " + tableName;
-        String sql = "UPDATE @@"+tableName+"@@ "
-                   + " SET "+columnName+"_start = NULL "
-                   + " WHERE "+columnName+"_start = '00000000' ";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
-
-        stepName = "fix empty partials_end handling for " + tableName;
-        sql = "UPDATE @@"+tableName+"@@ "
-                   + " SET "+columnName+"_end = NULL "
-                   + " WHERE "+columnName+"_end = '00000000'";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+//        String stepName = "fix empty partials_start handling for " + tableName;
+//        String sql = "UPDATE @@"+tableName+"@@ "
+//                   + " SET "+columnName+"_start = NULL "
+//                   + " WHERE "+columnName+"_start = '00000000' ";
+//        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
+//
+//        stepName = "fix empty partials_end handling for " + tableName;
+//        sql = "UPDATE @@"+tableName+"@@ "
+//                   + " SET "+columnName+"_end = NULL "
+//                   + " WHERE "+columnName+"_end = '00000000'";
+//        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, tableName, 99);
     }
 
     @Override
