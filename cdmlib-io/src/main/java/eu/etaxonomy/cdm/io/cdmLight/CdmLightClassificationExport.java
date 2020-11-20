@@ -1676,7 +1676,7 @@ public class CdmLightClassificationExport
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
                 }
 
-
+                String synonymSign = "";
                 if (index > 0){
                     boolean isInvalid = false;
 
@@ -1687,9 +1687,9 @@ public class CdmLightClassificationExport
                         }
                     }
                     if (isInvalid){
-                        nameString = "\u2212 " + nameString;
+                        synonymSign = "\u2212 ";
                     }else{
-                        nameString = "\u2261 " + nameString;
+                        synonymSign = "\u2261 ";
                     }
                 }
                 boolean isAccepted = false;
@@ -1714,8 +1714,8 @@ public class CdmLightClassificationExport
                          }
 
 
-                         typifiedNamesWithoutAccepted += doubtful + nameString ;
-                         typifiedNamesWithoutAcceptedWithSec += doubtful + nameString + sec ;
+                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString ;
+                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec ;
                      }else{
                          sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
@@ -1755,12 +1755,12 @@ public class CdmLightClassificationExport
                         }
                     }
                     if (!isAccepted){
-                        typifiedNamesWithoutAccepted += doubtful + nameString + "; ";
-                        typifiedNamesWithoutAcceptedWithSec += doubtful + nameString + sec + "; ";
+                        typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + "; ";
+                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + "; ";
                     }
                 }
-                typifiedNamesString += doubtful + nameString ;
-                typifiedNamesWithSecString += doubtful + nameString + sec;
+                typifiedNamesString += synonymSign + doubtful + nameString ;
+                typifiedNamesWithSecString += synonymSign + doubtful + nameString + sec;
 
 
                 if (typifiedNamesString != null) {
