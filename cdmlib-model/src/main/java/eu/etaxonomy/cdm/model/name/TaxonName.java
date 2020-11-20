@@ -1628,6 +1628,11 @@ public class TaxonName
     }
 
     @Override
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type){
+        return addRelationshipFromName(fromName, type, null, null, null, null);
+    }
+
+    @Override
     public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition){
         //fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
         return this.addRelationshipFromName(fromName, type, null, null, ruleConsidered, codeEdition);

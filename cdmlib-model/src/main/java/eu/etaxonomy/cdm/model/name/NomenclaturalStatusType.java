@@ -219,7 +219,8 @@ public class NomenclaturalStatusType
     @Override
     @Transient
     public boolean isDesignationOnly(){
-        //rejected, definitely rejected, confused, ined., comb. ined., ambigous, orth. var.
+        //rejected, definitely rejected, confused, ined., comb. ined., ambigous, orth. var., orth. rej.
+        //cons. prop., orth. cons. prop.
         return this.getNomenclaturalStanding() == NomenclaturalStanding.OTHER_DESIGNATION;
     }
 
@@ -238,12 +239,15 @@ public class NomenclaturalStatusType
     @Override
     @Transient
     public boolean isValidExplicit(){
+        //valid: valid, legitimate, conserved, sanctioned, protected, orth. cons., alternative
+        //       rej. prop, utique rej prop, nom. cons. des.
         return this.getNomenclaturalStanding().isValidExplicit();
     }
 
     @Override
     @Transient
     public boolean isNoStatus(){
+        //nom. dub., novum, comb. nov., nom. cons. prop., nom. orth. cons. prop., nom. subnud.
         return this.getNomenclaturalStanding().isNoStatus();
     }
 
@@ -271,12 +275,7 @@ public class NomenclaturalStatusType
 	@Override
     @Transient
 	public boolean isLegitimate(){
-		//valid: valid, legitimate, conserved, sanctioned, protected, orth. cons., alternative
-	    //       rej. prop, utique rej prop, nom. cons. des.
-	    //none: novum, comb. nov., nom. cons. prop., nom. orth. cons. prop., nom. subnud.
 	    return this.nomenclaturalStanding.isLegitimate();
-
-//				this.equals(CONSERVED_DESIG())
 	}
 
 	/**
@@ -298,28 +297,10 @@ public class NomenclaturalStatusType
 	@Override
     @Transient
 	public boolean isIllegitimate(){
-		if (this.equals(ILLEGITIMATE()) ||
-				this.equals(COMBINATION_ILLEGITIMATE()) ||
-		        this.equals(SUPERFLUOUS()) ||
-
-		        this.equals(DOUBTFUL()) ||
-
-//				this.equals(REJECTED()) ||
-//				this.equals(UTIQUE_REJECTED()) ||
-		        this.equals(ORTHOGRAPHY_REJECTED()) ||//TODO
-
-				this.equals(CONSERVED_PROP()) || //TODO
-				this.equals(ORTHOGRAPHY_CONSERVED_PROP()) ||//TODO
-
-				this.equals(ZOO_INVALID()) ||
-				this.equals(ZOO_SUPPRESSED())
-			){
-			return true;
-		}else{
-			return false;
-		}
+	    //nom. illeg., comb. illeg., nom. superfl.,
+	    //zoo nom. inval., zoo suppressed,
+	    return this.nomenclaturalStanding.isIllegitimate();
 	}
-
 
 	/**
 	 * Returns the nomenclatural status type "ambiguous". A "valid"
@@ -767,9 +748,13 @@ public class NomenclaturalStatusType
 
 	/**
 	 * Returns the nomenclatural status type "subnudum". This type is not
-	 * covered by {@link NomenclaturalCode nomenclature codes}. It appears sometimes in literature and
-	 * represents the opinion of the author who considers the {@link TaxonName taxon name} to be
-	 * unusable for an unambiguous taxonomic use.
+	 * covered by {@link NomenclaturalCode nomenclature codes}. It appears
+	 * sometimes in literature and represents the opinion of the author who
+	 * considers the {@link TaxonName taxon name} to be unusable for an unambiguous
+	 * taxonomic use.
+	 *
+	 * As the name is not explicitly invalid we handle it as valid name.
+	 * For discussion see #3046#comment:4
 	 *
 	 * @see  #AMBIGUOUS()
 	 * @see  #CONFUSUM()

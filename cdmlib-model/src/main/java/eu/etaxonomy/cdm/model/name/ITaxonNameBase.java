@@ -154,7 +154,23 @@ public interface ITaxonNameBase
     public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship}
+     * from another taxon name to <i>this</i> taxon name
+     * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
+     * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
+     *
+     * @param fromName        the taxon name of the source for this new name relationship
+     * @param type            the type of this new name relationship
+     * @see                   #getRelationsFromThisName()
+     * @see                   #getNameRelations()
+     * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)
+     * @see                   #addNameRelationship(NameRelationship)
+     */
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type);
+
+    /**
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship}
+     * from another taxon name to <i>this</i> taxon name
      * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
      * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
      *
