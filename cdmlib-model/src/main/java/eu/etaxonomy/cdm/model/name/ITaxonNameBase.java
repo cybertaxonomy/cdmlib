@@ -357,12 +357,19 @@ public interface ITaxonNameBase
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
     public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
+
     /**
-     * @deprecated in future original spellings will be stored with nomenclatural source
-     * so this method may be deleted then
+     * Returns the original spelling (taxon name used in nomenclatural source).
      */
-    @Deprecated
-    public NameRelationship addOriginalSpelling(TaxonName originalSpelling, Reference citation, String microcitation);
+    @Transient
+    public TaxonName getOriginalSpelling();
+
+    /**
+     * Sets the original spelling in the nomenclatural source.
+     * Creates the source if it does not exist yet.
+     */
+    public void setOriginalSpelling(TaxonName originalSpelling);
+
 
     /**
      * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.

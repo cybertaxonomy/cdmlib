@@ -16,13 +16,10 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -235,26 +232,18 @@ public abstract class NameCacheStrategyBase
     }
 
     private String getOriginalNameString(TaxonName currentName, List<TaggedText> originalNameTaggs) {
-        List<String> originalNameStrings = new ArrayList<>(1);
         currentName = CdmBase.deproxy(currentName);
         //Hibernate.initialize(currentName.getRelationsToThisName());
-        for (NameRelationship nameRel : currentName.getRelationsToThisName()){  //handle list, just in case we have strange data; this may result in strange looking results
-            NameRelationshipType type = nameRel.getType();
-            if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){
-                String originalNameString;
-                TaxonName originalName = nameRel.getFromName();
-                if (!originalName.isNonViral()){
-                    originalNameString = originalName.getTitleCache();
-                }else{
-                    INonViralName originalNvName = CdmBase.deproxy(originalName);
-                    originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
-                }
-                originalNameStrings.add("[as \"" + originalNameString + "\"]");
+        TaxonName originalName = currentName.getOriginalSpelling();
+        if (originalName != null){
+            String originalNameString;
+            if (!originalName.isNonViral()){
+                originalNameString = originalName.getTitleCache();
+            }else{
+                INonViralName originalNvName = CdmBase.deproxy(originalName);
+                originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
             }
-        }
-        if (originalNameStrings.size() > 0){
-            String result = CdmUtils.concat("", originalNameStrings.toArray(new String[originalNameStrings.size()])) ;
-            return result;
+            return "[as \"" + originalNameString + "\"]";
         }else{
             return null;
         }

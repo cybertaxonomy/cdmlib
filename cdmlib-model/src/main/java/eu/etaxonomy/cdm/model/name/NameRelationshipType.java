@@ -290,27 +290,22 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
 	 * must be almost identical (so one usually does not differentiate them).<BR>
 	 * For instance <i>Angelica silvestris</i> L. is an orthographic variant of
-	 * <i>Angelica sylvestris</i> L.<BR>
-	 * This type is symmetric and transitive but usually orthographic variant relationships should be organized
-	 * in a star schema with the correct variant in the middle and other variants pointing to it.
-	 * @see #ORIGINAL_SPELLING()()
+	 * <i>Angelica sylvestris</i> L.
+	 * <BR>
+	 * This type is symmetric and transitive but usually orthographic
+	 * variant relationships should be organized in a star schema with the (only!)
+	 * correct variant in the middle and other variants pointing to it.
+	 * <BR>
+	 * ICNAFP: Art. 61.2. "For the purpose of this Code, orthographical variants are the various spelling,
+	 * compounding, and inflectional forms of a name or its final epithet (including typographical errors)
+	 * when only one nomenclatural type is involved."<BR>
+	 * Art. 61.1. "Only one orthographical variant of any one name is treated as validly published:
+	 * the form that appears in the original publication (but see Art. 6.10), except
+	 *
+	 * @see #MISSPELLING()
 	 */
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
 		  return findTermByUuid(uuidOrthographicVariant);
-	}
-
-	/**
-	 * Returns the {@link TaxonName taxon name} as it is spelled in the original
-	 * publication of the given name. The first (left) name in the relationship takes the role
-	 * of the original spelling whereas the second (right) name takes the role of the
-	 * current/correct spelling.<BR>
-	 * Original spelling is a specialization of {@link #ORTHOGRAPHIC_VARIANT()}.
-	 * <BR>
-	 * @see #ORTHOGRAPHIC_VARIANT()
-	 * @see #MISSPELLING()
-	 */
-	public static final NameRelationshipType ORIGINAL_SPELLING(){
-		return findTermByUuid(uuidOriginalSpellingFor);
 	}
 
 	/**
@@ -322,13 +317,15 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * must be almost identical (so one usually does not differentiate them).<BR>
 	 * For instance <i>Anhelica silvestris</i> L. is a misspelling of
 	 * <i>Angelica silvestris</i> L.<BR>
-	 * A misspelling is always accicentally (not on purpose). Therefore misspellings are a
-	 * subset of {@link #ORTHOGRAPHIC_VARIANT orthographic variants} and are complementary to
-	 * emendations. A misspelling is always an {@link #ORTHOGRAPHIC_VARIANT orthographic variant}, too.
+	 * A misspelling is always accicentally (not on purpose). Therefore misspellings are overlapping with
+	 * {@link #ORTHOGRAPHIC_VARIANT orthographic variants} (in an old version of this documentation they
+	 * were called a subset but it seem doubtful that certain typos are orth. vars. according to Art. 61.2 (ICNAFP).
+     * and are complementary to {@link #EMENDATION() emendations}.
 	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
-	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.
+	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.<BR>
+	 * Misspellings are not handled in the ICNAFP.
+	 *
 	 * @see #ORTHOGRAPHIC_VARIANT()
-	 * @see #ORIGINAL_SPELLING()
 	 */
 	public static final NameRelationshipType MISSPELLING(){
 		  return findTermByUuid(uuidMisspelling);

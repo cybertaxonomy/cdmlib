@@ -2011,12 +2011,23 @@ public class TaxonName
     }
 
     @Override
-    @Deprecated
-    public NameRelationship addOriginalSpelling(TaxonName originalSpelling, Reference citation, String microcitation){
-        if (originalSpelling != null){
-            return originalSpelling.addRelationshipToName(this, NameRelationshipType.ORIGINAL_SPELLING(), citation, microcitation, null, null);
+    @Transient
+    public TaxonName getOriginalSpelling(){
+        if (this.getNomenclaturalSource() != null){
+            return this.getNomenclaturalSource().getNameUsedInSource();
         }else{
             return null;
+        }
+    }
+
+    @Override
+    @Transient
+    public void setOriginalSpelling(TaxonName originalSpelling){
+        if (originalSpelling != null){
+            this.getNomenclaturalSource(true).setNameUsedInSource(originalSpelling);
+        }else if (this.getNomenclaturalSource() != null){
+            this.getNomenclaturalSource().setNameUsedInSource(null);
+            checkNullSource();
         }
     }
 
