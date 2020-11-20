@@ -162,7 +162,6 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
         //status(+relation) orthography conserved (this is more a name property than a status,
         //    unclear if result is illegitimate or not, but it is expected to be a name not a designation, so in future it may become the status of a common super class)
 
-
         //VALID
         stepName = "Set nom status and name relationship types to VALID where appropriate";
         defaultQuery = "UPDATE @@DefinedTermBase@@ "
@@ -176,7 +175,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + "     '3b8a8519-420f-4dfa-b050-b410cc257961',"   //status(+relation) nom. alt.
                 + "     '643ee07f-026c-426c-b838-c778c8613383',"   //status nom. utique rej. prop.
                 + "     '248e44c2-5436-4526-a352-f7467ecebd56',"   //status nom. rej. prop.
-                + "     '4e9c9702-a74d-4033-9d47-792ad123712c'"   //status nom. cons. des.
+                + "     '4e9c9702-a74d-4033-9d47-792ad123712c',"   //status nom. cons. des.
                 + "     '049c6358-1094-4765-9fae-c9972a0e7780'"   //relation is alternative name for
                 + "    ) ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
@@ -187,13 +186,11 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
                 + " SET nomenclaturalStanding = 'IL' "
                 + " WHERE uuid IN ('b7c544cf-a375-4145-9d3e-4b97f3f18108',"   //status nom. illeg.
                 + "     'd901d455-4e01-45cb-b653-01a840b97eed',"   //status comb. illeg.
+                + "     '6890483a-c6ba-4ae1-9ab1-9fbaa5736ce9',"   //status nom. superfl.
                 + "     '80f06f65-58e0-4209-b811-cb40ad7220a6',"   //relation later homonym
                 + "     '2990a884-3302-4c8b-90b2-dfd31aaa2778',"   //relation treated as later homonym
-
-                + "     '6890483a-c6ba-4ae1-9ab1-9fbaa5736ce9',"   //status nom. superfl.
-
                 + "     '2bef7039-c129-410b-815e-2a1f7249127b',"   //status zoo invalid
-                + "     'a61602c7-fbd4-4eb4-98a2-44919db8920b'"   //status zoo suppressed
+                + "     'a61602c7-fbd4-4eb4-98a2-44919db8920b'"    //status zoo suppressed
                 + "    ) ";
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, defaultQuery, nonAuditedTableName, -99);
 
