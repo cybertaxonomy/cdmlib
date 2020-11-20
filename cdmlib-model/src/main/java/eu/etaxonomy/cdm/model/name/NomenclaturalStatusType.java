@@ -104,6 +104,12 @@ public class NomenclaturalStatusType
 	private static final UUID uuidOrthographyRejected = UUID.fromString("39a25673-f716-4ec7-ae27-2498fce43166");
 	private static final UUID uuidConservedDesig = UUID.fromString("4e9c9702-a74d-4033-9d47-792ad123712c");
 	private static final UUID uuidIned = UUID.fromString("51429574-c6f9-4aa1-bab9-0bbc5b160ba1");
+    private static final UUID uuidProtected = UUID.fromString("d071187a-512d-4955-b75c-d1706702f098");
+    private static final UUID uuidScheda = UUID.fromString("f080cee4-6e0a-466f-986e-bad59e9f4ea7");
+    private static final UUID uuidProSynonymo = UUID.fromString("54900d07-a18f-4e11-b4be-3929bb78416a");
+    private static final UUID uuidOrthVar = UUID.fromString("6703745b-9834-42b5-8ddd-fcc6ce572372");
+    private static final UUID uuidCombIned = UUID.fromString("71c13910-19a4-46b2-9ec8-2a8dbd45cd83");
+
 
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
@@ -790,6 +796,77 @@ public class NomenclaturalStatusType
 		return getTermByUuid(uuidOpusUtiqueOppr);
 	}
 
+    /**
+     * Returns the nomenclatural status type "protected name".
+     * It indicates a valid name.
+     * "The name of an organism treated as a fungus listed (in App. IIA, III, and IV)
+     * with its type and treated as conserved against any competing listed or unlisted
+     * synonyms or homonyms (including sanctioned names), although conservation
+     * under Art. 14 overrides this protection (Art. F.2.1)."
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "protected name"
+     */
+    public static final NomenclaturalStatusType PROTECTED_NAME(){
+        return getTermByUuid(uuidProtected);
+    }
+
+    /**
+     * Returns the nomenclatural status type "herbarium designation".
+     * It indicates an invalid designation (invalid name).
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "herbarium designation"
+     */
+    public static final NomenclaturalStatusType IN_SCHEDA(){
+        return getTermByUuid(uuidScheda);
+    }
+
+    /**
+     * Returns the nomenclatural status type "published in synonymy".
+     * It indicates an invalid designation (invalid name).
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "published in synonymy"
+     */
+    public static final NomenclaturalStatusType PRO_SYNONYMO(){
+        return getTermByUuid(uuidProSynonymo);
+    }
+
+    /**
+     * Returns the nomenclatural status type "orthographical variant".
+     * This status should only be used if the other name this name is
+     * an orth. var. for is not known for some reason.
+     * Otherwise use name relationship {@link NameRelationshipType#ORTHOGRAPHIC_VARIANT()}.
+     * These 2 types may be unified in future (#9273).
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "orthographical variant"
+     */
+    public static final NomenclaturalStatusType ORTH_VAR(){
+        return getTermByUuid(uuidOrthVar);
+    }
+
+    /**
+     * Returns the nomenclatural status type "unpublished combination".
+     * A {@link TaxonName combination} is "inedited" if it it has not yet been published.<BR>
+     * An inedited taxon name is therefore also "invalid" (bot.) / "not available (zool.)
+     * <BR><BR>
+     * {@link https://dev.e-taxonomy.eu/redmine/issues/5795}
+     *
+     * @see #INED()
+     * @see #PROVISIONAL()
+     * @see #isInvalid()
+     * @return the nomenclatural status type "comb. ined."
+     */
+    public static final NomenclaturalStatusType COMB_INED(){
+        return getTermByUuid(uuidCombIned);
+    }
+
 	/**
 	 * TODO
 	 * @return
@@ -823,10 +900,6 @@ public class NomenclaturalStatusType
     }
 
 	//TODO further Zoological status
-
-	//TODO Soraya
-	//	orth. var.: orthographic variant
-	//	pro syn.: pro synonymo
 
 	// TODO
 	// Preliminary implementation for BotanicalNameParser.
