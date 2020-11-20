@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType>
         implements INomenclaturalStanding {
 
+    private static final long serialVersionUID = 8504916205254159334L;
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
 	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
@@ -345,6 +346,9 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * {@link #ORTHOGRAPHIC_VARIANT orthographic variant}, too.<BR>
 	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
 	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.
+	 *
+	 * TODO IN ICNAFP Art. 47.1 emendations are used for alterations of the diagnostic characters, this
+	 * is something completely different. We need to check where the above definition comes from (zoology?)
 	 */
 	public static final NameRelationshipType EMENDATION(){
 		  return findTermByUuid(uuidEmendation);
