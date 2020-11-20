@@ -452,9 +452,11 @@ public class TypeDesignationSetManager {
     private void addSource(TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntityReference,
             OriginalSourceBase<?> source) {
         Reference ref = source.getCitation();
-        DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
-        String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
-        workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
+        if (ref != null){
+            DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
+            String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
+            workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
+        }
     }
 
     private boolean hasLectoSource(TypeDesignationBase<?> typeDes) {
