@@ -355,7 +355,7 @@ public class CsvNameExport extends CsvNameExportBase {
         boolean result;
         if (!relatedName.getStatus().isEmpty()){
             NomenclaturalStatus status = CdmBase.deproxy(relatedName.getStatus().iterator().next());
-            if (status.getType().isInvalidType()){
+            if (status.getType().isInvalid()){
                 result = true;
             }else{
                 result = false;
@@ -661,7 +661,7 @@ public class CsvNameExport extends CsvNameExportBase {
                 NomenclaturalStatus status = null;
                 if (!synonym.getName().getStatus().isEmpty()){
                     status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());
-                    if (status.getType().isInvalidType()){
+                    if (status.getType().isInvalid()){
                         heterotypicalSynonyms.append(" <invalid> ");
                         synonymName = CdmBase.deproxy(synonym.getName());
 
@@ -689,7 +689,7 @@ public class CsvNameExport extends CsvNameExportBase {
 
             if (!synonym.getName().getStatus().isEmpty()){
                 status = CdmBase.deproxy(synonym.getName().getStatus().iterator().next());
-                if (status.getType().isInvalidType()){
+                if (status.getType().isInvalid()){
                     homotypicalSynonyms.append(" <invalid> ");
                     synonymName = CdmBase.deproxy(synonym.getName());
                     synonymString = createSynonymNameString(synonymName, true);

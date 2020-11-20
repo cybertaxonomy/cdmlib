@@ -17,11 +17,14 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -55,13 +58,16 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since 08-Nov-2007 13:06:38
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NameRelationshipType")
+@XmlType(name = "NameRelationshipType", propOrder = {
+    "nomenclaturalStanding",
+    "nomenclaturalStandingInverse"}
+)
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
-	private static final long serialVersionUID = 8504916205254159334L;
+public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType>
+        implements INomenclaturalStanding {
 
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
@@ -78,13 +84,39 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
 	private static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
-	private static final UUID uuidOriginalSpellingFor = UUID.fromString("264d2be4-e378-4168-9760-a9512ffbddc4");
 
 
 	public static NameRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		return new NameRelationshipType(term, label, labelAbbrev, symmetric, transitive);
 	}
 
+    /**
+     * The {@link NomenclaturalStanding nomenclatural standing} of a name status type for
+     * the "from"-name in a name relationship.
+     * It is usually needed for correct formatting of a name in a synonymy by e.g. using
+     * a dash instead of equal sign in front.
+     */
+    @XmlAttribute(name ="NomenclaturalStanding")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.NomenclaturalStanding")}
+    )
+    @Audited
+	private NomenclaturalStanding nomenclaturalStanding;
+
+    /**
+     * The {@link NomenclaturalStanding nomenclatural standing} of a name status type for
+     * the "to"-name in a name relationship.
+     * It is usually needed for correct formatting of a name in a synonymy by e.g. using
+     * a dash instead of equal sign in front.
+     */
+    @XmlAttribute(name ="NomenclaturalStanding")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.NomenclaturalStanding")}
+    )
+    @Audited
+    private NomenclaturalStanding nomenclaturalStandingInverse;
 
 	protected static Map<UUID, NameRelationshipType> termMap = null;
 
@@ -126,7 +158,21 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		super(TermType.NameRelationshipType, term, label, labelAbbrev, symmetric, transitive);
 	}
 
+// ************************ GETTER / SETTER ******************/
 
+    public NomenclaturalStanding getNomenclaturalStanding() {
+        return nomenclaturalStanding;
+    }
+    public void setNomenclaturalStanding(NomenclaturalStanding nomenclaturalStanding) {
+        this.nomenclaturalStanding = nomenclaturalStanding;
+    }
+
+    public NomenclaturalStanding getNomenclaturalStandingInverse() {
+        return nomenclaturalStandingInverse;
+    }
+    public void setNomenclaturalStandingInverse(NomenclaturalStanding nomenclaturalStandingInverse) {
+        this.nomenclaturalStandingInverse = nomenclaturalStandingInverse;
+    }
 
 //************************** METHODS ********************************
 
@@ -135,81 +181,87 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		termMap = null;
 	}
 
-	// TODO this method should be moved to consistency proof classes
-	/**
-	 * Returns the boolean value indicating whether the nomenclatural status
-	 * type of the {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom() first taxon name}
-	 * involved in a name relationship with <i>this</i> name relationship type should
-	 * be "invalid" (true) or not (false). Returns false if <i>this</i> name
-	 * relationship status type is null.
-	 *
-	 * @see  #isLegitimateType()
-	 * @see  #isIllegitimateType()
-	 * @see  NomenclaturalStatusType#isInvalidType()
-	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
-	 */
-	@Transient
-	public boolean isInvalidType(){
-		if (this.equals(VALIDATED_BY_NAME()) ||
-				this.equals(LATER_VALIDATED_BY_NAME())
-			){
-			return true;
-		}else{
-			return false;
-		}
-	}
 
-	// TODO this method should be moved to consistency proof classes
-	/**
-	 * Returns the boolean value indicating whether the nomenclatural status
-	 * type of the {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom() first taxon name}
-	 * involved in a name relationship with <i>this</i> name relationship type should
-	 * be "legitimate" (true) or not (false). Returns false if <i>this</i> name
-	 * relationship status type is null.
-	 *
-	 * @see  #isInvalidType()
-	 * @see  #isIllegitimateType()
-	 * @see  NomenclaturalStatusType#isLegitimateType()
-	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
-	 */
-	@Transient
-	public boolean isLegitimateType(){
-		if (this.equals(BASIONYM()) ||
-				this.equals(REPLACED_SYNONYM()) ||
-				this.equals(ALTERNATIVE_NAME()) ||
-				this.equals(CONSERVED_AGAINST())
-			){
-			return true;
-		}else{
-			return false;
-		}
-	}
+    @Override
+    @Transient
+    public boolean isInvalidExplicit() {
+        return this.nomenclaturalStanding.isInvalidExplicit();
+    }
+    @Transient
+    public boolean isInvalidExplicitInverse() {
+        return this.nomenclaturalStandingInverse.isInvalidExplicit();
+    }
 
-	// TODO this method should be moved to consistency proof classes
-	/**
-	 * Returns the boolean value indicating whether the nomenclatural status
-	 * type of the {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom() first taxon name}
-	 * involved in a name relationship with <i>this</i> name relationship type should
-	 * be "illegitimate" (true) or not (false). Returns false if <i>this</i> name
-	 * relationship status type is null.
-	 *
-	 * @see  #isInvalidType()
-	 * @see  #isLegitimateType()
-	 * @see  NomenclaturalStatusType#isIllegitimateType()
-	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
-	 */
-	@Transient
-	public boolean isIllegitimateType(){
-		//TODO: implement isX method. Maybe as persistent class attribute?
-		//TODO: RejectedInFavour,
-		if (this.equals(LATER_HOMONYM()) ||
-				this.equals(TREATED_AS_LATER_HOMONYM())
-			){
-			return true;
-		}else{
-			return false;
-		}
-	}
+    @Override
+    @Transient
+    public boolean isIllegitimate() {
+        return this.nomenclaturalStanding.isLegitimate();
+    }
+    @Transient
+    public boolean isIllegitimateInverse() {
+        return this.nomenclaturalStandingInverse.isLegitimate();
+    }
+
+    @Override
+    @Transient
+    public boolean isValidExplicit() {
+        return this.nomenclaturalStanding.isValidExplicit();
+    }
+    @Transient
+    public boolean isValidExplicitInverse() {
+        return this.nomenclaturalStandingInverse.isValidExplicit();
+    }
+
+    @Override
+    @Transient
+    public boolean isNoStatus() {
+        return this.nomenclaturalStanding.isNoStatus();
+    }
+    @Transient
+    public boolean isNoStatusInverse() {
+        return this.nomenclaturalStandingInverse.isNoStatus();
+    }
+
+    @Override
+    @Transient
+    public boolean isInvalid() {
+        return this.nomenclaturalStanding.isInvalid();
+    }
+    @Transient
+    public boolean isInvalidInverse() {
+        return this.nomenclaturalStandingInverse.isInvalid();
+    }
+
+    @Override
+    @Transient
+    public boolean isLegitimate() {
+        //later homonym, treated as later homonym, ...
+        return this.nomenclaturalStanding.isLegitimate();
+    }
+    @Transient
+    public boolean isLegitimateInverse() {
+        return this.nomenclaturalStandingInverse.isLegitimate();
+    }
+
+    @Override
+    @Transient
+    public boolean isValid() {
+        return this.nomenclaturalStanding.isValid();
+    }
+    @Transient
+    public boolean isValidInverse() {
+        return this.nomenclaturalStandingInverse.isValid();
+    }
+
+    @Override
+    @Transient
+    public boolean isDesignationOnly(){
+        return this.nomenclaturalStanding.isDesignationOnly();
+    }
+    @Transient
+    public boolean isDesignationOnlyInverse(){
+        return this.nomenclaturalStandingInverse.isDesignationOnly();
+    }
 
 	@Transient
 	protected boolean isRelationshipType(NameRelationshipType type) {
@@ -315,8 +367,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * <i>Astragalus rhizanthus</i> Royle.<BR>
 	 * This type is not symmetric but transitive.
 	 *
-	 * @see	NomenclaturalStatusType#isIllegitimateType()
-	 * @see	NomenclaturalStatusType#isLegitimateType()
+	 * @see	NomenclaturalStatusType#isIllegitimate()
+	 * @see	NomenclaturalStatusType#isLegitimate()
 	 */
 	public static final NameRelationshipType LATER_HOMONYM(){
 	  return findTermByUuid(uuidLaterHomonym);
@@ -336,8 +388,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * This type is not symmetric but transitive.
 	 *
 	 * @see	#LATER_HOMONYM()
-	 * @see	NomenclaturalStatusType#isIllegitimateType()
-	 * @see	NomenclaturalStatusType#isLegitimateType()
+	 * @see	NomenclaturalStatusType#isIllegitimate()
+	 * @see	NomenclaturalStatusType#isLegitimate()
 	 */
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
 	  return findTermByUuid(uuidTreatedAsLaterHomonym);
@@ -370,7 +422,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * Returns the "alternative name" name relationship type. Both {@link TaxonName taxon names}
 	 * involved in such a relationship are family names. The first one is a
 	 * classical name long in use, in some cases, even before 1753 and is considered as
-	 * {@link NomenclaturalStatusType#VALID() valid} and also {@link NomenclaturalStatusType#isLegitimateType() legitimate}
+	 * {@link NomenclaturalStatusType#VALID() valid} and also {@link NomenclaturalStatusType#isLegitimate() legitimate}
 	 * although it does not follow the rules for family names (see Article 18 of
 	 * the ICBN). An alternative name is typified by the type of the name
 	 * it is alternative to (so both must belong to the same
@@ -437,8 +489,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 *
 	 * @see NomenclaturalStatusType#CONSERVED()
 	 * @see NomenclaturalStatusType#REJECTED()
-	 * @see NomenclaturalStatusType#isLegitimateType()
-	 * @see NomenclaturalStatusType#isIllegitimateType()
+	 * @see NomenclaturalStatusType#isLegitimate()
+	 * @see NomenclaturalStatusType#isIllegitimate()
 	 */
 	public static final NameRelationshipType CONSERVED_AGAINST(){
 	  return findTermByUuid(uuidConservedAgainst);
@@ -451,7 +503,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * taxon name is the one which was validly published for the first time.<BR>
 	 * This type is neither symmetric nor transitive.
 	 *
-	 * @see		NomenclaturalStatusType#isInvalidType()
+	 * @see		NomenclaturalStatusType#isInvalid()
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
 	public static final NameRelationshipType VALIDATED_BY_NAME(){
@@ -465,7 +517,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * taxon name is the one which was validly published for the first time.<BR>
 	 * This type is neither symmetric nor transitive.
 	 *
-	 * @see		NomenclaturalStatusType#isInvalidType()
+	 * @see		NomenclaturalStatusType#isInvalid()
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
 	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
@@ -505,7 +557,11 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public NameRelationshipType readCsvLine(Class<NameRelationshipType> termClass, List<String> csvLine, TermType termType,
 	        Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		NameRelationshipType result = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
-		String kindOfString = csvLine.get(10).trim();
+		String nomenclaturalStanding = csvLine.get(10).trim();  //not in use yet?
+        result.setNomenclaturalStanding(NomenclaturalStanding.getByKey(nomenclaturalStanding));
+        String nomenclaturalStandingInverse = csvLine.get(11).trim();  //not in use yet?
+        result.setNomenclaturalStandingInverse(NomenclaturalStanding.getByKey(nomenclaturalStandingInverse));
+        String kindOfString = csvLine.get(12).trim();  //not in use yet?
 		if (isNotBlank(kindOfString)){
 			UUID uuidKindOf = UUID.fromString(kindOfString);
 			DefinedTermBase<?> kindOf = terms.get(uuidKindOf);

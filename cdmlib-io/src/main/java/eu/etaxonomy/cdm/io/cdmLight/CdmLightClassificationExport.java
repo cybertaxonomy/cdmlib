@@ -1681,7 +1681,7 @@ public class CdmLightClassificationExport
                     boolean isInvalid = false;
 
                     for (NomenclaturalStatus status: name.getStatus()){
-                        if (status != null && status.getType() != null && status.getType().isInvalidType()){
+                        if (status != null && status.getType() != null && status.getType().isInvalid()){
                             isInvalid = true;
                             break;
                         }

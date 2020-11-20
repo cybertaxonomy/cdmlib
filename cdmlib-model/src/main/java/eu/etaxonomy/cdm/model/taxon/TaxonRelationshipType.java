@@ -385,7 +385,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * Returns the taxon relationship type "is invalid designation for". This
 	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
 	 * in such a {@link TaxonRelationship taxon relationship} has
-	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalStatusType#isInvalidType() not been validly published} but was intended to denominate
+	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalStatusType#isInvalid() not been validly published} but was intended to denominate
 	 * a real taxon which is the same as the one meant by the target {@link Taxon taxon}.<BR>
 	 * According to the nomenclature codes a not validly published taxon name is
 	 * not a taxon name at all.<BR>

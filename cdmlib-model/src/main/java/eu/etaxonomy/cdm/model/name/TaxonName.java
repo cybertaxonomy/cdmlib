@@ -191,8 +191,9 @@ public class TaxonName
             extends IdentifiableEntity<INameCacheStrategy>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
                 IBotanicalName, ICultivarPlantName, IFungusName,
-                IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable,
-                IDescribable<TaxonNameDescription>{
+                IParsable, IRelated, IMatchable, IIntextReferenceTarget,
+                IDescribable<TaxonNameDescription>,
+                INomenclaturalStanding {
 
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
@@ -3319,6 +3320,85 @@ public class TaxonName
     @Override
     public boolean isHybrid() {
         return this.isHybridName() || this.isHybridFormula();
+    }
+
+// ******************** NOMENCLATURAL STANDING ****************/
+
+    /**
+     * Computes the highest priority nomenclatural standing
+     * from nomenclatural status and name relationships.
+     */
+    private NomenclaturalStanding computeNomenclaturalStanding() {
+        Set<NomenclaturalStanding> standings = computeNomenclaturalStandings();
+        return NomenclaturalStanding.highest(standings);
+    }
+
+    /**
+     * Computes all nomenclatural standings form the nomenclatural status and the name relationships.
+     */
+    private Set<NomenclaturalStanding> computeNomenclaturalStandings() {
+        Set<NomenclaturalStanding> standings = new HashSet<>();
+        for (NomenclaturalStatus status : this.status){
+            NomenclaturalStanding standing = status.getType().getNomenclaturalStanding();
+            standings.add(standing);
+        }
+        for (NameRelationship nameRel : this.relationsFromThisName){
+            NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStanding();
+            standings.add(standing);
+        }
+        for (NameRelationship nameRel : this.relationsToThisName){
+            NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStandingInverse();
+            standings.add(standing);
+        }
+        return standings;
+    }
+
+    @Override
+    @Transient
+    public boolean isDesignationOnly() {
+        return computeNomenclaturalStanding().isDesignationOnly();
+    }
+
+    @Override
+    @Transient
+    public boolean isInvalidExplicit() {
+        return computeNomenclaturalStanding().isInvalidExplicit();
+    }
+
+    @Override
+    @Transient
+    public boolean isIllegitimate() {
+        return computeNomenclaturalStanding().isIllegitimate();
+    }
+
+    @Override
+    @Transient
+    public boolean isValidExplicit() {
+        return computeNomenclaturalStanding().isValidExplicit();
+    }
+
+    @Override
+    @Transient
+    public boolean isNoStatus() {
+        return computeNomenclaturalStanding().isNoStatus();
+    }
+
+    @Override
+    @Transient
+    public boolean isInvalid() {
+        return computeNomenclaturalStanding().isInvalid();
+    }
+
+    @Override
+    @Transient
+    public boolean isLegitimate() {
+        return computeNomenclaturalStanding().isLegitimate();
+    }
+
+    @Override
+    @Transient
+    public boolean isValid() {
+        return computeNomenclaturalStanding().isValid();
     }
 
 // ***************** COMPARE ********************************/

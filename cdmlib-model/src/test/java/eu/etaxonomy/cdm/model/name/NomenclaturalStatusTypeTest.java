@@ -61,4 +61,10 @@ public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	public void testNotAvailable() {
 		assertEquals(uuidNotAvailable,  NomenclaturalStatusType.ZOO_NOT_AVAILABLE().getUuid());
 	}
+
+    @Test
+    public void testNomenclaturalStanding() {
+        assertTrue(NomenclaturalStatusType.CONSERVED().isValid());
+        assertTrue(NomenclaturalStatusType.CONSERVED().isValidExplicit());
+    }
 }

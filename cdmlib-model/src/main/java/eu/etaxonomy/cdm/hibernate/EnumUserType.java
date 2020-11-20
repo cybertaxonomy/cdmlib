@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -149,6 +150,9 @@ public class EnumUserType<E extends Enum<E>>
         //DescriptionType
         }else if (clazz.equals(DescriptionType.class)){
             return DescriptionType.getByKey(val);
+        //NomenclaturalStanding
+        }else if (clazz.equals(NomenclaturalStanding.class)){
+            return NomenclaturalStanding.getByKey(val);
         //CdmClass
         }else if (clazz.equals(CdmClass.class)){
             return CdmClass.getByKey(val);

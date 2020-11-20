@@ -826,4 +826,25 @@ public class TaxonNameTest {
        result = abiesAlbaxPinusBeta.compareToName(abiesAlbaXinus);
        assertTrue(result < 0);
    }
+
+   @Test
+   public void testNomenclaturalStanding() {
+       //The status and relationship combinations in this test are not semantically consistent
+       //but only used for testing
+       Assert.assertTrue(nameBase1.isNoStatus());
+       nameBase1.addRelationshipFromName(nameBase2, NameRelationshipType.CONSERVED_AGAINST());
+       Assert.assertTrue(nameBase1.isDesignationOnly());
+       nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.AMBIGUOUS()));
+       Assert.assertTrue("nothing changed", nameBase1.isDesignationOnly());
+       Assert.assertTrue(nameBase1.isInvalid());
+       nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
+       Assert.assertFalse(nameBase1.isIllegitimate());
+       Assert.assertTrue(nameBase1.isDesignationOnly());
+       nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID()));
+       Assert.assertFalse(nameBase1.isDesignationOnly());
+       Assert.assertTrue(nameBase1.isInvalid());
+       nameBase1.addRelationshipToName(nameBase2, NameRelationshipType.CONSERVED_AGAINST());
+       Assert.assertTrue(nameBase1.isValid());
+   }
+
 }

@@ -148,7 +148,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		Set<NomenclaturalStatus> status1 = taxonName.getStatus();
         for (NomenclaturalStatus nomStatus1 : status1){
             NomenclaturalStatusType type = nomStatus1.getType();
-            if (type != null && type.isInvalidType()){
+            if (type != null && type.isInvalid()){
                 if(type.equals(NomenclaturalStatusType.PROVISIONAL())){
                     result += 1;
                 }else if (type.equals(NomenclaturalStatusType.INVALID())){
