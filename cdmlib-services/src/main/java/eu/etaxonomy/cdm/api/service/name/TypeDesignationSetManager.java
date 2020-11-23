@@ -77,9 +77,7 @@ public class TypeDesignationSetManager {
     }
 
     private static final String TYPE_STATUS_SEPARATOR = "; ";
-
     private static final String TYPE_SEPARATOR = "; ";
-
     private static final String TYPE_DESIGNATION_SEPARATOR = ", ";
     private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
     private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ") ";

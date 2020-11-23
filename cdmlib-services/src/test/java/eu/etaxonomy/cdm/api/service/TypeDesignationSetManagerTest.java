@@ -281,6 +281,8 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                     typeDesignationManager.print(true, false, true));
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L.",
                     typeDesignationManager.print(false, false, true));
+
+
         }
 
         @Test

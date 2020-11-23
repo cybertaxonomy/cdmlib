@@ -14,9 +14,10 @@ import java.util.Stack;
 import java.util.TreeSet;
 
 /**
+ * Formatter class to create Strings from TaggedText Lists.
+ *
  * @author a.mueller
  * @since 09.09.2015
- *
  */
 public class TaggedCacheHelper {
 
@@ -41,7 +42,6 @@ public class TaggedCacheHelper {
         }
         return result.toString().trim();
     }
-
 
     /**
      * Creates a string from tagged text by concatenating all tags. If no separator tag is defined

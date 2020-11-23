@@ -27,6 +27,9 @@ public class TaggedTextBuilder {
         taggedText.add(new TaggedText(type, text));
     }
 
+    /**
+     * @see TagEnum#separator
+     */
     public void addSeparator(String separator) {
         taggedText.add(TaggedText.NewSeparatorInstance(separator));
     }

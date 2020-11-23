@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache;
 
 import java.io.Serializable;
@@ -16,14 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
-
-
 /**
  *
  * @author a.kohlbecker
- * @author  m.doering
+ * @author m.doering
  * @since 11.12.2007
- *
  */
 public class TaggedText implements Serializable{
 
@@ -38,6 +34,9 @@ public class TaggedText implements Serializable{
 		return new TaggedText(TagEnum.separator, " ");
 	}
 
+    /**
+     * @see TagEnum#separator
+     */
     public static TaggedText NewSeparatorInstance(String separator){
         return new TaggedText(TagEnum.separator, separator);
     }
@@ -83,6 +82,7 @@ public class TaggedText implements Serializable{
         this.entityReference = entityReference;
     }
 
+// **************************** TO STRING ***********************************/
 
 	@Override
 	public String toString(){
@@ -93,5 +93,4 @@ public class TaggedText implements Serializable{
 			return result;
 		}
 	}
-
 }
