@@ -32,12 +32,16 @@ public class TaggedCacheHelper {
 
         boolean isSeparator;
         boolean wasSeparator = true;  //true for start tag
-        for (TaggedText tag: tags){
+        int index = 0;
+        for (index = 0; index < tags.size(); index++){
+            TaggedText tag = tags.get(index);
             isSeparator = tag.getType().isSeparator();
             if (! wasSeparator && ! isSeparator ){
                 result.append(" ");
             }
-            result.append(tag.getText());
+            if (index < tags.size() -1 || tag.getType() != TagEnum.postSeparator ){
+                result.append(tag.getText());
+            }
             wasSeparator = isSeparator;
         }
         return result.toString().trim();

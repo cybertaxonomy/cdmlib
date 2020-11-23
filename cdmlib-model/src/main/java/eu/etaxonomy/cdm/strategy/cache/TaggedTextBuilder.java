@@ -34,6 +34,13 @@ public class TaggedTextBuilder {
         taggedText.add(TaggedText.NewSeparatorInstance(separator));
     }
 
+    /**
+     * @see TagEnum#postSeparator
+     */
+    public void addPostSeparator(String separator) {
+        taggedText.add(TaggedText.NewPostSeparatorInstance(separator));
+    }
+
     public void addWhitespace() {
         taggedText.add(TaggedText.NewWhitespaceInstance());
     }

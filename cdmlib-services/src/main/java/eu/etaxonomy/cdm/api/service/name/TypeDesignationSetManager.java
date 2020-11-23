@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
@@ -80,13 +81,14 @@ public class TypeDesignationSetManager {
     private static final String TYPE_SEPARATOR = "; ";
     private static final String TYPE_DESIGNATION_SEPARATOR = ", ";
     private static final String TYPE_STATUS_PARENTHESIS_LEFT = " (";
-    private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ") ";
+    private static final String TYPE_STATUS_PARENTHESIS_RIGHT = ")";
     private static final String REFERENCE_PARENTHESIS_RIGHT = "]";
     private static final String REFERENCE_PARENTHESIS_LEFT = " [";
     private static final String REFERENCE_DESIGNATED_BY = " designated by ";
     private static final String REFERENCE_FIDE = "fide ";
     private static final String SOURCE_SEPARATOR = ", ";
     private static final String POST_STATUS_SEPARATOR = ": ";
+    private static final String POST_NAME_SEPARTOR = UTF8.EN_DASH_SPATIUM.toString();
 
     private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
 
@@ -102,13 +104,9 @@ public class TypeDesignationSetManager {
 
     private TaxonName typifiedName;
 
-    private String finalString = null;
-
     final NullTypeDesignationStatus NULL_STATUS = new NullTypeDesignationStatus();
 
     private List<String> problems = new ArrayList<>();
-
-    private List<TaggedText> taggedText;
 
     public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
             throws RegistrationValidationException{
@@ -165,7 +163,6 @@ public class TypeDesignationSetManager {
      * @param containgEntity
      */
     protected void mapAndSort() {
-        finalString = null;
         Map<TypedEntityReference<?>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
 
         this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
@@ -303,33 +300,28 @@ public class TypeDesignationSetManager {
     }
      */
 
-    private void buildString(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable){
+    private List<TaggedText> buildTaggedText(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable){
         boolean withBrackets = true;  //still unclear if this should become a parameter or should be always true
 
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
-        finalString = "";
 
         if(withNameIfAvailable && getTypifiedNameCache() != null){
-            finalString += getTypifiedNameCache();
             finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedNameRef().getUuid()));
+            finalBuilder.addPostSeparator(POST_NAME_SEPARTOR);
         }
 
         int typeSetCount = 0;
         if(orderedByTypesByBaseEntity != null){
-            String separator = UTF8.EN_DASH_SPATIUM.toString();
-            finalString += separator;
-            finalBuilder.addSeparator(separator);
             for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
-                buildStringForSingleTypeSet(withCitation, withStartingTypeLabel, withBrackets, finalBuilder,
+                buildTaggedTextForSingleTypeSet(withCitation, withStartingTypeLabel, withBrackets, finalBuilder,
                         typeSetCount, baseEntityRef);
                 typeSetCount++;
             }
         }
-        finalString = finalString.trim();
-        taggedText = finalBuilder.getTaggedText();
+        return finalBuilder.getTaggedText();
     }
 
-    private int buildStringForSingleTypeSet(boolean withCitation, boolean withStartingTypeLabel, boolean withBrackets,
+    private void buildTaggedTextForSingleTypeSet(boolean withCitation, boolean withStartingTypeLabel, boolean withBrackets,
             TaggedTextBuilder finalBuilder, int typeSetCount, TypedEntityReference<?> baseEntityRef) {
 
         TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
@@ -359,16 +351,15 @@ public class TypeDesignationSetManager {
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
         }
         for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
-            typeStatusCount = buildStringForSingleTypeStatus(withCitation, workingsetBuilder,
+            typeStatusCount = buildTaggedTextForSingleTypeStatus(withCitation, workingsetBuilder,
                     typeDesignationWorkingSet, typeStatusCount, typeStatus, typeSetCount);
         }
         if (withBrackets && isSpecimenTypeDesignation){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
         }
         typeDesignationWorkingSet.setRepresentation(workingsetBuilder.toString());
-        finalString += typeDesignationWorkingSet.getRepresentation();
         finalBuilder.addAll(workingsetBuilder);
-        return typeSetCount;
+        return;
     }
 
     private boolean hasMultipleTypes(
@@ -382,7 +373,7 @@ public class TypeDesignationSetManager {
         return singleSet.getTypeDesignations().size() > 1;
     }
 
-    private int buildStringForSingleTypeStatus(boolean withCitation, TaggedTextBuilder workingsetBuilder,
+    private int buildTaggedTextForSingleTypeStatus(boolean withCitation, TaggedTextBuilder workingsetBuilder,
             TypeDesignationWorkingSet typeDesignationWorkingSet, int typeStatusCount,
             TypeDesignationStatusBase<?> typeStatus, int typeSetCount) {
         //starting separator
@@ -405,13 +396,13 @@ public class TypeDesignationSetManager {
         //designation + sources
         int typeDesignationCount = 0;
         for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
-            typeDesignationCount = buildStringForSingleType(withCitation, workingsetBuilder, typeDesignationCount,
+            typeDesignationCount = buildTaggedTextForSingleType(withCitation, workingsetBuilder, typeDesignationCount,
                     typeDesignationEntityReference);
         }
         return typeStatusCount;
     }
 
-    private int buildStringForSingleType(boolean withCitation, TaggedTextBuilder workingsetBuilder, int typeDesignationCount,
+    private int buildTaggedTextForSingleType(boolean withCitation, TaggedTextBuilder workingsetBuilder, int typeDesignationCount,
             TypedEntityReference<?> typeDesignationEntityReference) {
         if(typeDesignationCount++ > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
@@ -681,13 +672,11 @@ public class TypeDesignationSetManager {
     }
 
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
-        buildString(withCitation, withStartingTypeLabel, withNameIfAvailable);
-        return finalString;
+        return TaggedCacheHelper.createString(toTaggedText(withCitation, withStartingTypeLabel, withNameIfAvailable));
     }
 
     public List<TaggedText> toTaggedText(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
-        buildString(withCitation, withStartingTypeLabel, withNameIfAvailable);
-        return taggedText;
+        return buildTaggedText(withCitation, withStartingTypeLabel, withNameIfAvailable);
     }
 
     public TaxonName getTypifiedName() {

@@ -41,6 +41,13 @@ public class TaggedText implements Serializable{
         return new TaggedText(TagEnum.separator, separator);
     }
 
+    /**
+     * @see TagEnum#postSeparator
+     */
+    public static TaggedText NewPostSeparatorInstance(String separator){
+        return new TaggedText(TagEnum.postSeparator, separator);
+    }
+
 	public static TaggedText NewInstance(TagEnum type, String text){
 	    return new TaggedText(type, text);
 	}
