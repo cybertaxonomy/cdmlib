@@ -34,7 +34,6 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_5184_5185.class);
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_18_04;
-	//FIXME
 	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_05;
 
 // ********************** FACTORY METHOD *************************************
