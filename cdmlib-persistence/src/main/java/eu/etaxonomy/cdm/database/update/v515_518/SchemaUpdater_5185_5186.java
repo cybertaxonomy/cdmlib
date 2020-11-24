@@ -30,7 +30,7 @@ public class SchemaUpdater_5185_5186 extends SchemaUpdaterBase {
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_18_05;
 	//FIXME
-	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_06;
+	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_05;
 
 // ********************** FACTORY METHOD *************************************
 
