@@ -172,8 +172,10 @@ public class TypeDesignationSetManager {
             final VersionableEntity baseEntity = baseEntity(td);
             final TypedEntityReference<? extends VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
 
-            TypedEntityReference<?> typeDesignationEntityReference = new TypedEntityReference<>(
-                    HibernateProxyHelper.deproxy(td).getClass(),
+            Class<? extends TypeDesignationBase> clazz = HibernateProxyHelper.deproxy((TypeDesignationBase)td).getClass();
+            TypedEntityReference<TypeDesignationBase> typeDesignationEntityReference
+            = new TypedEntityReference<>(
+                    (Class<TypeDesignationBase>)clazz,
                     td.getUuid(),
                     stringify(td));
 
@@ -497,7 +499,6 @@ public class TypeDesignationSetManager {
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
         return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable).format(this);
     }
-
 
     private boolean isNotBlank(String str){
         return StringUtils.isNotBlank(str);

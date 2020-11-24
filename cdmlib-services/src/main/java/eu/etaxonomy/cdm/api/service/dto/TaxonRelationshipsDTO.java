@@ -189,20 +189,12 @@ public class TaxonRelationshipsDTO {
         relations.add(relation);
     }
 
-    /**
-     * @param relation
-     * @param direction
-     */
     public TaxonRelationDTO addRelation(TaxonRelationship relation, Direction direction, List<Language> languages) {
         TaxonRelationDTO newRelation = new TaxonRelationDTO(relation, direction, languages);
         relations.add(newRelation);
         return newRelation;
     }
 
-
-    /**
-     *
-     */
     public void createMisapplicationString() {
         List<List<TaggedText>> result = new ArrayList<>();
 
@@ -272,10 +264,6 @@ public class TaxonRelationshipsDTO {
         }
     }
 
-    /**
-     * @param taggedText
-     * @return
-     */
     private boolean tagIsSensu(TaggedText tag) {
         if (tag.getType() == TagEnum.secReference ||
                 tag.getType() == TagEnum.secMicroReference ||
@@ -285,10 +273,6 @@ public class TaxonRelationshipsDTO {
         return false;
     }
 
-    /**
-     * @param tag
-     * @return
-     */
     private boolean isSensuSeparator(TaggedText tag) {
         if (SENSU_SEPARATOR.equals(tag.getText())
                 && tag.getType() == TagEnum.separator) {
@@ -297,11 +281,6 @@ public class TaxonRelationshipsDTO {
         return false;
     }
 
-    /**
-     * @param x
-     * @param y
-     * @return
-     */
     private boolean tagEqualsMisapplied(TaggedText x, TaggedText y) {
         if (CdmUtils.nullSafeEqual(x.getText(),y.getText())
                 && x.getType().equals(y.getType())
@@ -346,19 +325,10 @@ public class TaxonRelationshipsDTO {
         return result;
     }
 
-    /**
-     * @return the misapplications
-     */
     public List<List<TaggedText>> getMisapplications() {
         return misapplications;
     }
-
-    /**
-     * @param misapplications the misapplications to set
-     */
     public void setMisapplications(List<List<TaggedText>> misapplications) {
         this.misapplications = misapplications;
     }
-
-
 }
