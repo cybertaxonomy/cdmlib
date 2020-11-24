@@ -168,15 +168,15 @@ public class TypeDesignationSetManager {
             final VersionableEntity baseEntity = baseEntity(td);
             final TypedEntityReference<? extends VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
 
-            Class<? extends TypeDesignationBase> clazz = HibernateProxyHelper.deproxy((TypeDesignationBase)td).getClass();
-            boolean withCitation = true;
             TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
+            boolean withCitation = true;
             TypeDesignationSetFormatter.buildTaggedTextForSingleType(td, withCitation, workingsetBuilder, 0);
+
             TypeDesignationDTO typeDesignationDTO
                 = new TypeDesignationDTO(
-                    clazz,
-                    td.getUuid(),workingsetBuilder.getTaggedText());
-
+                    HibernateProxyHelper.deproxy((TypeDesignationBase)td).getClass(),
+                    td.getUuid(),
+                    workingsetBuilder.getTaggedText());
 
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
                 byBaseEntityByTypeStatus.put(baseEntityReference, new TypeDesignationWorkingSet(baseEntity, baseEntityReference));

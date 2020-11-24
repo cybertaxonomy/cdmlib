@@ -257,33 +257,6 @@ public class TypeDesignationSetFormatter {
         return singleSet.getTypeDesignations().size() > 1;
     }
 
-
-    private static String stringify(NameTypeDesignation td) {
-
-        StringBuffer sb = new StringBuffer();
-
-        if(td.getTypeName() != null){
-            sb.append(td.getTypeName().getTitleCache());
-        }
-//        if(td.getCitation() != null){
-//            sb.append(" ").append(td.getCitation().getTitleCache());
-//            if(td.getCitationMicroReference() != null){
-//                sb.append(":").append(td.getCitationMicroReference());
-//            }
-//        }
-        if(td.isNotDesignated()){
-            sb.append(" not designated");
-        }
-        if(td.isRejectedType()){
-            sb.append(" rejected");
-        }
-        if(td.isConservedType()){
-            sb.append(" conserved");
-        }
-        return sb.toString();
-    }
-
-
     private static String stringify(TypeDesignationBase<?> td) {
 
         if(td instanceof NameTypeDesignation){
@@ -295,6 +268,25 @@ public class TypeDesignationSetFormatter {
         }else{
             throw new RuntimeException("Unknown TypeDesignation type");
         }
+    }
+
+    private static String stringify(NameTypeDesignation td) {
+
+        StringBuffer sb = new StringBuffer();
+
+        if(td.getTypeName() != null){
+            sb.append(td.getTypeName().getTitleCache());
+        }
+        if(td.isNotDesignated()){
+            sb.append(" not designated");
+        }
+        if(td.isRejectedType()){
+            sb.append(" rejected");
+        }
+        if(td.isConservedType()){
+            sb.append(" conserved");
+        }
+        return sb.toString().trim();
     }
 
     private static String stringify(TextualTypeDesignation td) {
