@@ -58,9 +58,8 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @Api("registration")
-public class RegistrationDTOController extends AbstractController<Registration, IRegistrationService>
-{
-
+public class RegistrationDTOController
+            extends AbstractController<Registration, IRegistrationService>{
 
     private static final List<OrderHint> ORDER_BY_DATE_AND_ID = Arrays.asList(
             new OrderHint("registrationDate", SortOrder.DESCENDING),
@@ -79,9 +78,6 @@ public class RegistrationDTOController extends AbstractController<Registration, 
              }));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IRegistrationService service) {
