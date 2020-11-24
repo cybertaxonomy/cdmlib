@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -242,7 +243,7 @@ public class RegistrationDTO {
         return name;
     }
 
-    public LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> getOrderdTypeDesignationWorkingSets() {
+    public LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderdTypeDesignationWorkingSets() {
         return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets() : null;
     }
 

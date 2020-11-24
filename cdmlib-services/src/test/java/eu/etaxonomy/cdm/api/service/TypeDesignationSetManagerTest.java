@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -205,8 +206,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                     , result
                     );
 
-            @SuppressWarnings("rawtypes")
-            LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderedTypeDesignations =
+            LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedTypeDesignations =
                     typeDesignationManager.getOrderedTypeDesignationWorkingSets();
             Iterator<TypeDesignationWorkingSet> byStatusMapIterator = orderedTypeDesignations.values().iterator();
             Iterator<TypeDesignationStatusBase<?>> keyIt_1 = byStatusMapIterator.next().keySet().iterator();

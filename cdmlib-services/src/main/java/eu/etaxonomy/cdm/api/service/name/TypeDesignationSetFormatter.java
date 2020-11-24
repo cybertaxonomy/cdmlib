@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -85,7 +86,7 @@ public class TypeDesignationSetFormatter {
         }
 
         int typeSetCount = 0;
-        LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
+        LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
         if(orderedByTypesByBaseEntity != null){
             for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
                 buildTaggedTextForSingleTypeSet(manager, withBrackets, finalBuilder,
@@ -99,7 +100,7 @@ public class TypeDesignationSetFormatter {
     private void buildTaggedTextForSingleTypeSet(TypeDesignationSetManager manager, boolean withBrackets,
             TaggedTextBuilder finalBuilder, int typeSetCount, TypedEntityReference<?> baseEntityRef) {
 
-        LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
+        LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
 
         TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
         boolean isSpecimenTypeDesignation = SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType());
@@ -232,7 +233,7 @@ public class TypeDesignationSetFormatter {
     }
 
     private boolean hasMultipleTypes(
-            LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> typeWorkingSets) {
+            LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> typeWorkingSets) {
         if (typeWorkingSets == null || typeWorkingSets.isEmpty()){
             return false;
         }else if (typeWorkingSets.keySet().size() > 1) {

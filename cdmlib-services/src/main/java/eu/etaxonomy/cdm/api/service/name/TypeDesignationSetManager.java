@@ -81,7 +81,7 @@ public class TypeDesignationSetManager {
      * Groups the EntityReferences for each of the TypeDesignations by the according TypeDesignationStatus.
      * The TypeDesignationStatusBase keys are already ordered by the term order defined in the vocabulary.
      */
-    private LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderedByTypesByBaseEntity;
+    private LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity;
 
     private List<String> problems = new ArrayList<>();
 
@@ -212,13 +212,10 @@ public class TypeDesignationSetManager {
         return baseEntity;
     }
 
-    protected TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
+    protected static TypedEntityReference<? extends VersionableEntity> makeEntityReference(VersionableEntity baseEntity) {
 
         baseEntity = CdmBase.deproxy(baseEntity);
-        String label = "";
-        if(baseEntity instanceof IdentifiableEntity<?>){
-                label = ((IdentifiableEntity<?>)baseEntity).getTitleCache();
-        }
+        String label = entityLabel(baseEntity);
 
         TypedEntityReference<? extends VersionableEntity> baseEntityReference =
                 new TypedEntityReference<>(baseEntity.getClass(), baseEntity.getUuid(), label);
@@ -226,7 +223,15 @@ public class TypeDesignationSetManager {
         return baseEntityReference;
     }
 
-    private LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderByTypeByBaseEntity(
+    private static String entityLabel(VersionableEntity baseEntity) {
+        String label = "";
+        if(baseEntity instanceof IdentifiableEntity<?>){
+                label = ((IdentifiableEntity<?>)baseEntity).getTitleCache();
+        }
+        return label;
+    }
+
+    private LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderByTypeByBaseEntity(
             Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> stringsByTypeByBaseEntity){
 
        // order the FieldUnit TypeName keys
@@ -263,7 +268,7 @@ public class TypeDesignationSetManager {
        );
 
        // new LinkedHashMap for the ordered FieldUnitOrTypeName keys
-       LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> stringsOrderedbyBaseEntityOrderdByType
+       LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> stringsOrderedbyBaseEntityOrderdByType
            = new LinkedHashMap<>(stringsByTypeByBaseEntity.size());
 
        for(TypedEntityReference<? extends VersionableEntity> baseEntityRef : baseEntityKeyList){
@@ -274,8 +279,7 @@ public class TypeDesignationSetManager {
             Collections.sort(keyList, new TypeDesignationStatusComparator());
             // new LinkedHashMap for the ordered TypeDesignationStatusBase keys
             TypeDesignationWorkingSet orderedStringsByOrderedTypes = new TypeDesignationWorkingSet(
-                    typeDesignationWorkingSet.getBaseEntity(),
-                    baseEntityRef);
+                    typeDesignationWorkingSet.getBaseEntity());
             keyList.forEach(key -> orderedStringsByOrderedTypes.put(key, typeDesignationWorkingSet.get(key)));
             stringsOrderedbyBaseEntityOrderdByType.put(baseEntityRef, orderedStringsByOrderedTypes);
        }
@@ -357,7 +361,7 @@ public class TypeDesignationSetManager {
         return this.typeDesignations.get(typeDesignationRef.getUuid());
     }
 
-    public LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
+    public LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
         return orderedByTypesByBaseEntity;
     }
 

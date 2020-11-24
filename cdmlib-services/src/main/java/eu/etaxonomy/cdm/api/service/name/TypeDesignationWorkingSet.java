@@ -48,15 +48,24 @@ public class TypeDesignationWorkingSet implements Serializable {
 
     private String label = null;
 
+    //maybe remove in future as redundant with baseEntity
     private TypedEntityReference<? extends VersionableEntity> baseEntityReference;
 
     private VersionableEntity baseEntity;
 
-    public TypeDesignationWorkingSet(VersionableEntity baseEntity,
-            TypedEntityReference<? extends VersionableEntity> baseEntityReference) {
+// ********************************* CONSTRUCTOR **************************/
+
+    public TypeDesignationWorkingSet(VersionableEntity baseEntity) {
         this.baseEntity = baseEntity;
-        this.baseEntityReference = baseEntityReference;
+        this.baseEntityReference = TypeDesignationSetManager.makeEntityReference(baseEntity);
     }
+
+    public TypeDesignationWorkingSet(VersionableEntity baseEntity, TypedEntityReference<? extends VersionableEntity> baseEntityRef) {
+        this.baseEntity = baseEntity;
+        this.baseEntityReference = baseEntityRef;
+    }
+
+// ***********************************************************************/
 
     public VersionableEntity getBaseEntity() {
         return baseEntity;
