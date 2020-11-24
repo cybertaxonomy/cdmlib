@@ -15,13 +15,20 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -163,29 +170,36 @@ public class TypeDesignationSetFormatter {
 
         //designation + sources
         int typeDesignationCount = 0;
-        for(TypedEntityReference<?> typeDesignationEntityReference : createSortedList(typeDesignationWorkingSet, typeStatus)) {
-            typeDesignationCount = buildTaggedTextForSingleType(manager, workingsetBuilder, typeDesignationCount,
-                    typeDesignationEntityReference);
+        for(TypeDesignationDTO typeDesignationDTO : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+            TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
+
+            typeDesignationCount = buildTaggedTextForSingleType(typeDes, withCitation,
+                    workingsetBuilder, typeDesignationCount
+//                    , typeDesignationEntityReference
+                    );
         }
         return typeStatusCount;
     }
 
-    private int buildTaggedTextForSingleType(TypeDesignationSetManager manager, TaggedTextBuilder workingsetBuilder,
-            int typeDesignationCount, TypedEntityReference<?> typeDesignationEntityReference) {
+    protected static int buildTaggedTextForSingleType(TypeDesignationBase<?> typeDes, boolean withCitation,
+            TaggedTextBuilder workingsetBuilder, int typeDesignationCount
+//            , TypedEntityReference<?> typeDesignationEntityReference
+            ) {
+
         if(typeDesignationCount++ > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
         }
 
-        workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
+        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes));
+//        workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
         if (withCitation){
-            TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationEntityReference);
 
             //lectotype source
             OriginalSourceBase<?> lectoSource = typeDes.getSource();
             if (hasLectoSource(typeDes)){
                 workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
-                addSource(workingsetBuilder, typeDesignationEntityReference, lectoSource);
+                addSource(workingsetBuilder, lectoSource);
             }
             //general sources
             if (!typeDes.getSources().isEmpty()) {
@@ -195,7 +209,7 @@ public class TypeDesignationSetFormatter {
                     if (count++ > 0){
                         workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
                     }
-                    addSource(workingsetBuilder, typeDesignationEntityReference, source);
+                    addSource(workingsetBuilder, source);
                 }
                 workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
             }
@@ -207,29 +221,29 @@ public class TypeDesignationSetFormatter {
     /**
      * Adds the tags for the given source.
      */
-    private void addSource(TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntityReference,
+    private static void addSource(TaggedTextBuilder workingsetBuilder,
             OriginalSourceBase<?> source) {
         Reference ref = source.getCitation();
         if (ref != null){
             DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
             String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
-            workingsetBuilder.add(TagEnum.reference, shortCitation, typeDesignationEntityReference);
+            workingsetBuilder.add(TagEnum.reference, shortCitation);
         }
     }
 
-    private boolean hasLectoSource(TypeDesignationBase<?> typeDes) {
+    private static boolean hasLectoSource(TypeDesignationBase<?> typeDes) {
         return typeDes.getSource() != null &&
                     (typeDes.getSource().getCitation() != null
                       || isNotBlank(typeDes.getSource().getCitationMicroReference())
                      );
     }
 
-    private List<TypedEntityReference<TypeDesignationBase<?>>> createSortedList(
+    private List<TypeDesignationDTO> createSortedList(
             TypeDesignationWorkingSet typeDesignationWorkingSet, TypeDesignationStatusBase<?> typeStatus) {
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        List<TypedEntityReference<TypeDesignationBase<?>>> typeDesignationEntityReferences = new ArrayList(typeDesignationWorkingSet.get(typeStatus));
-        Collections.sort(typeDesignationEntityReferences, new TypedEntityComparator());
-        return typeDesignationEntityReferences;
+
+        List<TypeDesignationDTO> typeDesignationDTOs = new ArrayList<>(typeDesignationWorkingSet.get(typeStatus));
+        Collections.sort(typeDesignationDTOs);
+        return typeDesignationDTOs;
     }
 
     private boolean hasMultipleTypes(
@@ -243,7 +257,112 @@ public class TypeDesignationSetFormatter {
         return singleSet.getTypeDesignations().size() > 1;
     }
 
-    private boolean isNotBlank(String str){
+
+    private static String stringify(NameTypeDesignation td) {
+
+        StringBuffer sb = new StringBuffer();
+
+        if(td.getTypeName() != null){
+            sb.append(td.getTypeName().getTitleCache());
+        }
+//        if(td.getCitation() != null){
+//            sb.append(" ").append(td.getCitation().getTitleCache());
+//            if(td.getCitationMicroReference() != null){
+//                sb.append(":").append(td.getCitationMicroReference());
+//            }
+//        }
+        if(td.isNotDesignated()){
+            sb.append(" not designated");
+        }
+        if(td.isRejectedType()){
+            sb.append(" rejected");
+        }
+        if(td.isConservedType()){
+            sb.append(" conserved");
+        }
+        return sb.toString();
+    }
+
+
+    private static String stringify(TypeDesignationBase<?> td) {
+
+        if(td instanceof NameTypeDesignation){
+            return stringify((NameTypeDesignation)td);
+        } else if (td instanceof TextualTypeDesignation){
+            return stringify((TextualTypeDesignation)td);
+        } else if (td instanceof SpecimenTypeDesignation){
+            return stringify((SpecimenTypeDesignation)td, false);
+        }else{
+            throw new RuntimeException("Unknown TypeDesignation type");
+        }
+    }
+
+    private static String stringify(TextualTypeDesignation td) {
+        String result = td.getPreferredText(Language.DEFAULT());
+        if (td.isVerbatim()){
+            result = "\"" + result + "\"";  //TODO which character to use?
+        }
+        return result;
+    }
+
+    private static String stringify(SpecimenTypeDesignation td, boolean useFullTitleCache) {
+        String  result = "";
+
+        if(useFullTitleCache){
+            if(td.getTypeSpecimen() != null){
+                String nameTitleCache = td.getTypeSpecimen().getTitleCache();
+                //TODO is this needed?
+//                if(getTypifiedNameCache() != null){
+//                    nameTitleCache = nameTitleCache.replace(getTypifiedNameCache(), "");
+//                }
+                result += nameTitleCache;
+            }
+        } else {
+            if(td.getTypeSpecimen() != null){
+                DerivedUnit du = td.getTypeSpecimen();
+                if(du.isProtectedTitleCache()){
+                    result += du.getTitleCache();
+                } else {
+                    du = HibernateProxyHelper.deproxy(du);
+                    boolean isMediaSpecimen = du instanceof MediaSpecimen;
+                    String typeSpecimenTitle = "";
+                    if(isMediaSpecimen && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null) {
+                        // special case of an published image which is not covered by the DerivedUnitFacadeCacheStrategy
+                        MediaSpecimen msp = (MediaSpecimen)du;
+                        if(msp.getMediaSpecimen() != null){
+                            for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
+                                String referenceStr = source.getCitation() == null? "": source.getCitation().getTitleCache();
+                                String refDetailStr = source.getCitationMicroReference();
+                                if(isNotBlank(refDetailStr)){
+                                    typeSpecimenTitle += refDetailStr;
+                                }
+                                if(!typeSpecimenTitle.isEmpty() && !referenceStr.isEmpty()){
+                                    typeSpecimenTitle += " in ";
+                                }
+                                typeSpecimenTitle += referenceStr + " ";
+                            }
+                        }
+                    } else {
+                        DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
+                        String titleCache = cacheStrategy.getTitleCache(du, true, false);
+                        // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
+                        titleCache = titleCache.replaceAll("[\\(\\)]", "");
+                        typeSpecimenTitle += titleCache;
+                    }
+
+                    result += (isMediaSpecimen ? "[icon] " : "") + typeSpecimenTitle.trim();
+                }
+            }
+        }
+
+        if(td.isNotDesignated()){
+            result += " not designated";
+        }
+
+        return result;
+    }
+
+    private static boolean isNotBlank(String str){
         return StringUtils.isNotBlank(str);
     }
 }

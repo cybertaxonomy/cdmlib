@@ -12,11 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -39,7 +37,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  */
 public class TypeDesignationWorkingSet
         extends LinkedHashMap<TypeDesignationStatusBase<?>,
-                              Collection<TypedEntityReference<TypeDesignationBase>>> {
+                              Collection<TypeDesignationDTO>> {
 
     private static final long serialVersionUID = -1329007606500890729L;
 
@@ -70,30 +68,20 @@ public class TypeDesignationWorkingSet
         return baseEntity;
     }
 
-    public Collection<TypedEntityReference<TypeDesignationBase>> get(TypeDesignationStatusBase<?> typeStatus) {
-        return super.get(typeStatus);
-        // internalMap.get(typeStatus);
-    }
+//    @Override
+//    public Collection<TypedEntityReference<TypeDesignationBase>> put(TypeDesignationStatusBase<?> key, Collection<TypedEntityReference<TypeDesignationBase>> collection) {
+//        return super.put(key, collection);
+//        //return internalMap.put(key, collection);
+//    }
 
-    @Override
-    public Set<TypeDesignationStatusBase<?>> keySet() {
-        return super.keySet();
-    }
-
-    @Override
-    public Collection<TypedEntityReference<TypeDesignationBase>> put(TypeDesignationStatusBase<?> key, Collection<TypedEntityReference<TypeDesignationBase>> collection) {
-        return super.put(key, collection);
-        //return internalMap.put(key, collection);
-    }
-
-    public List<TypedEntityReference> getTypeDesignations() {
-        List<TypedEntityReference> typeDesignations = new ArrayList<>();
+    public List<TypeDesignationDTO> getTypeDesignations() {
+        List<TypeDesignationDTO> typeDesignations = new ArrayList<>();
         this.values().forEach(typeDesignationReferences -> typeDesignationReferences.forEach(td -> typeDesignations.add(td)));
         return typeDesignations;
     }
 
     public void insert(TypeDesignationStatusBase<?> status,
-            TypedEntityReference<TypeDesignationBase> typeDesignationEntityReference) {
+            TypeDesignationDTO typeDesignationEntityReference) {
 
         if(status == null){
             status = NULL_STATUS;

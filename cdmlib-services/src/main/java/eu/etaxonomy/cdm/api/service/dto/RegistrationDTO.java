@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
@@ -254,7 +255,7 @@ public class RegistrationDTO {
     public Set<TypeDesignationBase> getTypeDesignationsInWorkingSet(TypedEntityReference baseEntityReference) {
         Set<TypeDesignationBase> typeDesignations = new HashSet<>();
         TypeDesignationWorkingSet workingSet = getTypeDesignationWorkingSet(baseEntityReference);
-        for(EntityReference ref :  workingSet.getTypeDesignations()){
+        for(TypeDesignationDTO ref :  workingSet.getTypeDesignations()){
             typeDesignations.add(findTypeDesignation(ref));
         }
         return typeDesignations;
@@ -275,8 +276,8 @@ public class RegistrationDTO {
         return null;
     }
 
-    private TypeDesignationBase<?> findTypeDesignation(EntityReference ref) {
-        return typeDesignationManager != null ? typeDesignationManager.findTypeDesignation(ref) : null;
+    private TypeDesignationBase<?> findTypeDesignation(TypeDesignationDTO ref) {
+        return typeDesignationManager != null ? typeDesignationManager.findTypeDesignation(ref.getUuid()) : null;
     }
 
     public Collection<TypeDesignationBase<?>> typeDesignations() {

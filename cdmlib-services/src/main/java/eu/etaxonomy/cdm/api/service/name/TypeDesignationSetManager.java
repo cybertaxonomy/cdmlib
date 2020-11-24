@@ -23,27 +23,23 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
  * Manages a collection of {@link TypeDesignationBase type designations} for the same typified name.
@@ -173,16 +169,19 @@ public class TypeDesignationSetManager {
             final TypedEntityReference<? extends VersionableEntity> baseEntityReference = makeEntityReference(baseEntity);
 
             Class<? extends TypeDesignationBase> clazz = HibernateProxyHelper.deproxy((TypeDesignationBase)td).getClass();
-            TypedEntityReference<TypeDesignationBase> typeDesignationEntityReference
-            = new TypedEntityReference<>(
-                    (Class<TypeDesignationBase>)clazz,
-                    td.getUuid(),
-                    stringify(td));
+            boolean withCitation = true;
+            TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
+            TypeDesignationSetFormatter.buildTaggedTextForSingleType(td, withCitation, workingsetBuilder, 0);
+            TypeDesignationDTO typeDesignationDTO
+                = new TypeDesignationDTO(
+                    clazz,
+                    td.getUuid(),workingsetBuilder.getTaggedText());
+
 
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
                 byBaseEntityByTypeStatus.put(baseEntityReference, new TypeDesignationWorkingSet(baseEntity, baseEntityReference));
             }
-            byBaseEntityByTypeStatus.get(baseEntityReference).insert(status, typeDesignationEntityReference);
+            byBaseEntityByTypeStatus.get(baseEntityReference).insert(status, typeDesignationDTO);
 
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
@@ -225,7 +224,7 @@ public class TypeDesignationSetManager {
         return baseEntityReference;
     }
 
-    private static String entityLabel(VersionableEntity baseEntity) {
+    protected static String entityLabel(VersionableEntity baseEntity) {
         String label = "";
         if(baseEntity instanceof IdentifiableEntity<?>){
                 label = ((IdentifiableEntity<?>)baseEntity).getTitleCache();
@@ -359,114 +358,12 @@ public class TypeDesignationSetManager {
         return typeDesignations.values();
     }
 
-    public TypeDesignationBase<?> findTypeDesignation(EntityReference typeDesignationRef) {
-        return this.typeDesignations.get(typeDesignationRef.getUuid());
+    public TypeDesignationBase<?> findTypeDesignation(UUID uuid) {
+        return this.typeDesignations.get(uuid);
     }
 
     public LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
         return orderedByTypesByBaseEntity;
-    }
-
-    private String stringify(TypeDesignationBase<?> td) {
-
-        if(td instanceof NameTypeDesignation){
-            return stringify((NameTypeDesignation)td);
-        } else if (td instanceof TextualTypeDesignation){
-            return stringify((TextualTypeDesignation)td);
-        } else if (td instanceof SpecimenTypeDesignation){
-            return stringify((SpecimenTypeDesignation)td, false);
-        }else{
-            throw new RuntimeException("Unknown TypeDesignation type");
-        }
-    }
-
-    private String stringify(TextualTypeDesignation td) {
-        String result = td.getPreferredText(Language.DEFAULT());
-        if (td.isVerbatim()){
-            result = "\"" + result + "\"";  //TODO which character to use?
-        }
-        return result;
-    }
-
-    private String stringify(NameTypeDesignation td) {
-
-        StringBuffer sb = new StringBuffer();
-
-        if(td.getTypeName() != null){
-            sb.append(td.getTypeName().getTitleCache());
-        }
-//        if(td.getCitation() != null){
-//            sb.append(" ").append(td.getCitation().getTitleCache());
-//            if(td.getCitationMicroReference() != null){
-//                sb.append(":").append(td.getCitationMicroReference());
-//            }
-//        }
-        if(td.isNotDesignated()){
-            sb.append(" not designated");
-        }
-        if(td.isRejectedType()){
-            sb.append(" rejected");
-        }
-        if(td.isConservedType()){
-            sb.append(" conserved");
-        }
-        return sb.toString();
-    }
-
-    private String stringify(SpecimenTypeDesignation td, boolean useFullTitleCache) {
-        String  result = "";
-
-        if(useFullTitleCache){
-            if(td.getTypeSpecimen() != null){
-                String nameTitleCache = td.getTypeSpecimen().getTitleCache();
-                if(getTypifiedNameCache() != null){
-                    nameTitleCache = nameTitleCache.replace(getTypifiedNameCache(), "");
-                }
-                result += nameTitleCache;
-            }
-        } else {
-            if(td.getTypeSpecimen() != null){
-                DerivedUnit du = td.getTypeSpecimen();
-                if(du.isProtectedTitleCache()){
-                    result += du.getTitleCache();
-                } else {
-                    du = HibernateProxyHelper.deproxy(du);
-                    boolean isMediaSpecimen = du instanceof MediaSpecimen;
-                    String typeSpecimenTitle = "";
-                    if(isMediaSpecimen && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null) {
-                        // special case of an published image which is not covered by the DerivedUnitFacadeCacheStrategy
-                        MediaSpecimen msp = (MediaSpecimen)du;
-                        if(msp.getMediaSpecimen() != null){
-                            for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
-                                String referenceStr = source.getCitation() == null? "": source.getCitation().getTitleCache();
-                                String refDetailStr = source.getCitationMicroReference();
-                                if(isNotBlank(refDetailStr)){
-                                    typeSpecimenTitle += refDetailStr;
-                                }
-                                if(!typeSpecimenTitle.isEmpty() && !referenceStr.isEmpty()){
-                                    typeSpecimenTitle += " in ";
-                                }
-                                typeSpecimenTitle += referenceStr + " ";
-                            }
-                        }
-                    } else {
-                        DerivedUnitFacadeCacheStrategy cacheStrategy = new DerivedUnitFacadeCacheStrategy();
-                        String titleCache = cacheStrategy.getTitleCache(du, true, false);
-                        // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
-                        titleCache = titleCache.replaceAll("[\\(\\)]", "");
-                        typeSpecimenTitle += titleCache;
-                    }
-
-                    result += (isMediaSpecimen ? "[icon] " : "") + typeSpecimenTitle.trim();
-                }
-            }
-        }
-
-        if(td.isNotDesignated()){
-            result += " not designated";
-        }
-
-        return result;
     }
 
     private FieldUnit findFieldUnit(DerivedUnit du) {
