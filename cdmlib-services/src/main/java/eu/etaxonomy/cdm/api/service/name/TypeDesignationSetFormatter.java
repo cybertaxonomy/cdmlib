@@ -227,7 +227,7 @@ public class TypeDesignationSetFormatter {
         if (ref != null){
             DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
             String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
-            workingsetBuilder.add(TagEnum.reference, shortCitation, new TypedEntityReference<>(ref.getClass(), ref.getUuid()));
+            workingsetBuilder.add(TagEnum.reference, shortCitation, new TypedEntityReference<>(source.getClass(), ref.getUuid()));
         }
     }
 
