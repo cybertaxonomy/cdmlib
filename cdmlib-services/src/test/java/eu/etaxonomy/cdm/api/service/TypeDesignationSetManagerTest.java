@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.kohlbecker, k.luther
  * @since 03.09.2018
  */
-public class TypeDesignationSetManagerTest extends TermTestBase{
+public class TypeDesignationSetManagerTest  extends TermTestBase{
 
         private NameTypeDesignation ntd;
         private NameTypeDesignation ntd_LT;
