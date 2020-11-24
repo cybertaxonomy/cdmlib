@@ -243,7 +243,7 @@ public class RegistrationDTO {
         return name;
     }
 
-    public LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderdTypeDesignationWorkingSets() {
+    public LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
         return typeDesignationManager != null ? typeDesignationManager.getOrderedTypeDesignationWorkingSets() : null;
     }
 

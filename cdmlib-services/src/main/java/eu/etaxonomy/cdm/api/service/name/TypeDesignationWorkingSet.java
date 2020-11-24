@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -17,6 +16,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -37,11 +37,12 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  * @author a.kohlbecker
  * @since Mar 10, 2017
  */
-public class TypeDesignationWorkingSet implements Serializable {
+public class TypeDesignationWorkingSet
+        extends LinkedHashMap<TypeDesignationStatusBase<?>, Collection<TypedEntityReference>> {
 
     private static final long serialVersionUID = -1329007606500890729L;
 
-    private LinkedHashMap<TypeDesignationStatusBase<?>, Collection<TypedEntityReference>> internalMap
+    private LinkedHashMap<TypeDesignationStatusBase<?>, Collection<TypedEntityReference<TypeDesignationBase<?>>>> internalMap
             = new LinkedHashMap<>();
 
     public static final NullTypeDesignationStatus NULL_STATUS = new NullTypeDesignationStatus();
@@ -71,17 +72,19 @@ public class TypeDesignationWorkingSet implements Serializable {
         return baseEntity;
     }
 
-    public Collection<TypedEntityReference> get(TypeDesignationStatusBase<?> typeStatus) {
-        return internalMap.get(typeStatus);
-    }
+//    public Collection<TypedEntityReference> get(TypeDesignationStatusBase<?> typeStatus) {
+//        return internalMap.get(typeStatus);
+//    }
 
+    @Override
     public Set<TypeDesignationStatusBase<?>> keySet() {
         return internalMap.keySet();
     }
 
-    public Collection<TypedEntityReference> put(TypeDesignationStatusBase<?> key, Collection<TypedEntityReference> collection) {
-        return internalMap.put(key, collection);
-    }
+//    @Override
+//    public Collection<TypedEntityReference> put(TypeDesignationStatusBase<?> key, Collection<TypedEntityReference> collection) {
+//        return internalMap.put(key, collection);
+//    }
 
     public List<TypedEntityReference> getTypeDesignations() {
         List<TypedEntityReference> typeDesignations = new ArrayList<>();
@@ -94,10 +97,10 @@ public class TypeDesignationWorkingSet implements Serializable {
         if(status == null){
             status = NULL_STATUS;
         }
-        if(!internalMap.containsKey(status)){
-            internalMap.put(status, new ArrayList<>());
+        if(!this.containsKey(status)){
+            this.put(status, new ArrayList<>());
         }
-        internalMap.get(status).add(typeDesignationEntityReference);
+        this.get(status).add(typeDesignationEntityReference);
     }
 
     public String getLabel() {
@@ -154,5 +157,4 @@ public class TypeDesignationWorkingSet implements Serializable {
             return super.toString();
         }
     }
-
 }
