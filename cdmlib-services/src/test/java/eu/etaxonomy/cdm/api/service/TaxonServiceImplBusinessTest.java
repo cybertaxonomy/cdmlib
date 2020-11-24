@@ -91,7 +91,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		referenceDetail = "test";
 	}
 
-
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#swapSynonymAndAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)}.
 	 */
@@ -107,10 +106,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 
 		//The name of the new accepted taxon should be the same as from the former synonym
 		Assert.assertEquals(((Taxon)result.getCdmEntity()).getName(), name);
-
-
-
-
 	}
 
 	/**

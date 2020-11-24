@@ -52,8 +52,9 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
+
 /**
- * Manages a collection of {@link TypeDesignationBase TypeDesignations} for the same typified name.
+ * Manages a collection of {@link TypeDesignationBase type designations} for the same typified name.
  *
  * Type designations are ordered by the base type which is a {@link TaxonName} for {@link NameTypeDesignation NameTypeDesignations} or
  * in case of {@link SpecimenTypeDesignation SpecimenTypeDesignations} the  associate {@link FieldUnit} or the {@link DerivedUnit}
@@ -108,6 +109,8 @@ public class TypeDesignationSetManager {
 
     private List<String> problems = new ArrayList<>();
 
+// **************************** CONSTRUCTOR ***********************************/
+
     public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations)
             throws RegistrationValidationException{
     	this(typeDesignations, null);
@@ -142,6 +145,8 @@ public class TypeDesignationSetManager {
     public TypeDesignationSetManager(TaxonName typifiedName) {
         this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
     }
+
+// **************************************************************************/
 
     /**
      * Add one or more TypeDesignations to the manager. This causes re-grouping and re-ordering

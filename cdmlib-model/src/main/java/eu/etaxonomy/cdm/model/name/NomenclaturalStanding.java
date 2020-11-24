@@ -185,6 +185,4 @@ public enum NomenclaturalStanding
         }
         return result;
     }
-
-
 }
