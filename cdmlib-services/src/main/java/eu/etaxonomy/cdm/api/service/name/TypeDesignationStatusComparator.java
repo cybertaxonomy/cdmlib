@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager.NullTypeDesignationStatus;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermComparator;
 

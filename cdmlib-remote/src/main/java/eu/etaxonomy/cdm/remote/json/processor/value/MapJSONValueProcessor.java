@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -31,8 +31,8 @@ public class MapJSONValueProcessor implements JsonValueProcessor {
 	@Override
 	public Object processArrayValue(Object value, JsonConfig jsonConfig) {
 
-	    if(value instanceof TypeDesignationSetManager.TypeDesignationWorkingSet){
-	        TypeDesignationSetManager.TypeDesignationWorkingSet map = (TypeDesignationSetManager.TypeDesignationWorkingSet)value;
+	    if(value instanceof TypeDesignationWorkingSet){
+	        TypeDesignationWorkingSet map = (TypeDesignationWorkingSet)value;
 	        JSONObject json = new JSONObject();
             for(TypeDesignationStatusBase<?> key : map.keySet()){
                 TermRepresentation_L10n term_L10n = new TermRepresentation_L10n(key, false);
