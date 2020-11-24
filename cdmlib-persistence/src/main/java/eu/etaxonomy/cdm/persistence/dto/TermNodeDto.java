@@ -92,6 +92,9 @@ public class TermNodeDto implements Serializable{
             parent.getChildren().add(position, this);
         }
         tree = treeDto;
+        if (tree != null){
+            tree.addTerm(termDto);
+        }
         this.path = path;
 
     }
