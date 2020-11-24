@@ -190,7 +190,7 @@ public class TypeDesignationSetFormatter {
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
         }
 
-        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes));
+        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes), new TypedEntityReference<>(typeDes.getClass(), typeDes.getUuid()));
 //        workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
         if (withCitation){
@@ -227,7 +227,7 @@ public class TypeDesignationSetFormatter {
         if (ref != null){
             DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
             String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
-            workingsetBuilder.add(TagEnum.reference, shortCitation);
+            workingsetBuilder.add(TagEnum.reference, shortCitation, new TypedEntityReference<>(ref.getClass(), ref.getUuid()));
         }
     }
 
