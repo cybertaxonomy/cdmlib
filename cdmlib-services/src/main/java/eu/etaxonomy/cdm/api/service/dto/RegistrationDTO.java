@@ -230,7 +230,7 @@ public class RegistrationDTO {
     }
 
     public EntityReference getTypifiedNameRef() {
-        return typeDesignationManager != null ? typeDesignationManager.getTypifiedNameRef() : null;
+        return typeDesignationManager != null ? typeDesignationManager.getTypifiedNameAsEntityRef() : null;
     }
 
     public TaxonName getTypifiedName() {

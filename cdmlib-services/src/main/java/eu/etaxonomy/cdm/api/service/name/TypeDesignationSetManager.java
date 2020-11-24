@@ -91,21 +91,19 @@ public class TypeDesignationSetManager {
     private static final String POST_STATUS_SEPARATOR = ": ";
     private static final String POST_NAME_SEPARTOR = UTF8.EN_DASH_SPATIUM.toString();
 
-    private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
+    private final NullTypeDesignationStatus NULL_STATUS = new NullTypeDesignationStatus();
 
     private NameTypeBaseEntityType nameTypeBaseEntityType = NameTypeBaseEntityType.NAME_TYPE_DESIGNATION;
+
+    private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
+
+    private TaxonName typifiedName;
 
     /**
      * Groups the EntityReferences for each of the TypeDesignations by the according TypeDesignationStatus.
      * The TypeDesignationStatusBase keys are already ordered by the term order defined in the vocabulary.
      */
     private LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderedByTypesByBaseEntity;
-
-    private EntityReference typifiedNameRef;
-
-    private TaxonName typifiedName;
-
-    final NullTypeDesignationStatus NULL_STATUS = new NullTypeDesignationStatus();
 
     private List<String> problems = new ArrayList<>();
 
@@ -116,7 +114,8 @@ public class TypeDesignationSetManager {
     	this(typeDesignations, null);
     }
 
-    public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations, TaxonName typifiedName)
+    public TypeDesignationSetManager(@SuppressWarnings("rawtypes") Collection<TypeDesignationBase> typeDesignations,
+            TaxonName typifiedName)
             throws RegistrationValidationException  {
         for (TypeDesignationBase<?> typeDes:typeDesignations){
             this.typeDesignations.put(typeDes.getUuid(), typeDes);
@@ -128,7 +127,6 @@ public class TypeDesignationSetManager {
         		throw e;
         	}
         	this.typifiedName = typifiedName;
-            this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
         }
 
         mapAndSort();
@@ -143,7 +141,7 @@ public class TypeDesignationSetManager {
     }
 
     public TypeDesignationSetManager(TaxonName typifiedName) {
-        this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
+        this.typifiedName = typifiedName;
     }
 
 // **************************************************************************/
@@ -168,6 +166,7 @@ public class TypeDesignationSetManager {
      * @param containgEntity
      */
     protected void mapAndSort() {
+
         Map<TypedEntityReference<?>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
 
         this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
@@ -227,7 +226,7 @@ public class TypeDesignationSetManager {
 
         baseEntity = (VersionableEntity) HibernateHelper.unproxy(baseEntity);
         String label = "";
-        if(baseEntity  instanceof FieldUnit){
+        if(baseEntity instanceof FieldUnit){
                 label = ((FieldUnit)baseEntity).getTitleCache();
         }
 
@@ -312,7 +311,7 @@ public class TypeDesignationSetManager {
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
         if(withNameIfAvailable && getTypifiedNameCache() != null){
-            finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedNameRef().getUuid()));
+            finalBuilder.add(TagEnum.name, getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, getTypifiedName().getUuid()));
             finalBuilder.addPostSeparator(POST_NAME_SEPARTOR);
         }
 
@@ -514,8 +513,6 @@ public class TypeDesignationSetManager {
         if(typifiedName != null){
             // ON SUCCESS -------------------
             this.typifiedName = typifiedName;
-            this.typifiedNameRef = new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
-
         }
     }
 
@@ -523,8 +520,8 @@ public class TypeDesignationSetManager {
      * @return the title cache of the typifying name or <code>null</code>
      */
     public String getTypifiedNameCache() {
-        if(typifiedNameRef != null){
-            return typifiedNameRef.getLabel();
+        if(typifiedName != null){
+            return typifiedName.getTitleCache();
         }
         return null;
     }
@@ -532,8 +529,8 @@ public class TypeDesignationSetManager {
     /**
      * @return the title cache of the typifying name or <code>null</code>
      */
-    public EntityReference getTypifiedNameRef() {
-       return typifiedNameRef;
+    public EntityReference getTypifiedNameAsEntityRef() {
+       return new EntityReference(typifiedName.getUuid(), typifiedName.getTitleCache());
     }
 
     public Collection<TypeDesignationBase<?>> getTypeDesignations() {
