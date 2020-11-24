@@ -209,7 +209,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 
             @SuppressWarnings("rawtypes")
             LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> orderedTypeDesignations =
-                    typeDesignationManager.getOrderdTypeDesignationWorkingSets();
+                    typeDesignationManager.getOrderedTypeDesignationWorkingSets();
             Iterator<TypeDesignationWorkingSet> byStatusMapIterator = orderedTypeDesignations.values().iterator();
             Map<TypeDesignationStatusBase<?>, Collection<TypedEntityReference>> byStatusMap_1 = byStatusMapIterator.next();
             Map<TypeDesignationStatusBase<?>, Collection<TypedEntityReference>> byStatusMap_2 = byStatusMapIterator.next();

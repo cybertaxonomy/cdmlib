@@ -182,7 +182,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
     @Override
     public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager) {
-        return new DefaultPagerImpl<RegistrationDTO>(regPager.getCurrentIndex(), regPager.getCount(), regPager.getPageSize(), makeDTOs(regPager.getRecords()));
+        return new DefaultPagerImpl<>(regPager.getCurrentIndex(), regPager.getCount(),
+                regPager.getPageSize(), makeDTOs(regPager.getRecords()));
     }
 
     @Override

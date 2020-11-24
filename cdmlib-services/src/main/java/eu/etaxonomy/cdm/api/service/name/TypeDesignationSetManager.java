@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
  * {@link TypeDesignationBase TypeDesignations} and of the TypeDesignationWorkingSets:
  * <ul>
  *  <li>{@link #print()}
- *  <li>{@link #getOrderdTypeDesignationWorkingSets()} ... {@link TypeDesignationWorkingSet#getRepresentation()}
+ *  <li>{@link #getOrderedTypeDesignationWorkingSets()} ... {@link TypeDesignationWorkingSet#getRepresentation()}
  * </ul>
  * Prior using the representations you need to trigger their generation by calling {@link #buildString()}
  *
@@ -240,33 +240,34 @@ public class TypeDesignationSetManager {
        List<TypedEntityReference<?>> baseEntityKeyList = new LinkedList<>(stringsByTypeByBaseEntity.keySet());
        Collections.sort(baseEntityKeyList, new Comparator<TypedEntityReference<?>>(){
 
-       /**
-         * Sorts the base entities (TypedEntityReference) in the following order:
-         *
-         * 1. FieldUnits
-         * 2. DerivedUnit (in case of missing FieldUnit we expect the base type to be DerivedUnit)
-         * 3. NameType
-         *
-         * {@inheritDoc}
-         */
-        @Override
-        public int compare(TypedEntityReference<?> o1, TypedEntityReference<?> o2) {
+           /**
+             * Sorts the base entities (TypedEntityReference) in the following order:
+             *
+             * 1. FieldUnits
+             * 2. DerivedUnit (in case of missing FieldUnit we expect the base type to be DerivedUnit)
+             * 3. NameType
+             *
+             * {@inheritDoc}
+             */
+            @Override
+            public int compare(TypedEntityReference<?> o1, TypedEntityReference<?> o2) {
 
-            Class<?> type1 = o1.getType();
-            Class<?> type2 = o2.getType();
+                Class<?> type1 = o1.getType();
+                Class<?> type2 = o2.getType();
 
-            if(!type1.equals(type2)) {
-                if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
-                    // FieldUnits first
-                    return type1.equals(FieldUnit.class) ? -1 : 1;
+                if(!type1.equals(type2)) {
+                    if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
+                        // FieldUnits first
+                        return type1.equals(FieldUnit.class) ? -1 : 1;
+                    } else {
+                        // name types last (in case of missing FieldUnit we expect the base type to be DerivedUnit which comes into the middle)
+                        return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
+                    }
                 } else {
-                    // name types last (in case of missing FieldUnit we expect the base type to be DerivedUnit which comes into the middle)
-                    return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
+                    return o1.getLabel().compareTo(o2.getLabel());
                 }
-            } else {
-                return o1.getLabel().compareTo(o2.getLabel());
-            }
-        }});
+            }}
+       );
 
        // new LinkedHashMap for the ordered FieldUnitOrTypeName keys
        LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> stringsOrderedbyBaseEntityOrderdByType = new LinkedHashMap<>(stringsByTypeByBaseEntity.size());
@@ -538,7 +539,7 @@ public class TypeDesignationSetManager {
         return this.typeDesignations.get(typeDesignationRef.getUuid());
     }
 
-    public LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> getOrderdTypeDesignationWorkingSets() {
+    public LinkedHashMap<TypedEntityReference, TypeDesignationWorkingSet> getOrderedTypeDesignationWorkingSets() {
         return orderedByTypesByBaseEntity;
     }
 
