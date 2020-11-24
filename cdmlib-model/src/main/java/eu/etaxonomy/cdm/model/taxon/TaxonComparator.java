@@ -128,13 +128,16 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 
 	private int computeStatusCompareWeight(TaxonName taxonName) {
 		int result = 0;
-		if (taxonName == null || taxonName.getStatus() == null){
+
+		if (taxonName == null || taxonName.isValid()){
 			return 0;
 		}
 		Set<NomenclaturalStatus> status1 = taxonName.getStatus();
         for (NomenclaturalStatus nomStatus1 : status1){
             NomenclaturalStatusType type = nomStatus1.getType();
             if (type != null && type.isInvalid()){
+                //NOTE: not clear were this order comes from, it is partly mentioned
+                //in #5794, it is unclear if it fits to the longer list mentioned in #9272
                 if(type.equals(NomenclaturalStatusType.PROVISIONAL())){
                     result += 1;
                 }else if (type.equals(NomenclaturalStatusType.INVALID())){
