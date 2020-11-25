@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
  * we may also only need 1 single cache strategy. However, care must be taken as the formatting
  * differs dependent on the type an the in-reference structure.
  *
- * Generally the cache strategy computes allows 3 formattings:<BR>
+ * Generally the cache strategy allows to compute 3 formats:<BR>
  *
  *  1.) for bibliographic references (stored in {@link Reference#getTitleCache() titleCache}).<BR>
  *
@@ -46,7 +46,8 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
  *  3.) for nomenclatural references with micro reference, but not stored anywhere as the micro reference
  *      is part of the name, not of the reference<BR>
  *
- *  4.) for short citation (e.g. Author 2009) as defined in {@link IReferenceCacheStrategy#getCitation(Reference)}
+ *  4.) for short citation (e.g. Author 2009) as defined in {@link IReferenceCacheStrategy#getCitation(Reference, String)}
+ *  and {@link IReferenceCacheStrategy#createShortCitation(Reference, String, Boolean)}
  *
  * @author a.mueller
  * @since 25.05.2016
@@ -261,19 +262,7 @@ public class DefaultReferenceCacheStrategy
         return result.toString();
     }
 
-    //TODO this method seems to be used only for type designations and/or cdmlight, it should be unified with getCitation()
-    /**
-     * Creates a citation in form <i>author year: detail</i> or <i>author (year: detail)</i>.
-     * <BR>
-     * If reference has protected titlecache only the titlecache is returned (may change in future).
-     * <BR>
-     * The author team is abbreviated with <code>et al.</code> if more than 2 authors exist in the team.
-     *
-     * @param reference the reference to format
-     * @param citationDetail the microreference (page, figure, etc.), if <code>null</code> also the colon separator is not used
-     * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
-     * @return
-     */
+    @Override
     public String createShortCitation(Reference reference, String citationDetail, Boolean withYearBrackets) {
         if (withYearBrackets == null){
             withYearBrackets = false;
