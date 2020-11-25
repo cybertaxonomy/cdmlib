@@ -1235,7 +1235,8 @@ public class CdmLightClassificationExport
                     int index = 1;
                     for (IdentifiableSource source: typeDesignation.getSources()){
                         if (source.getCitation() != null){
-                            stringbuilder.append(((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy()).getCitation(source.getCitation()));
+                            DefaultReferenceCacheStrategy cacheStrategy = ((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy());
+                            stringbuilder.append(cacheStrategy.getCitation(source.getCitation(), source.getCitationMicroReference()));
                         }
                         if (index < typeDesignation.getSources().size()) {
                             stringbuilder.append( ", ");

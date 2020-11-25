@@ -133,7 +133,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     ref.getAuthorship() != null &&
                     isNotBlank(ref.getAuthorship().getTitleCache()) &&
                     isNotBlank(ref.getYear())){
-                secRef = ref.getCacheStrategy().getCitation(ref);
+                secRef = ref.getCacheStrategy().getCitation(ref, taxonBase.getSecMicroReference());
             }else{
                 secRef = ref.getTitleCache();
             }

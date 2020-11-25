@@ -227,7 +227,7 @@ public class DefaultReferenceCacheStrategy
 
     //TODO see comment on createShortCitation(...)
     @Override
-    public String getCitation(Reference reference) {
+    public String getCitation(Reference reference, String microReference) {
         // mostly copied from nomRefCacheStrat, refCache, journalCache
 
         if (reference == null){
@@ -252,7 +252,10 @@ public class DefaultReferenceCacheStrategy
 
         String year = reference.getYear();
         if (isNotBlank(year)){
-            stringBuilder.append(nextConcat + year);
+            result.append(nextConcat + year);
+        }
+        if (isNotBlank(microReference)){
+            result.append(": " + microReference);
         }
 
         return result.toString();
@@ -260,8 +263,11 @@ public class DefaultReferenceCacheStrategy
 
     //TODO this method seems to be used only for type designations and/or cdmlight, it should be unified with getCitation()
     /**
-     * Creates a citation in form Author (year: detail).
-     * If reference has protected titlecache only the titlecache is returned (may change in future)
+     * Creates a citation in form <i>author year: detail</i> or <i>author (year: detail)</i>.
+     * <BR>
+     * If reference has protected titlecache only the titlecache is returned (may change in future).
+     * <BR>
+     * The author team is abbreviated with <code>et al.</code> if more than 2 authors exist in the team.
      *
      * @param reference the reference to format
      * @param citationDetail the microreference (page, figure, etc.), if <code>null</code> also the colon separator is not used
