@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -275,6 +276,23 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             Set<NameRelationship> nameRelationsFiltered = RegistrableEntityFilter.
                 newInstance(userHelper).filterPublishedOnly(tnb, nameRelations);
             return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
+        }
+        return null;
+    }
+
+    /**
+     * Provides the  „Protologue / original publication“ of the names nomenclatural reference.
+     *
+     */
+    @RequestMapping(value = "protologueLinks", method = RequestMethod.GET)
+    public Set<ExternalLink> doGetProtologueLinks(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetProtologueLinks() - " + requestPathAndQuery(request));
+        TaxonName name = service.load(uuid, Arrays.asList("nomenclaturalSource.links"));
+        if(name.getNomenclaturalSource() != null) {
+            return name.getNomenclaturalSource().getLinks();
         }
         return null;
     }
