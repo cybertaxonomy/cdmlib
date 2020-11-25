@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 /**
  * @author a.kohlbecker
  */
-public class EntityReference implements Serializable{
+public class EntityReference implements Serializable, Comparable<EntityReference> {
 
     private static final long serialVersionUID = -8173845668898512626L;
 
@@ -52,6 +52,22 @@ public class EntityReference implements Serializable{
 
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public int compareTo(EntityReference o2) {
+        if(o2 == null){
+            return -1;
+        }
+        if (this.label == null && o2.label != null){
+            return -1;
+        }else if (this.label != null && o2.label == null){
+            return 1;
+        }else if (this.label == null && o2.label == null){
+            return this.uuid.compareTo(o2.uuid);  //TODO also test null?
+        }else{
+            return this.label.compareTo(o2.label);
         }
     }
 

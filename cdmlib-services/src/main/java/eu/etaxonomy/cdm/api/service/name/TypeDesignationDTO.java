@@ -12,54 +12,19 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.ref.RepresentableEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.mueller
  * @since 24.11.2020
  */
-public class TypeDesignationDTO implements Comparable<TypeDesignationDTO> {
+public class TypeDesignationDTO<T extends TypeDesignationBase> extends RepresentableEntityReference<T> {
 
-    private UUID uuid;
-    private Class<? extends TypeDesignationBase> type;
 
-    private List<TaggedText> taggedText;
-    private String label;
-
-    public TypeDesignationDTO(Class<? extends TypeDesignationBase> type, UUID uuid,
-            List<TaggedText> taggedText) {
-        this.uuid = uuid;
-        this.type = type;
-        this.taggedText = taggedText;
-        this.label = TaggedCacheHelper.createString(taggedText);
+    public TypeDesignationDTO(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
+        super(type, uuid, taggedText);
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
 
-    public Class<? extends TypeDesignationBase> getType() {
-        return type;
-    }
-
-    public List<TaggedText> getTaggedText() {
-        return taggedText;
-    }
-
-    @Override
-    public int compareTo(TypeDesignationDTO o2) {
-        if(o2 == null){
-            return -1;
-        }
-        if (this.label == null && o2.label != null){
-            return -1;
-        }else if (this.label != null && o2.label == null){
-            return 1;
-        }else if (this.label == null && o2.label == null){
-            return this.uuid.compareTo(o2.uuid);  //TODO also test null?
-        }else{
-            return this.label.compareTo(o2.label);
-        }
-    }
 }
