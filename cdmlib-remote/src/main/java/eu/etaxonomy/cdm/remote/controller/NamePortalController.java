@@ -70,7 +70,10 @@ public class NamePortalController extends BaseController<TaxonName, INameService
 
     private static final Logger logger = Logger.getLogger(NamePortalController.class);
 
-    private static final EntityInitStrategy DEFAULT_INIT_STRATEGY =  new EntityInitStrategy("$", "nomenclaturalSource.citation");
+    private static final EntityInitStrategy DEFAULT_INIT_STRATEGY =  new EntityInitStrategy(
+            "$",
+            "nomenclaturalSource.citation.inReference.inReference"
+            );
 
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = TypeDesignationPortalController.DEFAULT_INIT_STRATEGY;
 
