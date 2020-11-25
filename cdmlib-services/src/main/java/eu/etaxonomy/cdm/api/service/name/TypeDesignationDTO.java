@@ -12,15 +12,16 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.ref.RepresentableEntityReference;
+import eu.etaxonomy.cdm.ref.TaggedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.mueller
  * @since 24.11.2020
  */
-public class TypeDesignationDTO<T extends TypeDesignationBase> extends RepresentableEntityReference<T> {
+public class TypeDesignationDTO<T extends TypeDesignationBase> extends TaggedEntityReference<T> {
 
+    private static final long serialVersionUID = -7638336499975494954L;
 
     public TypeDesignationDTO(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
         super(type, uuid, taggedText);

@@ -19,14 +19,13 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author a.kohlbecker
  * @since Nov 25, 2020
  */
-public class RepresentableEntityReference<T extends CdmBase> extends TypedEntityReference<T> {
+public class TaggedEntityReference<T extends CdmBase> extends TypedEntityReference<T> {
 
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1327812492116862809L;
 
     private List<TaggedText> taggedText;
 
-    public RepresentableEntityReference(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
+    public TaggedEntityReference(Class<T> type, UUID uuid, List<TaggedText> taggedText) {
         super(type, uuid, TaggedCacheHelper.createString(taggedText));
         this.taggedText = taggedText;
     }
