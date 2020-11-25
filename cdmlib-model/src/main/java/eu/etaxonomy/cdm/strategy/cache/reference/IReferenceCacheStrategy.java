@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * A reference cache rendering strategy for {@link Reference references}.
  *
  * @author a.mueller
- *
  */
 public interface IReferenceCacheStrategy extends IIdentifiableEntityCacheStrategy<Reference> {
 

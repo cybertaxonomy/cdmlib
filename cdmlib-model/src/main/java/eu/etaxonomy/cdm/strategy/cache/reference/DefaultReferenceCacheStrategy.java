@@ -18,7 +18,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -52,9 +51,11 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
  * @author a.mueller
  * @since 25.05.2016
  */
-public class DefaultReferenceCacheStrategy extends StrategyBase implements INomenclaturalReferenceCacheStrategy{
-    private static final long serialVersionUID = 6773742298840407263L;
+public class DefaultReferenceCacheStrategy
+        extends StrategyBase
+        implements INomenclaturalReferenceCacheStrategy{
 
+    private static final long serialVersionUID = 6773742298840407263L;
     private static final Logger logger = Logger.getLogger(DefaultReferenceCacheStrategy.class);
 
     private final static UUID uuid = UUID.fromString("63e669ca-c6be-4a8a-b157-e391c22580f9");
@@ -232,19 +233,19 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if (reference == null){
             return null;
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         TeamOrPersonBase<?> team = reference.getAuthorship();
 
         String nextConcat = "";
 
         if (team != null &&  isNotBlank(team.getTitleCache())){
-            stringBuilder.append(team.getTitleCache() );
+            result.append(team.getTitleCache() );
             //here is the difference between nomRef and others
             if (isNomRef(reference.getType())) {
                 nextConcat = afterAuthor;
             }else{
                 //FIXME check if this really makes sense
-                stringBuilder.append(afterAuthor);
+                result.append(afterAuthor);
                 nextConcat = beforeYear;
             }
         }
@@ -254,7 +255,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
             stringBuilder.append(nextConcat + year);
         }
 
-        return stringBuilder.toString();
+        return result.toString();
     }
 
     //TODO this method seems to be used only for type designations and/or cdmlight, it should be unified with getCitation()
@@ -264,10 +265,13 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
      *
      * @param reference the reference to format
      * @param citationDetail the microreference (page, figure, etc.), if <code>null</code> also the colon separator is not used
-     * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>true</code>)
+     * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
      * @return
      */
-    public String createShortCitation(Reference reference, String citationDetail, boolean withYearBrackets) {
+    public String createShortCitation(Reference reference, String citationDetail, Boolean withYearBrackets) {
+        if (withYearBrackets == null){
+            withYearBrackets = false;
+        }
         if(reference.isProtectedTitleCache()){
             return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
         }
@@ -276,13 +280,13 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if (authorship == null) {
             return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
         }
-        authorship = HibernateProxyHelper.deproxy(authorship);
+        authorship = CdmBase.deproxy(authorship);
         if (authorship instanceof Person){
             shortCitation = getPersonString((Person)authorship);
         }
         else if (authorship instanceof Team){
 
-            Team team = HibernateProxyHelper.deproxy(authorship, Team.class);
+            Team team = CdmBase.deproxy(authorship, Team.class);
             if (team.isProtectedTitleCache()){
                 shortCitation = team.getTitleCache();
             }else{
