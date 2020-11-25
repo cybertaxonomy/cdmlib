@@ -1707,14 +1707,14 @@ public class Taxon
         result.setRelationsFromThisTaxon(new HashSet<>());
 
         for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
-            TaxonRelationship newRelationship = (TaxonRelationship)fromRelationship.clone();
+            TaxonRelationship newRelationship = fromRelationship.clone();
             newRelationship.setRelatedFrom(result);
             result.relationsFromThisTaxon.add(newRelationship);
         }
 
         result.setRelationsToThisTaxon(new HashSet<>());
         for (TaxonRelationship toRelationship : this.getRelationsToThisTaxon()){
-            TaxonRelationship newRelationship = (TaxonRelationship)toRelationship.clone();
+            TaxonRelationship newRelationship = toRelationship.clone();
             newRelationship.setRelatedTo(result);
             result.relationsToThisTaxon.add(newRelationship);
         }

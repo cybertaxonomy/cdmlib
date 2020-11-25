@@ -42,9 +42,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  */
 public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
+
+    private static final long serialVersionUID = -4932682946459109886L;
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonDeletionConfigurator.class);
-
 
 
     private boolean deleteSynonymsIfPossible = true;

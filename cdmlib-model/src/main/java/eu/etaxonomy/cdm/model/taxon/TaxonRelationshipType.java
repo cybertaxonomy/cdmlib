@@ -382,6 +382,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType CONTRADICTION(){
 		return getTermByUuid(uuidContradiction);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "is congruent to".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -398,6 +399,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType CONGRUENT_TO(){
 		return getTermByUuid(uuidCongruentTo);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "includes".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -416,6 +418,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType INCLUDES(){
 		return getTermByUuid(uuidIncludes);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "overlaps".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -433,6 +436,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType OVERLAPS(){
 		return getTermByUuid(uuidOverlaps);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "excludes".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -448,6 +452,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType EXCLUDES(){
 		return getTermByUuid(uuidExcludes);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "does not exclude".
 	 * This is a concept relationship type which means that the circumscriptions
