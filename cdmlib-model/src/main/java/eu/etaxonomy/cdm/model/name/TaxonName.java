@@ -3355,16 +3355,22 @@ public class TaxonName
     private Set<NomenclaturalStanding> computeNomenclaturalStandings() {
         Set<NomenclaturalStanding> standings = new HashSet<>();
         for (NomenclaturalStatus status : this.status){
-            NomenclaturalStanding standing = status.getType().getNomenclaturalStanding();
-            standings.add(standing);
+            if (status.getType() != null){
+                NomenclaturalStanding standing = status.getType().getNomenclaturalStanding();
+                standings.add(standing);
+            }
         }
         for (NameRelationship nameRel : this.relationsFromThisName){
-            NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStanding();
-            standings.add(standing);
+            if (nameRel.getType() != null){
+                NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStanding();
+                standings.add(standing);
+            }
         }
         for (NameRelationship nameRel : this.relationsToThisName){
-            NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStandingInverse();
-            standings.add(standing);
+            if (nameRel.getType() != null){
+                NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStandingInverse();
+                standings.add(standing);
+            }
         }
         return standings;
     }
