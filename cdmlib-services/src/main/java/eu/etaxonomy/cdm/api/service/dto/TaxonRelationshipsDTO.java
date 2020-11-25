@@ -63,7 +63,7 @@ public class TaxonRelationshipsDTO {
             TaxonRelationshipType relType = relation.getType();
 
             if (relType != null){
-                this.misapplication = relType.isMisappliedNameOrInvalidDesignation();
+                this.misapplication = relType.isMisappliedName();
                 this.synonym = relType.isAnySynonym();
                 this.typeUuid = relType.getUuid();
 //                TODO there must be a better DTO which also includes

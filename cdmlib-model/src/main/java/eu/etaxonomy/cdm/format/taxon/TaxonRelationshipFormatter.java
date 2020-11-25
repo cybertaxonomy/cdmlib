@@ -67,7 +67,7 @@ public class TaxonRelationshipFormatter {
         }
 
         TaxonRelationshipType type = taxonRelationship.getType();
-        boolean isMisapplied = type == null ? false : type.isMisappliedNameOrInvalidDesignation() && reverse;
+        boolean isMisapplied = type == null ? false : type.isMisappliedName() && reverse;
         boolean isSynonym = type == null? false : type.isAnySynonym();
 
         Taxon relatedTaxon = reverse? taxonRelationship.getFromTaxon()

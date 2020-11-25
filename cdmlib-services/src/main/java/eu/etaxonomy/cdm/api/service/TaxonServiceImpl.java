@@ -1030,8 +1030,8 @@ public class TaxonServiceImpl
                 configRelTaxon.setDeleteConceptRelationships(true);
 
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
-                    if (config.isDeleteMisappliedNamesAndInvalidDesignations()
-                            && taxRel.getType().isMisappliedNameOrInvalidDesignation()
+                    if (config.isDeleteMisappliedNames()
+                            && taxRel.getType().isMisappliedName()
                             && taxon.equals(taxRel.getToTaxon())){
                         this.deleteTaxon(taxRel.getFromTaxon().getUuid(), config, classificationUuid);
                     } else if (config.isDeleteConceptRelationships() && taxRel.getType().isConceptRelationship()){
@@ -3028,8 +3028,8 @@ public class TaxonServiceImpl
 
                 }
                 if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonRelationship)){
-                    if (!config.isDeleteMisappliedNamesAndInvalidDesignations() &&
-                            (((TaxonRelationship)ref).getType().isMisappliedNameOrInvalidDesignation())){
+                    if (!config.isDeleteMisappliedNames() &&
+                            (((TaxonRelationship)ref).getType().isMisappliedName())){
                         message = "The taxon can't be deleted as long as it has misapplied names or invalid designations.";
                     } else{
                         message = "The taxon can't be deleted as long as it belongs to taxon relationship.";

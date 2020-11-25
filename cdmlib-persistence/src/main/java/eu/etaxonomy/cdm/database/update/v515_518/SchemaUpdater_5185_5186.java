@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SingleTermRemover;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -48,6 +49,14 @@ public class SchemaUpdater_5185_5186 extends SchemaUpdaterBase {
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
         adaptNomenclaturalStanding(stepList);
+
+		//#9322 remove Invalid Designation taxon relationship
+        String stepName = "remove invalid designation taxon relationship type";
+        String uuidTerm = "605b1d01-f2b1-4544-b2e0-6f08def3d6ed";
+        String checkUsedQueries = "SELECT count(*) FROM @@TaxonRelationship@@ tr "
+                + " INNER JOIN @@DefinedTermBase@@ trType ON trType.id = tr.type_id "
+                + " WHERE trType.uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
+        SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
 
         return stepList;
     }
