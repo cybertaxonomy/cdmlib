@@ -569,7 +569,9 @@ public class TermNode <T extends DefinedTermBase>
 		    terms.add(term);
 		}
 		for(TermNode<T> childNode : this.getChildNodes()){
-			terms.addAll(childNode.getDistinctTermsRecursive(terms));
+		    if (childNode != null){
+		        terms.addAll(childNode.getDistinctTermsRecursive(terms));
+		    }
 		}
 		return terms;
 	}
@@ -715,6 +717,5 @@ public class TermNode <T extends DefinedTermBase>
 	public void removeNullValueFromChildren(){
 	    HHH_9751_Util.removeAllNull(children);
         updateSortIndex();
-
-	}
+    }
 }

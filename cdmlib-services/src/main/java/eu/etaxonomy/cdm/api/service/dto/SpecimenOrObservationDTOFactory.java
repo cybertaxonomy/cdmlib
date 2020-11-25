@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -28,12 +29,12 @@ public class SpecimenOrObservationDTOFactory {
             return null;
         }
         if (entity.isInstanceOf(FieldUnit.class)) {
-            return FieldUnitDTO.fromEntity((FieldUnit) entity);
+            return FieldUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, FieldUnit.class));
         } else {
             if (entity.isInstanceOf(DnaSample.class)){
-                return new DNASampleDTO((DnaSample)entity); // FIXME use factory method
+                return new DNASampleDTO(HibernateProxyHelper.deproxy(entity, DnaSample.class)); // FIXME use factory method
             } else {
-                return DerivedUnitDTO.fromEntity((DerivedUnit) entity);
+                return DerivedUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, DerivedUnit.class));
             }
         }
     }
