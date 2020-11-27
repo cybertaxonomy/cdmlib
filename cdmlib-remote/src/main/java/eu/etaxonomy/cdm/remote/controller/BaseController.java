@@ -117,10 +117,10 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
     @RequestMapping(value = "*", method = RequestMethod.GET)
     public Object doGetMethod(
             @PathVariable("uuid") UUID uuid,
-            // doPage request parametes
+            // doPage request parameters
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            // doList request parametes
+            // doList request parameters
             @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "limit", required = false) Integer limit,
             HttpServletRequest request,
