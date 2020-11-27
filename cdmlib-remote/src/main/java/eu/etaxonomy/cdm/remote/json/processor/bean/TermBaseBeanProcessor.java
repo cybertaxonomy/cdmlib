@@ -75,7 +75,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         }
 
         ITermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term, false);
-        handleL10nRepresentation(json, representation_L10n, false);
+        handleL10nRepresentation(json, representation_L10n, false, term);
         if(!replaceRepresentations){
             json.element("representations", term.getRepresentations(), jsonConfig);
         }
@@ -84,7 +84,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
         if(RelationshipTermBase.class.isAssignableFrom(term.getClass())){
             RelationshipTermBase<?> relTerm = (RelationshipTermBase<?>)term;
             ITermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm, true);
-            handleL10nRepresentation(json, inverseRepresentation_L10n, true);
+            handleL10nRepresentation(json, inverseRepresentation_L10n, true, term);
             if(!replaceRepresentations){
                 json.element("inverseRepresentations", relTerm.getInverseRepresentations(), jsonConfig);
             }
@@ -95,20 +95,26 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
     /**
      * @param json
      * @param representation_L10n
+     * @param term
      */
-    private void handleL10nRepresentation(JSONObject json, ITermRepresentation_L10n representation_L10n, boolean isInverse) {
+    private void handleL10nRepresentation(JSONObject json, ITermRepresentation_L10n representation_L10n, boolean isInverse, TermBase term) {
         String baseLabel = isInverse? "inverseRepresentation_L10n" : "representation_L10n";
-        if (representation_L10n.getLabel() != null) {
-            json.element(baseLabel,representation_L10n.getLabel());
-        }
-        if (representation_L10n.getAbbreviatedLabel() != null) {
-            json.element(baseLabel + "_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());
-        }
-        if (representation_L10n.getAbbreviatedLabel() != null) {
-            json.element(baseLabel + "_languageIso", representation_L10n.getLanguageIso());
-        }
-        if (representation_L10n.getAbbreviatedLabel() != null) {
-            json.element(baseLabel + "_languageUuid", representation_L10n.getLanguageUuid());
+        if(representation_L10n.getLabel() != null && representation_L10n.getAbbreviatedLabel() != null) {
+            if (representation_L10n.getLabel() != null) {
+                json.element(baseLabel,representation_L10n.getLabel());
+            }
+            if (representation_L10n.getAbbreviatedLabel() != null) {
+                json.element(baseLabel + "_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());
+            }
+            if (representation_L10n.getLanguageIso() != null) {
+                json.element(baseLabel + "_languageIso", representation_L10n.getLanguageIso());
+            }
+            if (representation_L10n.getLanguageUuid() != null) {
+                json.element(baseLabel + "_languageUuid", representation_L10n.getLanguageUuid());
+            }
+        } else {
+            // fall back to using the titleCache
+            json.element(baseLabel,term.getClass().getSimpleName() +  "<" + term.getUuid() + ">");
         }
     }
 
