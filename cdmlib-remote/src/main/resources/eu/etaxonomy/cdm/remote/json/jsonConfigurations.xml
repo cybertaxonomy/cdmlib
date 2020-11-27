@@ -191,9 +191,6 @@
          <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.name.NomenclaturalSource">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.NomenclaturalSourceBeanProcessor" />
-        </entry>
       </map>
     </property>
     <property name="jsonPropertyFilter">
@@ -497,9 +494,6 @@
         </entry>
         <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
-        </entry>
-        <entry key="eu.etaxonomy.cdm.model.name.NomenclaturalSource">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.NomenclaturalSourceBeanProcessor" />
         </entry>
       </map>
     </property>
