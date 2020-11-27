@@ -113,7 +113,8 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
                 json.element(baseLabel + "_languageUuid", representation_L10n.getLanguageUuid());
             }
         } else {
-            // fall back to using the titleCache
+            // fall back to using the titleCache produces "eu.etaxonomy.cdm.strategy.cache.term.TermDefaultCacheStrategy@..."
+            // therefore we create a better string here:
             json.element(baseLabel,term.getClass().getSimpleName() +  "<" + term.getUuid() + ">");
         }
     }
