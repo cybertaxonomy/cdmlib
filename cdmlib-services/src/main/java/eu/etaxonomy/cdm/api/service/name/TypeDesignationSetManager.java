@@ -224,6 +224,7 @@ public class TypeDesignationSetManager {
         return baseEntityReference;
     }
 
+    //TODO move to formatter?
     protected static String entityLabel(VersionableEntity baseEntity) {
         String label = "";
         if(baseEntity instanceof IdentifiableEntity<?>){

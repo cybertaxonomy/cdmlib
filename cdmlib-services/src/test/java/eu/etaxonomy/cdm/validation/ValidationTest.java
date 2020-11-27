@@ -59,7 +59,6 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 	}
 
-
 /****************** TESTS *****************************/
 
 	/**
