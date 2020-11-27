@@ -141,7 +141,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
                     collectionToCountMap.put(collection, herbariumCount + 1);
                 }
                 if (specimenOrObservationTypeFilter.contains(derivedUnit.getRecordBasis())) {
-                    DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null);
+                    DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit);
                     addDerivate(derivedUnitDTO);
                     setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
                     // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in

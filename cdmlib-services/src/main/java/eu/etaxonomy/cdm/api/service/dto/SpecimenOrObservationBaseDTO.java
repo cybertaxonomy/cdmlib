@@ -331,7 +331,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     }
 
     /**
-     * collects all derivatives from this an derivatives of this.
+     * Recursively collects all derivatives from this.
      */
     public Collection<DerivedUnitDTO> collectDerivatives() {
         return collectDerivatives(new HashSet<>());
