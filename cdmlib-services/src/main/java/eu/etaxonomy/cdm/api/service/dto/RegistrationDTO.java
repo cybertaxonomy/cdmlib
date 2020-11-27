@@ -236,7 +236,7 @@ public class RegistrationDTO {
         return typeDesignationManager != null ? typeDesignationManager.getTypifiedNameAsEntityRef() : null;
     }
 
-    public TaxonName getTypifiedName() {
+    public TaxonName typifiedName() {
         return typeDesignationManager != null ? typeDesignationManager.getTypifiedName() : null;
     }
 
