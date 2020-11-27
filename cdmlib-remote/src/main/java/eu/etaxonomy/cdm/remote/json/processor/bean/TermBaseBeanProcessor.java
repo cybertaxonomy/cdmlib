@@ -99,7 +99,7 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
      */
     private void handleL10nRepresentation(JSONObject json, ITermRepresentation_L10n representation_L10n, boolean isInverse, TermBase term) {
         String baseLabel = isInverse? "inverseRepresentation_L10n" : "representation_L10n";
-        if(representation_L10n.getLabel() != null && representation_L10n.getAbbreviatedLabel() != null) {
+        if(representation_L10n.getLabel() != null || representation_L10n.getAbbreviatedLabel() != null) {
             if (representation_L10n.getLabel() != null) {
                 json.element(baseLabel,representation_L10n.getLabel());
             }
