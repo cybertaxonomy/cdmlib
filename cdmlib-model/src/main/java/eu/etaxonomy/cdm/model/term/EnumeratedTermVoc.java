@@ -40,8 +40,6 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 		private final Set<S> children = new HashSet<>();
 		private final S parent;
 
-
-
 		private	SingleEnumTerm(S term, UUID uuid, String defaultString, String key, S parent){
 			this.term = term;
 			this.label = defaultString;
@@ -63,10 +61,10 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 		public String getKey() {return key;	}
 
 		@Override
-		public String getMessage() {return getMessage(Language.DEFAULT());}
+		public String getLabel() {return getLabel(Language.DEFAULT());}
 
 		@Override
-		public String getMessage(Language language) {
+		public String getLabel(Language language) {
 			//TODO make multi-lingual
 			return label;
 		}

@@ -48,7 +48,7 @@ public class TitleWithoutYearAndAuthorHelper {
         ReferenceType type = ref.getType();
         if (! DefaultReferenceCacheStrategy.isNomRef(type)){
             logger.warn("getTitleWithoutYearAndAuthor should not be required"
-                    + " for reference type " + type.getMessage() +
+                    + " for reference type " + type.getLabel() +
                     " and does not exist. Use Generic getTitleWithoutYearAndAuthorGeneric instead");
             return getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
         }else if (type == ReferenceType.Article){

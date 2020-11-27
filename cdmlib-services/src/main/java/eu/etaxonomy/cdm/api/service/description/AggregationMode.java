@@ -26,7 +26,7 @@ public enum AggregationMode implements IKeyTerm{
 //         }
 
     private String key;
-    private String message;
+    private String label;
     private boolean supportsDistribution;
     private boolean supportsDescriptiveData;
 
@@ -34,7 +34,7 @@ public enum AggregationMode implements IKeyTerm{
             boolean supportsDistribution, boolean supportsDescriptiveData) {
 
         this.key = key;
-        this.message = message;
+        this.label = message;
         this.supportsDistribution = supportsDistribution;
         this.supportsDescriptiveData = supportsDescriptiveData;
     }
@@ -45,14 +45,14 @@ public enum AggregationMode implements IKeyTerm{
     }
 
     @Override
-    public String getMessage() {
-        return message;
+    public String getLabel() {
+        return label;
     }
 
     @Override
-    public String getMessage(Language language) {
+    public String getLabel(Language language) {
         //TODO i18n not yet implemented for AggregationMode
-        return message;
+        return label;
     }
 
     public boolean isSupportsDistribution() {

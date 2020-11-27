@@ -22,7 +22,7 @@ public enum AggregationSourceMode implements IKeyTerm{
     TAXON("TAX","Link to child taxon", false, true, false);
 
     final private String key;
-    final private String message;
+    final private String label;
     final private boolean supportsWithinTaxon;
     final private boolean supportsToParent;
     final private boolean supportsOriginalSourceType;
@@ -30,7 +30,7 @@ public enum AggregationSourceMode implements IKeyTerm{
     private AggregationSourceMode(String key, String message, boolean supportsWithinTaxon,
             boolean supportsToParent, boolean supportsOriginalSourceType) {
         this.key = key;
-        this.message = message;
+        this.label = message;
         this.supportsWithinTaxon = supportsWithinTaxon;
         this.supportsToParent = supportsToParent;
         this.supportsOriginalSourceType = supportsOriginalSourceType;
@@ -42,14 +42,14 @@ public enum AggregationSourceMode implements IKeyTerm{
     }
 
     @Override
-    public String getMessage() {
-        return message;
+    public String getLabel() {
+        return label;
     }
 
     @Override
-    public String getMessage(Language language) {
+    public String getLabel(Language language) {
         //TODO i18n not yet implemented for AggregationMode
-        return message;
+        return label;
     }
 
     public boolean isSupportsWithinTaxon() {

@@ -167,7 +167,7 @@ public class ReferenceFactory {
 			case Section:
 				return newSection();
 			default:
-				logger.warn("Unknown reference type " + referenceType.getMessage() + ". Created generic reference instead.");
+				logger.warn("Unknown reference type " + referenceType.getLabel() + ". Created generic reference instead.");
 				return newGeneric();
 		}
 	}

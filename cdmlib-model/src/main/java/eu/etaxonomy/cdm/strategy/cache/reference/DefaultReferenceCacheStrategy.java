@@ -525,7 +525,7 @@ public class DefaultReferenceCacheStrategy
         }else if (type == ReferenceType.Section){
             return "in reference";
         } else {
-            return type.getMessage();
+            return type.getLabel();
         }
     }
 

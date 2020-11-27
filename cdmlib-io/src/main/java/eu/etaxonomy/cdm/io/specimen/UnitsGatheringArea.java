@@ -303,7 +303,7 @@ public class UnitsGatheringArea {
 		                   		countryUuids.add(na.getUuid());
 		                   	}
 			                if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
-			                	matchingTerms.put(na.getTitleCache()+" ("+na.getTermType().getMessage() + ")",na.getUuid());
+			                	matchingTerms.put(na.getTitleCache()+" ("+na.getTermType().getLabel() + ")",na.getUuid());
 			                }
 		                }
                 	}

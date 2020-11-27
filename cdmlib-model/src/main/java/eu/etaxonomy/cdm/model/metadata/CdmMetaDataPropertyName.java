@@ -62,12 +62,12 @@ public enum CdmMetaDataPropertyName implements IKeyTerm{
     }
 
     @Override
-    public String getMessage() {
-        return getMessage(Language.DEFAULT());
+    public String getLabel() {
+        return getLabel(Language.DEFAULT());
     }
 
     @Override
-    public String getMessage(Language language) {
+    public String getLabel(Language language) {
         //TODO i18n
         return label;
     }

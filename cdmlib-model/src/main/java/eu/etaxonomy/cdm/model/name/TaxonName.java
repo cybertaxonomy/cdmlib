@@ -2186,7 +2186,7 @@ public class TaxonName
         //check state
         if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
                 ){
-            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getLabel());
         }
         this.nomenclaturalSource = nomenclaturalSource;
         if (nomenclaturalSource != null && nomenclaturalSource.getSourcedName() != this){

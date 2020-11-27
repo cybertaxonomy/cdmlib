@@ -45,7 +45,7 @@ public class TaxonNode2DtoBeanProcessor implements JsonBeanProcessor {
             json.element("status", node.getStatus());
             json.element("status_symbol", node.getStatus().getSymbol());
             KeyTerm_L10n<TaxonNodeStatus> status_L10n = new KeyTerm_L10n<TaxonNodeStatus>(node.getStatus());
-            json.element("status_message_L10n", status_L10n.localizedMessage());
+            json.element("status_message_L10n", status_L10n.localizedLabel());
         }
 
         Taxon taxon = node.getTaxon();

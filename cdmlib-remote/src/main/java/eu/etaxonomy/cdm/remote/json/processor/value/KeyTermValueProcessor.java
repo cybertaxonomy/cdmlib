@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
 import org.apache.log4j.Logger;
@@ -21,12 +20,10 @@ import net.sf.json.processors.JsonValueProcessor;
 
 /**
  * @author a.kohlbecker
- *
  */
 public class KeyTermValueProcessor implements JsonValueProcessor  {
 
     public static final Logger logger = Logger.getLogger(KeyTermValueProcessor.class);
-
 
     @Override
     public Object processArrayValue(Object value, JsonConfig jsonConfig) {
@@ -46,13 +43,11 @@ public class KeyTermValueProcessor implements JsonValueProcessor  {
         if(term.getClass().isEnum()) {
             json.element("name", term); // will be serialized as enum.name()
         }
-        KeyTerm_L10n status_L10n = new KeyTerm_L10n(term);
-        json.element("message_L10n", status_L10n.localizedMessage());
+        KeyTerm_L10n<?> status_L10n = new KeyTerm_L10n<>(term);
+        json.element("message_L10n", status_L10n.localizedLabel());
         if(term instanceof TaxonNodeStatus) {
             json.element("symbol", ((TaxonNodeStatus)term).getSymbol());
         }
         return json;
     }
-
-
 }

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.permission;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
@@ -44,10 +45,10 @@ public enum CRUD  implements IEnumTerm<CRUD>{
     public String getKey(){return delegateVocTerm.getKey();}
 
     @Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
+    public String getLabel(){return delegateVocTerm.getLabel();}
 
     @Override
-    public String getMessage(eu.etaxonomy.cdm.model.common.Language language){return delegateVocTerm.getMessage(language);}
+    public String getLabel(Language language){return delegateVocTerm.getLabel(language);}
 
     @Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}

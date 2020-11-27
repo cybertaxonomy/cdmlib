@@ -25,21 +25,21 @@ public class KeyTerm_L10n<T extends IKeyTerm> {
         this.keyTerm = enumTerm;
     }
 
-    public String localizedMessage() {
+    public String localizedLabel() {
 
         List<Language> languages = LocaleContext.getLanguages();
-        String message_L10n = null;
+        String label_L10n = null;
         if(languages != null){
             for(Language language : languages) {
-                message_L10n = keyTerm.getMessage(language);
-                if(message_L10n != null){
-                    return message_L10n;
+                label_L10n = keyTerm.getLabel(language);
+                if(label_L10n != null){
+                    return label_L10n;
                 }
             }
         }
-        message_L10n = keyTerm.getMessage();
+        label_L10n = keyTerm.getLabel();
 
-        return message_L10n;
+        return label_L10n;
     }
 
 }

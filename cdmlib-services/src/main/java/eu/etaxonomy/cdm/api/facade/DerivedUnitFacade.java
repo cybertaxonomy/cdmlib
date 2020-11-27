@@ -195,7 +195,7 @@ public class DerivedUnitFacade {
 			return DerivedUnit.NewInstance(type);
 		} else {
 			String message = "Unknown specimen or observation type %s";
-			message = String.format(message, type.getMessage());
+			message = String.format(message, type.getLabel());
 			throw new IllegalStateException(message);
 		}
 	}

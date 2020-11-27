@@ -1293,7 +1293,7 @@ public class NonViralNameParserImpl
 			}
 		}else {
 			//TODO
-			logger.warn ("Full author String parsable only for defined BotanicalNames or ZoologicalNames but this is " + code.getMessage());
+			logger.warn ("Full author String parsable only for defined BotanicalNames or ZoologicalNames but this is " + code.getLabel());
 			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
 		}
 		fullAuthorsChecked(fullAuthorString, authors, years);

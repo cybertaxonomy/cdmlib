@@ -1377,7 +1377,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            //            return getFeature("Specimen or observation");
 	        }else{
 	            String message = "Unhandled record basis '%s' for defining individuals association feature type. Use default.";
-	            logger.warn(String.format(message, type.getMessage()));
+	            logger.warn(String.format(message, type.getLabel()));
 	            return Feature.OBSERVATION();
 	            //            return getFeature("Specimen or observation");
 

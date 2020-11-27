@@ -944,7 +944,7 @@ public class Reference
 	@Override
     @Transient
     public String getNomenclaturalCitation(String microReference) {
-		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
+		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getLabel();
 		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 			return null;

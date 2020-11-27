@@ -22,9 +22,9 @@ public interface IPreferencePredicate<T extends Object> {
 
     public T getDefaultValue();
 
-    public String getMessage();
+    public String getLabel();
 
-    public String getMessage(Language language);
+    public String getLabel(Language language);
 
     public UUID getUuid();
 
