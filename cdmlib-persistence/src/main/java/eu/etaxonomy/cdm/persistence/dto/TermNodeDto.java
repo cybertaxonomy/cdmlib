@@ -204,8 +204,10 @@ public class TermNodeDto implements Serializable{
     public int getIndex(TermNodeDto nodeDto) {
         int index = 0;
         for (TermNodeDto child: children){
-            if (child.getUuid().equals(nodeDto.getUuid())){
-                return index;
+            if (child != null){
+                if (child.getUuid().equals(nodeDto.getUuid())){
+                    return index;
+                }
             }
             index++;
         }
@@ -228,14 +230,14 @@ public class TermNodeDto implements Serializable{
     }
 
 
-public boolean removeChild(TermNodeDto nodeDto){
+public boolean removeChild(TermNodeDto nodeDto, boolean doRecursive){
        int index = this.getIndex(nodeDto);
        if (index > -1){
            this.getChildren().remove(index);
            return true;
-       }else if (this.getChildren() != null && !this.getChildren().isEmpty()){
+       }else if (doRecursive && this.getChildren() != null && !this.getChildren().isEmpty()){
            for (TermNodeDto child: children){
-               boolean result = child.removeChild(nodeDto);
+               boolean result = child.removeChild(nodeDto, doRecursive);
                if (result){
                    return true;
                }

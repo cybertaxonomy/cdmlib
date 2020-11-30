@@ -28,6 +28,7 @@ public class TermCollectionDto extends AbstractTermDto {
     private Set<TermDto> terms;
 
     private boolean isAllowDuplicate;
+    private boolean containsDuplicates = false;
     private boolean isOrderRelevant;
     private boolean isFlat;
 
@@ -48,8 +49,20 @@ public class TermCollectionDto extends AbstractTermDto {
     }
 
     public void addTerm(TermDto term){
+        if (terms == null){
+            terms = new HashSet<>();
+        }
+        if (terms.contains(term)){
+            containsDuplicates = true;
+        }
         terms.add(term);
     }
+
+    public void removeTerm(TermDto term){
+        terms.remove(term);
+    }
+
+
 
     /**
      * @return the isAllowDuplicate
@@ -63,6 +76,14 @@ public class TermCollectionDto extends AbstractTermDto {
      */
     public void setAllowDuplicate(boolean isAllowDuplicate) {
         this.isAllowDuplicate = isAllowDuplicate;
+    }
+
+    public boolean isContainsDuplicates() {
+        return containsDuplicates;
+    }
+
+    public void setContainsDuplicates(boolean containsDuplicates) {
+        this.containsDuplicates = containsDuplicates;
     }
 
     /**

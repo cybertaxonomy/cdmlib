@@ -55,7 +55,7 @@ public class TermTreeDto extends TermCollectionDto {
     }
 
     public boolean removeChild(TermNodeDto nodeDto){
-        return this.root.removeChild(nodeDto);
+        return this.root.removeChild(nodeDto, true);
     }
 
     public static String getTermTreeDtoSelect(){
