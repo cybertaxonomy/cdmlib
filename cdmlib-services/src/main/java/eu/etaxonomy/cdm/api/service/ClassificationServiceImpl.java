@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -156,7 +155,7 @@ public class ClassificationServiceImpl
 
     private void addChildTaxa(TaxonNode originalParentNode, TaxonNode cloneParentNode, Classification classification, TaxonRelationshipType relationshipType){
         Reference reference = classification.getReference();
-    	Taxon cloneTaxon = (Taxon) HibernateProxyHelper.deproxy(originalParentNode.getTaxon(), Taxon.class).clone();
+    	Taxon cloneTaxon = CdmBase.deproxy(originalParentNode.getTaxon()).clone();
     	cloneTaxon.setSec(reference);
 		String microReference = null;
 		List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
@@ -637,7 +636,7 @@ public class ClassificationServiceImpl
     			//FIXME NPE for name
     			TaxonName name = tNode.getTaxon().getName();
     			if(name.getNameCache().equalsIgnoreCase(genus)){
-    				TaxonNode clone = (TaxonNode) tNode.clone();
+    				TaxonNode clone = tNode.clone();
     				if(!tNode.hasChildNodes()){
     					//FIXME remove classification
 //    					parentNode = newClassification.addChildNode(clone, 0, classification.getCitation(), classification.getMicroReference());
@@ -682,7 +681,7 @@ public class ClassificationServiceImpl
     				continue; //skip to next taxonNode
     			}
 
-    			TaxonNode clone = (TaxonNode) tn.clone();
+    			TaxonNode clone = tn.clone();
     			//FIXME: citation from node
     			//TODO: addchildNode without citation and references
 //    			TaxonNode taxonNode = parentNode.addChildNode(clone, classification.getCitation(), classification.getMicroReference());
@@ -719,7 +718,7 @@ public class ClassificationServiceImpl
 			childNodes = copyFromNode.getChildNodes();
 		}
 		for(TaxonNode childNode:childNodes){
-			TaxonNode clone = (TaxonNode) childNode.clone();
+			TaxonNode clone = childNode.clone();
 			result.addUnChangedObject(clone);
 			if(childNode.hasChildNodes()){
 				copyAllChildrenToTaxonNode(childNode, clone, result);
