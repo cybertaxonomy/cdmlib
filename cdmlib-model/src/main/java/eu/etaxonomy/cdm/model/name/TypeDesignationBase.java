@@ -241,16 +241,24 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         checkNullSource();
     }
     /**
-     * The reference for the designation's  {@link #getSource() source}.
+     * Convenience method to retrieve the reference of the type designations
+     * designation/lectotype source.
+     *
+     * @see #getSource()
      */
     @Transient
     public Reference getCitation(){
         return source == null ? null : this.source.getCitation();
     }
     /**
-     * The reference for the designation's {@link #getSource() source}.
+     * Convenience method to set reference for the designation's
+     * {@link #getSource() designation/lectotype source}.
      * The source is created if reference is not <code>null</code>
      * and the source does not yet exist.
+     * <BR>
+     * This field should only be used if
+     * the {@link #getTypeStatus() status} is lectotype (or similar) which can be
+     * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}
      *
      * @see #getSource()
      */
@@ -275,7 +283,8 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     }
 
     /**
-     * The primary source of typification. This field should only be used if
+     * The primary source of typification as used for lecto-, epi- and neotypes.
+     * This field should only be used if
      * the {@link #getTypeStatus() status} is lectotype (or similar) which can be
      * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}.
      */
