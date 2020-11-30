@@ -116,7 +116,9 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             rankOrderIndex = null;
         }
         if (taxonNode != null || classification != null){
-            taxonNode = classification.getRootNode();
+            if (classification != null){
+                taxonNode = classification.getRootNode();
+            }
             taxonomicChildrenCount = taxonNode.getCountChildren();
             status = taxonNode.getStatus();
 
