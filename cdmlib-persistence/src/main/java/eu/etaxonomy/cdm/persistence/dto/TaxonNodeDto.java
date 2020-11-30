@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -89,11 +90,14 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(type, taxonTreeNode.getUuid(), taxonTreeNode.getId(), null);
         Taxon taxon = null;
         TaxonNode taxonNode = null;
-
+        Classification classification = null;
         if (taxonTreeNode instanceof TaxonNode){
             taxonNode = (TaxonNode)taxonTreeNode;
             taxon = taxonNode.getTaxon();
+        }else if (taxonTreeNode instanceof Classification){
+            classification = (Classification) taxonTreeNode;
         }
+
 
         if (taxon != null){
             setTitleCache(taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache());
@@ -106,10 +110,13 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         }else{
             if (taxonNode != null && taxonNode.getClassification() != null){
                 setTitleCache(taxonNode.getClassification().getTitleCache());
+            } else if (classification != null){
+                setTitleCache(classification.getTitleCache());
             }
             rankOrderIndex = null;
         }
-        if (taxonNode != null){
+        if (taxonNode != null || classification != null){
+            taxonNode = classification.getRootNode();
             taxonomicChildrenCount = taxonNode.getCountChildren();
             status = taxonNode.getStatus();
 
@@ -127,8 +134,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             sortIndex = taxonNode.getSortIndex();
             if(taxonNode.getClassification() != null) {
                 classificationUUID = taxonNode.getClassification().getUuid();
-            } else {
-                classificationUUID = null;
+            } else if (classification != null){
+                classificationUUID = classification.getUuid();
             }
 
         }
