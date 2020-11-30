@@ -83,6 +83,7 @@ public class TermTreeServiceImpl
 
 
     @Override
+    @Transactional(readOnly = false)
     public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos){
         UpdateResult result = new UpdateResult();
         MergeResult<TermTree> mergeResult;
@@ -94,7 +95,7 @@ public class TermTreeServiceImpl
             for (TermTreeDto dto: dtos){
 
                 if (dto.getUuid().equals(tree.getUuid())){
-                    tree.setTitleCache(dto.getTitleCache());
+                    tree.setTitleCache(dto.getTitleCache(), true);
                     tree.setAllowDuplicates(dto.isAllowDuplicate());
                     tree.setFlat(dto.isFlat());
                     tree.setOrderRelevant(dto.isOrderRelevant());
