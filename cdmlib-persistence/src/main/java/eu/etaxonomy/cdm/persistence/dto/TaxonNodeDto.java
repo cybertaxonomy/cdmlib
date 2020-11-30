@@ -103,9 +103,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             rankLabel = taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getLabel() : null;
             this.setAbbrevTitleCache(taxon.getTitleCache());
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
-
         }else{
-            if (taxonNode != null){
+            if (taxonNode != null && taxonNode.getClassification() != null){
                 setTitleCache(taxonNode.getClassification().getTitleCache());
             }
             rankOrderIndex = null;
