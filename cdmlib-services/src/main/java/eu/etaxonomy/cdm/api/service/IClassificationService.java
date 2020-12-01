@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
@@ -24,12 +25,10 @@ import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dto.ClassificationLookupDTO;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -61,12 +60,10 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
     /**
      * Clones an existing classification including all taxa and taxon nodes.
-     * @param name
-     * @param sec
-     * @param relationshipType
-     * @return
+
+     * @param config the configurator for the cloning
      */
-    public UpdateResult cloneClassification(UUID classificationUuid, String name, Reference sec, TaxonRelationshipType relationshipType);
+    public UpdateResult cloneClassification(SubtreeCloneConfigurator config);
 
     /**
      *

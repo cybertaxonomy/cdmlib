@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -29,6 +32,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -39,6 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
@@ -276,27 +281,73 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet
     public final void testCloneClassification(){
-    	Classification classification = classificationDao.load(CLASSIFICATION_UUID);
-    	Reference sec = ReferenceFactory.newGeneric();
-    	sec.setTitle("cloned sec");
-    	Classification clone = (Classification) classificationService.cloneClassification(CLASSIFICATION_UUID, "Cloned classification", sec, TaxonRelationshipType.CONGRUENT_TO()).getCdmEntity();
 
-    	List<TaxonNode> childNodes = classification.getChildNodes();
-    	for (TaxonNode taxonNode : childNodes) {
-			System.out.println(taxonNode.getTaxon().getTitleCache());
-		}
-    	childNodes = clone.getChildNodes();
-    	for (TaxonNode taxonNode : childNodes) {
-    		System.out.println(taxonNode.getTaxon().getTitleCache());
-    	}
-    	Set<TaxonNode> allNodes = classification.getAllNodes();
-    	assertEquals("# of direct children does not match", classification.getChildNodes().size(), clone.getChildNodes().size());
-		assertEquals("# of all nodes does not match", allNodes.size(), clone.getAllNodes().size());
+    	Classification originalClassification = classificationDao.load(CLASSIFICATION_UUID);
 
-    	//check that original taxon does not appear in cloned classification
-		for (TaxonNode taxonNode : allNodes) {
-    		assertNull(clone.getNode(taxonNode.getTaxon()));
+    	SubtreeCloneConfigurator config = SubtreeCloneConfigurator.NewBaseInstance(
+    	        originalClassification.getRootNode().getUuid(), "Cloned classification");
+
+    	Classification classificatonClone = (Classification) classificationService.cloneClassification(config).getCdmEntity();
+
+    	assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificatonClone.getChildNodes().size());
+		assertEquals("# of all nodes does not match", originalClassification.getAllNodes().size(), classificatonClone.getAllNodes().size());
+
+		Set<UUID> originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
+    	for (TaxonNode clonedTaxonNode : classificatonClone.getChildNodes()) {
+		    //test no reuse of taxon
+		    Taxon clonedTaxon = clonedTaxonNode.getTaxon();
+		    TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
+    		assertNull(originalNode);
+
+    		//check relationship
+    		assertEquals(0, clonedTaxon.getRelationsFromThisTaxon().size());
+
+    		//test taxon sec
+    		assertTrue(originalTaxonSecUuids.contains(clonedTaxon.getSec().getUuid()));
     	}
+
+    	//test reuse taxon
+    	config.setReuseTaxa(true);
+    	classificatonClone = (Classification) classificationService.cloneClassification(config).getCdmEntity();
+    	assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificatonClone.getChildNodes().size());
+    	originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
+        for (TaxonNode taxonNode : classificatonClone.getChildNodes()) {
+            //test no reuse of taxon
+            Taxon clonedTaxon = taxonNode.getTaxon();
+            TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
+            assertNotNull(originalNode);
+            Taxon originalTaxon = originalNode.getTaxon();
+            assertNotNull(originalTaxon);
+
+            //check relationship
+            assertEquals(0, clonedTaxon.getRelationsFromThisTaxon().size());
+
+            //test taxon sec
+            assertEquals(originalTaxon.getSec().getUuid(), clonedTaxon.getSec().getUuid());
+        }
+
+        config.setReuseTaxa(false);  //reset
+	    config.setRelationTypeToOldTaxon(TaxonRelationshipType.CONGRUENT_TO());
+	    Reference sec = referenceDao.findByUuid(UUID.fromString("719d136b-409e-40d0-9561-46f6999465b4"));
+	    config.setTaxonSecundumUuid(sec.getUuid());
+	    classificatonClone = (Classification) classificationService.cloneClassification(config).getCdmEntity();
+	    originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
+        for (TaxonNode taxonNode : classificatonClone.getChildNodes()) {
+            //test no reuse of taxon
+            Taxon clonedTaxon = taxonNode.getTaxon();
+            TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
+            assertNull(originalNode);
+
+            //check relationship
+            TaxonRelationship relShip = clonedTaxon.getRelationsFromThisTaxon().iterator().next();
+            Taxon relatedTaxon = relShip.getToTaxon();
+            Taxon relatedOriginalTaxon = originalClassification.getNode(relatedTaxon).getTaxon();
+            assertEquals(relatedOriginalTaxon.getName(), clonedTaxon.getName());
+            assertTrue(relShip.getType().equals(TaxonRelationshipType.CONGRUENT_TO()));
+
+            //test taxon sec
+            assertEquals(relatedOriginalTaxon.getSec().getUuid(), clonedTaxon.getSec().getUuid());
+        }
     }
 
     private UUID acacia_acicularis_uuid  = UUID.fromString("90ad2d8f-19a9-4a10-bab3-7d1de5ce1968");
