@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
  */
 public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
 
+    private static final long serialVersionUID = 5306732384161520246L;
+
     /**
      * If <code>true</code> all sub derivates of the specimen are deleted.
      */

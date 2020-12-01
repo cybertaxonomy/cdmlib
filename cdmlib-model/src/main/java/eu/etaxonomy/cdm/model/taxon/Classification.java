@@ -350,7 +350,7 @@ public class Classification
         }
 
         for (TaxonNode taxonNode: taxon.getTaxonNodes()){
-        	Classification classification = deproxy(taxonNode.getClassification(), Classification.class);
+        	Classification classification = deproxy(taxonNode.getClassification());
             if (classification.equals(this)){
                 return taxonNode;
             }
