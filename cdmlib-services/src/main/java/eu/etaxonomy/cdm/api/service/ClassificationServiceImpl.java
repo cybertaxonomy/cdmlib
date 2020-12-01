@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -105,7 +106,7 @@ public class ClassificationServiceImpl
     private ITaxonNodeService taxonNodeService;
 
     @Autowired
-    private IReferenceService referenceService;
+    private IReferenceDao referenceDao;
 
     @Autowired
     private IDefinedTermDao termDao;
@@ -149,15 +150,15 @@ public class ClassificationServiceImpl
 
         //TODO error handling
         Reference taxonSecundum = config.isReuseTaxa() || config.isReuseTaxonSecundum() || config.getTaxonSecundumUuid() == null ?
-                null : referenceService.find(config.getTaxonSecundumUuid());
+                null : referenceDao.findByUuid(config.getTaxonSecundumUuid());
         config.setTaxonSecundum(taxonSecundum);
 
         Reference parentChildReference = config.isReuseParentChildReference() || config.getParentChildReferenceUuid() == null ?
-                null : referenceService.find(config.getParentChildReferenceUuid());
+                null : referenceDao.findByUuid(config.getParentChildReferenceUuid());
         config.setParentChildReference(parentChildReference);
 
         Reference taxonRelationshipReference = config.getRelationTypeToOldTaxon() == null ?
-                null : referenceService.find(config.getRelationshipReferenceUuid());
+                null : referenceDao.findByUuid(config.getRelationshipReferenceUuid());
         config.setRelationshipReference(taxonRelationshipReference);
 
         Classification classificationClone = Classification.NewInstance(config.getClassificationName());
@@ -169,7 +170,7 @@ public class ClassificationServiceImpl
                 classificationClone.setReference(oldClassificationRef);
             }
         }else if (config.getClassificationReferenceUuid() != null) {
-            Reference classificationReference = referenceService.find(config.getClassificationReferenceUuid());
+            Reference classificationReference = referenceDao.findByUuid(config.getClassificationReferenceUuid());
             classificationClone.setReference(classificationReference);
         }
 
