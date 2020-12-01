@@ -1327,6 +1327,12 @@
         <version>0.9.5.2</version>
       </dependency>
       <dependency>
+        <groupId>com.mchange</groupId>
+        <artifactId>mchange-commons-java</artifactId>
+        <!-- mchange-commons-java needs to match the version as defined in the c3p0/pom.xml -->
+        <version>0.2.11</version>
+      </dependency>
+      <dependency>
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
         <version>5.1.0.Final</version>
