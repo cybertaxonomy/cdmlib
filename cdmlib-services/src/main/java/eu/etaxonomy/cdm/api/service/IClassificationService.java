@@ -41,15 +41,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface IClassificationService extends IIdentifiableEntityService<Classification> {
 
-    /**
-     *
-     * @param uuid
-     * @return
-     */
     public ITaxonTreeNode getTreeNodeByUuid(UUID uuid);
 
     /**
-     *
      * Returns the root node of the the given classification (specified by its UUID)
      * @param classificationUuid the uuid of the classification
      * @return the root node of the classification

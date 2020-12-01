@@ -65,6 +65,12 @@ public class SubtreeCloneConfigurator implements Serializable {
      private Reference relationshipReference;
 
 
+    /**
+     * Creates a default instance with default values. E.g. reuseNames is <code>true</code>.
+     * @param subTreeUuid
+     * @param classificationName
+     * @return
+     */
     public static SubtreeCloneConfigurator NewBaseInstance(UUID subTreeUuid, String classificationName
             ){
         Set<UUID> subTreeUuids = new HashSet<>();
