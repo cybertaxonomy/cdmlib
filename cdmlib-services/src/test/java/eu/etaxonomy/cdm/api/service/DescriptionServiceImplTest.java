@@ -95,6 +95,7 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
     }
 
     @Test
+    @DataSet("../../database/ClearDBDataSet.xml")
     public void testMoveDescriptionElement(){
         //Create data
         Taxon taxon = Taxon.NewInstance(null, null);
