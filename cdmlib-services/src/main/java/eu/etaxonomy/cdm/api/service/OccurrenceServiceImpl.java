@@ -685,7 +685,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
 
     /**
-     * Method to be used by calling functions
+     * Recursively searches all {@link DerivationEvent}s to find all "originals" ({@link SpecimenOrObservationBase})
+     * from which this DerivedUnit was derived until all FieldUnits are found.
+     * <p>
+     * <b>NOTE:</b> The recursive search still is a bit incomplete and may miss originals in the rare case where a
+     * derivative has more than one original. (see https://dev.e-taxonomy.eu/redmine/issues/9253)
+     *
+     * @param derivedUnitDTO
+     *  The DerivedUnitDTO to start the search from.
+     * @param alreadyCollectedSpecimen
+     *  A map to hold all originals that have been sees during the recursive walk.
+     * @return
+     *  The collection of all Field Units that are accessible from the derivative from where the search was started.
      */
     public Collection<FieldUnitDTO> findFieldUnitDTO(DerivedUnitDTO derivedUnitDTO, HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
         HashMap<UUID, FieldUnitDTO> fieldUnitDTOs = new HashMap<>();
