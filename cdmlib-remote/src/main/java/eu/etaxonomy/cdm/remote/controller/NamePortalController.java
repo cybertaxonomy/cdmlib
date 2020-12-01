@@ -82,6 +82,8 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             "elements.$",
             "elements.multilanguageText",
             "elements.media",
+            "elements.sources.citation.authorship",
+            "elements.sources.nameUsedInSource",
     });
 
     private static final EntityInitStrategy NOMREF_INIT_STRATEGY = new EntityInitStrategy(
