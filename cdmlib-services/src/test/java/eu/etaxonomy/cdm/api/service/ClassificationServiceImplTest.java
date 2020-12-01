@@ -305,6 +305,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
     		//test taxon sec
     		assertTrue(originalTaxonSecUuids.contains(clonedTaxon.getSec().getUuid()));
     	}
+    	commitAndStartNewTransaction();
 
     	//test reuse taxon
     	config.setReuseTaxa(true);
@@ -325,6 +326,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
             //test taxon sec
             assertEquals(originalTaxon.getSec().getUuid(), clonedTaxon.getSec().getUuid());
         }
+        commitAndStartNewTransaction();
 
         config.setReuseTaxa(false);  //reset
 	    config.setRelationTypeToOldTaxon(TaxonRelationshipType.CONGRUENT_TO());
@@ -348,6 +350,8 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
             //test taxon sec
             assertEquals(relatedOriginalTaxon.getSec().getUuid(), clonedTaxon.getSec().getUuid());
         }
+        commitAndStartNewTransaction();
+
     }
 
     private UUID acacia_acicularis_uuid  = UUID.fromString("90ad2d8f-19a9-4a10-bab3-7d1de5ce1968");

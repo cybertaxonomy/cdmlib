@@ -1709,6 +1709,7 @@ public class Taxon
         result = (Taxon)super.clone();
 
         result.setRelationsFromThisTaxon(new HashSet<>());
+        result.setRelationsToThisTaxon(new HashSet<>());
 
         if (withTaxonRelations){
             for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
@@ -1717,7 +1718,6 @@ public class Taxon
                 result.relationsFromThisTaxon.add(newRelationship);
             }
 
-            result.setRelationsToThisTaxon(new HashSet<>());
             for (TaxonRelationship toRelationship : this.getRelationsToThisTaxon()){
                 TaxonRelationship newRelationship = toRelationship.clone();
                 newRelationship.setRelatedTo(result);
