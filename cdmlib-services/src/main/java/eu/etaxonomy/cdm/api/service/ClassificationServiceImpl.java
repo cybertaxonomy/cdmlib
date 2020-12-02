@@ -209,7 +209,6 @@ public class ClassificationServiceImpl
                     cloneTaxon.setName(cloneTaxon.getName().clone());
                 }
 
-//                xxx KonzeptClone MAN, ppSyns;
                 if (!config.isReuseTaxonSecundum()){
                     cloneTaxon.setSec(config.getTaxonSecundum());
                 }

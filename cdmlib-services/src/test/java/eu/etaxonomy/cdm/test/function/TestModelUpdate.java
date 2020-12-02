@@ -128,7 +128,6 @@ public class TestModelUpdate {
 	 * Updates the H2 test database in remote web-app.
 	 * Requires that the local path to the database is adapted
 	 */
-	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
 	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
 	    updateH2(pathToProject);
@@ -138,7 +137,6 @@ public class TestModelUpdate {
      * Updates the H2 test database in TaxEditor.
      * Requires that the local path to the database is adapted
      */
-    @SuppressWarnings("unused")  //enable only if needed
     private void updateTaxEditorH2(){
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
         updateH2(pathToProject);
@@ -148,7 +146,6 @@ public class TestModelUpdate {
      * Updates the H2 test database in CDM vaadin.
      * Requires that the local path to the database is adapted
      */
-    @SuppressWarnings("unused")  //enable only if needed
     private void updateVaadinH2(){
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
         updateH2(pathToProject);
