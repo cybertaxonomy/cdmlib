@@ -56,10 +56,19 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
 
 		String stepName = "remove original spelling name relationship type";
 		String uuidTerm = "264d2be4-e378-4168-9760-a9512ffbddc4";
-		String checkUsedQueries = "SELECT count(*) FROM @@NameRelationship@@ nr "
-                + " INNER JOIN @@DefinedTermBase@@ nrType ON nrType.id = nr.type_id "
+		String checkUsedQueries = "SELECT count(*) "
+		        + " FROM @@NameRelationship@@ nr "
+                + "   INNER JOIN @@DefinedTermBase@@ nrType ON nrType.id = nr.type_id "
                 + " WHERE nrType.uuid = '264d2be4-e378-4168-9760-a9512ffbddc4'";
 		SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
+
+        stepName = "remove original spelling name relationship type (AUD)";
+        uuidTerm = "264d2be4-e378-4168-9760-a9512ffbddc4";
+        checkUsedQueries = "SELECT count(*) "
+                + " FROM @@NameRelationship_AUD@@ nr "
+                + "   INNER JOIN @@DefinedTermBase_AUD@@ nrType ON nrType.id = nr.type_id "
+                + " WHERE nrType.uuid = '264d2be4-e378-4168-9760-a9512ffbddc4'";
+        SingleTermRemover.NewAudInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
 
 		//#9311
         changeSomeTermLabels(stepList);
@@ -83,6 +92,7 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
     }
 
 	//#9311
+    @SuppressWarnings("null")
     private void changeSomeTermLabels(List<ISchemaUpdaterStep> stepList) {
 
         String stepName = "Change abbrev label op. utique oppr.";
@@ -261,6 +271,6 @@ public class SchemaUpdater_5184_5185 extends SchemaUpdaterBase {
 
     @Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_5185_5186.NewInstance();
 	}
 }
