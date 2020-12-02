@@ -1711,17 +1711,25 @@ public class Taxon
         result.setRelationsFromThisTaxon(new HashSet<>());
         result.setRelationsToThisTaxon(new HashSet<>());
 
-        if (withTaxonRelations){
+        if (withTaxonRelations || withSynonyms){
             for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
-                TaxonRelationship newRelationship = fromRelationship.clone();
-                newRelationship.setRelatedFrom(result);
-                result.relationsFromThisTaxon.add(newRelationship);
+                boolean isSynonymRelation = fromRelationship.getType() != null &&
+                        fromRelationship.getType().isAnySynonymOrMisappliedName();
+                if (isSynonymRelation && withSynonyms || !isSynonymRelation && withTaxonRelations){
+                    TaxonRelationship newRelationship = fromRelationship.clone();
+                    newRelationship.setRelatedFrom(result);
+                    result.relationsFromThisTaxon.add(newRelationship);
+                }
             }
 
             for (TaxonRelationship toRelationship : this.getRelationsToThisTaxon()){
-                TaxonRelationship newRelationship = toRelationship.clone();
-                newRelationship.setRelatedTo(result);
-                result.relationsToThisTaxon.add(newRelationship);
+                boolean isSynonymRelation = toRelationship.getType() != null &&
+                        toRelationship.getType().isAnySynonymOrMisappliedName();
+                if (isSynonymRelation && withSynonyms || !isSynonymRelation && withTaxonRelations){
+                    TaxonRelationship newRelationship = toRelationship.clone();
+                    newRelationship.setRelatedTo(result);
+                    result.relationsToThisTaxon.add(newRelationship);
+                }
             }
         }
 

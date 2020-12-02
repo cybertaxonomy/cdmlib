@@ -200,8 +200,15 @@ public class ClassificationServiceImpl
             if (config.isReuseTaxa()){
                 childNodeClone = parentNodeClone.addChildTaxon(originalTaxon, config.getParentChildReference(), microReference);
             }else{
-                Taxon cloneTaxon = originalTaxon.clone(config.isCloneSynonyms(), config.isCloneTaxonRelationships(),
-                        config.isCloneDescriptiveData(), config.isCloneMedia());
+                Taxon cloneTaxon = originalTaxon.clone(config.isIncludeSynonymsIncludingManAndProParte(),
+                        config.isIncludeTaxonRelationshipsExcludingManAndProParte(),
+                        config.isIncludeDescriptiveData(), config.isIncludeMedia());
+
+                //name
+                if (!config.isReuseNames()){
+                    cloneTaxon.setName(cloneTaxon.getName().clone());
+                }
+
 //                xxx KonzeptClone MAN, ppSyns;
                 if (!config.isReuseTaxonSecundum()){
                     cloneTaxon.setSec(config.getTaxonSecundum());
@@ -216,7 +223,7 @@ public class ClassificationServiceImpl
                 childNodeClone = parentNodeClone.addChildTaxon(cloneTaxon, config.getParentChildReference(), microReference);
             }
 
-            //TODO necessary?
+            //probably necessary as taxon nodes do not cascade
             taxonNodeDao.saveOrUpdate(childNodeClone);
             //add children
             List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();

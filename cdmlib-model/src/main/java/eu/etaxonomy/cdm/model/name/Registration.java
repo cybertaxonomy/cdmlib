@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
@@ -69,6 +70,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 public class Registration extends AnnotatableEntity {
 
     private static final long serialVersionUID = -5633923579539766801L;
+    private static final Logger logger = Logger.getLogger(Registration.class);
 
     @XmlElement(name = "Identifier")
     @NullOrNotEmpty
@@ -260,5 +262,31 @@ public class Registration extends AnnotatableEntity {
         }
     }
 
+    @Override
+    public Registration clone() {
+        try {
+            Registration result = (Registration)super.clone();
+
+            result.blockedBy = new HashSet<>();
+            for (Registration blockedByReg: this.blockedBy){
+                result.addBlockedBy(blockedByReg);
+            }
+
+            result.typeDesignations = new HashSet<>();
+            for (TypeDesignationBase<?> typeDesignation: this.typeDesignations){
+                result.addTypeDesignation(typeDesignation);
+            }
+
+
+            //no changes to: identifier, institution, registrationDate, specificIdentifier,
+            //status, submitter
+            return result;
+        } catch (CloneNotSupportedException e) {
+            logger.warn("Object does not implement cloneable");
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
 }

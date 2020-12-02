@@ -37,13 +37,13 @@ public class SubtreeCloneConfigurator implements Serializable {
 
     private boolean reuseTaxa = false;
      //used only if reuseTaxa == false
-     private boolean cloneSynonyms = true;
+     private boolean includeSynonymsIncludingManAndProParte = true;
      //used only if reuseTaxa == false
-     private boolean cloneDescriptiveData = true;
+     private boolean includeDescriptiveData = true;
      //used only if reuseTaxa == false
-     private boolean cloneMedia = true;
+     private boolean includeMedia = true;
      //used only if reuseTaxa == false
-     private boolean cloneTaxonRelationships = false;
+     private boolean includeTaxonRelationshipsExcludingManAndProParte = false;
      //used only if reuseTaxa == false
      private boolean reuseNames = true;
      //used only if reuseTaxa == false
@@ -274,52 +274,55 @@ public class SubtreeCloneConfigurator implements Serializable {
         this.relationshipReference = relationshipReference;
     }
 
-    public boolean isCloneSynonyms() {
-        return cloneSynonyms;
+    public boolean isIncludeSynonymsIncludingManAndProParte() {
+        return this.includeSynonymsIncludingManAndProParte;
     }
     /**
      * If <code>true</code> the synonyms relationships of this taxon are cloned and attached to the new taxon.
      * <BR>
      * This parameter is used only if <code>{@link #isReuseTaxa() reuseTaxa} == false</code>
      */
-    public void setCloneSynonyms(boolean cloneSynonyms) {
-        this.cloneSynonyms = cloneSynonyms;
+    public void setIncludeSynonymsIncludingManAndProParte(boolean includeSynonyms) {
+        this.includeSynonymsIncludingManAndProParte = includeSynonyms;
     }
 
-    public boolean isCloneDescriptiveData() {
-        return cloneDescriptiveData;
+    public boolean isIncludeDescriptiveData() {
+        return includeDescriptiveData;
     }
-
     /**
-     * If <code>true</code> the descriptive data attached to this taxon are also cloned and attached to the new taxon.
+     * If <code>true</code> the descriptive data attached to this taxon are included in the copy
+     * and attached to the new taxon.
      * <BR>
      * This parameter is used only if <code>{@link #isReuseTaxa() reuseTaxa} == false</code>
      */
-    public void setCloneDescriptiveData(boolean cloneDescriptiveData) {
-        this.cloneDescriptiveData = cloneDescriptiveData;
+    public void setIncludeDescriptiveData(boolean includeDescriptiveData) {
+        this.includeDescriptiveData = includeDescriptiveData;
     }
 
-    public boolean isCloneMedia() {
-        return cloneMedia;
+    public boolean isIncludeMedia() {
+        return includeMedia;
     }
     /**
      * If <code>true</code> the media attached to this taxon are also attached to the new taxon.
-     * Media itself are always reused.<BR>
-     * This parameter is used only if <code>{@link #isReuseTaxa() reuseTaxa} == false</code>
-     */
-    public void setCloneMedia(boolean cloneMedia) {
-        this.cloneMedia = cloneMedia;
-    }
-
-    public boolean isCloneTaxonRelationships() {
-        return cloneTaxonRelationships;
-    }
-    /**
-     * If <code>true</code> the taxon (concept) relationships to and from this taxon are also cloned.
+     * Media itself are always reused.
      * <BR>
      * This parameter is used only if <code>{@link #isReuseTaxa() reuseTaxa} == false</code>
      */
-    public void setCloneTaxonRelationships(boolean cloneTaxonRelationships) {
-        this.cloneTaxonRelationships = cloneTaxonRelationships;
+    public void setIncludeMedia(boolean includeMedia) {
+        this.includeMedia = includeMedia;
+    }
+
+    public boolean isIncludeTaxonRelationshipsExcludingManAndProParte() {
+        return includeTaxonRelationshipsExcludingManAndProParte;
+    }
+    /**
+     * If <code>true</code> the taxon (concept) relationships to and from this taxon are also cloned.
+     * This includes all taxon relationships except those for {@link TaxonRelationshipType#isAnyMisappliedName() any misapplied names}
+     * and {@link TaxonRelationshipType#isAnySynonym() any (pro parte synonyms)}.
+     * <BR>
+     * This parameter is used only if <code>{@link #isReuseTaxa() reuseTaxa} == false</code>
+     */
+    public void setIncludeTaxonRelationshipsExcludingManAndProParte(boolean includeTaxonRelationshipsExcludingManAndProParte) {
+        this.includeTaxonRelationshipsExcludingManAndProParte = includeTaxonRelationshipsExcludingManAndProParte;
     }
 }

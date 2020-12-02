@@ -188,6 +188,15 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
         return (allMisappliedNameTypes().contains(this));
     }
 
+    /**
+     * <code>true</code> if this relationship type is any
+     * of the {@link #isAnyMisappliedName() misapplied name relationships} or
+     * any of the {@link #isAnySynonym() (pro parte) synonym relationships}
+     */
+    public boolean isAnySynonymOrMisappliedName(){
+        return (allMisappliedNameTypes().contains(this) || allSynonymTypes().contains(this));
+    }
+
 
     /**
      * <code>true</code> if this relationship type is any

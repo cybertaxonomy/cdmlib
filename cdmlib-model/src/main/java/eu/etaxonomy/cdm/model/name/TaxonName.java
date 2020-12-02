@@ -3702,6 +3702,12 @@ public class TaxonName
                 result.authorshipCache = null;
             }
 
+            //registrations
+            result.registrations = new HashSet<>();
+            for (Registration registration : getRegistrations()){
+                result.registrations.add(registration);
+            }
+
             //no changes to: appendedPharse, nomenclaturalReference,
             //nomenclaturalMicroReference, parsingProblem, problemEnds, problemStarts
             //protectedFullTitleCache, rank
