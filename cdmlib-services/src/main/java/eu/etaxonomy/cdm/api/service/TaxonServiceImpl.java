@@ -329,7 +329,8 @@ public class TaxonServiceImpl
             return result;
         }
 
-        Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, null);
+        Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, synonym.getSec(), synonym.getSecMicroReference());
+
         dao.save(newAcceptedTaxon);
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF();
