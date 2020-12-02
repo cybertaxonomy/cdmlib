@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -279,5 +280,8 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 
     public Collection<TermDto> findFeatureByTitleAsDto(String title);
 
+    public Country getCountryByIso(String iso639);
+
+    public List<Country> getCountryByName(String name);
 
 }

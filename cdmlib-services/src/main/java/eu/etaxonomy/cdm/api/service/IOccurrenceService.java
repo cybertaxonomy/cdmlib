@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -65,11 +64,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.babadshanjan
  * @since 01.09.2008
  */
-public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenOrObservationBase> {
-
-    public Country getCountryByIso(String iso639);
-
-    public List<Country> getCountryByName(String name);
+public interface IOccurrenceService
+        extends IIdentifiableEntityService<SpecimenOrObservationBase> {
 
     /**
      * Returns a paged list of occurrences that have been determined to belong

@@ -25,7 +25,6 @@ import javax.swing.JTextArea;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -52,12 +51,14 @@ public class UnitsGatheringArea {
     private static final Logger logger = Logger.getLogger(UnitsGatheringArea.class);
 
     private static final boolean DEBUG = false;
-    private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
+
+    private final ArrayList<DefinedTermBase> areas = new ArrayList<>();
+
     private boolean useTDWGarea = false;
 
-    TermVocabulary continentVocabulary = null;
-    TermVocabulary countryVocabulary = null;
-    TermVocabulary specimenImportVocabulary = null;
+    TermVocabulary<NamedArea> continentVocabulary = null;
+    TermVocabulary<Country> countryVocabulary = null;
+    TermVocabulary<NamedArea> specimenImportAreaVocabulary = null;
 
 
     private DefinedTermBase<?> wbc;
@@ -67,10 +68,10 @@ public class UnitsGatheringArea {
         //
     }
 
-    public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config, ITermService termService,
-            IOccurrenceService occurrenceService, IVocabularyService vocService){
+    public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config,
+            ITermService termService, IVocabularyService vocService){
 
-        this.setCountry(isoCountry, country, config, termService, occurrenceService, vocService);
+        this.setCountry(isoCountry, country, config, termService, vocService);
     }
 
     /*
@@ -100,9 +101,9 @@ public class UnitsGatheringArea {
             logger.info(termService.list(NamedArea.class, 0, 0, null, null));
         }
 
-        HashSet<UUID> areaSet = new HashSet<UUID>();
+        HashSet<UUID> areaSet = new HashSet<>();
 
-        HashMap<String, UUID> matchingTermsToUuid = new HashMap<String, UUID>();
+        HashMap<String, UUID> matchingTermsToUuid = new HashMap<>();
         for (java.util.Map.Entry<String, String> entry : namedAreaList.entrySet()){
             String namedAreaStr = entry.getKey();
             String namedAreaClass = entry.getValue();
@@ -112,7 +113,7 @@ public class UnitsGatheringArea {
             List<DefinedTermBase> exactMatchingTerms = termService.findByTitleWithRestrictions(DefinedTermBase.class, namedAreaStr, MatchMode.EXACT, null, null, null, null, null).getRecords();
             if(!exactMatchingTerms.isEmpty()){
                 //check for continents
-                List<DefinedTermBase> exactMatchingContinentTerms = new ArrayList<DefinedTermBase>();
+                List<DefinedTermBase> exactMatchingContinentTerms = new ArrayList<>();
                 if(namedAreaClass!=null && namedAreaClass.equalsIgnoreCase("continent")){
                     if (continentVocabulary == null){
                         continentVocabulary = vocabularyService.load(NamedArea.uuidContinentVocabulary);
@@ -209,17 +210,17 @@ public class UnitsGatheringArea {
 
 
             ar.setTitleCache(namedAreaStr, true);
-            if (specimenImportVocabulary == null){
-                specimenImportVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
-                if (specimenImportVocabulary == null){
-                    specimenImportVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
-                    specimenImportVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
-                    specimenImportVocabulary = vocabularyService.save(specimenImportVocabulary);
+            if (specimenImportAreaVocabulary == null){
+                specimenImportAreaVocabulary = vocabularyService.load(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                if (specimenImportAreaVocabulary == null){
+                    specimenImportAreaVocabulary = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "User defined vocabulary for named areas", "User Defined Named Areas", null, null);
+                    specimenImportAreaVocabulary.setUuid(CdmImportBase.uuidUserDefinedNamedAreaVocabulary);
+                    specimenImportAreaVocabulary = vocabularyService.save(specimenImportAreaVocabulary);
                 }
             }
-            DefinedTermBase term =  specimenImportVocabulary.getTermByIdInvocabulary(namedAreaStr);
+            DefinedTermBase<?> term =  specimenImportAreaVocabulary.getTermByIdInvocabulary(namedAreaStr);
             if (term == null){
-                specimenImportVocabulary.addTerm(ar);
+                specimenImportAreaVocabulary.addTerm(ar);
                 termService.saveOrUpdate(ar);
                 this.areas.add(ar);
             }else{
@@ -268,13 +269,13 @@ public class UnitsGatheringArea {
      * @param fullName: the country's full name
      * @param app: the CDM application controller
      */
-    public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
-            IOccurrenceService occurrenceService, IVocabularyService vocService){
+    public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config,
+            ITermService termService, IVocabularyService vocService){
 
 
         if (!StringUtils.isEmpty(iso)){
         	try {
-        		wbc = occurrenceService.getCountryByIso(iso);
+        		wbc = termService.getCountryByIso(iso);
         	}catch(NullPointerException e) {
         		wbc = null;
         	}
@@ -344,10 +345,6 @@ public class UnitsGatheringArea {
         }
     }
 
-    /**
-     * @param fullName
-     * @param uuid
-     */
     private void addNamedAreaDecision(String fullName, UUID uuid,ImportConfiguratorBase<?, ?> config) {
         if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
             ((SpecimenSynthesysExcelImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
@@ -358,13 +355,8 @@ public class UnitsGatheringArea {
         if (config.getClass().equals(TaxonXImportConfigurator.class)) {
             ((TaxonXImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
         }
-
     }
 
-    /**
-     * @param fullName
-     * @return
-     */
     private UUID getNamedAreaDecision(String fullName, ImportConfiguratorBase<?, ?> config) {
         UUID areaUUID = null;
         if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
@@ -379,21 +371,11 @@ public class UnitsGatheringArea {
         return areaUUID;
     }
 
-    /**
-     * @param useTDWGarea2
-     */
     public void useTDWGareas(boolean useTDWGarea) {
         this.useTDWGarea=useTDWGarea;
-
     }
 
-    /**
-     * @return
-     */
     public DefinedTermBase<?> getCountry() {
         return wbc;
     }
-
-
-
 }

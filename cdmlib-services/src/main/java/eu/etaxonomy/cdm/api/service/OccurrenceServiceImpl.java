@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
@@ -73,7 +72,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.AmplificationResult;
@@ -92,10 +90,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
@@ -108,12 +104,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @Service
 @Transactional(readOnly = true)
-public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObservationBase, IOccurrenceDao> implements IOccurrenceService {
+public class OccurrenceServiceImpl
+        extends IdentifiableServiceBase<SpecimenOrObservationBase, IOccurrenceDao>
+        implements IOccurrenceService {
 
     static private final Logger logger = Logger.getLogger(OccurrenceServiceImpl.class);
-
-    @Autowired
-    private IDefinedTermDao definedTermDao;
 
     @Autowired
     private IDescriptionService descriptionService;
@@ -131,7 +126,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private ISequenceService sequenceService;
 
     @Autowired
-    private AbstractBeanInitializer beanInitializer;
+    private AbstractBeanInitializer<?> beanInitializer;
 
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
@@ -148,30 +143,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             clazz = SpecimenOrObservationBase.class;
         }
         return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * move to termService
-     */
-    @Override
-    public Country getCountryByIso(String iso639) {
-        return this.definedTermDao.getCountryByIso(iso639);
-
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * move to termService
-     */
-    @Override
-    public List<Country> getCountryByName(String name) {
-        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitleWithRestrictions(Country.class, name, null, null, null, null, null, null);
-        List<Country> countries = new ArrayList<>();
-        for (int i = 0; i < terms.size(); i++) {
-            countries.add((Country) terms.get(i));
-        }
-        return countries;
     }
 
     @Override
