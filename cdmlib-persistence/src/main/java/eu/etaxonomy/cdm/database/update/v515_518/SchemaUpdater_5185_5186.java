@@ -31,7 +31,7 @@ public class SchemaUpdater_5185_5186 extends SchemaUpdaterBase {
 
 	private static final CdmVersion startSchemaVersion = CdmVersion.V_05_18_05;
 	//FIXME
-	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_05;
+	private static final CdmVersion endSchemaVersion = CdmVersion.V_05_18_06;
 
 // ********************** FACTORY METHOD *************************************
 
@@ -57,6 +57,13 @@ public class SchemaUpdater_5185_5186 extends SchemaUpdaterBase {
                 + " INNER JOIN @@DefinedTermBase@@ trType ON trType.id = tr.type_id "
                 + " WHERE trType.uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
         SingleTermRemover.NewInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
+
+        stepName = "remove invalid designation taxon relationship type";
+        uuidTerm = "605b1d01-f2b1-4544-b2e0-6f08def3d6ed";
+        checkUsedQueries = "SELECT count(*) FROM @@TaxonRelationship_AUD@@ tr "
+                + " INNER JOIN @@DefinedTermBase_AUD@@ trType ON trType.id = tr.type_id "
+                + " WHERE trType.uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
+        SingleTermRemover.NewAudInstance(stepList, stepName, uuidTerm, checkUsedQueries, -99);
 
         return stepList;
     }
