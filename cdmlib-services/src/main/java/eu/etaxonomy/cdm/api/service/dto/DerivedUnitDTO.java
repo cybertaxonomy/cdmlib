@@ -86,7 +86,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      * @param entity
      *   The entity to create the dto for
      * @param individualsAssociations
-     *    <b>WARNING</b> This parameter will be removed in future versions. IndividualsAssociation should better retrieved in a separate
+     *    <b>WARNING</b> This parameter will be removed in future versions. IndividualsAssociation should better be retrieved in a separate
      *    action, since individualsAssociations are not accessible from the DerivedUnit side. A service level method call is needed to
      *    retrieve them, so it would be required to access the OccurrenceServiceImpl from inside of this DTO factory method, which is
      *    bad OO design. The other option is implemented here, requires all calling Objects to pass the IndividualsAssociations as parameter.

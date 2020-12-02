@@ -90,7 +90,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             NamedArea country = gatheringEvent.getCountry();
             setCountry(country != null ? country.getLabel() : null);
             // Collection
-            AgentBase collector = gatheringEvent.getCollector();
+            AgentBase<?> collector = gatheringEvent.getCollector();
             String fieldNumber = fieldUnit.getFieldNumber();
             String collectionString = "";
             if (collector != null || fieldNumber != null) {
