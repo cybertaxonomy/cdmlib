@@ -2800,7 +2800,7 @@ public class TaxonName
     @Override
     @Transient
     public List<HybridRelationship> getOrderedChildRelationships(){
-        List<HybridRelationship> result = new ArrayList<HybridRelationship>();
+        List<HybridRelationship> result = new ArrayList<>();
         result.addAll(this.hybridChildRelations);
         Collections.sort(result);
         Collections.reverse(result);
@@ -3622,9 +3622,8 @@ public class TaxonName
      */
     @Override
     public TaxonName clone() {
-        TaxonName result;
         try {
-            result = (TaxonName)super.clone();
+            TaxonName result = (TaxonName)super.clone();
 
             //taxonBases -> empty
             result.taxonBases = new HashSet<>();
