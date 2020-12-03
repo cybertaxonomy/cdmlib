@@ -10,7 +10,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -184,8 +185,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	 *     The type of the part for which the possible in-refrence types are to be returned.
 	 * @return a set, may be empty, never <code>null</code>
 	 */
-	public static Set<ReferenceType> inReferenceContraints(ReferenceType subReferenceType){
-	    Set<ReferenceType> inRefTypes = new HashSet<>();
+	public static List<ReferenceType> inReferenceContraints(ReferenceType subReferenceType){
+	    List<ReferenceType> inRefTypes = new ArrayList<>();
 
         if(subReferenceType != null && !subReferenceType.equals(ReferenceType.Generic)){
             if(subReferenceType.isArticle()){
@@ -199,13 +200,16 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
                 inRefTypes.add(ReferenceType.Proceedings);
             } else if (subReferenceType == ReferenceType.Section) {
                 inRefTypes.add(ReferenceType.Article);
+                inRefTypes.add(ReferenceType.BookSection);
                 inRefTypes.add(ReferenceType.Book);
                 inRefTypes.add(ReferenceType.Thesis);
                 inRefTypes.add(ReferenceType.Patent);
                 inRefTypes.add(ReferenceType.Report);
                 inRefTypes.add(ReferenceType.WebPage);
                 inRefTypes.add(ReferenceType.InProceedings);
-                inRefTypes.add(ReferenceType.BookSection);
+            } else if (subReferenceType == ReferenceType.WebPage) {
+                inRefTypes.add(ReferenceType.WebPage);
+                inRefTypes.add(ReferenceType.Database);
             }
         }
 
