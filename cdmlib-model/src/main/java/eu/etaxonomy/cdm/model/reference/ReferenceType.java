@@ -198,6 +198,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
                 inRefTypes.add(ReferenceType.Journal);
             } else if (subReferenceType == ReferenceType.InProceedings) {
                 inRefTypes.add(ReferenceType.Proceedings);
+            } else if (subReferenceType == ReferenceType.Proceedings) {
+                inRefTypes.add(ReferenceType.PrintSeries);
             } else if (subReferenceType == ReferenceType.Section) {
                 inRefTypes.add(ReferenceType.Article);
                 inRefTypes.add(ReferenceType.BookSection);
