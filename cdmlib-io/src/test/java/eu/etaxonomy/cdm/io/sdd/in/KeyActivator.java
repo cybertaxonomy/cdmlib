@@ -23,11 +23,8 @@ import eu.etaxonomy.cdm.io.sdd.ikeyplus.IkeyPlusImportConfigurator;
 /**
  * @author andreas
  * @since Sep 19, 2012
- *
  */
 public class KeyActivator {
-
-
 
     public static void main(String[] args) throws URISyntaxException{
         CdmDefaultImport<IImportConfigurator> keyImport = new CdmDefaultImport<IImportConfigurator>();
@@ -39,7 +36,6 @@ public class KeyActivator {
         URL url = KeyActivator.class.getResource(yyy);
         URI uri = url.toURI();
         IImportConfigurator config = IkeyPlusImportConfigurator.NewInstance(uri, destination);
-
 
         keyImport.invoke(config);
     }
