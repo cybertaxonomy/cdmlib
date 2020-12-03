@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.agent;
 
 import java.beans.PropertyChangeEvent;
@@ -136,7 +135,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
 	 */
 	public Team() {
-		super();
 		this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
 		addListenersToMembers();
 	}
@@ -241,7 +239,6 @@ public class Team extends TeamOrPersonBase<Team> {
     public boolean replaceTeamMember(Person newObject, Person oldObject){
         return replaceInList(this.teamMembers, newObject, oldObject);
     }
-
 
 	/**
 	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.
@@ -348,7 +345,6 @@ public class Team extends TeamOrPersonBase<Team> {
 		this.hasMoreMembers = hasMoreMembers;
 	}
 
-
     @Override
     public boolean updateCaches(){
         boolean result = super.updateCaches();
@@ -381,11 +377,10 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * a new instance that differs only slightly from <i>this</i> Team.
 	 * The corresponding person is cloned.
 	 *
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Team clone() {
 		try{
 			Team result = (Team)super.clone();
 			result.teamMembers = new ArrayList<>();

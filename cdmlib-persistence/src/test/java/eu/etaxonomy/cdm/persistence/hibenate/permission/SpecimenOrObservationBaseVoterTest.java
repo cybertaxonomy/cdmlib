@@ -29,10 +29,8 @@ import eu.etaxonomy.cdm.persistence.permission.voter.SpecimenOrObservationBaseVo
 /**
  * @author a.kohlbecker
  * @since 16.10.2017
- *
  */
 public class SpecimenOrObservationBaseVoterTest extends AbstractCdmPermissionVoterTest {
-
 
     private static final EnumSet<CRUD> UPDATE = EnumSet.of(CRUD.UPDATE);
 

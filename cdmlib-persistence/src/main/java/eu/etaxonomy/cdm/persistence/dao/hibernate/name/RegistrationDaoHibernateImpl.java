@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.kohlbecker
  * @since May 2, 2017
- *
  */
 @Repository
 public class RegistrationDaoHibernateImpl
@@ -43,17 +42,10 @@ public class RegistrationDaoHibernateImpl
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RegistrationDaoHibernateImpl.class);
 
-    /**
-     * @param type
-     */
     public RegistrationDaoHibernateImpl() {
         super(Registration.class);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Long count(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus) {
         //return 0 for detached volatile references
@@ -66,9 +58,6 @@ public class RegistrationDaoHibernateImpl
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Registration> list(Optional<Reference> reference, Collection<RegistrationStatus> includedStatus,
             Integer limit, Integer start, List<String> propertyPaths) {
@@ -96,20 +85,10 @@ public class RegistrationDaoHibernateImpl
         return results;
     }
 
-    /**
-     * @param reference
-     * @return
-     */
     private boolean isVolatile(Optional<Reference> reference) {
         return reference != null && reference.isPresent() && reference.get().getId() == 0;
     }
 
-    /**
-     * @param reference
-     * @param includedStatus
-     * @param isCount
-     * @return
-     */
     private Query makeReferenceQuery(Optional<Reference> reference,
             Collection<RegistrationStatus> includedStatus,
             boolean isCount) {
@@ -125,19 +104,23 @@ public class RegistrationDaoHibernateImpl
         if (reference == null){
             //do nothing
         }else if (reference.isPresent()){
-           from += "   LEFT JOIN n.nomenclaturalReference nomRef "
-                   + " LEFT JOIN desig.citation desigRef ";
+           from += "   LEFT JOIN n.nomenclaturalSource nomSource "
+                   + " LEFT JOIN nomSource.citation nomRef "
+                   + " LEFT JOIN desig.source desigSource "
+                   + " LEFT JOIN desigSource.citation desigRef ";
            where += " AND ("
                    + "     nomRef =:ref "
                    + "     OR (nomRef.type =:refType AND nomRef.inReference =:ref) "
                    + "     OR desigRef =:ref "
                    + "     OR (desigRef.type =:refType AND desigRef.inReference =:ref)"
-                   + ")";
+                + ")";
            refTypeParameter = ReferenceType.Section;
         }else{  //ref is null
-           where += " AND ((r.name IS NULL AND size(r.typeDesignations) = 0 ) "
-                   + "     OR (n IS NOT NULL AND r.name.nomenclaturalReference IS NULL ) "
-                   + "     OR (size(r.typeDesignations) > 0 AND desig.citation IS NULL )"
+            from += "   LEFT JOIN n.nomenclaturalSource nomSource "
+                    + " LEFT JOIN desig.source desigSource ";
+            where += " AND ((r.name IS NULL AND size(r.typeDesignations) = 0 ) "
+                   + "     OR (n IS NOT NULL AND (nomSource.citation IS NULL)) "
+                   + "     OR (size(r.typeDesignations) > 0 AND (desigSource.citation IS NULL))"
                    + ") "
                    ;
         }
@@ -160,10 +143,6 @@ public class RegistrationDaoHibernateImpl
         return query;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long count(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids) {
@@ -176,9 +155,6 @@ public class RegistrationDaoHibernateImpl
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Registration> list(UUID submitterUuid, Collection<RegistrationStatus> includedStatus, String identifierFilterPattern,
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer limit, Integer start,
@@ -235,15 +211,6 @@ public class RegistrationDaoHibernateImpl
         return list.isEmpty()? Long.valueOf(0) : list.get(0);
     }
 
-
-    /**
-     * @param submitterUuid
-     * @param includedStatus
-     * @param taxonNameUUIDs
-     * @param b
-     * @param orderHints
-     * @return
-     */
     private Query makeByNameUUIDQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             Collection<UUID> taxonNameUUIDs, boolean isCount, List<OrderHint> orderHints) {
 
@@ -291,16 +258,6 @@ public class RegistrationDaoHibernateImpl
 
     }
 
-
-    /**
-     * @param submitterUuid
-     * @param includedStatus
-     * @param identifierFilterPattern
-     * @param taxonNameFilterPattern
-     * @param typeDesignationStatusUuids
-     * @param isCount
-     * @return
-     */
     private Query makeFilteredSearchQuery(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String identifierFilterPattern, String taxonNameFilterPattern, String referenceFilterPattern,
             Collection<UUID> typeDesignationStatusUuids, boolean isCount, List<OrderHint> orderHints) {
@@ -317,7 +274,12 @@ public class RegistrationDaoHibernateImpl
                 + "     LEFT JOIN r.name n "
                 + (doNameFilter ?  " LEFT JOIN desig.typifiedNames typifiedNames ":"")
                 + (doTypeStatusFilter ? " LEFT JOIN desig.typeStatus typeStatus":"")  // without this join hibernate would make a cross join here
-                + (doReferenceFilter ? " LEFT JOIN desig.citation typeDesignationCitation LEFT JOIN n.nomenclaturalReference nomRef":"")
+                + (doReferenceFilter
+                        ?   " LEFT JOIN desig.source typeDesignationSource "
+                          + " LEFT JOIN typeDesignationSource.citation typeDesignationCitation "
+                          + " LEFT JOIN n.nomenclaturalSource nomSource "
+                          + " LEFT JOIN nomSource.citation nomRef "
+                        : "")
             ;
         // further JOIN
         String where = " WHERE (1=1) ";
@@ -377,6 +339,4 @@ public class RegistrationDaoHibernateImpl
 
         return query;
     }
-
-
 }

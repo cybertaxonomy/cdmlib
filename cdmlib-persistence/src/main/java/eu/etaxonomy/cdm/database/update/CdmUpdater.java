@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v512_515.SchemaUpdater_5151_5152;
+import eu.etaxonomy.cdm.database.update.v515_518.SchemaUpdater_5185_5186;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
@@ -62,25 +62,17 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * @since 10.09.2010
  */
 public class CdmUpdater {
+
     private static final Logger logger = Logger.getLogger(CdmUpdater.class);
 
     public static CdmUpdater NewInstance(){
         return new CdmUpdater();
     }
 
-    /**
-     * Returns the current CDM updater.
-     * @return the current CDM updater
-     */
     private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_5151_5152.NewInstance();
+        return SchemaUpdater_5185_5186.NewInstance();
     }
 
-    /**
-     * @param datasource
-     * @param monitor may be <code>null</code>
-     * @return
-     */
     public SchemaUpdateResult updateToCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor){
         SchemaUpdateResult result = new SchemaUpdateResult();
         if (monitor == null){
@@ -108,7 +100,6 @@ public class CdmUpdater {
             }else{
                 datasource.commitTransaction();
             }
-
         } catch (Exception e) {
             String message = "Stopped schema updater";
             result.addException(e, message, "CdmUpdater");
@@ -234,8 +225,6 @@ public class CdmUpdater {
             System.out.println(dnName + " DONE " + (result.isSuccess() ? "successfully" : "with ERRORS"));
             System.out.println(result.createReport().toString());
             System.out.println("====================================================================");
-
         }
     }
-
 }

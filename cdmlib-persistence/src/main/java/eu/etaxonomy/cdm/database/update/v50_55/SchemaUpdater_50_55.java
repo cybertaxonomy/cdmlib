@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
-import eu.etaxonomy.cdm.database.update.v47_50.SchemaUpdater_47_50;
+import eu.etaxonomy.cdm.database.update.v40_50.SchemaUpdater_47_50;
 import eu.etaxonomy.cdm.database.update.v505_508.SchemaUpdater_55_58;
 import eu.etaxonomy.cdm.model.term.TermType;
 
@@ -201,7 +201,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
         stepName = "taxonomically includes => taxonomically includes";
         label = "taxonomically includes";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
 
         //Misapplied Name for
@@ -213,7 +213,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
         stepName = "Has Misapplied Name => has misapplied name";
         label = "has misapplied name";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
 
         //Pro parte Misapplied Name for
@@ -225,7 +225,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
         stepName = "Has Pro parte Misapplied Name => has pro parte misapplied name";
         label = "has pro parte misapplied name";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
 
         //Partial Misapplied Name for
@@ -237,7 +237,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
         stepName = "Has Partial Misapplied Name => has partial misapplied name";
         label = "has partial misapplied name";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
 
         //Pro parte Synonym for
@@ -249,7 +249,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
         stepName = "Has Pro parte Synonym => has pro parte synonym";
         label = "has pro parte synonym";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
 
         //Partial Synonym for
@@ -261,7 +261,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
         stepName = "Has Partial Synonym => has partial synonym";
         label = "has partial synonym";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
 
         //Invalid Designation for
@@ -273,14 +273,14 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
 
         stepName = "Has Invalid Designation => has invalid designation";
         label = "has invalid designation";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
 
         //Not yet worked on
         stepName = "Unclear => Not yet worked on";
         label = "Not yet worked on";
         uuidTerm = UUID.fromString("8d47e59a-790d-428f-8060-01d443519166");
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
     }
 
@@ -431,7 +431,7 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
         stepName = "emendation for => is emendation for";
         uuidTerm = UUID.fromString("6e23ad45-3f2a-462b-ad87-d2389cd6e26c");
         label = "is emendation for";
-        TermRepresentationUpdater.NewReverseInstance(stepList, stepName, uuidTerm,
+        TermRepresentationUpdater.NewInverseInstance(stepList, stepName, uuidTerm,
                 label, label, null, uuidLanguage);
     }
 

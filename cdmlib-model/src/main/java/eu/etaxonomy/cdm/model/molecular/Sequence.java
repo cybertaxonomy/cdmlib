@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -106,7 +105,6 @@ public class Sequence
     @IndexedEmbedded
     private DnaSample dnaSample;
 
-
 	/** @see #getContigFile() */
 	@XmlElement(name = "ContigFile")
     @XmlIDREF
@@ -152,7 +150,6 @@ public class Sequence
 	//no cascade as it is a defined term
 	private DefinedTerm dnaMarker;
 
-
 	/** @see #getHaplotype() */
 	@XmlElement(name = "Haplotype")
     @Column(length=100)
@@ -173,7 +170,6 @@ public class Sequence
 //	@Type(type="dateTimeUserType")
 //	@Basic(fetch = FetchType.LAZY)
 //	private DateTime dateSequenced;
-
 
 //*********************** FACTORY ****************************************************/
 
@@ -572,9 +568,6 @@ public class Sequence
 		}
 	}
 
-
-
-
 	//*********************** CLONE ********************************************************/
 	/**
 	 * Clones <i>this</i> sequence. This is a shortcut that enables to create
@@ -586,37 +579,32 @@ public class Sequence
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public Sequence clone()  {
 		try{
-		Sequence result = (Sequence)super.clone();
+    		Sequence result = (Sequence)super.clone();
 
-		//sequences
-		result.consensusSequence = (SequenceString)this.consensusSequence.clone();
-		result.barcodeSequencePart = (SequenceString)this.barcodeSequencePart.clone();
+    		//sequences
+    		result.consensusSequence = (SequenceString)this.consensusSequence.clone();
+    		result.barcodeSequencePart = (SequenceString)this.barcodeSequencePart.clone();
 
+    		//single sequences
+    		result.singleReadAlignments = new HashSet<SingleReadAlignment>();
+    		for (SingleReadAlignment singleReadAlign: this.singleReadAlignments){
+    			SingleReadAlignment newAlignment = (SingleReadAlignment)singleReadAlign.clone();
+    			result.singleReadAlignments.add(newAlignment);
+    		}
 
-		//single sequences
-		result.singleReadAlignments = new HashSet<SingleReadAlignment>();
-		for (SingleReadAlignment singleReadAlign: this.singleReadAlignments){
-			SingleReadAlignment newAlignment = (SingleReadAlignment)singleReadAlign.clone();
-			result.singleReadAlignments.add(newAlignment);
-		}
+    		//citations  //TODO do we really want to copy these ??
+    		result.citations = new HashSet<Reference>();
+    		for (Reference ref: this.citations){
+    			result.citations.add(ref);
+    		}
 
-		//citations  //TODO do we really want to copy these ??
-		result.citations = new HashSet<Reference>();
-		for (Reference ref: this.citations){
-			result.citations.add(ref);
-		}
-
-
-
-		return result;
+    		return result;
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
 			e.printStackTrace();
 			return null;
 		}
 	}
-
-
 }

@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCodeEdition;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStanding;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -57,6 +58,8 @@ public class EnumUserType<E extends Enum<E>>
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnumUserType.class);
 
+    private static final int[] SQL_TYPES = { Types.VARCHAR };
+
 	private Class<E> clazz = null;
 
 	public EnumUserType(){}
@@ -74,9 +77,6 @@ public class EnumUserType<E extends Enum<E>>
 			throw new RuntimeException(e);
 		}
 	}
-
-	private static final int[] SQL_TYPES = { Types.VARCHAR };
-
 
 	@Override
 	public Object deepCopy(Object o) throws HibernateException {
@@ -150,6 +150,9 @@ public class EnumUserType<E extends Enum<E>>
         //DescriptionType
         }else if (clazz.equals(DescriptionType.class)){
             return DescriptionType.getByKey(val);
+        //NomenclaturalStanding
+        }else if (clazz.equals(NomenclaturalStanding.class)){
+            return NomenclaturalStanding.getByKey(val);
         //CdmClass
         }else if (clazz.equals(CdmClass.class)){
             return CdmClass.getByKey(val);
@@ -178,6 +181,4 @@ public class EnumUserType<E extends Enum<E>>
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
-
-
 }

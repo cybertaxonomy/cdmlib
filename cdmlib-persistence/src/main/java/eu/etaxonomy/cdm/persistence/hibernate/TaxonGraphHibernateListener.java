@@ -17,12 +17,22 @@ import org.apache.log4j.Logger;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostUpdateEvent;
+import org.hibernate.event.spi.PreDeleteEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
+import eu.etaxonomy.cdm.config.CdmHibernateListenerConfiguration;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 
 /**
- * see https://dev.e-taxonomy.eu/redmine/issues/7648
+ * The {@code TaxonGraphHibernateListener} it the implementation of the
+ * according interface. The listener in initially empty and thus will do nothing
+ * unless configured with the {@link TaxonGraphBeforeTransactionCompleteProces}
+ *
+ * @see <a href=
+ *      "https://dev.e-taxonomy.eu/redmine/issues/7648">https://dev.e-taxonomy.eu/redmine/issues/7648</a>
+ * @see {@link TaxonGraphBeforeTransactionCompleteProcess}
+ * @see {@link CdmHibernateListenerConfiguration}
  *
  * @author a.kohlbecker
  * @since Sep 27, 2018
@@ -50,7 +60,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
 
-        if(event.getEntity() instanceof TaxonName){
+        if(event.getEntity() instanceof TaxonName || event.getEntity() instanceof NomenclaturalSource){
             for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
                 try {
                     ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
@@ -67,7 +77,7 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     @Override
     public void onPostInsert(PostInsertEvent event) {
 
-        if(event.getEntity() instanceof TaxonName){
+        if(event.getEntity() instanceof TaxonName || event.getEntity() instanceof NomenclaturalSource){
             for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
                 try {
                     ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
@@ -82,6 +92,24 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     }
 
     @Override
+    public boolean onPreDelete(PreDeleteEvent event) {
+
+        if(event.getEntity() instanceof TaxonName || event.getEntity() instanceof NomenclaturalSource){
+            for(Class<? extends BeforeTransactionCompletionProcess> type : beforeTransactionCompletionProcessTypes.keySet()){
+                try {
+                    ProcessConstructorData<? extends BeforeTransactionCompletionProcess> pcd = beforeTransactionCompletionProcessTypes.get(type);
+                    BeforeTransactionCompletionProcess processorInstance = pcd.preDeleteEventConstructor.newInstance(pcd.buildConstructorArgs(event));
+                    event.getSession().getActionQueue().registerProcess(processorInstance);
+                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                        | InvocationTargetException | SecurityException e) {
+                    Logger.getLogger(TaxonGraphHibernateListener.class).error("Error creating new instance of " + type.toString(), e);
+                }
+            }
+        }
+        return false; // no veto
+    }
+
+    @Override
     public boolean requiresPostCommitHanding(EntityPersister persister) {
         return true;
     }
@@ -89,29 +117,29 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
     class ProcessConstructorData<T extends BeforeTransactionCompletionProcess> {
 
         Constructor<T> postInsertEventConstructor;
-
         Constructor<T> postUpdateEventConstructor;
-
+        Constructor<T> preDeleteEventConstructor;
         Object[] constructorArgs;
-        /**
-         * @param constructor
-         * @param constructorArgs
-         */
+
         public ProcessConstructorData(Class<T> type, Object[] constructorArgs, Class<?>[] paramterTypes) throws NoSuchMethodException, SecurityException {
 
             this.constructorArgs = constructorArgs;
 
             Class<?>[] postInsertEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
             Class<?>[] postUpdateEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
+            Class<?>[] preDeleteEventConstructorArgTypes = new Class<?>[constructorArgs.length + 1];
             postInsertEventConstructorArgTypes[0] = PostInsertEvent.class;
             postUpdateEventConstructorArgTypes[0] = PostUpdateEvent.class;
+            preDeleteEventConstructorArgTypes[0] = PreDeleteEvent.class;
             int i = 1;
             for(Class<?> ptype : paramterTypes){
                 postInsertEventConstructorArgTypes[i] = ptype;
                 postUpdateEventConstructorArgTypes[i] = ptype;
+                preDeleteEventConstructorArgTypes[i] = ptype;
             }
             postInsertEventConstructor = type.getConstructor(postInsertEventConstructorArgTypes);
             postUpdateEventConstructor = type.getConstructor(postUpdateEventConstructorArgTypes);
+            preDeleteEventConstructor = type.getConstructor(preDeleteEventConstructorArgTypes);
         }
 
         public Object[] buildConstructorArgs(Object firstArg){
@@ -123,9 +151,5 @@ public class TaxonGraphHibernateListener implements ITaxonGraphHibernateListener
             }
             return cargs;
         }
-
     }
-
-
-
 }

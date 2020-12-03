@@ -85,7 +85,7 @@ public class ObjectChangeMapper extends CdmAttributeMapperBase implements IDbExp
 
 	@Override
 	public Set<String> getSourceAttributes() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		if (cdmAttribute != null){
 			result.add(cdmAttribute);
 		}

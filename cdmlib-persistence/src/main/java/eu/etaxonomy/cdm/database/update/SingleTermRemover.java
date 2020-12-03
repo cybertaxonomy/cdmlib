@@ -21,20 +21,25 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * Removes a given term if it is not in use.
  * TODO does not yet check all DefinedTermBase_XXX tables except for representations.
- * Does also not handle AUD tables
+ * Does also not handle AUD tables => should probably be handled as DeleteEvent, not simply delete the record;
+ * There is now a factory method for handling AUDs.
  *
  * @author a.mueller
  * @since 06.09.2013
- *
- */
+  */
 public class SingleTermRemover
         extends SchemaUpdaterStepBase{
+
+    private String uuidTerm ;
+    private List<String> checkUsedQueries = new ArrayList<>();
+    private boolean isAudit = false;
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermRemover.class);
 
-	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, List<String> checkUsedQueries, int adapt){
-		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries);
+	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
+	        String uuidTerm, List<String> checkUsedQueries, int adapt){
+		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, false);
 	}
 
 	/**
@@ -42,30 +47,42 @@ public class SingleTermRemover
 	 * if this term is used at the given place.
 	 * @return
 	 */
-	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, String firstCheckUsedQuery, int adapt){
+	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
+	        String uuidTerm, String firstCheckUsedQuery, int adapt){
 		List<String> checkUsedQueries = new ArrayList<>();
 		checkUsedQueries.add(firstCheckUsedQuery);
-		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries);
+		return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, false);
 	}
 
+	/**
+     * @param firstCheckUsedQuery The first query to check if this term is used. Must return a single int value > 0
+     * if this term is used at the given place.
+     * @return
+     */
+    public static final SingleTermRemover NewAudInstance(List<ISchemaUpdaterStep> stepList, String stepName,
+            String uuidTerm, String firstCheckUsedQuery, int adapt){
+        List<String> checkUsedQueries = new ArrayList<>();
+        checkUsedQueries.add(firstCheckUsedQuery);
+        return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, true);
+    }
 
-	private String uuidTerm ;
-	private List<String> checkUsedQueries = new ArrayList<String>();
-
-
-	private SingleTermRemover(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm, List<String> checkUsedQueries) {
+	private SingleTermRemover(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm,
+	        List<String> checkUsedQueries, boolean isAudit) {
 		super(stepList, stepName);
 		this.uuidTerm = uuidTerm;
 		this.checkUsedQueries = checkUsedQueries;
+		this.isAudit = isAudit;
 	}
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result) throws SQLException {
+
         //get term id
 		String sql = " SELECT id FROM %s WHERE uuid = '%s'";
+		String tableName = isAudit ? "DefinedTermBase_AUD" : "DefinedTermBase";
 		Integer id = (Integer)datasource.getSingleValue(String.format(sql,
-				caseType.transformTo("DefinedTermBase"), this.uuidTerm));
+				caseType.transformTo(tableName), this.uuidTerm));
 		if (id == null || id == 0){
 			return;
 		}
@@ -87,30 +104,34 @@ public class SingleTermRemover
 		try {
             //get representation ids
             List<Integer> repIDs = new ArrayList<>();
-            getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation", caseType );
-            getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation", caseType);
+            String tableName = isAudit ? "DefinedTermBase_Representation_AUD" : "DefinedTermBase_Representation";
+            String inverseTableName = isAudit ? "DefinedTermBase_InverseRepresentation_AUD" : "DefinedTermBase_InverseRepresentation";
+            getRepIds(datasource, id, repIDs, "representations_id", tableName, caseType );
+            getRepIds(datasource, id, repIDs, "inverserepresentations_id", inverseTableName, caseType);
 
-            //remove MN table
+            //remove from MN table
             String sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
-            sql = String.format(sql, caseType.transformTo("DefinedTermBase_Representation"), id);
+            sql = String.format(sql, caseType.transformTo(tableName), id);
             datasource.executeUpdate(sql);
             sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
-            sql = String.format(sql, caseType.transformTo("RelationshipTermBase_inverseRepresentation"), id);
+            sql = String.format(sql, caseType.transformTo(tableName), id);
             datasource.executeUpdate(sql);
 
             //remove representations
+            tableName = isAudit ? "Representation_AUD" : "Representation";
             for (Integer repId : repIDs){
             	sql = " DELETE FROM %s WHERE id = %d ";
             	sql = String.format(sql,
-            			caseType.transformTo("Representation"),
+            			caseType.transformTo(tableName),
             			repId);
             	datasource.executeUpdate(sql);
             }
 
             //remove term
+            tableName = isAudit ? "DefinedTermBase_AUD" : "DefinedTermBase";
             sql = " DELETE FROM %s WHERE id = %d";
             sql = String.format(sql,
-            		caseType.transformTo("DefinedTermBase"),
+            		caseType.transformTo(tableName),
             		id);
             datasource.executeUpdate(sql);
         } catch (SQLException e) {
@@ -126,10 +147,8 @@ public class SingleTermRemover
 		sql = String.format(sql, mnRepresentationIdAttr, caseType.transformTo(mnTableName), id);
 		ResultSet rs = datasource.executeQuery(sql);
 		while (rs.next()){
-			Integer repId = rs.getInt("repId");  //TODO nullSafe, but should not happen
-			if (repId != null){
-				repIDs.add(repId);
-			}
+			int repId = rs.getInt("repId");  //TODO nullSafe, but should not happen
+			repIDs.add(repId);
 		}
 	}
 
@@ -148,7 +167,4 @@ public class SingleTermRemover
 		this.checkUsedQueries.add(query);
 		return this;
 	}
-
-
-
 }

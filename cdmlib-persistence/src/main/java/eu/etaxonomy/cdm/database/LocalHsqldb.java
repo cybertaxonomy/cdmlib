@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.io.File;
@@ -24,12 +23,9 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 
-
 /**
  * @author a.mueller
- *
  */
-
 public class LocalHsqldb extends BasicDataSource {
 	private static final Logger logger = Logger.getLogger(LocalHsqldb.class);
 
@@ -50,31 +46,17 @@ public class LocalHsqldb extends BasicDataSource {
 	/** default driver class name */
 	protected String DEFAULT_DRIVER_CLASS_NAME = "org.hsqldb.jdbcDriver";
 
-
-	/**
-	 *
-	 */
 	public LocalHsqldb() {
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 		setComposedUrl();
 	}
 
-	/**
-	 * @param url
-	 * @throws CannotGetJdbcConnectionException
-	 */
 	public LocalHsqldb(String url) throws CannotGetJdbcConnectionException {
 		super();
 		this.setUrl(url);
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
-	/**
-	 * @param url
-	 * @param username
-	 * @param password
-	 * @throws CannotGetJdbcConnectionException
-	 */
 	public LocalHsqldb(String url, String username, String password)
 			throws CannotGetJdbcConnectionException {
 		super();
@@ -84,13 +66,6 @@ public class LocalHsqldb extends BasicDataSource {
 		this.setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
-	/**
-	 * @param driverClassName
-	 * @param url
-	 * @param username
-	 * @param password
-	 * @throws CannotGetJdbcConnectionException
-	 */
 	public LocalHsqldb(String driverClassName, String url, String username,
 			String password) throws CannotGetJdbcConnectionException {
 		super();
@@ -110,33 +85,18 @@ public class LocalHsqldb extends BasicDataSource {
 		this.stopHsqldbServer();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.springframework.jdbc.datasource.BasicDataSource#getUrl()
-	 */
 	@Override
 	public String getUrl() {
 		return super.getUrl();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.springframework.jdbc.datasource.BasicDataSource#setUrl(java.lang.String)
-	 */
 	@Override
 	public void setUrl(String url) {
 		super.setUrl(url);
 	}
 
-	/**
-	 * @return the pureUrl
-	 */
 	public String getPureUrl() {
 		return pureUrl;
 	}
-
-	/**
-	 * @param pureUrl the pureUrl to set
-	 */
 	public void setPureUrl(String pureUrl) {
 		this.pureUrl = pureUrl;
 		if (dbName != null){
@@ -144,16 +104,9 @@ public class LocalHsqldb extends BasicDataSource {
 		}
 	}
 
-	/**
-	 * @return the dbName
-	 */
 	public String getDbName() {
 		return dbName;
 	}
-
-	/**
-	 * @param dbName the dbName to set
-	 */
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
 		if (pureUrl != null){
@@ -224,16 +177,9 @@ public class LocalHsqldb extends BasicDataSource {
 		}
 	}
 
-	/**
-	 * @return the dbPath
-	 */
 	public String getFilePath() {
 		return databasePath;
 	}
-
-	/**
-	 * @param dbPath the dbPath to set
-	 */
 	public void setFilePath(String filePath) {
 		if (databasePath.endsWith(sep)){
 			databasePath = databasePath + "localCdm";
@@ -241,37 +187,20 @@ public class LocalHsqldb extends BasicDataSource {
 		this.databasePath = filePath;
 	}
 
-	/**
-	 * @return the isStartServer
-	 */
 	public boolean isStartServer() {
 		return isStartServer;
 	}
-
-	/**
-	 * @param isStartServer the isStartServer to set
-	 */
 	public void setStartServer(boolean isStartServer) {
 		this.isStartServer = isStartServer;
 	}
 
-	/**
-	 * @return the isSilent
-	 */
 	public boolean isSilent() {
 		return isSilent;
 	}
-
-	/**
-	 * @param isSilent the isSilent to set
-	 */
 	public void setSilent(boolean isSilent) {
 		if (this.hsqldbServer != null){
 			this.hsqldbServer.setSilent(isSilent);
 		}
 		this.isSilent = isSilent;
 	}
-
-
-
 }

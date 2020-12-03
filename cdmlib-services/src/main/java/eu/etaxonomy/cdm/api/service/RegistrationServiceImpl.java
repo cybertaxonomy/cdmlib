@@ -189,7 +189,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         Pager<Registration> regPager = pageByParamWithRestrictions(Registration.class, "identifier", identifier, MatchMode.EXACT,
                 restrictions, pageSize, pageIndex, null, propertyPaths);
 
-
         return regPager;
     }
 
@@ -274,10 +273,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return reg;
     }
 
-    /**
-     * @param taxonNameId
-     * @return
-     */
     @Override
     @Transactional(readOnly=false)
     public Registration createRegistrationForName(UUID taxonNameUuid) {
@@ -285,7 +280,7 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         Registration reg = Registration.NewInstance(
                 null,
                 null,
-                taxonNameUuid != null ? nameService.load(taxonNameUuid, Arrays.asList("nomenclaturalReference.inReference")) : null,
+                taxonNameUuid != null ? nameService.load(taxonNameUuid, Arrays.asList("nomenclaturalSource.citation.inReference")) : null,
                         null);
 
         reg = assureIsPersisted(reg);
@@ -293,9 +288,6 @@ public class RegistrationServiceImpl extends AnnotatableServiceBase<Registration
         return load(reg.getUuid(), Arrays.asList(new String []{"blockedBy"}));
     }
 
-    /**
-     * @param typeDesignationTarget
-     */
     @Override
     @Transactional(readOnly=false)
     public Registration assureIsPersisted(Registration reg) {

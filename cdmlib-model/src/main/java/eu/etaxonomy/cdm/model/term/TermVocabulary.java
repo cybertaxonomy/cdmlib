@@ -216,7 +216,7 @@ public class TermVocabulary<T extends DefinedTermBase>
 		String label = csvLine.get(2).trim();
 		String description = csvLine.get(3);
 
-		//see  http://dev.e-taxonomy.eu/trac/ticket/3550
+		//see  https://dev.e-taxonomy.eu/redmine/issues/3550
 		this.addRepresentation(Representation.NewInstance(description, label, null, lang) );
 
 		TermType termType = TermType.getByKey(csvLine.get(4));
@@ -248,7 +248,7 @@ public class TermVocabulary<T extends DefinedTermBase>
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public TermVocabulary<T> clone() {
 		TermVocabulary<T> result;
 		try {
 			result = (TermVocabulary<T>) super.clone();

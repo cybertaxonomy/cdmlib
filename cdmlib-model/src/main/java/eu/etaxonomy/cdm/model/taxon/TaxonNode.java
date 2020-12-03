@@ -22,7 +22,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
@@ -35,11 +34,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
@@ -59,16 +56,15 @@ import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -88,9 +84,6 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
     "treeIndex",
     "sortIndex",
     "childNodes",
-    "source",
-//    "referenceForParentChildRelation",
-//    "microReferenceForParentChildRelation",
     "countChildren",
     "agentRelations",
     "synonymToBeUsed",
@@ -107,7 +100,7 @@ import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustNotSkipRanks;
 @ChildTaxaMustNotSkipRanks(groups = Level3.class)
 @ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonNode
-            extends AnnotatableEntity
+            extends SingleSourcedEntityBase
             implements ITaxonTreeNode, ITreeNode<TaxonNode>{
 
     private static final long serialVersionUID = -4743289894926587693L;
@@ -146,36 +139,24 @@ public class TaxonNode
     @XmlElement(name = "childNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     //@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<TaxonNode> childNodes = new ArrayList<>();
 
-    //see https://dev.e-taxonomy.eu/trac/ticket/3722
-    //see https://dev.e-taxonomy.eu/trac/ticket/4200
+    //see https://dev.e-taxonomy.eu/redmine/issues/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/4200
     private Integer sortIndex = -1;
 
-    //the source for this placement
-    @XmlElement(name = "source")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
-    private DescriptionElementSource source;
-
-//    @XmlElement(name = "reference")
+//    //the source for this placement
+//    @XmlElement(name = "source")
 //    @XmlIDREF
 //    @XmlSchemaType(name = "IDREF")
-    @XmlTransient
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference referenceForParentChildRelation;
-
-//    @XmlElement(name = "microReference")
-    @XmlTransient
-    private String microReferenceForParentChildRelation;
+//    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
+//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
+//    private DescriptionElementSource source;
 
     @XmlElement(name = "countChildren")
     private int countChildren;
@@ -305,45 +286,36 @@ public class TaxonNode
 
 //************************* SOURCE *********************/
 
-    @Override
-    @Transient
-    public String getMicroReference() {
-        return source == null ? null : this.source.getCitationMicroReference();
-    }
-    public void setMicroReference(String microReference) {
-        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
-        checkNullSource();
-    }
+//    @Override
+//    @Transient
+//    public String getMicroReference() {
+//        return source == null ? null : this.source.getCitationMicroReference();
+//    }
+//    public void setMicroReference(String microReference) {
+//        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+//        checkNullSource();
+//    }
+//
+//    @Override
+//    @Transient
+//    public Reference getReference() {
+//        return (this.source == null) ? null : source.getCitation();
+//    }
+//    public void setReference(Reference reference) {
+//        getSource(true).setCitation(reference);
+//        checkNullSource();
+//    }
 
-    @Override
-    @Transient
-    public Reference getReference() {
-        return (this.source == null) ? null : source.getCitation();
-    }
-    public void setReference(Reference reference) {
-        getSource(true).setCitation(reference);
-        checkNullSource();
-    }
+//    @Override
+//    public DescriptionElementSource getSource() {
+//        return source;
+//    }
+//    @Override
+//    public void setSource(DescriptionElementSource source) {
+//        this.source = source;
+//    }
 
-    public DescriptionElementSource getSource() {
-        return source;
-    }
-    public void setSource(DescriptionElementSource source) {
-        this.source = source;
-    }
 
-    private void checkNullSource() {
-        if (this.source != null && this.source.checkEmpty(true)){
-            this.source = null;
-        }
-    }
-
-    private DescriptionElementSource getSource(boolean createIfNotExist){
-        if (this.source == null && createIfNotExist){
-            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
-        }
-        return source;
-    }
 
 //************************************************************/
 
@@ -519,14 +491,8 @@ public class TaxonNode
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        Classification classification = CdmBase.deproxy(this.getClassification());
-        taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
-        if (classification.isTaxonInTree(taxon)){
-            throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
-       }
-       return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
+        return addChildTaxon(taxon, index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
     }
-
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source) {
@@ -567,20 +533,7 @@ public class TaxonNode
      */
     @Override
     public TaxonNode addChildNode(TaxonNode child, int index, Reference reference, String microReference){
-        if (index < 0 || index > childNodes.size() + 1){
-            throw new IndexOutOfBoundsException("Wrong index: " + index);
-        }
-           // check if this node is a descendant of the childNode
-        if(child.getParent() != this && child.isAncestor(this)){
-            throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
-        }
-
-        child.setParentTreeNode(this, index);
-
-        child.setReference(reference);
-        child.setMicroReference(microReference);
-
-        return child;
+        return addChildNode(child, index, DescriptionElementSource.NewPrimarySourceInstance(reference, microReference));
     }
 
 
@@ -910,11 +863,11 @@ public class TaxonNode
      */
     protected TaxonNode cloneDescendants(){
 
-        TaxonNode clone = (TaxonNode)this.clone();
+        TaxonNode clone = this.clone();
         TaxonNode childClone;
 
         for(TaxonNode childNode : getChildNodes()){
-            childClone = (TaxonNode) childNode.clone();
+            childClone = childNode.clone();
             for (TaxonNode childChild:childNode.getChildNodes()){
                 childClone.addChildNode(childChild.cloneDescendants(), childChild.getReference(), childChild.getMicroReference());
             }
@@ -1130,11 +1083,11 @@ public class TaxonNode
      * The child nodes are not copied.<BR>
      * The taxon and parent are the same as for the original taxon node. <BR>
      *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone()  {
+    public TaxonNode clone()  {
+
         try{
             TaxonNode result = (TaxonNode)super.clone();
             result.getTaxon().addTaxonNode(result);
@@ -1146,7 +1099,7 @@ public class TaxonNode
             //agents
             result.agentRelations = new HashSet<>();
             for (TaxonNodeAgentRelation rel : this.agentRelations){
-                result.addAgentRelation((TaxonNodeAgentRelation)rel.clone());
+                result.addAgentRelation(rel.clone());
             }
 
             //statusNote
@@ -1154,7 +1107,6 @@ public class TaxonNode
             for(Language lang : this.statusNote.keySet()){
                 result.statusNote.put(lang, this.statusNote.get(lang));
             }
-
 
             return result;
         }catch (CloneNotSupportedException e) {
@@ -1164,4 +1116,17 @@ public class TaxonNode
         }
     }
 
+//To be removed once SingleSourcedEntity attributes have been renamed to reference and microReference
+
+    @Override
+    @Transient
+    public Reference getReference() {
+        return getCitation();
+    }
+
+    @Override
+    @Transient
+    public String getMicroReference() {
+        return getCitationMicroReference();
+    }
 }

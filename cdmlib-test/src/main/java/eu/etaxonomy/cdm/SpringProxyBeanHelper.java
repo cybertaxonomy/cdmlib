@@ -14,10 +14,8 @@ import org.springframework.aop.support.AopUtils;
 /**
  * @author a.kohlbecker
  * @since Feb 23, 2018
- *
  */
 public class SpringProxyBeanHelper {
-
 
     @SuppressWarnings({"unchecked"})
     public static <T> T getTargetObject(Object proxy, Class<T> targetClass) throws Exception {

@@ -229,8 +229,9 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
-		KeyStatement result;
+	public KeyStatement clone() {
+
+	    KeyStatement result;
 		try {
 			result = (KeyStatement) super.clone();
 
@@ -254,7 +255,5 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 		}else{
 			return super.toString();
 		}
-
 	}
-
 }

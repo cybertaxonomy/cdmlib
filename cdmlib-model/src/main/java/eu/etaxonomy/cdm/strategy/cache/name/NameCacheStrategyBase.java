@@ -14,16 +14,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -102,7 +98,7 @@ public abstract class NameCacheStrategyBase
                     logger.warn(message);
                     throw new IllegalStateException(message);
                 }
-            }else if(StringUtils.isNotBlank(ncStatus.getRuleConsidered())){
+            }else if(isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();
             }
             String statusSeparator = ", ";
@@ -212,7 +208,7 @@ public abstract class NameCacheStrategyBase
             referenceCache = reference.getNomenclaturalCitation(microReference);
         }
             //add to tags
-        if (StringUtils.isNotBlank(referenceCache)){
+        if (isNotBlank(referenceCache)){
             if (! referenceCache.trim().startsWith("in ")){
                 String refConcat = ", ";
                 tags.add(new TaggedText(TagEnum.separator, refConcat));
@@ -230,32 +226,24 @@ public abstract class NameCacheStrategyBase
 
     protected void addOriginalSpelling(List<TaggedText> tags, TaxonName taxonName){
         String originalName = getOriginalNameString(taxonName, tags);
-        if (StringUtils.isNotBlank(originalName)){
+        if (isNotBlank(originalName)){
             tags.add(new TaggedText(TagEnum.name, originalName));
         }
     }
 
     private String getOriginalNameString(TaxonName currentName, List<TaggedText> originalNameTaggs) {
-        List<String> originalNameStrings = new ArrayList<>(1);
         currentName = CdmBase.deproxy(currentName);
         //Hibernate.initialize(currentName.getRelationsToThisName());
-        for (NameRelationship nameRel : currentName.getRelationsToThisName()){  //handle list, just in case we have strange data; this may result in strange looking results
-            NameRelationshipType type = nameRel.getType();
-            if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){
-                String originalNameString;
-                TaxonName originalName = nameRel.getFromName();
-                if (!originalName.isNonViral()){
-                    originalNameString = originalName.getTitleCache();
-                }else{
-                    INonViralName originalNvName = CdmBase.deproxy(originalName);
-                    originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
-                }
-                originalNameStrings.add("[as \"" + originalNameString + "\"]");
+        TaxonName originalName = currentName.getOriginalSpelling();
+        if (originalName != null){
+            String originalNameString;
+            if (!originalName.isNonViral()){
+                originalNameString = originalName.getTitleCache();
+            }else{
+                INonViralName originalNvName = CdmBase.deproxy(originalName);
+                originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
             }
-        }
-        if (originalNameStrings.size() > 0){
-            String result = CdmUtils.concat("", originalNameStrings.toArray(new String[originalNameStrings.size()])) ;
-            return result;
+            return "[as \"" + originalNameString + "\"]";
         }else{
             return null;
         }
@@ -265,11 +253,11 @@ public abstract class NameCacheStrategyBase
             List<TaggedText> currentNameTags) {
         //use cache if necessary
         String cacheToUse = null;
-        if (originalName.isProtectedNameCache() && StringUtils.isNotBlank(originalName.getNameCache())){
+        if (originalName.isProtectedNameCache() && isNotBlank(originalName.getNameCache())){
             cacheToUse = originalName.getNameCache();
-        }else if (originalName.isProtectedTitleCache() && StringUtils.isNotBlank(originalName.getTitleCache())){
+        }else if (originalName.isProtectedTitleCache() && isNotBlank(originalName.getTitleCache())){
             cacheToUse = originalName.getTitleCache();
-        }else if (originalName.isProtectedFullTitleCache() && StringUtils.isNotBlank(originalName.getFullTitleCache())){
+        }else if (originalName.isProtectedFullTitleCache() && isNotBlank(originalName.getFullTitleCache())){
             cacheToUse = originalName.getFullTitleCache();
         }
         if (cacheToUse != null){

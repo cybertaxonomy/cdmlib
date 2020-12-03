@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
-
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -31,7 +29,6 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
  * @author m.doering
  * @since 08-Nov-2007 13:06:49
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Representation", propOrder = {
     "label",
@@ -158,7 +155,7 @@ public class Representation extends LanguageStringBase {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public Representation clone() {
         try{
             Representation result = (Representation) super.clone();
             //no changes to abbreviatedLabel and label

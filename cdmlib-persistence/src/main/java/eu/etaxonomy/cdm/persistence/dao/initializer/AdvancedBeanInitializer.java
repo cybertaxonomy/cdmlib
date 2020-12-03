@@ -44,7 +44,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
  * @since 2013-10-25
  *
  */
-public class AdvancedBeanInitializer extends HibernateBeanInitializer {
+public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanInitializer<CDM> {
 
     public static final Logger logger = Logger.getLogger(AdvancedBeanInitializer.class);
 
@@ -53,7 +53,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
     @Override
     public void initialize(Object bean, List<String> propertyPaths) {
-        List<Object> beanList = new ArrayList<Object>(1);
+        List<Object> beanList = new ArrayList<>(1);
         beanList.add(bean);
         initializeAll(beanList, propertyPaths);
     }
@@ -75,16 +75,13 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             return beanList;
         }
 
-
         //new
-         BeanInitNode rootPath = BeanInitNode.createInitTree(propertyPaths);
+        BeanInitNode rootPath = BeanInitNode.createInitTree(propertyPaths);
         if (logger.isTraceEnabled()){logger.trace(rootPath.toStringTree());}
-
 
         if(logger.isDebugEnabled()){ logger.debug(">> starting to initialize beanlist ; class(e.g.):" + beanList.iterator().next().getClass().getSimpleName());}
         rootPath.addBeans(beanList);
         initializeNodeRecursive(rootPath);
-
 
         //old - keep for safety (this may help to initialize those beans that are not yet correctly initialized by the AdvancedBeanInitializer
         if(logger.isTraceEnabled()){logger.trace("Start old initalizer ... ");};
@@ -97,7 +94,6 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
         if(logger.isDebugEnabled()){ logger.debug("   Completed initialization of beanlist "); }
         return beanList;
-
     }
 
 
@@ -603,7 +599,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
                 } catch (Exception e) {
                     // should not happen, but just in case we fall back to explicit initialization
                     // and log the error
-                    logger.error(e);
+                    logger.error("error in fetch join processing, falling back to explicit initialization", e);
                     autoInit.initlializers.add(init);
                 }
 
@@ -616,7 +612,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
         Set<AutoPropertyInitializer<CdmBase>> result = new HashSet<AutoPropertyInitializer<CdmBase>>();
         for(Class<? extends CdmBase> superClass : getBeanAutoInitializers().keySet()){
             if(superClass.isAssignableFrom(clazz)){
-                result.add(getBeanAutoInitializers().get(superClass));
+                result.add((AutoPropertyInitializer<CdmBase>) getBeanAutoInitializers().get(superClass));
             }
         }
         return result;

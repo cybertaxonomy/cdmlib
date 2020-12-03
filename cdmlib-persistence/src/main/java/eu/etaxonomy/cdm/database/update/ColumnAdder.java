@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * @author a.mueller
  * @since 16.09.2010
- *
  */
 public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 	private static final Logger logger = Logger.getLogger(ColumnAdder.class);
@@ -31,7 +30,6 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase {
 	private final Object defaultValue;
 	private boolean isNotNull;
 	private final String referencedTable;
-
 
 	/**
 	 * Add ForeignKey.

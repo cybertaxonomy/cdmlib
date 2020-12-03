@@ -92,7 +92,7 @@ public class MediaRepresentation extends VersionableEntity {
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<>();
 
-
+//********************* FACTORY ***********************************************/
 
 	/**
 	 * Factory method
@@ -147,22 +147,18 @@ public class MediaRepresentation extends VersionableEntity {
 		return result;
 	}
 
+// ************************ CONSTRUCTOR *********************************/
 
 	protected MediaRepresentation(){
 		super();
 	}
 
-/***************  getter /setter *************************************/
+//***************  Getter /Setter *************************************/
 
 
 	public String getMimeType(){
 		return this.mimeType;
 	}
-
-	/**
-	 *
-	 * @param mimeType    mimeType
-	 */
 	public void setMimeType(String mimeType){
 		this.mimeType = mimeType;
 	}
@@ -171,11 +167,6 @@ public class MediaRepresentation extends VersionableEntity {
 	public String getSuffix(){
 		return this.suffix;
 	}
-
-	/**
-	 *
-	 * @param mimeType    mimeType
-	 */
 	public void setSuffix(String suffix){
 		this.suffix = suffix;
 	}
@@ -214,17 +205,15 @@ public class MediaRepresentation extends VersionableEntity {
 	}
 
 //************************* CLONE **************************/
-		/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
+
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public MediaRepresentation clone() throws CloneNotSupportedException{
 		MediaRepresentation result = (MediaRepresentation)super.clone();
 
 		//media representations
 		result.mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
 		for (MediaRepresentationPart mediaRepresentationPart: this.mediaRepresentationParts){
-			result.mediaRepresentationParts.add((MediaRepresentationPart)mediaRepresentationPart.clone());
+			result.mediaRepresentationParts.add(mediaRepresentationPart.clone());
 		}
 		//media
 		//this.getMedia().addRepresentation(result);
@@ -233,7 +222,4 @@ public class MediaRepresentation extends VersionableEntity {
 		//no changes to: mimeType, suffix
 		return result;
 	}
-
-
-
 }

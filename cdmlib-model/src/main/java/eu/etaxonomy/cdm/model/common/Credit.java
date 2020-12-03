@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -103,17 +102,18 @@ public class Credit extends LanguageStringBase implements Cloneable{
 //************************* CLONE **************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		Credit result = (Credit)super.clone();
+	public Credit clone() throws CloneNotSupportedException{
+
+	    Credit result = (Credit)super.clone();
 		//no changes to: agent
 		return result;
 	}
 
     @Override
     public String toString() {
-        if (StringUtils.isNotBlank(this.abbreviatedText)){
+        if (isNotBlank(this.abbreviatedText)){
             return this.abbreviatedText;
-        }else if (StringUtils.isNotBlank(this.text)){
+        }else if (isNotBlank(this.text)){
             return this.text;
         }else{
             return super.toString();

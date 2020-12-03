@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import static org.junit.Assert.assertFalse;
@@ -27,8 +26,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.validation.constraint.NameMustFollowCodeValidator;
-
-
 
 /**
  * Test class for {@link NameMustFollowCodeValidator}
@@ -56,7 +53,6 @@ public class NameMustFollowCodeTest extends ValidationTestBase {
 		bacterialName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
 	    cultivarName = TaxonNameFactory.NewCultivarInstance(Rank.SPECIES());
 	}
-
 
 /****************** TESTS *****************************/
 
@@ -174,7 +170,6 @@ public class NameMustFollowCodeTest extends ValidationTestBase {
         assertFalse("There should be a constraint violation as a ViralName must not have hybrid child", constraintViolations.isEmpty());
 
         //TBC
-
     }
 
     @Test
@@ -195,5 +190,4 @@ public class NameMustFollowCodeTest extends ValidationTestBase {
         Set<ConstraintViolation<TaxonName>> constraintViolations  = validator.validate(bacterialName);
         assertTrue("There should be no constraint violation as a bacterial name may have subgenus authorship or name approbation set", constraintViolations.isEmpty());
     }
-
 }

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
@@ -18,6 +17,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -43,8 +43,9 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 public class TaxonNameTest {
 	private static final Logger logger = Logger.getLogger(TaxonNameTest.class);
 
-	private TaxonNameTestClass nameBase1;
-	private TaxonNameTestClass nameBase2;
+	private TaxonName nameBase1;
+	private TaxonName nameBase2;
+	private Reference ref1;
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -52,125 +53,137 @@ public class TaxonNameTest {
 		vocabularyStore.initialize();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
-		nameBase1 = new TaxonNameTestClass(null,null);
-		nameBase2 = new TaxonNameTestClass(Rank.GENUS(), null);
+		nameBase1 = TaxonNameFactory.NewNameInstance(NomenclaturalCode.NonViral, null);
+		nameBase2 = TaxonNameFactory.NewNameInstance(NomenclaturalCode.NonViral, Rank.GENUS());
+	    ref1 = ReferenceFactory.newBook();
+	    ref1.setTitle("My book");
+	    ref1.setAbbrevTitle("M. bk.");
+	    ref1.setDatePublished(TimePeriodParser.parseStringVerbatim("1988"));
 	}
-
-
-	private class TaxonNameTestClass extends TaxonName{
-        private static final long serialVersionUID = 1751002250693432251L;
-        public TaxonNameTestClass(Rank rank, HomotypicalGroup hg){super(null, rank, hg);}
-		@Override
-		public void setCacheStrategy(INameCacheStrategy strategy){}
-		@Override
-		public INameCacheStrategy getCacheStrategy(){return null;}
-		@Override
-		public NomenclaturalCode getNomenclaturalCode(){return null;}
-		@Override
-		public String generateFullTitle(){return null;}
-		@Override
-		public String generateTitle() {
-			return null;
-		}
-	}
-
 
 /** *************************  TESTS ******************************************************/
 
-
 	@Test
-	public void testGenerateFullTitle() {
-		//abstract
+	public void testSetReferenceWithListener(){
+	    //prepare
+	    nameBase1.setGenusOrUninomial("Abies");
+	    nameBase1.setAuthorshipCache("Auth.");
+
+	    //before
+	    Assert.assertEquals("Abies Auth.", nameBase1.getFullTitleCache());
+
+	    //after
+	    //add ref
+	    nameBase1.setNomenclaturalReference(ref1);
+	    Assert.assertEquals("Using transient setNomenclaturalReference should reset the fullTitleCache",
+	            "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+	    //add detail
+        nameBase1.setNomenclaturalMicroReference("55");
+        Assert.assertEquals("Using transient setNomenclaturalMicroReference should reset the fullTitleCache",
+                "Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache());
+
+        //remove detail
+        nameBase1.setNomenclaturalMicroReference(null);
+        Assert.assertEquals("Using the source microcitation setter should reset the fullTitleCache",
+                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+        //remove ref
+        nameBase1.setNomenclaturalReference(null);
+        Assert.assertEquals("Using the source citation setter should reset the fullTitleCache",
+                "Abies Auth.", nameBase1.getFullTitleCache());
+
+        Assert.assertNull("Full emptying the source should remove it from the name (by method checkNullSource)",
+                nameBase1.getNomenclaturalSource());
+
+        //do the same again with setters on source
+        //after
+        //add ref
+        nameBase1.getNomenclaturalSource(true).setCitation(ref1);
+        Assert.assertEquals("Using transient setNomenclaturalReference should reset the fullTitleCache",
+                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+        //add detail
+        nameBase1.getNomenclaturalSource().setCitationMicroReference("55");
+        Assert.assertEquals("Using transient setNomenclaturalMicroReference should reset the fullTitleCache",
+                "Abies Auth., M. bk.: 55. 1988", nameBase1.getFullTitleCache());
+
+        //remove detail
+        nameBase1.getNomenclaturalSource().setCitationMicroReference(null);
+        Assert.assertEquals("Using the source microcitation setter should reset the fullTitleCache",
+                "Abies Auth., M. bk. 1988", nameBase1.getFullTitleCache());
+
+        //remove ref
+        nameBase1.getNomenclaturalSource().setCitation(null);;
+        Assert.assertEquals("Using the source citation setter should reset the fullTitleCache",
+                "Abies Auth.", nameBase1.getFullTitleCache());
+
+        Assert.assertNull("Full emptying the source should remove it from the name (by method checkNullSource)",
+                nameBase1.getNomenclaturalSource());
+
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#TaxonName()}.
-	 */
 	@Test
 	public void testTaxonName() {
 		assertNotNull(nameBase1);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#TaxonName(eu.etaxonomy.cdm.model.name.Rank)}.
-	 */
 	@Test
 	public void testTaxonNameRank() {
 		assertNotNull(nameBase2);
 		assertEquals(Rank.GENUS(), nameBase2.getRank());
 		Rank rank = null;
-		TaxonName testName = new TaxonNameTestClass(rank, null);
+		TaxonName testName = TaxonNameFactory.NewNonViralInstance(rank, null);
 		assertNull(testName.getRank());
 	}
 
 	@Test
 	public void testTaxonNameHomotypicalGroup() {
 		HomotypicalGroup hg = HomotypicalGroup.NewInstance();
-		TaxonName testHG = new TaxonNameTestClass(null, hg);
+		TaxonName testHG = TaxonNameFactory.NewNonViralInstance(null, hg);
 		assertSame(hg, testHG.getHomotypicalGroup());
 		HomotypicalGroup hgNull = null;
-		TaxonName testHGNull = new TaxonNameTestClass(null, hgNull);
+		TaxonName testHGNull = TaxonNameFactory.NewNonViralInstance(null, hgNull);
 		assertNotNull(testHGNull.getHomotypicalGroup());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#TaxonName(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.name.HomotypicalGroup)}.
-	 */
 	@Test
 	public void testTaxonNameRankHomotypicalGroup() {
 		Rank rank = Rank.SPECIES();
 		HomotypicalGroup hg = HomotypicalGroup.NewInstance();
-		TaxonName testHG = new TaxonNameTestClass(rank, hg);
+		TaxonName testHG = TaxonNameFactory.NewNonViralInstance(rank, hg);
 		assertSame(rank, testHG.getRank());
 		assertSame(hg, testHG.getHomotypicalGroup());
 
 		Rank rankNull = null;
 		HomotypicalGroup hgNull = null;
-		TaxonName testHGNull = new TaxonNameTestClass(rankNull, hgNull);
+		TaxonName testHGNull = TaxonNameFactory.NewNonViralInstance(rankNull, hgNull);
 		assertEquals(rankNull, testHGNull.getRank());
 		assertNotNull(testHGNull.getHomotypicalGroup());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addRelationshipToName(eu.etaxonomy.cdm.model.name.TaxonName, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.String)}.
-	 */
 	@Test
 	public void testAddRelationshipToName() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addRelationshipFromName(eu.etaxonomy.cdm.model.name.TaxonName, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.String)}.
-	 */
 	@Test
 	public void testAddRelationshipFromName() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addNameRelationship(eu.etaxonomy.cdm.model.name.NameRelationship)}.
-	 */
 	@Test
 	public void testAddNameRelationship() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#removeNameRelationship(eu.etaxonomy.cdm.model.name.NameRelationship)}.
-	 */
 	@Test
 	public void testRemoveNameRelationship() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)}.
-	 */
 	@Test
 	public void testAddRelationship() {
 		logger.warn("not yet implemented");
@@ -205,21 +218,13 @@ public class TaxonNameTest {
 		nameBase1.removeStatus(nomStatus2);
 		assertEquals(0, nameBase1.getStatus().size());
 		assertFalse(nameBase1.getStatus().contains(nomStatus2));
-
-
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isOriginalCombination()}.
-	 */
 	@Test
 	public void testIsOriginalCombination() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getBasionym()}.
-	 */
 	@Test
 	public void testGetBasionym() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -236,9 +241,6 @@ public class TaxonNameTest {
 		assertEquals(null, name1.getBasionym());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addBasionym(eu.etaxonomy.cdm.model.name.TaxonName)}.
-	 */
 	@Test
 	public void testAddBasionymT() {
 		assertNotSame(nameBase1.getHomotypicalGroup(), nameBase2.getHomotypicalGroup());
@@ -249,17 +251,11 @@ public class TaxonNameTest {
 		logger.warn("not yet fully implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addBasionym(eu.etaxonomy.cdm.model.name.TaxonName, java.lang.String)}.
-	 */
 	@Test
 	public void testAddBasionymTaxonNameString() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getRank()}.
-	 */
 	@Test
 	public void testGetRank() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -271,9 +267,6 @@ public class TaxonNameTest {
 
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getNomenclaturalReference()}.
-	 */
 	@Test
 	public void testGetSetNomenclaturalReference() {
 		INomenclaturalReference nr = nameBase1.getNomenclaturalReference();
@@ -283,9 +276,6 @@ public class TaxonNameTest {
 		assertNotNull("Nomenclatural Reference shall not be null", nr);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getAppendedPhrase()}.
-	 */
 	@Test
 	public void testGetAppendedPhrase() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -297,9 +287,6 @@ public class TaxonNameTest {
 		assertNull(name1.getAppendedPhrase());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getNomenclaturalMicroReference()}.
-	 */
 	@Test
 	public void testGetSetNomenclaturalMicroReference() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -311,9 +298,6 @@ public class TaxonNameTest {
 		assertNull(name1.getNomenclaturalMicroReference());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getHasProblem()}.
-	 */
 	@Test
 	public void testGetSetHasProblem() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -325,81 +309,52 @@ public class TaxonNameTest {
 		assertFalse(name1.getParsingProblem()!=0);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addNameTypeDesignation(eu.etaxonomy.cdm.model.name.TaxonName, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, java.lang.String, boolean, boolean)}.
-	 */
 	@Test
 	public void testAddNameTypeDesignation() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#removeNameTypeDesignation(eu.etaxonomy.cdm.model.name.NameTypeDesignation)}.
-	 */
 	@Test
 	public void testRemoveNameTypeDesignation() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getSpecimenTypeDesignationsOfHomotypicalGroup()}.
-	 */
 	@Test
 	public void testGetSpecimenTypeDesignationsOfHomotypicalGroup() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addSpecimenTypeDesignation(eu.etaxonomy.cdm.model.occurrence.Specimen, eu.etaxonomy.cdm.model.name.TypeDesignationStatus, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, java.lang.String, boolean)}.
-	 */
 	@Test
 	public void testAddSpecimenTypeDesignationSpecimenTypeDesignationStatusReferenceBaseStringStringBoolean() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#addSpecimenTypeDesignation(eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation)}.
-	 */
 	@Test
 	public void testAddSpecimenTypeDesignationSpecimenTypeDesignation() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#removeSpecimenTypeDesignation(eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation)}.
-	 */
 	@Test
 	public void testRemoveSpecimenTypeDesignation() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#removeTypeDesignation(eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation)}.
-	 */
 	@Test
 	public void testRemoveTypeDesignation() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getCitation()}.
-	 */
 	@Test
 	public void testGetCitation() {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getCitationString()}.
-	 */
 	@Test
 	public void testGetCitationString() {
-		logger.warn("not yet implemented");
+		String citation = nameBase1.getCitationString();
+	    logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getReferenceYear()}.
-	 */
 	@Test
 	public void testGetReferenceYear() {
 		logger.warn("not yet implemented");
@@ -419,7 +374,6 @@ public class TaxonNameTest {
 		assertEquals("The taxon name has not properly been removed from the taxon", null, taxon.getName());
 	}
 
-
 	@Test
 	public void testAddAndRemoveDescriptionTaxonNameDescription() {
 		TaxonNameDescription description = TaxonNameDescription.NewInstance();
@@ -431,10 +385,6 @@ public class TaxonNameTest {
 		assertEquals("The taxon name has not properly been removed from the description", null, description.getTaxonName());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#getSynonyms()}.
-	 */
 	@Test
 	public void testGetSynonyms() {
 		logger.warn("not yet implemented");
@@ -477,7 +427,6 @@ public class TaxonNameTest {
 		assertTrue(name3.getHomotypicalGroup().getTypifiedNames().contains(name2));
 	}
 
-
 	@Test
 	public void testIsBasionymFor() {
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -504,7 +453,6 @@ public class TaxonNameTest {
 		assertFalse(name1.isHomotypic(name3));
 		assertFalse(name3.isHomotypic(name1));
 		assertTrue(name2.isHomotypic(name1));
-
 	}
 
 	@Test
@@ -524,7 +472,6 @@ public class TaxonNameTest {
 		assertEquals(1, name3.getBasionyms().size());
 		assertEquals(1, name4.getBasionyms().size());
 		assertEquals(name1, name4.getBasionym());
-
 	}
 
 	@Test
@@ -547,8 +494,6 @@ public class TaxonNameTest {
 		assertFalse(name1.isGroupsBasionym());
 	}
 
-
-
 	@Test
 	public void testRemoveBasionyms(){
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(null);
@@ -562,7 +507,6 @@ public class TaxonNameTest {
 		name1.removeBasionyms();
 		assertEquals(0, name1.getBasionyms().size());
 	}
-
 
 	@Test
     public void testRemoveRelationWithTaxonName(){
@@ -578,10 +522,6 @@ public class TaxonNameTest {
         assertEquals(1, name1.getBasionyms().size());
     }
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isSupraGeneric()}.
-	 */
 	@Test
 	public void testIsSupraGeneric() {
 		nameBase1.setRank(Rank.FAMILY());
@@ -616,9 +556,6 @@ public class TaxonNameTest {
 		assertFalse(nameBase1.isGenus());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isInfraGeneric()}.
-	 */
 	@Test
 	public void testIsInfraGeneric() {
 		nameBase1.setRank(Rank.FAMILY());
@@ -653,9 +590,6 @@ public class TaxonNameTest {
 		assertFalse(nameBase1.isSpecies());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonName#isInfraSpecific()}.
-	 */
 	@Test
 	public void testIsInfraSpecific() {
 		nameBase1.setRank(Rank.FAMILY());
@@ -673,7 +607,6 @@ public class TaxonNameTest {
 		nameBase1.setRank(null);
 		assertFalse(nameBase1.isInfraSpecific());
 	}
-
 
 	//descriptions, fullTitleCache, homotypicalGroup,
 
@@ -712,8 +645,8 @@ public class TaxonNameTest {
 		description.addElement(textData);
 
 		//CLONE
-		TaxonName clone = (TaxonName)taxonName1.clone();
-		TaxonName genusClone = (TaxonName)genusName.clone();
+		TaxonName clone = taxonName1.clone();
+		TaxonName genusClone = genusName.clone();
 		assertSame("Rank should be same", taxonName1.getRank(), clone.getRank());
 		assertTrue("TaxonBases should not be cloned", clone.getTaxonBases().isEmpty());
 		assertEquals("TaxonBases of original name should not be empty", 1, taxonName1.getTaxonBases().size());
@@ -787,7 +720,6 @@ public class TaxonNameTest {
 		assertSame("Clone should be to-object in relationship", clone, nameRelation.getRelatedTo());
 		assertSame("Relationship type should be cloned correctly", NameRelationshipType.BASIONYM(), nameRelation.getType());
 //		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
-
 
 		//homonym of clone
 		assertEquals("There should be exactly 1 relationship in which the clone takes the from role", 1, clone.getRelationsFromThisName().size());
@@ -893,6 +825,26 @@ public class TaxonNameTest {
        abiesAlbaXinus.setInfraSpecificEpithet("xinus");
        result = abiesAlbaxPinusBeta.compareToName(abiesAlbaXinus);
        assertTrue(result < 0);
+   }
+
+   @Test
+   public void testNomenclaturalStanding() {
+       //The status and relationship combinations in this test are not semantically consistent
+       //but only used for testing
+       Assert.assertTrue(nameBase1.isNoStatus());
+       nameBase1.addRelationshipFromName(nameBase2, NameRelationshipType.CONSERVED_AGAINST());
+       Assert.assertTrue(nameBase1.isDesignationOnly());
+       nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.AMBIGUOUS()));
+       Assert.assertTrue("nothing changed", nameBase1.isDesignationOnly());
+       Assert.assertTrue(nameBase1.isInvalid());
+       nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
+       Assert.assertFalse(nameBase1.isIllegitimate());
+       Assert.assertTrue(nameBase1.isDesignationOnly());
+       nameBase1.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID()));
+       Assert.assertFalse(nameBase1.isDesignationOnly());
+       Assert.assertTrue(nameBase1.isInvalid());
+       nameBase1.addRelationshipToName(nameBase2, NameRelationshipType.CONSERVED_AGAINST());
+       Assert.assertTrue(nameBase1.isValid());
    }
 
 }

@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -52,8 +51,8 @@ import eu.etaxonomy.cdm.model.location.Point;
 
 /**
  * The event when gathering a specimen or recording a field unit only
- * @author m.doering
  *
+ * @author m.doering
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GatheringEvent", propOrder = {
@@ -270,11 +269,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.setLocality(LanguageString.NewInstance(locality, language));
 	}
 
-
-	/**
-	 * EventBase managed attributes
-	 * @return
-	 */
+/* ***** EventBase managed attributes  */
 
 	@Transient
 	public Partial getGatheringDate(){
@@ -287,7 +282,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public void setGatheringDate(Partial gatheringDate){
 		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
 	}
-
 	public void setGatheringDate(Calendar gatheringDate){
 		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
 	}
@@ -296,41 +290,36 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public AgentBase getCollector(){
 		return this.getActor();
 	}
-
 	public void setCollector(AgentBase collector){
 		this.setActor(collector);
 	}
 
+// ****************** GETTER / SETTER ************************/
+
 	public String getCollectingMethod() {
 		return collectingMethod;
 	}
-
 	public void setCollectingMethod(String collectingMethod) {
-		this.collectingMethod = StringUtils.isBlank(collectingMethod)? null : collectingMethod;
+		this.collectingMethod = isBlank(collectingMethod)? null : collectingMethod;
 	}
 
 	public Integer getAbsoluteElevation() {
 		return absoluteElevation;
 	}
-
 	public void setAbsoluteElevation(Integer absoluteElevation) {
 		this.absoluteElevation = absoluteElevation;
 	}
 
-
 	public Integer getAbsoluteElevationMax() {
 		return absoluteElevationMax;
 	}
-
 	public void setAbsoluteElevationMax(Integer absoluteElevationMax) {
 		this.absoluteElevationMax = absoluteElevationMax;
 	}
 
-
 	public String getAbsoluteElevationText() {
 		return absoluteElevationText;
 	}
-
 	public void setAbsoluteElevationText(String absoluteElevationText) {
 		this.absoluteElevationText = absoluteElevationText;
 	}
@@ -338,7 +327,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public Double getDistanceToGround() {
 		return distanceToGround;
 	}
-
 	public void setDistanceToGround(Double distanceToGround) {
 		this.distanceToGround = distanceToGround;
 	}
@@ -346,16 +334,13 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public Double getDistanceToWaterSurface() {
 		return distanceToWaterSurface;
 	}
-
 	public void setDistanceToWaterSurface(Double distanceToWaterSurface) {
 		this.distanceToWaterSurface = distanceToWaterSurface;
 	}
 
-
 	public Double getDistanceToGroundMax() {
 		return distanceToGroundMax;
 	}
-
 	public void setDistanceToGroundMax(Double distanceToGroundMax) {
 		this.distanceToGroundMax = distanceToGroundMax;
 	}
@@ -363,7 +348,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public Double getDistanceToWaterSurfaceMax() {
 		return distanceToWaterSurfaceMax;
 	}
-
 	public void setDistanceToWaterSurfaceMax(Double distanceToWaterSurfaceMax) {
 		this.distanceToWaterSurfaceMax = distanceToWaterSurfaceMax;
 	}
@@ -371,7 +355,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public String getDistanceToGroundText() {
 		return distanceToGroundText;
 	}
-
 	public void setDistanceToGroundText(String distanceToGroundText) {
 		this.distanceToGroundText = distanceToGroundText;
 	}
@@ -379,7 +362,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public String getDistanceToWaterSurfaceText() {
 		return distanceToWaterSurfaceText;
 	}
-
 	public void setDistanceToWaterSurfaceText(String distanceToWaterSurfaceText) {
 		this.distanceToWaterSurfaceText = distanceToWaterSurfaceText;
 	}

@@ -96,7 +96,6 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		return result;
 	}
 
-
     @Override
     public String getTitleCache(Team team) {
         String result = "";

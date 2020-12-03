@@ -29,10 +29,8 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
- *
  * @author a.kohlbecker
  * @since Jun 23, 2017
- *
  */
 @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class) // the dataset cleans up the DerivedUnits created in the tests
 public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegrationTest {
@@ -91,7 +89,6 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
 
         assertEquals(1, service.list(null, null, null, null, null).size());
         assertEquals(1, service.list(DerivedUnit.class, null, null, null, null).size());
-
     }
 
     /**
@@ -99,7 +96,8 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
      * org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade ...
      */
     @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class,
+            value="DerivedUnitConverterIntegrationTest.cascadeDelete.xml")
     public void cascadeDelete() throws DerivedUnitConversionException{
 
         // NOTE:

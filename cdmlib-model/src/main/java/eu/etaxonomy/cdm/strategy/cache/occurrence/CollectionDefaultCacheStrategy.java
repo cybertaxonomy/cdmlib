@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -47,8 +46,8 @@ public class CollectionDefaultCacheStrategy extends StrategyBase implements IIde
 			String result = "";
 			result = CdmUtils.concat("", result, collection.getName());
 			//add code if it exists
-			if (StringUtils.isNotBlank(collection.getCode())){
-				if (StringUtils.isNotBlank(result)){
+			if (isNotBlank(collection.getCode())){
+				if (isNotBlank(result)){
 					result += " (" + collection.getCode() +")";
 				}else{
 					result = collection.getCode();

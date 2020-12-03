@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
-
 
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -53,7 +51,6 @@ import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-
 
 /**
  * The class for individual properties (also designed as character, type or
@@ -133,7 +130,6 @@ public class Feature extends DefinedTermBase<Feature> {
     )
     private EnumSet<CdmClass> supportedDataTypes = EnumSet.of(CdmClass.TEXT_DATA);  //by default TextData should always be supported
 
-
     /* for M:M see #4843 */
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
@@ -148,11 +144,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	@JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private final Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<>();
 
-
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
 	private final Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<>();
-
 
     //copy from RelationshipTermBase
 	@XmlElementWrapper(name = "InverseRepresentations")
@@ -265,7 +259,6 @@ public class Feature extends DefinedTermBase<Feature> {
 		termMap = null;
 	}
 
-
 	/**
      * If this feature is available for {@link TaxonDescription taxon descriptions}.
      */
@@ -279,7 +272,6 @@ public class Feature extends DefinedTermBase<Feature> {
     public void setAvailableForTaxon(boolean availableForTaxon) {
         setAvailableFor(CdmClass.TAXON, availableForTaxon);
     }
-
 
     /**
      * If this feature is available for {@link NameDescription name descriptions}.
@@ -309,7 +301,6 @@ public class Feature extends DefinedTermBase<Feature> {
         setAvailableFor(CdmClass.OCCURRENCE, availableForOccurrence);
     }
 
-
 	/**
 	 * Returns the boolean value of the flag indicating whether <i>this</i>
 	 * feature can be described with {@link QuantitativeData quantitative data} (true)
@@ -322,7 +313,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsQuantitativeData() {
 	    return supportedDataTypes.contains(CdmClass.QUANTITATIVE_DATA);
 	}
-
 	/**
 	 * @see	#isSupportsQuantitativeData()
 	 */
@@ -341,7 +331,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsTextData() {
 	    return supportedDataTypes.contains(CdmClass.TEXT_DATA);
 	}
-
 	/**
 	 * @see	#isSupportsTextData()
 	 */
@@ -361,7 +350,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsDistribution() {
 	      return supportedDataTypes.contains(CdmClass.DISTRIBUTION);
 	}
-
 	/**
 	 * @see	#isSupportsDistribution()
 	 */
@@ -380,7 +368,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsIndividualAssociation() {
 	      return supportedDataTypes.contains(CdmClass.INDIVIDUALS_ASSOCIATION);
 	}
-
 	/**
 	 * @see	#isSupportsIndividualAssociation()
 	 */
@@ -400,7 +387,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsTaxonInteraction() {
 	      return supportedDataTypes.contains(CdmClass.TAXON_INTERACTION);
 	}
-
 	/**
 	 * @see	#isSupportsTaxonInteraction()
 	 */
@@ -420,7 +406,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsCommonTaxonName() {
 	      return supportedDataTypes.contains(CdmClass.COMMON_TAXON_NAME);
 	}
-
 	/**
 	 * @see	#isSupportsTaxonInteraction()
 	 */
@@ -439,7 +424,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	public boolean isSupportsCategoricalData() {
 		return supportedDataTypes.contains(CdmClass.CATEGORICAL_DATA);
 	}
-
 	/**
 	 * @see	#supportsCategoricalData()
 	 */
@@ -458,7 +442,6 @@ public class Feature extends DefinedTermBase<Feature> {
     public boolean isSupportsTemporalData() {
           return supportedDataTypes.contains(CdmClass.TEMPORAL_DATA);
     }
-
     /**
      * @see #isSupportsTemporalData()
      */
@@ -472,11 +455,38 @@ public class Feature extends DefinedTermBase<Feature> {
      * @param value the value if it is supported (<code>true</code>) or not (<code>false</code>)
      */
     private void setSupportedClass(CdmClass cdmClass, boolean value) {
-        if (value){
-            this.supportedDataTypes.add(cdmClass);
+        if (value && !this.supportedDataTypes.contains(cdmClass)){
+            setSupportedDataTypes(newEnumSet(this.supportedDataTypes, cdmClass, null));
+        }else if (!value && this.supportedDataTypes.contains(cdmClass)){
+            setSupportedDataTypes(newEnumSet(this.supportedDataTypes, null, cdmClass));
         }else{
-            this.supportedDataTypes.remove(cdmClass);
+            return;
         }
+    }
+
+    /**
+     * for know it is private and the boolean getters and setters should be used instead.
+     * If you make it public make sure to guarantee that any change to the enum set results
+     * in a new enum set (see also {@link #newEnumSet(EnumSet, CdmClass, CdmClass)}
+     * and that the client is aware of the enum set being immutable.
+     */
+    private void setSupportedDataTypes(EnumSet<CdmClass> dataTypes){
+        this.supportedDataTypes = dataTypes;
+    }
+
+    /**
+     * EnumSets being part of the model should be immutable to make hibernate know if they have been changed.
+     * Therefore any change to the enum set should result in a new enum set.
+     */
+    private EnumSet<CdmClass> newEnumSet(@NotNull EnumSet<CdmClass> enumSet, CdmClass additionalClass, CdmClass classToRemove) {
+        EnumSet<CdmClass> result = EnumSet.copyOf(enumSet);
+        if (additionalClass != null){
+            result.add(additionalClass);
+        }
+        if (classToRemove != null){
+            result.remove(classToRemove);
+        }
+        return result;
     }
 
     /**
@@ -485,11 +495,23 @@ public class Feature extends DefinedTermBase<Feature> {
      * @param value the value if it is supported (<code>true</code>) or not (<code>false</code>)
      */
     private void setAvailableFor(CdmClass cdmClass, boolean value) {
-        if (value){
-            this.availableFor.add(cdmClass);
+        if (value && !this.availableFor.contains(cdmClass)){
+            setAvailableFor(newEnumSet(this.availableFor, cdmClass, null));
+        }else if (!value && this.availableFor.contains(cdmClass)){
+            setAvailableFor(newEnumSet(this.availableFor, null, cdmClass));
         }else{
-            this.availableFor.remove(cdmClass);
+            return;
         }
+    }
+
+    /**
+     * for know it is private and the boolean getters and setters should be used instead.
+     * If you make it public make sure to guarantee that any change to the enum set results
+     * in a new enum set (see also {@link #newEnumSet(EnumSet, CdmClass, CdmClass)}
+     * and that the client is aware of the enum set being immutable.
+     */
+    private void setAvailableFor(EnumSet<CdmClass> availableFor){
+        this.availableFor = availableFor;
     }
 
     /**
@@ -761,8 +783,13 @@ public class Feature extends DefinedTermBase<Feature> {
 	        @SuppressWarnings("rawtypes") Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		Feature newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
-		//supported datatypes
 		String text = csvLine.get(4);
+		if (isNotBlank(text)){
+		    newInstance.setSymbol(text);
+		}
+
+		//supported datatypes
+		text = csvLine.get(5);
 		if (text != null && text.length() == 8){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);}
 			if ("1".equals(text.substring(1, 2))){newInstance.setSupportsQuantitativeData(true);}
@@ -777,7 +804,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		}
 
 		//availableFor
-        text = csvLine.get(5);
+        text = csvLine.get(6);
         if (text != null && text.length() == 3){
             if ("1".equals(text.substring(0, 1))){newInstance.setAvailableForTaxon(true);}
             if ("1".equals(text.substring(1, 2))){newInstance.setAvailableForOccurrence(true);}
@@ -786,8 +813,21 @@ public class Feature extends DefinedTermBase<Feature> {
             throw new IllegalStateException("AvailableFor XXX must exist for all 3 classes");
         }
 
-        //abbrev label - there is no abbreviated label for features yet, if there is one in future we need to increment the index for supportXXX form 4 to 5
-        newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(null);
+        //recommended measurement unit
+        text = csvLine.get(7);
+        if (isNotBlank(text) && text.length() == 36){
+            if (text.length() != 36){
+                throw new IllegalStateException("Recommended measurement unit must be a UUID");
+            }
+            UUID uuid = UUID.fromString(text);
+            MeasurementUnit recommendedMeasurementUnit = MeasurementUnit.getTermByUuid(uuid);
+            if (recommendedMeasurementUnit == null){
+                throw new IllegalArgumentException("Required recommended measurement unit not found for '"+text+"'");
+            }else{
+                newInstance.addRecommendedMeasurementUnit(recommendedMeasurementUnit);
+            }
+        }
+
 		return newInstance;
 	}
 
@@ -1175,7 +1215,7 @@ public class Feature extends DefinedTermBase<Feature> {
 
         result.inverseRepresentations = new HashSet<Representation>();
         for (Representation rep: this.inverseRepresentations){
-            result.addInverseRepresentation((Representation)rep.clone());
+            result.addInverseRepresentation(rep.clone());
         }
 
         //no changes to: symmetric, transitiv

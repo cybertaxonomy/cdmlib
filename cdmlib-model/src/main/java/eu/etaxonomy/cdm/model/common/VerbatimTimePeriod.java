@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
@@ -152,7 +151,7 @@ public class VerbatimTimePeriod extends TimePeriod {
     @Transient
     public boolean isEmpty(){
         boolean result = super.isEmpty();
-        return result && StringUtils.isBlank(this.getVerbatimDate());
+        return result && isBlank(this.getVerbatimDate());
     }
 
 //*********** EQUALS **********************************/

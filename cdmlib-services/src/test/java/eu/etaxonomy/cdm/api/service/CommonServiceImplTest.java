@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -38,7 +37,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
- *
  */
 public class CommonServiceImplTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
@@ -52,29 +50,17 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	private IReferenceService referenceService;
-//
-//	@SpringBeanByType
-//	private IAgentService agentService;
-//
-//	@SpringBeanByType
-//	private IUserService userService;
 
 	@SpringBeanByType
 	private IOccurrenceService occurrenceService;
 
 /****************** TESTS *****************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#setDao(eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao)}.
-	 */
 	@Test
 	public final void testSetDao() {
 		Assert.assertNotNull(service);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getTaxonByUuid(java.util.UUID)}.
-	 */
 	@Test
 	@DataSet
 	@Ignore
@@ -95,7 +81,6 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 //		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
 //		Reference ref1 = referenceService.findByUuid(uuid);
 
-
 		Set<CdmBase> referencedObjects = service.getReferencingObjects(ref1);
 		System.out.println("############## RESULT ###################");
 		for (CdmBase obj: referencedObjects){
@@ -103,8 +88,6 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		}
 		assertEquals(3, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
-
-
 
 //		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
 //		AgentBase author = agentService.findByUuid(uuidAuthor);
@@ -118,10 +101,6 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		System.out.println("############## ENDE ###################");
 	}
 
-	/**
-	 * Test method for getReferencingObject.
-	 * Test
-	 */
 	@Test
 	@DataSet
 	public final void testGetReferencingObjects2() {
@@ -149,9 +128,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		}
 		assertEquals(2, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
-
 	}
-
 
 	@Test
 	@DataSet
@@ -163,8 +140,5 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	}
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

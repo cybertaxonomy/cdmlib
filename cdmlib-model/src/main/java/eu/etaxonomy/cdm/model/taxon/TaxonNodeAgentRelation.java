@@ -115,13 +115,11 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
 
 //************************ to String **********************************/
 
-
     @Override
     public String toString() {
         return "TaxonNodeAgentRelation [taxonNode=" + taxonNode +
                 ", agent=" + agent + ", type=" + type + "]";
     }
-
 
 //************************** clone *******************************************/
 
@@ -129,11 +127,10 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
      * Clones <i>this</i> taxon node agent relation. This is a shortcut that enables to create
      * a new instance that differs only slightly from <i>this</i> relation.
      *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone()  {
+    public TaxonNodeAgentRelation clone()  {
         try{
             TaxonNodeAgentRelation result = (TaxonNodeAgentRelation)super.clone();
 
@@ -145,5 +142,4 @@ public class TaxonNodeAgentRelation extends AnnotatableEntity {
             return null;
         }
     }
-
 }

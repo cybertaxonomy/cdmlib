@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -190,7 +189,7 @@ public class CommonTaxonName extends DescriptionElementBase {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public CommonTaxonName clone() {
 
         try {
             CommonTaxonName result = (CommonTaxonName)super.clone();
@@ -207,7 +206,7 @@ public class CommonTaxonName extends DescriptionElementBase {
 
     @Override
     public String toString(){
-        if (StringUtils.isNotBlank(name)){
+        if (isNotBlank(name)){
             return name;
         }else{
             return super.toString();

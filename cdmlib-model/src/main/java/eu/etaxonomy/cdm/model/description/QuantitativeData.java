@@ -635,7 +635,7 @@ public class QuantitativeData
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public QuantitativeData clone() {
 
 		try {
 			QuantitativeData result = (QuantitativeData)super.clone();

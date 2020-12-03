@@ -14,13 +14,11 @@ import java.beans.PropertyChangeListener;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author a.mueller
  * @since 31.05.2010
- *
  */
 public class TeamTest {
 	public static final Logger logger = Logger.getLogger(TeamTest.class);
@@ -32,18 +30,6 @@ public class TeamTest {
 	private Person member3;
 	private boolean eventWasFired = false;
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		teamProtected = Team.NewInstance();
@@ -68,25 +54,16 @@ public class TeamTest {
 
 //********************* METHODS **********************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.agent.Team#getTitleCache()}.
-	 */
 	@Test
 	public void testGetTitleCache() {
 		Assert.assertEquals("Title Cache of team 1 must be 'Team1'", "Team1", teamProtected.getTitleCache());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.agent.Team#getNomenclaturalTitle()}.
-	 */
 	@Test
 	public void testGetNomenclaturalTitle() {
 		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1'", "NomTeam1", teamProtected.getNomenclaturalTitle());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.agent.Team#setNomenclaturalTitle(java.lang.String)}.
-	 */
 	@Test
 	public void testSetNomenclaturalTitleString() {
 		eventWasFired = false;
@@ -95,10 +72,6 @@ public class TeamTest {
 		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1a'", "NomTeam1a", teamProtected.getNomenclaturalTitle());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.agent.Team#setNomenclaturalTitle(java.lang.String, boolean)}.
-	 */
 	@Test
 	public void testSetNomenclaturalTitleStringBoolean() {
 		eventWasFired = false;
@@ -108,9 +81,6 @@ public class TeamTest {
 		//Assert.assertEquals("Nom title Cache of team 1 must be 'New Nom Title'", "New Nom Title", teamProtected.getNomenclaturalTitle());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.agent.Team#isProtectedNomenclaturalTitleCache()}.
-	 */
 	@Test
 	public void testIsSetProtectedNomenclaturalTitleCache() {
 		Assert.assertTrue("Protected title cache must be true for 'team protected'", teamProtected.isProtectedNomenclaturalTitleCache() );
@@ -118,9 +88,6 @@ public class TeamTest {
 		Assert.assertFalse("Protected title cache must be false for 'team protected'", teamProtected.isProtectedNomenclaturalTitleCache() );
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.agent.Team#addTeamMember(eu.etaxonomy.cdm.model.agent.Person)}.
-	 */
 	@Test
 	public void testAddGetRemoveTeamMemberPerson() {
 		Assert.assertEquals("Number of team members should be 1", 1,teamWithMembers.getTeamMembers().size());
@@ -164,6 +131,4 @@ public class TeamTest {
 		teamProtected.addTeamMember(member2);
 		Assert.assertTrue("addTeamMember(Person) needs to fire property change event", eventWasFired);
 	}
-
-
 }

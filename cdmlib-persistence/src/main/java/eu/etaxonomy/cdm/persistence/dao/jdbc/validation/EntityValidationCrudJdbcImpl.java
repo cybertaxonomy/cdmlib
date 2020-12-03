@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationCrud;
 /**
  * @author ayco_holleman
  * @since 16 jan. 2015
- *
  */
 @Repository
 public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
@@ -512,7 +511,7 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
 
     private static void dontDeleteErrorsInOtherValidationGroups(EntityValidation previousValidation,
             Class<?>[] validationGroups) {
-        Set<String> classNames = new HashSet<String>(validationGroups.length);
+        Set<String> classNames = new HashSet<>(validationGroups.length);
         for (Class<?> c : validationGroups) {
             classNames.add(c.getName());
         }
@@ -523,5 +522,4 @@ public class EntityValidationCrudJdbcImpl implements IEntityValidationCrud {
             }
         }
     }
-
 }

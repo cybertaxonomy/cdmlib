@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.format.taxon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
@@ -67,7 +67,7 @@ public class TaxonRelationshipFormatter {
         }
 
         TaxonRelationshipType type = taxonRelationship.getType();
-        boolean isMisapplied = type == null ? false : type.isMisappliedNameOrInvalidDesignation() && reverse;
+        boolean isMisapplied = type == null ? false : type.isMisappliedName() && reverse;
         boolean isSynonym = type == null? false : type.isAnySynonym();
 
         Taxon relatedTaxon = reverse? taxonRelationship.getFromTaxon()

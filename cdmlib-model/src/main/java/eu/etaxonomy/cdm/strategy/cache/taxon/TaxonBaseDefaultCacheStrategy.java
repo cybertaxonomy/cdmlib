@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -106,7 +104,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 List<TaggedText> statusTags = nameCacheStrategy.getNomStatusTags(name, true, true);
                 tags.addAll(statusTags);
             }
-            if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
+            if (isNotBlank(taxonBase.getAppendedPhrase())){
                 tags.add(new TaggedText(TagEnum.appendedPhrase, taxonBase.getAppendedPhrase().trim()));
             }
         }
@@ -135,7 +133,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     ref.getAuthorship() != null &&
                     isNotBlank(ref.getAuthorship().getTitleCache()) &&
                     isNotBlank(ref.getYear())){
-                secRef = ref.getCacheStrategy().getCitation(ref);
+                secRef = ref.getCacheStrategy().getCitation(ref, taxonBase.getSecMicroReference());
             }else{
                 secRef = ref.getTitleCache();
             }
@@ -144,7 +142,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             tags.add(new TaggedText(TagEnum.secReference, secRef));
         }
         //secMicroReference
-        if (StringUtils.isNotBlank(taxonBase.getSecMicroReference())){
+        if (isNotBlank(taxonBase.getSecMicroReference())){
             tags.add(new TaggedText(TagEnum.separator, ": "));
             tags.add(new TaggedText(TagEnum.secMicroReference, taxonBase.getSecMicroReference()));
 

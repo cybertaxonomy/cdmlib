@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.17.0</version>
+    <version>5.18.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -18,7 +18,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <goals>
@@ -49,20 +49,18 @@
       <artifactId>xmlunit</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>ooxml-schemas</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
     </dependency>
     <dependency>
       <groupId>identificationKeyAPI</groupId>
       <artifactId>identificationKeyAPI</artifactId>
+<!--       <exclusions> -->
+<!--         <exclusion> -->
+<!--           <groupId>xml-apis</groupId> -->
+<!--           <artifactId>xml-apis</artifactId> -->
+<!--         </exclusion> -->
+<!--       </exclusions> -->
     </dependency>
     <dependency>
  		<groupId>org.apache.jena</groupId>
@@ -72,9 +70,9 @@
         <groupId>org.docx4j</groupId>
         <artifactId>docx4j</artifactId>
     </dependency>
-    <dependency> 
-        <groupId>javax.xml.bind</groupId>
-        <artifactId>jaxb-api</artifactId>
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
     </dependency>
   </dependencies>
 </project>

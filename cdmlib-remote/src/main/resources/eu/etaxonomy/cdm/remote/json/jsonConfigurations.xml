@@ -3,9 +3,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
-    http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
     ">
 
     <bean id="genericApiCardinalityPropertyFilter" class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
@@ -25,7 +25,8 @@
              <value>TermNode.children</value>
              <value>TermNode.feature</value>
 
-            <value>NomenclaturalStatus.citation</value>
+             <value>NomenclaturalStatus.source</value>
+             <value>DescriptionElementSource.citation</value>
 
              <value>TreeNode.data</value>
              <value>TreeNode.data</value>
@@ -152,6 +153,9 @@
          <entry key="eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDtoBeanProcessor" />
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.location.Point">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.PointBeanProcessor"/>
+        </entry>
          <entry key="eu.etaxonomy.cdm.model.reference.Reference">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
          </entry>
@@ -184,6 +188,9 @@
          <entry key="org.apache.lucene.document.Document">
               <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
          </entry>
+         <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
+        </entry>
       </map>
     </property>
     <property name="jsonPropertyFilter">
@@ -227,13 +234,16 @@
         <entry key="java.util.LinkedHashMap">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager.TypeDesignationWorkingSet">
+        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
         <entry key="java.net.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
         </entry>
       </map>
@@ -323,6 +333,9 @@
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor" />
+        </entry>        
+        <entry key="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
         </entry>
       </map>
     </property>
@@ -476,6 +489,12 @@
                 <property name="replaceMultilanguageText" value="true" />
             </bean>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.api.service.dto.RegistrationDTO">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.RegistrationDtoBeanProcessor" />
+        </entry>
       </map>
     </property>
         <property name="jsonPropertyFilter">
@@ -510,11 +529,20 @@
         <entry key="java.util.Map">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
+        <entry key="java.util.LinkedHashMap">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
         <entry key="java.net.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.KeyTermValueProcessor"/>
         </entry>
       </map>
     </property>

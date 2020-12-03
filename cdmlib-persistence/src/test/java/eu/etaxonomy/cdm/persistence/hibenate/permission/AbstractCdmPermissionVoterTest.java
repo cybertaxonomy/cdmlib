@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 /**
  * @author a.kohlbecker
  * @since Feb 2, 2017
- *
  */
 abstract public class AbstractCdmPermissionVoterTest extends Assert {
 

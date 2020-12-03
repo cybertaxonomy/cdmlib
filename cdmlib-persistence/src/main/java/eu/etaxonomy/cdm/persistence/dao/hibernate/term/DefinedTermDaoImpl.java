@@ -605,7 +605,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
     }
 
     /**
-     * Workaround for http://dev.e-taxonomy.eu/trac/ticket/5871 and #5945
+     * Workaround for https://dev.e-taxonomy.eu/redmine/issues/5871 and #5945
      * Terms with multiple representations return identical duplicates
      * due to eager representation loading. We expect these duplicates to appear
      * in line wo we only compare one term with its predecessor. If it already

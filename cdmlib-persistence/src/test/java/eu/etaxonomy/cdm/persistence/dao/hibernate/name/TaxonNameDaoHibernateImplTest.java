@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import static org.junit.Assert.assertEquals;
@@ -29,7 +28,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -73,7 +72,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         acherontiaLachesisUuid = UUID.fromString("7969821b-a2cf-4d01-95ec-6a5ed0ca3f69");
         // Atropos Agassiz, 1846
         atroposUuid = UUID.fromString("27004fcc-14d4-47d4-a3e1-75750fdb5b79");
-
     }
 
     @Test
@@ -149,6 +147,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
         TaxonName acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
         assert acherontiaLachesis != null : "name must exist";
 
+        @SuppressWarnings("rawtypes")
         List<TypeDesignationBase> result1 = taxonNameDao.getTypeDesignations(acherontiaLachesis, null, null, null, null, null);
 
         assertNotNull("getTypeDesignations should return a list",result1);
@@ -290,7 +289,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
     public void testCountNamesByExample() {
         TaxonName zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.GENUS());
         zoologicalName.setGenusOrUninomial("Atropos");
-        Set<String> includedProperties = new HashSet<String>();
+        Set<String> includedProperties = new HashSet<>();
         includedProperties.add("genusOrUninomial");
         includedProperties.add("specificEpithet");
         includedProperties.add("infraSpecificEpithet");
@@ -320,36 +319,42 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @Test
     public void testDeleteTaxon(){
-        TaxonName acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
-        HibernateProxyHelper.deproxy(acherontiaLachesis, TaxonName.class);
+        TaxonName acherontiaLachesis = CdmBase.deproxy(taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid));
+        @SuppressWarnings("rawtypes")
         Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
         HomotypicalGroup group = acherontiaLachesis.getHomotypicalGroup();
         UUID groupUuid = group.getUuid();
         taxonNameDao.delete(acherontiaLachesis);
 
+        @SuppressWarnings("rawtypes")
         Iterator<TaxonBase> taxa= taxonBases.iterator();
-        TaxonBase taxon = taxa.next();
+        TaxonBase<?> taxon = taxa.next();
         UUID taxonUuid = taxon.getUuid();
 
-        //int numbOfTaxa = taxonDao.count(TaxonBase.class);
-        List<TaxonBase> taxaList = taxonDao.list(100, 0);
-
-        acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
+        acherontiaLachesis = taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
         taxon = taxonDao.findByUuid(taxonUuid);
-        group = homotypicalGroupDao.findByUuid(groupUuid);
-        group = HibernateProxyHelper.deproxy(group, HomotypicalGroup.class);
+        group = CdmBase.deproxy(homotypicalGroupDao.findByUuid(groupUuid));
         assertNull("There should be no taxonName with the deleted uuid", acherontiaLachesis);
         assertNull("There should be no taxon with the deleted uuid", taxon);
         assertNull("There should be no homotypicalGroup with the deleted uuid", group);
-
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
+    /**
+     * Test if the listener on nomenclatural source also works if the name is retrieved
+     * from the database
      */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
+    @Test
+    public void testNomenclaturalSourceListener(){
+        UUID uuidAusAus = UUID.fromString("05a438d6-065f-49ef-84db-c7dc2c259975");
+        TaxonName ausAus = taxonNameDao.findByUuid(uuidAusAus);
+        //start condition
+        assertEquals("Aus aus, Sp. Pl.", ausAus.getFullTitleCache());
 
+        ausAus.getNomenclaturalSource().setCitationMicroReference("23");
+        assertEquals("Here the full cache should show the cache as stored in the database but did not",
+                "Aus aus, Sp. Pl.: 23", ausAus.getFullTitleCache());
     }
+
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 }

@@ -68,10 +68,10 @@ public enum AuthorityType implements IEnumTerm<AuthorityType>{
 	public String getKey(){return delegateVocTerm.getKey();}
 
 	@Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
+    public String getLabel(){return delegateVocTerm.getLabel();}
 
 	@Override
-    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+    public String getLabel(Language language){return delegateVocTerm.getLabel(language);}
 
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}

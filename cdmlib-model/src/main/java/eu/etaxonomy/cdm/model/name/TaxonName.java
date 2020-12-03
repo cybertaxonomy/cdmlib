@@ -6,17 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -28,6 +28,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.Valid;
@@ -44,7 +45,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -78,6 +78,8 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -126,8 +128,6 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
 @XmlType(name = "TaxonName", propOrder = {
     "nameType",
     "appendedPhrase",
-    "nomenclaturalMicroReference",
-    "nomenclaturalReference",
     "nomenclaturalSource",
     "rank",
     "fullTitleCache",
@@ -140,7 +140,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "descriptions",
     "taxonBases",
     "registrations",
-
+    //non-viral names
     "nameCache",
     "genusOrUninomial",
     "infraGenericEpithet",
@@ -159,20 +159,20 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     "monomHybrid",
     "binomHybrid",
     "trinomHybrid",
-
+    //viral name
     "acronym",
-
+    //bacterial names
     "subGenusAuthorship",
     "nameApprobation",
-
+    //zoological name
     "breed",
     "publicationYear",
     "originalPublicationYear",
     "inCombinationAuthorship",
     "inBasionymAuthorship",
-
+    //fungi
     "anamorphic",
-
+    //cultivar plant names
     "cultivarName"
 })
 @XmlRootElement(name = "TaxonName")
@@ -191,12 +191,16 @@ public class TaxonName
             extends IdentifiableEntity<INameCacheStrategy>
             implements ITaxonNameBase, INonViralName, IViralName, IBacterialName, IZoologicalName,
                 IBotanicalName, ICultivarPlantName, IFungusName,
-                IParsable, IRelated, IMatchable, IIntextReferenceTarget, Cloneable,
-                IDescribable<TaxonNameDescription>{
+                IParsable, IRelated, IMatchable, IIntextReferenceTarget,
+                IDescribable<TaxonNameDescription>,
+                INomenclaturalStanding {
 
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
 
+//    @XmlTransient
+//    @Transient
+//    private PropertyChangeListener sourceListener;
 
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
@@ -236,15 +240,6 @@ public class TaxonName
 //    @NullOrNotEmpty
     @Column(length=255)
     private String appendedPhrase;
-
-    //#6581
-    @XmlElement(name = "NomenclaturalMicroReference")
-    @Field
-    @CacheUpdate(noUpdate ="titleCache")
-    //TODO Val #3379
-    //@NullOrNotEmpty
-    @Column(length=255)
-    private String nomenclaturalMicroReference;
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
@@ -331,24 +326,14 @@ public class TaxonName
     private Rank rank;
 
     //#6581
-    @XmlElement(name = "NomenclaturalReference")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @CacheUpdate(noUpdate ="titleCache")
-    @IndexedEmbedded
-    private Reference nomenclaturalReference;
-
-    //#6581
     @XmlElement(name = "NomenclaturalSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedName")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE,CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
-    private DescriptionElementSource nomenclaturalSource;
+    private NomenclaturalSource nomenclaturalSource;
 
     @XmlElementWrapper(name = "Registrations")
     @XmlElement(name = "Registration")
@@ -595,20 +580,7 @@ public class TaxonName
         return result;
     }
 
-
-    /**
-     * @param icnafp
-     * @param rank2
-     * @param genusOrUninomial2
-     * @param infraGenericEpithet2
-     * @param specificEpithet2
-     * @param infraSpecificEpithet2
-     * @param combinationAuthorship2
-     * @param nomenclaturalReference2
-     * @param nomenclMicroRef
-     * @param homotypicalGroup2
-     * @return
-     */
+    //TODO move to TaxonNameFactory
     public static TaxonName NewInstance(NomenclaturalCode code, Rank rank, String genusOrUninomial,
             String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
             TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
@@ -617,8 +589,8 @@ public class TaxonName
         return result;
     }
 
-
 // ************* CONSTRUCTORS *************/
+
     /**
      * Class constructor: creates a new empty taxon name.
      * @param code
@@ -628,10 +600,8 @@ public class TaxonName
      * @see #TaxonName(Rank, HomotypicalGroup)
      */
     protected TaxonName() {
-        super();
-        rectifyNameCacheStrategy();
+        this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
     }
-
 
     /**
      * Class constructor: creates a new taxon name instance
@@ -657,7 +627,6 @@ public class TaxonName
         homotypicalGroup.addTypifiedName(this);
         this.homotypicalGroup = homotypicalGroup;
     }
-
 
     /**
      * Class constructor: creates a new non viral taxon name instance
@@ -704,61 +673,51 @@ public class TaxonName
         this.setNomenclaturalMicroReference(nomenclMicroRef);
     }
 
-
-    /**
-     * This method was originally needed to distinguish cache strategies
-     * depending on the name type. Now we have a unified cache strategy
-     * which does not require this anymore. Maybe we could even further remove this method.
-     */
-    private void rectifyNameCacheStrategy(){
-        if (this.cacheStrategy == null){
-            this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-        }
-    }
-
-
     @Override
     public void initListener(){
-        PropertyChangeListener listener = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                boolean protectedByLowerCache = false;
-                //authorship cache
-                if (fieldHasCacheUpdateProperty(e.getPropertyName(), "authorshipCache")){
-                    if (protectedAuthorshipCache){
-                        protectedByLowerCache = true;
-                    }else{
-                        authorshipCache = null;
-                    }
-                }
+        PropertyChangeListener nameListener = event-> {
+            String propName = event.getPropertyName();
+            if (Objects.equals(event.getOldValue(), event.getNewValue())){
+                return;
+            }
 
-                //nameCache
-                if (fieldHasCacheUpdateProperty(e.getPropertyName(), "nameCache")){
-                    if (protectedNameCache){
-                        protectedByLowerCache = true;
-                    }else{
-                        nameCache = null;
-                    }
-                }
-                //title cache
-                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "titleCache")){
-                    if (isProtectedTitleCache()|| protectedByLowerCache == true ){
-                        protectedByLowerCache = true;
-                    }else{
-                        titleCache = null;
-                    }
-                }
-                //full title cache
-                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "fullTitleCache")){
-                    if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
-                        protectedByLowerCache = true;
-                    }else{
-                        fullTitleCache = null;
-                    }
+            boolean protectedByLowerCache = false;
+            //authorship cache
+            if (fieldHasCacheUpdateProperty(propName, "authorshipCache")){
+                if (protectedAuthorshipCache){
+                    protectedByLowerCache = true;
+                }else{
+                    authorshipCache = null;
                 }
             }
+
+            //nameCache
+            if (fieldHasCacheUpdateProperty(propName, "nameCache")){
+                if (protectedNameCache){
+                    protectedByLowerCache = true;
+                }else{
+                    nameCache = null;
+                }
+            }
+            //title cache
+            if (! fieldHasNoUpdateProperty(propName, "titleCache")){
+                if (isProtectedTitleCache()|| protectedByLowerCache == true ){
+                    protectedByLowerCache = true;
+                }else{
+                    titleCache = null;
+                }
+            }
+            //full title cache
+            if (! fieldHasNoUpdateProperty(propName, "fullTitleCache")){
+                if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
+                    protectedByLowerCache = true;
+                }else{
+                    fullTitleCache = null;
+                }
+            }
+
         };
-        addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
+        addPropertyChangeListener(nameListener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
     }
 
     private static Map<String, java.lang.reflect.Field> allFields = null;
@@ -775,9 +734,8 @@ public class TaxonName
      * @return
      */
     private boolean fieldHasCacheUpdateProperty(String propertyName, String cacheName) {
-        java.lang.reflect.Field field;
         try {
-            field = getAllFields().get(propertyName);
+            java.lang.reflect.Field field = getAllFields().get(propertyName);
             if (field != null){
                 CacheUpdate updateAnnotation = field.getAnnotation(CacheUpdate.class);
                 if (updateAnnotation != null){
@@ -871,7 +829,7 @@ public class TaxonName
      */
     @Override
     public void setGenusOrUninomial(String genusOrUninomial) {
-        this.genusOrUninomial = StringUtils.isBlank(genusOrUninomial) ? null : genusOrUninomial;
+        this.genusOrUninomial = isBlank(genusOrUninomial) ? null : genusOrUninomial;
     }
 
     /**
@@ -893,7 +851,7 @@ public class TaxonName
      */
     @Override
     public void setInfraGenericEpithet(String infraGenericEpithet){
-        this.infraGenericEpithet = StringUtils.isBlank(infraGenericEpithet)? null : infraGenericEpithet;
+        this.infraGenericEpithet = isBlank(infraGenericEpithet)? null : infraGenericEpithet;
     }
 
     /**
@@ -914,7 +872,7 @@ public class TaxonName
      */
     @Override
     public void setSpecificEpithet(String specificEpithet){
-        this.specificEpithet = StringUtils.isBlank(specificEpithet) ? null : specificEpithet;
+        this.specificEpithet = isBlank(specificEpithet) ? null : specificEpithet;
     }
 
     /**
@@ -936,7 +894,7 @@ public class TaxonName
      */
     @Override
     public void setInfraSpecificEpithet(String infraSpecificEpithet){
-        this.infraSpecificEpithet = StringUtils.isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
+        this.infraSpecificEpithet = isBlank(infraSpecificEpithet)?null : infraSpecificEpithet;
     }
 
     /**
@@ -1247,7 +1205,7 @@ public class TaxonName
      */
     @Override
     public void setAcronym(String acronym){
-        this.acronym = StringUtils.isBlank(acronym)? null : acronym;
+        this.acronym = isBlank(acronym)? null : acronym;
     }
 
     // ****************** BACTERIAL NAME ******************/
@@ -1288,7 +1246,7 @@ public class TaxonName
      */
     @Override
     public void setBreed(String breed){
-        this.breed = StringUtils.isBlank(breed) ? null : breed;
+        this.breed = isBlank(breed) ? null : breed;
     }
 
 
@@ -1330,7 +1288,7 @@ public class TaxonName
      */
     @Override
     public void setCultivarName(String cultivarName){
-        this.cultivarName = StringUtils.isBlank(cultivarName) ? null : cultivarName;
+        this.cultivarName = isBlank(cultivarName) ? null : cultivarName;
     }
 
     // **************** Fungus Name
@@ -1415,7 +1373,6 @@ public class TaxonName
 
     @Override
     public INameCacheStrategy getCacheStrategy() {
-        rectifyNameCacheStrategy();
         return this.cacheStrategy;
     }
 
@@ -1428,7 +1385,6 @@ public class TaxonName
             return cacheStrategy.getFullTitleCache(this);
         }
     }
-
 
     @Override
     public void setFullTitleCache(String fullTitleCache){
@@ -1467,7 +1423,6 @@ public class TaxonName
         }
     }
 
-
     @Override
     @Transient
     public List<TaggedText> getTaggedName(){
@@ -1494,7 +1449,6 @@ public class TaxonName
         }
         return fullTitleCache;
     }
-
 
     @Override
     public String getTitleCache(){
@@ -1536,11 +1490,6 @@ public class TaxonName
         return authorshipCache;
     }
 
-
-
-
-
-
     /**
      * Assigns an authorshipCache string to <i>this</i> non viral taxon name. Sets the isProtectedAuthorshipCache
      * flag to <code>true</code>.
@@ -1552,7 +1501,6 @@ public class TaxonName
     public void setAuthorshipCache(String authorshipCache) {
         setAuthorshipCache(authorshipCache, true);
     }
-
 
     /**
      * Assigns an authorshipCache string to <i>this</i> non viral taxon name.
@@ -1587,8 +1535,6 @@ public class TaxonName
         }
     }
 
-
-
     /**
      * Tests if the given name has any authors.
      * @return false if no author ((ex)combination or (ex)basionym) exists, true otherwise
@@ -1603,7 +1549,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the combination authors title cache. Returns null if no combination author exists.
-     * @return
      */
     @Override
     public String computeCombinationAuthorNomenclaturalTitle() {
@@ -1612,7 +1557,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the basionym authors title cache. Returns null if no basionym author exists.
-     * @return
      */
     @Override
     public String computeBasionymAuthorNomenclaturalTitle() {
@@ -1622,7 +1566,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the ex-combination authors title cache. Returns null if no ex-combination author exists.
-     * @return
      */
     @Override
     public String computeExCombinationAuthorNomenclaturalTitle() {
@@ -1631,7 +1574,6 @@ public class TaxonName
 
     /**
      * Shortcut. Returns the ex-basionym authors title cache. Returns null if no exbasionym author exists.
-     * @return
      */
     @Override
     public String computeExBasionymAuthorNomenclaturalTitle() {
@@ -1683,6 +1625,11 @@ public class TaxonName
         }
         NameRelationship rel = new NameRelationship(toName, this, type, citation, microCitation, ruleConsidered, codeEdition);
         return rel;
+    }
+
+    @Override
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type){
+        return addRelationshipFromName(fromName, type, null, null, null, null);
     }
 
     @Override
@@ -1782,7 +1729,6 @@ public class TaxonName
             }
         }
     }
-
 
     /**
      * If relation is of type NameRelationship, addNameRelationship is called;
@@ -1896,8 +1842,7 @@ public class TaxonName
 
     public void setStatus(Set<NomenclaturalStatus> nomStatus) throws SetterAdapterException {
         new EntityCollectionSetterAdapter<TaxonName, NomenclaturalStatus>(TaxonName.class, NomenclaturalStatus.class, "status", "addStatus", "removeStatus").setCollection(this, status);
-   }
-
+    }
 
     /**
      * Generates the composed name string of <i>this</i> non viral taxon name without author
@@ -2054,11 +1999,6 @@ public class TaxonName
         return getRelatedNames(relationsWithThisName(direction), type);
     }
 
-    /**
-     * @param rels
-     * @param type
-     * @return
-     */
     private Set<TaxonName> getRelatedNames(Set<NameRelationship> rels, NameRelationshipType type) {
         Set<TaxonName> result = new HashSet<>();
         for (NameRelationship rel : rels){
@@ -2071,12 +2011,23 @@ public class TaxonName
     }
 
     @Override
-    @Deprecated
-    public NameRelationship addOriginalSpelling(TaxonName originalSpelling, Reference citation, String microcitation){
-        if (originalSpelling != null){
-            return originalSpelling.addRelationshipToName(this, NameRelationshipType.ORIGINAL_SPELLING(), citation, microcitation, null, null);
+    @Transient
+    public TaxonName getOriginalSpelling(){
+        if (this.getNomenclaturalSource() != null){
+            return this.getNomenclaturalSource().getNameUsedInSource();
         }else{
             return null;
+        }
+    }
+
+    @Override
+    @Transient
+    public void setOriginalSpelling(TaxonName originalSpelling){
+        if (originalSpelling != null){
+            this.getNomenclaturalSource(true).setNameUsedInSource(originalSpelling);
+        }else if (this.getNomenclaturalSource() != null){
+            this.getNomenclaturalSource().setNameUsedInSource(null);
+            checkNullSource();
         }
     }
 
@@ -2189,13 +2140,7 @@ public class TaxonName
         }
     }
 
-
-    /**
-     * @param direction
-     * @return
-     */
     protected Set<NameRelationship> relationsWithThisName(Direction direction) {
-
         switch(direction) {
             case relatedTo:
                 return this.getRelationsToThisName();
@@ -2214,7 +2159,6 @@ public class TaxonName
     public Rank getRank(){
         return this.rank;
     }
-
     /**
      * @see  #getRank()
      */
@@ -2226,47 +2170,44 @@ public class TaxonName
 //*************** nom ref/source *******************/
 
     @Override
-    public Reference getNomenclaturalReference(){
-        //#6581
-        return this.nomenclaturalReference;
-//        if (this.nomenclaturalSource == null){
-//            return null;
-//        }
-//        return this.nomenclaturalSource.getCitation();
-    }
-
-    @Override
-    public DescriptionElementSource getNomenclaturalSource(){
+    public NomenclaturalSource getNomenclaturalSource(){
         return this.nomenclaturalSource;
     }
 
     protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
-        if (this.nomenclaturalSource == null){
-            if (!createIfNotExist){
-                return null;
-            }
-            this.nomenclaturalSource = DescriptionElementSource.NewInstance(OriginalSourceType.NomenclaturalReference);
+        if (this.nomenclaturalSource == null && createIfNotExist){
+            setNomenclaturalSource(NomenclaturalSource.NewNomenclaturalInstance(this));
         }
-        return this.nomenclaturalSource;
+        return nomenclaturalSource;
     }
 
-    /**
-     * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
-     * The corresponding {@link eu.etaxonomy.cdm.model.reference.Reference.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
-     * as it is obviously used for nomenclatural purposes.
-     *
-     * Shortcut to set the nomenclatural reference.
-     *
-     * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
-     * @see  #getNomenclaturalReference()
-     */
+    @Override
+    public void setNomenclaturalSource(NomenclaturalSource nomenclaturalSource) throws IllegalArgumentException {
+        //check state
+        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
+                ){
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getLabel());
+        }
+        this.nomenclaturalSource = nomenclaturalSource;
+        if (nomenclaturalSource != null && nomenclaturalSource.getSourcedName() != this){
+            nomenclaturalSource.setSourcedName(this);
+        }
+    }
 
     @Override
+    @Transient
+    public Reference getNomenclaturalReference(){
+        return this.nomenclaturalSource == null? null:this.nomenclaturalSource.getCitation();
+    }
+
+    @Override
+    @Transient
     public void setNomenclaturalReference(Reference nomenclaturalReference){
-        //#6581
-        this.nomenclaturalReference = nomenclaturalReference;
-//        getNomenclaturalSource(true).setCitation(nomenclaturalReference);
-//        checkNullSource();
+        if (nomenclaturalReference == null && this.getNomenclaturalSource()==null){
+            return;
+        }else{
+            getNomenclaturalSource(true).setCitation(nomenclaturalReference);
+        }
     }
 
     @Override
@@ -2284,39 +2225,48 @@ public class TaxonName
      */
     //Details of the nomenclatural reference (protologue).
     @Override
+    @Transient
     public String getNomenclaturalMicroReference(){
-        //#6581
-        return this.nomenclaturalMicroReference;
-//        if (this.nomenclaturalSource == null){
-//            return null;
-//        }
-//        return this.nomenclaturalSource.getCitationMicroReference();
+        return this.nomenclaturalSource == null? null: this.nomenclaturalSource.getCitationMicroReference();
     }
+
     /**
      * @see  #getNomenclaturalMicroReference()
      */
     @Override
     public void setNomenclaturalMicroReference(String nomenclaturalMicroReference){
-        //#6581
-        this.nomenclaturalMicroReference = nomenclaturalMicroReference;
-//        this.getNomenclaturalSource(true).setCitationMicroReference(StringUtils.isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference);
-//        checkNullSource();
+        nomenclaturalMicroReference = isBlank(nomenclaturalMicroReference)? null : nomenclaturalMicroReference;
+        if (nomenclaturalMicroReference == null && this.getNomenclaturalSource()==null){
+            return;
+        }else{
+            this.getNomenclaturalSource(true).setCitationMicroReference(nomenclaturalMicroReference);
+        }
     }
 
-    //#6581
-    private void checkNullSource() {
-        if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty()){
+    /**
+     * Checks if the source is completely empty and if empty removes it from the name.
+     */
+    //TODO maybe this should be moved to a hibernate listener, but the listener solution may
+    //work only for nomenclatural single sources as they are the only which are bidirectional
+    protected void checkNullSource() {
+        if (this.nomenclaturalSource != null && this.nomenclaturalSource.checkEmpty(true)){
             this.nomenclaturalSource = null;
         }
     }
 
-
-    @Override
-    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource) throws IllegalArgumentException {
-        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType()) ){
-            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getMessage());
-        }
-        this.nomenclaturalSource = nomenclaturalSource;
+    /**
+     * Creates a new external link for given uri with default language description if description exists
+     * and adds it to the nomenclatural source.
+     * If no nomenclatural source exists a new one is created.
+     * @param uri the url to the protogue
+     * @param description an additional description for the link for the default language
+     * @param type see {@link ExternalLinkType}
+     * @return the newly created {@link ExternalLink external link}
+     */
+    public ExternalLink addProtologue(URI uri, String description, ExternalLinkType type){
+        ExternalLink newProtologue = ExternalLink.NewInstance(type, uri, description, null);
+        getNomenclaturalSource(true).addLink(newProtologue);
+        return newProtologue;
     }
 
     /**
@@ -2334,7 +2284,7 @@ public class TaxonName
      */
     @Override
     public void setAppendedPhrase(String appendedPhrase){
-        this.appendedPhrase = StringUtils.isBlank(appendedPhrase)? null : appendedPhrase;
+        this.appendedPhrase = isBlank(appendedPhrase)? null : appendedPhrase;
     }
 
     @Override
@@ -2707,7 +2657,8 @@ public class TaxonName
     @Override
     @Transient
     public String getCitationString(){
-        return getNomenclaturalReference().getNomenclaturalCitation(getNomenclaturalMicroReference());
+        Reference nomRef = getNomenclaturalReference();
+        return nomRef == null ? null : nomRef.getNomenclaturalCitation(getNomenclaturalMicroReference());
     }
 
     /**
@@ -2849,7 +2800,7 @@ public class TaxonName
     @Override
     @Transient
     public List<HybridRelationship> getOrderedChildRelationships(){
-        List<HybridRelationship> result = new ArrayList<HybridRelationship>();
+        List<HybridRelationship> result = new ArrayList<>();
         result.addAll(this.hybridChildRelations);
         Collections.sort(result);
         Collections.reverse(result);
@@ -3367,30 +3318,109 @@ public class TaxonName
     @Override
     public String getLastNamePart() {
         String result =
-                StringUtils.isNotBlank(this.getInfraSpecificEpithet())?
+                isNotBlank(this.getInfraSpecificEpithet())?
                     this.getInfraSpecificEpithet() :
-                StringUtils.isNotBlank(this.getSpecificEpithet()) ?
+                isNotBlank(this.getSpecificEpithet()) ?
                     this.getSpecificEpithet():
-                StringUtils.isNotBlank(this.getInfraGenericEpithet()) ?
+                isNotBlank(this.getInfraGenericEpithet()) ?
                     this.getInfraGenericEpithet():
                 this.getGenusOrUninomial();
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isHybridName() {
         return this.isMonomHybrid() || this.isBinomHybrid() || this.isTrinomHybrid();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isHybrid() {
         return this.isHybridName() || this.isHybridFormula();
+    }
+
+// ******************** NOMENCLATURAL STANDING ****************/
+
+    /**
+     * Computes the highest priority nomenclatural standing
+     * from nomenclatural status and name relationships.
+     */
+    private NomenclaturalStanding computeNomenclaturalStanding() {
+        Set<NomenclaturalStanding> standings = computeNomenclaturalStandings();
+        return NomenclaturalStanding.highest(standings);
+    }
+
+    /**
+     * Computes all nomenclatural standings form the nomenclatural status and the name relationships.
+     */
+    private Set<NomenclaturalStanding> computeNomenclaturalStandings() {
+        Set<NomenclaturalStanding> standings = new HashSet<>();
+        for (NomenclaturalStatus status : this.status){
+            if (status.getType() != null){
+                NomenclaturalStanding standing = status.getType().getNomenclaturalStanding();
+                standings.add(standing);
+            }
+        }
+        for (NameRelationship nameRel : this.relationsFromThisName){
+            if (nameRel.getType() != null){
+                NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStanding();
+                standings.add(standing);
+            }
+        }
+        for (NameRelationship nameRel : this.relationsToThisName){
+            if (nameRel.getType() != null){
+                NomenclaturalStanding standing = nameRel.getType().getNomenclaturalStandingInverse();
+                standings.add(standing);
+            }
+        }
+        return standings;
+    }
+
+    @Override
+    @Transient
+    public boolean isDesignationOnly() {
+        return computeNomenclaturalStanding().isDesignationOnly();
+    }
+
+    @Override
+    @Transient
+    public boolean isInvalidExplicit() {
+        return computeNomenclaturalStanding().isInvalidExplicit();
+    }
+
+    @Override
+    @Transient
+    public boolean isIllegitimate() {
+        return computeNomenclaturalStanding().isIllegitimate();
+    }
+
+    @Override
+    @Transient
+    public boolean isValidExplicit() {
+        return computeNomenclaturalStanding().isValidExplicit();
+    }
+
+    @Override
+    @Transient
+    public boolean isNoStatus() {
+        return computeNomenclaturalStanding().isNoStatus();
+    }
+
+    @Override
+    @Transient
+    public boolean isInvalid() {
+        return computeNomenclaturalStanding().isInvalid();
+    }
+
+    @Override
+    @Transient
+    public boolean isLegitimate() {
+        return computeNomenclaturalStanding().isLegitimate();
+    }
+
+    @Override
+    @Transient
+    public boolean isValid() {
+        return computeNomenclaturalStanding().isValid();
     }
 
 // ***************** COMPARE ********************************/
@@ -3431,7 +3461,6 @@ public class TaxonName
             this.setNameCache(oldNameCache, isProtected);
         }
 
-
         // Compare name cache of taxon names
         if (CdmUtils.isNotBlank(otherNameCache) && CdmUtils.isNotBlank(thisNameCache)) {
             thisNameCache = normalizeName(thisNameCache);
@@ -3454,12 +3483,6 @@ public class TaxonName
     static final String HYBRID_SIGN = UTF8.HYBRID.toString();
     static final String QUOT_SIGN = "[\\u02BA\\u0022\\u0022]";
 
-    /**
-     * @param thisNameCache
-     * @param HYBRID_SIGN
-     * @param QUOT_SIGN
-     * @return
-     */
     private String normalizeName(String thisNameCache) {
         thisNameCache = thisNameCache.replaceAll(HYBRID_SIGN, "");
         thisNameCache = thisNameCache.replaceAll(QUOT_SIGN, "");
@@ -3500,14 +3523,10 @@ public class TaxonName
 
 //************************ isType ***********************************************/
 
-    /**
-     * @return
-     */
     @Override
     public boolean isNonViral() {
         return nameType.isNonViral();
     }
-
     @Override
     public boolean isZoological(){
         return nameType.isZoological();
@@ -3573,10 +3592,6 @@ public class TaxonName
         return false;
     }
 
-
-    /**
-     * @return
-     */
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
@@ -3589,7 +3604,6 @@ public class TaxonName
         }
         return false;
     }
-
 
 //*********************** CLONE ********************************************************/
 
@@ -3607,10 +3621,9 @@ public class TaxonName
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        TaxonName result;
+    public TaxonName clone() {
         try {
-            result = (TaxonName)super.clone();
+            TaxonName result = (TaxonName)super.clone();
 
             //taxonBases -> empty
             result.taxonBases = new HashSet<>();
@@ -3623,22 +3636,21 @@ public class TaxonName
             //descriptions
             result.descriptions = new HashSet<>();
             for (TaxonNameDescription taxonNameDescription : getDescriptions()){
-                TaxonNameDescription newDescription = (TaxonNameDescription)taxonNameDescription.clone();
+                TaxonNameDescription newDescription = taxonNameDescription.clone();
                 result.descriptions.add(newDescription);
             }
 
             //status
             result.status = new HashSet<>();
             for (NomenclaturalStatus nomenclaturalStatus : getStatus()){
-                NomenclaturalStatus newStatus = (NomenclaturalStatus)nomenclaturalStatus.clone();
+                NomenclaturalStatus newStatus = nomenclaturalStatus.clone();
                 result.status.add(newStatus);
             }
-
 
             //to relations
             result.relationsToThisName = new HashSet<>();
             for (NameRelationship toRelationship : getRelationsToThisName()){
-                NameRelationship newRelationship = (NameRelationship)toRelationship.clone();
+                NameRelationship newRelationship = toRelationship.clone();
                 newRelationship.setRelatedTo(result);
                 result.relationsToThisName.add(newRelationship);
             }
@@ -3646,7 +3658,7 @@ public class TaxonName
             //from relations
             result.relationsFromThisName = new HashSet<>();
             for (NameRelationship fromRelationship : getRelationsFromThisName()){
-                NameRelationship newRelationship = (NameRelationship)fromRelationship.clone();
+                NameRelationship newRelationship = fromRelationship.clone();
                 newRelationship.setRelatedFrom(result);
                 result.relationsFromThisName.add(newRelationship);
             }
@@ -3654,7 +3666,7 @@ public class TaxonName
             //type designations
             result.typeDesignations = new HashSet<>();
             for (TypeDesignationBase<?> typeDesignation : getTypeDesignations()){
-                TypeDesignationBase<?> newDesignation = (TypeDesignationBase<?>)typeDesignation.clone();
+                TypeDesignationBase<?> newDesignation = typeDesignation.clone();
                 this.removeTypeDesignation(newDesignation);
                 result.addTypeDesignation(newDesignation, false);
             }
@@ -3664,11 +3676,10 @@ public class TaxonName
             result.homotypicalGroup = HomotypicalGroup.NewInstance();
             result.homotypicalGroup.addTypifiedName(this);
 
-
             //HybridChildRelations
             result.hybridChildRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridChildRelations()){
-                HybridRelationship newChildRelationship = (HybridRelationship)hybridRelationship.clone();
+                HybridRelationship newChildRelationship = hybridRelationship.clone();
                 newChildRelationship.setRelatedTo(result);
                 result.hybridChildRelations.add(newChildRelationship);
             }
@@ -3676,7 +3687,7 @@ public class TaxonName
             //HybridParentRelations
             result.hybridParentRelations = new HashSet<>();
             for (HybridRelationship hybridRelationship : getHybridParentRelations()){
-                HybridRelationship newParentRelationship = (HybridRelationship)hybridRelationship.clone();
+                HybridRelationship newParentRelationship = hybridRelationship.clone();
                 newParentRelationship.setRelatedFrom(result);
                 result.hybridParentRelations.add(newParentRelationship);
             }
@@ -3689,6 +3700,12 @@ public class TaxonName
             //empty caches
             if (! protectedAuthorshipCache){
                 result.authorshipCache = null;
+            }
+
+            //registrations
+            result.registrations = new HashSet<>();
+            for (Registration registration : getRegistrations()){
+                result.registrations.add(registration);
             }
 
             //no changes to: appendedPharse, nomenclaturalReference,
@@ -3709,4 +3726,5 @@ public class TaxonName
             return null;
         }
     }
+
 }

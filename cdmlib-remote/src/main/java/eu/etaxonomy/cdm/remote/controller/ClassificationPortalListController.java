@@ -125,7 +125,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
             @PathVariable("treeUuid") UUID treeUuid,
             @PathVariable("taxonUuid") UUID taxonUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
-            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") TaxonNodeDtoSortMode sortMode,
+            @RequestParam(value = "sortMode", required = false, defaultValue = ClassificationController.DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());

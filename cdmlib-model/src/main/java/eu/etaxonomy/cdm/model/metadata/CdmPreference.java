@@ -25,27 +25,54 @@ import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
-
 /**
- * This class may hold all preferences data for a CDM database.
- * E.g. one may store what the default nomenclatural code is,
- * or which default formatter (cache strategy) to use for a
- * certain class.
+ * This class holds all preference data for a CDM database.
+ * E.g. one may store what the default nomenclatural code in a database is,
+ * or which formatter (cache strategy) to use in a certain context.
+ * <BR><BR>
  * The structure represents a triple where the first item
- * (subject) defines for which object the given information is valid.
- * The second item (predicate) describes the type of information
- * and the third item (value) represents the actual value.
- *
- *  E.g. for defining a database wide default nomenclatural code
- *  you may define a triple ("database", "eu.etaxonomy.cdm.model.name.NomenclaturalCode", "ICZN").
+ * (subject) defines in which context or for which object the given
+ * information is valid. The second item (predicate) describes the
+ * type of information and the third item (value) represents the actual value.
+ * <BR><BR>
+ * E.g. given the usecase of formatting terms in a UI.
+ * The predicate maybe something like "preferredTermFormatting".
+ * While the subject may define the context, e.g. "/" for the project
+ * wide default formatting while "/vaadin" may define the formatting
+ * used in a vaadin context and "/taxeditor" may define the formatting
+ * in TaxEditor context. Even more specific "/taxeditor/detailsview/dropdown"
+ * may define the correct formatting in dropdown elements in the detailsview
+ * while "/taxeditor/termeditor" may define the correct formatting in the taxeditors
+ * term editor.
+ * <BR><BR>
+ * Another more data centric example from checklists is the preference which distribution status terms
+ * should be available for which area. The predicate used here is
+ * {@link PreferencePredicate#AvailableDistributionStatus} for both preferences. The preference
+ * which defines the default list of distribution status terms uses "/" as subject and
+ * a list of UUIDs as value.
+ * <BR><BR>
+ * The preference defining the specific distribution status terms only available for the
+ * top level area, e.g. "Euro+Med" uses the subject "/NamedArea[111bdf38-7a32-440a-9808-8af1c9e54b51]/"
+ * (with 111bd... being the UUID of the top level area) and another UUID list as value.
+ * <BR><BR>
+ * Subjects by convention should be defined hierarchical following a slash syntax like
+ * "/level1/level2/level3". For how to resolve a subject see also
+ * {@link PreferenceResolver#resolve(List, PrefKey)}.<BR>
+ * Generally the subject is String based but clients may implement classes or enumerations
+ * to ease the hierarchical handling of subjects. With {@link PreferenceSubject} there is already
+ * a very basic implementation to allow to distinguish project wide, vaadin and taxeditor subjects.
+ * This may be further developed in future.
+ * <BR><BR>
+ * If doubt exists on best practice for how to use subjects please contact the author.
+ * <BR>
+ * <BR>
  *  The set of allowed values and semantics for each combination
- *  is up to implementing classes.
- *  The only restrictions we have is the length of the fields and
- *  the fact that the first two items (subject, predicate) do
- *  create a unique key.
+ *  will be defined by convention  over time and by implementing classes.
+ *  The only real restrictions we have is the length of the fields and
+ *  the fact that the first two items (subject, predicate) must be unique
+ *  key in the given database.
  *
- *  Size of single fields may be enlarged in future versions. "Value" may
- *  become a CLOB #7859.
+ *  Size of single fields may be enlarged in future versions.
  *
  * @author a.mueller
  * @since 03.07.2013

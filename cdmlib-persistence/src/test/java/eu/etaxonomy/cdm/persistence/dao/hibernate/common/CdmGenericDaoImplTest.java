@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.assertEquals;
@@ -227,21 +226,13 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 //            System.out.println("reference: " + ref.getUuid());
 //        }
 		Assert.assertEquals(1, list.size());
-
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getCdmBasesByFieldAndClass(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	public void testGetCdmBasesByFieldAndClass() {
 		logger.warn("Not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getCdmBasesWithItemInCollection(java.lang.Class, java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)}.
-	 */
 	@Test
 	public void testGetCdmBasesWithItemInCollection() {
 		logger.warn("Not yet implemented");
@@ -378,7 +369,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		//All classes must be found
 		Assert.assertTrue("all classes must be found by getAllCdmClasses() method", foundClasses.containsAll(existingClassesList));
 
-
 		//No extra classes must be found
 		for (Class<?> clazz : foundClasses){
 			if (! CdmBase.class.isAssignableFrom(clazz)&& !( AuditEvent.class == clazz) && !( CdmPreference.class == clazz)  ){ //OLD: && !( LSID.class == clazz)&& !( NomenclaturalCode.class == clazz) && !( Point.class == clazz) && !( Modifier.class == clazz) && !( Contact.class == clazz)
@@ -392,9 +382,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertFalse("Abstract class " + abstractClassToTest.getName() + " may not be in set ", noAbstractClasses.contains(abstractClassToTest));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.
-	 */
 	@Test
 	@DataSets({
 	     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -441,7 +428,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	/**
 	 * 2nd test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.
-	 *
 	 */
 	@Test
 	@DataSet
@@ -462,7 +448,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		UUID uuidSpec = UUID.fromString("41539e9c-3764-4f14-9712-2d07d00c8e4c");
 		SpecimenOrObservationBase<?> spec1 = occurrenceDao.findByUuid(uuidSpec);
 
-
 		Set<CdmBase> referencingObjects = cdmGenericDao.getReferencingObjects(spec1);
 //		System.out.println("############## RESULT ###################");
 //		for (CdmBase obj: referencingObjects){
@@ -470,7 +455,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 //		}
 //		System.out.println("############## ENDE ###################");
 		assertEquals("Number of referencing objects must be 2.", 2, referencingObjects.size());
-
 	}
 
 	/**
@@ -478,7 +462,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	 * @throws MergeException
 	 */
 	@Test
-//	@Ignore
 	public void testMergeCdmBaseReferenceAndIdentifiable() throws MergeException {
 
 		TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -493,14 +476,11 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Reference article1 = ReferenceFactory.newArticle();
 		Reference article2 = ReferenceFactory.newArticle();
 
-
 		name1.setNomenclaturalReference(article1);
 		name2.setNomenclaturalReference(article2);
 
-
 		Taxon taxon1 = Taxon.NewInstance(name1, article1);
 		Taxon taxon2 = Taxon.NewInstance(name2, article2);
-
 
 //		Person author = Person.NewInstance();
 //		author.setTitleCache("Author");
@@ -595,9 +575,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 		testMergeExceptions(name1, name2, taxon1, zooName1);
 
-
-
-
 		//FIXME TO BE IMPLEMENTED
 		//current defalt implementation for rights, credits and media is ADD_CLONE and therefore the below tests don't work
 		//TODO is this the wanted default behaviour?
@@ -607,12 +584,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
-	 * @throws MergeException
-	 */
 	@Test
-//	@Ignore
 	public void testMergeTaxonNameAndTaxon() throws MergeException {
 	    TaxonName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
@@ -640,14 +612,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 //TODO
 //		cdmGenericDao.merge(taxon1, taxon3, null);
 //		Assert.assertEquals("Name1 must have 3 taxa attached now.", 3 ,name1.getTaxonBases().size());
-
-
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
-	 * @throws MergeException
-	 */
 	@Test
 	public void testMergeAuthors() throws MergeException {
 
@@ -710,7 +676,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Assert.assertTrue("Team2 must have person3 as new member.", team2.getTeamMembers().contains(person3));
 		Assert.assertSame("Team2 must have person3 as third member.",person3, team2.getTeamMembers().get(2));
 
-
 		//Contact
 		cdmGenericDao.merge(team2, team1, null);
 		Contact team2Contact = team2.getContact();
@@ -761,7 +726,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	/**
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
      *
-     * Test for  http://dev.e-taxonomy.eu/trac/ticket/5652
+     * Test for https://dev.e-taxonomy.eu/redmine/issues/5652
      *
      * @throws MergeException
      */
@@ -781,7 +746,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 
         team1.addTeamMember(person1a);
         team1.addTeamMember(person2);
-
 
         team2.addTeamMember(person2);
         team2.addTeamMember(person1a);
@@ -808,7 +772,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("person2", team2.getTeamMembers().get(0).getTitleCache());
         Assert.assertEquals("person1b", team2.getTeamMembers().get(1).getTitleCache());
         Assert.assertEquals("person3", team2.getTeamMembers().get(2).getTitleCache());
-
     }
 
     @Test
@@ -852,7 +815,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
         languageString = textData.getLanguageText(language);
         Assert.assertEquals("And <cdm:reference cdmId='"+uuidRef2+"' intextId='"+uuidIntextRefRef+"'>here</cdm:reference> is a citation",
                 languageString.getText());
-
     }
 
     @Test
@@ -897,10 +859,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
                 annotation.getText());
     }
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
-	 * @throws MergeException
-	 */
 	@Test
 	public void testReallocatePersonTeam() throws MergeException {
 
@@ -925,7 +883,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
 		String emailAddress1 = "Email1";
 		team1.addEmailAddress(emailAddress1);
-
 
 		//FIXME
 //		team2.addTeamMember(person1);
@@ -985,9 +942,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		cdmGenericDao.save(name1);
 		cdmGenericDao.merge(team2, person1, strategy);
 		Assert.assertEquals("Name1 should have team2 as combination author now", team2, name1.getCombinationAuthorship());
-
 	}
-
 
 	private void testMergeExceptions(CdmBase name1, CdmBase name2, CdmBase taxon, ICdmBase zooName1) throws MergeException{
 		//
@@ -1088,7 +1043,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			sectionResult = cdmGenericDao.findMatching(section3, null);
 			Assert.assertEquals("Resultlist must have 1 entries", 2, sectionResult.size());
 
-
 			Person person1 = Person.NewTitledInstance("person");
 			Person person2 = Person.NewTitledInstance("person");
 			Person person3 = Person.NewTitledInstance("person");
@@ -1124,9 +1078,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			Assert.fail("Find match must not throw Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
-
 	}
-
 
 	@Test
 	public void findMatchingCache(){
@@ -1141,8 +1093,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		book1.setAuthorship(team1);
 
 
-		IBook book2 = (IBook) ((Reference)book1).clone();
-		IBook book3 = (IBook) ((Reference)book1).clone();
+		IBook book2 = ((Reference)book1).clone();
+		IBook book3 = ((Reference)book1).clone();
 
 //		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 //		book1.setTitleCache("cache1");
@@ -1163,7 +1115,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		cdmGenericDao.saveOrUpdate((Reference)book3);
 		cdmGenericDao.saveOrUpdate(team1);
 		cdmGenericDao.saveOrUpdate(team2);
-
 
 		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 
@@ -1223,7 +1174,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 
-
 		} catch (MatchException e) {
 			Assert.fail("Find match must not throw Exception: " + e.getMessage());
 			e.printStackTrace();
@@ -1246,12 +1196,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		Statistics statistics = factory.getStatistics();
 		Map<?,?> allClassMetadata = factory.getAllClassMetadata();
 		logger.debug("");
-
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getHqlResult(java.lang.String)}.
-	 */
 	@Test
 	public void testGetHqlResult() {
 		logger.warn("Not yet implemented");

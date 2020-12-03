@@ -15,11 +15,11 @@ import net.sf.json.JsonConfig;
 
 import org.hibernate.Hibernate;
 
+import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
-import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * @author a.kohlbecker

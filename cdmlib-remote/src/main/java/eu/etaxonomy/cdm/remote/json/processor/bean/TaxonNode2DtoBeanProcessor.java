@@ -11,10 +11,10 @@ package eu.etaxonomy.cdm.remote.json.processor.bean;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.api.service.l10n.KeyTerm_L10n;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
-import eu.etaxonomy.cdm.remote.l10n.KeyTerm_L10n;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -45,7 +45,7 @@ public class TaxonNode2DtoBeanProcessor implements JsonBeanProcessor {
             json.element("status", node.getStatus());
             json.element("status_symbol", node.getStatus().getSymbol());
             KeyTerm_L10n<TaxonNodeStatus> status_L10n = new KeyTerm_L10n<TaxonNodeStatus>(node.getStatus());
-            json.element("status_message_L10n", status_L10n.localizedMessage());
+            json.element("status_message_L10n", status_L10n.localizedLabel());
         }
 
         Taxon taxon = node.getTaxon();

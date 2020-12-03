@@ -120,8 +120,6 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
 		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceVersion, monitor);
 
-
-
 		if (! isDatasourceBeforeMyTargetVersion){
 			String warning = "Target version ("+targetVersion+") is not before updater target version ("+this.targetVersion+"). Nothing to update.";
 			monitor.warning(warning);

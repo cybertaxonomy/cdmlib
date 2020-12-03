@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term.init;
 
 import java.io.IOException;
@@ -33,6 +32,7 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 
 @Component
 public class TermLoader implements ITermLoader {
+
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
 	@Override
@@ -63,8 +63,8 @@ public class TermLoader implements ITermLoader {
 				UUID uuidTerm = UUID.fromString(nextLine[0]);
 				termSet.add(uuidTerm);
 			}
+			reader.close();
 			return uuidVocabulary;
-
 
 		} catch (Exception e) {
 			logger.error(e + " " + e.getCause() + " " + e.getMessage());
@@ -73,7 +73,6 @@ public class TermLoader implements ITermLoader {
 			}
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	@Override
@@ -113,6 +112,7 @@ public class TermLoader implements ITermLoader {
 				handleSingleTerm(nextLine, terms, termClass, voc,
 						abbrevAsId, classDefiningTermInstance);
 			}
+	        reader.close();
 			return voc;
 		} catch (Exception e) {
 			logger.error(e + " " + e.getCause() + " " + e.getMessage());
@@ -183,9 +183,6 @@ public class TermLoader implements ITermLoader {
 
 	/**
 	 * Returns the {@link CSVReader} for the given {@link VocabularyEnum}.
-	 * @param vocType
-	 * @return
-	 * @throws IOException
 	 */
 	private CSVReader getCsvReader(VocabularyEnum vocType) throws IOException {
 		String filename = vocType.name()+".csv";
@@ -222,5 +219,4 @@ public class TermLoader implements ITermLoader {
 		}
 		return csvTermAttributeList;
 	}
-
 }

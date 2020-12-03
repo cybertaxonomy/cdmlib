@@ -18,18 +18,27 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 /**
  * @author a.kohlbecker
  * @since Jul 12, 2018
- *
  */
 public class TaggedTextBuilder {
 
-    List<TaggedText> taggedText = new ArrayList<>();
+    private List<TaggedText> taggedText = new ArrayList<>();
 
     public void add(TagEnum type, String text){
         taggedText.add(new TaggedText(type, text));
     }
 
+    /**
+     * @see TagEnum#separator
+     */
     public void addSeparator(String separator) {
         taggedText.add(TaggedText.NewSeparatorInstance(separator));
+    }
+
+    /**
+     * @see TagEnum#postSeparator
+     */
+    public void addPostSeparator(String separator) {
+        taggedText.add(TaggedText.NewPostSeparatorInstance(separator));
     }
 
     public void addWhitespace() {
@@ -50,9 +59,6 @@ public class TaggedTextBuilder {
         taggedText.clear();
     }
 
-    /**
-     * @param workingsetBuilder
-     */
     public void addAll(TaggedTextBuilder ttb) {
         taggedText.addAll(ttb.taggedText);
     }
@@ -65,11 +71,12 @@ public class TaggedTextBuilder {
         return taggedText;
     }
 
+    public int size(){
+        return taggedText.size();
+    }
 
     @Override
     public String toString(){
         return TaggedCacheHelper.createString(taggedText);
     }
-
-
 }

@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -107,8 +106,6 @@ public class ExcelFormatAnalyzer<CONFIG extends FactExcelImportConfiguratorBase<
             }
         } catch(FileNotFoundException fne) {
             result.addFatalError("Import file '" + uri.toString() + "' not found. Import not possible.");
-        } catch(InvalidFormatException ife) {
-            result.addFatalError("Import file has invalid format for an excel file. Import not possible.");
         } catch(EncryptedDocumentException ede) {
             result.addFatalError("File is encrypted. Import not possible.");
         } catch(Exception ioe) {

@@ -69,19 +69,19 @@ public class PermissionsUpdater extends SchemaUpdaterStepBase  {
 
 		//insert useraccount_grantedauthority for user admin
 
-		/*sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 4)";
+		/*sql = "INSERT INTO useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 4)";
 		datasource.executeUpdate(sql);
 
-		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 3)";
+		sql = "INSERT INTO useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 3)";
 		datasource.executeUpdate(sql);
 
-		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 2)";
+		sql = "INSERT INTO useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 2)";
 		datasource.executeUpdate(sql);
 
-		sql = "INSERT INTO useraccount_grantedauthorityimpl (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 1)";
+		sql = "INSERT INTO useraccount_grantedauthorityimpl (User_id, grantedauthorities_id) VALUES ((SELECT id FROM useraccount WHERE username LIKE '" + Configuration.adminLogin + "'), 1)";
 		datasource.executeUpdate(sql);
 		*/
-		sql = "INSERT INTO @@UserAccount_GrantedAuthorityImpl@@ (UserAccount_id, grantedauthorities_id) VALUES ((SELECT id FROM @@UserAccount@@ WHERE username LIKE '" + Configuration.adminLogin + "'), 5)";
+		sql = "INSERT INTO @@UserAccount_GrantedAuthorityImpl@@ (User_id, grantedauthorities_id) VALUES ((SELECT id FROM @@UserAccount@@ WHERE username LIKE '" + Configuration.adminLogin + "'), 5)";
 		datasource.executeUpdate(caseType.replaceTableNames(sql));
 
 		return;

@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -93,14 +94,14 @@ public class TermNode <T extends DefinedTermBase>
 
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
-    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/3722
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent", targetEntity=TermNode.class)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<TermNode<T>> children = new ArrayList<>();
 
-    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    //see https://dev.e-taxonomy.eu/redmine/issues/3722
     private Integer sortIndex;
 
     @XmlElementWrapper(name = "OnlyApplicableIf")
@@ -260,7 +261,9 @@ public class TermNode <T extends DefinedTermBase>
 	    children.add(index, child);
 	    //TODO workaround (see sortIndex doc)
 	    for(int i = 0; i < children.size(); i++){
-	        children.get(i).setSortIndex(i);
+	        if (children.get(i) != null){
+	            children.get(i).setSortIndex(i);
+	        }
 	    }
 	    child.setSortIndex(index);
 	    return child;
@@ -341,7 +344,9 @@ public class TermNode <T extends DefinedTermBase>
 			//TODO workaround (see sortIndex doc)
 			for(int i = 0; i < children.size(); i++){
 				TermNode<T> childAt = children.get(i);
-				childAt.setSortIndex(i);
+				if (childAt != null){
+				    childAt.setSortIndex(i);
+				}
 			}
 			child.setSortIndex(null);
 		}
@@ -546,7 +551,6 @@ public class TermNode <T extends DefinedTermBase>
 //		return null;
 //	}
 
-
 //*********************** Terms ************************************/
 
 	/**
@@ -565,9 +569,24 @@ public class TermNode <T extends DefinedTermBase>
 		    terms.add(term);
 		}
 		for(TermNode<T> childNode : this.getChildNodes()){
-			terms.addAll(childNode.getDistinctTermsRecursive(terms));
+		    if (childNode != null){
+		        terms.addAll(childNode.getDistinctTermsRecursive(terms));
+		    }
 		}
 		return terms;
+	}
+
+
+	public String getPath(){
+	    String result = "";
+	    if (parent != null && parent.getTerm() != null){
+	        result = parent.getPath() ;
+	    }
+	    if (getTerm()!= null){
+	        String sep = StringUtils.isBlank(result)?"":"/";
+	        result += sep+ getTerm().getLabel();
+	    }
+	    return result;
 	}
 
     /**
@@ -589,8 +608,6 @@ public class TermNode <T extends DefinedTermBase>
         }
         return terms;
     }
-
-
 
     /**
      * @return <code>true</code> if any of the sets {@link #getInapplicableIf() inapplicableIf}
@@ -632,7 +649,7 @@ public class TermNode <T extends DefinedTermBase>
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public TermNode<T> clone() {
 		TermNode<T> result;
 		try {
 			result = (TermNode<T>)super.clone();
@@ -646,11 +663,11 @@ public class TermNode <T extends DefinedTermBase>
 	}
 
     public TermNode<T> cloneDescendants(){
-        TermNode<T> clone = (TermNode<T>)this.clone();
+        TermNode<T> clone = this.clone();
         TermNode<T> childClone;
 
         for(TermNode<T> childNode : this.getChildNodes()){
-            childClone = (TermNode<T>) childNode.clone();
+            childClone = childNode.clone();
             for (TermNode<T> childChild:childNode.getChildNodes()){
                 childClone.addChild(childChild.cloneDescendants());
             }
@@ -680,7 +697,6 @@ public class TermNode <T extends DefinedTermBase>
 		this.treeIndex = newTreeIndex;
 	}
 
-
 	@Override
 	@Deprecated
 	public int treeId() {
@@ -691,7 +707,7 @@ public class TermNode <T extends DefinedTermBase>
 		}
 	}
 
-	private void updateSortIndex(){
+	void updateSortIndex(){
 	 // TODO workaround (see sortIndex doc)
         for (int i = 0; i < children.size(); i++) {
             children.get(i).setSortIndex(i);
@@ -700,6 +716,6 @@ public class TermNode <T extends DefinedTermBase>
 
 	public void removeNullValueFromChildren(){
 	    HHH_9751_Util.removeAllNull(children);
-	    updateSortIndex();
-	}
+        updateSortIndex();
+    }
 }

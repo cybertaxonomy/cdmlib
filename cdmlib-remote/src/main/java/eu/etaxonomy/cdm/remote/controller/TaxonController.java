@@ -101,6 +101,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
 
     protected static final EntityInitStrategy TAXONNODE_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "taxonNodes.classification",
+            "taxonNodes.parent",
+            "taxonNodes.taxon.name",
+            "taxonNodes.taxon.sec",
             "acceptedTaxon.taxonNodes.classification"
     }));
 
@@ -108,7 +111,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         super();
         setInitializationStrategy(Arrays.asList(new String[]{
                 "$",
-                "name.nomenclaturalReference"
+                "name.nomenclaturalSource.citation"
                 }
         ));
     }
@@ -321,7 +324,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             HttpServletResponse response) throws IOException {
         logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
 
-        List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid);
+        List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
         return fieldUnitDtos;
     }

@@ -188,8 +188,9 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
 //****************** CLONE ************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		@SuppressWarnings("unchecked")
+	public SourcedEntityBase<SOURCE> clone() throws CloneNotSupportedException{
+
+	    @SuppressWarnings("unchecked")
         SourcedEntityBase<SOURCE> result = (SourcedEntityBase<SOURCE>)super.clone();
 
         //Sources
@@ -203,5 +204,4 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
 		//no changes to: -
 		return result;
 	}
-
 }

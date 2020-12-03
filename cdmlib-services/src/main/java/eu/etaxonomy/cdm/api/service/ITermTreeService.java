@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -47,4 +48,20 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 	        Class<S> clazz, TermType termType, Integer limit, String pattern);
 
     public List<Restriction<?>> buildTermTypeFilterRestrictions(TermType termType);
+
+    public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType);
+
+    /**
+     * @param uuid
+     * @return
+     */
+    public TermTreeDto getTermTreeDtoByUuid(UUID uuid);
+
+    /**
+     * @param dtos
+     * @return
+     */
+    UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos);
+
+
 }

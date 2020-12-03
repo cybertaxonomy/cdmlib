@@ -6,7 +6,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.17.0</version>
+    <version>5.18.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -25,7 +25,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>5.1.1</version>   <!-- updated 2020-09 -->
         <extensions>true</extensions>
         <configuration>
           <instructions>
@@ -46,9 +46,9 @@
   </build>
   <dependencies>
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>1.0.0</version>
+        <!-- see comment on <packaging> above for why osgi is required -->
+        <groupId>org.osgi</groupId>
+        <artifactId>osgi.core</artifactId>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
@@ -59,13 +59,6 @@
       <artifactId>cdmlib-test</artifactId>
       <scope>test</scope>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>eu.etaxonomy</groupId> -->
-<!--       <artifactId>cdmlib-persistence</artifactId> -->
-<!--       <type>test-jar</type> -->
-<!--       <scope>test</scope> -->
-<!--       <version>${project.version}</version> -->
-<!--      </dependency> -->
     <dependency>
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-highlighter</artifactId>
@@ -82,32 +75,15 @@
        <groupId>org.apache.lucene</groupId>
        <artifactId>lucene-suggest</artifactId>
     </dependency>
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-dbunit</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>org.unitils</groupId> -->
-<!--       <artifactId>unitils-spring</artifactId> -->
-<!--       <scope>test</scope> -->
-<!--     </dependency> -->
-<!--     <dependency> -->
-<!--       <groupId>xmlunit</groupId> -->
-<!--       <artifactId>xmlunit</artifactId> -->
-<!--        <scope>test</scope> -->
-<!--     </dependency> -->
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse</groupId>
-      <artifactId>osgi</artifactId>
+<!--       <exclusions> -->
+<!--         <exclusion> -->
+<!--           <groupId>xml-apis</groupId> -->
+<!--           <artifactId>xml-apis</artifactId> -->
+<!--         </exclusion> -->
+<!--       </exclusions> -->
     </dependency>
     <dependency>
         <groupId>org.springframework.security</groupId>
@@ -117,14 +93,5 @@
       <groupId>com.ibm.lsid</groupId>
       <artifactId>lsid-server</artifactId>
     </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
-	  <groupId>net.sf.ehcache</groupId>
-	  <artifactId>ehcache-core</artifactId>	  
-	</dependency>
   </dependencies>
 </project>
-

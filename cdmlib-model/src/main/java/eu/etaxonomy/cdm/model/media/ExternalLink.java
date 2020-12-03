@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.media;
-
 
 import java.net.URI;
 import java.util.HashMap;
@@ -40,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-
 
 /**
  * Class that represents a link to any web resource.
@@ -110,11 +107,6 @@ public class ExternalLink extends VersionableEntity{
 
 	/**
 	 * New default language instance
-	 * @param type
-	 * @param uri
-	 * @param description
-	 * @param size
-	 * @return
 	 */
 	public static ExternalLink NewInstance(ExternalLinkType type, URI uri, String description, Integer size){
 	    Map<Language, LanguageString> descMap = new HashMap<>();
@@ -143,7 +135,6 @@ public class ExternalLink extends VersionableEntity{
     public static ExternalLink NewWebSiteInstance(URI uri, String description, Language language){
         return NewInstance(ExternalLinkType.WebSite, uri, description, language, null);
     }
-
 
 // *********************************** CONSTRUCTOR ******************************/
 

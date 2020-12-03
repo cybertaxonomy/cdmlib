@@ -262,7 +262,6 @@ public class HybridRelationship
 		}
 	}
 
-
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -277,7 +276,7 @@ public class HybridRelationship
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public HybridRelationship clone() {
 		HybridRelationship result;
 		try {
 			result = (HybridRelationship)super.clone();
@@ -290,5 +289,4 @@ public class HybridRelationship
 			return null;
 		}
 	}
-
 }

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,9 +25,8 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.DerivateDTO;
+import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -38,7 +36,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -67,11 +64,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.babadshanjan
  * @since 01.09.2008
  */
-public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenOrObservationBase> {
-
-    public Country getCountryByIso(String iso639);
-
-    public List<Country> getCountryByName(String name);
+public interface IOccurrenceService
+        extends IIdentifiableEntityService<SpecimenOrObservationBase> {
 
     /**
      * Returns a paged list of occurrences that have been determined to belong
@@ -428,11 +422,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public FieldUnitDTO assembleFieldUnitDTO(FieldUnit fieldUnit);
 
     /**
-     * Assembles a {@link PreservedSpecimenDTO} for the given derived unit.
+     * Assembles a {@link DerivedUnitDTO} for the given derived unit.
      * @param derivedUnit
      * @return a DTO with all the assembled information
      */
-    public PreservedSpecimenDTO assemblePreservedSpecimenDTO(DerivedUnit derivedUnit);
+    public DerivedUnitDTO assembleDerivedUnitDTO(DerivedUnit derivedUnit);
 
     /**
      * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>
@@ -586,18 +580,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * Gets all description elements that are used for describing the character
      * states of the given specimen
      *
-     * @param specimen
-     *            the specimen for which the character state description
-     *            elements should be retrieved
-     * @return a collection of all character state description elements for this
-     *         specimen
-     */
-    public Collection<DescriptionElementBase> getCharacterDataForSpecimen(SpecimenOrObservationBase<?> specimen);
-
-    /**
-     * Gets all description elements that are used for describing the character
-     * states of the given specimen
-     *
      * @param specimenUuid
      *            the specimen {@link UUID} for which the character state description
      *            elements should be retrieved
@@ -610,7 +592,9 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * Returns the most significant identifier for the given {@link DerivedUnit}.
      * @param derivedUnit the derived unit to check
      * @return the identifier string
+     * @deprecated use {@link DerivedUnit#getMostSignificantIdentifier()} instead
      */
+    @Deprecated
     public String getMostSignificantIdentifier(DerivedUnit derivedUnit);
 
     /**
@@ -681,56 +665,27 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             FindOccurrencesConfigurator config);
 
     /**
-     * Returns a list of {@link PreservedSpecimenDTO} for the specimens found with the
+     * Returns a list of {@link DerivedUnitDTO} for the specimens found with the
      * given configurator
      * @param config the configurator for the search
-     * @return a list of {@link PreservedSpecimenDTO} object
+     * @return a list of {@link DerivedUnitDTO} object
      */
     @Transactional(readOnly = true)
-    public List<PreservedSpecimenDTO> findByTitlePreservedSpecimenDTO(
+    public List<DerivedUnitDTO> findByTitleDerivedUnitDTO(
             FindOccurrencesConfigurator config);
 
-    /**
-     * @param queryString
-     * @param propertyPaths
-     * @return
-     * @throws IOException
-     */
-    FieldUnitDTO findByAccessionNumber(
-             String accessionNumberString, List<OrderHint> orderHints,
-            List<String> propertyPaths);
 
-    /**
-     * @param includedRelationships
-     * @param associatedTaxon
-     * @param maxDepth
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
+    FieldUnitDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
+
+
     List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
-            UUID associatedTaxonUuid);
+            UUID associatedTaxonUuid, List<String> propertyPaths);
 
-    /**
-     * @param derivedUnitUuid
-     * @param propertyPaths
-     * @return
-     */
-
-    FieldUnitDTO findFieldUnitDTO(DerivateDTO derivedUnitDTO, Collection<FieldUnitDTO> fieldUnits,
-            HashMap<UUID, DerivateDTO> alreadyCollectedSpecimen);
-
-
-    /**
-     * @param fieldUnitUuids
-     * @return
-     */
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 
     /**
      * Load the FieldUnitDTO for the given <code>derivedUnitUuid</code> with all intermediate derivatives and {@link eu.etaxonomy.cdm.api.service.dto.GatheringEventDTO}
+
      * @param derivedUnitUuid
      * @return
      */

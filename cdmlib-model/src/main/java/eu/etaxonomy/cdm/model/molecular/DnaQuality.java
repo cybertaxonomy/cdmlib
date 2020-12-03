@@ -86,7 +86,7 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
 	//FIXME preliminary as it is not yet decided if we will use a string or a MoME #4552
     private MaterialOrMethodEvent typedPurificationMethod;
-	
+
     private String purificationMethod;
 
 
@@ -198,7 +198,6 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 	 *
 	 * @see Specimen#clone()
 	 * @see DerivedUnit#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override

@@ -36,6 +36,8 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  * @since 11.06.2008
  */
 public class TaxonComparatorTest {
+
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonComparatorTest.class);
 
     @BeforeClass
@@ -43,7 +45,6 @@ public class TaxonComparatorTest {
         DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
         vocabularyStore.initialize();
     }
-
 
 /******************** TESTS *****************************************************/
 
@@ -71,15 +72,8 @@ public class TaxonComparatorTest {
         Assert.assertEquals(getYear(list.get(3)), "1943");
         Assert.assertEquals(list.get(4).getId(), 2);
         Assert.assertEquals(getYear(list.get(4)), "");
-
-
-
     }
 
-
-    /**
-     * @return
-     */
     private List<TaxonBase<?>> createTestData() {
         Reference sec = ReferenceFactory.newBook();
 
@@ -124,7 +118,6 @@ public class TaxonComparatorTest {
 
         IZoologicalName zooName1 = TaxonNameFactory.NewZoologicalInstance(null);
 
-
        // botName3.setNomenclaturalReference(ref3);
         zooName1.setPublicationYear(1823);
 
@@ -152,7 +145,7 @@ public class TaxonComparatorTest {
 
     private List<TaxonNode> createTestDataWithTaxonNodes(){
         List<TaxonBase<?>> taxa = createTestData();
-        List<TaxonNode> result = new ArrayList();
+        List<TaxonNode> result = new ArrayList<>();
         TaxonNode node;
         Classification classification = Classification.NewInstance("TestClassification");
         int index = 0;
@@ -166,11 +159,6 @@ public class TaxonComparatorTest {
         return result;
     }
 
-
-    /**
-     * @param taxonBase
-     * @return
-     */
     private String getYear(TaxonBase<?> taxon) {
         String year = "";
         TaxonName tnb = taxon.getName();
@@ -202,8 +190,5 @@ public class TaxonComparatorTest {
         Assert.assertEquals(list.get(2).getId(), 2);
         Assert.assertEquals(list.get(3).getId(), 4);
         Assert.assertEquals(list.get(4).getId(), 3);
-
-
-
     }
 }

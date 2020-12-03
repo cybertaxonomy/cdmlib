@@ -84,8 +84,8 @@ public class TaxonNodeController extends AbstractController<TaxonNode, ITaxonNod
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value="sortMode", defaultValue="AlphabeticalOrder") TaxonNodeSortMode sortMode,
-            @RequestParam(value="doSynonyms", defaultValue="false") Boolean doSynonyms,
+            @RequestParam(value="sortMode", defaultValue = ClassificationController.DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeSortMode sortMode,
+            @RequestParam(value="doSynonyms", defaultValue = "false") Boolean doSynonyms,
             HttpServletResponse response
             ) throws IOException {
 

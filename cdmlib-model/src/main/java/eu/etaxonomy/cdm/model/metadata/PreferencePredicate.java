@@ -16,6 +16,16 @@ import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
+ * Enumeration of cdmlib wide {@link PreferencePredicate}s. For the usage of
+ * PreferencesPredicates within {@link CdmPreference}s see the {@link CdmPreference
+ * CdmPreference documentation}.
+ *
+ * NOTE: Some of the below predicates do not clearly follow the rule of dividing
+ * subject and predicate defined in {@link CdmPreference}. Those holding subject
+ * information may be adapted in future.
+ * Also the string representation of the predicates does not follow a common rule.
+ * This may also be adapted in future.
+ *
  * @author a.mueller
  * @since 2013-09-09
  *
@@ -162,6 +172,9 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
             "title", "artist", "rights", "location", "copyright", "date", "photographer", "locality")),
     MediaMetadataKeynameExcludes(UUID.fromString("f1375a03-259a-4cf3-b360-ac8339249464"), "Negative list of media metadata keywords", "media.metadataKeyword.excludes", null),
 
+    CdmLightExportCondensedDistributionString(UUID.fromString("76e7951e-d213-4121-b0bb-18d4299102e2"), "Create condensed distribution string in CdmLight export", "io.cdmLight.createCondensedString", Boolean.FALSE),
+    CondensedDistributionRecipe(UUID.fromString("b24349f6-c152-4dc2-ab7a-667f658f0c5f"), "The recipe for the condensed distribution string", "condensedStringRecipe", null)
+
     ;
 
     private Object defaultValue;
@@ -208,10 +221,10 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
 	public String getKey(){return delegateVocTerm.getKey();}
 
     @Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
+    public String getLabel(){return delegateVocTerm.getLabel();}
 
     @Override
-    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+    public String getLabel(Language language){return delegateVocTerm.getLabel(language);}
 
     @Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}

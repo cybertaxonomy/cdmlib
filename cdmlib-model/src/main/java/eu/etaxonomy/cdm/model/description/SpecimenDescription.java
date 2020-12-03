@@ -74,7 +74,7 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public SpecimenDescription clone() {
 		SpecimenDescription result;
 		result = (SpecimenDescription)super.clone();
 		//no changes to: taxonName

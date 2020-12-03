@@ -29,4 +29,5 @@ public interface ITermNodeDao extends IVersionableDao<TermNode> {
     public List<TermNode> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths);
 
+
 }

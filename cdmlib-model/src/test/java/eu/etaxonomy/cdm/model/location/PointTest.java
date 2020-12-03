@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,16 +32,16 @@ public class PointTest {
 
 	private Point point1;
 	private Point point2;
-	
+
 	private Integer errorRadius;
 	private Double longitude1;
 	private Double latitude1;
 	private Double longitude2;
 	private Double latitude2;
-	
+
 	private ReferenceSystem referenceSystem;
-	
-	
+
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -59,22 +59,22 @@ public class PointTest {
 	public void setUp() throws Exception {
 		longitude1 = 23.123556;
 		latitude1 = -13.975556;
-		
+
 		longitude2 = 28.48556;
 		latitude2 = 12.656;
-		
+
 		errorRadius = 5;
 		referenceSystem = ReferenceSystem.GOOGLE_EARTH();
-		
+
 		point1 = Point.NewInstance(longitude1, latitude1, referenceSystem, errorRadius);
 		point2 = Point.NewInstance();
-		
-		
-		
+
+
+
 	}
 
-//********************** TESTS *****************************	
-	
+//********************** TESTS *****************************
+
 	@Test
 	public void testNewInstance(){
 		Assert.assertNotNull("ReferenceSystem must not be null", referenceSystem);
@@ -85,7 +85,7 @@ public class PointTest {
 		Assert.assertEquals("", latitude1, point1.getLatitude());
 		Assert.assertEquals("", errorRadius, point1.getErrorRadius());
 		Assert.assertEquals("", referenceSystem, point1.getReferenceSystem());
-		
+
 		Assert.assertNull("LongitudeSexagesimal should be null", point2.getLongitudeSexagesimal());
 		Assert.assertNull("LatitudeSexagesimal should be null", point2.getLatitudeSexagesimal());
 	}
@@ -105,7 +105,7 @@ public class PointTest {
 		point2.setLatitude(null);
 		Assert.assertEquals(null, point2.getLatitude());
 	}
-	
+
 	@Test
 	public void testGetSetErrorRadius(){
 		point2.setErrorRadius(7);
@@ -113,7 +113,7 @@ public class PointTest {
 		point2.setErrorRadius(null);
 		Assert.assertEquals(null, point2.getErrorRadius());
 	}
-	
+
 	@Test
 	public void testGetSetReferenceSystem(){
 		ReferenceSystem newRefSystem = ReferenceSystem.NewInstance();
@@ -122,26 +122,26 @@ public class PointTest {
 		point2.setReferenceSystem(null);
 		Assert.assertEquals(null, point2.getReferenceSystem());
 	}
-	
+
 	@Test
 	public void testGetLongitudeSexagesimal(){
 		Assert.assertEquals("23\u00B07'24.801\"E", point1.getLongitudeSexagesimal().toString(true, false));
-		
-		
+
+
 		point2.setLongitudeSexagesimal(Sexagesimal.NewInstance(5, 22, null, Direction.WEST));
 		Assert.assertEquals((Integer)22, point2.getLongitudeSexagesimal().minutes);
 		Assert.assertEquals((Integer)0, point2.getLongitudeSexagesimal().seconds);
-		
-		Double latitudeDouble = -45.57389326; 
+
+		Double latitudeDouble = -45.57389326;
 		point1.setLatitudeSexagesimal(Sexagesimal.valueOf(latitudeDouble, true));
 		//Not true because of rounding errors
 //		Assert.assertEquals("latitudeDouble must be equal", latitudeDouble, point1.getLatitude());
-		
+
 		Sexagesimal sexagesimal1 = Sexagesimal.NewInstance(0, 0, 0, Direction.WEST);
 		Sexagesimal sexagesimal2 = Sexagesimal.NewInstance(2, 2, 2, Direction.WEST);
 		Assert.assertNotSame("", sexagesimal1, sexagesimal2);
-	
-			
+
+
 	}
 
 	@Test
@@ -178,21 +178,21 @@ public class PointTest {
 		try {
 			point1.setLatitudeByParsing("37\u00B07'44\"N");
 			Assert.assertEquals("Result should be 37\u00B07'44\"N not 37\u00B07'44.999\"N", "37\u00B07'44\"N", point1.getLatitudeSexagesimal().toString());
-			
+
 			point1.setLatitudeByParsing("37\u00B07'45\"N");
 			Assert.assertEquals("Result should be 37\u00B07'45\"N not 37\u00B07'45.\"N", "37\u00B07'45\"N", point1.getLatitudeSexagesimal().toString());
-			
+
 		} catch (ParseException e) {
 			Assert.fail("No parsing error should occur");
 		}
-		
-		
-		 
 
 
-		
-		
-		
+
+
+
+
+
+
 //		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
 //		Assert.assertFalse("Southern must be latitude", conversionResults.isLongitude);
 //
@@ -203,7 +203,7 @@ public class PointTest {
 //		conversionResults = coordinateConverter.tryConvert("95\u00B034.744");
 //		Assert.assertTrue("Longitude must be defined", conversionResults.isLongitude);
 //
-//		
+//
 //		conversionResults = coordinateConverter.tryConvert("-35\u00B034'55.67S");
 //		Assert.assertTrue(conversionResults.conversionComments, conversionResults.patternRecognised);
 //
@@ -212,12 +212,12 @@ public class PointTest {
 //
 //		conversionResults = coordinateConverter.tryConvert("35\u00B011'34.744SW");
 //		Assert.assertTrue("Western must be longitude", conversionResults.isLongitude);
-//		
+//
 //		conversionResults = coordinateConverter.tryConvert("35D11M34.744S");
 //		Assert.assertNull("isLongitude must be undefined. S stands for second.", conversionResults.isLongitude);
 
 	}
-	
+
 
 	@Test
 	public void testDoubleParsing(){
@@ -233,7 +233,7 @@ public class PointTest {
 		} catch (ParseException e) {
 			Assert.fail("No parsing error should occur");
 		}
-		
+
 		try {
 			point1.setLongitudeByParsing("-120.4");
 			Assert.assertEquals("", "-120.4", point1.getLongitude().toString());
@@ -248,7 +248,7 @@ public class PointTest {
 		} catch (ParseException e) {
 			Assert.assertTrue("Latitude can not be > 90", true);
 		}
-		
+
 		try {
 			point1.setLongitudeByParsing("191");
 			Assert.fail("Longitude can be > 180°");
@@ -261,11 +261,11 @@ public class PointTest {
 			Assert.fail("String '2°39'38,5956\"S'should be parsable");
 		}
 }
-	
+
 	/**
 	 * I don't exactly know what should happen here.
-	 * Please see http://dev.e-taxonomy.eu/trac/ticket/2267#comment:3 on why this test was created 
-	 * 
+	 * Please see https://dev.e-taxonomy.eu/redmine/issues/2267#comment:3 on why this test was created
+	 *
 	 * @throws ParseException
 	 */
 	@Test
@@ -274,7 +274,7 @@ public class PointTest {
 		point1.setLatitudeByParsing(example);
 		Assert.assertEquals(example, point1.getLatitudeSexagesimal().toString());
 	}
-	
+
 	@Test
 	public void testStaticParsing(){
 		try{
@@ -285,7 +285,7 @@ public class PointTest {
 			Assert.fail("No parsing error should occur");
 		}
 	}
-	
-	
-	
+
+
+
 }

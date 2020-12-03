@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.remote.controller.oaipmh;
 
 import static eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix.DWC;
-import io.swagger.annotations.Api;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,6 +28,7 @@ import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.remote.controller.IdDoesNotExistException;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
+import io.swagger.annotations.Api;
 
 @Controller
 @Api("OAI-PMH References")
@@ -48,7 +48,7 @@ public class ReferenceOaiPmhController extends AbstractOaiPmhController<Referenc
     private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "titleCache",
             "name.titleCache",
-            "name.nomenclaturalReference.titleCache",
+            "name.nomenclaturalSource.citation.titleCache",
             "$"
             });
 

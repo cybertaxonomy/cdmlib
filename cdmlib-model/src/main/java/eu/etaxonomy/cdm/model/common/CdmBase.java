@@ -88,6 +88,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 })
 @MappedSuperclass
 public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptive, Cloneable{
+
     private static final long serialVersionUID = -3053225700018294809L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CdmBase.class);
@@ -502,14 +503,13 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         return result;
     }
 
-
     /**
      * Returns <code>true</code> if the given String is blank.
      * @param str the String to check
      * @see StringUtils#isBlank(String)
      * @return <code>true</code> if str is blank, <code>false</code> otherwise
      */
-    protected boolean isBlank(String str) {
+    protected static boolean isBlank(String str) {
         return StringUtils.isBlank(str);
     }
 
@@ -519,14 +519,23 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
      * @see StringUtils#isNotBlank(String)
      * @return <code>true</code> if str is not blank, <code>false</code> otherwise
      */
-    protected boolean isNotBlank(String str) {
+    protected static boolean isNotBlank(String str) {
         return StringUtils.isNotBlank(str);
     }
 
 // **************** EMPTY ************************/
 
+    /**
+     * Checks if the entity is completely empty
+     * and therefore can be removed.<BR>
+     *
+     * To be implemented by subclasses if used
+     *
+     * @return <code>true</code> if empty
+     */
     protected boolean checkEmpty(){
-       return true;
+        //nothing to check; id, uuid, created and createdBy are not relevant
+        return true;
     }
 
 //********************** CLONE *****************************************/
@@ -542,7 +551,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 //    }
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
+    public CdmBase clone() throws CloneNotSupportedException{
         CdmBase result = (CdmBase)super.clone();
         result.propertyChangeSupport=new PropertyChangeSupport(result);
 

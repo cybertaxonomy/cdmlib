@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.io.FileNotFoundException;
@@ -71,11 +70,12 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author p.kelbert
  * @since 29.10.2008
  * @since 13 mars 2013
- *
  */
 @Component
 public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesysExcelImportConfigurator, SpecimenSynthesysExcelImportState>
         implements ICdmIO<SpecimenSynthesysExcelImportState> {
+
+    private static final long serialVersionUID = -1145031415387024364L;
 
     private static final Logger logger = Logger.getLogger(SpecimenSythesysExcelImport.class);
 
@@ -126,9 +126,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
      * return empty string instead of null
      * */
     public class MyHashMap<K,V> extends HashMap<K,V> {
-        /**
-         *
-         */
+
         private static final long serialVersionUID = -6230407405666753405L;
 
         @SuppressWarnings("unchecked")
@@ -212,7 +210,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 }
                 getClassificationService().saveOrUpdate(classification);
             }
-
         }
     }
 
@@ -317,7 +314,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         identifier = unit.get("identifier");
     }
 
-
     private Institution getInstitution(SpecimenSynthesysExcelImportConfigurator config){
         Institution institution;
         List<Institution> institutions;
@@ -385,12 +381,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         return collection;
     }
 
-    /*
-     *
-     * @param app
-     * @param derivedThing
-     * @param sec
-     */
     private void setTaxonName(SpecimenSynthesysExcelImportConfigurator config){
         TaxonName taxonName = null;
         Taxon taxon = null;
@@ -462,8 +452,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 taxon = addTaxonNode(taxon, config);
             }
 
-
-
             DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
             determinationEvent.setTaxon(getTaxonService().find(taxon.getUuid()));
             determinationEvent.setPreferredFlag(preferredFlag);
@@ -480,15 +468,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
             getOccurrenceService().saveOrUpdate(derivedUnitBase);
         }
-
     }
 
-    /**
-     * @param taxon
-     * @param taxonName
-     * @param config
-     * @return
-     */
     private Taxon addTaxonNode(Taxon taxon, SpecimenSynthesysExcelImportConfigurator config) {
         if (DEBUG) {
             logger.info("link taxon to a taxonNode");
@@ -651,7 +632,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             unitsGatheringArea.useTDWGareas(this.useTDWGarea);
             //            unitsGatheringArea.setConfig(config, getOccurrenceService(),getTermService());
-            unitsGatheringArea.setParams(isocountry, country, config, getTermService(), getOccurrenceService(), getVocabularyService());
+            unitsGatheringArea.setParams(isocountry, country, config, getTermService(), getVocabularyService());
             DefinedTermBase areaCountry =unitsGatheringArea.getCountry();
 
 
@@ -969,7 +950,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                             }
                         }
                         if (collteam.size()>0) {
-                            collectorinteams.add(new ArrayList<String>(new HashSet<String>(collteam)));
+                            collectorinteams.add(new ArrayList<String>(new HashSet<>(collteam)));
                         }
                     }
                     else
@@ -980,15 +961,15 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             }
         }
 
-        List<String> collectorsU = new ArrayList<String>(new HashSet<String>(collectors));
-        List<String> teamsU = new ArrayList<String>(new HashSet<String>(teams));
+        List<String> collectorsU = new ArrayList<String>(new HashSet<>(collectors));
+        List<String> teamsU = new ArrayList<String>(new HashSet<>(teams));
 
 
         //existing teams in DB
         Map<String,Team> titleCacheTeam = new HashMap<String, Team>();
         List<UuidAndTitleCache<Team>> hiberTeam = getAgentService().getTeamUuidAndTitleCache();
 
-        Set<UUID> uuids = new HashSet<UUID>();
+        Set<UUID> uuids = new HashSet<>();
         for (UuidAndTitleCache<Team> hibernateT:hiberTeam){
             uuids.add(hibernateT.getUuid());
         }
@@ -1000,14 +981,14 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
 
 
-        Map<String,UUID> teamMap = new HashMap<String, UUID>();
+        Map<String,UUID> teamMap = new HashMap<>();
         for (UuidAndTitleCache<Team> uuidt:hiberTeam){
             teamMap.put(uuidt.getTitleCache(), uuidt.getUuid());
         }
 
         //existing persons in DB
         List<UuidAndTitleCache<Person>> hiberPersons = getAgentService().getPersonUuidAndTitleCache();
-        Map<String,Person> titleCachePerson = new HashMap<String, Person>();
+        Map<String,Person> titleCachePerson = new HashMap<>();
         uuids = new HashSet<UUID>();
         for (UuidAndTitleCache<Person> hibernateP:hiberPersons){
             uuids.add(hibernateP.getUuid());
@@ -1025,8 +1006,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             personMap.put(person.getTitleCache(), person.getUuid());
         }
 
-        java.util.Collection<AgentBase> personsToAdd = new ArrayList<AgentBase>();
-        java.util.Collection<AgentBase> teamsToAdd = new ArrayList<AgentBase>();
+        java.util.Collection<AgentBase> personsToAdd = new ArrayList<>();
+        java.util.Collection<AgentBase> teamsToAdd = new ArrayList<>();
 
         for (String collector:collectorsU){
             Person p = Person.NewInstance();
@@ -1046,7 +1027,6 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         for (UUID u:uuuidPerson.keySet()){
             titleCachePerson.put(uuuidPerson.get(u).getTitleCache(),CdmBase.deproxy(uuuidPerson.get(u), Person.class) );
         }
-
 
         Person ptmp ;
         Map <String,Integer>teamdone = new HashMap<String, Integer>();

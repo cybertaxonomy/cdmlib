@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.ext.geo;
 
 import static org.junit.Assert.assertTrue;
@@ -167,7 +166,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testGetWebServiceUrlCyprus() throws ClientProtocolException, IOException {
         makeCyprusAreas();
-        Set<Distribution> distributions = new HashSet<Distribution>();
+        Set<Distribution> distributions = new HashSet<>();
         distributions.add(Distribution.NewInstance(divisions.get("1"), PresenceAbsenceTerm.PRESENT()));
         distributions.add(Distribution.NewInstance(divisions.get("2"), PresenceAbsenceTerm.INTRODUCED()));
         distributions.add(Distribution.NewInstance(divisions.get("3"), PresenceAbsenceTerm.CULTIVATED()));
@@ -221,7 +220,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     }
 
     public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
-    private final Map<String, NamedArea> divisions = new HashMap<String, NamedArea>();
+    private final Map<String, NamedArea> divisions = new HashMap<>();
 
     private boolean makeCyprusAreas() throws IOException {
         //divisions
@@ -264,7 +263,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
             divisions.put(dtb.getIdInVocabulary(), (NamedArea) dtb);
         }
 
-
 //		indigenousStatus = (PresenceTerm)getTermService().find(CyprusTransformer.indigenousUuid);
 //		casualStatus = (PresenceTerm)getTermService().find(CyprusTransformer.casualUuid);
 //		nonInvasiveStatus = (PresenceTerm)getTermService().find(CyprusTransformer.nonInvasiveUuid);
@@ -272,8 +270,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 //		questionableStatus = (PresenceTerm)getTermService().find(CyprusTransformer.questionableUuid);
 
         return true;
-
-
     }
 
     public static final UUID uuidDivision1 = UUID.fromString("ab17eee9-1abb-4ce9-a9a2-563f840cdbfc");
@@ -284,7 +280,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     public static final UUID uuidDivision6 = UUID.fromString("fbf21230-4a42-4f4c-9af8-5da52123c264");
     public static final UUID uuidDivision7 = UUID.fromString("d31dd96a-36ea-4428-871c-d8552a9565ca");
     public static final UUID uuidDivision8 = UUID.fromString("236ea447-c3ab-486d-9e06-cc5907861acc");
-
 
     public UUID getNamedAreaUuid(String key) {
         if (StringUtils.isBlank(key)){return null;
@@ -388,7 +383,6 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         System.out.println(distributions);
         Assert.assertTrue("Distribution string should contain the non-persited distribution Germany", distributions.contains("DEU"));
         Assert.assertFalse("Distribution string should contain France as it has a non-distribution feature", distributions.contains("FRA"));
-
 //        CHE,POL
     }
 

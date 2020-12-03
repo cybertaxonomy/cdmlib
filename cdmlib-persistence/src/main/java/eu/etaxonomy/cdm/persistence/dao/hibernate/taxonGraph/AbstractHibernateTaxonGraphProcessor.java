@@ -31,8 +31,32 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmPreferenceLookup;
 import eu.etaxonomy.cdm.persistence.dao.taxonGraph.TaxonGraphException;
+import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
 
 /**
+ * Provides the business logic to manage multiple classifications as
+ * classification fragments in a graph of
+ * {@link eu.etaxonomy.cdm.model.taxon.Taxon Taxa} and
+ * {@link eu.etaxonomy.cdm.model.taxon.TaxonRelationship TaxonRelationships}.
+ * <p>
+ * This abstract class provides the base for
+ * {@link eu.etaxonomy.cdm.api.service.taxonGraph.TaxonGraphBeforeTransactionCompleteProcess}
+ * and {@link TaxonGraphDaoHibernateImpl} which both are operating on the persisted
+ * graph structures and thus are sharing this business logic in common:
+ * <ul>
+ * <li><code>TaxonGraphBeforeTransactionCompleteProcess</code>: Manages the
+ * graph and is the only class allowed to modify it.</li>
+ * <li><code>TaxonGraphDaoHibernateImpl</code>: Provides read only access to the
+ * graph structure.</li>
+ * <ul>
+ * <p>
+ * The conceptual idea for the resulting graph is described in <a href=
+ * "https://dev.e-taxonomy.eu/redmine/issues/6173#6-N1T-Higher-taxon-graphs-with-includedIn-relations-taxon-relationships">#6173
+ * 6) [N1T] Higher taxon-graphs with includedIn relations taxon
+ * relationships}</a> The
+ * <code>TaxonGraphBeforeTransactionCompleteProcess</code> is instantiated and
+ * used in the {@link TaxonGraphHibernateListener}
+ *
  * @author a.kohlbecker
  * @since Oct 4, 2018
  *
@@ -91,6 +115,14 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         }
     }
 
+    /**
+     * Provides the sec reference for all taxa in the graph. The Reference uuid
+     * is expected to be stored in the CDM perferences under the preference key
+     * {@link TaxonGraphDaoHibernateImpl#CDM_PREF_KEY_SEC_REF_UUID}
+     *
+     *
+     * @return The reference for all taxa in the graph
+     */
     public Reference secReference(){
         if(secReference == null){
             Query q = getSession().createQuery("SELECT r FROM Reference r WHERE r.uuid = :uuid");
@@ -118,13 +150,41 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
 
 
     /**
-     * Create all missing edges from the <code>taxon</code>.
+     * Create all missing edges from the <code>taxon</code> to names with higher
+     * rank and edges from names with lower rank to this taxon. No longer needed
+     * relations (edges) are removed.
+     * <p>
+     * {@link #conceptReference(Reference) concept references} which are null are ignored.
+     * This means no edges are created.
      *
-     * @param taxonName
+     *
+     * @param taxon
+     *            The taxon to update the edges for.
      */
     public void updateEdges(Taxon taxon) throws TaxonGraphException {
 
-        Reference conceptReference = conceptReference(taxon.getName().getNomenclaturalReference());
+        Reference nomenclaturalReference = taxon.getName().getNomenclaturalReference();
+
+        updateEdges(taxon, nomenclaturalReference);
+    }
+
+    /**
+     * Create all missing edges from the <code>taxon</code> to names with higher
+     * rank and edges from names with lower rank to this taxon. No longer needed
+     * relations (edges) are removed.
+     * <p>
+     * {@link #conceptReference(Reference) concept references} which are null are ignored.
+     * This means no edges are created.
+     *
+     *
+     * @param taxon
+     *            The taxon to update the edges for.
+     * @param nomenclaturalReference
+     *           The nomenclatural reference to update the edged with.
+     */
+    protected void updateEdges(Taxon taxon, Reference nomenclaturalReference) throws TaxonGraphException {
+
+        Reference conceptReference = conceptReference(nomenclaturalReference);
 
         if(conceptReference != null){
             // update edges to higher names
@@ -219,10 +279,36 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
 
     abstract public Session getSession();
 
+    /**
+     * Same as {@link #assureSingleTaxon(TaxonName, boolean)} with
+     * <code>createMissing = true</code>
+     */
     public Taxon assureSingleTaxon(TaxonName taxonName) throws TaxonGraphException {
         return assureSingleTaxon(taxonName, true);
     }
 
+    /**
+     * Assurers that there is only one {@link Taxon} for the given name
+     * (<code>taxonName</code>) having the the default sec reference
+     * ({@link #getSecReferenceUUID()}).
+     * <p>
+     * If there is no such taxon it will be created when
+     * <code>createMissing=true</code>. A <code>TaxonGraphException</code> is
+     * thrown when more than one taxa with the default sec reference
+     * ({@link #getSecReferenceUUID()}) are found for the given name
+     * (<code>taxonName</code>)
+     *
+     * @param taxonName
+     *            The name to check
+     * @param createMissing
+     *            A missing taxon is created when this is <code>true</code>.
+     * @return
+     * @throws TaxonGraphException
+     *             A <code>TaxonGraphException</code> is thrown when more than
+     *             one taxa with the default sec reference
+     *             ({@link #getSecReferenceUUID()}) are found for the given name
+     *             (<code>taxonName</code>)
+     */
     public Taxon assureSingleTaxon(TaxonName taxonName, boolean createMissing) throws TaxonGraphException {
 
         UUID secRefUuid = getSecReferenceUUID();
@@ -260,6 +346,11 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
         return taxon != null ? session.load(Taxon.class, taxon.getId()) : null;
     }
 
+    /**
+     * Provides the concept reference for a given <code>nomenclaturalReference</code>.
+     * For references which are {@link ReferenceType#Section} or {@link ReferenceType#BookSection} the in-reference is returned,
+     * otherwise the passed  <code>nomenclaturalReference</code> itself.
+     */
     protected Reference conceptReference(Reference nomenclaturalReference) {
 
         Reference conceptRef = nomenclaturalReference;
@@ -407,15 +498,16 @@ public abstract class AbstractHibernateTaxonGraphProcessor {
      */
     protected List<TaxonRelationship> getTaxonRelationships(Taxon relatedTaxon, TaxonRelationshipType type, Reference citation, Direction direction){
 
+        getSession().flush();
         String hql = "SELECT rel FROM TaxonRelationship rel WHERE rel." + direction + " = :relatedTaxon AND rel.type = :type";
         if(citation != null){
-            hql += " AND rel.citation = :citation";
+            hql += " AND rel.source.citation = :citation";
         }
         Query q = getSession().createQuery(hql);
         q.setParameter("relatedTaxon", relatedTaxon);
         q.setParameter("type", type);
         if(citation != null){
-        q.setParameter("citation", citation);
+            q.setParameter("citation", citation);
         }
         @SuppressWarnings("unchecked")
         List<TaxonRelationship> rels = q.list();

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
@@ -42,10 +41,8 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
-
 /**
  * @author a.mueller
- *
  */
 @Component
 public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
@@ -56,7 +53,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	public TcsXmlTaxonImport(){
 		super();
 	}
-
 
 	@Override
 	public boolean doCheck(TcsXmlImportState state){
@@ -77,7 +73,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	private Set<String> makeSynonymIds(List<Element> elTaxonConceptList, ResultWrapper<Boolean> success){
 		//TODO use XPath
 
-		 Set<String> result =  new HashSet<String>();
+		 Set<String> result =  new HashSet<>();
 
 		Namespace tcsNamespace;
 		//for each taxonConcept
@@ -113,9 +109,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		}
 		return result;
 	}
-
-
-
 
 	@Override
 	public void doInvoke(TcsXmlImportState state){
@@ -284,8 +277,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		}
 	}
 
-
-
 	private boolean hasIsSynonymRelation(Element taxonConcept, Namespace rdfNamespace){
 		boolean result = false;
 		if (taxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(taxonConcept.getName()) ){
@@ -306,11 +297,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		return result;
 	}
 
-
-	/**
-	 * @param elTaxonRelationships
-	 * @param success
-	 */
 	private TaxonName makeScientificName(Element elName, NomenclaturalCode code, MapWrapper<TaxonName> objectMap, ResultWrapper<Boolean> success){
 		TaxonName result = null;
 		if (elName != null){
@@ -338,17 +324,10 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		return result;
 	}
 
-
-	/**
-	 * @param elTaxonRelationships
-	 * @param success
-	 */
 	private void makeTaxonRelationships(TaxonBase<?> name, Element elTaxonRelationships, ResultWrapper<Boolean> success){
 		//TaxonRelationships are handled in TcsXmlTaxonRelationsImport
 		return;
 	}
-
-
 
 	private void makeSpecimenCircumscription(TaxonBase<?> name, Element elSpecimenCircumscription, ResultWrapper<Boolean> success){
 		if (elSpecimenCircumscription != null){
@@ -356,7 +335,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 			success.setValue(false);
 		}
 	}
-
 
 	private void makeCharacterCircumscription(TaxonBase<?> name, Element elCharacterCircumscription, ResultWrapper<Boolean> success){
 		if (elCharacterCircumscription != null){
@@ -372,7 +350,6 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		}
 	}
 
-
 	private void makeProviderSpecificData(TaxonBase<?> name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
 		if (elProviderSpecificData != null){
 			logger.warn("makeProviderLink not yet implemented");
@@ -380,15 +357,8 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		}
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
     protected boolean isIgnore(TcsXmlImportState state){
 		return ! state.getConfig().isDoTaxa();
 	}
-
-
 }

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
+import eu.etaxonomy.cdm.database.update.v24_30.SchemaUpdater_24_25;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**

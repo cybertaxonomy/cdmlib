@@ -64,11 +64,13 @@ public class DbImportMethodMapper<CDMBASE extends VersionableEntity, STATE exten
 //		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity, T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterType1,parameterType2);
 //		return result;
 //	}
-//
-//	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper NewInstance(Object objectToInvoke, String methodName, Class<?>... parameterTypes){
-//		DbImportMethodMapper<?,?> result = new DbImportMethodMapper<VersionableEntity,T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterTypes);
-//		return result;
-//	}
+
+	@Deprecated //not sure if it works correctly any more, was already commented but is used in CentralAfricaFernsXXXImport
+	//can be removed if this dependency is removed
+	public static <T extends DbImportStateBase<?,?>> DbImportMethodMapper<VersionableEntity,T> NewInstance(Object objectToInvoke, String methodName, Class<?>... parameterTypes){
+		DbImportMethodMapper<VersionableEntity,T> result = new DbImportMethodMapper<VersionableEntity,T>(objectToInvoke.getClass(), objectToInvoke, methodName, parameterTypes);
+		return result;
+	}
 
 //********************************* CONSTRUCTOR ****************************************/
 

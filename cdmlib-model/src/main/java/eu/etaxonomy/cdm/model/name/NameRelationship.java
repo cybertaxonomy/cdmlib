@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors;
@@ -139,6 +140,29 @@ public class NameRelationship
 		this.setRuleConsidered(ruleConsidered);
 		this.setCodeEdition(codeEdition);
 	}
+
+	/**
+     * Class constructor: creates a new name relationship instance including
+     * its {@link  eu.etaxonomy.cdm.model.description.DescriptionElementSource reference source} and adds it to the respective
+     *{@link TaxonName#getNameRelations() taxon name relation sets} of both involved names.
+     *
+     * @param toName                the taxon name to be set as target for the new name relationship
+     * @param fromName              the taxon name to be set as source for the new name relationship
+     * @param type                  the relationship type to be assigned to the new name relationship
+     * @param source                the source for the new name relationship
+     * @param ruleConsidered        the string indicating the article of the nomenclatural code justifying the new name relationship
+     * @param codeEdition           the edition of the nomenclatural code where the <code>ruleConsidered</code> has been published.
+     * @see                         #NameRelationship(TaxonName, TaxonName, NameRelationshipType, String)
+     * @see                         TaxonName#addNameRelationship(NameRelationship)
+     * @see                         TaxonName#addRelationshipFromName(TaxonName, NameRelationshipType, String)
+     * @see                         TaxonName#addRelationshipToName(TaxonName, NameRelationshipType, String)
+     */
+    protected NameRelationship(TaxonName  toName, TaxonName fromName, NameRelationshipType type, DescriptionElementSource source, String ruleConsidered, NomenclaturalCodeEdition codeEdition) {
+        super(fromName, toName, type, source);
+        this.setRuleConsidered(ruleConsidered);
+        this.setCodeEdition(codeEdition);
+    }
+
 
 	//********* METHODS **************************************/
 
@@ -284,7 +308,7 @@ public class NameRelationship
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public NameRelationship clone() {
 		NameRelationship result;
 		try {
 			result = (NameRelationship)super.clone();

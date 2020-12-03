@@ -10,23 +10,22 @@ package eu.etaxonomy.cdm.ref;
 
 import java.util.UUID;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.kohlbecker
  * @since Jun 12, 2017
- *
  */
-public class TypedEntityReference<T> extends EntityReference {
+public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private static final long serialVersionUID = -4619590272174606288L;
 
     private Class<T> type;
 
-    /**
-     * @param uuid
-     * @param label
-     */
     public TypedEntityReference(Class<T> type, UUID uuid, String label) {
         super(uuid, label);
         this.type = type;
@@ -37,6 +36,18 @@ public class TypedEntityReference<T> extends EntityReference {
         this.type = type;
     }
 
+    public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
+        if(entity == null) {
+            return null;
+        }
+        entity = HibernateProxyHelper.deproxy(entity);
+        if(IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
+            return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid(), ((IdentifiableEntity)entity).getTitleCache());
+        } else {
+            return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
+        }
+    }
+
     public Class<T> getType() {
         return type;
     }
@@ -44,9 +55,6 @@ public class TypedEntityReference<T> extends EntityReference {
         this.type = type;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31)
@@ -55,9 +63,6 @@ public class TypedEntityReference<T> extends EntityReference {
                 .hashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("rawtypes")
     @Override
     public boolean equals(Object obj) {
@@ -73,7 +78,5 @@ public class TypedEntityReference<T> extends EntityReference {
     @Override
     public String toString(){
         return type.getSimpleName() + "#" + uuid;
-
     }
-
 }

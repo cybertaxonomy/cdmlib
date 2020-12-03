@@ -543,7 +543,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
     /**
      * Variant of {@link #testArea_rank_and_area_1()} with alternate source references to
      * check the handling of the case where the target taxon already has the distribution which is the
-     * result of the aggregation (see http://dev.e-taxonomy.eu/trac/ticket/4366#comment:12)
+     * result of the aggregation (see https://dev.e-taxonomy.eu/redmine/issues/4366#comment:12)
      *
      * This test relies on {@link #testArea_rank_and_area_1()}
      * an makes assertions only on the alternative source references

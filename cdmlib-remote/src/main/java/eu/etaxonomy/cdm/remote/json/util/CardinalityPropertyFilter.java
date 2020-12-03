@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.remote.json.util;
 
 import java.util.Collection;
@@ -14,21 +13,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.json.util.PropertyFilter;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import net.sf.json.util.PropertyFilter;
 
 public class CardinalityPropertyFilter implements PropertyFilter {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CardinalityPropertyFilter.class);
 
     boolean includeToOneRelations = true;
 
     boolean includeToManyRelations = true;
 
-    Set<String> exceptions = new HashSet<String>();
+    Set<String> exceptions = new HashSet<>();
 
     public void setExceptions(Set<String> exceptions) {
         this.exceptions = exceptions;
@@ -42,9 +41,7 @@ public class CardinalityPropertyFilter implements PropertyFilter {
         this.includeToManyRelations = includeToManyRelations;
     }
 
-    /* (non-Javadoc)
-     * @see net.sf.json.util.PropertyFilter#apply(java.lang.Object, java.lang.String, java.lang.Object)
-     */
+    @Override
     public boolean apply(Object source, String name, Object value) {
         Class<?> valueType;
 

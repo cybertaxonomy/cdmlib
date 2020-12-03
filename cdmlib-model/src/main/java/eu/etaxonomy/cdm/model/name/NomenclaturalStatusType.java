@@ -16,11 +16,14 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -55,12 +58,16 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @since 10.07.2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NomenclaturalStatusType")
+@XmlType(name = "NomenclaturalStatusType", propOrder = {
+        "nomenclaturalStanding"}
+)
 @Entity
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
+public class NomenclaturalStatusType
+        extends OrderedTermBase<NomenclaturalStatusType>
+        implements INomenclaturalStanding {
 
 	private static final long serialVersionUID = 1337101678484153972L;
 
@@ -97,6 +104,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidOrthographyRejected = UUID.fromString("39a25673-f716-4ec7-ae27-2498fce43166");
 	private static final UUID uuidConservedDesig = UUID.fromString("4e9c9702-a74d-4033-9d47-792ad123712c");
 	private static final UUID uuidIned = UUID.fromString("51429574-c6f9-4aa1-bab9-0bbc5b160ba1");
+    private static final UUID uuidProtected = UUID.fromString("d071187a-512d-4955-b75c-d1706702f098");
+    private static final UUID uuidScheda = UUID.fromString("f080cee4-6e0a-466f-986e-bad59e9f4ea7");
+    private static final UUID uuidProSynonymo = UUID.fromString("54900d07-a18f-4e11-b4be-3929bb78416a");
+    private static final UUID uuidOrthVar = UUID.fromString("6703745b-9834-42b5-8ddd-fcc6ce572372");
+    private static final UUID uuidCombIned = UUID.fromString("71c13910-19a4-46b2-9ec8-2a8dbd45cd83");
+
 
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
@@ -144,6 +157,20 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return result;
 	}
 
+    /**
+     * The {@link NomenclaturalStanding nomenclatural standing} of a name with a given
+     * nomenclatural status.
+     * It is usually needed for correct formatting of a name in a synonymy by e.g. using
+     * a dash instead of equal sign in front.
+     */
+    @XmlAttribute(name ="NomenclaturalStanding")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.NomenclaturalStanding")}
+    )
+    @Audited
+    private NomenclaturalStanding nomenclaturalStanding;
+
 
 //********************************** Constructor *********************************/
 
@@ -177,6 +204,16 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		this.addRepresentation(new Representation(term, label, labelAbbrev, language));
 	}
 
+// ************************ GETTER / SETTER ******************/
+
+    public NomenclaturalStanding getNomenclaturalStanding() {
+        return nomenclaturalStanding;
+    }
+
+    public void setNomenclaturalStanding(NomenclaturalStanding nomenclaturalStanding) {
+        this.nomenclaturalStanding = nomenclaturalStanding;
+    }
+
 //********* METHODS **************************************
 
 	@Override
@@ -185,40 +222,48 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		zooTermMap = null;
 	}
 
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
-	 * type is itself "invalid" or a kind of "invalid" (true) or not (false) -
-	 * this corresponds to "not available" for {@link IZoologicalName zoological names} -.
-	 * Returns false if <i>this</i> nomenclatural status type is null. The use
-	 * of "invalid" {@link TaxonName taxon names} should be avoided.<BR>
-	 * A taxon name is "invalid" if it is not "valid"; this means that
-	 * the taxon name:<ul>
-	 * <li>has not been effectively published or
-	 * <li>has a form which does not comply with the rules of the
-	 * 	   {@link NomenclaturalCode nomenclature code} or
-	 * <li>is not accompanied by a description or diagnosis or by a reference to
-	 * 	   such a previously published description or diagnosis
-	 * </ul>
-	 *
-	 * @see  #VALID()
-	 * @see  #isIllegitimateType()
-	 * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
-	 */
-	@Transient
-	public boolean isInvalidType(){
-		if (this.equals(INVALID())
-			|| this.equals(NUDUM())
-			|| 	this.equals(PROVISIONAL())
-			||  this.equals(INED())
-			|| 	this.equals(COMBINATION_INVALID())
-			|| 	this.equals(OPUS_UTIQUE_OPPR())
-			||  this.equals(ZOO_NOT_AVAILABLE())
-			){
-			return true;
-		}else{
-			return false;
-		}
+    @Override
+    @Transient
+    public boolean isDesignationOnly(){
+        //rejected, definitely rejected, confused, ined., comb. ined., ambigous, orth. var., orth. rej.
+        //cons. prop., orth. cons. prop.
+        return this.getNomenclaturalStanding() == NomenclaturalStanding.OTHER_DESIGNATION;
+    }
+
+	@Override
+    @Transient
+	public boolean isInvalid(){
+	    return this.getNomenclaturalStanding().isInvalid();
 	}
+
+    @Override
+    @Transient
+    public boolean isValid(){
+        return this.getNomenclaturalStanding().isValid();
+    }
+
+    @Override
+    @Transient
+    public boolean isValidExplicit(){
+        //valid: valid, legitimate, conserved, sanctioned, protected, orth. cons., alternative
+        //       rej. prop, utique rej prop, nom. cons. des.
+        return this.getNomenclaturalStanding().isValidExplicit();
+    }
+
+    @Override
+    @Transient
+    public boolean isNoStatus(){
+        //nom. dub., novum, comb. nov., nom. cons. prop., nom. orth. cons. prop., nom. subnud.
+        return this.getNomenclaturalStanding().isNoStatus();
+    }
+
+    @Override
+    @Transient
+    public boolean isInvalidExplicit(){
+        //nom. inval., comb. inval., nom. nud., nom. prov., op. utique oppr., in sched.
+        //pro syn., "published with alternative name" (TODO)
+        return this.getNomenclaturalStanding() == NomenclaturalStanding.INVALID;
+    }
 
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> nomenclatural status
@@ -229,26 +274,14 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * is "legitimate" if it was not "superfluous" when published
 	 * or has been later "conserved".<BR>
 	 *
-	 * @see  #isInvalidType()
-	 * @see  #isIllegitimateType()
+	 * @see  #isInvalid()
+	 * @see  #isIllegitimate()
 	 * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
 	 */
-	@Transient
-	public boolean isLegitimateType(){
-		if (this.equals(LEGITIMATE()) ||
-				this.equals(NOVUM()) ||
-				this.equals(ALTERNATIVE()) ||
-				this.equals(CONSERVED()) ||
-				this.equals(ORTHOGRAPHY_CONSERVED()) ||
-				this.equals(REJECTED_PROP()) ||
-				this.equals(UTIQUE_REJECTED_PROP()) ||
-				this.equals(COMB_NOV())||
-				this.equals(CONSERVED_DESIG())
-			){
-			return true;
-		}else{
-			return false;
-		}
+	@Override
+    @Transient
+	public boolean isLegitimate(){
+	    return this.nomenclaturalStanding.isLegitimate();
 	}
 
 	/**
@@ -261,28 +294,18 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * or has been later "rejected".
 	 *
 	 * @see  #VALID()
-	 * @see  #isInvalidType()
+	 * @see  #isInvalid()
 	 * @see  #ILLEGITIMATE()
 	 * @see  #CONSERVED()
 	 * @see  #SANCTIONED()
 	 * @see  eu.etaxonomy.cdm.model.term.DefinedTermBase#getKindOf()
 	 */
-	@Transient
-	public boolean isIllegitimateType(){
-		if (this.equals(ILLEGITIMATE()) ||
-				this.equals(SUPERFLUOUS()) ||
-				this.equals(REJECTED()) ||
-				this.equals(UTIQUE_REJECTED()) ||
-				this.equals(CONSERVED_PROP()) ||
-				this.equals(ORTHOGRAPHY_CONSERVED_PROP()) ||
-				this.equals(ZOO_INVALID()) ||
-				this.equals(ZOO_SUPPRESSED()) ||
-				this.equals(ORTHOGRAPHY_REJECTED())
-			){
-			return true;
-		}else{
-			return false;
-		}
+	@Override
+    @Transient
+	public boolean isIllegitimate(){
+	    //nom. illeg., comb. illeg., nom. superfl.,
+	    //zoo nom. inval., zoo suppressed,
+	    return this.nomenclaturalStanding.isIllegitimate();
 	}
 
 	/**
@@ -295,7 +318,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
-	 * @see  #isIllegitimateType()
+	 * @see  #isIllegitimate()
 	 */
 	public static final NomenclaturalStatusType AMBIGUOUS(){
 		return getTermByUuid(uuidAmbiguous);
@@ -311,7 +334,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
-	 * @see  #isIllegitimateType()
+	 * @see  #isIllegitimate()
 	 */
 	public static final NomenclaturalStatusType DOUBTFUL(){
 		return getTermByUuid(uuidDoubtful);
@@ -326,7 +349,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #VALID()
 	 * @see  #REJECTED()
-	 * @see  #isIllegitimateType()
+	 * @see  #isIllegitimate()
 	 */
 	public static final NomenclaturalStatusType CONFUSUM(){
 		return getTermByUuid(uuidConfusum);
@@ -360,7 +383,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #VALID()
 	 * @see  #CONSERVED()
 	 * @see  #SANCTIONED()
-	 * @see  #isIllegitimateType()
+	 * @see  #isIllegitimate()
 	 */
 	public static final NomenclaturalStatusType SUPERFLUOUS(){
 		return getTermByUuid(uuidSuperfluous);
@@ -378,8 +401,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * of a "conserved" taxon name.
 	 *
 	 * @see  #VALID()
-	 * @see  #isLegitimateType()
-	 * @see  #isIllegitimateType()
+	 * @see  #isLegitimate()
+	 * @see  #isIllegitimate()
 	 * @see  #CONSERVED()
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
@@ -396,7 +419,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #REJECTED()
 	 * @see  #VALID()
-	 * @see  #isIllegitimateType()
+	 * @see  #isIllegitimate()
 	 * @see  #CONSERVED()
 	 */
 	public static final NomenclaturalStatusType UTIQUE_REJECTED(){
@@ -414,11 +437,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * A "proposed to be conserved" taxon name is therefore still "illegitimate"
 	 * ("invalid" for zoological names).
 	 *
-	 * {@link https://dev.e-taxonomy.eu/trac/ticket/5662}
+	 * {@link https://dev.e-taxonomy.eu/redmine/issues/5662}
 	 *
 	 * @see  #VALID()
-	 * @see  #isIllegitimateType()
-	 * @see  #isLegitimateType()
+	 * @see  #isIllegitimate()
+	 * @see  #isLegitimate()
 	 * @see  #CONSERVED()
 	 * @see  #CONSERVED_DESIG()
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
@@ -435,11 +458,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
      *
      * NOTE: This interpretation needs further clarification.
      *
-     * {@link https://dev.e-taxonomy.eu/trac/ticket/5662}
+     * {@link https://dev.e-taxonomy.eu/redmine/issues/5662}
      *
      * @see  #VALID()
-     * @see  #isIllegitimateType()
-     * @see  #isLegitimateType()
+     * @see  #isIllegitimate()
+     * @see  #isLegitimate()
      * @see  #CONSERVED()
      * @see  #CONSERVED_PROP()()
      * @see  NameRelationshipType#CONSERVED_AGAINST()
@@ -457,7 +480,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * A "proposed to be conserved (orthography)" taxon name is therefore still
 	 * "illegitimate" ("invalid" for {@link IZoologicalName zoological names}).
 	 *
-	 * @see  #isIllegitimateType()
+	 * @see  #isIllegitimate()
 	 * @see  #CONSERVED_PROP()
 	 * @see  #CONSERVED()
 	 * @see  NameRelationshipType#ORTHOGRAPHIC_VARIANT()
@@ -492,7 +515,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #VALID()
 	 * @see  #CONSERVED()
-	 * @see  #isLegitimateType()
+	 * @see  #isLegitimate()
 	 * @see  NameRelationshipType#ALTERNATIVE_NAME()
 	 */
 	public static final NomenclaturalStatusType ALTERNATIVE(){
@@ -508,7 +531,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * {@link IZoologicalName zoological names}).
 	 *
 	 * @see  #VALID()
-	 * @see  #isIllegitimateType()
+	 * @see  #isIllegitimate()
 	 * @see  NameRelationshipType#REPLACED_SYNONYM()
 	 * @see  NameRelationshipType#BLOCKING_NAME_FOR()
 	 */
@@ -529,8 +552,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * ("valid" for zoological names).
 	 *
 	 * @see  #VALID()
-	 * @see  #isLegitimateType()
-	 * @see  #isIllegitimateType()
+	 * @see  #isLegitimate()
+	 * @see  #isIllegitimate()
 	 * @see  #REJECTED()
 	 * @see  #REJECTED_PROP()
 	 */
@@ -545,7 +568,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * A "conserved (orthography)" taxon name is "conserved" and hence
 	 * "legitimate" ("valid" for {@link IZoologicalName zoological names}).
 	 *
-	 * @see  #isLegitimateType()
+	 * @see  #isLegitimate()
 	 * @see  #CONSERVED()
 	 * @see  #ORTHOGRAPHY_CONSERVED_PROP()
 	 * @see  NameRelationshipType#ORTHOGRAPHIC_VARIANT()
@@ -558,11 +581,11 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
     /**
      * Returns the nomenclatural status type "orthography rejected". <BR>
      * TBC.
-     * See also {@link http://dev.e-taxonomy.eu/trac/ticket/5649}
+     * See also {@link https://dev.e-taxonomy.eu/redmine/issues/5649}
      *
      * @see  #ORTHOGRAPHY_CONSERVED()
      * @see  #REJECTED()
-     * @see  #isIllegitimateType()
+     * @see  #isIllegitimate()
      */
     public static final NomenclaturalStatusType ORTHOGRAPHY_REJECTED(){
         return getTermByUuid(uuidOrthographyRejected);
@@ -581,8 +604,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * to be rejected in favour of a "proposed to be conserved" taxon name.
 	 *
 	 * @see  #VALID()
-	 * @see  #isLegitimateType()
-	 * @see  #isIllegitimateType()
+	 * @see  #isLegitimate()
+	 * @see  #isIllegitimate()
 	 * @see  #REJECTED()
 	 * @see  #CONSERVED_PROP()
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
@@ -603,8 +626,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * zoological names).
 	 *
 	 * @see  #VALID()
-	 * @see  #isIllegitimateType()
-	 * @see  #isLegitimateType()
+	 * @see  #isIllegitimate()
+	 * @see  #isLegitimate()
 	 * @see  NameRelationshipType#CONSERVED_AGAINST()
 	 */
 	public static final NomenclaturalStatusType CONSERVED(){
@@ -620,7 +643,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 *
 	 * @see  #VALID()
 	 * @see  #CONSERVED()
-	 * @see  #isLegitimateType()
+	 * @see  #isLegitimate()
 	 */
 	public static final NomenclaturalStatusType SANCTIONED(){
 		return getTermByUuid(uuidSanctioned);
@@ -640,7 +663,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * </ul>
 	 *
 	 * @see  #VALID()
-	 * @see  #isInvalidType()
+	 * @see  #isInvalid()
 	 * @see  #ILLEGITIMATE()
 	 */
 	public static final NomenclaturalStatusType INVALID(){
@@ -654,7 +677,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * A "nudum" taxon name is therefore also "invalid" ("not available" for
 	 * {@link IZoologicalName zoological names}).
 	 *
-	 * @see  #isInvalidType()
+	 * @see  #isInvalid()
 	 */
 	public static final NomenclaturalStatusType NUDUM(){
 		return getTermByUuid(uuidNudum);
@@ -668,7 +691,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * An "invalid combination" taxon name is therefore also "invalid"
 	 * ("not available" for {@link IZoologicalName zoological names}).
 	 *
-	 * @see  #isInvalidType()
+	 * @see  #isInvalid()
 	 */
 	public static final NomenclaturalStatusType COMBINATION_INVALID(){
 		return getTermByUuid(uuidCombinationInvalid);
@@ -678,7 +701,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * Returns the nomenclatural status type "illegitimate combination".
 	 * TODO explanation
 	 *
-	 * @see  #isInvalidType()
+	 * @see  #isInvalid()
 	 */
 	public static final NomenclaturalStatusType COMBINATION_ILLEGITIMATE(){
 		return getTermByUuid(uuidCombinationIllegitimate);
@@ -690,7 +713,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * Some people use it in the same way as {@link #INED() ined.}
 	 *
 	 * @see #INED()
-	 * @see  #isInvalidType()
+	 * @see  #isInvalid()
 	 */
 	public static final NomenclaturalStatusType PROVISIONAL(){
 		return getTermByUuid(uuidProvisional);
@@ -701,10 +724,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
      * "inedited" if it it has not yet been published.<BR>
      * An inedited taxon name is therefore also "invalid" (bot.) / "not available (zool.)
      *<BR>
-     * see also http://dev.e-taxonomy.eu/trac/ticket/5896
+     * see also https://dev.e-taxonomy.eu/redmine/issues/5896
      *
      * @see #PROVISIONAL()
-     * @see  #isInvalidType()
+     * @see  #isInvalid()
      * @return
      */
     public static final NomenclaturalStatusType INED(){
@@ -731,9 +754,13 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 
 	/**
 	 * Returns the nomenclatural status type "subnudum". This type is not
-	 * covered by {@link NomenclaturalCode nomenclature codes}. It appears sometimes in literature and
-	 * represents the opinion of the author who considers the {@link TaxonName taxon name} to be
-	 * unusable for an unambiguous taxonomic use.
+	 * covered by {@link NomenclaturalCode nomenclature codes}. It appears
+	 * sometimes in literature and represents the opinion of the author who
+	 * considers the {@link TaxonName taxon name} to be unusable for an unambiguous
+	 * taxonomic use.
+	 *
+	 * As the name is not explicitly invalid we handle it as valid name.
+	 * For discussion see #3046#comment:4
 	 *
 	 * @see  #AMBIGUOUS()
 	 * @see  #CONFUSUM()
@@ -763,11 +790,82 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * An "opus utique oppressum" taxon name is therefore also "invalid"
 	 * ("not available" for {@link IZoologicalName zoological names}).
 	 *
-	 * @see  #isInvalidType()
+	 * @see  #isInvalid()
 	 */
 	public static final NomenclaturalStatusType OPUS_UTIQUE_OPPR(){
 		return getTermByUuid(uuidOpusUtiqueOppr);
 	}
+
+    /**
+     * Returns the nomenclatural status type "protected name".
+     * It indicates a valid name.
+     * "The name of an organism treated as a fungus listed (in App. IIA, III, and IV)
+     * with its type and treated as conserved against any competing listed or unlisted
+     * synonyms or homonyms (including sanctioned names), although conservation
+     * under Art. 14 overrides this protection (Art. F.2.1)."
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "protected name"
+     */
+    public static final NomenclaturalStatusType PROTECTED_NAME(){
+        return getTermByUuid(uuidProtected);
+    }
+
+    /**
+     * Returns the nomenclatural status type "herbarium designation".
+     * It indicates an invalid designation (invalid name).
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "herbarium designation"
+     */
+    public static final NomenclaturalStatusType IN_SCHEDA(){
+        return getTermByUuid(uuidScheda);
+    }
+
+    /**
+     * Returns the nomenclatural status type "published in synonymy".
+     * It indicates an invalid designation (invalid name).
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "published in synonymy"
+     */
+    public static final NomenclaturalStatusType PRO_SYNONYMO(){
+        return getTermByUuid(uuidProSynonymo);
+    }
+
+    /**
+     * Returns the nomenclatural status type "orthographical variant".
+     * This status should only be used if the other name this name is
+     * an orth. var. for is not known for some reason.
+     * Otherwise use name relationship {@link NameRelationshipType#ORTHOGRAPHIC_VARIANT()}.
+     * These 2 types may be unified in future (#9273).
+     *
+     * See also #9272.
+     *
+     * @return the nomenclatural status type "orthographical variant"
+     */
+    public static final NomenclaturalStatusType ORTH_VAR(){
+        return getTermByUuid(uuidOrthVar);
+    }
+
+    /**
+     * Returns the nomenclatural status type "unpublished combination".
+     * A {@link TaxonName combination} is "inedited" if it it has not yet been published.<BR>
+     * An inedited taxon name is therefore also "invalid" (bot.) / "not available (zool.)
+     * <BR><BR>
+     * {@link https://dev.e-taxonomy.eu/redmine/issues/5795}
+     *
+     * @see #INED()
+     * @see #PROVISIONAL()
+     * @see #isInvalid()
+     * @return the nomenclatural status type "comb. ined."
+     */
+    public static final NomenclaturalStatusType COMB_INED(){
+        return getTermByUuid(uuidCombIned);
+    }
 
 	/**
 	 * TODO
@@ -793,16 +891,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		return getTermByUuid(uuidZooSuppressed);
 	}
 
+	/**
+	 * TODO
+	 * @return
+	 */
 	public static final  NomenclaturalStatusType ZOO_OBLITUM (){
         return getTermByUuid(uuidZooOblitum);
     }
 
-
 	//TODO further Zoological status
-
-	//TODO Soraya
-	//	orth. var.: orthographic variant
-	//	pro syn.: pro synonymo
 
 	// TODO
 	// Preliminary implementation for BotanicalNameParser.
@@ -903,6 +1000,9 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			NomenclaturalStatusType newInstance = termClass.newInstance();
 			newInstance.setTermType(termType);
 			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN(), abbrevAsId);
+		    String nomenclaturalStanding = csvLine.get(5).trim();  //not in use yet?
+		    newInstance.setNomenclaturalStanding(NomenclaturalStanding.getByKey(nomenclaturalStanding));
+
 			return newInstance;
 		} catch (Exception e) {
 			e.printStackTrace();

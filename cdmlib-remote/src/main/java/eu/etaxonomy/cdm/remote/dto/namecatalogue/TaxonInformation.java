@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.namecatalogue;
 
 import java.util.ArrayList;
@@ -13,7 +18,6 @@ import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
 
 /**
  * @author c.mathew
- *
  */
 public class TaxonInformation implements RemoteResponse {
     private TaxonInformation.TaxonInformationRequest request;
@@ -114,7 +118,7 @@ public class TaxonInformation implements RemoteResponse {
         private List<RelatedTaxonInfo> relatedTaxa;
 
         public TaxonInformationResponse() {
-            relatedTaxa = new ArrayList<RelatedTaxonInfo>();
+            relatedTaxa = new ArrayList<>();
         }
 
         private void setTaxon(String title,
@@ -215,7 +219,7 @@ public class TaxonInformation implements RemoteResponse {
                 name = "";
                 rank = "";
                 taxonStatus = "";
-                flags = new Hashtable<String,String>();
+                flags = new Hashtable<>();
                 classification = null;
                 source = null;
                 scrutiny = null;
@@ -288,16 +292,9 @@ public class TaxonInformation implements RemoteResponse {
                 return this.scrutiny;
             }
 
-            /**
-             * @return the lsid
-             */
             public String getLsid() {
                 return lsid;
             }
-
-            /**
-             * @param lsid the lsid to set
-             */
             public void setLsid(String lsid) {
                 this.lsid = lsid;
             }
@@ -337,7 +334,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setTaxonUuid(String taxonUuid) {
                 this.taxonUuid = taxonUuid;
             }
-
             public String getTaxonUuid() {
                 return this.taxonUuid;
             }
@@ -345,7 +341,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setTitle(String title) {
                 this.title = title;
             }
-
             public String getTitle() {
                 return this.title;
             }
@@ -353,7 +348,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setName(String name) {
                 this.name = name;
             }
-
             public String getName() {
                 return this.name;
             }
@@ -362,7 +356,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setRank(String rank) {
                 this.rank = rank;
             }
-
             public String getRank() {
                 return this.rank;
             }
@@ -370,7 +363,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setTaxonStatus(String taxonStatus) {
                 this.taxonStatus = taxonStatus;
             }
-
             public String getTaxonStatus() {
                 return this.taxonStatus;
             }
@@ -378,7 +370,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setSource(SourceInfo source) {
                 this.source = source;
             }
-
             public SourceInfo getSource() {
                 return this.source;
             }
@@ -386,7 +377,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setRelationshipType(String relationshipType) {
                 this.relationshipType = relationshipType;
             }
-
             public String getRelationshipType() {
                 return this.relationshipType;
             }
@@ -394,7 +384,6 @@ public class TaxonInformation implements RemoteResponse {
             public void setTaxonomicScrutiny(TaxonomicScrutiny scrutiny) {
                 this.scrutiny = scrutiny;
             }
-
             public TaxonomicScrutiny getTaxonomicScrutiny() {
                 return this.scrutiny;
             }
@@ -462,5 +451,4 @@ public class TaxonInformation implements RemoteResponse {
             }
         }
     }
-
 }

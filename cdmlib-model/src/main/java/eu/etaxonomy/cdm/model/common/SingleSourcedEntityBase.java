@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.common;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,11 +22,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -41,8 +45,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @MappedSuperclass
 @Audited
 public abstract class SingleSourcedEntityBase
-        //TODO move to AnnotatableEntity once als ReferencedEntityBase attributes are removed from subclasses
-        extends ReferencedEntityBase {
+        extends AnnotatableEntity {
 
     static final long serialVersionUID = 2035568689268762760L;
     @SuppressWarnings("unused")
@@ -54,7 +57,7 @@ public abstract class SingleSourcedEntityBase
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private IdentifiableSource source;
+    private DescriptionElementSource source;
 
 // ************ CONSTRUCTOR ********************************************/
 
@@ -63,18 +66,59 @@ public abstract class SingleSourcedEntityBase
 		super();
 	}
 
-    protected SingleSourcedEntityBase(Reference citation, String citationMicroReference,
+    protected SingleSourcedEntityBase(Reference reference, String microReference,
             String originalNameString) {
-        super(citation, citationMicroReference, originalNameString);
+        super();
+        this.setCitation(reference);
+        this.setCitationMicroReference(microReference);
+        if (StringUtils.isNotEmpty(originalNameString)){
+            getSource(true).setOriginalNameString(originalNameString);
+        }
     }
 
-	protected SingleSourcedEntityBase(IdentifiableSource source) {
+	protected SingleSourcedEntityBase(DescriptionElementSource source) {
 		this.source = source;
 	}
 
 //********************* GETTER / SETTER *******************************/
 
-	//TODO source
+    @Transient
+    public String getCitationMicroReference() {
+        return source == null ? null : this.source.getCitationMicroReference();
+    }
+    public void setCitationMicroReference(String microReference) {
+        this.getSource(true).setCitationMicroReference(isBlank(microReference)? null : microReference);
+        checkNullSource();
+    }
+
+    @Transient
+    public Reference getCitation() {
+        return (this.source == null) ? null : source.getCitation();
+    }
+    public void setCitation(Reference reference) {
+        getSource(true).setCitation(reference);
+        checkNullSource();
+    }
+
+    public DescriptionElementSource getSource() {
+        return source;
+    }
+    public void setSource(DescriptionElementSource source) {
+        this.source = source;
+    }
+
+    private void checkNullSource() {
+        if (this.source != null && this.source.checkEmpty(true)){
+            this.source = null;
+        }
+    }
+
+    private DescriptionElementSource getSource(boolean createIfNotExist){
+        if (this.source == null && createIfNotExist){
+            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+        }
+        return source;
+    }
 
 // **************** EMPTY ************************/
 
@@ -88,7 +132,7 @@ public abstract class SingleSourcedEntityBase
 //****************** CLONE ************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public SingleSourcedEntityBase clone() throws CloneNotSupportedException{
 		SingleSourcedEntityBase result = (SingleSourcedEntityBase)super.clone();
 
 		if (this.source != null){
@@ -100,8 +144,6 @@ public abstract class SingleSourcedEntityBase
 	}
 
 //*********************************** EQUALS *********************************************************/
-
-
 
 
 }

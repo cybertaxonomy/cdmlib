@@ -8,12 +8,17 @@
 */
 package eu.etaxonomy.cdm.ext.geo;
 
+import eu.etaxonomy.cdm.ext.geo.EuroPlusMedCondensedDistributionComposer;
+import eu.etaxonomy.cdm.ext.geo.FloraCubaCondensedDistributionComposer;
+import eu.etaxonomy.cdm.ext.geo.ICondensedDistributionComposer;
+import eu.etaxonomy.cdm.model.metadata.IKeyLabel;
+
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2015
  *
  */
-public enum CondensedDistributionRecipe {
+public enum CondensedDistributionRecipe implements IKeyLabel{
 
     /**
      * The recipe for creation of the condensed distribution strings
@@ -25,16 +30,30 @@ public enum CondensedDistributionRecipe {
      *   <li>{@link http://dev.e-taxonomy.eu/trac/ticket/3907}</li>
      * </ul>
      */
-    EuroPlusMed(EuroPlusMedCondensedDistributionComposer.class),
-    FloraCuba(FloraCubaCondensedDistributionComposer.class);
+    EuroPlusMed("EuroPlusMed", "Euro + Med", EuroPlusMedCondensedDistributionComposer.class),
+    FloraCuba("FloraCuba", "Flora Cuba", FloraCubaCondensedDistributionComposer.class);
 
     Class<? extends ICondensedDistributionComposer> implementation;
+    String label;
+    String key;
 
-    CondensedDistributionRecipe(Class<? extends ICondensedDistributionComposer> implementation) {
+    CondensedDistributionRecipe(String key, String label, Class<? extends ICondensedDistributionComposer> implementation) {
+        this.key = key;
+        this.label = label;
         this.implementation = implementation;
     }
 
     public ICondensedDistributionComposer newCondensedDistributionComposerInstance() throws InstantiationException, IllegalAccessException {
         return implementation.newInstance();
+    }
+
+    @Override
+    public String getLabel() {
+       return label;
+    }
+
+    @Override
+    public String getKey() {
+        return key;
     }
 }

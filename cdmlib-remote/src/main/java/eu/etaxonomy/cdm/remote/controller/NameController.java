@@ -31,12 +31,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
+import eu.etaxonomy.cdm.remote.service.RegistrableEntityFilter;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import io.swagger.annotations.Api;
 
@@ -69,14 +71,15 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "relationsFromThisName.$",
             "relationsToThisName.$",
             "status.$",
-            "nomenclaturalReference.authorship.$",
-            "nomenclaturalReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.inReference.authorship.$"
+            "nomenclaturalSource.citation.authorship.$",
+            "nomenclaturalSource.citation.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.inReference.authorship.$"
     }));
 
     public static final EntityInitStrategy NAME_RELATIONS_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
+            "source.citation",
             "relationsFromThisName.$",
             "relationsFromThisName.toName.registrations",
             "relationsToThisName.$",
@@ -160,7 +163,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         Pager<TypeDesignationBase> pager = service.getTypeDesignations(tnb, null,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return pager.getRecords();
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(pager.getRecords()));
     }
 
     /**
@@ -185,7 +188,7 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY.getPropertyPaths());
-        return result;
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
     }
 
 
@@ -270,31 +273,26 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
         Set<NameRelationship> nameRelations = tnb.getNameRelations();
 
         if(nameRelations != null && nameRelations.size() > 0){
-        Set<NameRelationship> nameRelationsFiltered = new HashSet<>(nameRelations.size());
-
-        if(!userHelper.userIsAutheticated() || userHelper.userIsAnnonymous()){
-            // need to filter out unpublished related names in this case
-                for(NameRelationship rel : nameRelations){
-                    // check if the name has been published ba any registration
-                    Set<Registration> regsToCheck = new HashSet<>();
-                    if(rel.getToName().equals(tnb) && rel.getFromName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getFromName().getRegistrations());
-                    }
-                    if(rel.getFromName().equals(tnb) && rel.getToName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getToName().getRegistrations());
-                    }
-                    // if there is no registration for this name we assume that it is published
-                    boolean nameIsPublished = regsToCheck.size() == 0;
-                    nameIsPublished |= regsToCheck.stream().anyMatch(reg -> reg.getStatus().equals(RegistrationStatus.PUBLISHED));
-                    if(nameIsPublished){
-                        nameRelationsFiltered.add(rel);
-                    }
-                }
-            }  else {
-                // no filtering needed
-                nameRelationsFiltered = nameRelations;
-            }
+            Set<NameRelationship> nameRelationsFiltered = RegistrableEntityFilter.
+                newInstance(userHelper).filterPublishedOnly(tnb, nameRelations);
             return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
+        }
+        return null;
+    }
+
+    /**
+     * Provides the  „Protologue / original publication“ of the names nomenclatural reference.
+     *
+     */
+    @RequestMapping(value = "protologueLinks", method = RequestMethod.GET)
+    public Set<ExternalLink> doGetProtologueLinks(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetProtologueLinks() - " + requestPathAndQuery(request));
+        TaxonName name = service.load(uuid, Arrays.asList("nomenclaturalSource.links"));
+        if(name.getNomenclaturalSource() != null) {
+            return name.getNomenclaturalSource().getLinks();
         }
         return null;
     }

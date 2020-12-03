@@ -52,9 +52,6 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 
 	private static final String ID = "id";
 
-	/**
-	 * @param state
-	 */
 	public DwcTaxonCsv2CdmTaxonRelationConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
@@ -67,7 +64,6 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
             return new DwcTaxonStreamItem2CdmTaxonConverter<>(state, true);  //the converter also is implementing the ItemFilter interfacem, this way we guarantee that the evaluation if the item is a synonym, lower or higher taxon is the same during taxon creation and relationship creation
         }
     }
-
 
     @Override
     public IReader<MappedCdmBase<? extends CdmBase>> map(StreamItem item){
@@ -137,13 +133,11 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		return new ListReader<>(resultList);
 	}
 
-
 	@Override
 	public String getSourceId(StreamItem item) {
 		String id = item.get(ID);
 		return id;
 	}
-
 
 	private void handleSubGenus(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
@@ -172,7 +166,6 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 	private void handleKingdom(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state) {
 		// TODO Auto-generated method stub
 	}
-
 
 	private void handleParentNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state,
 	        TaxonBase<?> taxonBase, String id, List<MappedCdmBase<? extends CdmBase>> resultList) {
@@ -222,7 +215,6 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		}
 	}
 
-
 	private Classification getClassification(StreamItem item, List<MappedCdmBase<? extends CdmBase>> resultList) {
 		Set<Classification> resultSet = new HashSet<>();
 		//
@@ -260,7 +252,6 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		return resultSet.iterator().next();
 	}
 
-
 	private void handleAcceptedNameUsage(StreamItem item, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase<?> taxonBase, String id) {
 		if (acceptedNameUsageExists(item)){
 			String accId = item.get(TermUri.DWC_ACCEPTED_NAME_USAGE_ID);
@@ -270,15 +261,6 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		}
 	}
 
-
-	/**
-	 * @param item
-	 * @param state
-	 * @param taxonBase
-	 * @param id
-	 * @param accId
-	 * @param taxStatus
-	 */
 	private void handleAcceptedNameUsageParam(StreamItem item,
 	        DwcaDataImportStateBase<DwcaDataImportConfiguratorBase> state, TaxonBase<?> taxonBase, String id, String accId) {
 		if (id.equals(accId)){
@@ -313,16 +295,9 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 		}
 	}
 
-
-	/**
-	 * @param item
-	 * @return
-	 */
 	private boolean acceptedNameUsageExists(StreamItem item) {
 		return exists(TermUri.DWC_ACCEPTED_NAME_USAGE_ID, item) || exists(TermUri.DWC_ACCEPTED_NAME_USAGE, item);
 	}
-
-
 
 //**************************** PARTITIONABLE ************************************************
 
@@ -381,7 +356,7 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
 
 	@Override
 	public Set<String> requiredSourceNamespaces() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 
 		result.add(TermUri.DWC_TAXON.toString());
 
@@ -400,14 +375,10 @@ public class DwcTaxonCsv2CdmTaxonRelationConverter
  		return result;
 	}
 
-
 //************************************* TO STRING ********************************************
 
 	@Override
 	public String toString(){
 		return this.getClass().getName();
 	}
-
-
-
 }

@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.EntityDTO;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
@@ -47,7 +48,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.exception.FilterException;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -68,9 +68,10 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
@@ -105,6 +106,9 @@ public class ClassificationServiceImpl
     private ITaxonNodeService taxonNodeService;
 
     @Autowired
+    private IReferenceDao referenceDao;
+
+    @Autowired
     private IDefinedTermDao termDao;
 
     @Autowired
@@ -137,49 +141,97 @@ public class ClassificationServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult cloneClassification(UUID classificationUuid,
-    		String name, Reference sec, TaxonRelationshipType relationshipType) {
+    public UpdateResult cloneClassification(SubtreeCloneConfigurator config) {
         UpdateResult result = new UpdateResult();
-    	Classification classification = load(classificationUuid);
-    	Classification clone = Classification.NewInstance(name);
-    	clone.setReference(sec);
+
+        if (config.getSubTreeUuids().isEmpty()){
+            return result;
+        }
+
+        //TODO error handling
+        Reference taxonSecundum = config.isReuseTaxa() || config.isReuseTaxonSecundum() || config.getTaxonSecundumUuid() == null ?
+                null : referenceDao.findByUuid(config.getTaxonSecundumUuid());
+        config.setTaxonSecundum(taxonSecundum);
+
+        Reference parentChildReference = config.isReuseParentChildReference() || config.getParentChildReferenceUuid() == null ?
+                null : referenceDao.findByUuid(config.getParentChildReferenceUuid());
+        config.setParentChildReference(parentChildReference);
+
+        Reference taxonRelationshipReference = config.getRelationTypeToOldTaxon() == null ?
+                null : referenceDao.findByUuid(config.getRelationshipReferenceUuid());
+        config.setRelationshipReference(taxonRelationshipReference);
+
+        Classification classificationClone = Classification.NewInstance(config.getClassificationName());
+
+        if (config.isReuseClassificationReference()){
+            TaxonNode anyNode = taxonNodeDao.findByUuid(config.getSubTreeUuids().iterator().next());
+            if (anyNode != null){
+                Reference oldClassificationRef = anyNode.getClassification().getReference();
+                classificationClone.setReference(oldClassificationRef);
+            }
+        }else if (config.getClassificationReferenceUuid() != null) {
+            Reference classificationReference = referenceDao.findByUuid(config.getClassificationReferenceUuid());
+            classificationClone.setReference(classificationReference);
+        }
 
     	//clone taxa and taxon nodes
-    	List<TaxonNode> childNodes = classification.getRootNode().getChildNodes();
-    	for (TaxonNode taxonNode : childNodes) {
-    		addChildTaxa(taxonNode, null, clone, relationshipType);
+//    	List<Integer> childNodeIds = taxonNodeService.idList(taxonNodeFilter);
+//    	List<TaxonNode> childNodes = taxonNodeService.loadByIds(childNodeIds, null);
+    	List<TaxonNode> rootNodes = taxonNodeService.find(config.getSubTreeUuids());
+    	for (TaxonNode taxonNode : rootNodes) {
+    	    addChildTaxaToClone(taxonNode, classificationClone.getRootNode(), config);
     	}
-    	dao.saveOrUpdate(clone);
-    	result.setCdmEntity(clone);
+    	dao.saveOrUpdate(classificationClone);
+    	result.setCdmEntity(classificationClone);
     	return result;
     }
 
-    private void addChildTaxa(TaxonNode originalParentNode, TaxonNode cloneParentNode, Classification classification, TaxonRelationshipType relationshipType){
-        Reference reference = classification.getReference();
-    	Taxon cloneTaxon = (Taxon) HibernateProxyHelper.deproxy(originalParentNode.getTaxon(), Taxon.class).clone();
-    	cloneTaxon.setSec(reference);
-		String microReference = null;
-		List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
-		HHH_9751_Util.removeAllNull(originalChildNodes);
+    private void addChildTaxaToClone(TaxonNode originalParentNode, TaxonNode parentNodeClone,
+            SubtreeCloneConfigurator config){
 
-		//add relation between taxa
-		if (relationshipType != null){
-		    cloneTaxon.addTaxonRelation(originalParentNode.getTaxon(), relationshipType, reference, microReference);
-		}
+        Taxon originalTaxon = CdmBase.deproxy(originalParentNode.getTaxon());
+        if (originalTaxon == null){
+            for (TaxonNode originalChildChildNode : originalParentNode.getChildNodes()) {
+                addChildTaxaToClone(originalChildChildNode, parentNodeClone, config);
+            }
+        }else{
+            TaxonNode childNodeClone;
+            String microReference = null;
+            if (config.isReuseTaxa()){
+                childNodeClone = parentNodeClone.addChildTaxon(originalTaxon, config.getParentChildReference(), microReference);
+            }else{
+                Taxon cloneTaxon = originalTaxon.clone(config.isIncludeSynonymsIncludingManAndProParte(),
+                        config.isIncludeTaxonRelationshipsExcludingManAndProParte(),
+                        config.isIncludeDescriptiveData(), config.isIncludeMedia());
 
-		TaxonNode cloneChildNode = null;
-    	//add taxon node to either parent node or classification (no parent node)
-    	if(cloneParentNode==null){
-    		cloneChildNode = classification.addChildTaxon(cloneTaxon, reference, microReference);
-    	}
-    	else{
-    		cloneChildNode = cloneParentNode.addChildTaxon(cloneTaxon, reference, microReference);
-    	}
-    	taxonNodeDao.saveOrUpdate(cloneChildNode);
-    	//add children
-		for (TaxonNode originalChildNode : originalChildNodes) {
-    		addChildTaxa(originalChildNode, cloneChildNode, classification, relationshipType);
-    	}
+                //name
+                if (!config.isReuseNames()){
+                    cloneTaxon.setName(cloneTaxon.getName().clone());
+                }
+
+                if (!config.isReuseTaxonSecundum()){
+                    cloneTaxon.setSec(config.getTaxonSecundum());
+                }
+
+                //add relation between taxa
+                if (config.getRelationTypeToOldTaxon() != null){
+                    TaxonRelationship rel = cloneTaxon.addTaxonRelation(originalParentNode.getTaxon(), config.getRelationTypeToOldTaxon(),
+                            config.getRelationshipReference(), microReference);
+                    rel.setDoubtful(config.isRelationDoubtful());
+                }
+                childNodeClone = parentNodeClone.addChildTaxon(cloneTaxon, config.getParentChildReference(), microReference);
+            }
+
+            //probably necessary as taxon nodes do not cascade
+            taxonNodeDao.saveOrUpdate(childNodeClone);
+            //add children
+            List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
+            HHH_9751_Util.removeAllNull(originalChildNodes);
+
+            for (TaxonNode originalChildNode : originalChildNodes) {
+                addChildTaxaToClone(originalChildNode, childNodeClone, config);
+            }
+        }
     }
 
     @Override
@@ -253,9 +305,6 @@ public class ClassificationServiceImpl
         return loadTreeBranch(taxonNode, null, baseRank, includeUnpublished, propertyPaths);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, TaxonNode subtree, Rank baseRank,
             boolean includeUnpublished, List<String> propertyPaths) throws UnpublishedException{
@@ -637,7 +686,7 @@ public class ClassificationServiceImpl
     			//FIXME NPE for name
     			TaxonName name = tNode.getTaxon().getName();
     			if(name.getNameCache().equalsIgnoreCase(genus)){
-    				TaxonNode clone = (TaxonNode) tNode.clone();
+    				TaxonNode clone = tNode.clone();
     				if(!tNode.hasChildNodes()){
     					//FIXME remove classification
 //    					parentNode = newClassification.addChildNode(clone, 0, classification.getCitation(), classification.getMicroReference());
@@ -682,7 +731,7 @@ public class ClassificationServiceImpl
     				continue; //skip to next taxonNode
     			}
 
-    			TaxonNode clone = (TaxonNode) tn.clone();
+    			TaxonNode clone = tn.clone();
     			//FIXME: citation from node
     			//TODO: addchildNode without citation and references
 //    			TaxonNode taxonNode = parentNode.addChildNode(clone, classification.getCitation(), classification.getMicroReference());
@@ -719,7 +768,7 @@ public class ClassificationServiceImpl
 			childNodes = copyFromNode.getChildNodes();
 		}
 		for(TaxonNode childNode:childNodes){
-			TaxonNode clone = (TaxonNode) childNode.clone();
+			TaxonNode clone = childNode.clone();
 			result.addUnChangedObject(clone);
 			if(childNode.hasChildNodes()){
 				copyAllChildrenToTaxonNode(childNode, clone, result);

@@ -50,10 +50,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author pkelbert
  * @since 21 juin 2013
- *
  */
 public class SpecimenUserInteraction implements ItemListener, Serializable {
 
+    private static final long serialVersionUID = 6384263183459028523L;
+    @SuppressWarnings("unused")
     private static Logger log = Logger.getLogger(SpecimenUserInteraction.class);
 
     public Classification askForClassification(Map<String, Classification> classMap){
@@ -87,8 +88,6 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         return classMap.get(s);
     }
 
-
-
     /**
      * @return the name for the new Classification
      */
@@ -113,14 +112,12 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         return s;
     }
 
-
     /**
      * @param refMap
      * @return
      */
-    @SuppressWarnings("rawtypes")
     public Reference askForReference(Map<String, Reference> refMap) {
-        List<String>  possibilities = new ArrayList<String> (refMap.keySet());
+        List<String>  possibilities = new ArrayList<>(refMap.keySet());
         Collections.sort(possibilities);
         if (refMap.keySet().size()>0) {
             refMap.put("Nothing matches, create a new reference",null);
@@ -149,24 +146,19 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         return refMap.get(s);
     }
 
-
-
-
-
     /**
      * @param refMap
      * @param iReferenceService
      * @param docSources
      * @return
      */
-    @SuppressWarnings("rawtypes")
     public List<OriginalSourceBase<?>> askForSource(Map<String, OriginalSourceBase<?>> refMap, String currentElement, String blabla,
             IReferenceService iReferenceService, List<String> docSources) {
 
 //        System.out.println(refMap);
-        List<String>  possibilities = new ArrayList<String> (refMap.keySet());
+        List<String>  possibilities = new ArrayList<> (refMap.keySet());
 
-        Set<String> all = new HashSet<String>();
+        Set<String> all = new HashSet<>();
         all.addAll(possibilities);
 
         List<String> allList = new ArrayList<String>();
@@ -233,12 +225,9 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
                     sources.add(a);
                 }
             }
-
         }
 
-
-
-        List<OriginalSourceBase<?>> dess = new ArrayList<OriginalSourceBase<?>>();
+        List<OriginalSourceBase<?>> dess = new ArrayList<>();
         for (String src:sources){
             if (refMap.get(src) !=null) {
                 dess.add(refMap.get(src));
@@ -273,10 +262,6 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         return dess;
     }
 
-
-    /**
-     * @return
-     */
     public String createNewReference() {
         JTextArea textArea = new JTextArea("How should the reference be named ?");
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -298,9 +283,6 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         return s;
     }
 
-    /**
-     * @return
-     */
     public String createNewSource() {
         JTextArea textArea = new JTextArea("How should the source be named? If there is a citation detail, prefix it with 3 minus signs ('---').");
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -322,10 +304,6 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         return s;
     }
 
-
-    /**
-     * @param descriptions
-     */
     public TaxonDescription askForDescriptionGroup(Set<TaxonDescription> descriptions) {
         JTextArea textArea = new JTextArea("One or several description group(s) does already exist for this taxon.");
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -344,7 +322,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
             for (IdentifiableSource s:sources) {
                 src.add(s.getCitation().getTitleCache());
             }
-            List<String> srcb = new ArrayList<String>(new HashSet<String>(src));
+            List<String> srcb = new ArrayList<String>(new HashSet<>(src));
             if (srcb.size()>0) {
                 if(descrMap.containsKey(descCnt+": "+description.getTitleCache()+"("+StringUtils.join(srcb,";")+")")) {
                     descCnt+=1;
@@ -363,7 +341,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
                 //            }
             }
         }
-        List<String>  possibilities = new ArrayList<String> (descrMap.keySet());
+        List<String>  possibilities = new ArrayList<>(descrMap.keySet());
         if (possibilities.size()==0) {
             return null;
         }
@@ -389,9 +367,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         } else {
             return null;
         }
-
     }
-
 
     /**
      * Look if the same name already exists in the ALL classifications and ask the user to select one or none.
@@ -401,7 +377,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
      */
     @SuppressWarnings("rawtypes")
     public Taxon askWhereToFixData(String scientificName, List<TaxonBase> taxonList, Classification classification) {
-        Map<String,TaxonNode> classMap = new HashMap<String, TaxonNode>();
+        Map<String,TaxonNode> classMap = new HashMap<>();
         boolean sameClassification=false;
         Taxon n = null;
         for (TaxonBase taxonBase: taxonList){
@@ -476,12 +452,9 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
         return taxonFound;
     }
 
-
-    List<String> sources = new ArrayList<String>();
+    List<String> sources = new ArrayList<>();
     String currentSource = "";
-    /* (non-Javadoc)
-     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-     */
+
     @Override
     public void itemStateChanged(ItemEvent e) {
         JRadioButton cb = (JRadioButton) e.getItem();
@@ -493,7 +466,4 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
             currentSource="";
         }
     }
-
-
-
 }

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @since 12.06.2020
  */
-public class Reference2SourceMover  extends SchemaUpdaterStepBase {
+public class Reference2SourceMover extends SchemaUpdaterStepBase {
 
 
     @SuppressWarnings("unused")
@@ -39,21 +39,32 @@ public class Reference2SourceMover  extends SchemaUpdaterStepBase {
     private final String citationsIdAttr;
     private final String detailAttr;
     private final String sourceAttr;
+    private final String sourceType;
+    private final String dtype;
 
     public static final Reference2SourceMover NewInstance(List<ISchemaUpdaterStep> stepList, String tableName,
             String citationsIdAttr, String detailAttr, String sourceAttr){
-        Reference2SourceMover result = new Reference2SourceMover(stepList, tableName, citationsIdAttr, detailAttr, sourceAttr);
+        Reference2SourceMover result = new Reference2SourceMover(stepList, tableName, citationsIdAttr, detailAttr, sourceAttr, null, null);
+
+        return result;
+    }
+
+    public static final Reference2SourceMover NewInstance(List<ISchemaUpdaterStep> stepList, String tableName,
+            String citationsIdAttr, String detailAttr, String sourceAttr, String dtype, String sourceType){
+        Reference2SourceMover result = new Reference2SourceMover(stepList, tableName, citationsIdAttr, detailAttr, sourceAttr, sourceType, dtype);
 
         return result;
     }
 
     protected Reference2SourceMover(List<ISchemaUpdaterStep> stepList, String tableName,
-            String citationsIdAttr, String detailAttr, String sourceAttr) {
+            String citationsIdAttr, String detailAttr, String sourceAttr, String sourceType, String dtype) {
         super(stepList, stepName);
         this.tableName = tableName;
         this.citationsIdAttr = citationsIdAttr;
         this.detailAttr = detailAttr;
         this.sourceAttr = sourceAttr;
+        this.sourceType = sourceType == null? "PTS" : sourceType;
+        this.dtype = dtype == null? "DescriptionElementSource" : dtype;
     }
 
     @Override
@@ -82,7 +93,7 @@ public class Reference2SourceMover  extends SchemaUpdaterStepBase {
             String detail = rs.getString(detailAttr);
 
             sql = "INSERT INTO @@OriginalSourceBase@@ (DTYPE, sourceType, uuid, id, citation_id, citationMicroReference, createdBy_id, created)"
-               + " VALUES ('DescriptionElementSource', 'PTS','"+UUID.randomUUID()+"'," + id + ", " + citationId + "," + nullSafeParam(detail) + "," + createdById + ",'" + this.getNowString() + "')";
+               + " VALUES ('"+dtype+"', '"+sourceType+"','"+UUID.randomUUID()+"'," + id + ", " + citationId + "," + nullSafeParam(detail) + "," + createdById + ",'" + this.getNowString() + "')";
             datasource.executeUpdate(caseType.replaceTableNames(sql));
 
             sql = "UPDATE " + caseType.transformTo(tableName)
@@ -91,18 +102,6 @@ public class Reference2SourceMover  extends SchemaUpdaterStepBase {
             id++;
 
             datasource.executeUpdate(caseType.replaceTableNames(sql));
-
         }
     }
-
-    protected Integer nullSafeInt(ResultSet rs, String columnName) throws SQLException {
-        Object intObject = rs.getObject(columnName);
-        if (intObject == null){
-            return null;
-        }else{
-            return Integer.valueOf(intObject.toString());
-        }
-    }
-
-
 }

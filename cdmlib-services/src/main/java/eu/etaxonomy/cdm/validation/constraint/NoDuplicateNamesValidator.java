@@ -6,12 +6,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation.constraint;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -28,14 +29,14 @@ public class NoDuplicateNamesValidator implements
 	private static Set<String> includeProperties;
 
 	static {
-		includeProperties = new HashSet<String>();
+		includeProperties = new HashSet<>();
 		includeProperties.add("genusOrUninomial");
 		includeProperties.add("infraGenericEpithet");
 		includeProperties.add("specificEpithet");
 		includeProperties.add("infraSpecificEpithet");
 		includeProperties.add("rank");
-		includeProperties.add("nomenclaturalReference");
-		includeProperties.add("nomenclaturalMicroReference");
+//		includeProperties.add("nomenclaturalSource.citation");   //handled in method now since #6581
+//		includeProperties.add("nomenclaturalSource.citationMicroReference"); //handled in method now since #6581
 		includeProperties.add("basionymAuthorship");
 		includeProperties.add("exBasionymAuthorship");
 		includeProperties.add("combinationAuthorship");
@@ -57,9 +58,15 @@ public class NoDuplicateNamesValidator implements
 		if(name == null) {
 			return true;
 		} else {
-			List<TaxonName> matchingNonViralNames = nameService.list(name, includeProperties, null, null, null, null);
-			if(matchingNonViralNames.size() > 0) {
-				if(matchingNonViralNames.size() == 1 && matchingNonViralNames.get(0).equals(name)) {
+			List<TaxonName> matchingNames = nameService.list(name, includeProperties, null, null, null, null);
+			matchingNames = matchingNames.stream().filter(existing->
+			           Objects.equals(existing.getNomenclaturalReference(),name.getNomenclaturalReference())
+			        && Objects.equals(existing.getNomenclaturalMicroReference(), name.getNomenclaturalMicroReference())
+			        && !existing.equals(name)
+			    ).collect(Collectors.toList());
+
+			if(matchingNames.size() > 0) {
+			    if(matchingNames.size() == 1 && matchingNames.get(0).equals(name)) {
 					return true;
 				} else {
 			        return false;

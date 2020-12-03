@@ -276,7 +276,7 @@ public class MultiAccessKey extends DescriptiveDataSet implements IIdentificatio
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public MultiAccessKey clone() {
 		MultiAccessKey result;
 
 			result = (MultiAccessKey)super.clone();

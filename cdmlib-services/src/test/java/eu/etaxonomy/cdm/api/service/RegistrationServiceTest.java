@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 /**
  * @author a.kohlbecker
  * @since Jun 28, 2019
- *
  */
 public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWithSecurity {
 
@@ -76,7 +75,7 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
     public void testPageWithPatternFilters(){
 
         OrderHint orderBySpecificIdentifier = new OrderHint("specificIdentifier", SortOrder.ASCENDING);
-        OrderHint orderById = new OrderHint("id", SortOrder.ASCENDING);
+//      OrderHint orderById = new OrderHint("id", SortOrder.ASCENDING);
 
         repo.authenticate("user1", "00000");
 
@@ -337,6 +336,7 @@ public class RegistrationServiceTest extends CdmTransactionalIntegrationTestWith
             "TaxonName", "TaxonName_TypeDesignationBase",
             "TypeDesignationBase",
             "AGENTBASE", "HOMOTYPICALGROUP",
+            "OriginalSourceBase",
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
             fileNameAppendix, true );

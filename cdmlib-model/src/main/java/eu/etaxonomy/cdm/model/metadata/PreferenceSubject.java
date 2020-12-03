@@ -19,9 +19,15 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
+ * This is helping class to ease the usage of {@link CdmPreference#getSubjectString()
+ * subject part} of a {@link CdmPreference} for some typical subjects.
+ * Currently only very few non hierarchical basic subjects are supported.
+ *
+ * For how to use subjects see {@link CdmPreference}. For how to resolve
+ * them see {@link PreferenceResolver#resolve(List, PrefKey)}
+ *
  * @author a.mueller
  * @since 03.06.2016
- *
  */
 public class PreferenceSubject {
 

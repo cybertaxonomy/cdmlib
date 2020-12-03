@@ -77,7 +77,6 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
                     langString.setText("blablubber");
                 }
             }
-
         }
         service.saveOrUpdate(descBase);
         Pager<DescriptionElementBase> allElements = service.getDescriptionElements(null, null, null, null, null, null);
@@ -95,8 +94,8 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         }
     }
 
-
     @Test
+    @DataSet("../../database/ClearDBDataSet.xml")
     public void testMoveDescriptionElement(){
         //Create data
         Taxon taxon = Taxon.NewInstance(null, null);
@@ -111,7 +110,6 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         service.saveOrUpdate(desc2);
         commitAndStartNewTransaction(null);
 
-
         DescriptionBase<?> descLoaded1 = service.find(desc1.getUuid());
         DescriptionBase<?> descLoaded2 = service.find(desc2.getUuid());
 
@@ -125,8 +123,6 @@ public class DescriptionServiceImplTest extends CdmTransactionalIntegrationTest 
         } catch (Exception e) {
             Assert.fail("Moving description element should not throw an exception. Exception is " + e.getMessage());
         }
-
-
     }
 
     @Test

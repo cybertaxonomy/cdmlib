@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author andreas
  * @since Mar 25, 2015
- *
  */
 public class TermDto extends AbstractTermDto{
 
@@ -53,13 +52,13 @@ public class TermDto extends AbstractTermDto{
     private NamedAreaLevel level = null;
 
     private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary) {
-        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null);
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
+        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null, titleCache);
     }
 
     protected TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations) {
-        super(uuid, representations);
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations, String titleCache) {
+        super(uuid, representations, titleCache);
         this.partOfUuid = partOfUuid;
         this.kindOfUuid = kindOfUuid;
         this.vocabularyUuid = vocabularyUuid;
@@ -67,7 +66,6 @@ public class TermDto extends AbstractTermDto{
         this.idInVocabulary = idInVocabulary;
         this.vocRepresentations = vocRepresentations;
         setTermType(termType);
-
     }
 
     static public TermDto fromTerm(DefinedTermBase term) {
@@ -83,9 +81,10 @@ public class TermDto extends AbstractTermDto{
     }
 
     static public TermDto fromTerm(DefinedTermBase term, Set<Representation> representations, boolean initializeToTop) {
-        DefinedTermBase partOf = term.getPartOf();
-        DefinedTermBase kindOf = term.getKindOf();
-        TermVocabulary vocabulary = term.getVocabulary();
+        DefinedTermBase<?> partOf = term.getPartOf();
+        DefinedTermBase<?> kindOf = term.getKindOf();
+        TermVocabulary<?> vocabulary = term.getVocabulary();
+
         TermDto dto = new TermDto(
                         term.getUuid(),
                         representations!=null?representations:term.getRepresentations(),
@@ -94,7 +93,7 @@ public class TermDto extends AbstractTermDto{
                         (kindOf!=null?kindOf.getUuid():null),
                         (vocabulary!=null?vocabulary.getUuid():null),
                         (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
-                         term.getIdInVocabulary());
+                         term.getIdInVocabulary(), term.getTitleCache());
         dto.setUri(term.getUri());
         if(initializeToTop){
             if(partOf!=null){
@@ -105,7 +104,7 @@ public class TermDto extends AbstractTermDto{
             }
         }
         if (vocabulary != null){
-            dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType()));
+            dto.setVocabularyDto(new TermVocabularyDto(vocabulary.getUuid(), vocabulary.getRepresentations(), term.getTermType(), vocabulary.getTitleCache(), vocabulary.isAllowDuplicates(), vocabulary.isOrderRelevant(), vocabulary.isFlat()));
         }
         if(term.getMedia()!=null){
             Collection<UUID> mediaUuids = new HashSet<>();
@@ -120,7 +119,6 @@ public class TermDto extends AbstractTermDto{
         }
         return dto;
     }
-
 
     @Override
     public void localize(ITermRepresentation_L10n representation_L10n) {
@@ -253,17 +251,12 @@ public class TermDto extends AbstractTermDto{
         return level;
     }
 
-
     public static String getTermDtoSelect(String fromTable){
         String[] result = createSqlParts(fromTable);
 
         return result[0]+result[1]+result[2];
     }
 
-    /**
-     * @param fromTable
-     * @return
-     */
     private static String[] createSqlParts(String fromTable) {
         String sqlSelectString = ""
                 + "select a.uuid, "
@@ -276,8 +269,9 @@ public class TermDto extends AbstractTermDto{
                 + "voc_rep,  "
                 + "a.termType,  "
                 + "a.uri,  "
-                + "m  ";
-        String sqlFromString =   "from "+fromTable+" as a ";
+                + "m,  "
+                + "a.titleCache ";
+        String sqlFromString =   " from "+fromTable+" as a ";
 
         String sqlJoinString =  "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
@@ -298,9 +292,6 @@ public class TermDto extends AbstractTermDto{
         String[] result = createSqlParts("NamedArea");
         return result[0]+  ", level  " + result[1] + result[2]+ "LEFT JOIN a.level as level ";
     }
-
-
-
 
     public static List<TermDto> termDtoListFrom(List<Object[]> results) {
         List<TermDto> dtos = new ArrayList<>(); // list to ensure order
@@ -346,11 +337,12 @@ public class TermDto extends AbstractTermDto{
                         (UUID)elements[4],
                         (Integer)elements[5],
                         (String)elements[6],
-                        vocRepresentations);
+                        vocRepresentations,
+                        (String)elements[11]);
                 termDto.setUri((URI)elements[9]);
                 termDto.setMedia(mediaUuids);
-                if (elements.length>11 && elements[11] != null){
-                    termDto.setLevel((NamedAreaLevel)elements[11]);
+                if (elements.length>12 && elements[12] != null){
+                    termDto.setLevel((NamedAreaLevel)elements[12]);
                 }
 
                 dtoMap.put(uuid, termDto);
@@ -359,5 +351,4 @@ public class TermDto extends AbstractTermDto{
         }
         return dtos;
     }
-
 }

@@ -16,9 +16,7 @@ import java.util.Map;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -49,14 +47,15 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author s.buers
- *
  */
 @SuppressWarnings({ "rawtypes", "serial" })
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
+    private static final Logger logger = Logger.getLogger(StatisticsServiceImplTest.class);
+
 	// constant if you want to printout the database content to console:
 	// only recommended for a small probe
-	private static final boolean PRINTOUT = true;
+	private static final boolean PRINTOUT = false;
 
 	// ************constants to set up the expected results for all:
 	// ********************
@@ -147,11 +146,11 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
 	private static List<Long> no_of_taxon_names_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_descriptive_source_references_c = new ArrayList<Long>(
+	private static List<Long> no_of_descriptive_source_references_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
 	private static List<Long> no_of_all_references_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_nomenclatural_references_c = new ArrayList<Long>(
+	private static List<Long> no_of_nomenclatural_references_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
 	// we do not count classifications in classifications
 
@@ -160,7 +159,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	private static final Map<String, List<Long>> typeCountMap_CLASSIFICATION = new HashMap<String, List<Long>>() {
 		{
 			put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
-					new ArrayList<Long>(Arrays.asList((Long) null, null, null)));
+					new ArrayList<>(Arrays.asList((Long) null, null, null)));
 			put(StatisticsTypeEnum.ALL_TAXA.getLabel(), no_of_all_taxa_c);
 			put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
 					no_of_accepted_taxa_c);
@@ -174,9 +173,6 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					no_of_nomenclatural_references_c);
 		}
 	};
-
-	private static final Logger logger = Logger
-			.getLogger(StatisticsServiceImplTest.class);
 
 	private List<Classification> classifications;
 
@@ -196,29 +192,14 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// **********vars to count what i create *********
 
-	MyCounter countAll = new MyCounter();
-	ArrayList<MyCounter> classificationCounters = new ArrayList<MyCounter>();
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+	private MyCounter countAll = new MyCounter();
+	private ArrayList<MyCounter> classificationCounters = new ArrayList<>();
 
 	/**
 	 * create some testdata
 	 *
 	 * @throws java.lang.Exception
 	 */
-
 	@Before
 	// @DataSet
 	public void setUp() throws Exception {
@@ -263,10 +244,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				&& classiCounter < NO_OF_CLASSIFICATIONS; /* see below */) {
 
 			// compute no of taxa to be created in this classification
-			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last
-																// classification
-																// gets all left
-																// taxa
+			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last classification gets all left taxa
 				taxaInClass = remainder;
 			} else { // take half of left taxa for this class:
 				taxaInClass = remainder / 2;
@@ -597,8 +575,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				(String[]) PARTS.toArray(), TYPES);
 
 		// run method of StatisticsService
-		List<Statistics> statisticsList = service
-				.getCountStatistics(configuratorList);
+		List<Statistics> statisticsList = service.getCountStatistics(configuratorList);
 
 		// print out the: expected and the result:
 

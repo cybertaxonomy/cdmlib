@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * @author k.luther
@@ -31,9 +32,14 @@ public class TermVocabularyDto extends TermCollectionDto {
      * @param representations
      * @param termType
      */
-    public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType) {
-        super(uuid, representations, termType);
+    public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
+        super(uuid, representations, termType, titleCache, isAllowDuplicate, isOrderRelevant, isFlat);
         // TODO Auto-generated constructor stub
+    }
+
+    public static TermVocabularyDto fromVocabulary(TermVocabulary voc) {
+        TermVocabularyDto dto = new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat());
+        return dto;
     }
 
     public static List<TermVocabularyDto> termVocabularyDtoListFrom(List<Object[]> results) {
@@ -60,7 +66,11 @@ public class TermVocabularyDto extends TermCollectionDto {
                 TermVocabularyDto termVocDto = new TermVocabularyDto(
                         uuid,
                         representations,
-                        (TermType)elements[2]);
+                        (TermType)elements[2],
+                        (String)elements[3],
+                        (boolean)elements[4],
+                        (boolean)elements[5],
+                        (boolean)elements[6]);
 
 
                 dtoMap.put(uuid, termVocDto);

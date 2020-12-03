@@ -23,8 +23,6 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.xml.edited
 cdmlib-model/ajcore.*.txt
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ParserProblemRange.java
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/OrderedTermBaseTest.java
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java
 
 cdmlib-persistence/002_cdm.dll
 cdmlib-persistence/NewDataSet.xml
@@ -37,7 +35,6 @@ cdmlib-persistence/src/test/resources/dbscripts/Kopie[!!-~]von[!!-~]001_cdm.ddl
 cdmlib-persistence/test.xml
 cdmlib-print/*odf_output.odf
 
-
 cdmlib-services/CleanSweepInsertLoadStrategy-debug.xml
 
 cdmlib-services/cdmlib-services.uml
@@ -45,9 +42,20 @@ cdmlib-services/src/main/resources/log4j.properties
 
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 
-
 !cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ggbn/.settings
 !cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/data/.settings
 !cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v35_36/.settings
 workbench.xmi
 cdmlib-ext/KmlJaxbMarshallerTest.kml
+cdmlib-cache/eu.etaxonomy.cdm.model.description.DescriptionElementBase/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.description.DescriptionElementBase/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.name.TaxonName/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.name.TaxonName/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.Classification/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.Classification/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonBase/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonBase/write.lock
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonRelationship/segments_1
+cdmlib-cache/eu.etaxonomy.cdm.model.taxon.TaxonRelationship/write.lock

@@ -70,7 +70,10 @@ import eu.etaxonomy.cdm.model.term.TermBase;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class TextData extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
+public class TextData
+        extends DescriptionElementBase
+        implements IMultiLanguageTextHolder, Cloneable{
+
     private static final long serialVersionUID = -2165015581278282615L;
     private static final Logger logger = Logger.getLogger(TextData.class);
 
@@ -448,7 +451,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public TextData clone() {
 
         try {
             TextData result = (TextData)super.clone();
@@ -457,7 +460,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
             result.multilanguageText = new HashMap<Language, LanguageString>();
             for (Language language : getMultilanguageText().keySet()){
                 //TODO clone needed? See also IndividualsAssociation
-                LanguageString newLanguageString = (LanguageString)getMultilanguageText().get(language).clone();
+                LanguageString newLanguageString = getMultilanguageText().get(language).clone();
                 result.multilanguageText.put(language, newLanguageString);
             }
 

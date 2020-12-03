@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -467,6 +467,18 @@ public class CdmUtils {
             return string.substring(0, string.length() -1);
         }
         return string;
+    }
+
+    /**
+     * Adds a trailing dot to the given String
+     * if string is not blank and does not end with dot already.
+     * Otherwise str is returned.
+     */
+    public static String addTrailingDotIfNotExists(String str){
+        if (StringUtils.isNotBlank(str) && !str.endsWith(".")){
+            str += ".";
+         }
+        return str;
     }
 
     /**

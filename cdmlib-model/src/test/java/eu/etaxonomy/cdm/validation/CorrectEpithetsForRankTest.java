@@ -36,8 +36,6 @@ import eu.etaxonomy.cdm.validation.constraint.CorrectEpithetsForRankValidator;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author ben.clark
- *
- *
  */
 public class CorrectEpithetsForRankTest extends ValidationTestBase {
 	@SuppressWarnings("unused")

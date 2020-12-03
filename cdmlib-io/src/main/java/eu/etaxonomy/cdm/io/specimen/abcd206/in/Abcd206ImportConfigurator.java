@@ -254,6 +254,15 @@ public String toString(){
       result.append(":");
       result.append(this.getDnaSoure() != null ? this.getDnaSoure().toString():"");
       result.append(";");
+      result.append("classificationUUID");
+      result.append(":");
+      result.append(this.getClassificationUuid() != null ? this.getClassificationUuid().toString():"");
+      result.append(";");
+      result.append("classificationName");
+      result.append(":");
+      result.append(this.getClassificationName() != null ? this.getClassificationName():"");
+      result.append(";");
+
 
     return result.toString();
 

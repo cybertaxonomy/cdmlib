@@ -38,7 +38,8 @@ import eu.etaxonomy.cdm.common.XmlHelp;
  *      that is the combination of GeoServiceType, URL and layer would be a unique key.
  *      This is however conflicting with the concept of the  subAreas which allows to combine multiple
  *      polygons from different layers.
- *      see also http://dev.e-taxonomy.eu/trac/ticket/4263
+ *      <BR><BR>
+ *      see also https://dev.e-taxonomy.eu/redmine/issues/4263
  *
  * @author a.mueller
  * @since 11.08.2011

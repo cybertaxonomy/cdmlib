@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -67,7 +66,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * PCR itself is not persistent we do not store further information on it in the CDM and do not handle
  * {@link AmplificationResult} as a {@link DerivedUnit}.
  * <BR>
- * This may change in future: http://dev.e-taxonomy.eu/trac/ticket/3717.
+ * This may change in future: https://dev.e-taxonomy.eu/redmine/issues/3717.
  * <BR>
  *
  * @author a.mueller
@@ -91,7 +90,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @XmlRootElement(name = "Amplification")
 @Entity
 @Audited
-public class Amplification extends EventBase implements Cloneable{
+public class Amplification extends EventBase {
 	private static final long serialVersionUID = -6382383300974316261L;
 
 	private static final Logger logger = Logger.getLogger(Amplification.class);
@@ -171,14 +170,11 @@ public class Amplification extends EventBase implements Cloneable{
 	    return new Amplification();
 	}
 
-
 // ******************* CONSTRUCTOR *******************************/
 
 	protected Amplification(){}
 
-
 //********************* GETTER / SETTER ************/
-
 
 	/**
 	 * The {@link TermType#DnaMarker DNA marker} used for this amplification.
@@ -222,7 +218,6 @@ public class Amplification extends EventBase implements Cloneable{
 	public void setReversePrimer(Primer reversePrimer) {
 		this.reversePrimer = reversePrimer;
 	}
-
 
 	/**
 	 * The material and/or method used for purification.
@@ -287,7 +282,6 @@ public class Amplification extends EventBase implements Cloneable{
 		this.gelRunningTime = gelRunningTime;
 	}
 
-
 	/**
 	 * The gel concentration used for the electrophoresis.
 	 * Base unit is [%]
@@ -323,8 +317,6 @@ public class Amplification extends EventBase implements Cloneable{
 		this.ladderUsed = ladderUsed;
 	}
 
-
-
 	/**
 	 * Returns the labelCache
 	 * @return
@@ -332,7 +324,6 @@ public class Amplification extends EventBase implements Cloneable{
 	public String getLabelCache() {
 		return labelCache;
 	}
-
 
 	/**
 	 * This method pushes the {@link Amplification#labelCache label cache} update.
@@ -348,10 +339,8 @@ public class Amplification extends EventBase implements Cloneable{
          //assemble string
          String designation = CdmUtils.concat("_", new String[]{institutionName, staffName, dnaMarkerString, dateString});
 
-         this.labelCache = StringUtils.isBlank(designation) ? "<Amplification:" + getUuid() + ">" : designation ;
+         this.labelCache = isBlank(designation) ? "<Amplification:" + getUuid() + ">" : designation ;
 	}
-
-
 
 	// ********************** CLONE ***********************************/
 	/**
@@ -364,7 +353,7 @@ public class Amplification extends EventBase implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public Amplification clone()  {
 		try{
 			Amplification result = (Amplification)super.clone();
 
@@ -378,6 +367,4 @@ public class Amplification extends EventBase implements Cloneable{
 			return null;
 		}
 	}
-
-
 }

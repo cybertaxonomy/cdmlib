@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import static org.junit.Assert.assertFalse;
@@ -25,8 +24,6 @@ import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-
-
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -55,7 +52,6 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 		name.setFullTitleCache("Aus aus L.");
 		name.setTitleCache("Aus aus L.", true);
 	}
-
 
 /****************** TESTS *****************************/
 

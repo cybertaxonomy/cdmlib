@@ -8,9 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * @author a.kohlbecker
@@ -68,19 +67,16 @@ public class PolytomousKeyPortalController extends BaseController<PolytomousKey,
 
         ModelAndView mv = new ModelAndView();
 
-        List<String> nodePaths = new ArrayList<String>();
+        List<String> nodePaths = new ArrayList<>();
         nodePaths.add("subkey");
-        nodePaths.add("taxon.name.nomenclaturalReference");
+        nodePaths.add("taxon.name.nomenclaturalSource.citation");
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("sources");
         propertyPaths.add("annotations");
 
         PolytomousKey key = service.loadWithNodes(uuid, propertyPaths, nodePaths);
         mv.addObject(key);
         return mv;
-
     }
-
 }
-

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import java.net.URI;
@@ -26,7 +25,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -117,22 +115,15 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 		super();
 	}
 
-	/**
-	 * Constructor
-	 * @param text
-	 * @param lang
-	 */
 	protected Annotation(String text, Language language) {
 		super(text, language);
 	}
 
 //******************** GETTER /SETTER *************************/
 
-
 	public AnnotationType getAnnotationType() {
 		return annotationType;
 	}
-
 	public void setAnnotationType(AnnotationType annotationType) {
 		this.annotationType = annotationType;
 	}
@@ -144,14 +135,12 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 		this.commentator = commentator;
 	}
 
-
 	public URI getLinkbackUri() {
 		return linkbackUri;
 	}
 	public void setLinkbackUri(URI linkbackUri) {
 		this.linkbackUri = linkbackUri;
 	}
-
 
 	//*************** INTEXT REFERENCE **********************************************
 
@@ -185,25 +174,23 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 		}
 	}
 
-
 // ***************************** TO STRING ***********************************
 
 	@Override
 	public String toString() {
-		if (StringUtils.isNotBlank(this.text)){
+		if (isNotBlank(this.text)){
 			return "Ann.: " + this.text;
 		}else{
 			return super.toString();
 		}
 	}
 
-
-
 //****************** CLONE ************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		Annotation result = (Annotation)super.clone();
+	public Annotation clone() throws CloneNotSupportedException{
+
+	    Annotation result = (Annotation)super.clone();
 		//TODO do we really need this, it should not change anything
 		result.setCommentator(this.getCommentator());
 		//TODO do we really need this, it should not change anything
@@ -223,5 +210,4 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 
 		return result;
 	}
-
 }

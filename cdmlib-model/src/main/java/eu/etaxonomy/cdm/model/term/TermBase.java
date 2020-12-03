@@ -282,7 +282,7 @@ public abstract class TermBase
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone()throws CloneNotSupportedException {
+    public TermBase clone()throws CloneNotSupportedException {
 
         TermBase result = (TermBase) super.clone();
 

@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
  * Special term trees:
  *
  * <B>Feature</B> trees are essential as interactive multiple-access keys for
- * determination process and for systematical output arrangement of
+ * determination process and for systematic output arrangement of
  * {@link DescriptionElementBase description elements} according to different goals
  * but may also be used to define flat feature subsets for filtering purposes.<BR>
  * <P>
@@ -222,6 +222,7 @@ public class TermTree <T extends DefinedTermBase>
 	@Transient
 	public List<TermNode<T>> getRootChildren(){
 		List<TermNode<T>> result = new ArrayList<>();
+		root.removeNullValueFromChildren();
 		result.addAll(root.getChildNodes());
 		return result;
 	}
@@ -260,6 +261,12 @@ public class TermTree <T extends DefinedTermBase>
         return terms;
     }
 
+    public void removeNullValueFromChildren(){
+       root.removeNullValueFromChildren();
+
+
+    }
+
 //*********************** CLONE ********************************************************/
 
 	/**
@@ -274,7 +281,7 @@ public class TermTree <T extends DefinedTermBase>
 	 * @see java.lang.Object#clone()
 	 */
     @Override
-	public Object clone() {
+	public TermTree<T> clone() {
 		try {
 		    @SuppressWarnings("unchecked")
 		    TermTree<T> result = (TermTree<T>)super.clone();

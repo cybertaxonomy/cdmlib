@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
@@ -51,6 +52,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     HYBRIDRELATIONSHIP("HybridRelationship"),
     IDENTIFIABLESOURCE("IdentifiableSource"),
     IDENTIFIER("Identifier"),
+    KEYSTATEMENT("KeyStatement"),
     LANGUAGE("Language"),
     LANGUAGESTRING("LanguageString"),
     MARKER("Marker"),
@@ -113,10 +115,10 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     public String getKey(){return delegateVocTerm.getKey();}
 
     @Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
+    public String getLabel(){return delegateVocTerm.getLabel();}
 
     @Override
-    public String getMessage(eu.etaxonomy.cdm.model.common.Language language){return delegateVocTerm.getMessage(language);}
+    public String getLabel(Language language){return delegateVocTerm.getLabel(language);}
 
     @Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}

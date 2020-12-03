@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
@@ -649,7 +648,7 @@ public class Language extends DefinedTermBase<Language> {
 
     public Language(String text, String label, String labelAbbrev, Language lang) {
         super(TermType.Language);
-        if (StringUtils.isNotBlank(label) || StringUtils.isNotBlank(labelAbbrev) || lang != null){
+        if (isNotBlank(label) || isNotBlank(labelAbbrev) || lang != null){
             this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
         }
     }
@@ -1264,7 +1263,7 @@ public class Language extends DefinedTermBase<Language> {
     }
 
     public static Language getLanguageByDescription(String text){
-        if (StringUtils.isBlank(text)){
+        if (isBlank(text)){
             return null;
         }
         for (Language language : termMap.values()){
@@ -1276,7 +1275,7 @@ public class Language extends DefinedTermBase<Language> {
     }
 
     public static Language getLanguageByLabel(String label){
-        if (StringUtils.isBlank(label)){
+        if (isBlank(label)){
             return null;
         }
         for (Language language : termMap.values()){
@@ -1287,7 +1286,7 @@ public class Language extends DefinedTermBase<Language> {
         return null;
     }
     public static Language getLanguageByIsoCode(String code){
-        if (StringUtils.isBlank(code)){
+        if (isBlank(code)){
             return null;
         }
         for (Language language : termMap.values()){

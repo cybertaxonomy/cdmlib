@@ -137,15 +137,10 @@ public class CdmAuthority extends AuthorityBase {
 // ************************* CLONE *****************************/
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public CdmAuthority clone() throws CloneNotSupportedException {
+
         CdmAuthority result = (CdmAuthority)super.clone();
-
         result.operations = this.operations.clone();
-
         return result;
     }
-
-
-
-
 }

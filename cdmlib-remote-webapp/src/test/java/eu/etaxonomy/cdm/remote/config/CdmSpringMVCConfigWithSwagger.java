@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Profile;
 // @DependsOn("objectMapperConfigurer")
 @ComponentScan(basePackages = {
         "springfox.documentation.spring.web", // --> CdmSwaggerConfig
-        "eu.etaxonomy.cdm.remote.l10n",
+        "eu.etaxonomy.cdm.api.service.l10n",
         "eu.etaxonomy.cdm.remote.controller",
         "eu.etaxonomy.cdm.remote.service",
         "eu.etaxonomy.cdm.remote.config" })

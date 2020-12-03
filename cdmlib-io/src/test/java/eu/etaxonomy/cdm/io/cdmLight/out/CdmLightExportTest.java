@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -95,10 +96,14 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
         public void testSubTree(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+//            config.setCreateCondensedDistributionString(false);
             config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
 
             config.setTarget(TARGET.EXPORT_DATA);
@@ -138,23 +143,36 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertNotNull("Scientific Name table must not be null", scientificName);
             expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
             Assert.assertTrue(scientificNameString.contains(expected));
-            expected ="\"Book\",\"The book of botany\",\"Mill., The book of botany 3. 1804\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
+            if (config.isAddHTML()){
+                expected = "\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\"";
+                Assert.assertTrue(scientificNameString.contains(expected));
+            }
+
+            expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
             Assert.assertTrue(scientificNameString.contains(expected));
 
             byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
-            expected ="\"Genus species subsp. subspec Mill.\",\"\"";
+            if (config.isAddHTML()){
+                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
+            }else{
+                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
+            }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
         public void testFullTreeWithUnpublished(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
             config.setTarget(TARGET.EXPORT_DATA);
             config.getTaxonNodeFilter().setIncludeUnpublished(true);
+
             ExportResult result = defaultExport.invoke(config);
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
@@ -219,18 +237,25 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             Assert.assertNotNull("Scientific Name table must not be null", scientificName);
             expected ="\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"\",\"Subspecies\",\"43\",\"Genus species subsp. subspec Mill.\",\"Genus species subsp. subspec\",\"Genus\",\"\",\"\",\"species\",\"subsp.\",\"subspec\",\"\",\"\",\"\",";
             Assert.assertTrue(scientificNameString.contains(expected));
-            expected ="\"Book\",\"The book of botany\",\"Mill., The book of botany 3. 1804\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
+            expected ="\"Book\",\"The book of botany\",\"The book of botany\",\"Mill.\",\"Mill.\",\"3:22\",\"3\",\"22\",\"1804\",\"1804\",\"\",\"\",\"\",\"\"";
             Assert.assertTrue(scientificNameString.contains(expected));
 
             byte[] homotypicGroup = data.get(CdmLightExportTable.HOMOTYPIC_GROUP.getTableName());
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
-            expected ="\"Genus species subsp. subspec Mill.\",\"\"";
+            if (config.isAddHTML()){
+                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\"";
+            }else{
+                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\",\"\"";
+            }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
 
         @Test
-        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+        @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
         public void testFullData(){
 
             CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);

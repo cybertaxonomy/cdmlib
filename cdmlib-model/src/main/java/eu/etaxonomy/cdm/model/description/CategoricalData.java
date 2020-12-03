@@ -262,12 +262,13 @@ public class CategoricalData extends DescriptionElementBase {
      * Clones <i>this</i> categorical data. This is a shortcut that enables to create
      * a new instance that differs only slightly from <i>this</i> categorical data by
      * modifying only some of the attributes.
+     * @throws CloneNotSupportedException
      *
      * @see eu.etaxonomy.cdm.model.description.DescriptionElementBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public CategoricalData clone() {
 
         try {
             CategoricalData result = (CategoricalData)super.clone();
@@ -279,15 +280,10 @@ public class CategoricalData extends DescriptionElementBase {
                 result.addStateData(newState);
             }
 
-            return result;
             //no changes to: orderRelevant
+            return result;
         } catch (CloneNotSupportedException e) {
-            logger.warn("Object does not implement cloneable");
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
-
-
-
 }

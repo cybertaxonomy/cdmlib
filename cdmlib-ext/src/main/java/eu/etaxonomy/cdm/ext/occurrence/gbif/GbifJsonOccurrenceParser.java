@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,7 +52,6 @@ import net.sf.json.JSONObject;
  * resulting from a GBIF query for occurrences to the corresponding CDM entities.
  * @author pplitzner
  * @since 22.05.2014
- *
  */
 public class GbifJsonOccurrenceParser {
 
@@ -82,7 +82,6 @@ public class GbifJsonOccurrenceParser {
     private static final String COLLECTION_CODE = "collectionCode";
     private static final String CATALOG_NUMBER = "catalogNumber";//accession number
     private static final String INSTITUTION_CODE = "institutionCode";
-
 
     protected static final String PUBLISHING_ORG_KEY = "publishingOrgKey";
     protected static final String PUBLISHING_COUNTRY = "publishingCountry";
@@ -116,9 +115,6 @@ public class GbifJsonOccurrenceParser {
     protected static final String CONITNENT = "continent";
     protected static final String STATE_PROVINCE = "stateProvince";
 
-
-
-
     protected static final String ISSUES = "issues";
     protected static final String LAST_INTERPRETED = "lastInterpreted";
     protected static final String IDENTIFIERS = "identifiers";
@@ -149,19 +145,10 @@ public class GbifJsonOccurrenceParser {
     protected static final String COLLECTION_ID = "collectionID";
 
     private static final String PLANTAE = "Plantae";
-
     private static final String ANIMALIA = "Animalia";
-
     private static final String FUNGI = "Fungi";
-
     private static final String BACTERIA = "Bacteria";
-
     private static final String MULTIMEDIA = "media";
-
-
-
-
-
 
     /**
      * Parses the given {@link String} for occurrences.<br>
@@ -180,7 +167,7 @@ public class GbifJsonOccurrenceParser {
      */
     public static Collection<GbifResponse> parseJsonRecords(InputStream inputStream) throws IOException{
         StringWriter stringWriter = new StringWriter();
-        IOUtils.copy(inputStream, stringWriter);
+        IOUtils.copy(inputStream, stringWriter, Charset.defaultCharset());
         return parseJsonRecords(stringWriter.toString());
     }
 
@@ -200,7 +187,7 @@ public class GbifJsonOccurrenceParser {
      * @return the found occurrences as a collection of {@link GbifResponse}
      */
     private static Collection<GbifResponse> parseJsonRecords(JSONArray jsonArray) {
-        Collection<GbifResponse> results = new ArrayList<GbifResponse>();
+        Collection<GbifResponse> results = new ArrayList<>();
         String[] tripleId = new String[3];
         String string;
         for(Object o:jsonArray){
@@ -292,22 +279,17 @@ public class GbifJsonOccurrenceParser {
                         if (record.has(SCIENTIFIC_NAME)){
                             name.setTitleCache(record.getString(SCIENTIFIC_NAME), true);
                         }
-
                     }
                     DeterminationEvent detEvent = DeterminationEvent.NewInstance();
 
                     if (record.has(IDENTIFIED_BY)){
                         Person determiner = Person.NewTitledInstance(record.getString(IDENTIFIED_BY));
                         detEvent.setDeterminer(determiner);
-
                     }
                     detEvent.setTaxonName(name);
                     detEvent.setPreferredFlag(true);
                     derivedUnitFacade.addDetermination(detEvent);
-
                 }
-
-
 
                 // GPS location
                 Point location = Point.NewInstance();
@@ -462,21 +444,19 @@ public class GbifJsonOccurrenceParser {
                                     type = SpecimenOrObservationType.StillImage;
                                 }
                             }
-
-                            }
-                            ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInf);
-                            representation = MediaRepresentation.NewInstance();
-
-                            representation.addRepresentationPart(imageFile);
-                            media.addRepresentation(representation);
-
-                            derivedUnitFacade.addDerivedUnitMedia(media);
                         }
+                        ImageFile imageFile = ImageFile.NewInstance(uri, null, imageInf);
+                        representation = MediaRepresentation.NewInstance();
+
+                        representation.addRepresentationPart(imageFile);
+                        media.addRepresentation(representation);
+
+                        derivedUnitFacade.addDerivedUnitMedia(media);
+                    }
                     //identifier=http://ww2.bgbm.org/herbarium/images/B/-W/08/53/B_-W_08537%20-00%201__3.jpg
                    //references=http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=136628
                     //format=image/jpeg
                     //type=StillImage
-
                 }
 
                 // create dataset URL
@@ -496,7 +476,7 @@ public class GbifJsonOccurrenceParser {
 
     public static DataSetResponse parseOriginalDataSetUri(InputStream inputStream) throws IOException {
         StringWriter stringWriter = new StringWriter();
-        IOUtils.copy(inputStream, stringWriter);
+        IOUtils.copy(inputStream, stringWriter, Charset.defaultCharset());
         return parseOriginalDataSetUri(stringWriter.toString());
     }
 
@@ -515,5 +495,4 @@ public class GbifJsonOccurrenceParser {
         }
         return response;
     }
-
 }

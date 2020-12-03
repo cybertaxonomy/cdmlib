@@ -44,7 +44,6 @@ public class TermGraph <T extends DefinedTermBase>
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = Logger.getLogger(TermGraph.class);
 
-
 //******************** FACTORY METHODS ******************************************/
 
     /**
@@ -55,7 +54,6 @@ public class TermGraph <T extends DefinedTermBase>
     public static <T extends DefinedTermBase<T>> TermGraph<T> NewInstance(@NotNull TermType termType){
         return new TermGraph<>(termType);
     }
-
 
 	/**
 	 * Creates a new TermGraph instance with a given uuid.
@@ -68,8 +66,6 @@ public class TermGraph <T extends DefinedTermBase>
 		result.setUuid(uuid);
 		return result;
 	}
-
-
 
 // ******************** CONSTRUCTOR *************************************/
 
@@ -86,8 +82,6 @@ public class TermGraph <T extends DefinedTermBase>
 	}
 
 // ****************** GETTER / SETTER **********************************/
-
-
 
 
 //******************** METHODS ***********************************************/
@@ -122,10 +116,9 @@ public class TermGraph <T extends DefinedTermBase>
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public TermGraph<T> clone() {
 		try {
-		    @SuppressWarnings("unchecked")
-            TermGraph<T> result = (TermGraph<T>)super.clone();
+		    TermGraph<T> result = (TermGraph<T>)super.clone();
 			return result;
 		}catch (CloneNotSupportedException e) {
             String message = "Clone not possible. Object does not implement cloneable";

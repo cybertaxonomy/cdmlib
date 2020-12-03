@@ -49,7 +49,7 @@ import javassist.compiler.ast.Keyword;
  * For a short abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
  * is to be used.<BR>
  * For other alternative (string-)names {@link eu.etaxonomy.cdm.model.reference.OriginalSourceBase OriginalSource} instances must be created
- * and the inherited attribute {@link eu.etaxonomy.cdm.model.common.ReferencedEntityBase#getOriginalNameString() originalNameString} must be used.
+ * and the attribute {@link eu.etaxonomy.cdm.model.common.OriginalSourceBase#getOriginalNameString() originalNameString} must be used.
  * <P>
  * This class corresponds to: <ul>
  * <li> Person according to the TDWG ontology
@@ -413,11 +413,10 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * Clones <i>this</i> Person. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> Person.
 	 *
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Person clone() {
 		try{
 			Person result = (Person)super.clone();
 			//no changes to givenname, familyname, lifespan, prefix, suffix
@@ -428,5 +427,4 @@ public class Person extends TeamOrPersonBase<Person>{
 			return null;
 		}
 	}
-
 }

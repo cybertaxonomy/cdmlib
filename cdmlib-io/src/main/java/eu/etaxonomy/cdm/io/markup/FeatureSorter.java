@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package eu.etaxonomy.cdm.io.markup;
 
@@ -16,13 +16,11 @@ import java.util.UUID;
 /**
  * This class is supposed to find the best sorting order for features (descriptive and other).
  * Currently it is not yet very sophisticated.
- * 
- * @author a.mueller
  *
+ * @author a.mueller
  */
 public class FeatureSorter {
 
-	
 	class FeatureStatistic{
 
 		private UUID uuid;
@@ -30,7 +28,7 @@ public class FeatureSorter {
 		private int before = 0;   //number of features before this feature
 		private int after = 0;    //number of features after this feature
 		private int n = 0;      //number of occurrences of this feature
-		
+
 		public FeatureStatistic(UUID uuid) {
 			this.uuid = uuid;
 		}
@@ -46,10 +44,8 @@ public class FeatureSorter {
 		public String toString(){
 			return uuid != null? uuid.toString(): super.toString();
 		}
-		
 	}
-	
-	
+
 	/**
 	 * Compute the order of features.
 	 * @param orderLists
@@ -72,7 +68,7 @@ public class FeatureSorter {
 
 
 	private void removeEmptyLists(Map<String, List<FeatureSorterInfo>> listMap) {
-		Set<String> keysToRemove = new HashSet<String>();
+		Set<String> keysToRemove = new HashSet<>();
 		for(String key : listMap.keySet()){
 			List<FeatureSorterInfo> list = listMap.get(key);
 			if (list.isEmpty()){
@@ -82,7 +78,7 @@ public class FeatureSorter {
 		for (String key : keysToRemove){
 			listMap.remove(key);
 		}
-		
+
 	}
 
 
@@ -92,13 +88,13 @@ public class FeatureSorter {
 	 * @param uuid
 	 */
 	private Map<String, List<FeatureSorterInfo>> removeFromLists(Map<String, List<FeatureSorterInfo>> orderListsMap, UUID uuid) {
-		Map<String, List<FeatureSorterInfo>> childLists = new HashMap<String, List<FeatureSorterInfo>>();
-		
+		Map<String, List<FeatureSorterInfo>> childLists = new HashMap<>();
+
 		Set<String> keySet = orderListsMap.keySet();
 		Iterator<String> keySetIterator = keySet.iterator();
 		while (keySetIterator.hasNext()){
 			String key = keySetIterator.next();
-			List<FeatureSorterInfo> list = orderListsMap.get(key);			
+			List<FeatureSorterInfo> list = orderListsMap.get(key);
 			Iterator<FeatureSorterInfo> it = list.listIterator();
 			while (it.hasNext()){
 				FeatureSorterInfo info = it.next();
@@ -115,7 +111,6 @@ public class FeatureSorter {
 		}
 		return childLists;
 	}
-
 
 	private FeatureStatistic findBest(Map<UUID, FeatureStatistic> statisticMap) {
 		FeatureStatistic result;
@@ -150,11 +145,10 @@ public class FeatureSorter {
 		return result;
 	}
 
-
 	/**
 	 * If no feature is always highest this method can be called to use an alternative criteria
-	 * to find the "highest" feature. 
-	 * 
+	 * to find the "highest" feature.
+	 *
 	 * @param statisticMap
 	 * @return
 	 */
@@ -173,9 +167,8 @@ public class FeatureSorter {
 		return result;
 	}
 
-
 	private Set<FeatureStatistic> getOnlyHighestFeatures(Map<UUID, FeatureStatistic> statisticMap) {
-		 Set<FeatureStatistic> result = new HashSet<FeatureStatistic>();
+		 Set<FeatureStatistic> result = new HashSet<>();
 		 for (FeatureStatistic statistic : statisticMap.values()){
 			 if (statistic.isAlwaysHighest){
 				 result.add(statistic);
@@ -186,7 +179,7 @@ public class FeatureSorter {
 
 
 	private Map<UUID, FeatureStatistic> computeStatistic(Map<String,List<FeatureSorterInfo>> orderLists) {
-		Map<UUID, FeatureStatistic> result = new HashMap<UUID, FeatureStatistic>();
+		Map<UUID, FeatureStatistic> result = new HashMap<>();
 		for (String key :  orderLists.keySet()){
 			List<FeatureSorterInfo> list = orderLists.get(key);
 			int n = list.size();
@@ -198,7 +191,6 @@ public class FeatureSorter {
 		}
 		return result;
 	}
-
 
 	private FeatureStatistic getFeatureStatistic(FeatureSorterInfo info, Map<UUID, FeatureStatistic> statisticMap) {
 		UUID uuid = info.getUuid();

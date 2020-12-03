@@ -64,20 +64,20 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<Class<? extends CdmBase>, Set<String>>();
 
     static{
-//        disabled since no longer needed, see https://dev.e-taxonomy.eu/trac/ticket/4111#comment:8
-//        exculdeMap.put(TaxonName.class, new HashSet<String>());
+//        disabled since no longer needed, see https://dev.e-taxonomy.eu/redmine/issues/4111#comment:8
+//        exculdeMap.put(TaxonName.class, new HashSet<>());
 
-        Set<String> defaultExculdes = new HashSet<String>();
+        Set<String> defaultExculdes = new HashSet<>();
         defaultExculdes.add("createdBy");  //created by is changed by CdmPreDataChangeListener after save. This is handled as a change and therefore throws a security exception during first insert if only CREATE rights exist
         defaultExculdes.add("created");  // same behavior was not yet observed for "created", but to be on the save side we also exclude "created"
         defaultExculdes.add("updatedBy");
         defaultExculdes.add("updated");
 
         for ( CdmBaseType type: CdmBaseType.values()){
-            exculdeMap.put(type.getBaseClass(), new HashSet<String>());
+            exculdeMap.put(type.getBaseClass(), new HashSet<>());
             exculdeMap.get(type.getBaseClass()).addAll(defaultExculdes);
         }
-        exculdeMap.put(CdmBase.class, new HashSet<String>());
+        exculdeMap.put(CdmBase.class, new HashSet<>());
         exculdeMap.get(CdmBase.class).addAll(defaultExculdes);
 
 

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.kohlbecker
  * @since May 4, 2017
- *
  */
 public interface IRegistrationWorkingSetService {
 
@@ -74,23 +73,9 @@ public interface IRegistrationWorkingSetService {
             String taxonNameFilterPattern, String referenceFilterPattern, Collection<UUID> typeDesignationStatusUuids, Integer pageSize,
             Integer pageIndex, List<OrderHint> orderHints);
 
-    /**
-     * @param submitterUuid
-     * @param includedStatus
-     * @param taxonNameFilterPattern
-     * @param matchMode
-     * @param pageSize
-     * @param pageIndex
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
     public Pager<RegistrationDTO> findInTaxonGraph(UUID submitterUuid, Collection<RegistrationStatus> includedStatus,
             String taxonNameFilterPattern, MatchMode matchMode, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints);
 
     public Pager<RegistrationDTO> pageWorkingSetsByNameUUID(Collection<UUID> taxonNameUuids, Integer pageIndex, Integer pageSize, List<OrderHint> orderHints) throws RegistrationValidationException, PermissionDeniedException;
-
-
-
 }

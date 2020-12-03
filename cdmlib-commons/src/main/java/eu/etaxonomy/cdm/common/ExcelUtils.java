@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -149,19 +150,19 @@ public class ExcelUtils {
 
 	public static String getCellValue(Cell cell) {
 		try {
-			if (cell.getCellType() == Cell.CELL_TYPE_STRING ){
+			if (cell.getCellType() == CellType.STRING){
 				return cell.getStringCellValue();
-			}else if (cell.getCellType() == Cell.CELL_TYPE_BLANK){
+			}else if (cell.getCellType() == CellType.BLANK){
 				return "";
-			}else if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+			}else if (cell.getCellType() == CellType.NUMERIC){
 				return getNumericCellValue(cell);
-			}else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN){
+			}else if (cell.getCellType() == CellType.BOOLEAN){
 				Boolean cellValue = cell.getBooleanCellValue();
 				String value = String.valueOf(cellValue);
 				return value;
-			}else if (cell.getCellType() == Cell.CELL_TYPE_ERROR){
+			}else if (cell.getCellType() == CellType.ERROR){
 				return "-error-";
-			}else if (cell.getCellType() == Cell.CELL_TYPE_FORMULA){
+			}else if (cell.getCellType() == CellType.FORMULA){
 				try {
 					String strValue = cell.getStringCellValue();
 					if ("".equals(strValue)){

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package org.hibernate.dialect;
 
 import java.sql.Types;
@@ -21,7 +20,5 @@ public class H2CorrectedDialectTest extends H2Dialect {
 	 public H2CorrectedDialectTest() {
 	        super();
 	        registerColumnType(Types.FLOAT, "double"); //do we really want this
-
-
 	 }
 }

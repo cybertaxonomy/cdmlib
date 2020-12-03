@@ -42,11 +42,6 @@ public class CdmMetaData extends CdmBase{
 
 	private static final String UNNAMED = "- UNNAMED -";
 
-
-	/* It is a little bit confusing that this specific information is located in
-	 * a generic class for metadata. Think about moving the schema version
-	 *
-	 */
 	/**
 	 * The database schema version number.
 	 * It is recommended to have the first two numbers equal to the CDM Library version number.
@@ -58,14 +53,21 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = CdmVersion.V_05_15_02.versionString;
+	private static final String dbSchemaVersion = CdmVersion.V_05_18_06.versionString;
 
 	public enum CdmVersion {
 	    V_05_12_00("5.12.0.0.20191202"),
         V_05_15_00("5.15.0.0.20200510"),
 	    V_05_15_01("5.15.1.0.20200610"),
-	    V_05_15_02("5.15.2.0.20200611")
-	    ;
+	    V_05_15_02("5.15.2.0.20200611"),
+	    V_05_18_00("5.18.0.0.20200902"),
+        V_05_18_01("5.18.1.0.20200914"),
+        V_05_18_02("5.18.2.0.20200921"),
+        V_05_18_03("5.18.3.0.20200924"),
+        V_05_18_04("5.18.4.0.20201020"),
+        V_05_18_05("5.18.5.0.20201103"),
+        V_05_18_06("5.18.6.0.20201124")
+        ;
         private String versionString;
 	    private CdmVersion(String versionString){
 	        this.versionString = versionString;
@@ -75,10 +77,7 @@ public class CdmMetaData extends CdmBase{
 	    }
 	}
 
-
-	/* END OF CONFUSION */
-
-	   /**
+	/**
      * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term}
      * and in it's {@link TermVocabulary vocabulary}.
      */
@@ -86,7 +85,7 @@ public class CdmMetaData extends CdmBase{
     @Column(name="propertyName", length=20)
     @NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName")}
+        parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName")}
     )
 	private CdmMetaDataPropertyName propertyName;
 	private String value;
@@ -109,7 +108,6 @@ public class CdmMetaData extends CdmBase{
 
 // ******************** STATIC **********************************/
 
-
     /**
      * @return a list of default metadata objects
      */
@@ -123,8 +121,6 @@ public class CdmMetaData extends CdmBase{
         result.add(new CdmMetaData(CdmMetaDataPropertyName.INSTANCE_NAME, UNNAMED));
         return result;
     }
-
-
 
 //****************** instance methods ****************************/
 
@@ -201,10 +197,6 @@ public class CdmMetaData extends CdmBase{
 	 * Compares two version string. If version1 is higher than version2 a positive result is returned.
 	 * If both are equal 0 is returned, otherwise -1 is returned.
 	 * @see Comparator#compare(Object, Object)
-	 * @param version1
-	 * @param version2
-	 * @param depth
-	 * @param monitor
 	 * @return
 	 */
 	public static int compareVersion(String version1, String version2, Integer depth, IProgressMonitor monitor){
@@ -219,5 +211,4 @@ public class CdmMetaData extends CdmBase{
 	public static String getDbSchemaVersion() {
 		return dbSchemaVersion;
 	}
-
 }

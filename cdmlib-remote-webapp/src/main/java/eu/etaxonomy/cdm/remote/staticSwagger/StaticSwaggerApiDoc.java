@@ -10,11 +10,13 @@ package eu.etaxonomy.cdm.remote.staticSwagger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,10 @@ import eu.etaxonomy.cdm.remote.controller.HttpStatusMessage;
 
 @Controller
 public class StaticSwaggerApiDoc {
+
+
+    public static final Logger logger = Logger.getLogger(StaticSwaggerApiDoc.class);
+
 
     public static final String SWAGGER_STATIC = "swagger-static";
     public static final String JSON = ".json";
@@ -96,7 +102,7 @@ public class StaticSwaggerApiDoc {
             @RequestParam(value = "group", required = true) String group,
              HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-
+        logger.debug("request scheme: " + request.getScheme());
         String hostValue = request.getServerName() + ":" + request.getServerPort();
         String basePathValue = request.getContextPath();
 
@@ -109,11 +115,15 @@ public class StaticSwaggerApiDoc {
                 HttpStatusMessage.create("Static swagger api doc file for group '" + group + "' not found.", 500).send(response);
             } else {
                 response.addHeader("Content-Type", "application/json;charset=utf-8");
-                String staticDocText = IOUtils.toString(staticDocStream);
+                Charset utf8 = Charset.forName("UTF-8");
+                String staticDocText = IOUtils.toString(staticDocStream, utf8);
+                logger.debug("staticDocStream read");
                 staticDocText = staticDocText.replaceFirst(HOST_REGEX, hostValue);
+                logger.debug("staticDocStream HOST_REGEX replaced");
                 staticDocText = staticDocText.replaceFirst(BASE_PATH_REGEX, basePathValue);
+                logger.debug("staticDocStream BASE_PATH_REGEX replaced");
 
-                IOUtils.write(staticDocText, response.getOutputStream());
+                IOUtils.write(staticDocText, response.getOutputStream(), utf8);
                 staticDocStream.close();
             }
         }

@@ -92,7 +92,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         name.setCombinationAuthorship(combAuthor);
         Taxon taxon = Taxon.NewInstance(name, null);
         taxonService.save(taxon).getUuid();
-        printDataSetWithNull(System.out,false,null,includeTables);
+        printDataSet(System.out,false,null,includeTables);
     }
 
     @Test

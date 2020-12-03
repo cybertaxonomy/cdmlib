@@ -48,7 +48,7 @@ public class DescriptionUtility {
      * An area is a <b>fallback area</b> if it is marked to be hidden and if it has at least one of
      * sub area which is not marked to be hidden. The fallback area will be show if there is no {@link Distribution}
      * for any of the non hidden sub-areas. For more detailed discussion on fallback areas see
-     * https://dev.e-taxonomy.eu/trac/ticket/4408</li>
+     * https://dev.e-taxonomy.eu/redmine/issues/4408</li>
      * <li><b>Prefer computed rule</b>:Computed distributions are preferred over entered or imported elements.
      * (Computed description elements are identified by the {@link
      * MarkerType.COMPUTED()}). This means if a entered or imported status
@@ -67,7 +67,7 @@ public class DescriptionUtility {
      * <code>subAreaPreference</code>. Can be run separately from the other filters.
      * This rule affects any distribution,
      * that is to computed and edited equally. For more details see
-     * {@link https://dev.e-taxonomy.eu/trac/ticket/5050})</li>
+     * {@link https://dev.e-taxonomy.eu/redmine/issues/5050})</li>
      * </ol>
      *
      * @param distributions

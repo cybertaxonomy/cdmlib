@@ -119,7 +119,7 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public TaxonNameDescription clone() {
         TaxonNameDescription result;
         result = (TaxonNameDescription)super.clone();
         //no changes to: taxonName

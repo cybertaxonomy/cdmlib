@@ -154,11 +154,11 @@ public class NomenclaturalStatus
 	 * a new instance that differs only slightly from <i>this</i> nomenclatural status by
 	 * modifying only some of the attributes.
 	 *
-	 * @see eu.etaxonomy.cdm.model.common.ReferencedEntityBase#clone()
+	 * @see eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public NomenclaturalStatus clone() {
 		try {
 			NomenclaturalStatus result = (NomenclaturalStatus)super.clone();
 	         result.ruleConsidered = this.ruleConsidered == null? null : this.ruleConsidered.clone();
@@ -170,5 +170,4 @@ public class NomenclaturalStatus
 			return null;
 		}
 	}
-
 }

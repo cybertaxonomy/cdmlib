@@ -514,7 +514,7 @@ public class NonViralNameParserImplTest {
         assertEquals("Uninomial must be 'Aegilops'", "Aegilops", name1.getGenusOrUninomial());
 
         //Subspecies hybrid with hybrid sign
-        //maybe false: see http://dev.e-taxonomy.eu/trac/ticket/3868
+        //maybe false: see https://dev.e-taxonomy.eu/redmine/issues/3868
         name1 = parser.parseFullName("Aegilops insulae subsp. X abies Scholz", botanicCode, null);
         assertFalse("Name must not have monom hybrid bit set", name1.isMonomHybrid());
         assertFalse("Name must not have binom hybrid bit set", name1.isBinomHybrid());
@@ -1047,7 +1047,7 @@ public class NonViralNameParserImplTest {
         assertEquals( NomenclaturalStatusType.CONSERVED_PROP(), nameTestStatus.getStatus().iterator().next().getType());
 
         //nom. orth. cons. prop.
-        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. orth. cons. prop.";
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, orth. cons. prop.";
         nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
         assertFullRefStandard(nameTestStatus);
         assertTrue(nameTestStatus.getStatus().size()== 1);
@@ -1096,7 +1096,7 @@ public class NonViralNameParserImplTest {
         assertEquals( NomenclaturalStatusType.UTIQUE_REJECTED_PROP(), nameTestStatus.getStatus().iterator().next().getType());
 
         //nom. orth. cons.
-        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, nom. orth. cons.";
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, orth. cons.";
         nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
         assertFullRefStandard(nameTestStatus);
         assertTrue(nameTestStatus.getStatus().size()== 1);
@@ -1166,7 +1166,7 @@ public class NonViralNameParserImplTest {
         assertEquals( NomenclaturalStatusType.SUBNUDUM(), nameTestStatus.getStatus().iterator().next().getType());
 
         //opus. utique oppr.
-        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, opus. utique oppr.";
+        strTestStatus = "Abies alba Mill., Sp. Pl. 4: 455. 1987, op. utique oppr.";
         nameTestStatus = parser.parseReferencedName(strTestStatus, null, Rank.SPECIES());
         assertFullRefStandard(nameTestStatus);
         assertTrue(nameTestStatus.getStatus().size()== 1);
@@ -1638,44 +1638,44 @@ public class NonViralNameParserImplTest {
 
     /**
      * Test author with name parts van, von, de, de la, d', da, del.
-     * See also http://dev.e-taxonomy.eu/trac/ticket/3373
+     * See also https://dev.e-taxonomy.eu/redmine/issues/3373
      */
     @Test
     public final void  testComposedAuthorNames(){
 
-        //van author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
+        //van author (see https://dev.e-taxonomy.eu/redmine/issues/3373)
         String testParsable = "Aphelocoma unicolor subsp. griscomi van Rossem, 1928";
         assertTrue("Author with 'van' should be parsable", isParsable(testParsable, ICZN));
 
-        //von author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
+        //von author (see https://dev.e-taxonomy.eu/redmine/issues/3373)
         testParsable = "Aphelocoma unicolor subsp. griscomi von Rossem, 1928";
         assertTrue("Author with 'von' should be parsable", isParsable(testParsable, ICZN));
 
-        //de author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
+        //de author (see https://dev.e-taxonomy.eu/redmine/issues/3373)
         testParsable = "Aphelocoma unicolor subsp. griscomi de Rossem, 1928";
         assertTrue("Author with 'de' should be parsable", isParsable(testParsable, ICZN));
 
-        //de la author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
+        //de la author (see https://dev.e-taxonomy.eu/redmine/issues/3373)
         testParsable = "Aphelocoma unicolor subsp. griscomi de la Rossem, 1928";
         assertTrue("Author with 'de la' should be parsable", isParsable(testParsable, ICZN));
 
-        //d' author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
+        //d' author (see https://dev.e-taxonomy.eu/redmine/issues/3373)
         testParsable = "Aphelocoma unicolor subsp. griscomi d'Rossem, 1928";
         assertTrue("Author with \"'d'\" should be parsable", isParsable(testParsable, ICZN));
 
-        //da author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
+        //da author (see https://dev.e-taxonomy.eu/redmine/issues/3373)
         testParsable = "Aphelocoma unicolor subsp. griscomi da Rossem, 1928";
         assertTrue("Author with 'da' should be parsable", isParsable(testParsable, ICZN));
 
-        //del author (see https://dev.e-taxonomy.eu/trac/ticket/3373)
+        //del author (see https://dev.e-taxonomy.eu/redmine/issues/3373)
         testParsable = "Aphelocoma unicolor subsp. griscomi del Rossem, 1928";
         assertTrue("Author with 'del' should be parsable", isParsable(testParsable, ICZN));
 
-        //O' author (see https://dev.e-taxonomy.eu/trac/ticket/4759)
+        //O' author (see https://dev.e-taxonomy.eu/redmine/issues/4759)
         testParsable = "Aphelocoma unicolor subsp. griscomi O'Connor, 1928";
         assertTrue("Author with 'O'' should be parsable", isParsable(testParsable, ICZN));
 
-        //del author (see https://dev.e-taxonomy.eu/trac/ticket/4759)
+        //del author (see https://dev.e-taxonomy.eu/redmine/issues/4759)
         testParsable = "Aphelocoma unicolor subsp. griscomi zur Strassen, 1928";
         assertTrue("Author with 'zur' should be parsable", isParsable(testParsable, ICZN));
 
@@ -1720,7 +1720,7 @@ public class NonViralNameParserImplTest {
 
     @Test
     public void testNeverEndingParsing(){
-        //some full titles result in never ending parsing process https://dev.e-taxonomy.eu/trac/ticket/1556
+        //some full titles result in never ending parsing process https://dev.e-taxonomy.eu/redmine/issues/1556
 
         String irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
 //      irinaExample = "Milichiidae Sharp, 1899, Insects. Part II. Uiuis Iuiui Hymenopteracontinued (Tubulifera and Aculeata), Coleoptera, Strepsiptera, Lepidoptera, Diptera, Aphaniptera, Thysanoptera, Hemiptera, Anoplura 6: 504. 1899";
@@ -1780,6 +1780,7 @@ public class NonViralNameParserImplTest {
     }
 
     @Test
+    @Ignore
     public final void testRussian(){
         String parseStr = "Cortusa turkestanica Losinsk. in Тр. Бот. инст. Aкад. наук СССР, сер. 1, 3: 239. 1936";
         INonViralName name = parser.parseReferencedName(parseStr);

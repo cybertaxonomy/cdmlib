@@ -139,7 +139,7 @@ public class ShpAttributesToNamedAreaMapper {
 
             if(matchIdCode != null){
                 //TODO need to clear the area mapping since the mapping impl can not distinguish multiple layers
-                //     see http://dev.e-taxonomy.eu/trac/ticket/4263
+                //     see https://dev.e-taxonomy.eu/redmine/issues/4263
                 areaMapping.clear(a);
 
                 GeoServiceArea geoServiceArea;

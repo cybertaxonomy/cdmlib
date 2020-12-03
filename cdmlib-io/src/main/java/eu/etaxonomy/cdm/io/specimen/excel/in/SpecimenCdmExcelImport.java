@@ -903,14 +903,14 @@ public class SpecimenCdmExcelImport
 	private void handleCountry(DerivedUnitFacade facade, SpecimenRow row, SpecimenCdmExcelImportState state) {
 
 		if (StringUtils.isNotBlank(row.getIsoCountry())){
-			NamedArea country = getOccurrenceService().getCountryByIso(row.getIsoCountry());
+			NamedArea country = getTermService().getCountryByIso(row.getIsoCountry());
 			if (country != null){
 				facade.setCountry(country);
 				return;
 			}
 		}
 		if (StringUtils.isNotBlank(row.getCountry())){
-			List<Country> countries = getOccurrenceService().getCountryByName(row.getCountry());
+			List<Country> countries = getTermService().getCountryByName(row.getCountry());
 			if (countries.size() >0){
 				facade.setCountry(countries.get(0));
 			}else{

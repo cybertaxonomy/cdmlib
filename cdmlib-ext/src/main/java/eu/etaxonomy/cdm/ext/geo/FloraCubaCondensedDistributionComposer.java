@@ -50,7 +50,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
     static {
 
         // ==================================================
-        // Mapping as defined in ticket http://dev.e-taxonomy.eu/trac/ticket/5682
+        // Mapping as defined in ticket https://dev.e-taxonomy.eu/redmine/issues/5682
         // ==================================================
 
        statusSymbols = new HashMap<> ();

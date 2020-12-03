@@ -1,15 +1,16 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
+
 package eu.etaxonomy.cdm.test.unit;
 
 import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -36,23 +37,23 @@ public abstract class EntityTestBase {
 			return null;
 		}
 	}
-	
+
 //	/**
 //	 * Tests if all persistent (not transient) getter have an according setter.
 //	 * Not needed anymore as we switched to field-level hibernate annotations.
-//	 * Maybe useful once we try to fully compliant with the beans specification. 
+//	 * Maybe useful once we try to be fully compliant with the beans specification.
 //	 */
-//	@Test 
+//	@Test
 //	@Ignore
 //	public final void testPersistentGetterSetterPair() {
 //		//
 //		Annotation annotation = clazzToTest.getAnnotation(Entity.class);
 //		if (annotation != null){
 //			Method[] methods = clazzToTest.getDeclaredMethods();
-//			List<String> strMethods = new ArrayList<String>(); 
+//			List<String> strMethods = new ArrayList<String>();
 //			for (Method method : methods){
 //				strMethods.add(method.getName());
-//			}		
+//			}
 //			for (Method method : methods){
 //				if (Modifier.isStatic( method.getModifiers())){
 //					continue;
@@ -88,7 +89,7 @@ public abstract class EntityTestBase {
 //
 //			}
 //		}
-//		
+//
 //	}
 
 }

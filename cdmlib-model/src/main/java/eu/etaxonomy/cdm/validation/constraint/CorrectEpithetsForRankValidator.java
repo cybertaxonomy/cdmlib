@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.validation.constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
@@ -79,10 +79,6 @@ public class CorrectEpithetsForRankValidator implements ConstraintValidator<Corr
 		return valid;
 	}
 
-    /**
-     * @param specificEpithet
-     * @return
-     */
     private boolean isNotBlank(String str) {
         return StringUtils.isNotBlank(str);
     }

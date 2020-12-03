@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -25,9 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.PreservedSpecimenDTO;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -74,10 +72,6 @@ public class OccurrencePortalController extends OccurrenceController
             "collection.institute.$"
     });
 
-    @Autowired
-    private ITermService termService;
-
-
     /**
      *
      */
@@ -86,9 +80,6 @@ public class OccurrencePortalController extends OccurrenceController
         setInitializationStrategy(DEFAULT_INIT_STRATEGY);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IOccurrenceService service) {
@@ -99,11 +90,11 @@ public class OccurrencePortalController extends OccurrenceController
     public FieldUnitDTO doGetDerivateHierarchy(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetDerivateHierarchy() " + requestPathAndQuery(request));
 
-        SpecimenOrObservationBase sob = service.load(uuid);
+        SpecimenOrObservationBase<?> sob = service.load(uuid);
         if(sob instanceof FieldUnit){
             FieldUnit fieldUnit = (FieldUnit)sob;
             if(fieldUnit.isPublish()){
@@ -115,19 +106,19 @@ public class OccurrencePortalController extends OccurrenceController
     }
 
     @RequestMapping(value = { "specimenDerivates" }, method = RequestMethod.GET)
-    public PreservedSpecimenDTO doGetSpecimenDerivates(
+    public DerivedUnitDTO doGetSpecimenDerivates(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetSpecimenDerivates() " + requestPathAndQuery(request));
 
 
-        SpecimenOrObservationBase sob = service.load(uuid);
+        SpecimenOrObservationBase<?> sob = service.load(uuid);
         if(sob instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit) sob;
             if(derivedUnit.isPublish()){
-                PreservedSpecimenDTO dto = service.assemblePreservedSpecimenDTO(derivedUnit);
+                DerivedUnitDTO dto = service.assembleDerivedUnitDTO(derivedUnit);
                 return dto;
             }
         }
@@ -138,12 +129,12 @@ public class OccurrencePortalController extends OccurrenceController
     public Media doGetMediaSpecimen(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doGetMediaSpecimen() " + requestPathAndQuery(request));
 
 
-        SpecimenOrObservationBase sob = service.load(uuid, Arrays.asList("mediaSpecimen.sources.citation", "mediaSpecimen.representations.parts"));
+        SpecimenOrObservationBase<?> sob = service.load(uuid, Arrays.asList("mediaSpecimen.sources.citation", "mediaSpecimen.representations.parts"));
         if(sob instanceof MediaSpecimen){
             MediaSpecimen mediaSpecimen = (MediaSpecimen) sob;
             if(mediaSpecimen.isPublish()){

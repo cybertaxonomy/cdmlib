@@ -63,6 +63,8 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     private ITermService termService;
     private ITaxonNodeService taxonNodeService;
 
+    public static final String DEFAULT_TAXONNODEDTO_SORT_MODE = "RankAndAlphabeticalOrder";
+
     @Override
     @Autowired
     public void setService(IClassificationService service) {
@@ -109,7 +111,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
     public List<TaxonNodeDto> getChildNodes(
             @PathVariable("uuid") UUID classificationUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
-            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") TaxonNodeDtoSortMode sortMode,
+            @RequestParam(value = "sortMode", required = false, defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -124,7 +126,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
             @PathVariable("uuid") UUID classificationUuid,
             @PathVariable("rankUuid") UUID rankUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
-            @RequestParam(value = "sortMode", required = false, defaultValue = "AlphabeticalOrder") TaxonNodeDtoSortMode sortMode,
+            @RequestParam(value = "sortMode", required = false, defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeDtoSortMode sortMode,
             HttpServletRequest request,
             HttpServletResponse response
             ) throws IOException {
@@ -170,8 +172,8 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            @PathVariable("taxonUuid") UUID taxonUuid,
            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-           @RequestParam(value = "sortMode", defaultValue="AlphabeticalOrder") TaxonNodeSortMode sortMode,
-           @RequestParam(value = "doSynonyms", defaultValue="false") Boolean doSynonyms,
+           @RequestParam(value = "sortMode", defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeSortMode sortMode,
+           @RequestParam(value = "doSynonyms", defaultValue = "false") Boolean doSynonyms,
            HttpServletResponse response
            ) throws IOException {
 
@@ -303,7 +305,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
            @PathVariable("taxonUuid") UUID taxonUuid,
            @RequestParam(value = "doChildren", defaultValue = "false") Boolean doChildren,
            @RequestParam(value = "doSynonyms", defaultValue = "false") Boolean doSynonyms,
-           @RequestParam(value = "sortMode", defaultValue="AlphabeticalOrder") TaxonNodeSortMode sortMode,
+           @RequestParam(value = "sortMode", defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeSortMode sortMode,
            @RequestParam(value = "ancestorMarker", required = false) List<UUID> ancestorMarkers,
            HttpServletResponse response
            ) throws IOException {

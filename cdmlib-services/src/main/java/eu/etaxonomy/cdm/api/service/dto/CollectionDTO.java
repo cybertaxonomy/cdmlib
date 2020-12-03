@@ -8,17 +8,15 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.io.Serializable;
-
-import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
  * @author k.luther
  * @since 21.06.2018
  *
  */
-public class CollectionDTO implements Serializable{
+public class CollectionDTO extends TypedEntityReference<Collection> {
 
     private static final long serialVersionUID = -1840237876297997573L;
 
@@ -26,29 +24,27 @@ public class CollectionDTO implements Serializable{
     private String codeStandard;
     private String institute;
     private String townOrLocation;
+    private CollectionDTO superCollection;
 
-
-    /**
-     * @param code
-     * @param codeStandard
-     * @param institute
-     * @param townOrLocation
-     */
-    public CollectionDTO(String code, String codeStandard, Institution institute, String townOrLocation) {
-        this.code = code;
-        this.codeStandard = codeStandard;
-        if (institute != null){
-            this.institute = institute.getTitleCache();
+    public static CollectionDTO fromCollection(Collection entity) {
+        if(entity == null) {
+            return null;
         }
-        this.townOrLocation = townOrLocation;
+        return new CollectionDTO(entity);
     }
 
     /**
      * @param collection
      */
     public CollectionDTO(Collection collection) {
-        this(collection.getCode(),collection.getCodeStandard(), collection.getInstitute(),collection.getTownOrLocation());
-
+        super(Collection.class, collection.getUuid(), collection.getTitleCache());
+        this.code = collection.getCode();
+        this.codeStandard = collection.getCodeStandard();
+        if (collection.getInstitute() != null){
+            this.institute = collection.getInstitute().getTitleCache();
+        }
+        this.townOrLocation = collection.getTownOrLocation();
+        this.setSuperCollection(CollectionDTO.fromCollection(collection.getSuperCollection()));
     }
 
     public String getCode() {
@@ -74,6 +70,14 @@ public class CollectionDTO implements Serializable{
     }
     public void setTownOrLocation(String townOrLocation) {
         this.townOrLocation = townOrLocation;
+    }
+
+    public CollectionDTO getSuperCollection() {
+        return superCollection;
+    }
+
+    public void setSuperCollection(CollectionDTO superCollection) {
+        this.superCollection = superCollection;
     }
 
 }

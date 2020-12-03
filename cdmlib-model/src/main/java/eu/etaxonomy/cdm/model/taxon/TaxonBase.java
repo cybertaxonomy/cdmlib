@@ -450,14 +450,13 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
      * Clones <i>this</i> taxon. This is a shortcut that enables to create
      * a new instance with exactly the same taxon name and sec reference.
      *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
-        TaxonBase<?> result;
+    public TaxonBase<S> clone() {
+        TaxonBase<S> result;
         try {
-            result = (TaxonBase<?>)super.clone();
+            result = (TaxonBase<S>)super.clone();
 //            result.setSec(null);
 
             return result;
@@ -466,9 +465,5 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
             e.printStackTrace();
             return null;
         }
-
-
     }
-
-
 }

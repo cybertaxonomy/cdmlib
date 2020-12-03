@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -39,7 +38,6 @@ import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
-
 
 @Service
 @Transactional(readOnly = true)
@@ -328,26 +326,22 @@ public class CommonServiceImpl
     @Override
     public Object initializeCollection(UUID ownerUuid, String fieldName) {
         return genericDao.initializeCollection(ownerUuid, fieldName);
-
     }
 
     @Override
     public Object initializeCollection(UUID ownerUuid, String fieldName, List<String> propertyPaths) {
         return genericDao.initializeCollection(ownerUuid, fieldName, propertyPaths);
-
     }
 
     @Override
     public boolean isEmpty(UUID ownerUuid, String fieldName) {
         return genericDao.isEmpty(ownerUuid, fieldName);
-
     }
 
     @Override
     public int size(UUID ownerUuid, String fieldName) {
         return genericDao.size(ownerUuid, fieldName);
     }
-
 
     @Override
     public Object get(UUID ownerUuid, String fieldName, int index) {
@@ -418,7 +412,6 @@ public class CommonServiceImpl
         //and generally the saveAll method should work for other CdmBase types with generics removed
         return (Map<UUID, T>) originalSourceDao.saveOrUpdateAll((Collection)newInstances);
     }
-
 
     @Override
     public <T extends CdmBase> boolean isMergeable(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {

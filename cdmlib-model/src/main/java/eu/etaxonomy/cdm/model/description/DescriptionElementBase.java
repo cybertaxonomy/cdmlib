@@ -546,7 +546,8 @@ public abstract class DescriptionElementBase
      * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
      */
     @Override
-    public Object clone() throws CloneNotSupportedException{
+    public DescriptionElementBase clone() throws CloneNotSupportedException{
+
         DescriptionElementBase result = (DescriptionElementBase)super.clone();
 
         //inDescription
@@ -558,7 +559,7 @@ public abstract class DescriptionElementBase
         //Sources
         result.sources = new HashSet<>();
         for (DescriptionElementSource source : getSources()){
-            DescriptionElementSource newSource = (DescriptionElementSource)source.clone();
+            DescriptionElementSource newSource = source.clone();
             result.addSource(newSource);
         }
 
@@ -589,9 +590,8 @@ public abstract class DescriptionElementBase
      * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
      */
     public DescriptionElementBase clone(DescriptionBase description) throws CloneNotSupportedException{
-        DescriptionElementBase result = (DescriptionElementBase)clone();
+        DescriptionElementBase result = clone();
         description.addElement(result);
         return result;
     }
-
 }

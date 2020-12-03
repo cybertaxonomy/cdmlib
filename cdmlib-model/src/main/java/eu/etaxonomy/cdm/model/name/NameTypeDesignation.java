@@ -154,10 +154,6 @@ public class NameTypeDesignation
 
 	//********* METHODS **************************************/
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.TypeDesignationBase#removeType()
-	 */
 	@Override
 	public void removeType() {
 		this.typeName = null;
@@ -220,9 +216,8 @@ public class NameTypeDesignation
 	 * designation should have a {@link eu.etaxonomy.cdm.model.reference.Reference reference} that is different to the
 	 * {@link TaxonName#getNomenclaturalReference() nomenclatural reference} of the typified taxon name.
 	 *
-	 * @see   ReferencedEntityBase#getCitation()
+	 * @see OriginalSourceBas#getCitation()
 	 */
-
 
 //*********************** CLONE ********************************************************/
 
@@ -235,8 +230,9 @@ public class NameTypeDesignation
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
-		NameTypeDesignation result;
+	public NameTypeDesignation clone() {
+
+	    NameTypeDesignation result;
 		try {
 			result = (NameTypeDesignation)super.clone();
 			//no changes to: rejectedType, conservedType, typeName
@@ -247,5 +243,4 @@ public class NameTypeDesignation
 			return null;
 		}
 	}
-
 }

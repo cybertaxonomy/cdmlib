@@ -34,11 +34,11 @@ public interface IKeyTerm  {
 	/**
 	 * Returns a human readable label preferably for the default language.
 	 */
-	public String getMessage();
+	public String getLabel();
 
 	/**
 	 * Returns a human readable label preferably for the given language.
 	 */
-	public String getMessage(Language language);
+	public String getLabel(Language language);
 
 }

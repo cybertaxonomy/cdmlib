@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;

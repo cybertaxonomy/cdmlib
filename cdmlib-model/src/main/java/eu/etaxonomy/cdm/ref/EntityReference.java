@@ -11,23 +11,22 @@ package eu.etaxonomy.cdm.ref;
 import java.io.Serializable;
 import java.util.UUID;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * @author a.kohlbecker
  */
-public class EntityReference implements Serializable{
+public class EntityReference implements Serializable, Comparable<EntityReference> {
 
     private static final long serialVersionUID = -8173845668898512626L;
 
-    UUID uuid;
-    String label;
+    protected UUID uuid;
+    protected String label;
 
     public EntityReference(UUID uuid, String label) {
         this.uuid = uuid;
         this.label = label;
     }
-
 
     public UUID getUuid() {
         return uuid;
@@ -37,9 +36,6 @@ public class EntityReference implements Serializable{
         return label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31)
@@ -48,9 +44,6 @@ public class EntityReference implements Serializable{
                 .toHashCode();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         try {
@@ -59,6 +52,22 @@ public class EntityReference implements Serializable{
 
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public int compareTo(EntityReference o2) {
+        if(o2 == null){
+            return -1;
+        }
+        if (this.label == null && o2.label != null){
+            return -1;
+        }else if (this.label != null && o2.label == null){
+            return 1;
+        }else if (this.label == null && o2.label == null){
+            return this.uuid.compareTo(o2.uuid);  //TODO also test null?
+        }else{
+            return this.label.compareTo(o2.label);
         }
     }
 

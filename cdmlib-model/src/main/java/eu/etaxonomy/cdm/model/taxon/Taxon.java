@@ -860,31 +860,6 @@ public class Taxon
     }
 
     /**
-     * Returns the boolean value indicating whether <i>this</i> taxon is a invalid designation
-     * for at least one other taxon.
-     */
-    // TODO cache as for #hasTaxonomicChildren
-    @Transient
-    public boolean isInvalidDesignation(){
-        return computeInvalidDesignationRelations() > 0;
-    }
-
-    /**
-     * Counts the number of invalid designation relationships where this taxon represents the
-     * invalid designation for another taxon.
-     * @return
-     */
-    private int computeInvalidDesignationRelations(){
-        int count = 0;
-        for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
-            if (rel.getType().isInvalidDesignation()){
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /**
      * Returns the boolean value indicating whether <i>this</i> taxon is a related
      * concept for at least one other taxon.
      */
@@ -1596,20 +1571,6 @@ public class Taxon
         return result;
     }
 
-    /**
-     * @see     #getSynonymsGroups()
-     */
-    @Transient
-    public List<Taxon> getInvalidDesignations(){
-        List<Taxon> result = new ArrayList<>();
-        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
-            if (rel.getType().isInvalidDesignation()){
-                result.add(rel.getFromTaxon());
-            }
-        }
-        sortBySimpleTitleCacheComparator(result);
-        return result;
-    }
 
     /**
      * @see     #getSynonymsGroups()
@@ -1739,36 +1700,55 @@ public class Taxon
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public Taxon clone() {
+        return clone(true, true, true, true);
+    }
+
+    public Taxon clone(boolean withSynonyms, boolean withTaxonRelations, boolean withDescriptions, boolean withMedia) {
         Taxon result;
         result = (Taxon)super.clone();
 
         result.setRelationsFromThisTaxon(new HashSet<>());
-
-        for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
-            TaxonRelationship newRelationship = (TaxonRelationship)fromRelationship.clone();
-            newRelationship.setRelatedFrom(result);
-            result.relationsFromThisTaxon.add(newRelationship);
-        }
-
         result.setRelationsToThisTaxon(new HashSet<>());
-        for (TaxonRelationship toRelationship : this.getRelationsToThisTaxon()){
-            TaxonRelationship newRelationship = (TaxonRelationship)toRelationship.clone();
-            newRelationship.setRelatedTo(result);
-            result.relationsToThisTaxon.add(newRelationship);
+
+        if (withTaxonRelations || withSynonyms){
+            for (TaxonRelationship fromRelationship : this.getRelationsFromThisTaxon()){
+                boolean isSynonymRelation = fromRelationship.getType() != null &&
+                        fromRelationship.getType().isAnySynonymOrMisappliedName();
+                if (isSynonymRelation && withSynonyms || !isSynonymRelation && withTaxonRelations){
+                    TaxonRelationship newRelationship = fromRelationship.clone();
+                    newRelationship.setRelatedFrom(result);
+                    result.relationsFromThisTaxon.add(newRelationship);
+                }
+            }
+
+            for (TaxonRelationship toRelationship : this.getRelationsToThisTaxon()){
+                boolean isSynonymRelation = toRelationship.getType() != null &&
+                        toRelationship.getType().isAnySynonymOrMisappliedName();
+                if (isSynonymRelation && withSynonyms || !isSynonymRelation && withTaxonRelations){
+                    TaxonRelationship newRelationship = toRelationship.clone();
+                    newRelationship.setRelatedTo(result);
+                    result.relationsToThisTaxon.add(newRelationship);
+                }
+            }
         }
 
         //clone synonyms (is this wanted or should we remove synonyms
         result.synonyms = new HashSet<>();
-        for (Synonym synonym : this.getSynonyms()){
-            Synonym newSyn = (Synonym)synonym.clone();
-            newSyn.setAcceptedTaxon(result);
+        if(withSynonyms){
+            for (Synonym synonym : this.getSynonyms()){
+                Synonym newSyn = synonym.clone();
+                newSyn.setAcceptedTaxon(result);
+            }
         }
 
         result.descriptions = new HashSet<>();
         for (TaxonDescription description : this.getDescriptions()){
-            TaxonDescription newDescription = (TaxonDescription)description.clone();
-            result.addDescription(newDescription);
+            if (description.isImageGallery() && withMedia ||
+                    !description.isImageGallery() && withDescriptions){
+                TaxonDescription newDescription = description.clone();
+                result.addDescription(newDescription);
+            }
         }
 
         result.taxonNodes = new HashSet<>();

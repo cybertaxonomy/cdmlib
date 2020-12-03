@@ -26,12 +26,11 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author a.mueller
  * @since 05.11.2015
- *
  */
 @Repository
 public class TestingTermVocabularyDao {
-    private static final Logger logger = Logger.getLogger(TestingTermVocabularyDao.class);
 
+    private static final Logger logger = Logger.getLogger(TestingTermVocabularyDao.class);
 
     @Autowired
     private SessionFactory factory;
@@ -53,7 +52,6 @@ public class TestingTermVocabularyDao {
         }
     }
 
-
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.factory = sessionFactory;
     }
@@ -64,5 +62,4 @@ public class TestingTermVocabularyDao {
         Session session = factory.getCurrentSession();
         return session;
     }
-
 }

@@ -6,19 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.agent;
-
 
 import static org.junit.Assert.assertNotNull;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -28,32 +23,14 @@ import eu.etaxonomy.cdm.model.agent.Person;
  * @since 29.09.2009
  */
 public class PersonDefaultCacheStrategyTest {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PersonDefaultCacheStrategyTest.class);
 
 	private static Person person1;
 	private static Person person2;
 	private static Person person3;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-
-
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		person1 = Person.NewInstance();
@@ -70,21 +47,10 @@ public class PersonDefaultCacheStrategyTest {
 		person2.setSuffix("P2Suff");
 
 		person3 = Person.NewInstance(); //empty person
-
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 //**************************************** TESTS **************************************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy#NewInstance()}.
-	 */
 	@Test
 	public final void testNewInstance() {
 		PersonDefaultCacheStrategy cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
@@ -105,7 +71,6 @@ public class PersonDefaultCacheStrategyTest {
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title should start with Person#0", "Person#0", person3.getNomenclaturalTitle().substring(0, 8));
 	}
-
 
 	@Test
 	public final void testGetTitleCacheAdaptedFromOldVersion(){
@@ -151,7 +116,6 @@ public class PersonDefaultCacheStrategyTest {
         Assert.assertEquals("Initials should be computed from givenname if not set manually",
                 expected, pers.getTitleCache());
     }
-
 
     @Test
     public final void testGetFullTitle(){
@@ -292,7 +256,5 @@ public class PersonDefaultCacheStrategyTest {
         Assert.assertEquals("W.-H.-", formatter.getInitialsFromGivenName(givenname, force));
         givenname = "W.-Hennin-";
         Assert.assertEquals("W.-H.-", formatter.getInitialsFromGivenName(givenname, force));
-
 	}
-
 }

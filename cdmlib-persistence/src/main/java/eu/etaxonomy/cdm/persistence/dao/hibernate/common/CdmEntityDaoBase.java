@@ -1020,7 +1020,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
                         throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property,
                                 ie);
                     }
-
                 }
             }
         } else {

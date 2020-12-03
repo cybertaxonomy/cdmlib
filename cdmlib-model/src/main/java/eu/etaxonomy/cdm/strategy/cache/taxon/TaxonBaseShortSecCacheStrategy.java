@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
-
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -138,7 +136,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		if (taxonBase.isUseNameCache()){
 			result = taxonName.getNameCache();
 		}
-		if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
+		if (isNotBlank(taxonBase.getAppendedPhrase())){
 			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim();
 		}
 		return result;
@@ -213,7 +211,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 
                 //year
                 String year = sec.getYear();
-                if (StringUtils.isNotBlank(year) && ! authorTags.isEmpty()){
+                if (isNotBlank(year) && ! authorTags.isEmpty()){
                     tags.add(new TaggedText(TagEnum.separator, "("));
                     tags.add(new TaggedText(TagEnum.year, year));
                     tags.add(new TaggedText(TagEnum.postSeparator, ")"));

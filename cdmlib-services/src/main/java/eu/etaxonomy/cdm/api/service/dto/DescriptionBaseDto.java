@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -27,12 +29,13 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
  */
 public class DescriptionBaseDto implements Serializable{
 
+    private static final long serialVersionUID = -1578895619195062502L;
+
     private UuidAndTitleCache<Taxon> taxonUuid;
-    private DerivateDTO specimenDto;
+    private SpecimenOrObservationBaseDTO specimenDto;
 
     private UuidAndTitleCache<TaxonName> nameUuid;
-    private DescriptionBase description;
-
+    private DescriptionBase description; // TODO use DTO instead
 
 
     public DescriptionBaseDto(DescriptionBase description){
@@ -41,8 +44,8 @@ public class DescriptionBaseDto implements Serializable{
             Taxon taxon = ((TaxonDescription)description).getTaxon();
             taxonUuid = new UuidAndTitleCache<>(taxon.getUuid(), taxon.getId(), taxon.getTitleCache());
         }else if (description instanceof SpecimenDescription){
-            SpecimenOrObservationBase specimen = ((SpecimenDescription)description).getDescribedSpecimenOrObservation();
-            specimenDto = DerivateDTO.newInstance(specimen);
+            SpecimenOrObservationBase sob = ((SpecimenDescription)description).getDescribedSpecimenOrObservation();
+            specimenDto = SpecimenOrObservationDTOFactory.fromEntity(sob);
         }else if (description instanceof TaxonNameDescription){
             TaxonName name = ((TaxonNameDescription)description).getTaxonName();
             nameUuid = new UuidAndTitleCache<>(name.getUuid(), name.getId(), name.getTitleCache());
@@ -54,10 +57,11 @@ public class DescriptionBaseDto implements Serializable{
     public DescriptionBaseDto(SpecimenOrObservationBase specimen, Set<DescriptiveDataSet> dataSets, boolean isDefault, boolean isImageGallery ){
 
         description = SpecimenDescription.NewInstance(specimen);
-
-        specimenDto = DerivateDTO.newInstance(specimen);
-
-
+        if(specimen instanceof FieldUnit) {
+            specimenDto = FieldUnitDTO.fromEntity((FieldUnit)specimen);
+        } else {
+            specimenDto = DerivedUnitDTO.fromEntity((DerivedUnit)specimen);
+        }
     }
 
 
@@ -79,7 +83,7 @@ public class DescriptionBaseDto implements Serializable{
         return taxonUuid;
     }
 
-    public DerivateDTO getSpecimenDto() {
+    public SpecimenOrObservationBaseDTO getSpecimenDto() {
         return specimenDto;
     }
 

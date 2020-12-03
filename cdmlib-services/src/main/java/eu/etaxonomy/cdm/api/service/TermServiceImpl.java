@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -62,8 +63,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
 @Transactional(readOnly = true)
-public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
-	@SuppressWarnings("unused")
+public class TermServiceImpl
+            extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao>
+            implements ITermService{
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 
 	private ILanguageStringDao languageStringDao;
@@ -653,6 +657,21 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     @Override
     public Collection<TermDto> findFeatureByTitleAsDto(String title){
         return dao.findFeatureByTitleAsDto(title);
+    }
+
+    @Override
+    public Country getCountryByIso(String iso639) {
+        return this.dao.getCountryByIso(iso639);
+    }
+
+    @Override
+    public List<Country> getCountryByName(String name) {
+        List<? extends DefinedTermBase> terms = this.dao.findByTitleWithRestrictions(Country.class, name, null, null, null, null, null, null);
+        List<Country> countries = new ArrayList<>();
+        for (int i = 0; i < terms.size(); i++) {
+            countries.add((Country) terms.get(i));
+        }
+        return countries;
     }
 
 

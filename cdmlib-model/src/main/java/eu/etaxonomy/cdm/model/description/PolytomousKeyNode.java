@@ -856,7 +856,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 
 	// *********************** CLONE ********************************************************/
 
-
     /**
 	 * Clones <i>this</i> PolytomousKeyNode. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i>
@@ -868,7 +867,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public PolytomousKeyNode clone() {
 		PolytomousKeyNode result;
 		try {
 			result = (PolytomousKeyNode) super.clone();
@@ -904,6 +903,4 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     public void removeNullValueFromChildren(){
         updateSortIndex();
     }
-
-
 }

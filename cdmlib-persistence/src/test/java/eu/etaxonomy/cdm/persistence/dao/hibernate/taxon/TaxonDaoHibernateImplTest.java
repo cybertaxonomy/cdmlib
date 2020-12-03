@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static org.junit.Assert.assertEquals;
@@ -133,7 +132,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
         , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
 
-
     @Before
     public void setUp() {
 
@@ -157,9 +155,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         AuditEventContextHolder.clearContext();
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
-     */
     @Test
     @DataSet
     public void testInit() {
@@ -225,7 +220,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
     }
-
 
     @Test
     @DataSet (loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
@@ -838,7 +832,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxonMatchingUninomial() {
-        @SuppressWarnings("rawtypes")
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*","*",null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
@@ -849,7 +842,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxonMatchingSpeciesBinomial() {
-        @SuppressWarnings("rawtypes")
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", null, "kindermannii", null,"*",null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
@@ -860,7 +852,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testGetTaxonMatchingTrinomial() {
-        @SuppressWarnings("rawtypes")
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class,"Cryptocoryne", null,"purpurea","borneoensis","*",null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
@@ -871,7 +862,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testNegativeMatch() {
-        @SuppressWarnings("rawtypes")
         List<Taxon> result = taxonDao.findTaxaByName(Taxon.class,"Acherontia", null,"atropos","dehli",null,null,null,null,null);
 
         assertNotNull("findTaxaByName should return a List", result);
@@ -1208,6 +1198,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
 
         long count = taxonDao.countAuditEvents(TaxonBase.class, null, null, null);
+        assertTrue(count > 0);
 
         @SuppressWarnings("rawtypes")
         List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, criteria,null, null, AuditEventSort.FORWARDS, propertyPaths);

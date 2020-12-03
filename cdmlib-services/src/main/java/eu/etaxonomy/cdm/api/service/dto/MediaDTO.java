@@ -24,7 +24,7 @@ public class MediaDTO extends TypedEntityReference<Media> {
 
     private String uri;
 
-    private String title_l10n;
+    private String title_L10n;
 
     private String mimeType;
 
@@ -47,10 +47,10 @@ public class MediaDTO extends TypedEntityReference<Media> {
     }
 
     public String getTitle_l10n() {
-        return title_l10n;
+        return title_L10n;
     }
     public void setTitle_l10n(String title_l10n) {
-        this.title_l10n = title_l10n;
+        this.title_L10n = title_l10n;
     }
 
     public String getMimeType() {

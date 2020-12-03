@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -675,7 +674,7 @@ public class Rank extends OrderedTermBase<Rank> {
         if (idInVoc == null){
             throw new NullPointerException("idInVoc is NULL in getRankByIdInVoc");
         }
-        if (StringUtils.isBlank(idInVoc)){
+        if (isBlank(idInVoc)){
             //handle empty idInVoc as unknown
             idInVoc = "oijas34\u0155";
         }
@@ -1029,7 +1028,7 @@ public class Rank extends OrderedTermBase<Rank> {
         }
         labelMap.put(label.toLowerCase(), rank.getUuid());
         //add to map
-        if (StringUtils.isBlank(abbrevLabel)){
+        if (isBlank(abbrevLabel)){
             if (logger.isDebugEnabled()){logger.info("Abbreviated label for rank is NULL or empty.Can't add rank to abbrevLabel map: " + CdmUtils.Nz(rank.getLabel()));}
         }else{
             idInVocMap.put(abbrevLabel, rank.getUuid());

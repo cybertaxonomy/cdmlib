@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
@@ -66,9 +65,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	@Override
     protected abstract void doInvoke(TcsXmlImportState state);
 
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-//	 */
 //	@Override
 //	protected boolean doInvoke(IImportConfigurator config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores){
@@ -77,10 +73,9 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 //		return doInvoke(state);
 //	}
 
-
 	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
-			omitAttributes = new HashSet<String>();
+			omitAttributes = new HashSet<>();
 		}
 		boolean result = true;
 		for (CdmSingleAttributeXmlMapperBase mapper : classMappers){
@@ -128,7 +123,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 						break;
 					}
 				}
-
 			}else if (content instanceof Text){
 				//empty Text
 				if (((Text)content).getTextNormalize().equals("")){
@@ -180,7 +174,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 //		return true;
 //	}
 
-
 	protected boolean testAdditionalElements(Element parentElement, List<String> excludeList){
 		boolean result = true;
 		List<Element> list = parentElement.getChildren();
@@ -192,7 +185,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return result;
 	}
-
 
 	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
 		T result = null;
@@ -232,7 +224,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return result;
 	}
 
-
 	protected Reference makeAccordingTo(Element elAccordingTo, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		Reference result = null;
 		if (elAccordingTo != null){
@@ -254,7 +245,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return result;
 	}
-
 
 	private Reference makeAccordingToDetailed(Element elAccordingToDetailed, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
 		Reference result = null;
@@ -296,18 +286,10 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return result;
 	}
 
-
-
-
-
 	protected void testNoMoreElements(){
 		//TODO
 		//logger.info("testNoMoreElements Not yet implemented");
 	}
-
-
-
-
 
 	@SuppressWarnings("unchecked")
 	protected TeamOrPersonBase<?> makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
@@ -360,14 +342,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 	}
 
-
-
-
-
-
-
-
-
 	protected Integer getIntegerYear(String year){
 		try {
 			Integer result = Integer.valueOf(year);
@@ -384,10 +358,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		} else {
 			return ref;
 		}
-
 	}
-
-
 
 	protected void makeTypification(TaxonName name, Element elTypifiacation, ResultWrapper<Boolean> success){
 		if (elTypifiacation != null){
@@ -396,13 +367,11 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 	}
 
-
 	protected void makePublicationStatus(TaxonName name, Element elPublicationStatus, ResultWrapper<Boolean> success){
 		//Status
 
 		if (elPublicationStatus != null){
 			String pubStat = elPublicationStatus.getAttributeValue("Note");
-
 		}
 	}
 
@@ -412,7 +381,6 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			//success.setValue(false);
 		}
 	}
-
 
 	protected void makeProviderSpecificData(TaxonName name, Element elProviderSpecificData, ResultWrapper<Boolean> success, TcsXmlImportState state){
 		if (elProviderSpecificData != null){
@@ -450,13 +418,12 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
     			String id =elRelatedName.getAttributeValue("ref");
     			System.out.println(removeVersionOfRef(id));
     			if (name.getTaxa().iterator().hasNext()){
-    			    Taxon taxon = (Taxon) name.getTaxa().iterator().next();
+    			    Taxon taxon = name.getTaxa().iterator().next();
     			    //if taxon already exist
     			    taxon.addHomotypicSynonym((Synonym)state.getStore(TAXON_STORE).get(removeVersionOfRef(id)));
     			    //otherwise add to a map for homotypic synonyms
     			}
 			}
-
 		}
 	}
 
@@ -465,13 +432,9 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		return ! state.getConfig().isDoTaxonNames();
 	}
 
-
 	protected static final Reference unknownSec(){
 		Reference result = ReferenceFactory.newGeneric();
 		result.setTitleCache("UNKNOWN", true);
 		return result;
 	}
-
-
-
 }

@@ -1389,7 +1389,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    //http://dev.e-taxonomy.eu/trac/ticket/5477
+    //https://dev.e-taxonomy.eu/redmine/issues/5477
     public final void testFindTaxaAndNamesByFullText_AreaFilter_issue5477() throws IOException, LuceneParseException, LuceneMultiSearchException {
 
         TaxonNode subtree = null;

@@ -174,7 +174,7 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public Distribution clone() {
 
         try {
             Distribution result = (Distribution)super.clone();

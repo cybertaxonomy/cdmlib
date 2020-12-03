@@ -130,7 +130,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         @XmlElement(name = "IndividualsAssociation", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = IndividualsAssociation.class),
         @XmlElement(name = "QuantitativeData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = QuantitativeData.class),
         @XmlElement(name = "TaxonInteraction", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TaxonInteraction.class),
-        @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class)
+        @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class),
+        @XmlElement(name = "TemporalData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TemporalData.class)
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
@@ -397,14 +398,13 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * {@link TypeDesignationBase Type designations} are cloned as XXX.<BR>
      * {@link NameRelationship Name relation} are cloned as XXX.<BR>
      *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone()  {
-        DescriptionBase<?> result;
+    public DescriptionBase<S> clone()  {
+        DescriptionBase<S> result;
         try{
-            result = (DescriptionBase<?>)super.clone();
+            result = (DescriptionBase<S>)super.clone();
 
             //working set
             result.descriptiveDataSets = new HashSet<>();
@@ -421,7 +421,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             //elements
             result.descriptionElements = new HashSet<>();
             for (DescriptionElementBase element : getElements()){
-                DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
+                DescriptionElementBase newElement = element.clone();
                 result.addElement(newElement);
             }
 

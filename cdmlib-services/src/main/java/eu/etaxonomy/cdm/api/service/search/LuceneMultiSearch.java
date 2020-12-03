@@ -33,14 +33,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author Andreas Kohlbecker
  * @since Dec 21, 2011
- *
  */
 public class LuceneMultiSearch extends LuceneSearch {
 
     public static final Logger logger = Logger.getLogger(LuceneMultiSearch.class);
 
-    private final Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<Class<? extends CdmBase>>();
-
+    private final Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<>();
 
     /**
      * @param luceneSearch the searches to execute together as a union like search
@@ -52,8 +50,8 @@ public class LuceneMultiSearch extends LuceneSearch {
         groupByField = null; //reset
         Builder queryBuilder = new Builder();
 
-        Set<String> highlightFields = new HashSet<String>();
-        List<SortField> multiSearcherSortFields = new ArrayList<SortField>();
+        Set<String> highlightFields = new HashSet<>();
+        List<SortField> multiSearcherSortFields = new ArrayList<>();
 
         for(LuceneSearch search : luceneSearch){
 
@@ -99,14 +97,11 @@ public class LuceneMultiSearch extends LuceneSearch {
         this.query = queryBuilder.build();
     }
 
-    /**
-     * @return
-     */
     @Override
     public IndexSearcher getSearcher() {
 
         if(searcher == null){
-            List<IndexReader> readers = new ArrayList<IndexReader>();
+            List<IndexReader> readers = new ArrayList<>();
             for(Class<? extends CdmBase> type : directorySelectClasses){
                    //OLD
 //                DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
@@ -156,15 +151,8 @@ public class LuceneMultiSearch extends LuceneSearch {
         return analyzer;
     }
 
-
-    /**
-     * @param analyzer
-     * @param a
-     * @return
-     */
     private boolean isEqual(Analyzer analyzer, Analyzer a) {
         // FIXME PatternAnalyzers must be compared by Pattern also other analyzers must be compared by their properties
         return analyzer != null && !analyzer.getClass().equals(a.getClass());
     }
-
 }

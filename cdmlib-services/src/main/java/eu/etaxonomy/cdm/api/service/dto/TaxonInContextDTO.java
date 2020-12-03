@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonStatus;
 /**
  * @author a.mueller
  * @since 21.09.2016
- *
  */
 public class TaxonInContextDTO {
 
@@ -49,24 +48,16 @@ public class TaxonInContextDTO {
     //accepted taxon
     private UUID acceptedTaxonUuid;
     private String acceptedNameLabel;
-
     private String acceptedTaxonLabel;
-
 
     //parent taxon
     private UUID parentTaxonUuid;
     private String parentNameLabel;
     private String parentTaxonLabel;
 
-
-
     private List<EntityDTO<Taxon>> children = new ArrayList<>();
-
     private List<EntityDTO<Synonym>> synonyms = new ArrayList<>();
-
     private List<MarkedEntityDTO<Taxon>> markedAncestors = new ArrayList<>();
-
-
 
 //********************* GETTER / SETTER ****************************/
 
@@ -119,137 +110,71 @@ public class TaxonInContextDTO {
 
     public String getInfraSpecificEpithet() {return infraSpecificEpithet;}
 
-    /**
-     * @return the authorship
-     */
     public String getAuthorship() {
         return authorship;
     }
 
-    /**
-     * @return the secundumUuid
-     */
     public UUID getSecundumUuid() {
         return secundumUuid;
     }
 
-    /**
-     * @return the secundumLabel
-     */
     public String getSecundumLabel() {
         return secundumLabel;
     }
 
-
-    /**
-     * @return the taxonLabel
-     */
     public String getTaxonLabel() {
         return taxonLabel;
     }
-
-    /**
-     * @param taxonLabel the taxonLabel to set
-     */
     public void setTaxonLabel(String taxonLabel) {
         this.taxonLabel = taxonLabel;
     }
 
-    /**
-     * @return the nameLabel
-     */
     public String getNameLabel() {
         return nameLabel;
     }
-
-    /**
-     * @param nameLabel the nameLabel to set
-     */
     public void setNameLabel(String nameLabel) {
         this.nameLabel = nameLabel;
     }
 
-    /**
-     * @return the nameWithoutAuthor
-     */
     public String getNameWithoutAuthor() {
         return nameWithoutAuthor;
     }
-
-    /**
-     * @param nameWithoutAuthor the nameWithoutAuthor to set
-     */
     public void setNameWithoutAuthor(String nameWithoutAuthor) {
         this.nameWithoutAuthor = nameWithoutAuthor;
     }
 
-
-    /**
-     * @return the children
-     */
     public List<EntityDTO<Taxon>> getChildren() {
         return children;
     }
 
-    /**
-     * @return the synonyms
-     */
     public List<EntityDTO<Synonym>> getSynonyms() {
         return synonyms;
     }
-    /**
-     * @param synonyms the synonyms to set
-     */
     public void setSynonyms(List<EntityDTO<Synonym>> synonyms) {
         this.synonyms = synonyms;
     }
 
-    /**
-     * @return the markedAncestors
-     */
     public List<MarkedEntityDTO<Taxon>> getMarkedAncestors() {
         return markedAncestors;
     }
 
-
-    /**
-     * @return the acceptedTaxonUuid
-     */
     public UUID getAcceptedTaxonUuid() {
         return acceptedTaxonUuid;
     }
-
-    /**
-     * @param acceptedTaxonUuid the acceptedTaxonUuid to set
-     */
     public void setAcceptedTaxonUuid(UUID acceptedTaxonUuid) {
         this.acceptedTaxonUuid = acceptedTaxonUuid;
     }
 
-    /**
-     * @return the acceptedNameLabel
-     */
     public String getAcceptedNameLabel() {
         return acceptedNameLabel;
     }
-
-    /**
-     * @param acceptedNameLabel the acceptedNameLabel to set
-     */
     public void setAcceptedNameLabel(String acceptedNameLabel) {
         this.acceptedNameLabel = acceptedNameLabel;
     }
 
-    /**
-     * @return the taxonStatus
-     */
     public TaxonStatus getTaxonStatus() {
         return taxonStatus;
     }
-
-    /**
-     * @param taxonStatus the taxonStatus to set
-     */
     public void setTaxonStatus(TaxonStatus taxonStatus) {
         this.taxonStatus = taxonStatus;
     }
@@ -281,7 +206,6 @@ public class TaxonInContextDTO {
         this.children.add(childDto);
     }
 
-
     public void addSynonym(EntityDTO<Synonym> synonymDto){
         this.synonyms.add(synonymDto);
     }
@@ -289,7 +213,4 @@ public class TaxonInContextDTO {
     public void addMarkedAncestor(MarkedEntityDTO<Taxon> markedAncestor){
         this.markedAncestors.add(markedAncestor);
     }
-
-
-
 }

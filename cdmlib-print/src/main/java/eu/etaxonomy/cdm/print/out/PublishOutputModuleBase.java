@@ -123,13 +123,6 @@ public abstract class PublishOutputModuleBase implements IPublishOutputModule {
 		return inputDocument;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * eu.etaxonomy.printpublisher.out.IPublishOutputModule#output(org.jdom.
-	 * Document, java.io.File)
-	 */
 	@Override
     public void output(Document document, File exportFolder,
 			IProgressMonitor progressMonitor) {

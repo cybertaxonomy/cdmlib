@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,20 +44,32 @@ public class EntityInitStrategy {
     }
 
     /**
-     * Extends the property base bath by all property definitions in the <code>extensions</code>.
+     * Extends the property base bath by all property definitions in the
+     * <code>extensions</code> and adds the resulting property path to the
+     * EntityInitStrategy.
+     * <p>
+     * Potential duplicate property paths de-duplicated.
      *
-     * @param basePath can be NUll or empty to just append the extensions to the init strategies.
+     * @param basePath
+     *            can be NUll or empty to just append the extensions to the init
+     *            strategies.
      * @param extensions
      * @param basePathIsCollection
      */
-    public EntityInitStrategy extend(String basePath, EntityInitStrategy extensions, boolean basePathIsCollection){
+    public EntityInitStrategy extend(String basePath, EntityInitStrategy extensions, boolean basePathIsCollection) {
         return extend(basePath, extensions.getPropertyPaths(), basePathIsCollection);
     }
 
     /**
-     * Extends the property base bath by all property definitions in the <code>extensions</code>.
+     * Extends the property base bath by all property definitions in the
+     * <code>extensions</code> and adds the resulting property path to the
+     * EntityInitStrategy.
+     * <p>
+     * Potential duplicate property paths de-duplicated.
      *
-     * @param basePath can be NUll or empty to just append the extensions to the init strategies.
+     * @param basePath
+     *            can be NUll or empty to just add the extensions to the init
+     *            strategies.
      * @param extensions
      * @param basePathIsCollection
      */
@@ -73,6 +86,7 @@ public class EntityInitStrategy {
                 propertyPaths.add(appendix);
             }
         }
+        propertyPaths = propertyPaths.stream().distinct().collect(Collectors.toList());
         return this;
     }
 

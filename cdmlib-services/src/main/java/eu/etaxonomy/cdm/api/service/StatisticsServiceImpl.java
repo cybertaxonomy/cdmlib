@@ -101,7 +101,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private void countStatisticsPart(StatisticsConfigurator configurator) {
 		// get last element of configurator.filter (the node that is the root
 		// for the count):
-		IdentifiableEntity filter = configurator.getFilter().get(
+		IdentifiableEntity<?> filter = configurator.getFilter().get(
 				(configurator.getFilter().size()) - 1);
 		if (filter == getFilterALL_DB()) {
 			countAll(configurator);
@@ -111,9 +111,6 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	}
 
-	/**
-	 * @param configurator
-	 */
 	private void countAll(StatisticsConfigurator configurator) {
 		Statistics statistics = new Statistics(configurator);
 

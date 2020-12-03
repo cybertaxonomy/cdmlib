@@ -60,7 +60,7 @@ public interface IReferenceDao extends IIdentifiableDao<Reference>, ITitledDao<R
 	/**
 	 * searches for taxa using the following relations:
 	 * <ul>
-	 * <li>taxon.name.nomenclaturalreference</li>
+	 * <li>taxon.name.nomenclaturalSource.citation</li>
 	 * <li>taxon.descriptions.descriptionElement.sources.citation</li>
 	 * <li>taxon.descriptions.descriptionSources</li>
 	 * <li>taxon.name.descriptions.descriptionElement.sources</li>

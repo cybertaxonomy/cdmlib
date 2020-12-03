@@ -1175,7 +1175,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Child taxon should exist", child1);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteTaxonNodes(false);
-        config.setDeleteMisappliedNamesAndInvalidDesignations(false);
+        config.setDeleteMisappliedNames(false);
         //try {
             //commitAndStartNewTransaction(tableNames);
 
@@ -1713,7 +1713,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID misappliedNameUUID = service.save(misappliedName).getUuid();
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
-        config.setDeleteMisappliedNamesAndInvalidDesignations(true);
+        config.setDeleteMisappliedNames(true);
 
         DeleteResult result  = service.deleteTaxon(testTaxon.getUuid(), config, node.getClassification().getUuid());
         if(!result.isOk()){
@@ -1742,7 +1742,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID misappliedNameUUID = service.save(misappliedName).getUuid();
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
-        config.setDeleteMisappliedNamesAndInvalidDesignations(false);
+        config.setDeleteMisappliedNames(false);
 
         DeleteResult result = service.deleteTaxon(testTaxon.getUuid(), config, node.getClassification().getUuid());
         if(!result.isOk()){

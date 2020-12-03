@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.view;
 
 import java.util.Arrays;
@@ -37,11 +36,9 @@ import org.springframework.web.servlet.view.XmlViewResolver;
  */
 public class PatternViewResolver extends XmlViewResolver {
 
-	private final Set<String> viewSet = new HashSet<String>();
+	private final Set<String> viewSet = new HashSet<>();
 
 	private PathMatcher pathMatcher = new AntPathMatcher();
-
-
 
 	public void setPathMatcher(PathMatcher pathMatcher) {
 		Assert.notNull(pathMatcher, "PathMatcher must not be null");
@@ -83,5 +80,4 @@ public class PatternViewResolver extends XmlViewResolver {
 		}
 		return beanFactory;
 	}
-
 }

@@ -20,7 +20,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
@@ -908,30 +907,34 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
     			+ " inRef.seriespart as inRefSeries, inRef.datepublished_start inRefPublishedStart, inRef.datepublished_end inRefPublishedEnd, inRef.volume as inRefVolume"
     			+ " FROM TaxonBase tb"
     			+ " LEFT OUTER JOIN TaxonName tnb ON tb.name_id = tnb.id"
-    			+ "	LEFT OUTER JOIN Reference r ON tnb.nomenclaturalreference_id = r.id"
-    			+ "	LEFT OUTER JOIN TaxonNode tn ON tn.taxon_id = tb.id"
+    			+ "	LEFT OUTER JOIN OriginalSourceBase nosb ON tnb.id = nosb.sourcedName_id"
+    			+ " LEFT OUTER JOIN Reference r ON nosb.citation_id = r.id"
+                + "	LEFT OUTER JOIN TaxonNode tn ON tn.taxon_id = tb.id"
     			+ "	LEFT OUTER JOIN TaxonName_TypeDesignationBase typeMN ON typeMN.TaxonName_id = tnb.id"
     			+ " LEFT OUTER JOIN TypeDesignationBase tdb ON tdb.id = typeMN.typedesignations_id"
     			+ "	LEFT OUTER JOIN TaxonName nameType ON tdb.typename_id = nameType.id"
-    			+ "	LEFT OUTER JOIN Reference nameTypeRef ON nameType.nomenclaturalreference_id = nameTypeRef.id"
-    			+ "		LEFT OUTER JOIN Reference inRef ON inRef.id = r.inreference_id"
+    			+ " LEFT OUTER JOIN OriginalSourceBase nameTypeOsb ON nameType.id = nameTypeOsb.sourcedName_id"
+    			+ "	LEFT OUTER JOIN Reference nameTypeRef ON nameTypeOsb.citation_id = nameTypeRef.id"
+                + "		LEFT OUTER JOIN Reference inRef ON inRef.id = r.inreference_id"
     			+ "	LEFT OUTER JOIN TaxonBase accT ON accT.id = tb.acceptedTaxon_id"
     			+ "		LEFT OUTER JOIN TaxonNode tnAcc ON tnAcc.taxon_id = accT.id"
     			+ "	ORDER BY DTYPE, famName, accFamName,  tnb.rank_id ,tb.titleCache";
 
-
-    	SQLQuery query = getSession().createSQLQuery(sql);
-
-    	String hqlQueryStringSelect = "SELECT * ";
-
-    	String hqlQueryStringFrom = "FROM TaxonBase taxonBase LEFT OUTER JOIN taxonBase.name as tnb LEFT OUTER JOIN  tnb.nomenclaturalReference as nomRef LEFT OUTER JOIN taxonBase.taxonNodes as node LEFT OUTER JOIN tnb.typeDesignations as type "
-    	        + "LEFT OUTER JOIN type.typifiedNames as nameType LEFT OUTER JOIN nameType.nomenclaturalReference as nameTypeRef LEFT OUTER JOIN nomRef.inReference as inRef LEFT OUTER JOIN taxonBase.acceptedTaxon as accTaxon "
-    	        + "LEFT OUTER JOIN accTaxon.taxonNodes as accTaxonNodes";
-
+    	String hqlQueryStringFrom = "FROM TaxonBase taxonBase "
+    	        + " LEFT OUTER JOIN taxonBase.name as tnb "
+    	        + " LEFT OUTER JOIN tnb.nomenclaturalSource as nomSource "
+    	        + " LEFT OUTER JOIN nomSource.citation as nomRef "
+                + " LEFT OUTER JOIN taxonBase.taxonNodes as node "
+    	        + " LEFT OUTER JOIN tnb.typeDesignations as type "
+    	        + " LEFT OUTER JOIN type.typifiedNames as nameType "
+    	        + " LEFT OUTER JOIN nameType.nomenclaturalSource as nameTypeSource "
+    	        + " LEFT OUTER JOIN nameTypeSource.citation as nameTypeRef "
+                + " LEFT OUTER JOIN nomRef.inReference as inRef "
+    	        + " LEFT OUTER JOIN taxonBase.acceptedTaxon as accTaxon "
+    	        + " LEFT OUTER JOIN accTaxon.taxonNodes as accTaxonNodes";
 
     	Query hqlQuery = getSession().createQuery(hqlQueryStringFrom);
     	List<?> hqlResult = hqlQuery.list();
-
 
 		List<HashMap<String,String>> nameRecords = new ArrayList<>();
 		HashMap<String,String> nameRecord = new HashMap<>();
@@ -956,7 +959,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
             nameRecord.put("famName",familyNode.getTaxon().getName().getNameCache());
             nameRecord.put("accFamName","");
-
 
 			//nameRecord.put("famName",(String)row[0]);
 
@@ -992,9 +994,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 		return nameRecords;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TaxonNameParts> findTaxonNameParts(Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
@@ -1016,11 +1015,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         return result;
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public long countTaxonNameParts(Optional<String> genusOrUninomial, Optional<String> infraGenericEpithet,
             Optional<String> specificEpithet, Optional<String> infraSpecificEpithet, Rank rank, Collection<UUID> excludedNamesUUIDs) {
@@ -1038,9 +1032,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         return (Long) count;
     }
 
-    /**
-     * @return
-     */
     private StringBuilder prepareFindTaxonNameParts(boolean doCount, Optional<String> genusOrUninomial,
             Optional<String> infraGenericEpithet, Optional<String> specificEpithet,
             Optional<String> infraSpecificEpithet, Rank rank, Collection<UUID> excludedNamesUuids) {
@@ -1149,6 +1140,4 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
 
         return results;
     }
-
-
 }

@@ -116,10 +116,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         assertNull(termNotExist);
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#listTerms(java.util.UUID)}.
-     */
     @Test
     /* @DataSet
      * WARNING:
@@ -139,7 +135,6 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
         TermVocabulary<Rank> nullVoc = vocabularyService.find(nullUuid);
         assertNull(nullVoc);
     }
-
 
     @Test
     /* @DataSet

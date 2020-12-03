@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,17 +23,17 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
  * The rank class defines the category of ranks a certain rank belongs to. This information is
- * usually needed for correct formatting of taxon name text representations by using e.g. 
+ * usually needed for correct formatting of taxon name text representations by using e.g.
  * {@link Rank#isSupraGeneric()} . Prior to v3.3 this was computed by comparison of ranks.
  * The current solution makes such methods less dependend on term loading.<BR>
- * @see http://dev.e-taxonomy.eu/trac/ticket/3521
- * 
+ * @see https://dev.e-taxonomy.eu/redmine/issues/3521
+ *
  * @author a.mueller
  * @since 11.06.2013
  */
 @XmlEnum
-public enum RankClass implements IEnumTerm<RankClass>, Serializable{
-	
+public enum RankClass implements IEnumTerm<RankClass>{
+
 	//0
 	/**
 	 * Unknown rank class is to be used if no information is available about the rank class.
@@ -50,7 +49,7 @@ public enum RankClass implements IEnumTerm<RankClass>, Serializable{
 	 */
 	@XmlEnumValue("Suprageneric")
 	Suprageneric(UUID.fromString("439a7897-9e0d-4560-b238-459d827f8a70"), "Suprageneric", "SG", null),
-	
+
 	//2
 	/**
 	 * Class of ranks equal to {@link Rank#GENUS()}. It is expected that there is only 1 such rank.
@@ -64,8 +63,8 @@ public enum RankClass implements IEnumTerm<RankClass>, Serializable{
 	 * This class includes {@link #SpeciesGroup species groups}
 	 */
 	@XmlEnumValue("Infrageneric")
-	Infrageneric(UUID.fromString("37d5b535-3bf9-4749-af66-1a1c089dc0ae"), "Rank", "IG", null),	
-	
+	Infrageneric(UUID.fromString("37d5b535-3bf9-4749-af66-1a1c089dc0ae"), "Rank", "IG", null),
+
 	//4
 	/**
 	 * Class of ranks directly above {@link Rank#SPECIES()} which are used to group certain species
@@ -74,14 +73,14 @@ public enum RankClass implements IEnumTerm<RankClass>, Serializable{
 	 */
 	@XmlEnumValue("SpeciesGroup")
 	SpeciesGroup(UUID.fromString("702edcb7-ee53-45b7-8635-efcbbfd69bca"), "Species group or aggr.", "AG", Infrageneric),
-	
+
 	//5
 	/**
 	 * Class of ranks equal to {@link Rank#SPECIES()}. It is expected that there is only 1 such rank.
 	 */
 	@XmlEnumValue("Species")
 	Species(UUID.fromString("74cc173b-788e-4b01-9d70-a988498458b7"), "Species", "SP", null),
-	
+
 	//6
 	/**
 	 * Class of ranks lower than {@link Rank#SPECIES()}
@@ -90,18 +89,18 @@ public enum RankClass implements IEnumTerm<RankClass>, Serializable{
 	Infraspecific(UUID.fromString("25915b4c-7f07-442f-bdaa-9d0223f6be42"), "Infraspecific", "IS", null),
 
 	;
-	
-	
+
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RankClass.class);
 
 
-	
+
 	private RankClass(UUID uuid, String defaultString, String key, RankClass parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
-	
-// *************************** DELEGATE **************************************/	
+
+// *************************** DELEGATE **************************************/
 
 	private static EnumeratedTermVoc<RankClass> delegateVoc;
 	private IEnumTerm<RankClass> delegateVocTerm;
@@ -109,22 +108,22 @@ public enum RankClass implements IEnumTerm<RankClass>, Serializable{
 	static {
 		delegateVoc = EnumeratedTermVoc.getVoc(RankClass.class);
 	}
-	
-	@Override
-	public String getKey(){return delegateVocTerm.getKey();}
-	
-	@Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
 
 	@Override
-    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
-		
+	public String getKey(){return delegateVocTerm.getKey();}
+
+	@Override
+    public String getLabel(){return delegateVocTerm.getLabel();}
+
+	@Override
+    public String getLabel(Language language){return delegateVocTerm.getLabel(language);}
+
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
 
 	@Override
     public RankClass getKindOf() {return delegateVocTerm.getKindOf();}
-	
+
 	@Override
     public Set<RankClass> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
@@ -135,7 +134,7 @@ public enum RankClass implements IEnumTerm<RankClass>, Serializable{
     public Set<RankClass> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
 
-	
+
 	public static RankClass getByKey(String key){return delegateVoc.getByKey(key);}
     public static RankClass getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 

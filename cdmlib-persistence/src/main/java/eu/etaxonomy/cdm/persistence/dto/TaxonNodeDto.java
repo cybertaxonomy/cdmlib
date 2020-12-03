@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -89,11 +90,14 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(type, taxonTreeNode.getUuid(), taxonTreeNode.getId(), null);
         Taxon taxon = null;
         TaxonNode taxonNode = null;
-
+        Classification classification = null;
         if (taxonTreeNode instanceof TaxonNode){
             taxonNode = (TaxonNode)taxonTreeNode;
             taxon = taxonNode.getTaxon();
+        }else if (taxonTreeNode instanceof Classification){
+            classification = (Classification) taxonTreeNode;
         }
+
 
         if (taxon != null){
             setTitleCache(taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache());
@@ -103,14 +107,18 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             rankLabel = taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getLabel() : null;
             this.setAbbrevTitleCache(taxon.getTitleCache());
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
-
         }else{
-            if (taxonNode != null){
+            if (taxonNode != null && taxonNode.getClassification() != null){
                 setTitleCache(taxonNode.getClassification().getTitleCache());
+            } else if (classification != null){
+                setTitleCache(classification.getTitleCache());
             }
             rankOrderIndex = null;
         }
-        if (taxonNode != null){
+        if (taxonNode != null || classification != null){
+            if (classification != null){
+                taxonNode = classification.getRootNode();
+            }
             taxonomicChildrenCount = taxonNode.getCountChildren();
             status = taxonNode.getStatus();
 
@@ -119,19 +127,17 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             }
 
             treeIndex = taxonNode.treeIndex();
-            try{
-                TaxonNode parent = taxonNode.getParent();
-                parentUUID = parent == null? null:parent.getUuid();
-            }catch(Exception e){
+            if(taxonNode.getParent() != null) {
+                parentUUID = taxonNode.getParent().getUuid();
+            } else {
                 parentUUID = null;
             }
 
             sortIndex = taxonNode.getSortIndex();
-            try{
+            if(taxonNode.getClassification() != null) {
                 classificationUUID = taxonNode.getClassification().getUuid();
-
-            }catch(Exception e){
-                classificationUUID = null;
+            } else if (classification != null){
+                classificationUUID = classification.getUuid();
             }
 
         }

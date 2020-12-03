@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -34,8 +34,8 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * is affiliated. It includes {@link eu.etaxonomy.cdm.model.common.TimePeriod time period} of membership and role of
  * the person in this institution. In case one person belongs to several
  * institutions a corresponding number of instances of InstitutionalMembership
- * have to be created.  
- * 
+ * have to be created.
+ *
  * @author m.doering
  * @version 1.0
  * @since 08-Nov-2007 13:06:30
@@ -54,19 +54,19 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 public class InstitutionalMembership extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -800814712134999042L;
 	public static final Logger logger = Logger.getLogger(InstitutionalMembership.class);
-	
+
 	/*Time period a person belonged to the institution*/
     @XmlElement(name = "Period")
 	private TimePeriod period = TimePeriod.NewInstance();
-	
+
 	//Department of the institution this person was working in
     @XmlElement(name = "Department")
 	private String department;
-	
+
 	//Role this person had in the institution
     @XmlElement(name = "Role")
 	private String role;
-	
+
 	//current institute the person belongs to
     @XmlElement(name = "Institution", required = true)
     @XmlIDREF
@@ -74,14 +74,14 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Institution institute;
-	
+
     @XmlElement(name = "Person", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Person person;
-	
+
 	public static InstitutionalMembership NewInstance() {
 		InstitutionalMembership mship = new InstitutionalMembership();
 		return mship;
@@ -91,7 +91,7 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 		super();
 	}
 
-	/** 
+	/**
 	 * Class constructor using an {@link Institution institution}, a {@link Person person}, a {@link common.TimePeriod time period},
 	 * a department name string and a role string.
 	 * Adds this membership to the persons memberships.
@@ -117,8 +117,8 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 		this.person = person;
 		person.addInstitutionalMembership(this);
 	}
-	
-	/** 
+
+	/**
 	 * Returns the {@link Person person} involved in <i>this</i> institutional membership.
 	 *
 	 * @see  Person#institutionalMemberships
@@ -127,7 +127,7 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 	public Person getPerson() {
 		return person;
 	}
-	
+
 	/**
 	 * Assigns a new {@link Person person} (replacing the actual one) to <i>this</i> institutional membership.
 	 * This method also updates both sets of institutions
@@ -141,13 +141,13 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 		this.person = person;
 	}
 
-	/** 
+	/**
 	 * Returns the {@link Institution institution} corresponding to <i>this</i> institutional membership.
 	 */
 	public Institution getInstitute(){
 		return this.institute;
 	}
-	/** 
+	/**
 	 * Assigns an new institution (replacing the actual one)
 	 * to <i>this</i> institutional membership.
 	 *
@@ -158,7 +158,7 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 		this.institute = newInstitute;
 	}
 
-	/** 
+	/**
 	 * Returns the {@link TimePeriod time period} during which
 	 * the {@link Person person} involved in <i>this</i> institutional membership belonged
 	 * to the {@link Institution institution} also involved in it.
@@ -205,18 +205,18 @@ public class InstitutionalMembership extends VersionableEntity implements Clonea
 	public void setRole(String role){
 		this.role = role == "" ? null : role;
 	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> InstitutionalMembership. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> InstitutionalMembership.
-	 *  
+	 *
 	 * @see eu.etaxonomy.cdm.model.common.VersionableEntity
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public InstitutionalMembership clone() {
 		try{
 			InstitutionalMembership result = (InstitutionalMembership) super.clone();
 			//no changes to department, institute, period, person, role

@@ -546,7 +546,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	    /**
 	     * Very fast and dirty implementation to allow handling of transient objects as described in
-	     * https://dev.e-taxonomy.eu/trac/ticket/3726
+	     * https://dev.e-taxonomy.eu/redmine/issues/3726
 	     *
 	     * Not yet complete.
 	     *
@@ -1377,7 +1377,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            //            return getFeature("Specimen or observation");
 	        }else{
 	            String message = "Unhandled record basis '%s' for defining individuals association feature type. Use default.";
-	            logger.warn(String.format(message, type.getMessage()));
+	            logger.warn(String.format(message, type.getLabel()));
 	            return Feature.OBSERVATION();
 	            //            return getFeature("Specimen or observation");
 

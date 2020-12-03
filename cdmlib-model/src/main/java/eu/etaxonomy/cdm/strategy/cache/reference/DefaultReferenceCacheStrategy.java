@@ -11,14 +11,13 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -37,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
  * we may also only need 1 single cache strategy. However, care must be taken as the formatting
  * differs dependent on the type an the in-reference structure.
  *
- * Generally the cache strategy computes allows 3 formattings:<BR>
+ * Generally the cache strategy allows to compute 3 formats:<BR>
  *
  *  1.) for bibliographic references (stored in {@link Reference#getTitleCache() titleCache}).<BR>
  *
@@ -47,14 +46,17 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
  *  3.) for nomenclatural references with micro reference, but not stored anywhere as the micro reference
  *      is part of the name, not of the reference<BR>
  *
- *  4.) for short citation (e.g. Author 2009) as defined in {@link IReferenceCacheStrategy#getCitation(Reference)}
+ *  4.) for short citation (e.g. Author 2009) as defined in {@link IReferenceCacheStrategy#getCitation(Reference, String)}
+ *  and {@link IReferenceCacheStrategy#createShortCitation(Reference, String, Boolean)}
  *
  * @author a.mueller
  * @since 25.05.2016
  */
-public class DefaultReferenceCacheStrategy extends StrategyBase implements INomenclaturalReferenceCacheStrategy{
-    private static final long serialVersionUID = 6773742298840407263L;
+public class DefaultReferenceCacheStrategy
+        extends StrategyBase
+        implements INomenclaturalReferenceCacheStrategy{
 
+    private static final long serialVersionUID = 6773742298840407263L;
     private static final Logger logger = Logger.getLogger(DefaultReferenceCacheStrategy.class);
 
     private final static UUID uuid = UUID.fromString("63e669ca-c6be-4a8a-b157-e391c22580f9");
@@ -224,83 +226,137 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         return result;
     }
 
+    //TODO see comment on createShortCitation(...)
     @Override
-    public String getCitation(Reference reference) {
+    public String getCitation(Reference reference, String microReference) {
         // mostly copied from nomRefCacheStrat, refCache, journalCache
 
         if (reference == null){
             return null;
         }
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         TeamOrPersonBase<?> team = reference.getAuthorship();
 
         String nextConcat = "";
 
         if (team != null &&  isNotBlank(team.getTitleCache())){
-            stringBuilder.append(team.getTitleCache() );
+            result.append(team.getTitleCache() );
             //here is the difference between nomRef and others
             if (isNomRef(reference.getType())) {
                 nextConcat = afterAuthor;
             }else{
                 //FIXME check if this really makes sense
-                stringBuilder.append(afterAuthor);
+                result.append(afterAuthor);
                 nextConcat = beforeYear;
             }
         }
 
         String year = reference.getYear();
-        if (StringUtils.isNotBlank(year)){
-            stringBuilder.append(nextConcat + year);
+        if (isNotBlank(year)){
+            result.append(nextConcat + year);
+        }
+        if (isNotBlank(microReference)){
+            result.append(": " + microReference);
         }
 
-        return stringBuilder.toString();
+        return result.toString();
     }
 
-    public String createShortCitation(Reference reference) {
+    @Override
+    public String createShortCitation(Reference reference, String citationDetail, Boolean withYearBrackets) {
+        if (withYearBrackets == null){
+            withYearBrackets = false;
+        }
+        if(reference.isProtectedTitleCache()){
+            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
+        }
         TeamOrPersonBase<?> authorship = reference.getAuthorship();
         String shortCitation = "";
         if (authorship == null) {
-            return null;
+            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
         }
-        authorship = HibernateProxyHelper.deproxy(authorship);
+        authorship = CdmBase.deproxy(authorship);
         if (authorship instanceof Person){
-            shortCitation = ((Person)authorship).getFamilyName();
-            if (StringUtils.isBlank(shortCitation) ){
-                shortCitation = ((Person)authorship).getTitleCache();
-            }
+            shortCitation = getPersonString((Person)authorship);
         }
         else if (authorship instanceof Team){
 
-            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
-            int index = 0;
-
-            for (Person teamMember : authorTeam.getTeamMembers()){
-                index++;
-                if (index == 3){
-                    shortCitation += " & al.";
-                    break;
+            Team team = CdmBase.deproxy(authorship, Team.class);
+            if (team.isProtectedTitleCache()){
+                shortCitation = team.getTitleCache();
+            }else{
+                List<Person> teamMembers = team.getTeamMembers();
+                int etAlPosition = 2;
+                for (int i = 1; i <= teamMembers.size() && i < etAlPosition; i++){
+                    Person teamMember = teamMembers.get(i-1);
+                    if(teamMember == null){
+                        // this can happen in UIs in the process of adding new members
+                        continue;
+                    }
+                    String concat = TeamDefaultCacheStrategy.concatString(team, teamMembers, i);
+                    shortCitation += concat + getPersonString(teamMember);
                 }
-                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index, ", ", " & ");
-                if (teamMember.getFamilyName() != null){
-                    shortCitation += concat + teamMember.getFamilyName();
-                }else{
-                    shortCitation += concat + teamMember.getTitleCache();
+                if (teamMembers.size() == 0){
+                    shortCitation = TeamDefaultCacheStrategy.EMPTY_TEAM;
+                } else if (team.isHasMoreMembers() || teamMembers.size() >= etAlPosition){
+                    shortCitation += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
                 }
-
-            }
-            if (StringUtils.isBlank(shortCitation)){
-                shortCitation = authorTeam.getTitleCache();
-            }
-
-        }
-        if (reference.getDatePublished() != null) {
-            if (!StringUtils.isBlank(reference.getDatePublished().getFreeText())){
-                shortCitation = shortCitation + " (" + reference.getDatePublished().getFreeText() + ")";
-            }else if (!StringUtils.isBlank(reference.getYear()) ){
-                shortCitation = shortCitation + " (" + reference.getYear() + ")";
             }
         }
+        shortCitation = CdmUtils.concat(" ", shortCitation, getShortCitationDate(reference, withYearBrackets, citationDetail));
 
+        return shortCitation;
+    }
+
+
+    /**
+     * Adds the citationDetail to the titleCache string that is returned from a method as data is not
+     * accurately parsed.
+     * @return
+     */
+    private String handleCitationDetailInTitleCache(String titleCache, String citationDetail) {
+        if (StringUtils.isBlank(citationDetail)){
+            return titleCache;
+        }else if (StringUtils.isBlank(titleCache)){
+            return ": " + citationDetail;
+        }else if (citationDetail.length() <= 3){
+            if (titleCache.contains(": " + citationDetail)){
+                return titleCache;
+            }
+        }else{
+            if (titleCache.contains(citationDetail)){
+                return titleCache;
+            }
+        }
+        return titleCache + ": " + citationDetail;
+    }
+
+    private String getShortCitationDate(Reference reference, boolean withBrackets, String citationDetail) {
+        String result = null;
+        if (reference.getDatePublished() != null && !reference.getDatePublished().isEmpty()) {
+            if (isNotBlank(reference.getDatePublished().getFreeText())){
+                result = reference.getDatePublished().getFreeText();
+            }else if (isNotBlank(reference.getYear()) ){
+                result = reference.getYear();
+            }
+            if (StringUtils.isNotEmpty(citationDetail)){
+                result = CdmUtils.Nz(result) + ": " + citationDetail;
+            }
+            if (StringUtils.isNotBlank(result) && withBrackets){
+                result = "(" + result + ")";
+            }
+        }else if (reference.getInReference() != null){
+            result = getShortCitationDate(reference.getInReference(), withBrackets, citationDetail);
+        }
+        return result;
+    }
+
+    private String getPersonString(Person person) {
+        String shortCitation;
+        shortCitation = person.getFamilyName();
+        if (isBlank(shortCitation) ){
+            shortCitation = person.getTitleCache();
+        }
         return shortCitation;
     }
 
@@ -399,7 +455,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         if (team != null){
             String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(),
                     team.getNomenclaturalTitle(), isAbbrev, trim);
-            if (StringUtils.isNotBlank(author)){
+            if (isNotBlank(author)){
                 result = author + afterAuthor + result;
             }
         }
@@ -469,7 +525,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
         }else if (type == ReferenceType.Section){
             return "in reference";
         } else {
-            return type.getMessage();
+            return type.getLabel();
         }
     }
 
@@ -629,7 +685,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
                 result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
             }
         }
-        //FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862
+        //FIXME: vol. etc., https://dev.e-taxonomy.eu/redmine/issues/2862
 
         result = getInRefAuthorPart(thisRef.getInReference(), afterInRefAuthor) + result;
         result = "in " +  result;
@@ -654,7 +710,7 @@ public class DefaultReferenceCacheStrategy extends StrategyBase implements INome
                         + " nomenclatural reference. This is not correct or not handled yet."
                         + " Generic titleWithoutYearAndAuthor used instead");
                 result = getTitleWithoutYearAndAuthorGeneric(inInRef, true);
-                //FIXME: vol. etc., http://dev.e-taxonomy.eu/trac/ticket/2862  (comment taken from super.getTokenizedNomenclaturalTitel())
+                //FIXME: vol. etc., https://dev.e-taxonomy.eu/redmine/issues/2862  (comment taken from super.getTokenizedNomenclaturalTitel())
             }else{
                 result = getTitleWithoutYearAndAuthor(inRef, true);
             }

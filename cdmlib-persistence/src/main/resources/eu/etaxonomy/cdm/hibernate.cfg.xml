@@ -159,6 +159,7 @@
       <mapping class="eu.etaxonomy.cdm.model.name.NameTypeDesignation"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalCode"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalSource"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatusType"/>
       <mapping class="eu.etaxonomy.cdm.model.name.Rank"/>

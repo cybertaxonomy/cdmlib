@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.name;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager.NullTypeDesignationStatus;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermComparator;
 
@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.term.OrderedTermComparator;
  * @author a.kohlbecker
  *
  */
-public class TypeDesignationStatusComparator <T extends TypeDesignationStatusBase<T>>  extends OrderedTermComparator<T> {
+public class TypeDesignationStatusComparator<T extends TypeDesignationStatusBase<T>>  extends OrderedTermComparator<T> {
     @Override
     public int compare(T o1, T o2) {
         // fix inverted order of cdm terms by -1*

@@ -40,9 +40,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.description.TaxonDescriptionDefaultCacheStrategy;
-import javafx.stage.Stage;
 
 
 /**
@@ -197,7 +197,8 @@ public class TaxonDescription
 
 
     /**
-     * Returns the set of {@link Scope scopes} (this covers mostly {@link Stage life stage} or {@link Sex sex} or both)
+     * Returns the set of {@link Scope scopes} (this covers mostly terms for {@link TermType#Stage life stage}
+     * or {@link TermType#Sex sex} or both)
      * restricting the validity of <i>this</i> taxon description. This set
      * of scopes should contain no more than one "sex" and one "life stage".
      */
@@ -206,7 +207,7 @@ public class TaxonDescription
     }
 
     /**
-     * Adds a {@link Scope scope} (mostly a {@link Stage life stage} or a {@link Sex sex})
+     * Adds a {@link Scope scope} (mostly a <code>life stage</code> or <code>sex</code> term)
      * to the set of {@link #getScopes() scopes} restricting the validity of
      * <i>this</i> taxon description.
      *
@@ -232,7 +233,6 @@ public class TaxonDescription
     /**
      * Returns the first TextData element of feature type image. If no such element exists,
      * a new one is created.
-     * @return
      */
     @Transient
     public TextData getOrCreateImageTextData(){
@@ -248,7 +248,6 @@ public class TaxonDescription
         return textData;
     }
 
-
 //*********************** CLONE ********************************************************/
 
     /**
@@ -260,7 +259,7 @@ public class TaxonDescription
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public TaxonDescription clone() {
         TaxonDescription result = (TaxonDescription)super.clone();
 
         //scopes

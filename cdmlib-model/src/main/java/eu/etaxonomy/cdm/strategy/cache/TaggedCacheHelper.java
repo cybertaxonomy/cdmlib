@@ -14,9 +14,10 @@ import java.util.Stack;
 import java.util.TreeSet;
 
 /**
+ * Formatter class to create Strings from TaggedText Lists.
+ *
  * @author a.mueller
  * @since 09.09.2015
- *
  */
 public class TaggedCacheHelper {
 
@@ -31,17 +32,20 @@ public class TaggedCacheHelper {
 
         boolean isSeparator;
         boolean wasSeparator = true;  //true for start tag
-        for (TaggedText tag: tags){
+        int index = 0;
+        for (index = 0; index < tags.size(); index++){
+            TaggedText tag = tags.get(index);
             isSeparator = tag.getType().isSeparator();
             if (! wasSeparator && ! isSeparator ){
                 result.append(" ");
             }
-            result.append(tag.getText());
+            if (index < tags.size() -1 || tag.getType() != TagEnum.postSeparator ){
+                result.append(tag.getText());
+            }
             wasSeparator = isSeparator;
         }
         return result.toString().trim();
     }
-
 
     /**
      * Creates a string from tagged text by concatenating all tags. If no separator tag is defined

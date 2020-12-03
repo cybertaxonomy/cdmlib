@@ -114,7 +114,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 // ****************** CLONE ************************************/
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
+    public LanguageStringBase clone() throws CloneNotSupportedException{
         LanguageStringBase result = (LanguageStringBase) super.clone();
         //no changes to text and language
         //result.setText(this.text);

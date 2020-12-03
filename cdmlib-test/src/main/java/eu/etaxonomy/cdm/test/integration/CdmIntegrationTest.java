@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.integration;
 
 import java.io.FileNotFoundException;
@@ -26,6 +25,7 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.filter.ITableFilterSimple;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.h2.tools.Server;
 import org.junit.Before;
@@ -33,12 +33,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.database.annotations.TestDataSource;
+import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 import org.unitils.orm.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.DataBaseTablePrinter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
  * Abstract base class for integration testing a spring / hibernate application using
@@ -182,10 +184,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * Prints the data set to an output stream, using the
      * {@link FlatXmlDataSet}.
      * <p>
-     * <h2>NOTE: for compatibility with unitils 3.x you may
-     * want to use the {@link #printDataSetWithNull(OutputStream)}
-     * method instead.</h2>
-     * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
      * transaction is committed, and that isn't until after the
@@ -207,13 +205,20 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * {@link FlatFullXmlWriter}.
      * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
      * inserts '[null]' place holders for null values instead of skipping them.
-     * This was necessary to make this xml database export compatible to the
-     * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+     * This was necessary for some time to make this xml database export compatible to the
+     * {@link MultiSchemaXmlDataSetReader} which is used in unitils since version 3.x.
+     * Newer versions of unitils handle <code>null</code> values correctly so this method
+     * is now deprecated as explicitly mentioning <code>null</code> values litters the test
+     * data and disturb during model updating.
      * <p>
      * @see {@link DataBaseTablePrinter}
-     * @param out out The OutputStream to write to.
+     * @param out the OutputStream to write to.
      * @param includeTableNames
+     * @deprecated use {@link #printDataSet(OutputStream, String...) as <code>null</code> values should not be mentioned in test data anymore
+     *   (with very few where the null value is the value that is to be tested, these values
+     *   should be added manually)
      */
+    @Deprecated
     public void printDataSetWithNull(OutputStream out, String[] includeTableNames) {
         dbTablePrinter.printDataSetWithNull(out, includeTableNames);
     }
@@ -223,8 +228,10 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * {@link FlatFullXmlWriter}.
      * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
      * inserts '[null]' place holders for null values instead of skipping them.
-     * This was necessary to make this xml database export compatible to the
-     * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+     * This was necessary for some time to make this xml database export compatible to the
+     * {@link MultiSchemaXmlDataSetReader} which is used in unitils since version 3.x
+     * but in the meanwhile handling of <code>null</code> values has been fixed in
+     * unitils.
      * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
@@ -234,10 +241,13 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * annotation (that executes after the test is run), or use
      * {@link CdmTransactionalIntegrationTest}.
      *
-     *@see {@link DataBaseTablePrinter}
+     * @see {@link DataBaseTablePrinter}
      * @param out The OutputStream to write to.
      * @see FlatFullXmlWriter
+     * @deprecated use {@link #printDataSet(OutputStream)} instead, <code>null</code> values
+     * litter the test data and disturb model updating and are not necessary anymore
      */
+    @Deprecated
     public void printDataSetWithNull(OutputStream out) {
         dbTablePrinter.printDataSetWithNull(out);
     }
@@ -247,6 +257,19 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
      * @param excludeTermLoadingTables
      * @param excludeFilter the tables to be <em>excluded</em>
      */
+    public void printDataSet(OutputStream out, Boolean excludeTermLoadingTables,
+            ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
+        dbTablePrinter.printDataSet(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames, false);
+    }
+
+    /**
+     * @param out
+     * @param excludeTermLoadingTables
+     * @param excludeFilter the tables to be <em>excluded</em>
+     * @deprecated use {@link #printDataSet(OutputStream, Boolean, ITableFilterSimple, String[])
+     *   instead, <code>null</code> values litter the test data and disturb model updating and are not necessary anymore
+     */
+    @Deprecated
     public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
             ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
         dbTablePrinter.printDataSetWithNull(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames);
@@ -264,11 +287,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     /**
      * Prints the named tables to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatXmlDataSet}.
-     * <p>
-     * <h2>NOTE: for compatibility with unitils 3.x you may
-     * want to use the {@link #printDataSetWithNull(OutputStream)}
-     * method instead.</h2>
-     *
      * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
@@ -296,11 +314,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     /**
      * Prints the named tables to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatXmlWriter}.
-     * <p>
-     * <h2>NOTE: for compatibility with unitils 3.x you may
-     * want to use the {@link #printDataSetWithNull(OutputStream)}
-     * method instead.</h2>
-     *
      * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the

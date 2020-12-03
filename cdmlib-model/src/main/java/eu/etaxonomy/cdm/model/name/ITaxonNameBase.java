@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -155,7 +154,23 @@ public interface ITaxonNameBase
     public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
     /**
-     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship}
+     * from another taxon name to <i>this</i> taxon name
+     * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
+     * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
+     *
+     * @param fromName        the taxon name of the source for this new name relationship
+     * @param type            the type of this new name relationship
+     * @see                   #getRelationsFromThisName()
+     * @see                   #getNameRelations()
+     * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)
+     * @see                   #addNameRelationship(NameRelationship)
+     */
+    public NameRelationship addRelationshipFromName(TaxonName fromName, NameRelationshipType type);
+
+    /**
+     * Creates a new {@link NameRelationship#NameRelationship(TaxonName, TaxonName, NameRelationshipType, String) name relationship}
+     * from another taxon name to <i>this</i> taxon name
      * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
      * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
      *
@@ -164,7 +179,7 @@ public interface ITaxonNameBase
      * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
      * @param citation        the reference in which this relation was described
      * @param microCitation   the reference detail for this relation (e.g. page)
-     * @param codeEditrion    the nomenclatural code used for the considered rule
+     * @param codeEdition     the nomenclatural code used for the considered rule
      * @see                   #getRelationsFromThisName()
      * @see                   #getNameRelations()
      * @see                   #addRelationshipToName(TaxonName, NameRelationshipType, String)
@@ -342,12 +357,19 @@ public interface ITaxonNameBase
     //TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
     public void addReplacedSynonym(TaxonName replacedSynonym, Reference citation, String microcitation, String ruleConsidered, NomenclaturalCodeEdition codeEdition);
 
+
     /**
-     * @deprecated in future original spellings will be stored with nomenclatural source
-     * so this method may be deleted then
+     * Returns the original spelling (taxon name used in nomenclatural source).
      */
-    @Deprecated
-    public NameRelationship addOriginalSpelling(TaxonName originalSpelling, Reference citation, String microcitation);
+    @Transient
+    public TaxonName getOriginalSpelling();
+
+    /**
+     * Sets the original spelling in the nomenclatural source.
+     * Creates the source if it does not exist yet.
+     */
+    public void setOriginalSpelling(TaxonName originalSpelling);
+
 
     /**
      * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.
@@ -414,13 +436,13 @@ public interface ITaxonNameBase
      * @see #getNomenclaturalReference()
      * @see #getNomenclaturalMicroReference()
      */
-    public DescriptionElementSource getNomenclaturalSource();
+    public NomenclaturalSource getNomenclaturalSource();
 
     /**
      * Sets the nomenclatural source
      * @param nomenclaturalSource
      */
-    public void setNomenclaturalSource(DescriptionElementSource nomenclaturalSource);
+    public void setNomenclaturalSource(NomenclaturalSource nomenclaturalSource);
 
 
     /**

@@ -10,11 +10,12 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,14 +31,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.Registration;
-import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
+import eu.etaxonomy.cdm.remote.service.RegistrableEntityFilter;
 import io.swagger.annotations.Api;
 
 /**
@@ -69,6 +70,11 @@ public class NamePortalController extends BaseController<TaxonName, INameService
 
     private static final Logger logger = Logger.getLogger(NamePortalController.class);
 
+    private static final EntityInitStrategy DEFAULT_INIT_STRATEGY =  new EntityInitStrategy(
+            "$",
+            "nomenclaturalSource.citation.inReference.inReference"
+            );
+
     private static final List<String> TYPEDESIGNATION_INIT_STRATEGY = TypeDesignationPortalController.DEFAULT_INIT_STRATEGY;
 
 
@@ -76,20 +82,19 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             "elements.$",
             "elements.multilanguageText",
             "elements.media",
+            "elements.sources.citation.authorship",
+            "elements.sources.nameUsedInSource",
     });
 
     private static final EntityInitStrategy NOMREF_INIT_STRATEGY = new EntityInitStrategy(
-            "nomenclaturalReference.authorship.$",
-            "nomenclaturalReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.authorship.$",
-            "nomenclaturalReference.inReference.inReference.inReference.authorship.$"
+            "nomenclaturalSource.citation.authorship.$",
+            "nomenclaturalSource.citation.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.authorship.$",
+            "nomenclaturalSource.citation.inReference.inReference.inReference.authorship.$"
             );
 
     private static EntityInitStrategy nameRelationsInitStrategy = null;
 
-    /**
-     * @return the nameRelationsInitStrategy
-     */
     public static EntityInitStrategy getNameRelationsInitStrategy() {
         if(nameRelationsInitStrategy == null){
             nameRelationsInitStrategy = extendNameRelationsInitStrategies(NameController.NAME_RELATIONS_INIT_STRATEGY.getPropertyPaths(), true);
@@ -97,6 +102,9 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         return nameRelationsInitStrategy;
     }
 
+    public NamePortalController() {
+        setInitializationStrategy(DEFAULT_INIT_STRATEGY.getPropertyPaths());
+    }
 
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
@@ -105,16 +113,10 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         if(pathProperties == null){
             return pathProperties;
         }
-
         EntityInitStrategy initStrategy = extendNameRelationsInitStrategies(pathProperties, false);
-
         return initStrategy.getPropertyPaths();
     }
 
-    /**
-     * @param pathProperties
-     * @return
-     */
     static EntityInitStrategy extendNameRelationsInitStrategies(List<String> pathProperties, boolean addNomrefInitStrategy) {
 
         EntityInitStrategy initStrategy = new EntityInitStrategy(pathProperties);
@@ -126,27 +128,30 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             nameRelInitExtendet.extend("fromName", NOMREF_INIT_STRATEGY.getPropertyPaths(), false);
         }
 
-        if(pathProperties.contains("nameRelations")){
+        List<String> transtientNameRelationsInitstrategies = initStrategy.getPropertyPaths()
+                .stream()
+                .filter(s -> s.startsWith("nameRelations"))
+                .collect(Collectors.toList());
+        if(!transtientNameRelationsInitstrategies.isEmpty()){
             // nameRelations is a transient property! replace it by relationsFromThisName and relationsToThisName
-            initStrategy.getPropertyPaths().remove("nameRelations");
+            for(String remove : transtientNameRelationsInitstrategies) {
+                initStrategy.getPropertyPaths().remove(remove);
+            }
             initStrategy.extend("relationsFromThisName", nameRelInitExtendet.getPropertyPaths(), true);
             initStrategy.extend("relationsToThisName", nameRelInitExtendet.getPropertyPaths(), true);
         } else {
-            if(pathProperties.contains("relationsFromThisName")){
-                initStrategy.getPropertyPaths().remove("relationsFromThisName");
+            if(pathProperties.stream().anyMatch(s -> s.startsWith("relationsFromThisName"))){
+                initStrategy.getPropertyPaths().remove("relationsFromThisName"); // remove the very simple one
                 initStrategy.extend("relationsFromThisName", nameRelInitExtendet.getPropertyPaths(), true);
             }
-            if(pathProperties.contains("relationsToThisName")){
-                initStrategy.getPropertyPaths().remove("relationsToThisName");
+            if(pathProperties.stream().anyMatch(s -> s.startsWith("relationsToThisName"))){
+                initStrategy.getPropertyPaths().remove("relationsToThisName"); // remove the very simple one
                 initStrategy.extend("relationsToThisName", nameRelInitExtendet.getPropertyPaths(), true);
             }
         }
         return initStrategy;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(INameService service) {
@@ -179,7 +184,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
             return null;
         }
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return p.getRecords();
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(p.getRecords()));
     }
 
     /**
@@ -204,7 +209,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         }
         List<TypeDesignationBase> result = service.getTypeDesignationsInHomotypicalGroup(uuid,
                 null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return result;
+        return new ArrayList(RegistrableEntityFilter.newInstance(userHelper).filterPublishedOnly(result));
     }
 
     /**
@@ -257,36 +262,13 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         Set<NameRelationship> nameRelations = tnb.getNameRelations();
 
         if(nameRelations != null && nameRelations.size() > 0){
-        Set<NameRelationship> nameRelationsFiltered = new HashSet<>(nameRelations.size());
-
-        if(userHelper.userIsAnnonymous()){
-            // need to filter out unpublished related names in this case
-                for(NameRelationship rel : nameRelations){
-                    // check if the name has been published ba any registration
-                    Set<Registration> regsToCheck = new HashSet<>();
-                    if(rel.getToName().equals(tnb) && rel.getFromName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getFromName().getRegistrations());
-                    }
-                    if(rel.getFromName().equals(tnb) && rel.getToName().getRegistrations() != null) {
-                        regsToCheck.addAll(rel.getToName().getRegistrations());
-                    }
-                    // if there is no registration for this name we assume that it is published
-                    boolean nameIsPublished = regsToCheck.size() == 0;
-                    nameIsPublished |= regsToCheck.stream().anyMatch(reg -> reg.getStatus().equals(RegistrationStatus.PUBLISHED));
-                    if(nameIsPublished){
-                        nameRelationsFiltered.add(rel);
-                    } else {
-                        logger.debug("Hiding NameRelationship " + rel);
-                    }
-                }
-            }  else {
-                // no filtering needed
-                nameRelationsFiltered = nameRelations;
-            }
+            Set<NameRelationship> nameRelationsFiltered = RegistrableEntityFilter.
+                    newInstance(userHelper).filterPublishedOnly(tnb, nameRelations);
             return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
         }
         return null;
     }
+
 
 
 }

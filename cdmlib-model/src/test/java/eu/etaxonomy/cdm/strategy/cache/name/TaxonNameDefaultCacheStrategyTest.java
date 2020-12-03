@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -305,13 +304,13 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     //3665
     @Test
     public void testOriginalSpelling() {
-    	NameRelationshipType origSpellingType = NameRelationshipType.ORIGINAL_SPELLING();
-    	TaxonName originalName = (TaxonName)speciesName.clone();
+
+        TaxonName originalName = speciesName.clone();
     	originalName.setSpecificEpithet("alpa");
     	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alpa", originalName.getNameCache());
 
-    	speciesName.addRelationshipFromName(originalName, origSpellingType, null, null);
+    	speciesName.setOriginalSpelling(originalName);
     	Assert.assertEquals("Abies alba [as \"alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
@@ -326,7 +325,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     	//#3665
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
     	TaxonName originalSpelling = (TaxonName)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
-    	correctName.addRelationshipFromName(originalSpelling, origSpellingType, null, null);
+    	correctName.setOriginalSpelling(originalSpelling);
     	Assert.assertEquals("Nepenthes glabrata", correctName.getNameCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton", correctName.getTitleCache());
     	Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton [as \"glabratus\"]", correctName.getFullTitleCache());
@@ -443,7 +442,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertNull("NameCache should be null", subSpeciesName.getNameCache());
         subSpeciesName.setProtectedNameCache(false);
         subSpeciesName.setAppendedPhrase(null);
-
 
         //ref + nomRef
         Reference book = ReferenceFactory.newBook();

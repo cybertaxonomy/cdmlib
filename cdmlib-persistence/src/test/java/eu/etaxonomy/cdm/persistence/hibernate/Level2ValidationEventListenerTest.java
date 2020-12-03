@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import static org.junit.Assert.assertNotNull;
@@ -33,13 +41,8 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 	@SpringBeanByType
 	private IUserDao userDao;
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 		logger.info("begin setUp()");
 		uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
 		cdmBase = Taxon.NewInstance(null, null);
@@ -47,91 +50,50 @@ public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrati
 		logger.info("end setUp()");
 	}
 
-
 	/************ TESTS ********************************/
 
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}
-	 * .
-	 *
-	 * @throws Exception
-	 */
 	@Test
-	public void testCdmEntityDaoBase() throws Exception
-	{
+	public void testCdmEntityDaoBase() throws Exception	{
 		assertNotNull("cdmEntityDaoBase should exist", cdmEntityDaoBase);
 	}
 
-
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}
-	 * .
-	 */
 	//@Test
 	//@DataSet
 	//@ExpectedDataSet
-	public void testSaveOrUpdate()
-	{
+	public void testSaveOrUpdate(){
 		TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
 		commit();
 	}
 
-
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}
-	 * .
-	 */
 	//@Test
 	//@DataSet
 	//@ExpectedDataSet
-	public void testSave() throws Exception
-	{
+	public void testSave() throws Exception{
 		cdmEntityDaoBase.save(cdmBase);
 		commit();
 	}
 
-
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#update(eu.etaxonomy.cdm.model.common.CdmBase)}
-	 * .
-	 */
 	//@Test
 	//@DataSet
 	//@ExpectedDataSet
-	public void testUpdate()
-	{
+	public void testUpdate(){
 		TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.update(cdmBase);
 		commit();
 	}
 
-
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)}
-	 * .
-	 */
 	//@Test
 	//@DataSet("CdmEntityDaoBaseTest.xml")
 	//@ExpectedDataSet
-	public void testDelete()
-	{
+	public void testDelete(){
 		TaxonBase<?> cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		assertNotNull(cdmBase);
 		cdmEntityDaoBase.delete(cdmBase);
 	}
 
-
 	@Override
-	public void createTestDataSet() throws FileNotFoundException {
-		// TODO Auto-generated method stub
-	}
-
+	public void createTestDataSet() throws FileNotFoundException {}
 }

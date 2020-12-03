@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  * @since 02.08.2018
  *
  */
-public class DNASampleDTO extends PreservedSpecimenDTO{
+public class DNASampleDTO extends DerivedUnitDTO{
 
     private static final long serialVersionUID = -1050277075084265067L;
 
@@ -34,7 +34,12 @@ public class DNASampleDTO extends PreservedSpecimenDTO{
     private DnaQuality dnaQuality;
 
 
-
+    public static DNASampleDTO fromEntity(DnaSample entity){
+        if(entity == null) {
+            return null;
+        }
+        return new DNASampleDTO(HibernateProxyHelper.deproxy(entity, DnaSample.class));
+    }
 
     public DNASampleDTO(DerivedUnit derivedUnit) {
         super(derivedUnit);

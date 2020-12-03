@@ -200,7 +200,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
 //*********************** CLONE ********************************************************/
 
 	@Override
-	public Object clone() {
+	public Synonym clone() {
 		Synonym result;
 		result = (Synonym)super.clone();
 

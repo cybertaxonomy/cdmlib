@@ -10,12 +10,16 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TermNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.persistence.dto.CharacterNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermNodeDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -74,5 +78,27 @@ public interface ITermNodeService extends IVersionableService<TermNode>{
      * @return the result of the operation
      */
     public UpdateResult moveNode(UUID movedNodeUuid, UUID targetNodeUuid);
+
+    /**
+     * @param dtos
+     * @return
+     */
+    UpdateResult saveTermNodeDtoList(List<TermNodeDto> dtos);
+
+    /**
+     * @param dtos
+     * @param vocabularyUuid
+     * @return
+     */
+    UpdateResult saveNewCharacterNodeDtoMap(Map<Character, CharacterNodeDto> dtos, UUID vocabularyUuid);
+
+    /**
+     * @param dtos
+     * @return
+     */
+    UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos);
+
+
+
 
 }

@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -38,6 +37,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -304,11 +304,11 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
 	public void setCatalogNumber(String catalogNumber) {
-		this.catalogNumber = StringUtils.isBlank(catalogNumber)?null:catalogNumber;
+		this.catalogNumber = isBlank(catalogNumber)?null:catalogNumber;
 	}
 
 	public void setBarcode(String barcode) {
-		this.barcode = StringUtils.isBlank(barcode)? null : barcode;
+		this.barcode = isBlank(barcode)? null : barcode;
 	}
 	public String getBarcode() {
 		return barcode;
@@ -321,12 +321,9 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	public String getAccessionNumber() {
 		return accessionNumber;
 	}
-
-
 	public void setAccessionNumber(String accessionNumber) {
-		this.accessionNumber = StringUtils.isBlank(accessionNumber)? null : accessionNumber;
+		this.accessionNumber = isBlank(accessionNumber)? null : accessionNumber;
 	}
-
 
 	/**
 	 * Original label information may present the exact original text
@@ -363,7 +360,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 */
 	@Deprecated
 	public void setCollectorsNumber(String collectorsNumber) {
-		this.collectorsNumber = StringUtils.isBlank(collectorsNumber)? null : collectorsNumber;
+		this.collectorsNumber = isBlank(collectorsNumber)? null : collectorsNumber;
 	}
 
 	public TaxonName getStoredUnder() {
@@ -392,16 +389,39 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
     public String getMostSignificantIdentifier() {
-        if (StringUtils.isNotBlank(getAccessionNumber())) {
+        if (isNotBlank(getAccessionNumber())) {
             return getAccessionNumber();
         }
-        else if(StringUtils.isNotBlank(getBarcode())){
+        else if(isNotBlank(getBarcode())){
             return getBarcode();
         }
-        else if(StringUtils.isNotBlank(getCatalogNumber())){
+        else if(isNotBlank(getCatalogNumber())){
             return getCatalogNumber();
         }
         return null;
+    }
+
+    /**
+     * Collects all FieldUnits in the parent branches of the derivation graph.
+     * <p>
+     * <b>NOTE:</b> As this method walks the derivation graph it should only be used in a transactional context or
+     * it must be assured that the whole graph is initialized.
+     */
+    public java.util.Collection<FieldUnit> collectFieldUnits() {
+        java.util.Collection<FieldUnit> fieldUnits = new HashSet<>();
+        Set<SpecimenOrObservationBase> originals = getOriginals();
+        if (originals != null && !originals.isEmpty()) {
+            for (SpecimenOrObservationBase<?> original : originals) {
+                if (original.isInstanceOf(FieldUnit.class)) {
+                    fieldUnits.add(HibernateProxyHelper.deproxy(original, FieldUnit.class));
+                }
+                else if(original.isInstanceOf(DerivedUnit.class)){
+                    DerivedUnit originalDerivedUnit = HibernateProxyHelper.deproxy(original, DerivedUnit.class);
+                    fieldUnits.addAll(originalDerivedUnit.collectFieldUnits());
+                }
+            }
+        }
+        return fieldUnits;
     }
 
 // ******* GETTER / SETTER for preserved specimen only ******************/
@@ -420,7 +440,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 
 
 	public void setExsiccatum(String exsiccatum) {
-		this.exsiccatum = StringUtils.isBlank(exsiccatum)? null : exsiccatum;
+		this.exsiccatum = isBlank(exsiccatum)? null : exsiccatum;
 	}
 
 	public String getExsiccatum() {
@@ -436,11 +456,10 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	 * This method overrides the clone method from {@link SpecimenOrObservationBase SpecimenOrObservationBase}.
 	 *
 	 * @see SpecimenOrObservationBase#clone()
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public DerivedUnit clone() {
 		try{
 			DerivedUnit result = (DerivedUnit)super.clone();
 			//collection

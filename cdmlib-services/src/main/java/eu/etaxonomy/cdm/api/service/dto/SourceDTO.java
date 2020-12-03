@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+
 /**
  * @author a.kohlbecker
  * @since Aug 31, 2018
@@ -18,7 +20,46 @@ import java.util.UUID;
 public class SourceDTO {
 
     private UUID uuid;
-    String citation;
     String citationDetail;
+    ReferenceDTO citation;
+
+    public static SourceDTO fromDescriptionElementSource(DescriptionElementSource entity) {
+        if(entity == null) {
+            return null;
+        }
+        SourceDTO dto = new SourceDTO();
+        dto.uuid = entity.getUuid();
+        dto.citation = ReferenceDTO.fromReference(entity.getCitation());
+        dto.citationDetail = entity.getCitationMicroReference();
+        return dto;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public ReferenceDTO getCitation() {
+        return citation;
+    }
+
+
+    public void setCitation(ReferenceDTO citation) {
+        this.citation = citation;
+    }
+
+
+    public String getCitationDetail() {
+        return citationDetail;
+    }
+
+
+    public void setCitationDetail(String citationDetail) {
+        this.citationDetail = citationDetail;
+    }
 
 }

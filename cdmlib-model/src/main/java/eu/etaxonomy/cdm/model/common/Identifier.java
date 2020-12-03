@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -44,8 +43,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @Table(name="Identifier", indexes = { @Index(name = "identifierIndex", columnList = "identifier") })
 public class Identifier<T extends IdentifiableEntity<?>>
-            extends AnnotatableEntity
-            implements Cloneable {
+            extends AnnotatableEntity {
 
     private static final long serialVersionUID = 3337567049024506936L;
 	@SuppressWarnings("unused")
@@ -94,9 +92,8 @@ public class Identifier<T extends IdentifiableEntity<?>>
 		return identifier;
 	}
 	public void setIdentifier(String identifier) {
-		this.identifier = StringUtils.isBlank(identifier) ? null : identifier;
+		this.identifier = isBlank(identifier) ? null : identifier;
 	}
-
 
 	/**
 	 * The identifier type. E.g. DOI, LSID, Barcode, Sample Designation, ...
@@ -113,10 +110,9 @@ public class Identifier<T extends IdentifiableEntity<?>>
 	//****************** CLONE ************************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		Identifier<?> result = (Identifier<?>)super.clone();
+	public Identifier<T> clone() throws CloneNotSupportedException{
+		Identifier<T> result = (Identifier<T>)super.clone();
 		//no changes to: type, value
 		return result;
 	}
-
 }

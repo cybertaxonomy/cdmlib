@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.17.0</version>
+    <version>5.18.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -20,7 +20,34 @@
     the common data model via webservices in the wider sense</description>
   <!-- Revert this back to "war" before committing -->
   <packaging>jar</packaging>
-
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>../src/site/apt/remote</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <dependencies>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
@@ -98,18 +125,6 @@
       <artifactId>dozer</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-cglib-repack</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
       <classifier>jdk15</classifier>
@@ -141,16 +156,18 @@
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
     </dependency>
-    <dependency>
-      <groupId>stax</groupId>
-      <artifactId>stax</artifactId>
-    </dependency>
 
     <!-- JsonView -->
     <dependency>
       <!-- for xml serialization (net.sf.json.xml.XMLSerializer) -->
       <groupId>xom</groupId>
       <artifactId>xom</artifactId>
+<!--       <exclusions> -->
+<!--         <exclusion> -->
+<!--           <groupId>xml-apis</groupId> -->
+<!--           <artifactId>xml-apis</artifactId> -->
+<!--         </exclusion> -->
+<!--       </exclusions> -->
     </dependency>
 
     <!-- swagger -->
@@ -170,31 +187,5 @@
       <artifactId>iiif-apis</artifactId>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.5</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/eu/etaxonomy/cdm/doc/remote/apt</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>../src/site/apt/remote</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
 

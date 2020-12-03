@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
@@ -48,13 +47,9 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 	protected static String nsTm = "http://rs.tdwg.org/ontology/voc/Team";
 	protected static String nsTpalm = "http://wp5.e-taxonomy.eu/import/palmae/common";
 
-
 	@Override
     protected abstract void doInvoke(TcsRdfImportState state);
 
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-//	 */
 //	@Override
 //	protected boolean doInvoke(IImportConfigurator config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores){
@@ -65,7 +60,7 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 
 	protected boolean makeStandardMapper(Statement resource, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeRDFMapperBase[] classMappers){
 		if (omitAttributes == null){
-			omitAttributes = new HashSet<String>();
+			omitAttributes = new HashSet<>();
 		}
 		boolean result = true;
 		for (CdmSingleAttributeRDFMapperBase mapper : classMappers){
@@ -108,7 +103,6 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 						break;
 					}
 				}
-
 			}else if (content instanceof Text){
 				//empty Text
 				if (((Text)content).getTextNormalize().equals("")){
@@ -127,5 +121,4 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 		}
 		return (additionalContentList.size() == 0);
 	}
-
 }

@@ -16,12 +16,11 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 /**
  * @author a.kohlbecker
  * @since Feb 21, 2018
- *
  */
 public class TermTestBase {
 
     @BeforeClass
-    public final static void intitializeTermsIfneeded() {
+    public final static void intitializeTermsIfNeeded() {
         DefaultTermInitializer defaultTermInitializer = new DefaultTermInitializer();
         if(Language.DEFAULT() == null){
             defaultTermInitializer.initialize();

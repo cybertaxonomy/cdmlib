@@ -48,7 +48,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
     static {
 
         // ==================================================
-        // Mapping as defined in ticket http://dev.e-taxonomy.eu/trac/ticket/3907
+        // Mapping as defined in ticket https://dev.e-taxonomy.eu/redmine/issues/3907
         // ==================================================
 
         statusSymbols = new HashMap<> ();

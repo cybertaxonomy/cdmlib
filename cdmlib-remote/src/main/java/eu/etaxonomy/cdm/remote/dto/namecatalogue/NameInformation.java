@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.namecatalogue;
 
 import java.util.ArrayList;
@@ -43,7 +51,7 @@ public class NameInformation implements RemoteResponse {
 		response.setRank(rank);
 
 		// set status list
-		Iterator it = nomenclatureStatus.iterator();
+		Iterator<?> it = nomenclatureStatus.iterator();
 		System.out.println("NStatus Size : " + nomenclatureStatus.size());
 		while(it.hasNext()) {
 			NomenclaturalStatus ns = (NomenclaturalStatus)it.next();
@@ -82,7 +90,7 @@ public class NameInformation implements RemoteResponse {
 			if(tnbRelatedTo != null) {
 			    System.out.println("tnbRelatedTo not null");
 				relatednameCache = tnbRelatedTo.getTitleCache();
-				Reference ref = (Reference) tnbRelatedTo.getNomenclaturalReference();
+				Reference ref = tnbRelatedTo.getNomenclaturalReference();
 				if(ref !=null) {
 				    relatedCitation = ref.getTitleCache();
 				}
@@ -110,7 +118,7 @@ public class NameInformation implements RemoteResponse {
 			if(tnbRelatedFrom != null) {
 			    System.out.println("tnbRelatedTo not null");
 				relatednameCache = tnbRelatedFrom.getTitleCache();
-				Reference ref = (Reference) tnbRelatedFrom.getNomenclaturalReference();
+				Reference ref = tnbRelatedFrom.getNomenclaturalReference();
 				if(ref !=null) {
 				    relatedCitation = ref.getTitleCache();
 				}
@@ -171,23 +179,21 @@ public class NameInformation implements RemoteResponse {
 		private Set<String> taxonUuids;
 		private Set<String> taxonLsids;
 
-
 		public NameInformationResponse() {
 			title = "";
 			name = "";
 			rank = "";
-			nomenclatureStatus = new ArrayList<String>();
+			nomenclatureStatus = new ArrayList<>();
 			citation = "";
-			nameRelationships = new ArrayList<NameInformation.NameInformationResponse.NameRelationshipInfo>();
-			taxonUuids = new HashSet<String>();
-			taxonLsids = new HashSet<String>();
+			nameRelationships = new ArrayList<>();
+			taxonUuids = new HashSet<>();
+			taxonLsids = new HashSet<>();
 
 		}
 
 		public void setTitle(String title) {
 			this.title = title;
 		}
-
 		public String getTitle() {
 			return this.title;
 		}
@@ -195,7 +201,6 @@ public class NameInformation implements RemoteResponse {
 		public void setName(String name) {
 			this.name = name;
 		}
-
 		public String getName() {
 			return this.name;
 		}
@@ -203,7 +208,6 @@ public class NameInformation implements RemoteResponse {
 		public void setRank(String rank) {
 			this.rank = rank;
 		}
-
 		public String getRank() {
 			return this.rank;
 		}
@@ -256,11 +260,7 @@ public class NameInformation implements RemoteResponse {
 			private String relatedName;
 			private String citation;
 
-
-
-			public NameRelationshipInfo() {
-
-			}
+			public NameRelationshipInfo() {}
 
 			public void setRelationInfo(String type, String relatedName, String citation) {
 				this.type = type;
@@ -279,8 +279,6 @@ public class NameInformation implements RemoteResponse {
 			public String getCitation() {
 				return this.citation;
 			}
-
-
 		}
 	}
 }

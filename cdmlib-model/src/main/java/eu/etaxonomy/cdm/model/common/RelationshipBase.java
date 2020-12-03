@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.MappedSuperclass;
@@ -21,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -55,7 +55,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
     @XmlAttribute(name = "isDoubtful")
     private boolean doubtful;
-
 
     /**
      * Enumeration and String representation of the <code>relatedFrom</code> (invers) and
@@ -114,6 +113,24 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
         to.addRelationship(this);
     }
 
+    /**
+     * Creates a relationship between 2 objects and adds it to the respective
+     * relation sets of both objects.
+     *
+     * @param from
+     * @param to
+     * @param type
+     * @param source
+     */
+    protected RelationshipBase(FROM from, TO to, TYPE type, DescriptionElementSource source) {
+        super(source);
+        setRelatedFrom(from);
+        setRelatedTo(to);
+        setType(type);
+        from.addRelationship(this);
+        to.addRelationship(this);
+    }
+
     public abstract TYPE getType();
 
     public abstract void setType(TYPE type);
@@ -150,7 +167,6 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 //        return this.getRelatedFrom() == null || this.getRelatedTo() == null;
 //    }
 
-
 //*********************** CLONE ********************************************************/
 
     /**
@@ -163,7 +179,9 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public RelationshipBase<FROM,TO,TYPE> clone() throws CloneNotSupportedException {
+
+        @SuppressWarnings("unchecked")
         RelationshipBase<FROM,TO,TYPE> result = (RelationshipBase<FROM,TO,TYPE>)super.clone();
 
         //no changes to: doubtful

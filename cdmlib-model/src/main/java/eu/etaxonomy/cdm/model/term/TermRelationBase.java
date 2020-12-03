@@ -147,11 +147,10 @@ public abstract class TermRelationBase<TERM extends DefinedTermBase, REL extends
 
 // ********************** CLONE **************************//
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Object clone() throws CloneNotSupportedException{
-        TermRelationBase<TERM, REL, GRAPH> result;
-        result = (TermRelationBase<TERM, REL, GRAPH>)super.clone();
+    public TermRelationBase<TERM, REL, GRAPH> clone() throws CloneNotSupportedException{
+        @SuppressWarnings("unchecked")
+        TermRelationBase<TERM, REL, GRAPH> result = (TermRelationBase<TERM, REL, GRAPH>)super.clone();
         return result;
     }
 }

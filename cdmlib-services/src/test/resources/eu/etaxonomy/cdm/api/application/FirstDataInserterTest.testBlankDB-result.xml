@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<dataset>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../database/schema/dataset.xsd">
   <USERACCOUNT ACCOUNTNONEXPIRED="true" ACCOUNTNONLOCKED="true" CREDENTIALSNONEXPIRED="true" ENABLED="true" PASSWORD="dd55f17f6275cf0fc63962d1015e18fb" USERNAME="admin" SALT="[null]"/>
   <USERACCOUNT_GRANTEDAUTHORITYIMPL USER_ID="5000" GRANTEDAUTHORITIES_ID="5000"/>
   <!-- ROLE_ADMIN.uuid is fixed ! -->

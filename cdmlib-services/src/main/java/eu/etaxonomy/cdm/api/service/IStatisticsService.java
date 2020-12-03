@@ -7,11 +7,9 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
- * @author sybille
- *
+ * @author s.buers
  */
 public interface IStatisticsService {
-
 
 //	List<Statistics> getCountStatistics(StatisticsConfigurator configurator);
 
@@ -19,6 +17,4 @@ public interface IStatisticsService {
 			List<StatisticsConfigurator> configurator);
 
 	public IdentifiableEntity<?> getFilterALL_DB();
-
-	
 }

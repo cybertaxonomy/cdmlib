@@ -211,7 +211,7 @@ public class StatisticalMeasurementValue
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public StatisticalMeasurementValue clone() {
 
 		try {
 			StatisticalMeasurementValue result = (StatisticalMeasurementValue)super.clone();

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
@@ -53,7 +52,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 @XmlRootElement(name = "Address")
 @Entity
 @Audited
-public class Address extends VersionableEntity implements Cloneable{
+public class Address extends VersionableEntity {
 	private static final long serialVersionUID = 682106303069088972L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Address.class);
@@ -236,13 +235,10 @@ public class Address extends VersionableEntity implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public Address clone() throws CloneNotSupportedException{
 		Address result = (Address)super.clone();
 
 		//no changes to: -
 		return result;
 	}
-
-
-
 }

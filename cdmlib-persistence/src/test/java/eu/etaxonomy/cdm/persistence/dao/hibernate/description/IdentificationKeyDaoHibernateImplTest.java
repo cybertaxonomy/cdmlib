@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.io.FileNotFoundException;
@@ -35,7 +34,6 @@ public class IdentificationKeyDaoHibernateImplTest extends CdmIntegrationTest {
 
 	@Before
 	public void setUp() {
-
 	}
 
 	@Test
@@ -61,15 +59,6 @@ public class IdentificationKeyDaoHibernateImplTest extends CdmIntegrationTest {
 		Assert.assertEquals(list3.size(), 0);
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
-
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

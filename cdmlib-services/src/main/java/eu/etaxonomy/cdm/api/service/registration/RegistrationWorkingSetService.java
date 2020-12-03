@@ -79,7 +79,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
 
             // name
             "name.$",
-            "name.nomenclaturalReference",
+            "name.nomenclaturalSource.citation",
             "name.rank",
             "name.homotypicalGroup.typifiedNames",
             "name.status.type",
@@ -89,7 +89,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             }
             ))
             .extend("typeDesignations.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false)
-            .extend("name.nomenclaturalReference", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+            .extend("name.nomenclaturalSource.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
     public  EntityInitStrategy DERIVEDUNIT_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
@@ -120,8 +120,8 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
           "blockedBy.typeDesignations.typeStatus",
 //          "typeDesignations.typifiedNames.typeDesignations", // important !?
 //          "blockedBy.name.$",
-          "blockedBy.name.nomenclaturalReference.authorship",
-          "blockedBy.name.nomenclaturalReference.inReference",
+          "blockedBy.name.nomenclaturalSource.citation.authorship",
+          "blockedBy.name.nomenclaturalSource.citation.inReference",
           "blockedBy.name.rank",
           // institution
           "blockedBy.institution",
@@ -180,22 +180,15 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return convertToDTOPager(regPager);
     }
 
-
-    /**
-     * @param regPager
-     * @return
-     */
     @Override
     public Pager<RegistrationDTO> convertToDTOPager(Pager<Registration> regPager) {
-        return new DefaultPagerImpl<RegistrationDTO>(regPager.getCurrentIndex(), regPager.getCount(), regPager.getPageSize(), makeDTOs(regPager.getRecords()));
+        return new DefaultPagerImpl<>(regPager.getCurrentIndex(), regPager.getCount(),
+                regPager.getPageSize(), makeDTOs(regPager.getRecords()));
     }
-
 
     @Override
     public Pager<RegistrationDTO> pageDTOs(Integer pageSize, Integer pageIndex) {
-
         return pageDTOs((UUID)null, null, null, null, null, null, pageSize, pageIndex, null);
-
     }
 
     /**
@@ -421,10 +414,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return blockingSet;
     }
 
-    /**
-     * @param regs
-     * @return
-     */
     @Override
     public List<RegistrationDTO> makeDTOs(Collection<Registration> regs) {
         initializeSpecimens(regs);
@@ -433,21 +422,12 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return dtos;
     }
 
-
-    /**
-     * @param regs
-     */
     public void initializeSpecimens(Collection<Registration> regs) {
         for(Registration reg : regs){
             inititializeSpecimen(reg);
         }
-
     }
 
-
-    /**
-     * @param reg
-     */
     public void inititializeSpecimen(Registration reg) {
 
         for(TypeDesignationBase<?> td : reg.getTypeDesignations()){

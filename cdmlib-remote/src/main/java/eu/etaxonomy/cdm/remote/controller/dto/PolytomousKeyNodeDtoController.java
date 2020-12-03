@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller.dto;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -48,7 +47,7 @@ import eu.etaxonomy.cdm.remote.dto.polytomouskey.AbstractLinkDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.LinkedPolytomousKeyNodeRowDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.PolytomousKeyNodeLinkDto;
 import eu.etaxonomy.cdm.remote.dto.polytomouskey.TaxonLinkDto;
-import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
+import io.swagger.annotations.Api;
 
 /**
  * @author l.morris
@@ -81,9 +80,6 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
 
     private ITaxonService taxonService;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(IPolytomousKeyService service) {
@@ -95,22 +91,21 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
         this.taxonService = taxonService;
     }
 
-
     @RequestMapping(value = {"{uuid}/linkedStyle"}, method = RequestMethod.GET)
     public ModelAndView doLinkedStyle(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) {
 
         logger.info("doLinkedStyle() - " + requestPathAndQuery(request));
 
         ModelAndView mv = new ModelAndView();
-        List<LinkedPolytomousKeyNodeRowDto> polytomousKeyNodeRowList = new ArrayList<LinkedPolytomousKeyNodeRowDto>();
+        List<LinkedPolytomousKeyNodeRowDto> polytomousKeyNodeRowList = new ArrayList<>();
 
-        List<String> nodePaths = new ArrayList<String>();
+        List<String> nodePaths = new ArrayList<>();
         nodePaths.add("$");//initialize all to 1 relations e.g. subkey, statement
         nodePaths.add("statement.$");
-        //nodePaths.add("taxon.name.nomenclaturalReference");
+        //nodePaths.add("taxon.name.nomenclaturalSource.citation");
         nodePaths.add("taxon.name.$");
 
         List<String> propertyPaths = new ArrayList<String>();
@@ -148,15 +143,15 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
         logger.info("doLinkedStyle() - " + requestPathAndQuery(request));
 
         ModelAndView mv = new ModelAndView();
-        List<LinkedPolytomousKeyNodeRowDto> polytomousKeyNodeRowList = new ArrayList<LinkedPolytomousKeyNodeRowDto>();
+        List<LinkedPolytomousKeyNodeRowDto> polytomousKeyNodeRowList = new ArrayList<>();
 
-        List<String> nodePaths = new ArrayList<String>();
+        List<String> nodePaths = new ArrayList<>();
         nodePaths.add("$");//initialize all to 1 relations e.g. subkey, statement
         nodePaths.add("statement.$");
-        //nodePaths.add("taxon.name.nomenclaturalReference");
+        //nodePaths.add("taxon.name.nomenclaturalSource.citation");
         nodePaths.add("taxon.name.$");
 
-        List<String> propertyPaths = new ArrayList<String>();
+        List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("sources");
         propertyPaths.add("annotations");
 

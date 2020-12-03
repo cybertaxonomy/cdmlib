@@ -122,7 +122,7 @@ public abstract class VersionableEntity
 	@Override
     protected boolean checkEmpty(){
        return super.checkEmpty()
-               //nothing to do
+               //nothing to do; updated and updatedBy are not relevant
            ;
     }
 
@@ -137,8 +137,9 @@ public abstract class VersionableEntity
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		VersionableEntity result = (VersionableEntity)super.clone();
+	public VersionableEntity clone() throws CloneNotSupportedException{
+
+	    VersionableEntity result = (VersionableEntity)super.clone();
 
 		result.setUpdated(null);
 		result.setUpdatedBy(null);
@@ -157,7 +158,7 @@ public abstract class VersionableEntity
     protected Map<Language,LanguageString> cloneLanguageString(Map<Language,LanguageString> oldMap) throws CloneNotSupportedException{
         Map<Language,LanguageString> result = new HashMap<>();
         for (Language language : oldMap.keySet()){
-            LanguageString newLanguageString = (LanguageString)oldMap.get(language).clone();
+            LanguageString newLanguageString = oldMap.get(language).clone();
             result.put(language, newLanguageString);
         }
         return result;

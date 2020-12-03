@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.application;
 
 import java.io.File;
@@ -29,7 +28,6 @@ public class CdmApplicationUtils implements ApplicationContextAware {
     private static final Logger logger = Logger.getLogger(CdmApplicationUtils.class);
 
     private static ApplicationContext applicationContext;
-
 
     //directory of the resources (configfiles etc.)
     static File fileResourceDir;
@@ -113,13 +111,8 @@ public class CdmApplicationUtils implements ApplicationContextAware {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        CdmApplicationUtils.applicationContext = applicationContext;
     }
-
-
 }

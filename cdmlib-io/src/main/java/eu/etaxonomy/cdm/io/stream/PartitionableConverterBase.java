@@ -161,7 +161,7 @@ public abstract class PartitionableConverterBase<CONFIG extends DwcaDataImportCo
 	protected Set<String> getKeySet(String key, Map<String, Set<String>> fkMap) {
 		Set<String> keySet = fkMap.get(key);
 		if (keySet == null){
-			keySet = new HashSet<String>();
+			keySet = new HashSet<>();
 			fkMap.put(key, keySet);
 		}
 		return keySet;

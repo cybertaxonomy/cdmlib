@@ -21,7 +21,6 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -31,12 +30,15 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 @Component
-public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
-	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameRelationsImport.class);
+public class TcsXmlTaxonNameRelationsImport
+        extends TcsXmlImportBase {
+
+    private static final long serialVersionUID = 4000887401260650783L;
+
+    private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameRelationsImport.class);
 
 	private static int modCount = 5000;
 
@@ -57,29 +59,27 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 	@Override
 	public void doInvoke(TcsXmlImportState state){
 
-
 		logger.info("start make taxon name relations ...");
-		MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
+		@SuppressWarnings("unchecked")
+        MapWrapper<TaxonName> taxonNameMap = (MapWrapper<TaxonName>)state.getStore(ICdmIO.TAXONNAME_STORE);
 
-		Set<TaxonName> nameStore = new HashSet<TaxonName>();
+		Set<TaxonName> nameStore = new HashSet<>();
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
 		boolean obligatory;
-		String idNamespace = "TaxonName";
 
 		TcsXmlImportConfigurator config = state.getConfig();
 		Element elDataSet = super. getDataSetElement(config);
 		Namespace tcsNamespace = config.getTcsXmlNamespace();
 
-		DoubleResult<Element, Boolean> doubleResult;
 		childName = "TaxonNames";
 		obligatory = false;
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 
 		String tcsElementName = "TaxonName";
-		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : elTaxonNames.getChildren(tcsElementName, tcsNamespace);
+		@SuppressWarnings("unchecked")
+        List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<>() : elTaxonNames.getChildren(tcsElementName, tcsNamespace);
 
 //		Element source = tcsConfig.getSourceRoot();
 
@@ -92,7 +92,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 			//Basionyms
 			tcsElementName = "Basionym";
-			List<Element> elBasionymList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elBasionymList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 
 			for (Element elBasionym: elBasionymList){
 				nameRelCount++;
@@ -109,7 +110,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 			//SpellingCorrections
 			tcsElementName = "SpellingCorrectionOf";
-			List<Element> elSpellingCorrectionList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elSpellingCorrectionList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 
 			for (Element elSpellingCorrection: elSpellingCorrectionList){
 				nameRelCount++;
@@ -124,7 +126,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 			//LaterHomonymOf
 			tcsElementName = "LaterHomonymOf";
-			List<Element> elLaterHomonymList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elLaterHomonymList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 			for (Element elLaterHomonym: elLaterHomonymList){
 				nameRelCount++;
 				logger.debug("LaterHomonymOf "+  nameRelCount);
@@ -138,7 +141,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 			//ReplacementNameFor
 			tcsElementName = "ReplacementNameFor";
-			List<Element> elReplacementNameForList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elReplacementNameForList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 			for (Element elReplacementNameFor: elReplacementNameForList){
 				nameRelCount++;
 				logger.debug("LaterHomonymOf "+  nameRelCount);
@@ -152,7 +156,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 			//ConservedAgainst
 			tcsElementName = "ConservedAgainst";
-			List<Element> elConservedAgainstList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elConservedAgainstList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 			for (Element elConservedAgainst: elConservedAgainstList){
 				nameRelCount++;
 				logger.debug("ConservedAgainst "+  nameRelCount);
@@ -168,7 +173,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 			//Sanctioned
 			tcsElementName = "Sanctioned";
-			List<Element> elSanctionedList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elSanctionedList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 			for (Element elSanctioned: elSanctionedList){
 
 				//nameRelCount++;
@@ -192,7 +198,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				//logger.warn("PublicationStatus not yet implemented " );
 				NomenclaturalStatusType statusType = null;
 				NameRelationshipType nameRelType = null;
-				List<Content> content = elPublicationStatus.getContent();
+				@SuppressWarnings("unchecked")
+                List<Content> content = elPublicationStatus.getContent();
 				Element el = elPublicationStatus.getChild("Note");
 				Iterator<Content> iterator = content.iterator();
 				Content next;
@@ -200,17 +207,15 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				String relatedName = null;
 				while (iterator.hasNext()){
 					next = iterator.next();
-					String test = next.getClass().getName();
 					if (next.getClass().getName().equals("org.jdom.Element")){
 						Element element = (Element)next;
-						NomenclaturalStatus status;
 						try {
 							if (element.getName().equals("Note")){
-								Iterator<Content> iteratorNote = element.getContent().iterator();
+								@SuppressWarnings("unchecked")
+                                Iterator<Content> iteratorNote = element.getContent().iterator();
 								Content nextNote;
 								while (iteratorNote.hasNext()){
 									nextNote = iteratorNote.next();
-									test = nextNote.getClass().getName();
 									if (nextNote.getValue().startsWith("nom. inval.")){
 										statusType =TcsXmlTransformer.nomStatusString2NomStatus("nom. inval.");
 									} else if (nextNote.getValue().startsWith("nom. illeg.")){
@@ -224,14 +229,16 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 								}
 							}else if (element.getName().equals("RuleConsidered")){
-								Iterator<Content> iteratorNote = element.getContent().iterator();
+								@SuppressWarnings("unchecked")
+                                Iterator<Content> iteratorNote = element.getContent().iterator();
 								Content nextNote;
 								while (iteratorNote.hasNext()){
 									nextNote = iteratorNote.next();
 									ruleConsidered = nextNote.getValue();
 								}
 							}else if (element.getName().equals("RelatedName")){
-								Iterator<Content> iteratorNote = element.getContent().iterator();
+								@SuppressWarnings("unchecked")
+                                Iterator<Content> iteratorNote = element.getContent().iterator();
 								Content nextNote;
 								while (iteratorNote.hasNext()){
 									nextNote = iteratorNote.next();
@@ -274,7 +281,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 
 			//BasedOn
 			tcsElementName = "BasedOn";
-			List<Element> elBasedOnList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
+			@SuppressWarnings("unchecked")
+            List<Element> elBasedOnList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 			for (Element elBasedOn: elBasedOnList){
 
 				//nameRelCount++;
@@ -334,7 +342,6 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 			return false;
 		}
 
-
 		//TODO note, microreference
 		if (inverse == false){
 			toName.addRelationshipToName(fromName, relType, ruleConsidered, null);
@@ -349,5 +356,4 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 	protected boolean isIgnore(TcsXmlImportState state){
 		return ! state.getConfig().isDoRelNames();
 	}
-
 }

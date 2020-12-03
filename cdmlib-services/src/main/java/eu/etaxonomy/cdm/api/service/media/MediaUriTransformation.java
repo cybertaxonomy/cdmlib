@@ -9,9 +9,13 @@
 package eu.etaxonomy.cdm.api.service.media;
 
 /**
+ * Defines a transformation rule to create volatile media representation on base of existing ones.
+ * <p>
  * All defined {@link SearchReplace} rules must match otherwise the transformations is omitted.
  * A {@link SearchReplace} rule can be mediate an identity transformation of is URI part
  * in which case the rule just acts as a filter.
+ * <p>
+ * <b>CHANGING THIS CLASS MAY BREAK DESERIALIZATION OF EXISTING CDM PREFERENCES!</b>
  *
  * @author a.kohlbecker
  * @since Jul 8, 2020

@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -31,6 +31,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.xpath.XPath;
+
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
@@ -39,7 +40,7 @@ import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
  * Implementation of an IXMLEntityFactory that is connected to a CDM Community
  * Server on a remote machine. API call will be executed by accessing the
  * servers REST API.
- * 
+ *
  * @author n.hoffmann
  * @author l.morris
  * @since Apr 6, 2010
@@ -103,9 +104,9 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 	/**
 	 * Creates new instance of this factory and connects it to the given CDM
 	 * Community Stores access point.
-	 * 
+	 *
 	 * Typically, there is no need to instantiate this class.
-	 * 
+	 *
 	 * @param monitor
 	 */
 	protected RemoteXMLEntityFactory(URL webserviceUrl, IProgressMonitor monitor) {
@@ -115,10 +116,11 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getClassifications()
 	 */
-	public List<Element> getClassifications() {
+	@Override
+    public List<Element> getClassifications() {
 		Element result = queryServiceWithParameters(CLASSIFICATIONS,
 				UNLIMITED_RESULTS);
 		return processElementList(result);
@@ -126,12 +128,13 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getChildNodes(org.jdom.
 	 * Element)
 	 */
-	public List<Element> getChildNodes(Element treeNode) {
+	@Override
+    public List<Element> getChildNodes(Element treeNode) {
 		EntityType entityType = XMLHelper.getEntityType(treeNode);
 
 		Element result = null;
@@ -147,19 +150,21 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getTaxonNode(java.util.
 	 * UUID)
 	 */
-	public Element getTaxonNode(UUID taxonNodeUuid) {
+	@Override
+    public Element getTaxonNode(UUID taxonNodeUuid) {
 		return queryService(taxonNodeUuid, TAXONNODE);
 	}
 
 	/*
 	 * Returns the taxonNode for a specific taxon name string.
 	 */
-	public Element getTaxonNodesByName(String taxonName, String classification) {
+	@Override
+    public Element getTaxonNodesByName(String taxonName, String classification) {
 
 		// 1-To find the uuid of a Taxon name:
 		// http://dev.e-taxonomy.eu/cdmserver/palmae/taxon/findTaxaAndNames.json?doTaxa=1&matchMode=EXACT&query=Acrocomia
@@ -222,82 +227,88 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTree(java.util
 	 * .UUID)
 	 */
-	public Element getFeatureTree(UUID featureTreeUuid) {
+	@Override
+    public Element getFeatureTree(UUID featureTreeUuid) {
 		return queryService(featureTreeUuid, FEATURETREE);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTrees()
 	 */
-	public List<Element> getFeatureTrees() {
+	@Override
+    public List<Element> getFeatureTrees() {
 		Element result = queryServiceWithParameters(FEATURETREES,
 				UNLIMITED_RESULTS);
 		return processElementList(result);
 	}
 
-	public Element getTermNode(UUID featureNodeUuid) {
+	@Override
+    public Element getTermNode(UUID featureNodeUuid) {
 		Element result = queryService(featureNodeUuid, FEATURENODE);
 		return result;
 	}
 
-	public Element getFeatureForTermNode(UUID featureNodeUuid) {
+	@Override
+    public Element getFeatureForTermNode(UUID featureNodeUuid) {
 		Element result = queryService(featureNodeUuid, FEATURENODE_FEATURE);
 		return result;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getTaxonFromTaxonNode(org
 	 * .jdom.Element)
 	 */
-	public Element getTaxonForTaxonNode(Element taxonNodeElement) {
+	@Override
+    public Element getTaxonForTaxonNode(Element taxonNodeElement) {
 		return queryService(taxonNodeElement, TAXONNODE_TAXON);
 	}
 
 	/*
-	 * 
+	 *
 	 */
 	/*
 	 * public List<Element> getReferences(Element taxonElement) throws
 	 * JDOMException {
-	 * 
+	 *
 	 * //get the references from the taxonElement String referencePattern =
-	 * "//name/nomenclaturalReference";
-	 * 
+	 * "//name/nomenclaturalSource.citation";
+	 *
 	 * //but there could be many references Element referenceElement = (Element)
 	 * XPath.selectSingleNode(taxonElement, referencePattern); //List<Element>
 	 * descriptionElementElements = XPath.selectNodes(context, featurePattern +
 	 * "/..");
-	 * 
+	 *
 	 * List<Element> elementList = null;
-	 * 
+	 *
 	 * if(referenceElement != null){ //the referencePattern was found in the
 	 * taxonElement
-	 * 
+	 *
 	 * Element result = queryService(referenceElement, REFERENCES);
-	 * 
+	 *
 	 * elementList = new ArrayList<Element>();
-	 * 
+	 *
 	 * for(Object child : result.getChildren()){ if(child instanceof Element){
 	 * Element childElement = (Element) ((Element)child).clone();
-	 * 
+	 *
 	 * childElement.detach();
-	 * 
+	 *
 	 * elementList.add(childElement); } } }
-	 * 
+	 *
 	 * return elementList; }
 	 */
 
-	public List<Element> getReferences(Element referenceElement) {
+	@Override
+    public List<Element> getReferences(Element referenceElement) {
 
 		Element result = queryService(referenceElement, REFERENCES);
 
@@ -318,24 +329,26 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getAcceptedTaxonElement
 	 * (org.jdom.Element)
 	 */
-	public Element getAcceptedTaxonElement(Element taxonElement) {
+	@Override
+    public Element getAcceptedTaxonElement(Element taxonElement) {
 		Element result = queryService(taxonElement, TAXON_ACCEPTED);
 		return result;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getSynonymy(org.jdom.Element
 	 * )
 	 */
-	public List<Element> getSynonymy(Element taxonElement) {
+	@Override
+    public List<Element> getSynonymy(Element taxonElement) {
 		Element result = queryService(taxonElement, TAXON_SYNONYMY);
 
 		List<Element> elementList = new ArrayList<Element>();
@@ -354,9 +367,10 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 	}
 
 	/*
-	 * 
+	 *
 	 */
-	public List<Element> getMedia(Element taxonElement) {
+	@Override
+    public List<Element> getMedia(Element taxonElement) {
 
 		List<NameValuePair> params = Arrays
 				.asList(new NameValuePair[] {
@@ -390,31 +404,33 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getTypeDesignations(org
 	 * .jdom.Element)
 	 */
-	public List<Element> getTypeDesignations(Element nameElement) {
+	@Override
+    public List<Element> getTypeDesignations(Element nameElement) {
 		Element result = queryService(nameElement, NAME_TYPE_DESIGNATIONS);
 		return processElementList(result);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.printpublisher.IXMLEntityFactory#getDescriptions(org.jdom
 	 * .Element)
 	 */
-	public Element getDescriptions(Element taxonElement) {
+	@Override
+    public Element getDescriptions(Element taxonElement) {
 		Element result = queryService(taxonElement, TAXON_DESCRIPTIONS);
 		return result;
 	}
 
 	/**
 	 * Queries the service with the uuid of the given element
-	 * 
+	 *
 	 * @param element
 	 * @param restRequest
 	 * @return
@@ -426,7 +442,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/**
 	 * Queries the service with the given uuid
-	 * 
+	 *
 	 * @param uuid
 	 * @param restRequest
 	 * @return
@@ -437,7 +453,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param restRequest
 	 * @return
 	 * @throws URISyntaxException
@@ -495,7 +511,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/**
 	 * The access point of a CDM Community Server
-	 * 
+	 *
 	 * @return the serviceUrl
 	 */
 	public URL getServiceUrl() {
@@ -504,7 +520,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 
 	/**
 	 * The CDM Community Servers access point
-	 * 
+	 *
 	 * @param serviceUrl
 	 */
 	public void setServiceUrl(URL serviceUrl) {
@@ -514,7 +530,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 	// dto/polytomousKey/linkedStyle.json?findByTaxonomicScope=f820f533-06f2-4116-87e9-c9319c0c1cbf
 	/*
 	 * (non-Javadoc) TODO: Implement this method.
-	 * 
+	 *
 	 * @see
 	 * eu.etaxonomy.cdm.print.IXMLEntityFactory#getPolytomousKey(org.jdom.Element
 	 * )

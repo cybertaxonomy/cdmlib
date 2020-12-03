@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.format.occurrences;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 
@@ -24,7 +25,7 @@ public class MediaSpecimenFormatter extends DerivedUnitFormatter {
     @Override
     protected void initFormatKeys(Object object) {
         super.initFormatKeys(object);
-        MediaSpecimen mediaSpecimen = (MediaSpecimen)object;
+        MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(object, MediaSpecimen.class);
         Media media = mediaSpecimen.getMediaSpecimen();
         if(media!=null){
             if(media.getArtist()!=null){

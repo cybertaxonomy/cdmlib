@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -34,16 +33,13 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationDTO;
 import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.registration.IRegistrationWorkingSetService;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
-import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
-import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -62,9 +58,8 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @Api("registration")
-public class RegistrationDTOController extends AbstractController<Registration, IRegistrationService>
-{
-
+public class RegistrationDTOController
+            extends AbstractController<Registration, IRegistrationService>{
 
     private static final List<OrderHint> ORDER_BY_DATE_AND_ID = Arrays.asList(
             new OrderHint("registrationDate", SortOrder.DESCENDING),
@@ -83,9 +78,6 @@ public class RegistrationDTOController extends AbstractController<Registration, 
              }));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IRegistrationService service) {
@@ -112,34 +104,25 @@ public class RegistrationDTOController extends AbstractController<Registration, 
         notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED,
         response = Registration.class
     )
-    @RequestMapping(value="/registrationDTO/identifier/**", method = RequestMethod.GET)
+    @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params={"identifier"})
     public RegistrationDTO doGetByIdentifier(
+            @RequestParam(value = "identifier", required = true) String identifier,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetByIdentifier() " + requestPathAndQuery(request));
-
-        String identifier = readPathParameter(request, "/registrationDTO/identifier/");
-
-        Pager<RegistrationDTO> regPager = registrationWorkingSetService.pageDTOs(identifier, 0, 2);
-
-        if(regPager.getCount() == 1){
-            return regPager.getRecords().get(0);
-        } else if(regPager.getCount() > 1){
-            HttpStatusMessage.create("The identifier " + identifier + " refrences multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED).send(response);
-            return null; // never reached, due to previous send()
-        } else {
-            return null;
-        }
+        return pageRegistrationDTOs(identifier, true, 0, 2, response).getRecords().get(0);
     }
 
     @ApiImplicitParams({
         @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration.", required = true, dataType = "string", paramType = "path"),
     })
-    @ApiOperation(value = "Finds Registrations by persitent identifier."
+    @ApiOperation(value = "Finds Registrations by persistent identifier."
     )
-    @RequestMapping(value="/registrationDTO/identifier/**", method = RequestMethod.GET, params={"validateUniqueness"})
+    @RequestMapping(value="/registrationDTO", method = RequestMethod.GET, params={"identifier", "validateUniqueness"})
     public Pager<RegistrationDTO> doPageByIdentifier(
+            @RequestParam(value = "identifier", required = true) String identifier,
+            @RequestParam(value = "validateUniqueness") boolean validateUniqueness,
             @RequestParam(value = "pageNumber", required=true) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
@@ -147,11 +130,26 @@ public class RegistrationDTOController extends AbstractController<Registration, 
 
         logger.info("doPageByIdentifier() " + requestPathAndQuery(request));
 
-        String identifier = readPathParameter(request, "/registrationDTO/identifier/");
+        return pageRegistrationDTOs(identifier, validateUniqueness, pageIndex, pageSize, response);
 
-        Pager<RegistrationDTO> regDTOPager = registrationWorkingSetService.pageDTOs(identifier, pageIndex, pageSize);
+    }
 
-        return regDTOPager;
+    protected Pager<RegistrationDTO> pageRegistrationDTOs(String identifier, boolean validateUniqueness, Integer pageIndex, Integer pageSize, HttpServletResponse response) throws IOException {
+
+        Pager<RegistrationDTO> regPager = registrationWorkingSetService.pageDTOs(identifier, pageIndex, pageSize);
+
+        if(regPager.getCount() == 1){
+            return regPager;
+        } else if(regPager.getCount() > 1){
+            if(validateUniqueness) {
+                HttpStatusMessage.create("The identifier " + identifier + " refrences multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED).send(response);
+                return null; // never reached, due to previous send()
+            } else {
+                return regPager;
+            }
+        } else {
+            return null;
+        }
     }
 
     @RequestMapping(value="/registrationDTO/find", method = RequestMethod.GET)
@@ -165,7 +163,7 @@ public class RegistrationDTOController extends AbstractController<Registration, 
             @RequestParam(value = "pageNumber", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doFind() " + requestPathAndQuery(request));
 

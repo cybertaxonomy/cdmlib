@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.hibernate.replace;
-
 
 import java.io.FileNotFoundException;
 import java.util.UUID;
@@ -34,7 +32,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since 22.12.2009
  */
 public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrationTest {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(ReferringObjectMetadataFactoryTest.class);
 
 	@SpringBeanByType
@@ -62,10 +61,6 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 		person3 = UUID.fromString("c62cd389-d787-47f4-99c3-b80eb12a1ef2");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#CdmEntityDaoBase(java.lang.Class)}.
-	 * @throws Exception
-	 */
 	@Test
 	public void testReferringObjectMetadataFactory() throws Exception {
 		referringObjectMetadataFactory.get(Person.class);
@@ -100,7 +95,6 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 		agentDao.replace(x,y);
 		this.setComplete();
 		this.endTransaction();
-
 	}
 
 	@Test
@@ -124,5 +118,3 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
 }
-
-

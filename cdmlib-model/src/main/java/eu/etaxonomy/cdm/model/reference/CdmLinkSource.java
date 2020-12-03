@@ -23,6 +23,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmLinkBase;
+import eu.etaxonomy.cdm.model.common.IntextReference;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -107,7 +108,7 @@ public class CdmLinkSource extends CdmLinkBase {
 // ********************************* CLONE **********************************/
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
+    public CdmLinkSource clone() throws CloneNotSupportedException {
         CdmLinkSource result = (CdmLinkSource)super.clone();
 
         return result;

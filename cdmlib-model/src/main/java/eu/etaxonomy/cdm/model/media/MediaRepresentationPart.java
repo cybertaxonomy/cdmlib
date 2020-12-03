@@ -154,11 +154,10 @@ public class MediaRepresentationPart extends VersionableEntity {
         }
     }
 
-
 //************************* CLONE **************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
+	public MediaRepresentationPart clone() throws CloneNotSupportedException{
 		MediaRepresentationPart result = (MediaRepresentationPart)super.clone();
 
 		//media representation

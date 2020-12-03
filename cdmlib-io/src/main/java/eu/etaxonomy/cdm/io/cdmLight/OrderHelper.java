@@ -15,10 +15,8 @@ import java.util.UUID;
 /**
  * @author k.luther
  * @since 21.05.2019
- *
  */
 public class OrderHelper {
-
 
     int orderIndex;
     UUID taxonUuid;
@@ -29,63 +27,40 @@ public class OrderHelper {
         this.taxonUuid = uuid;
     }
 
-    /**
-     * @return the orderIndex
-     */
     public int getOrderIndex() {
         return orderIndex;
     }
-    /**
-     * @param orderIndex the orderIndex to set
-     */
     public void setOrderIndex(int orderIndex) {
         this.orderIndex = orderIndex;
     }
-    /**
-     * @return the uuid
-     */
+
     public UUID getTaxonUuid() {
         return taxonUuid;
     }
 
-    /**
-     * @return the children
-     */
     public List<OrderHelper> getChildren() {
         return children;
     }
-    /**
-     * @param children the children to set
-     */
     public void setChildren(List<OrderHelper> children) {
         this.children = children;
     }
 
-    /**
-     * @param children the children to set
-     */
     public void addChild(OrderHelper child) {
         if (children == null){
-            children = new ArrayList();
+            children = new ArrayList<>();
         }
         this.children.add(child);
     }
 
-    /**
-     * @param children the children to set
-     */
     public void addChildren(List<OrderHelper> children) {
         if (children == null){
             return;
         }
         if (this.children == null){
-           this.children = new ArrayList();
+           this.children = new ArrayList<>();
         }
         for (OrderHelper child: children){
             this.children.add(child);
         }
     }
-
-
-
 }

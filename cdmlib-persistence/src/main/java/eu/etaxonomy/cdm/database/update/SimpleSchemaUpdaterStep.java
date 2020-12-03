@@ -66,13 +66,15 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 
 	/**
 	 * Simple schema updater with an explicit query for AUD table.
+	 *
 	 * @param stepName step name
 	 * @param defaultQuery the non_AUD update query
 	 * @param defaultQueryForAuditedTables the AUD update query
 	 * @param adapt preliminary
 	 * @return
 	 */
-	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery, String defaultQueryForAuditedTables, int adapt){
+	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(List<ISchemaUpdaterStep> stepList, String stepName,
+	        String defaultQuery, String defaultQueryForAuditedTables, int adapt){
 		boolean audit = StringUtils.isNotBlank(defaultQueryForAuditedTables);
 		return new SimpleSchemaUpdaterStep(stepList, stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
 	}
@@ -80,7 +82,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 
 //************************ CONSTRUCTOR ***********************************/
 
-	private SimpleSchemaUpdaterStep(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery, boolean includeAudit, String tableName, String defaultQueryForAuditedTables){
+	private SimpleSchemaUpdaterStep(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery,
+	        boolean includeAudit, String tableName, String defaultQueryForAuditedTables){
 		super(stepList, stepName);
 		this.includeAudit = includeAudit;
 		queryMap.put(null, defaultQuery);
@@ -88,15 +91,13 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 		if (includeAudit){
 			if (StringUtils.isNotBlank(defaultQueryForAuditedTables)){
 				auditQueryMap.put(null, defaultQueryForAuditedTables);
-			}else if (StringUtils.isNotBlank(tableName)){
+			}else if (isNotBlank(tableName)){
 				setDefaultAuditing(tableName);
 			}
 		}
 	}
 
 // *************************** INVOKE *****************************
-
-
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
@@ -148,7 +149,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 
 	private void makeAuditedQuery(DatabaseTypeEnum dbType, String tableName, boolean addTable){
 		String auditQuery = addTable? auditQueryMap.get(dbType) : queryMap.get(dbType);
-		if (StringUtils.isBlank(auditQuery)){
+		if (isBlank(auditQuery)){
 			throw new IllegalArgumentException("Non-audit query must not be blank");
 		}
 	    auditQuery = auditQuery.replace("@@" + tableName + "@@", "@@" + tableName + "_AUD@@");

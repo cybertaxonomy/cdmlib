@@ -41,9 +41,11 @@ import org.hibernate.type.DoubleType;
 import org.hibernate.type.EntityType;
 import org.hibernate.type.EnumType;
 import org.hibernate.type.FloatType;
+import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.MaterializedClobType;
+import org.hibernate.type.OneToOneType;
 import org.hibernate.type.SerializableType;
 import org.hibernate.type.StringType;
 import org.hibernate.type.Type;
@@ -333,9 +335,7 @@ public class CdmGenericDaoImpl
 		if (allCdmClasses == null){
 			allCdmClasses = getAllPersistedClasses(false); //findAllCdmClasses();
 		}
-		//referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 		SessionFactory sessionFactory = getSession().getSessionFactory();
-
 
 		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
@@ -346,7 +346,6 @@ public class CdmGenericDaoImpl
 				makePropertyType(result, referencedClass, sessionFactory, cdmClass, propertyType, propertyName, false);
 				propertyNr++;
 			}
-
 		}
 		return result;
 	}
@@ -375,10 +374,17 @@ public class CdmGenericDaoImpl
 			String associatedEntityName = entityType.getAssociatedEntityName();
 			Class<?> entityClass = Class.forName(associatedEntityName);
 			if (entityClass.isInterface()){
-				logger.debug("There is an interface");
+			    logger.debug("There is an interface");
+			}
+			if (entityType instanceof OneToOneType){
+			    OneToOneType oneToOneType = (OneToOneType)entityType;
+			    ForeignKeyDirection direction = oneToOneType.getForeignKeyDirection();
+			    if (direction == ForeignKeyDirection.TO_PARENT){  //this
+			        return;
+			    }
 			}
 			if (entityClass.isAssignableFrom(referencedClass)){
-				makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
+			    makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
 			}
 		}else if (propertyType.isCollectionType()){
 			CollectionType collectionType = (CollectionType)propertyType;
@@ -815,9 +821,6 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#saveMetaData(eu.etaxonomy.cdm.model.common.CdmMetaData)
-	 */
 	@Override
     public void saveMetaData(CdmMetaData cdmMetaData) {
 		getSession().saveOrUpdate(cdmMetaData);
@@ -886,7 +889,6 @@ public class CdmGenericDaoImpl
         return 0;
     }
 
-
     @Override
     public Object get(UUID ownerUuid, String fieldName, int index) {
         Object col = initializeCollection(ownerUuid, fieldName);
@@ -917,8 +919,6 @@ public class CdmGenericDaoImpl
         }
     }
 
-
-
     @Override
     public boolean containsValue(UUID ownerUuid, String fieldName, Object value) {
         Object col = initializeCollection(ownerUuid, fieldName);
@@ -943,7 +943,4 @@ public class CdmGenericDaoImpl
         List<UUID> list = query.list();
         return list;
     }
-
-
-
 }

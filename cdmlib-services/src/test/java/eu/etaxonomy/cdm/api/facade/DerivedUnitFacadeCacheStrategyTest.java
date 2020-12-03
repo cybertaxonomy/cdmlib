@@ -42,7 +42,8 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @since 03.06.2010
  */
 public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
 
 	DerivedUnit specimen;
@@ -90,9 +91,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 	FieldUnit firstFieldObject;
 	Media media1 = Media.NewInstance();
 
-
 //****************************** SET UP *****************************************/
-
 
 	@Before
 	public void setUp() throws Exception {
@@ -159,7 +158,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		firstDerivationEvent.addOriginal(firstFieldObject);
 		existingGatheringEvent = GatheringEvent.NewInstance();
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
-
 	}
 
 	@Test
@@ -171,9 +169,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
 	}
 
-	/**
-     * Test method for {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.occurrence.Specimen)}.
-     */
     @Test
     public void testGetTitleCacheWithEtAl() {
         String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
@@ -199,5 +194,4 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
         correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B UU879873590); flowers blue.";
         Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
     }
-
 }

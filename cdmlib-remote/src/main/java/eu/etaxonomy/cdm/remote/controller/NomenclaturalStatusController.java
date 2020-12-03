@@ -61,7 +61,7 @@ public class NomenclaturalStatusController extends AbstractController<TaxonName,
 
         logger.info("doGet() - " + requestPathAndQuery(request));
 
-        NomenclaturalStatus nomstatus = service.loadNomenclaturalStatus(uuid, Arrays.asList("$", "citation.inReference"));
+        NomenclaturalStatus nomstatus = service.loadNomenclaturalStatus(uuid, Arrays.asList("$", "source.citation.inReference"));
         if(nomstatus == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }

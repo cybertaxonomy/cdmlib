@@ -75,8 +75,8 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 //******************** CLONE **********************************************/
 
 	@Override
-	public Object clone() throws CloneNotSupportedException{
-		IdentifiableMediaEntity<?> result = (IdentifiableMediaEntity<?>)super.clone();
+	public IdentifiableMediaEntity<S> clone() throws CloneNotSupportedException{
+		IdentifiableMediaEntity<S> result = (IdentifiableMediaEntity<S>)super.clone();
 		//Media
 		result.media = new HashSet<>();
 		for(Media media : this.media) {

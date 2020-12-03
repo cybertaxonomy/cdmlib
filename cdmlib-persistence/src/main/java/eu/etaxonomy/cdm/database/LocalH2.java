@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.io.File;
@@ -27,14 +26,12 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 
-
 /**
  * @author a.mueller
  *
  * IN WORK
  *
  */
-
 public class LocalH2 extends BasicDataSource {
 	private static final Logger logger = Logger.getLogger(LocalH2.class);
 
@@ -56,9 +53,6 @@ public class LocalH2 extends BasicDataSource {
 	protected String DEFAULT_DRIVER_CLASS_NAME = "org.h2.Driver";
 	String mode = H2Mode.EMBEDDED.toString();
 
-	/**
-	 *
-	 */
 	public LocalH2() {
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 		setLocalUrl();

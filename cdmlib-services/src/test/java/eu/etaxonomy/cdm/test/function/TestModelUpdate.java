@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.function;
 
 import java.util.UUID;
@@ -48,7 +47,8 @@ public class TestModelUpdate {
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm511" : "cdm515");
+		String database = (schema == DbSchemaValidation.VALIDATE  ? "cdm515" : "cdm518");
+//		database = "cdm_test1";
 
 		CdmDataSource dataSource = getDatasource(dbType, database);
  		try {
@@ -98,6 +98,7 @@ public class TestModelUpdate {
         String server = "localhost";
         String username = "edit";
         String serverSql = "130.133.70.26";
+//        server = "160.45.63.175";
 
         if (dbType == DatabaseTypeEnum.MySQL){
             return CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
@@ -123,13 +124,10 @@ public class TestModelUpdate {
         }
     }
 
-
-
 	/**
 	 * Updates the H2 test database in remote web-app.
 	 * Requires that the local path to the database is adapted
 	 */
-	@SuppressWarnings("unused")  //enable only if needed
 	private void updateRemoteWebappTestH2(){
 	    String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdmlib\\cdmlib-remote-webapp\\";
 	    updateH2(pathToProject);
@@ -139,10 +137,8 @@ public class TestModelUpdate {
      * Updates the H2 test database in TaxEditor.
      * Requires that the local path to the database is adapted
      */
-    @SuppressWarnings("unused")  //enable only if needed
     private void updateTaxEditorH2(){
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\taxeditor2\\eu.etaxonomy.taxeditor.test\\";
-
         updateH2(pathToProject);
     }
 
@@ -150,23 +146,16 @@ public class TestModelUpdate {
      * Updates the H2 test database in CDM vaadin.
      * Requires that the local path to the database is adapted
      */
-    @SuppressWarnings("unused")  //enable only if needed
     private void updateVaadinH2(){
         String pathToProject = "C:\\Users\\a.mueller\\eclipse\\git\\cdm-vaadin\\";
-
         updateH2(pathToProject);
     }
 
-
-    /**
-     * @param pathToProject
-     */
     private void updateH2(String pathToProject) {
         String pathInProject = "src\\test\\resources\\h2";
 
 	    String path = pathToProject + pathInProject;
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("cdmTest", "sa", "", path);
-
 
  		try {
 			CdmUpdater updater = new CdmUpdater();
@@ -183,7 +172,6 @@ public class TestModelUpdate {
 		System.out.println("\nEnd Datasource");
     }
 
-
     @SuppressWarnings("unused")  //enable only if needed
     private void updateEdaphobasePostgres(){
        String serverSql = "130.133.70.26";
@@ -194,7 +182,6 @@ public class TestModelUpdate {
 
        ICdmDataSource dataSource = CdmDataSource.NewPostgreSQLInstance(serverSql,
                 database, port, username, password);
-
         try {
             CdmUpdater updater = new CdmUpdater();
             SchemaUpdateResult result = updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
@@ -209,7 +196,6 @@ public class TestModelUpdate {
         appCtr.close();
         System.out.println("\nEnd Datasource");
     }
-
 
 	private void test(){
 		System.out.println("Start TestModelUpdate");
@@ -236,5 +222,4 @@ public class TestModelUpdate {
 		cc.test();
     	System.exit(0);
 	}
-
 }

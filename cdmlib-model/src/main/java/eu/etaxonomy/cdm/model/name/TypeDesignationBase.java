@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -38,6 +39,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -63,8 +65,6 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
     "typeStatus",
     "notDesignated",
     "typifiedNames",
-    "citation",
-    "citationMicroReference",
     "source",
     "registrations",
 })
@@ -96,25 +96,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = TypeDesignationStatusBase.class)
     private T typeStatus;
 
-    //the lectotype (or similar) reference
-    @XmlElement(name = "Citation")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference citation;
-
-    //Details of the lectotype reference.
-    @XmlElement(name = "CitationMicroReference")
-    private String citationMicroReference;
-
     //the source for the lectotypification (or similar)
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private IdentifiableSource source;
+    private DescriptionElementSource source;
 
     @XmlElementWrapper(name = "TypifiedNames")
     @XmlElement(name = "TypifiedName")
@@ -176,15 +164,30 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
-        super();
-        this.notDesignated = notDesignated;
-        this.citationMicroReference = citationMicroReference;
-        this.citation = citation;
+        this(DescriptionElementSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
     }
 
+    /**
+     * Class constructor: creates a new type designation
+     * (including its {@link Reference reference source} and eventually
+     * the taxon name string originally used by this reference when establishing
+     * the former designation).
+     *
+     * @param source                the reference source for the new designation
+     * @param originalNameString    the taxon name string used originally in the reference source for the new designation
+     * @param isNotDesignated       the boolean flag indicating whether there is no type at all for
+     *                              <i>this</i> type designation
+     * @see                         #TypeDesignationBase()
+     * @see                         #isNotDesignated()
+     * @see                         TaxonName#getTypeDesignations()
+     */
+    protected TypeDesignationBase(DescriptionElementSource source, String originalNameString, boolean notDesignated){
+        super();
+        this.notDesignated = notDesignated;
+        this.source = source;
+    }
 
 // **************** METHODS *************************************/
-
 
     /**
      * Returns the {@link TypeDesignationStatusBase type designation status} for <i>this</i> specimen type
@@ -206,10 +209,11 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * Returns the boolean value "true" if it is known that a type does not
      * exist and therefore the {@link TaxonName taxon name} to which <i>this</i>
      * type designation is assigned must still be typified. Two
-     * cases must be differentiated: <BR><ul>
+     * cases must be differentiated: <BR>
+     * <ul>
      * <li> a) it is unknown whether a type exists and
      * <li> b) it is known that no type exists
-     *  </ul>
+     * </ul>
      * If a) is true there should be no TypeDesignation instance at all
      * assigned to the "typified" taxon name.<BR>
      * If b) is true there should be a TypeDesignation instance with the
@@ -227,18 +231,78 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
         this.notDesignated = notDesignated;
     }
 
-    public String getCitationMicroReference(){
-        return this.citationMicroReference;
-    }
-    public void setCitationMicroReference(String citationMicroReference){
-        this.citationMicroReference = citationMicroReference;
+    @Transient
+    public String getCitationMicroReference() {
+        return source == null ? null : this.source.getCitationMicroReference();
     }
 
-    public Reference getCitation(){
-        return this.citation;
+    public void setCitationMicroReference(String microReference) {
+        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+        checkNullSource();
     }
+    /**
+     * Convenience method to retrieve the reference of the type designations
+     * designation/lectotype source.
+     *
+     * @see #getSource()
+     */
+    @Transient
+    public Reference getCitation(){
+        return source == null ? null : this.source.getCitation();
+    }
+    /**
+     * Convenience method to set reference for the designation's
+     * {@link #getSource() designation/lectotype source}.
+     * The source is created if reference is not <code>null</code>
+     * and the source does not yet exist.
+     * <BR>
+     * This field should only be used if
+     * the {@link #getTypeStatus() status} is lectotype (or similar) which can be
+     * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}
+     *
+     * @see #getSource()
+     */
     public void setCitation(Reference citation) {
-        this.citation = citation;
+        this.getSource(true).setCitation(citation);
+        checkNullSource();
+    }
+
+    /**
+     * Returns the {@link #getSource() source}. If a source does not exist
+     * yet a new and empty one is created. A source should only be created for
+     * lectotype like type designations (see {@link #getSource()}.
+     *
+     * @param createIfNotExist
+     * @see #getSource()
+     */
+    public DescriptionElementSource getSource(boolean createIfNotExist) {
+        if (this.source == null && createIfNotExist){
+            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+        }
+        return source;
+    }
+
+    /**
+     * The primary source of typification as used for lecto-, epi- and neotypes.
+     * This field should only be used if
+     * the {@link #getTypeStatus() status} is lectotype (or similar) which can be
+     * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}.
+     */
+    //TODO should we rename this to better distinguish the lectotype source from the general sources?
+    public DescriptionElementSource getSource(){
+        return source;
+    }
+    /**
+     * @see #getSource()
+     */
+    public void setSource(DescriptionElementSource source) {
+        this.source = source;
+    }
+
+    private void checkNullSource() {
+        if (this.source != null && this.source.checkEmpty(true)){
+            this.source = null;
+        }
     }
 
     /**
@@ -316,12 +380,14 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      *
      * @throws CloneNotSupportedException
      *
-     * @see eu.etaxonomy.cdm.model.common.ReferencedEntityBase#clone()
+     * @see eu.etaxonomy.cdm.model.common.SourcedEntityBase#clone()
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        TypeDesignationBase<?> result = (TypeDesignationBase<?>)super.clone();
+    public TypeDesignationBase<T> clone() throws CloneNotSupportedException {
+
+        @SuppressWarnings("unchecked")
+        TypeDesignationBase<T> result = (TypeDesignationBase<T>)super.clone();
 
 		//registrations
 		result.registrations = new HashSet<>();

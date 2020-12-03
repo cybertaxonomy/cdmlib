@@ -46,7 +46,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
-import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -79,7 +78,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
 public class Classification
             extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Classification>>
-            implements IReferencedEntity, ITaxonTreeNode{
+            implements ITaxonTreeNode{
 
     private static final long serialVersionUID = -753804821474209635L;
     private static final Logger logger = Logger.getLogger(Classification.class);
@@ -90,7 +89,6 @@ public class Classification
     @JoinColumn(name = "name_id", referencedColumnName = "id")
     @IndexedEmbedded
     private LanguageString name;
-
 
     @XmlElement(name = "rootNode")
     @XmlIDREF
@@ -131,7 +129,8 @@ public class Classification
 //    @FieldBridge(impl=MultilanguageTextFieldBridge.class)
     private Map<Language,LanguageString> description = new HashMap<>();
 
-    //the source for this single classification
+	//TODO remove, due to #9211
+	//the source for this single classification
     @XmlElement(name = "source")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -181,6 +180,7 @@ public class Classification
     }
 
 //********************** xxxxxxxxxxxxx ******************************************/
+
     /**
      * Returns the topmost {@link TaxonNode taxon node} (root node) of <i>this</i>
      * classification. The root node does not have any parent and no taxon. Since taxon nodes
@@ -205,8 +205,8 @@ public class Classification
 
         childNode.setParentTreeNode(this.rootNode, index);
 
-        childNode.setReference(citation);
-        childNode.setMicroReference(microCitation);
+        childNode.setCitation(citation);
+        childNode.setCitationMicroReference(microCitation);
 //		childNode.setSynonymToBeUsed(synonymToBeUsed);
 
         return childNode;
@@ -219,7 +219,7 @@ public class Classification
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
+        return addChildNode(new TaxonNode(taxon), index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
     }
 
     @Override
@@ -239,7 +239,6 @@ public class Classification
 
         return childNode;
     }
-
 
     @Override
     public boolean deleteChildNode(TaxonNode node) {
@@ -350,7 +349,7 @@ public class Classification
         }
 
         for (TaxonNode taxonNode: taxon.getTaxonNodes()){
-        	Classification classification = deproxy(taxonNode.getClassification(), Classification.class);
+        	Classification classification = deproxy(taxonNode.getClassification());
             if (classification.equals(this)){
                 return taxonNode;
             }
@@ -397,15 +396,15 @@ public class Classification
     private boolean handleCitationOverwrite(TaxonNode childNode, Reference citation, String microCitation){
         if (citation != null){
             if (childNode.getReference() != null && ! childNode.getReference().equals(citation)){
-                logger.warn("ReferenceForParentChildRelation will be overwritten");
+                logger.warn("TaxonNode source will be overwritten");
             }
-            childNode.setReference(citation);
+            childNode.setCitation(citation);
         }
         if (microCitation != null){
             if (childNode.getMicroReference() != null && ! childNode.getMicroReference().equals(microCitation)){
-                logger.warn("MicroReferenceForParentChildRelation will be overwritten");
+                logger.warn("TaxonNode source detail will be overwritten");
             }
-            childNode.setMicroReference(microCitation);
+            childNode.setCitationMicroReference(microCitation);
         }
         return true;
     }
@@ -492,7 +491,6 @@ public class Classification
         }
     }
 
-    @Override
     @Transient
     public Reference getCitation() {
         return reference;
@@ -538,7 +536,6 @@ public class Classification
         this.reference = reference;
     }
 
-
     @Override
     public String getMicroReference() {
         return microReference;
@@ -547,7 +544,6 @@ public class Classification
         this.microReference = microReference;
     }
 
-
     /**
 	 * The point in time, the time period or the season for which this description element
 	 * is valid. A season may be expressed by not filling the year part(s) of the time period.
@@ -555,7 +551,6 @@ public class Classification
 	public TimePeriod getTimeperiod() {
 		return timeperiod;
 	}
-
 	/**
 	 * @see #getTimeperiod()
 	 */
@@ -565,7 +560,6 @@ public class Classification
 		}
 		this.timeperiod = timeperiod;
 	}
-
 
     /**
      * Returns the set of {@link NamedArea named areas} indicating the geospatial
@@ -597,7 +591,6 @@ public class Classification
     public void removeGeoScope(NamedArea geoScope){
         this.geoScopes.remove(geoScope);
     }
-
 
 	/**
 	 * Returns the i18n description used to describe
@@ -649,7 +642,6 @@ public class Classification
 		this.description.remove(language);
 	}
 
-
     @Override
     public String generateTitle() {
         //TODO implement as cache strategy
@@ -669,30 +661,28 @@ public class Classification
         return 0;
     }
 
-
     @Override
     public boolean hasChildNodes() {
         return getChildNodes().size() > 0;
     }
 
     //*********************** CLONE ********************************************************/
+
     /**
      * Clones <i>this</i> classification. This is a shortcut that enables to create
      * a new instance that differs only slightly from <i>this</i> classification by
      * modifying only some of the attributes.<BR><BR>
 
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public Classification clone() {
         Classification result;
         try{
             result = (Classification)super.clone();
             //result.rootNode.childNodes = new ArrayList<TaxonNode>();
             List<TaxonNode> rootNodes = new ArrayList<>();
             TaxonNode rootNodeClone;
-
 
             rootNodes.addAll(rootNode.getChildNodes());
             TaxonNode rootNode;
@@ -721,8 +711,5 @@ public class Classification
             e.printStackTrace();
             return null;
         }
-
     }
-
-
 }

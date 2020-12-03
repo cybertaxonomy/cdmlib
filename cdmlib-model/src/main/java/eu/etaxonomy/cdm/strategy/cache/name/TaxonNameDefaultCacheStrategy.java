@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -309,7 +308,7 @@ public class TaxonNameDefaultCacheStrategy
             referenceCache = reference.getNomenclaturalCitation(microReference);
         }
             //add to tags
-        if (StringUtils.isNotBlank(referenceCache)){
+        if (referenceCache!= null && isNotBlank(referenceCache)){
             if (! referenceCache.trim().startsWith("in ")){
                 String refConcat = ", ";
                 tags.add(new TaggedText(TagEnum.separator, refConcat));
@@ -322,15 +321,8 @@ public class TaxonNameDefaultCacheStrategy
         //nomenclatural status
         tags.addAll(getNomStatusTags(nonViralName, true, false));
         return tags;
-
     }
 
-
-    /**
-     * @param nonViralName
-     * @param tags
-     * @return
-     */
     @Override
     public List<TaggedText> getNomStatusTags(TaxonName nonViralName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
@@ -358,7 +350,7 @@ public class TaxonNameDefaultCacheStrategy
                     logger.warn(message);
                     nomStatusStr = statusType.getTitleCache();
                 }
-            }else if(StringUtils.isNotBlank(ncStatus.getRuleConsidered())){
+            }else if(isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();
             }
             String statusSeparator = ", ";
@@ -409,7 +401,7 @@ public class TaxonNameDefaultCacheStrategy
             List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
             String authorCache = getAuthorshipCache(taxonName);
-            if (StringUtils.isNotBlank(authorCache)){
+            if (isNotBlank(authorCache)){
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }
@@ -428,7 +420,7 @@ public class TaxonNameDefaultCacheStrategy
             tags.add(new TaggedText(TagEnum.name, viralName.getTitleCache()));
             return tags;
         }else{
-            if (StringUtils.isNotBlank(viralName.getAcronym())){
+            if (isNotBlank(viralName.getAcronym())){
                 //this is not according to the code
                 tags.add(new TaggedText(TagEnum.name, viralName.getAcronym()));
             }
@@ -523,7 +515,7 @@ public class TaxonNameDefaultCacheStrategy
 
 	        //author
 	        String authorCache = getAuthorshipCache(nonViralName);
-	        if (StringUtils.isNotBlank(authorCache)){
+	        if (isNotBlank(authorCache)){
 	            tags.add(new TaggedText(TagEnum.authors, authorCache));
 	        }
 
@@ -536,14 +528,14 @@ public class TaxonNameDefaultCacheStrategy
 	            if (nonViralName.isTrinomHybrid()){
 	                infraSpeciesMarker = CdmUtils.concat("", NOTHO, infraSpeciesMarker);
 	            }
-	            if (StringUtils.isNotBlank(infraSpeciesMarker)){
+	            if (isNotBlank(infraSpeciesMarker)){
 	                tags.add(new TaggedText(TagEnum.rank, infraSpeciesMarker));
 	            }
 	        }
 
 	        //infra species
 	        String infraSpeciesPart = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim();
-	        if (StringUtils.isNotBlank(infraSpeciesPart)){
+	        if (isNotBlank(infraSpeciesPart)){
 	            tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
 	        }
 
@@ -553,7 +545,7 @@ public class TaxonNameDefaultCacheStrategy
 
 	       //author
            String authorCache = getAuthorshipCache(nonViralName);
-           if (StringUtils.isNotBlank(authorCache)){
+           if (isNotBlank(authorCache)){
                tags.add(new TaggedText(TagEnum.authors, authorCache));
            }
 
@@ -567,14 +559,14 @@ public class TaxonNameDefaultCacheStrategy
                 if (rank.equals(Rank.SECTION_BOTANY()) || rank.equals(Rank.SUBSECTION_BOTANY())){
                 	infraGenericMarker = infraGenericMarker.replace("(bot.)", "");
                 }
-	            if (StringUtils.isNotBlank(infraGenericMarker)){
+	            if (isNotBlank(infraGenericMarker)){
 	                tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
 	            }
 	        }
 
 	        //infra genus
 	        String infraGenericPart = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim();
-	        if (StringUtils.isNotBlank(infraGenericPart)){
+	        if (isNotBlank(infraGenericPart)){
 	            tags.add(new TaggedText(TagEnum.name, infraGenericPart));
 	        }
         }
@@ -592,12 +584,12 @@ public class TaxonNameDefaultCacheStrategy
     protected List<TaggedText> getRanklessTaggedNameCache(INonViralName nonViralName){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
         String speciesEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim();
-        if (StringUtils.isNotBlank(speciesEpi)){
+        if (isNotBlank(speciesEpi)){
             tags.add(new TaggedText(TagEnum.name, speciesEpi));
         }
 
         String infraSpeciesEpi = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet());
-        if (StringUtils.isNotBlank(infraSpeciesEpi)){
+        if (isNotBlank(infraSpeciesEpi)){
             tags.add(new TaggedText(TagEnum.name, infraSpeciesEpi));
         }
 
@@ -619,7 +611,7 @@ public class TaxonNameDefaultCacheStrategy
         }
 
         String uninomial = CdmUtils.Nz(nonViralName.getGenusOrUninomial()).trim();
-        if (StringUtils.isNotBlank(uninomial)){
+        if (isNotBlank(uninomial)){
             tags.add(new TaggedText(TagEnum.name, uninomial));
         }
 
@@ -698,7 +690,7 @@ public class TaxonNameDefaultCacheStrategy
 		tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
 
 		//add epitheton
-		if (StringUtils.isNotBlank(infraGenEpi)){
+		if (isNotBlank(infraGenEpi)){
             tags.add(new TaggedText(TagEnum.name, infraGenEpi));
         }
 	}
@@ -735,7 +727,7 @@ public class TaxonNameDefaultCacheStrategy
         } catch (UnknownCdmTypeException e) {
             marker = "'unknown aggregat type'";
         }
-        if (StringUtils.isNotBlank(marker)){
+        if (isNotBlank(marker)){
             tags.add(new TaggedText(TagEnum.rank, marker));
         }
     }
@@ -779,7 +771,7 @@ public class TaxonNameDefaultCacheStrategy
             if (nonViralName.isTrinomHybrid()){
                 marker = CdmUtils.concat("", NOTHO, marker);
             }
-            if (StringUtils.isNotBlank(marker)){
+            if (isNotBlank(marker)){
                 tags.add(new TaggedText(TagEnum.rank, marker));
             }
 
@@ -788,7 +780,7 @@ public class TaxonNameDefaultCacheStrategy
 
         infrSpecEpi = infrSpecEpi.trim().replace("null", "");
 
-        if (StringUtils.isNotBlank(infrSpecEpi)){
+        if (isNotBlank(infrSpecEpi)){
             tags.add(new TaggedText(TagEnum.name, infrSpecEpi));
         }
 
@@ -816,7 +808,7 @@ public class TaxonNameDefaultCacheStrategy
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
 
         //InfraGenericEpi
-        boolean hasInfraGenericEpi = StringUtils.isNotBlank(nonViralName.getInfraGenericEpithet());
+        boolean hasInfraGenericEpi = isNotBlank(nonViralName.getInfraGenericEpithet());
         if (hasInfraGenericEpi){
             String infrGenEpi = nonViralName.getInfraGenericEpithet().trim();
             if (nonViralName.isBinomHybrid()){
@@ -833,7 +825,7 @@ public class TaxonNameDefaultCacheStrategy
                 hasInfraGenericEpi && nonViralName.isTrinomHybrid()){
             addHybridPrefix(tags);
         }
-        if (StringUtils.isNotBlank(specEpi)){
+        if (isNotBlank(specEpi)){
             tags.add(new TaggedText(TagEnum.name, specEpi));
         }
         return tags;
@@ -846,11 +838,10 @@ public class TaxonNameDefaultCacheStrategy
      */
     protected void addAppendedTaggedPhrase(List<TaggedText> tags, INonViralName nonViralName){
         String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
-        if (StringUtils.isNotEmpty(appendedPhrase)){
+        if (isNotBlank(appendedPhrase)){
             tags.add(new TaggedText(TagEnum.name, appendedPhrase));
         }
     }
-
 
 	@Override
     public String getLastEpithet(TaxonName taxonName) {
@@ -893,7 +884,7 @@ public class TaxonNameDefaultCacheStrategy
              List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
             String authorCache = getAuthorshipCache(taxonName);
-            if (StringUtils.isNotBlank(authorCache)){
+            if (isNotBlank(authorCache)){
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }

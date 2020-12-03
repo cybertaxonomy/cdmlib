@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 16.11.2015
  */
-public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest {
+public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = Logger.getLogger(AdvancedBeanInitializerTest.class);
 
@@ -88,15 +88,15 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
     private ITaxonDao taxonDao;
 
     @SpringBeanByType
-    private AdvancedBeanInitializer initializer;
+    private AdvancedBeanInitializer<CDM> initializer;
 
     @SpringBeanByType
-    private AdvancedBeanInitializer defaultBeanInitializer;
+    private AdvancedBeanInitializer<CDM> defaultBeanInitializer;
 
     @SpringBeanByType
     private SessionFactory factory;
 
-    private Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> deacivatedAutoIntitializers;
+    private Map<Class<CDM>, AutoPropertyInitializer<CDM>> deacivatedAutoIntitializers;
 
     /**
      * Checks that the AdvancedBeanInitializer is available and that the expected set of beanAutoInitializers is configured
@@ -120,7 +120,8 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
         Set<Class<?>> checkSet = new HashSet<>(Arrays.asList(expectedAutoInitializers));
 
-        for(AutoPropertyInitializer<?> api : defaultBeanInitializer.getBeanAutoInitializers().values()){
+        Map<Class<CDM>, AutoPropertyInitializer<CDM>> beanAutoInitializers = defaultBeanInitializer.getBeanAutoInitializers();
+        for(AutoPropertyInitializer<CDM> api : beanAutoInitializers.values()){
             assert checkSet.remove(api.getClass()) == true;
         }
         assert checkSet.size() == 0;
@@ -159,10 +160,9 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         Reference ref = referenceDao.findById(5000);
         TaxonName name = nameDao.findById(5000);
         assertFalse("for this test to be significant the authorship must be uninitialized", Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
-        initializer.initialize(name, Arrays.asList(new String[]{"nomenclaturalReference.authorship.$"}));
+        initializer.initialize(name, Arrays.asList(new String[]{"nomenclaturalSource.citation.authorship.$"}));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
     }
-
 
     @DataSet
     @Test
@@ -175,7 +175,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertFalse(Hibernate.isInitialized(name.getAnnotations()));
 
-        name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalReference.$"));
+        name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalSource.citation.$"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference().getAnnotations()));
@@ -189,16 +189,16 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         deacivatedAutoIntitializers = clearAutoinitializers();
         assureSessionClear();
 
-        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalReference.$.*.contact.faxNumbers"));
+        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalSource.citation.$.*.contact.faxNumbers"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference())); // nomenclaturalReference
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship())); // $
-        assertFalse("must not be initialized by 'nomenclaturalReference.$'", Hibernate.isInitialized(name.getNomenclaturalReference().getExtensions()));
+        assertFalse("must not be initialized by 'nomenclaturalSource.citation.$'", Hibernate.isInitialized(name.getNomenclaturalReference().getExtensions()));
         Team team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
         assertTrue(Hibernate.isInitialized(team.getTeamMembers())); // *
         Person person1 = HibernateProxyHelper.deproxy(team.getTeamMembers().get(0), Person.class);
         assertEquals(personUuid, person1.getUuid());
         assertTrue(Hibernate.isInitialized(person1.getContact())); // contact
-        assertFalse("must not be initialized by 'nomenclaturalReference.$.*.contact'", Hibernate.isInitialized(person1.getAnnotations()));
+        assertFalse("must not be initialized by 'nomenclaturalSource.citation.$.*.contact'", Hibernate.isInitialized(person1.getAnnotations()));
         assertTrue(Hibernate.isInitialized(person1.getContact().getFaxNumbers())); // * // FIXME fails here #7375
     }
 
@@ -221,11 +221,10 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         deacivatedAutoIntitializers = clearAutoinitializers();
         assureSessionClear();
 
-        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalReference.$"));
+        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalSource.citation.$"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference().getAnnotations()));
-
     }
 
     @DataSet
@@ -238,7 +237,6 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         TaxonName name = nameDao.load(nameUuid, Arrays.asList("*"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertTrue(Hibernate.isInitialized(name.getAnnotations()));
-
     }
 
     @DataSet
@@ -248,13 +246,16 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         deacivatedAutoIntitializers = clearAutoinitializers();
         assureSessionClear();
 
-        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalReference.*"));
+        TaxonName name = nameDao.load(nameUuid, Arrays.asList("nomenclaturalSource.citation.*"));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference()));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAuthorship()));
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference().getAnnotations()));
-
     }
 
+    /**
+     * Test for the {@link TitleAndNameCacheAutoInitializer}
+     * <p>
+     */
     @DataSet
     @Test
     public void testTitleAndNameCacheAutoInitializer() {
@@ -262,12 +263,17 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         assureSessionClear();
 
         //Logger.getLogger(AdvancedBeanInitializer.class).setLevel(Level.TRACE);
-
-        Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("$"));
+        List<String> propertyPath = Arrays.asList("$");    //property path is actually not needed, test also succeeds with property path = null
+        Taxon taxon = (Taxon)taxonDao.load(taxonUuid, propertyPath);
         assertTrue(Hibernate.isInitialized(taxon.getName()));
         TaxonName name = taxon.getName();
-        // the TitleAndNameCacheAutoInitializer must not intitialize the nomenclaturalReference
+        // the TitleAndNameCacheAutoInitializer must not initialize the nomenclaturalReference
         // since the authorship is only taken from the combinationAutors field
+        //
+        // retrospectively added explanation: the TitleAndNameCacheAutoInitializer only initializes
+        // the authorship fields, not the nomenclatural reference. In case of the taxon.name use in the test
+        // the combinationAutors are sufficient for creating the titlecache. The nomenclatural reference
+        // is not included into the initialization done by the TitleAndNameCacheAutoInitializer
         assertFalse(Hibernate.isInitialized(name.getNomenclaturalReference()));
     }
 
@@ -282,7 +288,7 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         deacivatedAutoIntitializers = clearAutoinitializers();
         // load bean with autoinitializers deactivated
         factory.getCurrentSession().setFlushMode(FlushMode.MANUAL); // TODO this is only needed due to #7377 and should be removed otherwise
-        Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalReference.authorship"));
+        Taxon taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalSource.citation.authorship"));
         assertTrue(Hibernate.isInitialized(taxon.getName())); // name
         TaxonName name = taxon.getName();
         assertTrue(Hibernate.isInitialized(name.getNomenclaturalReference())); // nomenclaturalReference
@@ -298,11 +304,11 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         assertFalse("members should not intitialized since they where not included in the property path", Hibernate.isInitialized(team.getTeamMembers()));
 
         // activate the teamAutoInitializer again
-        AutoPropertyInitializer<CdmBase> teamAutoInitializer = deacivatedAutoIntitializers.get(TeamOrPersonBase.class);
+        AutoPropertyInitializer<CDM> teamAutoInitializer = deacivatedAutoIntitializers.get(TeamOrPersonBase.class);
         deacivatedAutoIntitializers.remove(teamAutoInitializer);
-        defaultBeanInitializer.getBeanAutoInitializers().put(TeamOrPersonBase.class, teamAutoInitializer);
+        defaultBeanInitializer.getBeanAutoInitializers().put((Class<CDM>) TeamOrPersonBase.class, teamAutoInitializer);
 
-        taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalReference.authorship"));
+        taxon = (Taxon)taxonDao.load(taxonUuid, Arrays.asList("name.nomenclaturalSource.citation.authorship"));
 
         team = HibernateProxyHelper.deproxy(name.getNomenclaturalReference().getAuthorship(), Team.class);
         assertTrue("members should have been intitialized by the ", Hibernate.isInitialized(team.getTeamMembers()));
@@ -311,19 +317,12 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
 
     // ============================== end of tests ========================= //
 
-    /**
-     * @return
-     */
-    protected Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> clearAutoinitializers() {
-        Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> autoIntitializers = new HashMap<>(defaultBeanInitializer.getBeanAutoInitializers());
+    protected Map<Class<CDM>, AutoPropertyInitializer<CDM>> clearAutoinitializers() {
+        Map<Class<CDM>, AutoPropertyInitializer<CDM>> autoIntitializers = new HashMap<>(defaultBeanInitializer.getBeanAutoInitializers());
         defaultBeanInitializer.getBeanAutoInitializers().clear();
         return autoIntitializers;
     }
 
-
-    /**
-     *
-     */
     protected void assureSessionClear() {
         try {
             factory.getCurrentSession().clear();
@@ -345,15 +344,15 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
         team.setUuid(teamUuid);
         team.addTeamMember(person1);
         team.addTeamMember(person2);
-        Set<Address> addresses = new HashSet<Address>();
+        Set<Address> addresses = new HashSet<>();
         addresses.add(Address.NewInstance(Country.GERMANY(), "locality", "pobox", "postcode", "region", "street", Point.NewInstance(50.02,33.3, ReferenceSystem.GOOGLE_EARTH(), 3)));
-        List<String> emailAddresses = new ArrayList<String>();
+        List<String> emailAddresses = new ArrayList<>();
         emailAddresses.add("My.email@web.de");
-        List<String> faxNumbers = new ArrayList<String>();
+        List<String> faxNumbers = new ArrayList<>();
         faxNumbers.add("0049-30-1234545");
-        List<String> phoneNumbers = new ArrayList<String>();
+        List<String> phoneNumbers = new ArrayList<>();
         phoneNumbers.add("0049-30-1234546");
-        List<URI> urls = new ArrayList<URI>();
+        List<URI> urls = new ArrayList<>();
         urls.add(URI.create("http://www.test.de"));
         Contact contact = Contact.NewInstance(addresses, emailAddresses, faxNumbers, phoneNumbers, urls);
 
@@ -398,7 +397,5 @@ public class AdvancedBeanInitializerTest extends CdmTransactionalIntegrationTest
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             },
             fileNameAppendix, true );
-
     }
-
 }

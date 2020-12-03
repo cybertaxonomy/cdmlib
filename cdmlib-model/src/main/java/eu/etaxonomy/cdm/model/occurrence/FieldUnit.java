@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -171,7 +170,7 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	}
 
 	public void setFieldNumber(String fieldNumber) {
-		this.fieldNumber = StringUtils.isBlank(fieldNumber)? null : fieldNumber;
+		this.fieldNumber = isBlank(fieldNumber)? null : fieldNumber;
 	}
 
 
@@ -194,7 +193,7 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 	}
 
 	public void setFieldNotes(String fieldNotes) {
-		this.fieldNotes = StringUtils.isBlank(fieldNotes)? null : fieldNotes;
+		this.fieldNotes = isBlank(fieldNotes)? null : fieldNotes;
 	}
 
 	// *********** Listener *****************************/

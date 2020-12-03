@@ -56,7 +56,8 @@ public class StatisticsDaoHibernateImplTest
 	@SpringBeanByType
 	private IStatisticsDao statisticsDao;
 
-	private UUID nodeUuid;
+	@SuppressWarnings("unused")
+    private UUID nodeUuid;
 
 	private List<Classification> classifications;
 

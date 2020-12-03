@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -505,7 +505,7 @@ public class PolytomousKey
      * @see java.lang.Object#clone()
      */
     @Override
-    public Object clone() {
+    public PolytomousKey clone() {
         PolytomousKey result;
 
         try {

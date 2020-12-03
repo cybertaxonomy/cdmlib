@@ -42,14 +42,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  */
 public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
+
+    private static final long serialVersionUID = -4932682946459109886L;
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonDeletionConfigurator.class);
 
 
-
     private boolean deleteSynonymsIfPossible = true;
 
-    private boolean deleteMisappliedNamesAndInvalidDesignations = true;
+    private boolean deleteMisappliedNames = true;
 
     private boolean deleteConceptRelationships = false;
 
@@ -70,34 +72,27 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     private UUID classificationUuid = null;
 
 
-
-
 	public boolean isDeleteInAllClassifications() {
         return deleteInAllClassifications;
     }
-
-
     public void setDeleteInAllClassifications(boolean deleteInAllClassifications) {
         this.deleteInAllClassifications = deleteInAllClassifications;
     }
 
 
-
-
     /**
-     * If <code>true</code> related taxa with  {@link TaxonRelationshipType} misappliedName or invalidDesignation will be removed if possible
+     * If <code>true</code> related taxa with  {@link TaxonRelationshipType} misappliedName
+     * will be removed if possible.<BR>
      * It is possible to remove a related taxon if it is not used in any other context, e.g. any
      * other @link {@link TaxonRelationship} or in another @link {@link Classification}
      * @return
      */
-    public boolean isDeleteMisappliedNamesAndInvalidDesignations() {
-        return deleteMisappliedNamesAndInvalidDesignations;
+    public boolean isDeleteMisappliedNames() {
+        return deleteMisappliedNames;
     }
-
-
-    public void setDeleteMisappliedNamesAndInvalidDesignations(
-            boolean deleteMisappliedNamesAndInvalidDesignations) {
-        this.deleteMisappliedNamesAndInvalidDesignations = deleteMisappliedNamesAndInvalidDesignations;
+    public void setDeleteMisappliedNames(
+            boolean deleteMisappliedNames) {
+        this.deleteMisappliedNames = deleteMisappliedNames;
     }
 
 

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
  *      the replacement name comes later as this reflects the order of publication</li>
  *  </ul>
  *
- * Details on ordering are explained at http://dev.e-taxonomy.eu/trac/ticket/3338<BR>
+ * Details on ordering are explained at https://dev.e-taxonomy.eu/redmine/issues/3338<BR>
  *
  * @author k.luther
  * @since 20.03.2017
@@ -139,9 +139,9 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
             }else if (basionym.equals(name2)){
                 return 1;
             }else{
-                this.compare(name1, name2, false);
+                return this.compare(name1, name2, false);
             }
-            return 0;
+
         }
 
         /**
@@ -310,7 +310,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
             Set<NomenclaturalStatus> status1 = taxonName.getStatus();
             for (NomenclaturalStatus nomStatus1 : status1){
                 NomenclaturalStatusType type = nomStatus1.getType();
-                if (type != null && type.isInvalidType()){
+                if (type != null && type.isInvalid()){
                     if(type.equals(NomenclaturalStatusType.PROVISIONAL())){
                         result += 1;
                     }else if (type.equals(NomenclaturalStatusType.INVALID())){
@@ -395,7 +395,7 @@ public class HomotypicalGroupNameComparator implements Comparator<TaxonName>, Se
                if (name.isZoological()){
                    result = name.getPublicationYear();
                }else{
-                   Reference ref = (Reference) name.getNomenclaturalReference();
+                   Reference ref = name.getNomenclaturalReference();
                    if (ref == null){
                        result = null;
                    }else{

@@ -50,10 +50,7 @@ import org.hibernate.type.Type;
  * ...
  * </pre>
  *
- *
- *
  * @author Andreas Kohlbecker, 2012
- *
  */
 //TODO this class has been moved to cdmlib-persistence preliminarily. It should be moved to
 //cdmlib-test again as it should be used only in test. Currently this is not possible because
@@ -62,12 +59,8 @@ import org.hibernate.type.Type;
 //see also TableGeneratorGlobalOverride
 public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 
-
 	private static final Logger logger = Logger.getLogger(TableGenerator.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
     public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) throws MappingException {
 
@@ -78,28 +71,5 @@ public class TableGenerator extends org.hibernate.id.enhanced.TableGenerator {
 		logger.debug("overrideProperies:" + (overrideProperies != null ? overrideProperies :"NULL"));
 		super.configure(type, params, serviceRegistry);
 	}
-
-//	/**
-//	 * {@inheritDoc}
-//	 */
-//	@Override
-//	public synchronized Serializable generate(final SessionImplementor session, Object obj) {
-//
-//		Serializable nextId =  super.generate(session, obj);
-//		logger.debug("next id for " + obj.getClass().getSimpleName() + ":" + obj + " =" + nextId );
-//		return nextId;
-//
-//		/*
-//		if(nextId instanceof Number){
-//			long nextIdL = ((Number)nextId).longValue();
-//			int nextIdOffset = 1000;
-//			logger.info("next id = " + (nextIdL + nextIdOffset));
-//			return IdentifierGeneratorHelper.createNumber( nextIdL + nextIdOffset, nextId.getClass() );
-//		} else {
-//			logger.error("identifier expected to be a Number, cannot apply offset");
-//			return nextId;
-//		}
-//		*/
-//	}
 
 }

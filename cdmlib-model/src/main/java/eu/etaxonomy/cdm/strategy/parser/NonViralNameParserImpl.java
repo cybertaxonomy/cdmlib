@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
@@ -1293,7 +1293,7 @@ public class NonViralNameParserImpl
 			}
 		}else {
 			//TODO
-			logger.warn ("Full author String parsable only for defined BotanicalNames or ZoologicalNames but this is " + code.getMessage());
+			logger.warn ("Full author String parsable only for defined BotanicalNames or ZoologicalNames but this is " + code.getLabel());
 			throw new StringNotParsableException("fullAuthorString (" +fullAuthorString+") not parsable: ");
 		}
 		fullAuthorsChecked(fullAuthorString, authors, years);

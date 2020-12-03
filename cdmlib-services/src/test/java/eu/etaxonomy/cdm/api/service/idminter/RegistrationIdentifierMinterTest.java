@@ -22,20 +22,11 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.kohlbecker
  * @since Dec 13, 2017
- *
  */
 public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private SessionFactory factory;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {
-
-    }
 
     @Test
     @DataSet("RegistrationIdentifierMinterTest.xml")
@@ -84,7 +75,7 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
         minter.setIdentifierFormatString("http://phycobank/%s");
         boolean thrown = false;
         try {
-            Identifier<String> indentifier = minter.mint();
+            minter.mint();
         } catch (OutOfIdentifiersException e){
             thrown = true;
         }
@@ -111,6 +102,9 @@ public class RegistrationIdentifierMinterTest extends CdmTransactionalIntegratio
         Assert.assertFalse(minter.isFromOwnRegistration("http://phycobank/"));
         Assert.assertFalse(minter.isFromOwnRegistration("http://otherreg/1234"));
     }
+
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 
 }

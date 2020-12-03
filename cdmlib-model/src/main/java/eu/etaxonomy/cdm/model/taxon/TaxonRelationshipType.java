@@ -69,7 +69,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final UUID uuidPartialMisappliedNameFor = UUID.fromString("859fb615-b0e8-440b-866e-8a19f493cd36");
 	public static final UUID uuidProParteSynonymFor = UUID.fromString("8a896603-0fa3-44c6-9cd7-df2d8792e577");
 	public static final UUID uuidPartialSynonymFor = UUID.fromString("9d7a5e56-973c-474c-b6c3-a1cb00833a3c");
-	private static final UUID uuidInvalidDesignationFor = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
 
 	private static final UUID uuidContradiction = UUID.fromString("a8f03491-2ad6-4fae-a04c-2a4c117a2e9b");
 	private static final UUID uuidCongruentTo = UUID.fromString("60974c98-64ab-4574-bb5c-c110f6db634d");
@@ -171,23 +170,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
      *
      * @see #isAnyMisappliedName()()
      */
-	public boolean isMisappliedNameOrInvalidDesignation(){
+	public boolean isMisappliedName(){
         if (this.isAnyMisappliedName()){
-            return true;
-        }else if (isInvalidDesignation()){
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * <code>true</code> if this relationship type is an
-     * {@link #INVALID_DESIGNATION_FOR() invalid designation}
-     *
-     * @see #isAnyMisappliedName()()
-     */
-    public boolean isInvalidDesignation(){
-        if (this.equals(INVALID_DESIGNATION_FOR())){
             return true;
         }
         return false;
@@ -202,6 +186,15 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
      */
     public boolean isAnyMisappliedName(){
         return (allMisappliedNameTypes().contains(this));
+    }
+
+    /**
+     * <code>true</code> if this relationship type is any
+     * of the {@link #isAnyMisappliedName() misapplied name relationships} or
+     * any of the {@link #isAnySynonym() (pro parte) synonym relationships}
+     */
+    public boolean isAnySynonymOrMisappliedName(){
+        return (allMisappliedNameTypes().contains(this) || allSynonymTypes().contains(this));
     }
 
 
@@ -281,7 +274,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * @return
 	 */
 	public boolean isConceptRelationship(){
-		if (this.isMisappliedNameOrInvalidDesignation()){
+		if (this.isMisappliedName()){
 			return false;
         }else if (this.equals(TAXONOMICALLY_INCLUDED_IN())){
 			return false;
@@ -382,19 +375,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
     }
 
 	/**
-	 * Returns the taxon relationship type "is invalid designation for". This
-	 * indicates that the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} of the {@link TaxonRelationship#getFromTaxon() source taxon}
-	 * in such a {@link TaxonRelationship taxon relationship} has
-	 * {@link eu.etaxonomy.cdm.model.name.NomenclaturalStatusType#isInvalidType() not been validly published} but was intended to denominate
-	 * a real taxon which is the same as the one meant by the target {@link Taxon taxon}.<BR>
-	 * According to the nomenclature codes a not validly published taxon name is
-	 * not a taxon name at all.<BR>
-	 * This type is neither symmetric nor transitive.
-	 */
-	public static final TaxonRelationshipType INVALID_DESIGNATION_FOR(){
-		return getTermByUuid(uuidInvalidDesignationFor);
-	}
-	/**
 	 * Returns the (concept) taxon relationship type "is impossible"
 	 * (contradiction). This is a concept relationship type which means that the
 	 * circumscriptions (the set of organisms/specimens that belong to a {@link Taxon taxon}
@@ -411,6 +391,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType CONTRADICTION(){
 		return getTermByUuid(uuidContradiction);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "is congruent to".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -427,6 +408,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType CONGRUENT_TO(){
 		return getTermByUuid(uuidCongruentTo);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "includes".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -445,6 +427,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType INCLUDES(){
 		return getTermByUuid(uuidIncludes);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "overlaps".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -462,6 +445,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType OVERLAPS(){
 		return getTermByUuid(uuidOverlaps);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "excludes".
 	 * This is a concept relationship type which means that the circumscriptions
@@ -477,6 +461,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	public static final TaxonRelationshipType EXCLUDES(){
 		return getTermByUuid(uuidExcludes);
 	}
+
 	/**
 	 * Returns the (concept) taxon relationship type "does not exclude".
 	 * This is a concept relationship type which means that the circumscriptions

@@ -93,7 +93,6 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		super(TermType.SpecimenTypeDesignationStatus);
 	}
 
-
 	/**
 	 * Class constructor: creates an additional type designation status instance
 	 * with a description (in the {@link eu.etaxonomy.cdm.model.common.Language#DEFAULT() default language}), a label

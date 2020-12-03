@@ -229,8 +229,10 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
 
     /**
      * {@inheritDoc}
+     *
      * @deprecated usually a {@link TextualTypeDesignation} may have multiple types,
-     * therefore the type is not defined
+     * therefore the type is not defined and can not be classified to have a designation
+     * source or not
      */
     @Deprecated
     @Override
@@ -276,6 +278,7 @@ public class TextualTypeDesignation extends TypeDesignationBase<SpecimenTypeDesi
 
     /**
      * {@inheritDoc}
+     *
      * @deprecated a textual type designation has no specific type
      * therefore the type can not be removed.
      */

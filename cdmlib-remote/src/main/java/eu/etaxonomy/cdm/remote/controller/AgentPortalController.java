@@ -41,7 +41,7 @@ public class AgentPortalController extends AgentController {
     private static final List<String> TAXONNODEAGENTRELATIONS_INIT_STRATEGY = Arrays.asList(new String[]{
             // NOTE: all other cases are covered in the TaxonNodeDaoHibernateImpl method
             // which is using join fetches
-            "taxonNode.taxon.name.nomenclaturalReference",
+            "taxonNode.taxon.name.nomenclaturalSource.citation",
             // AgentBase
             "agent.contact.*",
             // Person

@@ -10,7 +10,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @since 20.09.2009
  */
 
-//TODO hierarchies, see http://dev.e-taxonomy.eu/trac/ticket/3619
+//TODO hierarchies, see https://dev.e-taxonomy.eu/redmine/issues/3619
 @XmlEnum
 public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 
@@ -184,8 +185,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	 *     The type of the part for which the possible in-refrence types are to be returned.
 	 * @return a set, may be empty, never <code>null</code>
 	 */
-	public static Set<ReferenceType> inReferenceContraints(ReferenceType subReferenceType){
-	    Set<ReferenceType> inRefTypes = new HashSet<>();
+	public static List<ReferenceType> inReferenceContraints(ReferenceType subReferenceType){
+	    List<ReferenceType> inRefTypes = new ArrayList<>();
 
         if(subReferenceType != null && !subReferenceType.equals(ReferenceType.Generic)){
             if(subReferenceType.isArticle()){
@@ -197,15 +198,20 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
                 inRefTypes.add(ReferenceType.Journal);
             } else if (subReferenceType == ReferenceType.InProceedings) {
                 inRefTypes.add(ReferenceType.Proceedings);
+            } else if (subReferenceType == ReferenceType.Proceedings) {
+                inRefTypes.add(ReferenceType.PrintSeries);
             } else if (subReferenceType == ReferenceType.Section) {
                 inRefTypes.add(ReferenceType.Article);
+                inRefTypes.add(ReferenceType.BookSection);
                 inRefTypes.add(ReferenceType.Book);
                 inRefTypes.add(ReferenceType.Thesis);
                 inRefTypes.add(ReferenceType.Patent);
                 inRefTypes.add(ReferenceType.Report);
                 inRefTypes.add(ReferenceType.WebPage);
                 inRefTypes.add(ReferenceType.InProceedings);
-                inRefTypes.add(ReferenceType.BookSection);
+            } else if (subReferenceType == ReferenceType.WebPage) {
+                inRefTypes.add(ReferenceType.WebPage);
+                inRefTypes.add(ReferenceType.Database);
             }
         }
 
@@ -225,10 +231,10 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	public String getKey(){return delegateVocTerm.getKey();}
 
 	@Override
-    public String getMessage(){return delegateVocTerm.getMessage();}
+    public String getLabel(){return delegateVocTerm.getLabel();}
 
 	@Override
-    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+    public String getLabel(Language language){return delegateVocTerm.getLabel(language);}
 
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}

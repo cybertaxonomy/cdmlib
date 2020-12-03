@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
- *
  */
 @DataSet
 public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
@@ -51,17 +50,11 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 
 /************ TESTS ********************************/
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase#IdentifiableDaoBase(java.lang.Class)}.
-     */
     @Test
     public void testIdentifiableDaoBase() {
         assertNotNull(identifiableDao);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase#findByTitle(java.lang.String)}.
-     */
     @Test
     public void testFindByTitle() {
         List<TaxonBase> results = identifiableDao.findByTitle("Lorem");
@@ -88,6 +81,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
         assertNotNull("findByTitle should return an integer",result);
         assertEquals("findByTitle should return 1", 1, result);
     }
+
     @Test
     public void testGetRights() {
         TaxonBase<?> taxon = identifiableDao.findByUuid(uuid);
@@ -126,7 +120,6 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
         assertEquals("My second credit", credits.get(1).getText());
         assertEquals("My third credit", credits.get(2).getText());
     }
-
 
     @Test
     public void testSources() throws Exception {
@@ -169,5 +162,4 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

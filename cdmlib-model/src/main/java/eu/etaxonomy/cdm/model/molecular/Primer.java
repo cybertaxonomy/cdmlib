@@ -167,12 +167,10 @@ public class Primer extends AnnotatableEntity {
 	 * a new instance that differs only slightly from <i>this</i> primer by
 	 * modifying only some of the attributes.<BR><BR>
 	 *
-	 *
-	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public Primer clone()  {
 		try{
 		Primer result = (Primer)super.clone();
 

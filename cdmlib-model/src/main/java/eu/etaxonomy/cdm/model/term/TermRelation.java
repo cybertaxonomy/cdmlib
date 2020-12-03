@@ -72,11 +72,9 @@ public abstract class TermRelation<T extends DefinedTermBase>
 
  // ********************** CLONE **************************//
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Object clone() throws CloneNotSupportedException{
-        TermRelation<T> result;
-        result = (TermRelation<T>)super.clone();
+    public TermRelation<T> clone() throws CloneNotSupportedException{
+        TermRelation<T> result = (TermRelation<T>)super.clone();
         return result;
     }
 }

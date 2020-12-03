@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.io.ByteArrayOutputStream;
@@ -41,8 +40,10 @@ import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.unitils.dbunit.util.MultiSchemaXmlDataSetReader;
 
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
 
 /**
@@ -85,10 +86,6 @@ public class DataBaseTablePrinter {
      * Prints the data set to an output stream, using the
      * {@link FlatXmlDataSet}.
      * <p>
-     * <h2>NOTE: for compatibility with unitils 3.x you may
-     * want to use the {@link #printDataSetWithNull(OutputStream)}
-     * method instead.</h2>
-     * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
      * transaction is committed, and that isn't until after the
@@ -125,12 +122,17 @@ public class DataBaseTablePrinter {
      * {@link FlatFullXmlWriter}.
      * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
      * inserts '[null]' place holders for null values instead of skipping them.
-     * This was necessary to make this xml database export compatible to the
-     * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+     * This was necessary for some time to make this xml database export compatible to the
+     * {@link MultiSchemaXmlDataSetReader} which is used in unitils since version 3.x.
+     * In the meanwhile unitils handles <code>null</code> values correctly.
      * <p>
      * @param out out The OutputStream to write to.
      * @param includeTableNames
+     * @deprecated use {@link #printDataSet(OutputStream, String[])
+     *   instead, <code>null</code> values litter the test data, disturb model updating
+     *   and are not necessary anymore
      */
+    @Deprecated
     public void printDataSetWithNull(OutputStream out, String[] includeTableNames) {
         printDataSetWithNull(out, null, null, includeTableNames);
     }
@@ -140,8 +142,9 @@ public class DataBaseTablePrinter {
      * {@link FlatFullXmlWriter}.
      * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
      * inserts '[null]' place holders for null values instead of skipping them.
-     * This was necessary to make this xml database export compatible to the
-     * {@link MultiSchemaXmlDataSetReader} which is used in Unitils since version 3.x
+     * This was necessary for some time to make this xml database export compatible to the
+     * {@link MultiSchemaXmlDataSetReader} which is used in unitils since version 3.x.
+     * In the meanwhile unitils handles <code>null</code> values correctly.
      * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
@@ -153,7 +156,11 @@ public class DataBaseTablePrinter {
      *
      * @param out The OutputStream to write to.
      * @see FlatFullXmlWriter
+     * @deprecated use {@link #printDataSet(OutputStream)
+     *   instead, <code>null</code> values litter the test data, disturb model updating
+     *   and are not necessary anymore
      */
+    @Deprecated
     public void printDataSetWithNull(OutputStream out) {
         printDataSetWithNull(out, null, null, null);
     }
@@ -163,11 +170,23 @@ public class DataBaseTablePrinter {
      * @param excludeTermLoadingTables
      * @param excludeFilter the tables to be <em>excluded</em>
      */
+    public void printDataSet(OutputStream out, Boolean excludeTermLoadingTables,
+            ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
+        printDataSet(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames, false);
+    }
+
+    /**
+     * @param out
+     * @param excludeTermLoadingTables
+     * @param excludeFilter the tables to be <em>excluded</em>
+     * @deprecated use {@link #printDataSet(OutputStream, Boolean, ITableFilterSimple, String[])
+     *   instead, <code>null</code> values litter the test data and disturb model updating and are not necessary anymore
+     */
+    @Deprecated
     public void printDataSetWithNull(OutputStream out, Boolean excludeTermLoadingTables,
             ITableFilterSimple excludeFilterOrig, String[] includeTableNames) {
 
         printDataSet(out, excludeTermLoadingTables, excludeFilterOrig, includeTableNames, true);
-
     }
 
     public void printDataSet(OutputStream out, Boolean excludeTermLoadingTables,
@@ -257,11 +276,6 @@ public class DataBaseTablePrinter {
      * Prints the named tables to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatXmlDataSet}.
      * <p>
-     * <h2>NOTE: for compatibility with unitils 3.x you may
-     * want to use the {@link #printDataSetWithNull(OutputStream)}
-     * method instead.</h2>
-     *
-     * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
      * transaction is committed, and that isn't until after the
@@ -307,11 +321,6 @@ public class DataBaseTablePrinter {
      * Prints the named tables to an output stream, using dbunit's
      * {@link org.dbunit.dataset.xml.FlatXmlWriter}.
      * <p>
-     * <h2>NOTE: for compatibility with unitils 3.x you may
-     * want to use the {@link #printDataSetWithNull(OutputStream)}
-     * method instead.</h2>
-     *
-     * <p>
      * Remember, if you've just called save() or
      * update(), the data isn't written to the database until the
      * transaction is committed, and that isn't until after the
@@ -353,7 +362,6 @@ public class DataBaseTablePrinter {
             }
         }
     }
-
 
     /**
      * Prints a dtd to an output stream, using dbunit's

@@ -92,7 +92,7 @@ public class RegistrationController extends BaseController<Registration, IRegist
     @ApiOperation(value = "Finds Registration by persitent identifier.",
         notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
     )
-    @RequestMapping(value="identifier/**", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public Registration doGetByIdentifier(
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -119,15 +119,14 @@ public class RegistrationController extends BaseController<Registration, IRegist
     @ApiOperation(value = "Finds status of a Registration by persitent identifier.",
         notes = "The identifier passed as paramter must be unique in the database otherwise the server will responde with the HTTP error code: " + HttpServletResponse.SC_PRECONDITION_FAILED
     )
-    @RequestMapping(value="identifier/**/status", method = RequestMethod.GET)
+    @RequestMapping(value="status", method = RequestMethod.GET, params={"identifier"})
     public ModelAndView doStatusByIdentifier(
+            @RequestParam(value = "identifier", required = true) String identifier,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doStatusByIdentifier() " + requestPathAndQuery(request));
 
-        String identifier = readPathParameter(request, "/registration/identifier/");
-        identifier = identifier.replace("/status", "");
 
         Map<UUID, RegistrationStatus> map = service.statusByIdentifier(identifier);
 
@@ -149,8 +148,10 @@ public class RegistrationController extends BaseController<Registration, IRegist
     @ApiImplicitParams({
         @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration", required = true, dataType = "string", paramType = "path"),
     })
-    @RequestMapping(value="identifier/**", method = RequestMethod.GET, params={"validateUniqueness"})
+    @RequestMapping(method = RequestMethod.GET, params={"identifier", "validateUniqueness"})
     public Pager<Registration> doPageByIdentifier(
+            @RequestParam(value = "identifier", required = true) String identifier,
+            @RequestParam(value = "validateUniqueness") boolean validateUniqueness,
             @RequestParam(value = "pageNumber", required = true) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
@@ -158,10 +159,25 @@ public class RegistrationController extends BaseController<Registration, IRegist
 
         logger.info("doPageByIdentifier() " + requestPathAndQuery(request));
 
-        String identifier = readPathParameter(request, "/registration/identifier/");
+        return pageRegistrations(identifier, validateUniqueness, pageIndex, pageSize, response);
+    }
+
+    protected Pager<Registration> pageRegistrations(String identifier, boolean validateUniqueness, Integer pageIndex, Integer pageSize, HttpServletResponse response) throws IOException {
 
         Pager<Registration> regPager = service.pageByIdentifier(identifier, pageIndex, pageSize, getInitializationStrategy());
-        return regPager;
+
+        if(regPager.getCount() == 1){
+            return regPager;
+        } else if(regPager.getCount() > 1){
+            if(validateUniqueness) {
+                HttpStatusMessage.create("The identifier " + identifier + " refrences multiple registrations", HttpServletResponse.SC_PRECONDITION_FAILED).send(response);
+                return null; // never reached, due to previous send()
+            } else {
+                return regPager;
+            }
+        } else {
+            return null;
+        }
     }
 
 
