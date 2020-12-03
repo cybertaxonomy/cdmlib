@@ -424,8 +424,7 @@ public class CdmPersistentDataSource
 		try {
 			return NewInstance(strDataSourceName) ;
 		} catch (DataSourceNotFoundException e) {
-			logger.error("Error when saving datasource");
-			return null;
+			throw new RuntimeException("Error when saving CdmPersistentDatasource", e);
 		}
 	}
 
