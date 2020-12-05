@@ -141,7 +141,8 @@ public class TreeNode<T,S> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{").append(getData().toString()).append(",[");
+
+        sb.append("{").append(getData() == null ? "null" : getData().toString()).append(",[");
         int i = 0;
         for (TreeNode<T,S> e : getChildren()) {
             if (i > 0) {
