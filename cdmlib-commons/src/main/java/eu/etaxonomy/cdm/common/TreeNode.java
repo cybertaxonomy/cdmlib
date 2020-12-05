@@ -107,7 +107,7 @@ public class TreeNode<T,S> {
      */
     public void addChild(TreeNode<T,S> child) {
         if (children == null) {
-            children = new ArrayList<TreeNode<T,S>>();
+            children = new ArrayList<>();
         }
         children.add(child);
     }
@@ -155,17 +155,9 @@ public class TreeNode<T,S> {
         return sb.toString();
     }
 
-    /**
-     *
-     * @return the nodeId
-     */
     public S getNodeId() {
         return nodeId;
     }
-
-    /**
-     * @param nodeId the nodeId to set
-     */
     public void setNodeId(S nodeId) {
         this.nodeId = nodeId;
     }
