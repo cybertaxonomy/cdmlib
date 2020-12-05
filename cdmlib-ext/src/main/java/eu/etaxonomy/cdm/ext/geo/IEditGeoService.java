@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * @author a.kohlbecker
  * @since 18.06.2009
  * @author n.hoffmann
- *
  */
 public interface IEditGeoService {
 
