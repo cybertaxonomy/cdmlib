@@ -845,6 +845,7 @@ public class TaxonNodeServiceImpl
         }
 
        Taxon newTaxon = Taxon.NewInstance(name, sec);
+       newTaxon.setPublish(taxonDto.isPublish());
 //       UUID taxonUuid = taxonService.saveOrUpdate(newTaxon);
 //       newTaxon = (Taxon) taxonService.load(taxonUuid);
 
