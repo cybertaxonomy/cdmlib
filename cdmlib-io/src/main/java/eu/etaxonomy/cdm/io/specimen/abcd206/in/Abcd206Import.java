@@ -1112,8 +1112,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         // state.getDataHolder().getUnitID());
                         URI lastAccessPoint = state.getActualAccessPoint();
                         state.setActualAccessPoint(dnaSource);
+                        String oldPrefix = state.getPrefix();
+                        state.setPrefix(unitAssociationWrapper.getPrefix());
                         handleSingleUnit(state, associatedUnits.item(m), false);
                         state.setActualAccessPoint(lastAccessPoint);
+                        state.setPrefix(oldPrefix);
                         DerivedUnit associatedUnit = state.getDerivedUnitBase();
                         FieldUnit associatedFieldUnit = null;
                         java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository()

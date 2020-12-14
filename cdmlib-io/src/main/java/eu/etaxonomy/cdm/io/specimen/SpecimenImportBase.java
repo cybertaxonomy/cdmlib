@@ -880,9 +880,12 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     */
 	    protected Taxon linkParentChildNode(Taxon parent, Taxon child, Classification classification, STATE state) {
 	        TaxonNode node =null;
+	        List<String> propertyPaths = new ArrayList<>();
+            propertyPaths.add("childNodes");
 	        if (parent != null) {
-	            parent = (Taxon) getTaxonService().find(parent.getUuid());
-	            child = (Taxon) getTaxonService().find(child.getUuid());
+
+	            parent = (Taxon) getTaxonService().load(parent.getUuid(), propertyPaths);
+	            child = (Taxon) getTaxonService().load(child.getUuid(), propertyPaths);
 	            //here we do not have to check if the taxon nodes already exists
 	            //this is done by classification.addParentChild()
 	            //do not add child node if it already exists
