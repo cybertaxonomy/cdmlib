@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
@@ -45,17 +45,18 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author n.hoffmann
  * @since Dec 16, 2010
  */
-public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
+public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTest {
+
+    @SpringBeanByType
+    private ITaxonService service;
+
+    @SpringBeanByType
+    private INameService nameService;
 
 	private Synonym s1;
 	private Synonym s2;
 	private Taxon t2;
 	private Taxon t1;
-	@SpringBeanByType
-	private ITaxonService service;
-
-	@SpringBeanByType
-	private INameService nameService;
 	private String referenceDetail;
 	private Reference reference;
 	private SynonymType homoTypicSynonymType;
@@ -210,7 +211,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#changeSynonymToRelatedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
 	public final void testChangeSynonymToRelatedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymType);
 		t1.addSynonym(s2, homoTypicSynonymType);
