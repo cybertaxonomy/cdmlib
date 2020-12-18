@@ -210,7 +210,7 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#changeSynonymToRelatedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
 	public final void testChangeSynonymToRelatedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymType);
 		t1.addSynonym(s2, homoTypicSynonymType);
@@ -336,7 +336,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("s2 must have exactly 0 basionym relationships", 0, s2.getName().getBasionyms().size());
 
 	}
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
