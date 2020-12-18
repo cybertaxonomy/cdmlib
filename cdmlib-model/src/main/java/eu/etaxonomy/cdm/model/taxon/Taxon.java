@@ -1704,7 +1704,9 @@ public class Taxon
         return clone(true, true, true, true);
     }
 
-    public Taxon clone(boolean withSynonyms, boolean withTaxonRelations, boolean withDescriptions, boolean withMedia) {
+    public Taxon clone(boolean withSynonyms, boolean withTaxonRelations, boolean withDescriptions,
+            boolean withMedia) {
+
         Taxon result;
         result = (Taxon)super.clone();
 

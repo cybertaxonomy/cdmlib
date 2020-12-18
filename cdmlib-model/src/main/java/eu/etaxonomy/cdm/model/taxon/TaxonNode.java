@@ -837,11 +837,8 @@ public class TaxonNode
 	    }
 	}
 
-
     /**
-     * Returns a set containing this node and all nodes that are descendants of this node
-     *
-     * @return
+     * Returns a set containing this node and all nodes that are descendants of this node.
      */
 	@Transient
     protected Set<TaxonNode> getDescendants(){
@@ -1082,6 +1079,11 @@ public class TaxonNode
      * modifying only some of the attributes.<BR><BR>
      * The child nodes are not copied.<BR>
      * The taxon and parent are the same as for the original taxon node. <BR>
+     * <BR>
+     * Note: Cloning taxon nodes with cloning taxa (and children) is a complex
+     * issue which is better be handled in service layer logic. See according
+     * clone method in classification service
+     * or taxon node service there.
      *
      * @see java.lang.Object#clone()
      */

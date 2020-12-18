@@ -94,6 +94,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class TaxonNodeServiceImpl
            extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao>
            implements ITaxonNodeService{
+
     private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 
     @Autowired
@@ -116,7 +117,6 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private IOriginalSourceDao sourceDao;
-
 
     @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;

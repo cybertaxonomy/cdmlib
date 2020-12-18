@@ -261,11 +261,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     @Deprecated
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
 
-    /**
-     *
-     * @param classification
-     * @return
-     */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
@@ -328,89 +323,34 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * The highter taxon is defined by rank where the lowest rank equal or above minRank
      * is taken. If maxRank <> null and no taxon exists with minRank <= rank <= maxRank
      * no higher taxon is returned for this taxon.
-     *
-     * @param taxonUuids
-     * @param minRank
-     * @param maxRank
-     * @return
      */
     public List<GroupedTaxonDTO> groupTaxaByHigherTaxon(List<UUID> taxonUuids, UUID classificationUuid, Rank minRank, Rank maxRank);
 
-    /**
-     * @param taxonUuids
-     * @param classificationUuid
-     * @param markerType
-     * @param value
-     * @return
-     */
     public List<GroupedTaxonDTO> groupTaxaByMarkedParents(List<UUID> taxonUuids, UUID classificationUuid,
             MarkerType markerType, Boolean value);
-
 
     /**
      * Returns the most relevant data of a taxon/taxon node, including children, synonyms
      * and certain ancestors if required.
-     * @param classificationUuid
-     * @param taxonUuid
-     * @param doSynonyms
-     * @param includeUnpublished
-     * @param ancestorMarkers
-     * @return
      */
     public TaxonInContextDTO getTaxonInContext(UUID classificationUuid, UUID taxonUuid,
             Boolean doChildren, Boolean doSynonyms, boolean includeUnpublished, List<UUID> ancestorMarkers,
             TaxonNodeSortMode sortMode);
 
-    /**
-     * @param classification
-     * @return
-     */
     public UUID saveClassification(Classification classification);
 
-    /**
-     * @param classificationUuid
-     * @param limit
-     * @param pattern
-     * @param searchForClassifications
-     * @return
-     */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications);
 
-    /**
-     * @param classification
-     * @param limit
-     * @param pattern
-     * @param searchForClassifications
-     * @return
-     */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications);
 
-    /**
-     * @param classificationUuid
-     * @param searchForClassifications
-     * @return
-     */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, boolean searchForClassifications);
 
-    /**
-     * @param classification
-     * @param searchForClassifications
-     * @return
-     */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, boolean searchForClassifications);
 
-    /**
-     * @param classificationUuid
-     * @param limit
-     * @param pattern
-     * @param searchForClassifications
-     * @param includeDoubtful
-     * @return
-     */
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             UUID classificationUuid, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
