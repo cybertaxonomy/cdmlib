@@ -28,7 +28,7 @@ public class SubtreeCloneConfigurator implements Serializable {
     //might be replaced by a TaxonNodeFilter in future (but requires treebuilding and handling for missing inbetween taxa a tree)
     private Set<UUID> subTreeUuids;
 
-    private String classificationName = "Taxon subtree clone";
+    private String newClassificationName = "Taxon subtree clone";
 
     private boolean reuseClassificationReference = false;
      //used only if reuseClassificationReferenceUuid == false
@@ -99,14 +99,14 @@ public class SubtreeCloneConfigurator implements Serializable {
 
 // ******************************** CONSTRUCTOR ********************************/
 
-    private SubtreeCloneConfigurator(Set<UUID> subTreeUuids, String classificationName,
+    private SubtreeCloneConfigurator(Set<UUID> subTreeUuids, String newClassificationName,
             boolean reuseClassificationReference, UUID classificationReferenceUuid,
             boolean reuseTaxa, boolean reuseTaxonSecundum, UUID taxonSecundumUuid,
             boolean reuseParentChildReference, UUID parentChildReferenceUuid,
             TaxonRelationshipType relationTypeToOldTaxon,
             boolean reuseNames) {
         this.subTreeUuids = subTreeUuids;
-        this.classificationName = classificationName;
+        this.newClassificationName = newClassificationName;
         this.reuseClassificationReference = reuseClassificationReference;
         this.classificationReferenceUuid = classificationReferenceUuid;
         this.reuseTaxa = reuseTaxa;
@@ -127,11 +127,11 @@ public class SubtreeCloneConfigurator implements Serializable {
         this.subTreeUuids = subTreeUuid;
     }
 
-    public String getClassificationName() {
-        return classificationName;
+    public String getNewClassificationName() {
+        return newClassificationName;
     }
-    public void setClassificationName(String classificationName) {
-        this.classificationName = classificationName;
+    public void setNewClassificationName(String newClassificationName) {
+        this.newClassificationName = newClassificationName;
     }
 
     public UUID getClassificationReferenceUuid() {
