@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertFalse;
@@ -64,9 +63,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	private INonViralName t1n;
 	private TaxonName s2n;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		//service = new TaxonServiceImpl();
@@ -206,8 +202,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		}
 
 //		Assert.assertNull("Synonym should not be used in a name anymore", s1.getName());
-
-
 	}
 
 	/**
@@ -244,7 +238,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
         //UUID s1UUID = service.update(s1);
         newTaxonUUID = service.save(newTaxon).getUuid();
 
-
         s2 =(Synonym)service.find(s2.getUuid());
         newTaxon = (Taxon)service.find(newTaxonUUID);
         assertNull(s2);
@@ -252,7 +245,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
         assertFalse(synonymName.getTaxonBases().contains(s2));
         assertTrue(synonymName.getTaxonBases().contains(newTaxon));
 	}
-
 
 	@Test
 	public void changeHomotypicalGroupOfSynonym(){

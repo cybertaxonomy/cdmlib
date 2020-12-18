@@ -1390,8 +1390,8 @@ public class Taxon
      * @see			#getHomotypicSynonymyGroups()
      * @see			SynonymType
      * @deprecated as the method currently returns data not matching the original description of the method
-     * as an ordered list (according to date of publication) of synonyms with same secundum as <i>this</i> taxon.
-     * In future this method will either be removed or semantics may change.
+     *    as an ordered list (according to date of publication) of synonyms with same secundum as <i>this</i> taxon.<BR>
+     *    In future this method will either be removed or semantics may change.
      */
     @Deprecated
     @Transient
