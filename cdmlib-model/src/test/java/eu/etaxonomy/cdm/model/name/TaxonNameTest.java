@@ -697,9 +697,7 @@ public class TaxonNameTest {
 		assertSame("The type of the nomStatus needs to be the same", nomStatus.getType(), cloneStatus.getType());
 		assertSame("The citation of the nomStatus needs to be the same", nomStatus.getCitation(), cloneStatus.getCitation());
 		assertSame("The rule considered of the nomStatus needs to be the same", nomStatus.getRuleConsidered(), cloneStatus.getRuleConsidered());
-		//DISCUSS: do we want to reuse the status
-		assertSame("The nomStatus needs to be the same", nomStatus, cloneStatus);
-
+		assertNotSame("The nomStatus should be cloned as it is orphan removal", nomStatus, cloneStatus);
 
 //		//hybrid parents of clone
 //		assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getChildRelationships().size());
