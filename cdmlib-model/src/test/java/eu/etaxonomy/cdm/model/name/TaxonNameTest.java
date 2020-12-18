@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -616,27 +617,29 @@ public class TaxonNameTest {
 
 	@Test
 	public void testClone(){
+
+	    //Create data
 	    TaxonName taxonName1 = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 	    TaxonName genusName = TaxonNameFactory.NewNonViralInstance(Rank.GENUS());
         Taxon.NewInstance(taxonName1, null);
 
-		//basionym & homonym
+		   //basionym & homonym
 		TaxonName basionym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		TaxonName earlierHomonym = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
-		taxonName1.addBasionym(basionym);
-		taxonName1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule", null);
-		//status
+		NameRelationship basionymRelation = taxonName1.addBasionym(basionym);
+		NameRelationship homonymRelation = taxonName1.addRelationshipToName(earlierHomonym, NameRelationshipType.LATER_HOMONYM(), "later homonym rule", null);
+		   //status
 		Reference statusReference = ReferenceFactory.newArticle();
 		NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED(), statusReference, "55");
 		taxonName1.addStatus(nomStatus);
-		//typeDesignation
+		   //typeDesignation
 		DerivedUnit typeSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		Reference specimenTypeCitation = ReferenceFactory.newArticle();
 		Reference nameTypeCitation = ReferenceFactory.newArticle();
 		SpecimenTypeDesignation specimenTypeDesignationOriginal = taxonName1.addSpecimenTypeDesignation(typeSpecimen, SpecimenTypeDesignationStatus.HOLOTYPE(), specimenTypeCitation, null, null, false, false);
 		NameTypeDesignation nameTypeDesignationOriginal = genusName.addNameTypeDesignation(taxonName1, nameTypeCitation, null, null, NameTypeDesignationStatus.LECTOTYPE(), true, false, false, false);
 
-		//description
+		   //description
 		TaxonNameDescription description = TaxonNameDescription.NewInstance(taxonName1);
 		TextData textData = TextData.NewInstance(Feature.IMAGE());
 		textData.putText(Language.DEFAULT(), "My media text data");
@@ -650,10 +653,10 @@ public class TaxonNameTest {
 		assertSame("Rank should be same", taxonName1.getRank(), clone.getRank());
 		assertTrue("TaxonBases should not be cloned", clone.getTaxonBases().isEmpty());
 		assertEquals("TaxonBases of original name should not be empty", 1, taxonName1.getTaxonBases().size());
-		//Homotypical group - CAUTION: behaviour may be changed in future
-		//TODO still needs to be discussed
-//		assertSame("The clone must have the same homotypical group as the original", taxonName1.getHomotypicalGroup(), clone.getHomotypicalGroup());
-//		assertSame("The genusClone must have the same homotypical group as the original genus", genusName.getHomotypicalGroup(), genusClone.getHomotypicalGroup());
+		//homotypical groups are not cloned, see documentation
+		assertNotSame("The clone must have a new homotypical group", taxonName1.getHomotypicalGroup(), clone.getHomotypicalGroup());
+		assertNotSame("The genusClone must a new homotypical group", genusName.getHomotypicalGroup(), genusClone.getHomotypicalGroup());
+		assertEquals("Only the name should be part of the new homotypical group", 1, clone.getHomotypicalGroup().getTypifiedNames().size());
 
 		//description
 		assertEquals("There should be exactly 1 name description", 1, clone.getDescriptions().size());
@@ -695,13 +698,13 @@ public class TaxonNameTest {
 		assertSame("The citation of the nomStatus needs to be the same", nomStatus.getCitation(), cloneStatus.getCitation());
 		assertSame("The rule considered of the nomStatus needs to be the same", nomStatus.getRuleConsidered(), cloneStatus.getRuleConsidered());
 		//DISCUSS: do we want to reuse the status
-//		assertSame("The nomStatus needs to be the same", nomStatus, cloneStatus);
+		assertSame("The nomStatus needs to be the same", nomStatus, cloneStatus);
 
 
 //		//hybrid parents of clone
 //		assertEquals("There should be exactly 2 hybrid relationships in which the clone takes the child role", 2, clone.getChildRelationships().size());
-//		Set<NonViralName> parentSet = new HashSet<NonViralName>();
-//		Set<NonViralName> childSet = new HashSet<NonViralName>();
+//		Set<NonViralName> parentSet = new HashSet<>();
+//		Set<NonViralName> childSet = new HashSet<>();
 //		for (Object object : clone.getChildRelationships()){
 //			HybridRelationship childRelation = (HybridRelationship)object;
 //			NonViralName relatedFrom = childRelation.getRelatedFrom();
@@ -714,20 +717,22 @@ public class TaxonNameTest {
 //		assertTrue("Child set should contain clone", childSet.contains(clone));
 
 		//basionym of clone
-		assertEquals("There should be exactly 1 relationship in which the clone takes the to role", 1, clone.getRelationsToThisName().size());
-		NameRelationship nameRelation = clone.getRelationsToThisName().iterator().next();
-		assertSame("Basionym should be from-object in relationship", basionym, nameRelation.getRelatedFrom());
-		assertSame("Clone should be to-object in relationship", clone, nameRelation.getRelatedTo());
-		assertSame("Relationship type should be cloned correctly", NameRelationshipType.BASIONYM(), nameRelation.getType());
-//		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
+		assertEquals("There should be exactly 1 relationship in which the clone takes the -to- role", 1, clone.getRelationsToThisName().size());
+		NameRelationship basionymRelationClone = clone.getRelationsToThisName().iterator().next();
+		assertNotEquals(basionymRelation, basionymRelationClone);
+		//related name should not be cloned, if needed e.g. for basionyms this should be handled by the calling method (see documentation)
+		assertSame("Basionym should be from-object in relationship", basionym, basionymRelationClone.getRelatedFrom());
+		assertSame("Clone should be to-object in relationship", clone, basionymRelationClone.getRelatedTo());
+		assertSame("Relationship type should be cloned correctly", NameRelationshipType.BASIONYM(), basionymRelationClone.getType());
 
 		//homonym of clone
 		assertEquals("There should be exactly 1 relationship in which the clone takes the from role", 1, clone.getRelationsFromThisName().size());
-		nameRelation = clone.getRelationsFromThisName().iterator().next();
-		assertSame("Clone should be from-object in relationship", clone, nameRelation.getRelatedFrom());
-		assertSame("Homonym should be to-object in relationship", earlierHomonym, nameRelation.getRelatedTo());
-		assertSame("Relationship type should be cloned correctly", NameRelationshipType.LATER_HOMONYM(), nameRelation.getType());
-		assertEquals("Rule should be cloned correctly", "later homonym rule", nameRelation.getRuleConsidered());
+		NameRelationship homonymRelationClone = clone.getRelationsFromThisName().iterator().next();
+		assertNotEquals(homonymRelation, homonymRelationClone);
+        assertSame("Clone should be from-object in relationship", clone, homonymRelationClone.getRelatedFrom());
+		assertSame("Homonym should be to-object in relationship", earlierHomonym, homonymRelationClone.getRelatedTo());
+		assertSame("Relationship type should be cloned correctly", NameRelationshipType.LATER_HOMONYM(), homonymRelationClone.getType());
+		assertEquals("Rule should be cloned correctly", "later homonym rule", homonymRelationClone.getRuleConsidered());
 	}
 
 

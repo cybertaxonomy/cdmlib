@@ -54,8 +54,6 @@ public interface ITaxonNameBase
     public NomenclaturalCode getNameType();
     public void setNameType(NomenclaturalCode nameType);
 
-    public Object clone();
-
     public String generateFullTitle();
 
     @Transient
@@ -965,5 +963,37 @@ public interface ITaxonNameBase
      * any sub type and is supposed to be handled via {@link IViralName}
      */
     boolean isViral();
+
+    /**
+     * Clones <i>this</i> taxon name. This is a shortcut that enables to create
+     * a new instance that differs only slightly from <i>this</i> taxon name by
+     * modifying only some of the attributes.<BR>
+     * <BR>
+     * Usages of this name in a {@link TaxonBase taxa} are <b>not</b> cloned.<BR>
+     * The <b>homotypical group</b> is created <b>anew</b> and not reused (if this
+     * is not wanted
+     * use {@link #clone(boolean)} instead).<BR><BR>
+     * {@link TaxonNameDescription Name descriptions} are cloned and not reused. <BR>
+     * {@link TypeDesignationBase Type designations} are cloned and not reused.<BR>
+     *
+     * {@link NameRelationship Name relationships} are cloned and not reused, <B>but the
+     * related names are not cloned but reused</B>. This in some cases is not correct (e.g. for basionym
+     * relationships but the correct handling needs to be better resolved in the
+     * calling methods).
+     *
+     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
+     * @see java.lang.Object#clone()
+     * @see #clone(boolean)
+     */
+    public TaxonName clone();
+
+    /**
+     * See {@link #clone()}
+     *
+     * @param cloneHomotypicGroup
+     *          If <code>true</code> a new homotypic group is created.
+     *          Else the existing homotypic group is reused.
+     */
+    public TaxonName clone(boolean cloneHomotypicGroup);
 
 }

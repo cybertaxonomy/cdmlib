@@ -3607,21 +3607,13 @@ public class TaxonName
 
 //*********************** CLONE ********************************************************/
 
-    /**
-     * Clones <i>this</i> taxon name. This is a shortcut that enables to create
-     * a new instance that differs only slightly from <i>this</i> taxon name by
-     * modifying only some of the attributes.<BR><BR>
-     * Usages of this name in a taxon concept are <b>not</b> cloned.<BR>
-     * <b>The name gets a newly created homotypical group</b><BR>
-     * (CAUTION: this behavior needs to be discussed and may change in future).<BR><BR>
-     * {@link TaxonNameDescription Name descriptions} are cloned and not reused.<BR>
-     * {@link TypeDesignationBase Type designations} are cloned and not reused.<BR>
-     *
-     * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
-     * @see java.lang.Object#clone()
-     */
     @Override
     public TaxonName clone() {
+        return this.clone(true);
+    }
+
+    @Override
+    public TaxonName clone(boolean newHomotypicGroup) {
         try {
             TaxonName result = (TaxonName)super.clone();
 
@@ -3672,9 +3664,12 @@ public class TaxonName
             }
 
             //homotypicalGroup
-            //TODO still needs to be discussed
-            result.homotypicalGroup = HomotypicalGroup.NewInstance();
-            result.homotypicalGroup.addTypifiedName(this);
+            if (newHomotypicGroup){
+                HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
+                homotypicalGroup.addTypifiedName(result);
+            }else{
+                result.homotypicalGroup.addTypifiedName(result);  //to immediately handle bidirectionality
+            }
 
             //HybridChildRelations
             result.hybridChildRelations = new HashSet<>();
