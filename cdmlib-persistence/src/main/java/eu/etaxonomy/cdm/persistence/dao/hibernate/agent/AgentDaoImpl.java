@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -181,15 +180,9 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         String clazzString = "";
 
         if (clazz == null){
-            clazzString = "";
-        }else if (clazz.equals(Team.class)){
-            clazzString = "dtype like 'Team'";
-        } else if (clazz.equals(Person.class)){
-            clazzString = "dtype like 'Person'";
-        }  else if (clazz.equals(Institution.class)){
-            clazzString = "dtype like 'Institution'";
-        } else if (clazz.equals(TeamOrPersonBase.class)){
-            clazzString = "dtype NOT LIKE 'Institution'";
+            clazzString = " FROM " + type.getSimpleName();
+        }else {
+            clazzString = " FROM " + clazz.getSimpleName();
         }
 
         Query query = null;
@@ -199,20 +192,14 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
             if (pattern.startsWith("*")){
                 whereClause += " OR titleCache LIKE :pattern";
             }
-            if (clazzString != ""){
-                whereClause += " AND " + clazzString;
-            }
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName()  + whereClause);
+
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            if (clazzString != ""){
-                query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() + " WHERE " + clazzString);
-            } else{
-                query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName());
-            }
+           query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString);
         }
         if (limit != null){
            query.setMaxResults(limit);
