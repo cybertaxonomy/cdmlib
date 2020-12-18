@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.CreateHierarchyForClassificationConfigurator;
-import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonInContextDTO;
@@ -52,21 +51,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
     public UUID getTaxonNodeUuidByTaxonUuid(UUID classificationUuid, UUID taxonUuid);
 
-    /**
-     * Clones an existing classification including all taxa and taxon nodes.
-
-     * @param config the configurator for the cloning
-     */
-    public UpdateResult cloneClassification(SubtreeCloneConfigurator config);
-
-    /**
-     *
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
     public List<Classification> listClassifications(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**

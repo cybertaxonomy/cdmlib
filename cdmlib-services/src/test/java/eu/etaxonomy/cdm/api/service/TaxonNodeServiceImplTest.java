@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,6 +33,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -51,7 +53,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -83,6 +88,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@SpringBeanByType
 	private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private IClassificationDao classificationDao;
+
+    @SpringBeanByType
+    private IReferenceDao referenceDao;
 
 	@SpringBeanByType
 	private IPolytomousKeyService polKeyService;
@@ -1242,6 +1253,82 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         node2 = taxonNodeService.find(node2Uuid);
         TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
         taxonNodeService.saveNewTaxonNode(newTaxonNode);
+    }
+
+
+    @Test
+    @DataSet("ClassificationServiceImplTest.xml")
+    public final void testCloneClassification(){
+
+        Classification originalClassification = classificationDao.load(ClassificationServiceImplTest.CLASSIFICATION_UUID);
+
+        SubtreeCloneConfigurator config = SubtreeCloneConfigurator.NewBaseInstance(
+                originalClassification.getRootNode().getUuid(), "Cloned classification");
+
+        Classification classificatonClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+
+        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificatonClone.getChildNodes().size());
+        assertEquals("# of all nodes does not match", originalClassification.getAllNodes().size(), classificatonClone.getAllNodes().size());
+
+        Set<UUID> originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
+        for (TaxonNode clonedTaxonNode : classificatonClone.getChildNodes()) {
+            //test no reuse of taxon
+            Taxon clonedTaxon = clonedTaxonNode.getTaxon();
+            TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
+            assertNull(originalNode);
+
+            //check relationship
+            assertEquals(0, clonedTaxon.getRelationsFromThisTaxon().size());
+
+            //test taxon sec
+            assertTrue(originalTaxonSecUuids.contains(clonedTaxon.getSec().getUuid()));
+        }
+        commitAndStartNewTransaction();
+
+        //test reuse taxon
+        config.setReuseTaxa(true);
+        classificatonClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificatonClone.getChildNodes().size());
+        originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
+        for (TaxonNode taxonNode : classificatonClone.getChildNodes()) {
+            //test no reuse of taxon
+            Taxon clonedTaxon = taxonNode.getTaxon();
+            TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
+            assertNotNull(originalNode);
+            Taxon originalTaxon = originalNode.getTaxon();
+            assertNotNull(originalTaxon);
+
+            //check relationship
+            assertEquals(0, clonedTaxon.getRelationsFromThisTaxon().size());
+
+            //test taxon sec
+            assertEquals(originalTaxon.getSec().getUuid(), clonedTaxon.getSec().getUuid());
+        }
+        commitAndStartNewTransaction();
+
+        config.setReuseTaxa(false);  //reset
+        config.setRelationTypeToOldTaxon(TaxonRelationshipType.CONGRUENT_TO());
+        Reference sec = referenceDao.findByUuid(UUID.fromString("719d136b-409e-40d0-9561-46f6999465b4"));
+        config.setTaxonSecundumUuid(sec.getUuid());
+        classificatonClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+        originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
+        for (TaxonNode taxonNode : classificatonClone.getChildNodes()) {
+            //test no reuse of taxon
+            Taxon clonedTaxon = taxonNode.getTaxon();
+            TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
+            assertNull(originalNode);
+
+            //check relationship
+            TaxonRelationship relShip = clonedTaxon.getRelationsFromThisTaxon().iterator().next();
+            Taxon relatedTaxon = relShip.getToTaxon();
+            Taxon relatedOriginalTaxon = originalClassification.getNode(relatedTaxon).getTaxon();
+            assertEquals(relatedOriginalTaxon.getName(), clonedTaxon.getName());
+            assertTrue(relShip.getType().equals(TaxonRelationshipType.CONGRUENT_TO()));
+
+            //test taxon sec
+            assertEquals(relatedOriginalTaxon.getSec().getUuid(), clonedTaxon.getSec().getUuid());
+        }
+        commitAndStartNewTransaction();
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CreateTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
@@ -275,10 +276,12 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
             Authentication authentication, boolean openChildren);
 
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
+
     /**
-     * @param nodeUuids
-     * @param propertyPaths
-     * @return
+     * Clones a subtree including all taxa and taxon nodes.
+
+     * @param config the configurator for the cloning
      */
-    List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
+    public UpdateResult cloneSubtree(SubtreeCloneConfigurator config);
 }
