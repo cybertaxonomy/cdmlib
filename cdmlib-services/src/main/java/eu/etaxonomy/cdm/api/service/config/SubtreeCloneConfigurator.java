@@ -172,6 +172,13 @@ public class SubtreeCloneConfigurator implements Serializable {
     public boolean isReuseNames() {
         return reuseNames;
     }
+    /**
+     * @param reuseNames
+     * @deprecated  as it is not fully implemented yet and generally not recommended
+     *          to clone names in a database; see comments in #9349 why name cloning
+     *          needs to be done with care
+     */
+    @Deprecated
     public void setReuseNames(boolean reuseNames) {
         this.reuseNames = reuseNames;
     }
