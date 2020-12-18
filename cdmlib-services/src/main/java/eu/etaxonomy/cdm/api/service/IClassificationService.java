@@ -266,25 +266,6 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
     public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 
     /**
-     *
-     * @param taxonNode
-     * @return
-     * @deprecated use TaxonNodeService instead
-     */
-    @Deprecated
-    public UUID removeTaxonNode(TaxonNode taxonNode);
-
-    /**
-     *
-     * @param taxonNode
-     * @return
-     * @deprecated use TaxonNodeService instead
-     */
-    @Deprecated
-    public UUID saveTaxonNode(TaxonNode taxonNode);
-
-    /**
-     *
      * @param taxonNodeCollection
      * @return
      * @deprecated use TaxonNodeService instead

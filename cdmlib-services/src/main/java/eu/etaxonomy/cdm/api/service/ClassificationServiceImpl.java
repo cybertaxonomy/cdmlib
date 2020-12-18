@@ -497,10 +497,6 @@ public class ClassificationServiceImpl
     }
 
     @Override
-    public UUID removeTaxonNode(TaxonNode taxonNode) {
-        return taxonNodeDao.delete(taxonNode);
-    }
-    @Override
     public UUID removeTreeNode(ITaxonTreeNode treeNode) {
         if(treeNode instanceof Classification){
             return dao.delete((Classification) treeNode);
@@ -508,10 +504,6 @@ public class ClassificationServiceImpl
             return taxonNodeDao.delete((TaxonNode)treeNode);
         }
         return null;
-    }
-    @Override
-    public UUID saveTaxonNode(TaxonNode taxonNode) {
-        return taxonNodeDao.save(taxonNode).getUuid();
     }
 
     @Override
