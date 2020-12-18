@@ -1329,6 +1329,24 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
             assertEquals(relatedOriginalTaxon.getSec().getUuid(), clonedTaxon.getSec().getUuid());
         }
         commitAndStartNewTransaction();
+
+        //no recursive for root
+        config = SubtreeCloneConfigurator.NewBaseInstance(
+                originalClassification.getRootNode().getUuid(), "Cloned classification");
+        config.setDoRecursive(false);
+        classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+        Assert.assertTrue(classificationClone.getRootNode().getChildNodes().isEmpty());
+
+        //no recursive for root
+        config = SubtreeCloneConfigurator.NewBaseInstance(
+                UUID.fromString("26cc5c08-72df-45d4-84ea-ce81e7e53114"), "Cloned classification");
+        config.setDoRecursive(false);
+        classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+        List<TaxonNode> nodes = classificationClone.getRootNode().getChildNodes();
+        Assert.assertEquals(1, nodes.size());
+        Taxon clonedTaxon = nodes.iterator().next().getTaxon();
+        Assert.assertEquals("Name should be the same as for the original taxon", UUID.fromString("301e2bf0-85a4-442a-93f6-63d3b9ee8c3d"), clonedTaxon.getName().getUuid());
+        Assert.assertTrue(nodes.iterator().next().getChildNodes().isEmpty());
     }
 
     @Override

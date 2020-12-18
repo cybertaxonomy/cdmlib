@@ -1287,23 +1287,19 @@ public class TaxonNodeServiceImpl
 //      List<TaxonNode> childNodes = taxonNodeService.loadByIds(childNodeIds, null);
         List<TaxonNode> rootNodes = this.find(config.getSubTreeUuids());
         for (TaxonNode taxonNode : rootNodes) {
-            addChildTaxaToClone(taxonNode, classificationClone.getRootNode(), config);
+            cloneTaxonRecursive(taxonNode, classificationClone.getRootNode(), config);
         }
         classificationDao.saveOrUpdate(classificationClone);
         result.setCdmEntity(classificationClone);
         return result;
     }
 
-    private void addChildTaxaToClone(TaxonNode originalParentNode, TaxonNode parentNodeClone,
+    private void cloneTaxonRecursive(TaxonNode originalParentNode, TaxonNode parentNodeClone,
             SubtreeCloneConfigurator config){
 
         Taxon originalTaxon = CdmBase.deproxy(originalParentNode.getTaxon());
-        if (originalTaxon == null){
-            for (TaxonNode originalChildChildNode : originalParentNode.getChildNodes()) {
-                addChildTaxaToClone(originalChildChildNode, parentNodeClone, config);
-            }
-        }else{
-            TaxonNode childNodeClone;
+        TaxonNode childNodeClone;
+        if (originalTaxon != null){
             String microReference = null;
             if (config.isReuseTaxa()){
                 childNodeClone = parentNodeClone.addChildTaxon(originalTaxon, config.getParentChildReference(), microReference);
@@ -1335,12 +1331,17 @@ public class TaxonNodeServiceImpl
 
             //probably necessary as taxon nodes do not cascade
             dao.saveOrUpdate(childNodeClone);
-            //add children
+
+        }else{
+            childNodeClone = parentNodeClone;
+        }
+        //add children
+        if (config.isDoRecursive()){
             List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
             HHH_9751_Util.removeAllNull(originalChildNodes);
 
             for (TaxonNode originalChildNode : originalChildNodes) {
-                addChildTaxaToClone(originalChildNode, childNodeClone, config);
+                cloneTaxonRecursive(originalChildNode, childNodeClone, config);
             }
         }
     }
