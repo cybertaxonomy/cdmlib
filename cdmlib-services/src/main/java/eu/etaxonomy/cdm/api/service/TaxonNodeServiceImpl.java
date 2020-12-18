@@ -1269,7 +1269,7 @@ public class TaxonNodeServiceImpl
                 null : referenceDao.findByUuid(config.getRelationshipReferenceUuid());
         config.setRelationshipReference(taxonRelationshipReference);
 
-        Classification classificationClone = Classification.NewInstance(config.getClassificationName());
+        Classification classificationClone = Classification.NewInstance(config.getNewClassificationName());
 
         if (config.isReuseClassificationReference()){
             TaxonNode anyNode = dao.findByUuid(config.getSubTreeUuids().iterator().next());
