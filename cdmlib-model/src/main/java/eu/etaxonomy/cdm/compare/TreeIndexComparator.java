@@ -6,9 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.compare;
 
 import java.util.Comparator;
+
+import eu.etaxonomy.cdm.model.common.ITreeNode;
+import eu.etaxonomy.cdm.model.common.TreeIndex;
 
 /**
  * @author a.mueller

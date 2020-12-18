@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.api.service;
 import org.junit.Assert;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.compare.TreeIndexComparator;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
-import eu.etaxonomy.cdm.model.common.TreeIndexComparator;
 
 
 /**

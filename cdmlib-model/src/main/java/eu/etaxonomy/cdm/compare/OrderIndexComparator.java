@@ -6,20 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.compare;
 
 import java.util.Comparator;
 
 /**
  * @author k.luther
  * @since 07.12.2018
- *
  */
 public class OrderIndexComparator implements Comparator<Integer> {
 
     private static OrderIndexComparator instance;
-
-
 
     public static OrderIndexComparator instance(){
         if(instance == null){
@@ -28,9 +25,6 @@ public class OrderIndexComparator implements Comparator<Integer> {
         return instance;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compare(Integer orderIndex1, Integer orderIndex2) {
        if (orderIndex1 == orderIndex2){
@@ -47,7 +41,5 @@ public class OrderIndexComparator implements Comparator<Integer> {
        }else{
            return 1;
        }
-
     }
-
 }
