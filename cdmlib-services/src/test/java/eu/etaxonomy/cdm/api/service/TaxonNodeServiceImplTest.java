@@ -1265,13 +1265,13 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         SubtreeCloneConfigurator config = SubtreeCloneConfigurator.NewBaseInstance(
                 originalClassification.getRootNode().getUuid(), "Cloned classification");
 
-        Classification classificatonClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+        Classification classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
 
-        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificatonClone.getChildNodes().size());
-        assertEquals("# of all nodes does not match", originalClassification.getAllNodes().size(), classificatonClone.getAllNodes().size());
+        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificationClone.getChildNodes().size());
+        assertEquals("# of all nodes does not match", originalClassification.getAllNodes().size(), classificationClone.getAllNodes().size());
 
         Set<UUID> originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
-        for (TaxonNode clonedTaxonNode : classificatonClone.getChildNodes()) {
+        for (TaxonNode clonedTaxonNode : classificationClone.getChildNodes()) {
             //test no reuse of taxon
             Taxon clonedTaxon = clonedTaxonNode.getTaxon();
             TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
@@ -1287,10 +1287,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
         //test reuse taxon
         config.setReuseTaxa(true);
-        classificatonClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
-        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificatonClone.getChildNodes().size());
+        classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+        assertEquals("# of direct children does not match", originalClassification.getChildNodes().size(), classificationClone.getChildNodes().size());
         originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
-        for (TaxonNode taxonNode : classificatonClone.getChildNodes()) {
+        for (TaxonNode taxonNode : classificationClone.getChildNodes()) {
             //test no reuse of taxon
             Taxon clonedTaxon = taxonNode.getTaxon();
             TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
@@ -1310,9 +1310,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         config.setRelationTypeToOldTaxon(TaxonRelationshipType.CONGRUENT_TO());
         Reference sec = referenceDao.findByUuid(UUID.fromString("719d136b-409e-40d0-9561-46f6999465b4"));
         config.setTaxonSecundumUuid(sec.getUuid());
-        classificatonClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
+        classificationClone = (Classification) taxonNodeService.cloneSubtree(config).getCdmEntity();
         originalTaxonSecUuids = originalClassification.getAllNodes().stream().map(tn -> tn.getTaxon().getSec().getUuid()).collect(Collectors.toSet());
-        for (TaxonNode taxonNode : classificatonClone.getChildNodes()) {
+        for (TaxonNode taxonNode : classificationClone.getChildNodes()) {
             //test no reuse of taxon
             Taxon clonedTaxon = taxonNode.getTaxon();
             TaxonNode originalNode = originalClassification.getNode(clonedTaxon);
