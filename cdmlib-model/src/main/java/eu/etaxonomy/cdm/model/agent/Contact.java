@@ -401,7 +401,7 @@ public class Contact implements Serializable, Cloneable {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone() {
+	public Contact clone() {
 		try{
 			Contact result = (Contact) super.clone();
 			result.addresses = new HashSet<>();

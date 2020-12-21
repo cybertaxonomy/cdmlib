@@ -239,4 +239,13 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy<? ext
 		getNewOrExistingContact(false).removeUrl(url);
 	}
 
+    @Override
+    public AgentBase<S> clone() throws CloneNotSupportedException {
+        AgentBase<S> result = (AgentBase<S>)super.clone();
+
+        result.setContact(this.contact == null ? null : this.contact.clone());
+        //nothing to do: contact
+        return result;
+    }
+
 }

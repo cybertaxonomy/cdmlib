@@ -135,4 +135,12 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         return result;
     }
 
+    @Override
+    public TeamOrPersonBase clone() throws CloneNotSupportedException {
+        @SuppressWarnings("rawtypes")
+        TeamOrPersonBase<?> result = (TeamOrPersonBase)super.clone();
+
+        //nothing to do: collectorTitle, nomenclaturalTitle;
+        return result;
+    }
 }
