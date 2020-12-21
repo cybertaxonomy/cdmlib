@@ -242,6 +242,7 @@ public class AgentServiceImpl
 	        team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 			team = this.save(team);
 			genericDao.merge(team, person, strategy);
+			team.setProtectedNomenclaturalTitleCache(true); //for some reason it is not protected when titleCache is also not protected
 			//team.addTeamMember(person); it is not wanted to keep the person as member
 
 		} catch (Exception e) {

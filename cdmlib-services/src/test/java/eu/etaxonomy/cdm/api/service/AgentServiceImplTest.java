@@ -105,6 +105,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         }
 	    Assert.assertEquals("Title cache must be equal", person2.getTitleCache(), team.getTitleCache());
         Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+        Assert.assertTrue("Nom. title must be protected", team.isProtectedNomenclaturalTitleCache());
 
         //test fully empty
         person2 = person2.clone();
