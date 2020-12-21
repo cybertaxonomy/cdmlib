@@ -36,12 +36,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 
     public UUID saveOrUpdate(T transientObject) throws DataAccessException;
 
-    /**
-     * @param newOrManagedObject
-     * @return
-     * @throws DataAccessException
-     */
-    public T save(T newOrManagedObject) throws DataAccessException;
+    public <S extends T> S save(S newInstance) throws DataAccessException;
 
     public T merge(T transientObject) throws DataAccessException;
 

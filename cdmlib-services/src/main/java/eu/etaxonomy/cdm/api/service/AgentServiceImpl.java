@@ -233,7 +233,7 @@ public class AgentServiceImpl
 			team.setProtectedNomenclaturalTitleCache(false);
 			team.setProtectedTitleCache(true);
 			team.setTitleCache(person.getTitleCache(), true);
-			team =(Team) this.save(team);
+			team = this.save(team);
 			genericDao.merge(team, person, strategy);
 			//team.addTeamMember(person);
 
