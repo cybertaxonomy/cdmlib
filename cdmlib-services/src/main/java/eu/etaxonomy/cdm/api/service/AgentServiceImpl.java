@@ -219,6 +219,9 @@ public class AgentServiceImpl
 
 	@Override
 	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
+	    if (person == null){
+	        throw new IllegalArgumentException("Person does not exist.");
+	    }
 	    UpdateResult result = new UpdateResult();
         Team team = Team.NewInstance();
         ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
@@ -228,7 +231,7 @@ public class AgentServiceImpl
         strategy.setMergeMode("protectedTitleCache", MergeMode.FIRST); //as we do not add team members, the titleCache of the new team should be always protected
         strategy.setDeleteSecondObject(true);
 
-		if (! genericDao.isMergeable(team, person, strategy)){
+        if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
 		}
 		try {
