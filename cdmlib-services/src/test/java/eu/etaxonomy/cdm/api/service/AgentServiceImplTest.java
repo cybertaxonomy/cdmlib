@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -73,25 +74,53 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	name.setCombinationAuthorship(person);
     	person.addAnnotation(annotation);
 
-    	service.save(person);
     	nameSerivce.save(name);
 
-
     	Team team = null;
-    	UpdateResult result = null;
-		try {
-		    result = service.convertPerson2Team(person);
-		    team = (Team) result.getCdmEntity();
-		} catch (MergeException e) {
-			Assert.fail("No Merge exception should be thrown");
-		}
-    	Assert.assertNotNull(team);
-    	Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
-    	Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
-    	Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
-    	Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
-       	Assert.assertNotNull("Contact must be copied too", team.getContact());
-    	Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
+	    try {
+	        UpdateResult result = service.convertPerson2Team(person);
+	        team = (Team) result.getCdmEntity();
+	    } catch (MergeException e) {
+	        Assert.fail("No Merge exception should be thrown");
+	    }
+	    Assert.assertNotNull(team);
+	    Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
+	    Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+	    Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
+	    Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
+	    Assert.assertNotNull("Contact must be copied too", team.getContact());
+	    Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
+
+	    //test un-protected titleCache
+	    Person person2 = person.clone();
+	    person2.setProtectedTitleCache(false);
+	    Assert.assertEquals("Title cache must be equal", nomTitle, person2.getTitleCache());
+	    service.save(person2);
+
+	    try{
+	        UpdateResult result = service.convertPerson2Team(person2);
+	        team = (Team) result.getCdmEntity();
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+        }
+	    Assert.assertEquals("Title cache must be equal", person2.getTitleCache(), team.getTitleCache());
+        Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+
+        //test fully empty
+        person2 = person2.clone();
+        person2.setNomenclaturalTitle(null);  //now it is fully empty
+        Assert.assertEquals("Title cache must be equal", "Person#0<"+person2.getUuid()+">", person2.getTitleCache());  //expected value may change when toString() implementation changes for Person class
+
+        service.save(person2);
+        try{
+            UpdateResult result = service.convertPerson2Team(person2);
+            team = (Team) result.getCdmEntity();
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+        }
+        Assert.assertEquals("If person was completely empty we don't expect the title cache to be taken from person.nomenclaturalTitle", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getTitleCache());
+        Assert.assertFalse("If person was completely empty we don't expect the title cache to be protected", team.isProtectedTitleCache());
+        Assert.assertEquals("Nom. title must be equal", person2.getNomenclaturalTitle(), team.getNomenclaturalTitle());
     }
 
     private Contact getContact(){

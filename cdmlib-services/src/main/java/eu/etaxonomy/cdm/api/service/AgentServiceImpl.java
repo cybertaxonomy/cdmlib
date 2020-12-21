@@ -221,18 +221,21 @@ public class AgentServiceImpl
 	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
 	    UpdateResult result = new UpdateResult();
         Team team = Team.NewInstance();
-		ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
-		strategy.setDefaultMergeMode(MergeMode.SECOND);
-		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
-		strategy.setDeleteSecondObject(true);
+        ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
+        strategy.setDefaultMergeMode(MergeMode.SECOND);
+        strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
+        team.setProtectedTitleCache(true);
+        strategy.setMergeMode("protectedTitleCache", MergeMode.FIRST); //as we do not add team members, the titleCache of the new team should be always protected
+        strategy.setDeleteSecondObject(true);
 
 		if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
 		}
 		try {
 			team.setProtectedNomenclaturalTitleCache(false);
-			team.setProtectedTitleCache(true);
-			team.setTitleCache(person.getTitleCache(), true);
+			if (person.isProtectedTitleCache() || !person.getTitleCache().startsWith("Person#")){
+			    team.setTitleCache(person.getTitleCache(), true);
+			}
 	        team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 			team = this.save(team);
 			genericDao.merge(team, person, strategy);
