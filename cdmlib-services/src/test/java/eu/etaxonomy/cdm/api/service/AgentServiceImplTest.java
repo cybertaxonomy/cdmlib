@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -45,9 +44,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
-    /**
-     *
-     */
     private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
 
     @SuppressWarnings("unused")
@@ -59,14 +55,15 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     @SpringBeanByType
     private INameService nameSerivce;
 
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertPerson2Team(){
-    	String fullAuthor = "Original author";
+
+        //create data
+        String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
     	Person person = Person.NewTitledInstance(fullAuthor);
     	person.setNomenclaturalTitle(nomTitle);
@@ -78,6 +75,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
     	service.save(person);
     	nameSerivce.save(name);
+
 
     	Team team = null;
     	UpdateResult result = null;
@@ -93,7 +91,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
        	Assert.assertNotNull("Contact must be copied too", team.getContact());
     	Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
-
     }
 
     private Contact getContact(){

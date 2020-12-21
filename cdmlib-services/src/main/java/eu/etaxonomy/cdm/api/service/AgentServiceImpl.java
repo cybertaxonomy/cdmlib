@@ -226,12 +226,10 @@ public class AgentServiceImpl
 		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
 		strategy.setDeleteSecondObject(true);
 
-
 		if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
 		}
 		try {
-			//this.save(team);
 			team.setProtectedNomenclaturalTitleCache(false);
 			team.setProtectedTitleCache(true);
 			team.setTitleCache(person.getTitleCache(), true);

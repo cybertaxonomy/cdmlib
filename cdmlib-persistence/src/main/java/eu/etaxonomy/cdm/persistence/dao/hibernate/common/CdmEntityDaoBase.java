@@ -77,7 +77,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *         with @Repository?
  */
 @Repository
-public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
+public abstract class CdmEntityDaoBase<T extends CdmBase>
+        extends DaoBase
+        implements ICdmEntityDao<T> {
 
     private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 

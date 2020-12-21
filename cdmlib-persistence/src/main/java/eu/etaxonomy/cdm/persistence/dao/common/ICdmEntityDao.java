@@ -34,11 +34,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface ICdmEntityDao<T extends CdmBase> {
 
-    /**
-     * @param transientObject
-     * @return
-     * @throws DataAccessException
-     */
     public UUID saveOrUpdate(T transientObject) throws DataAccessException;
 
     /**
