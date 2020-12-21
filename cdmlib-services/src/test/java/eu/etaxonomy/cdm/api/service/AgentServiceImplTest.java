@@ -86,8 +86,9 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 			Assert.fail("No Merge exception should be thrown");
 		}
     	Assert.assertNotNull(team);
-    	//Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
-    	//Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+    	Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
+    	Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+    	Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
     	Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
        	Assert.assertNotNull("Contact must be copied too", team.getContact());
     	Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());

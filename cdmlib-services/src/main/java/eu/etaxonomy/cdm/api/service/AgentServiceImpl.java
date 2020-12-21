@@ -233,12 +233,11 @@ public class AgentServiceImpl
 			team.setProtectedNomenclaturalTitleCache(false);
 			team.setProtectedTitleCache(true);
 			team.setTitleCache(person.getTitleCache(), true);
+	        team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 			team = this.save(team);
 			genericDao.merge(team, person, strategy);
-			//team.addTeamMember(person);
+			//team.addTeamMember(person); it is not wanted to keep the person as member
 
-			//this.save(team);
-//			team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 		} catch (Exception e) {
 			throw new MergeException("Unhandled merge exception", e);
 		}
