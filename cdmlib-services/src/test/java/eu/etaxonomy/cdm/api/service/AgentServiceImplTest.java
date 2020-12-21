@@ -113,7 +113,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
         service.save(person2);
         try{
-            UpdateResult result = service.convertPerson2Team(person2);
+            UpdateResult result = service.convertPerson2Team(person2.getUuid());
             team = (Team) result.getCdmEntity();
         } catch (MergeException e) {
             Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
@@ -121,6 +121,15 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals("If person was completely empty we don't expect the title cache to be taken from person.nomenclaturalTitle", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getTitleCache());
         Assert.assertFalse("If person was completely empty we don't expect the title cache to be protected", team.isProtectedTitleCache());
         Assert.assertEquals("Nom. title must be equal", person2.getNomenclaturalTitle(), team.getNomenclaturalTitle());
+
+        try{
+            service.convertPerson2Team(person2.getUuid());
+            Assert.fail("Non-existing person should throw an exception");
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+        }catch (IllegalArgumentException e) {
+            //nothing to do
+        }
     }
 
     private Contact getContact(){
