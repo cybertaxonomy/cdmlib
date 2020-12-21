@@ -60,7 +60,6 @@ public class TeamDefaultCacheStrategyTest {
 		person3 = Person.NewInstance();
 		person3.setNomenclaturalTitle("P3NomT");
 
-
 		person4 = Person.NewInstance(); //empty person
 
 		team1.addTeamMember(person1);

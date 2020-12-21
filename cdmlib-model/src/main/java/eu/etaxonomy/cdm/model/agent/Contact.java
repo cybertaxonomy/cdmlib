@@ -190,7 +190,7 @@ public class Contact implements Serializable, Cloneable {
 					if (this.addresses == null){
 						this.addresses = new HashSet<>();
 					}
-					this.addresses.add((Address)address.clone());
+					this.addresses.add(address.clone());
 				} catch (CloneNotSupportedException e) {
 					throw new MergeException("Address must implement Cloneable");
 				}
@@ -406,7 +406,7 @@ public class Contact implements Serializable, Cloneable {
 			Contact result = (Contact) super.clone();
 			result.addresses = new HashSet<>();
 			for (Address adr : this.addresses){
-				result.addAddress((Address)adr.clone());
+				result.addAddress(adr.clone());
 			}
 			//no changes to emailAdresses, faxnumbers, phonenumbers, urls
 			return result;

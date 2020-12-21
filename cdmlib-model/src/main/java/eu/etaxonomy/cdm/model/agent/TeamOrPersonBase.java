@@ -125,10 +125,6 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         }
     }
 
-    /**
-     * @param result
-     * @return
-     */
     protected String replaceEmptyTitleByNomTitle(String result) {
         if (isBlank(result)){
             result = nomenclaturalTitle;
