@@ -246,9 +246,6 @@ public class AgentServiceImpl
         return result;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IAgentService#getUuidAndAbbrevTitleCache()
-     */
     @Override
     public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern) {
         return dao.getUuidAndAbbrevTitleCache(clazz, null, pattern);
@@ -258,5 +255,4 @@ public class AgentServiceImpl
     public List<AgentBase> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<AgentBase> config){
         return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
-
 }
