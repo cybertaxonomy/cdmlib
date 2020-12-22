@@ -227,23 +227,23 @@ public class AgentServiceImpl
         ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
         strategy.setDefaultMergeMode(MergeMode.SECOND);
         strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
-        team.setProtectedTitleCache(true);
+        if (person.isProtectedTitleCache() || !person.getTitleCache().startsWith("Person#")){  //the later is for checking if the person is empty, this can be done better
+            team.setTitleCache(person.getTitleCache(), true);  //as there are no members we set the titleCache to protected (as long as titleCache does not take the protected nomenclatural title but results in '-empty team-' in this situation); for some reason it is necessary to also set the title cache as well here, otherwise it is recomputed during the merge
+        }
         strategy.setMergeMode("protectedTitleCache", MergeMode.FIRST); //as we do not add team members, the titleCache of the new team should be always protected
         strategy.setDeleteSecondObject(true);
+        team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);  //sets the protected flag always to true, this is necessary as long as person does not have a nomenclatural title cache; maybe setting the protected title itself is not necessary but does no harm
 
         if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
 		}
 		try {
-			team.setProtectedNomenclaturalTitleCache(false);
-			if (person.isProtectedTitleCache() || !person.getTitleCache().startsWith("Person#")){
-			    team.setTitleCache(person.getTitleCache(), true);
-			}
-	        team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
 			team = this.save(team);
 			genericDao.merge(team, person, strategy);
 			team.setProtectedNomenclaturalTitleCache(true); //for some reason it is not protected when titleCache is also not protected
-			//team.addTeamMember(person); it is not wanted to keep the person as member
+
+			//Note: we decided  never add the old person as (first) member of the team as there are not many usecases for this.
+			//But we may try to parse the old person into members which may handle the case that teams have been stored as unparsed persons
 
 		} catch (Exception e) {
 			throw new MergeException("Unhandled merge exception", e);
