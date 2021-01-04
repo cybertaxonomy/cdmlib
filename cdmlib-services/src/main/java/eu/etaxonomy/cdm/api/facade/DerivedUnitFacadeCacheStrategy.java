@@ -58,10 +58,10 @@ public class DerivedUnitFacadeCacheStrategy
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 
 	        if(!skipFieldUnit){
-	                result += fieldStrategy.getFieldData(facade);
+	            result += fieldStrategy.getFieldData(facade);
 	        }
 
-			//Exsiccatum
+			//exsiccatum
 			String exsiccatum = null;
 			try {
 				exsiccatum = facade.getExsiccatum();

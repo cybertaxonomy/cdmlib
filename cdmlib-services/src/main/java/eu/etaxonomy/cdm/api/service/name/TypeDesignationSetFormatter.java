@@ -170,7 +170,7 @@ public class TypeDesignationSetFormatter {
 
         //designation + sources
         int typeDesignationCount = 0;
-        for(TypeDesignationDTO typeDesignationDTO : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+        for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationWorkingSet, typeStatus)) {
             TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
 
             typeDesignationCount = buildTaggedTextForSingleType(typeDes, withCitation,
@@ -297,10 +297,10 @@ public class TypeDesignationSetFormatter {
         return result;
     }
 
-    private static String stringify(SpecimenTypeDesignation td, boolean useFullTitleCache) {
+    private static String stringify(SpecimenTypeDesignation td, boolean useTitleCache) {
         String  result = "";
 
-        if(useFullTitleCache){
+        if(useTitleCache){
             if(td.getTypeSpecimen() != null){
                 String nameTitleCache = td.getTypeSpecimen().getTitleCache();
                 //TODO is this needed?

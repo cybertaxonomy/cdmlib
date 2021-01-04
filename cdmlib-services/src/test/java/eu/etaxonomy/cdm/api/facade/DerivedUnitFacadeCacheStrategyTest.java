@@ -46,50 +46,50 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
 
-	DerivedUnit specimen;
-	DerivationEvent derivationEvent;
-	FieldUnit fieldUnit;
-	GatheringEvent gatheringEvent;
-	Integer absoluteElevation = 40;
-	Integer absoluteElevationError = 2;
-	Team collector = Team.NewInstance();
-	String collectingMethod = "Collection Method";
-	Double distanceToGround = 22.0;
-	Double distanceToSurface = 50.0;
-	ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
-	Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
-	String gatheringEventDescription = "A nice gathering description";
-	TimePeriod gatheringPeriod = TimePeriodParser.parseString("03.05.2005");
-	String ecology = "sand dunes";
-	String plantDescription = "flowers blue";
+	private DerivedUnit specimen;
+	private DerivationEvent derivationEvent;
+	private FieldUnit fieldUnit;
+	private GatheringEvent gatheringEvent;
+	private Integer absoluteElevation = 40;
+	private Integer absoluteElevationError = 2;
+	private Team collector = Team.NewInstance();
+	private String collectingMethod = "Collection Method";
+	private Double distanceToGround = 22.0;
+	private Double distanceToSurface = 50.0;
+	private ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
+	private Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
+	private String gatheringEventDescription = "A nice gathering description";
+	private TimePeriod gatheringPeriod = TimePeriodParser.parseString("03.05.2005");
+	private String ecology = "sand dunes";
+	private String plantDescription = "flowers blue";
 
-	String fieldNumber = "5678";
-	String fieldNotes = "such a beautiful specimen";
-	Person primaryCollector;
+	private String fieldNumber = "5678";
+	private String fieldNotes = "such a beautiful specimen";
+	private Person primaryCollector;
 
-	String individualCount = "1";
-	DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
-	DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
-	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
-	NamedArea country = Country.GERMANY();
+	private String individualCount = "1";
+	private DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
+	private DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
+	private LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
+	private NamedArea country = Country.GERMANY();
 
-	String exsiccatum = "Greuter, Pl. Dahlem. 456";
-	String accessionNumber = "8909756";
-	String catalogNumber = "UU879873590";
-	String barcode = "B12345678";
-	TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
-	String collectorsNumber = "234589913A34";
-	Collection collection = Collection.NewInstance();
+	private String exsiccatum = "Greuter, Pl. Dahlem. 456";
+	private String accessionNumber = "8909756";
+	private String catalogNumber = "UU879873590";
+	private String barcode = "B12345678";
+	private TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+	private String collectorsNumber = "234589913A34";
+	private Collection collection = Collection.NewInstance();
 
-	PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
+	private PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
 
-	DerivedUnitFacade specimenFacade;
+	private DerivedUnitFacade specimenFacade;
 
-	DerivedUnit collectionSpecimen;
-	GatheringEvent existingGatheringEvent;
-	DerivationEvent firstDerivationEvent;
-	FieldUnit firstFieldObject;
-	Media media1 = Media.NewInstance();
+	private DerivedUnit collectionSpecimen;
+	private GatheringEvent existingGatheringEvent;
+	private DerivationEvent firstDerivationEvent;
+	private FieldUnit firstFieldObject;
+	private Media media1 = Media.NewInstance();
 
 //****************************** SET UP *****************************************/
 

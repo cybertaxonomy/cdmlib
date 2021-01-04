@@ -224,8 +224,6 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
 
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
             String result = typeDesignationManager.print(true, true, true);
-//            Logger.getLogger(this.getClass()).debug(result);
-            assertNotNull(result);
             assertEquals(
                     "Prionus L."
                     , result
@@ -279,7 +277,6 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
                     typeDesignationManager.print(true, false, true));
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L.",
                     typeDesignationManager.print(false, false, true));
-
 
         }
 
