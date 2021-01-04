@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -244,6 +245,18 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
                     "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Nametype: Prionus coriatius L."
                     , typeDesignationManager.print(true, true, true)
                     );
+
+            DerivedUnit specimen = std_HT.getTypeSpecimen();
+            specimen.setProtectedTitleCache(false);
+            Collection collection = Collection.NewInstance();
+            collection.setName("OHB");
+            specimen.setCollection(collection);
+
+            assertEquals(
+                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Nametype: Prionus coriatius L."
+                    , typeDesignationManager.print(true, true, true)
+                    );
+
         }
 
         //see #9262

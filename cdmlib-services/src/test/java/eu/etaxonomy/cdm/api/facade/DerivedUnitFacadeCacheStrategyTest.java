@@ -167,6 +167,9 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+        collection.setCode(null);
+        collection.setName("Herbarium Berolinense");
+        Assert.assertEquals(correctCache.replace("B 8909756", "Herbarium Berolinense 8909756"), specimenFacade.getTitleCache());
 	}
 
     @Test

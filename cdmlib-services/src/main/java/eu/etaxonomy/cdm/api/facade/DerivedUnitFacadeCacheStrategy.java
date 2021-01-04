@@ -139,6 +139,9 @@ public class DerivedUnitFacadeCacheStrategy
 		if(facade.getCollection() != null){
 			code = facade.getCollection().getCode();
 			if (StringUtils.isBlank(code)){
+			    code = facade.getCollection().getName();
+			}
+			if (StringUtils.isBlank(code)){
 				Institution institution = facade.getCollection().getInstitute();
 				if (institution != null){
 					code = institution.getCode();
