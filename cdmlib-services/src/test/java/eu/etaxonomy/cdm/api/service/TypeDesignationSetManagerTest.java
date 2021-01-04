@@ -249,11 +249,11 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
             DerivedUnit specimen = std_HT.getTypeSpecimen();
             specimen.setProtectedTitleCache(false);
             Collection collection = Collection.NewInstance();
-            collection.setName("OHB");
+            collection.setName("My collection");
             specimen.setCollection(collection);
 
             assertEquals(
-                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Nametype: Prionus coriatius L."
+                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Nametype: Prionus coriatius L."
                     , typeDesignationManager.print(true, true, true)
                     );
 
