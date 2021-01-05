@@ -125,6 +125,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 	}
 
 	@Test
+	@Ignore
 	public void testMarshalRdf() throws Exception {
 		rdf.addThing(taxonConcept);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
