@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.common;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -19,7 +20,8 @@ import java.net.URL;
  * @author a.mueller
  * @since 05.01.2021
  */
-public class URI implements java.io.Serializable {
+public class URI
+        implements Comparable<URI>, Serializable {
 
     private static final long serialVersionUID = -8002215586516542076L;
 
@@ -151,6 +153,7 @@ public class URI implements java.io.Serializable {
         return javaUri.getQuery();
     }
 
+
 //****************************** equals *****************************/
 
     @Override
@@ -166,6 +169,11 @@ public class URI implements java.io.Serializable {
         return false;
     }
 
+    @Override
+    public int compareTo(URI that) {
+        return this.javaUri.compareTo(that.javaUri);
+    }
+
 //********************** clone ***********************************/
 
     @Override
@@ -179,5 +187,6 @@ public class URI implements java.io.Serializable {
     public String toString() {
         return javaUri.toString();
     }
+
 
 }
