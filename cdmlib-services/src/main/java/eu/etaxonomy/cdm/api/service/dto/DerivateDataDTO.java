@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 /**
  * @author pplitzner
  * @since Mar 26, 2015
- *
  */
 public class DerivateDataDTO implements Serializable {
 

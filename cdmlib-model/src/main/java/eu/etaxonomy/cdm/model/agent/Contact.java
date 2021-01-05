@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.agent;
 
 import java.io.Serializable;
@@ -52,7 +51,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @since 08-Nov-2007 13:06:18
  */
 @XmlAccessorType(XmlAccessType.FIELD)

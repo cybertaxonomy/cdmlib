@@ -27,9 +27,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class DwcaEmlRecord extends DwcaRecordBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaEmlRecord.class);
 

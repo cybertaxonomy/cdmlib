@@ -32,8 +32,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-
-
 /**
  * @author a.kohlbecker
  * @since 25.08.2010
@@ -42,25 +40,16 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 
 	static URI identifier = null;
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.common.SchemaAdapterBase#getIdentifier()
-	 */
 	@Override
 	public URI getIdentifier() {
 		return identifier;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getShortName()
-	 */
 	@Override
 	public String getShortName() {
 		return "MOBOT.OpenUrl.Utilities.OpenUrlResponse";
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getCmdEntities(java.io.Reader)
-	 */
 	@Override
 	public List<Reference> getCmdEntities(InputStream inputStream) throws IOException {
 
@@ -74,7 +63,6 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		} catch (SAXException e) {
 			logger.error(e);
 		}
-
 
 		OpenUrlResponseHandler handler = new OpenUrlResponseHandler();
 
@@ -150,8 +138,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		private static final String EPAGE = "EPage";
 		private static final String PAGES = "Pages";
 
-
-		List<Reference> referenceList = new ArrayList<Reference>();
+		List<Reference> referenceList = new ArrayList<>();
 
 		OpenUrlReference reference = null;
 
@@ -162,7 +149,6 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		String elementName = null;
 		private String elementNameToStore;
 		private StringBuilder textBuffer = new StringBuilder();
-
 
 		@Override
 		public void startElement(String uri, String localName,
@@ -207,9 +193,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 				throws SAXException {
 
 			if(elementNameToStore  == null){
-
 				textBuffer.append(new String(ch, start, length));
-
 			} else {
 
 				logger.debug("Characters [" + elementNameToStore + "]: " + textBuffer);

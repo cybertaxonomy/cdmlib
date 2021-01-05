@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-
 import static org.junit.Assert.assertEquals;
 
 import java.net.URI;
@@ -42,7 +41,6 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  *
  * @author a.mueller
  * @since 25.05.2016
- *
  */
 public class DefaultReferenceCacheStrategyTest {
 	@SuppressWarnings("unused")
@@ -80,17 +78,11 @@ public class DefaultReferenceCacheStrategyTest {
 	private static DefaultReferenceCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		defaultStrategy = DefaultReferenceCacheStrategy.NewInstance();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 	    //article
@@ -134,7 +126,6 @@ public class DefaultReferenceCacheStrategyTest {
 	}
 
 //**************************** TESTS ***********************************
-
 
 	@Test
 	public void testArticleGetTitleCache(){

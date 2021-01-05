@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.ByteArrayOutputStream;
@@ -35,18 +34,16 @@ public class Abcd206ImportState
 
 	private String prefix;
 
-	private List<String[]> associatedUnitIds = new ArrayList<String[]>();
+	private List<String[]> associatedUnitIds = new ArrayList<>();
 
 	private Set<URI> sequenceDataStableIdentifier = new HashSet<>();
 
-	private List<UUID> fieldUnitUUIDsToDelete = new ArrayList();
+	private List<UUID> fieldUnitUUIDsToDelete = new ArrayList<>();
 
 	private FieldUnit lastFieldUnit = null;
 
 
-
 //****************** CONSTRUCTOR ***************************************************/
-
 
     public Abcd206ImportState(Abcd206ImportConfigurator config) {
 		super(config);
@@ -55,8 +52,6 @@ public class Abcd206ImportState
 	}
 
 //************************ GETTER / SETTER *****************************************/
-
-
 
     @Override
     public Abcd206DataHolder getDataHolder() {
@@ -67,23 +62,13 @@ public class Abcd206ImportState
         this.dataHolder = dataHolder;
     }
 
-    /**
-     * @return the fieldUnitsToDelete
-     */
     public List<UUID> getFieldUnitsToDelete() {
         return fieldUnitUUIDsToDelete;
     }
-
-    /**
-     * @param fieldUnitsToDelete the fieldUnitsToDelete to set
-     */
     public void setFieldUnitsToDelete(List<UUID> fieldUnitsToDelete) {
         this.fieldUnitUUIDsToDelete = fieldUnitsToDelete;
     }
 
-    /**
-     * @param fieldUnitsToDelete the fieldUnitsToDelete to set
-     */
     public void addFieldUnitsToDelete(FieldUnit fieldUnitToDelete) {
         if (fieldUnitToDelete != null){
             this.fieldUnitUUIDsToDelete.add(fieldUnitToDelete.getUuid());
@@ -113,10 +98,6 @@ public class Abcd206ImportState
         return this.associatedUnitIds;
     }
 
-
-
-
-
     public Set<URI> getSequenceDataStableIdentifier() {
         return sequenceDataStableIdentifier;
     }
@@ -124,7 +105,6 @@ public class Abcd206ImportState
     public void putSequenceDataStableIdentifier(URI sequenceDataStableIdentifier) {
         this.sequenceDataStableIdentifier.add(sequenceDataStableIdentifier);
     }
-
 
     public FieldUnit getLastFieldUnit() {
         return lastFieldUnit;
@@ -136,9 +116,6 @@ public class Abcd206ImportState
             this.setFieldUnit(lastFieldUnit);
         }
     }
-
-
-
 
 //
 //    public void reset() {

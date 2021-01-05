@@ -24,11 +24,9 @@ import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-
 /**
  * @author a.kohlbecker
  * @since 24.08.2010
- *
  */
 public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 
@@ -75,12 +73,11 @@ public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 		pairs.add(new BasicNameValuePair("query", cqlQuery));
 		pairs.add(new BasicNameValuePair("recordSchema", recordSchema));
 
-		Map<String, String> requestHeaders = new HashMap<String, String>();
+		Map<String, String> requestHeaders = new HashMap<>();
 		requestHeaders.put("Accept-Charset", "UTF-8");
 
 		try {
 			URI requestUri = createUri(null, pairs);
-
 
 			InputStream stream = executeHttpGet(requestUri, requestHeaders);
 			return schemaAdapter.getCmdEntities(stream);
@@ -94,9 +91,5 @@ public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 		}
 
 		return null;
-
 	}
-
-
-
 }

@@ -385,7 +385,7 @@ public class Media
         //media representations
         result.representations = new HashSet<>();
         for (MediaRepresentation mediaRepresentation: this.representations){
-            result.representations.add((MediaRepresentation)mediaRepresentation.clone());
+            result.representations.add(mediaRepresentation.clone());
         }
 
         result.link = this.link != null ? this.link.clone(): null;

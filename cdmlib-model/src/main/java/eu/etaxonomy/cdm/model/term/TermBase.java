@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import java.net.URI;
@@ -288,7 +287,7 @@ public abstract class TermBase
 
         result.representations = new HashSet<Representation>();
         for (Representation rep : this.representations){
-            result.representations.add((Representation)rep.clone());
+            result.representations.add(rep.clone());
         }
 
         return result;

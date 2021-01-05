@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.model.media.Rights;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class DwcaImageRecord extends DwcaRecordBase{
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImageRecord.class);
 
@@ -45,11 +45,9 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	private AgentBase<?> publisher;
 	private String audience;
 
-
 	public DwcaImageRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 	}
-
 
 	@Override
     protected void registerKnownFields(){
@@ -114,7 +112,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public URI getIdentifier() {
 		return identifier;
 	}
-
 	public void setIdentifier(URI identifier) {
 		this.identifier = identifier;
 	}
@@ -122,7 +119,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public String getTitle() {
 		return title;
 	}
-
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -130,7 +126,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -138,7 +133,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public String getSpatial() {
 		return spatial;
 	}
-
 	public void setSpatial(String spatial) {
 		this.spatial = spatial;
 	}
@@ -146,7 +140,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public Point getCoordinates() {
 		return coordinates;
 	}
-
 	public void setCoordinates(Point coordinates) {
 		this.coordinates = coordinates;
 	}
@@ -154,7 +147,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public String getFormat() {
 		return format;
 	}
-
 	public void setFormat(String format) {
 		this.format = format;
 	}
@@ -162,7 +154,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public Set<Rights> getLicense() {
 		return license;
 	}
-
 	public void setLicense(Set<Rights> set) {
 		this.license = set;
 	}
@@ -170,7 +161,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public TimePeriod getCreated() {
 		return created;
 	}
-
 	public void setCreated(TimePeriod created) {
 		this.created = created;
 	}
@@ -178,7 +168,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public AgentBase<?> getCreator() {
 		return creator;
 	}
-
 	public void setCreator(AgentBase<?> creator) {
 		this.creator = creator;
 	}
@@ -186,7 +175,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public AgentBase<?> getContributor() {
 		return contributor;
 	}
-
 	public void setContributor(AgentBase<?> contributor) {
 		this.contributor = contributor;
 	}
@@ -194,7 +182,6 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public AgentBase<?> getPublisher() {
 		return publisher;
 	}
-
 	public void setPublisher(AgentBase<?> publisher) {
 		this.publisher = publisher;
 	}
@@ -202,11 +189,7 @@ public class DwcaImageRecord extends DwcaRecordBase{
 	public String getAudience() {
 		return audience;
 	}
-
 	public void setAudience(String audience) {
 		this.audience = audience;
 	}
-
-
-
 }

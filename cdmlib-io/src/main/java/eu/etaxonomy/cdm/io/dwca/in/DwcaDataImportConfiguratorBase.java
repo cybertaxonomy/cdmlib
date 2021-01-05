@@ -65,12 +65,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
         MARKER
     }
 
-
-	/**
-	 * @param uri
-	 * @param destination
-	 * @param defaultTransformer
-	 */
 	protected DwcaDataImportConfiguratorBase(URI uri, ICdmDataSource destination, IInputTransformer defaultTransformer) {
 		super(defaultTransformer);
 		this.setSource(uri);
@@ -173,14 +167,12 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
         this.doSynonymRelationships = doSynonymRelationships;
     }
 
-
     public boolean isDoHigherRankRelationships() {
         return doHigherRankRelationships;
     }
     public void setDoHigherRankRelationships(boolean doHigherRankRelationships) {
         this.doHigherRankRelationships = doHigherRankRelationships;
     }
-
 
     public boolean isDoLowerRankRelationships() {
         return doLowerRankRelationships;

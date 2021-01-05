@@ -33,11 +33,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
-
 /**
  * @author a.mueller
  * @since 15.11.2017
- *
  */
 public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
 
@@ -128,9 +126,6 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
 
         Integer expected = 118;  //did not count yet
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
-
-
-
     }
 
     @Override

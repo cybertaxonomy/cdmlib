@@ -33,6 +33,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 public class AudioFile extends MediaRepresentationPart {
+
 	private static final long serialVersionUID = 2327736023969971196L;
 	private static final Logger logger = Logger.getLogger(AudioFile.class);
 

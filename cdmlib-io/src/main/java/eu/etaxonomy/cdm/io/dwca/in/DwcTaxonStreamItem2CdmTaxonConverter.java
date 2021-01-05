@@ -67,7 +67,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>
         extends PartitionableConverterBase<CONFIG, STATE>
@@ -84,9 +83,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	private final NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
-	/**
-	 * @param state
-	 */
 	public DwcTaxonStreamItem2CdmTaxonConverter(STATE state) {
 		super(state);
 	}

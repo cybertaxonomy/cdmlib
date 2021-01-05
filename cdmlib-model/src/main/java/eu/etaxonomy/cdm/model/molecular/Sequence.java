@@ -590,7 +590,7 @@ public class Sequence
     		//single sequences
     		result.singleReadAlignments = new HashSet<SingleReadAlignment>();
     		for (SingleReadAlignment singleReadAlign: this.singleReadAlignments){
-    			SingleReadAlignment newAlignment = (SingleReadAlignment)singleReadAlign.clone();
+    			SingleReadAlignment newAlignment = singleReadAlign.clone();
     			result.singleReadAlignments.add(newAlignment);
     		}
 

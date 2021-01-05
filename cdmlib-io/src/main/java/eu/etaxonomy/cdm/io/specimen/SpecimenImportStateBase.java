@@ -38,17 +38,11 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author k.luther
- * @param <CONFIG>
  * @since 15.07.2016
- *
  */
 public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBase, STATE extends SpecimenImportStateBase>
         extends ImportStateBase<CONFIG , CdmImportBase<CONFIG , STATE >>{
 
-
-    /**
-     * @param config
-     */
     public SpecimenImportStateBase(CONFIG config) {
         super(config);
     }
@@ -60,58 +54,42 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private Classification defaultClassification = null;
     private Reference ref = null;
 
-    private HashMap<UUID, TaxonDescription> descriptionsPerTaxon = new HashMap();
+    private HashMap<UUID, TaxonDescription> descriptionsPerTaxon = new HashMap<>();
     private DerivedUnit derivedUnitBase;
 
     private SpecimenImportReport report;
 
     protected SpecimenDataHolder dataHolder;
 
-    private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
+    private List<OriginalSourceBase<?>> associationRefs = new ArrayList<>();
     private boolean associationSourcesSet=false;
-    private List<OriginalSourceBase<?>> descriptionRefs = new ArrayList<OriginalSourceBase<?>>();
+    private List<OriginalSourceBase<?>> descriptionRefs = new ArrayList<>();
     private boolean descriptionSourcesSet=false;
-    private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
+    private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<>();
     private boolean derivedUnitSourcesSet=false;
     private boolean descriptionGroupSet = false;
-    protected HashMap<String, Institution> institutions = new HashMap<String, Institution>();
-    protected HashMap<String, Collection> collections= new HashMap<String, Collection>();
-    protected HashMap<String, TaxonName> names= new HashMap<String, TaxonName>();
-    private HashMap<String,FieldUnit> fieldUnits = new HashMap<String, FieldUnit>();
+    protected HashMap<String, Institution> institutions = new HashMap<>();
+    protected HashMap<String, Collection> collections= new HashMap<>();
+    protected HashMap<String, TaxonName> names= new HashMap<>();
+    private HashMap<String,FieldUnit> fieldUnits = new HashMap<>();
 
     MapWrapper<TeamOrPersonBase<?>> personStore;
     private Map<String, Reference> importReferences = new HashMap<>();
     private URI actualAccessPoint;
     private Set<URI> allAccesPoints = new HashSet<>();
 
+// ************************* Getter/Setter **************/
 
-
-    /* -----Getter/Setter ---*/
-
-    /**
-     * @return the personStore
-     */
     public MapWrapper<TeamOrPersonBase<?>> getPersonStore() {
         return personStore;
     }
-
-    /**
-     * @param personStore the personStore to set
-     */
     public void setPersonStore(MapWrapper<TeamOrPersonBase<?>> personStore) {
         this.personStore = personStore;
     }
 
-    /**
-     * @return the fieldUnits
-     */
     public FieldUnit getFieldUnit(String fieldNumber) {
         return fieldUnits.get(fieldNumber);
     }
-
-    /**
-     * @param fieldUnits the fieldUnits to set
-     */
     public void setFieldUnit(FieldUnit fieldUnit) {
         this.fieldUnits.put(fieldUnit.getFieldNumber(), fieldUnit);
     }
@@ -247,19 +225,14 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.derivedUnitBase = derivedUnitBase;
     }
 
-
     public URI getActualAccessPoint() {
         return actualAccessPoint;
     }
-
 
     public Set<URI> getAllAccesPoint() {
         return allAccesPoints;
     }
 
-    /**
-     * @param actualAccesPoint the actualAccesPoint to set
-     */
     public void addActualAccesPoint(URI actualAccesPoint) {
         this.allAccesPoints.add(actualAccesPoint);
     }
@@ -268,34 +241,19 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.actualAccessPoint = actualAccessPoint;
     }
 
-    /**
-     * @return the report
-     */
     public SpecimenImportReport getReport() {
         if (report == null){
             report = new SpecimenImportReport();
         }
         return report;
     }
-
-    /**
-     * @param report the report to set
-     */
     public void setReport(SpecimenImportReport report) {
         this.report = report;
     }
 
-
-    /**
-     * @return the dataHolder
-     */
     public SpecimenDataHolder getDataHolder() {
         return dataHolder;
     }
-
-    /**
-     * @param dataHolder the dataHolder to set
-     */
     public void setDataHolder(SpecimenDataHolder dataHolder) {
         this.dataHolder = dataHolder;
     }
@@ -309,7 +267,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
             return null;
         }
         if (importReferences == null){
-            importReferences = new HashMap();
+            importReferences = new HashMap<>();
         }
         if (this.importReferences.containsKey(accessPoint.toString())){
             return this.importReferences.get(accessPoint.toString());
@@ -320,16 +278,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
             this.importReferences.put(accessPoint.toString(), ref);
             return ref;
         }
-
     }
 
-    /**
-     * @param ref
-     */
     public void addImportReference(Reference ref) {
         if (ref.getUri() != null){
             this.importReferences.put(ref.getUri().toString(), ref);
         }
     }
-
 }

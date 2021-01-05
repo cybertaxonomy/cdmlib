@@ -68,7 +68,6 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  *
  * TODO the whole ipni service should be refactored to use UriUtils. I did this for the queryService method only because we ran into timeout
  * problems in tests. UriUtils handles these problems already.
- *
  */
 @Component
 public class IpniService  implements IIpniService{
@@ -331,24 +330,18 @@ public class IpniService  implements IIpniService{
 
             HttpResponse response = UriUtils.getResponse(newUri, null);
 
-            int responseCode = response.getStatusLine().getStatusCode();
-
             // get the content at the resource
             InputStream content = response.getEntity().getContent();
             return content;
 
-		   } catch (IOException e) {
-	           logger.error("No content for request: " + request);
-	           throw new RuntimeException(e);
-	       } catch (URISyntaxException e) {
-				logger.error("Given URL could not be transformed into URI", e);
-				   throw new RuntimeException(e);
-		   }
-
+	   } catch (IOException e) {
+           logger.error("No content for request: " + request);
+           throw new RuntimeException(e);
+       } catch (URISyntaxException e) {
+			logger.error("Given URL could not be transformed into URI", e);
+			throw new RuntimeException(e);
+	   }
 	}
-
-
-
 
 	private List<Reference> buildPublicationList( InputStream content, ICdmRepository services, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServicePublicationConfigurator config = (IpniServicePublicationConfigurator)iConfig;
@@ -369,14 +362,6 @@ public class IpniService  implements IIpniService{
 		return result;
 	}
 
-
-	/**
-	 * @param line
-	 * @param parameterMap
-	 * @param repository
-	 * @param config
-	 * @return
-	 */
 	private Reference getPublicationFromLine(String line, Map<Integer, String> parameterMap,
 	        ICdmRepository repository, IpniServicePublicationConfigurator config) {
 		//fill value map
@@ -413,7 +398,6 @@ public class IpniService  implements IIpniService{
 		    ref.addAnnotation(annotation);
 		}
 
-
 		String tl2AuthorString = valueMap.get(TL2_AUTHOR);
 		if (ref.getAuthorship() == null){
 			Team tl2Author = Team.NewTitledInstance(tl2AuthorString, null);
@@ -424,17 +408,13 @@ public class IpniService  implements IIpniService{
 			ref.addAnnotation(Annotation.NewInstance(tl2AuthorString, AnnotationType.EDITORIAL(), Language.ENGLISH()));
 		}
 
-
 		//dates
 		VerbatimTimePeriod date = TimePeriodParser.parseStringVerbatim(valueMap.get(DATE));
 		ref.setDatePublished(date);
 
-
 		//source
 		Reference citation = getIpniCitation(repository);
 		ref.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
-
-
 
 /*		TODO
 		BPH number
@@ -448,7 +428,6 @@ public class IpniService  implements IIpniService{
 
 		return ref;
 	}
-
 
 	private List<TaxonName> buildNameList( InputStream content, ICdmRepository repository, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServiceNamesConfigurator config = (IpniServiceNamesConfigurator)iConfig;
@@ -469,7 +448,6 @@ public class IpniService  implements IIpniService{
 
 		return result;
 	}
-
 
 	private static final NonViralNameParserImpl nvnParser = NonViralNameParserImpl.NewInstance();
 
@@ -502,8 +480,6 @@ public class IpniService  implements IIpniService{
             nvnParser.parseSimpleName(name, valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), name.getRank(), true);
 //            name.setNameCache(valueMap.get(FULL_NAME_WITHOUT_FAMILY_AND_AUTHORS), true);
         }
-
-
 
         String authors = "";
 		//authors

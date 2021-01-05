@@ -16,9 +16,9 @@ import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 /**
  * @author pplitzner
  * @since Apr 24, 2019
- *
  */
-public class StructureTreeOwlImportState extends ImportStateBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImport> {
+public class StructureTreeOwlImportState
+        extends ImportStateBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImport> {
 
     private Model model;
 
@@ -30,5 +30,4 @@ public class StructureTreeOwlImportState extends ImportStateBase<StructureTreeOw
     public Model getModel() {
         return model;
     }
-
 }

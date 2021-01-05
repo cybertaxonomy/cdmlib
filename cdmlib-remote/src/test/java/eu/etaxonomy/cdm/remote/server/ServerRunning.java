@@ -386,7 +386,5 @@ public class ServerRunning implements MethodRule {
                 throw new IllegalArgumentException("Could not create URI from [" + builder + "]: " + ex, ex);
             }
         }
-
     }
-
 }

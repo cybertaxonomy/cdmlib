@@ -46,7 +46,6 @@ public class URIUserType extends AbstractUserType implements UserType {
 		return SQL_TYPES;
 	}
 
-
 	@Override
 	public URI nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException {
@@ -89,5 +88,4 @@ public class URIUserType extends AbstractUserType implements UserType {
             throw new TypeMismatchException(e.getMessage());
         }
     }
-
 }

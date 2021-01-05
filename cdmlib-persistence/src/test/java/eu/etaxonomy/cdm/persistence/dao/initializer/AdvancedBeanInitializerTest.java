@@ -358,9 +358,9 @@ public class AdvancedBeanInitializerTest<CDM extends CdmBase> extends CdmTransac
 
         person1.setContact(contact);
         person1.setUuid(personUuid);
-        person1 = (Person)agentDao.save(person1);
-        person2 = (Person)agentDao.save(person2);
-        team = (Team)agentDao.save(team);
+        person1 = agentDao.save(person1);
+        person2 = agentDao.save(person2);
+        team = agentDao.save(team);
 
         Reference ref = ReferenceFactory.newBook();
         ref.setUuid(referenceUuid);

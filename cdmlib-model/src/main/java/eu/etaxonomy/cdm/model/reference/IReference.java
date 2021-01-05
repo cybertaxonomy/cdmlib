@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.reference;
 
 import java.beans.Transient;
@@ -17,7 +16,6 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
-
 
 /**
  * The upmost interface for references (information sources).
@@ -50,7 +48,6 @@ public interface IReference
 	 */
 	public boolean isOfType(ReferenceType type);
 
-
 	/**
 	 * Returns the references title
 	 */
@@ -61,8 +58,6 @@ public interface IReference
 	 * @param title
 	 */
 	public void setTitle(String title);
-
-
 
     /**
      * The abbreviated title is the short form for the title. It is usually used
@@ -78,7 +73,6 @@ public interface IReference
      */
     public void setAbbrevTitle(String abbrevTitle);
 
-
 	/**
 	 * Returns the Uniform Resource Identifier (URI) corresponding to <i>this</i>
 	 * reference. An URI is a string of characters used to identify a resource
@@ -91,7 +85,6 @@ public interface IReference
 	 * @see #getUri()
 	 */
 	public void setUri(URI uri);
-
 
 	/**
 	 * Returns the references abstract which is a summary of the content
@@ -136,5 +129,4 @@ public interface IReference
 	@Transient
 	@javax.persistence.Transient
     void setTitleCaches(String cache);
-
 }

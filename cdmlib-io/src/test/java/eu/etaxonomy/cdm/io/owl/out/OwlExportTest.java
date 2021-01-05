@@ -22,8 +22,9 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.common.ExportDataWrapper;
 import eu.etaxonomy.cdm.io.common.ExportResult;
@@ -53,7 +54,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
     private IClassificationService classificationService;
 
     @SpringBeanByType
-    private IFeatureTreeService featureTreeService;
+    private ITermTreeService termTreeService;
 
     @SpringBeanByType
     private ITaxonNodeService taxonNodeService;
@@ -102,7 +103,7 @@ public class OwlExportTest  extends CdmTransactionalIntegrationTest{
         voc.addTerm(featureC);
         TermNode<Feature> nodeC = tree.getRoot().addChild(featureC);
 
-        featureTreeService.save(tree);
+        termTreeService.save(tree);
         return Collections.singletonList(tree.getUuid());
     }
 

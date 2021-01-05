@@ -25,20 +25,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  *
  * @author a.mueller
  * @since 08.07.2017
-
  */
 public abstract class CsvImportConfiguratorBase
         extends ImportConfiguratorBase<CsvImportState<CsvImportConfiguratorBase>, InputStreamReader>{
 
-
     private static final long serialVersionUID = -6735627744555323225L;
 
     private char fieldSeparator = ',';
-
     private int transactionLineCount = 1000;
-
     private URI originalUri;
-
 
     // ****************** CONSTRUCTOR *****************************/
     protected CsvImportConfiguratorBase(InputStreamReader inputStream,
@@ -67,19 +62,12 @@ public abstract class CsvImportConfiguratorBase
         return toStream(originalUri);
     }
 
-    /**
-     * @param uri
-     * @return
-     * @throws IOException
-     */
     private static InputStreamReader toStream(URI uri) throws IOException {
         URL url = uri.toURL();
         InputStream stream = url.openStream();
         InputStreamReader inputStreamReader = new InputStreamReader(stream, "UTF8");
         return inputStreamReader;
     }
-
-
 
     @Override
     public Reference getSourceReference() {
@@ -94,9 +82,6 @@ public abstract class CsvImportConfiguratorBase
         return sourceReference;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CsvImportState getNewState() {
         return new CsvImportState<CsvImportConfiguratorBase>(this);

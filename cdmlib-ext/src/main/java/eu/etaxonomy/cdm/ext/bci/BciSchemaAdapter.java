@@ -30,47 +30,30 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
-
-
 /**
  * @author a.kohlbecker
  * @since 25.08.2010
  */
 public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 
-
-
 	static URI identifier = null;
 
 	static String nameSpace = "http://purl.org/dc/elements/1.1/";
 
 	static {
-		try {
-			identifier = new URI("info:srw/schema/1/dc-v1.1");
-		} catch (URISyntaxException e) {
-			// should never happen
-		}
+		identifier = URI.create("info:srw/schema/1/dc-v1.1");
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getIdentifier()
-	 */
 	@Override
 	public URI getIdentifier() {
 		return identifier;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getShortName()
-	 */
 	@Override
 	public String getShortName() {
 		return "dc";
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getCmdEntities(java.io.Reader)
-	 */
 	@Override
 	public List<Reference> getCmdEntities(InputStream inputStream) {
 
@@ -84,7 +67,6 @@ public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 		} catch (SAXException e) {
 			logger.error(e);
 		}
-
 
 		DcSaxHandler handler = new DcSaxHandler();
 
@@ -100,7 +82,6 @@ public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 			logger.error(e);
 		}
 
-
 		return handler.referenceList;
 	}
 
@@ -113,13 +94,11 @@ public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 		private static final String DC_PUBLISHER = "dc:publisher";
 		private static final String DC_DATE = "dc:date";
 
-		List<Reference> referenceList = new ArrayList<Reference>();
+		private List<Reference> referenceList = new ArrayList<>();
 
-		Reference reference = null;
+		private Reference reference = null;
 
-		String dcFieldName = null;
-
-
+		private String dcFieldName = null;
 
 		@Override
 		public void startElement(String uri, String localName,
@@ -152,7 +131,6 @@ public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 					}
 				}
 			}
-
 		}
 
 		@Override
@@ -172,14 +150,11 @@ public class BciSchemaAdapter extends SchemaAdapterBase<Reference>{
 					reference.setPublisher(text);
 				}
 				if(dcFieldName.equals(DC_CREATOR)){
-					TeamOrPersonBase authorship = new Team();
+					TeamOrPersonBase<?> authorship = new Team();
 					authorship.setTitleCache(text, true);
 					reference.setAuthorship(authorship);
 				}
-
 			}
 		}
-
 	}
-
 }

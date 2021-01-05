@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsrdf;
 
 import static org.junit.Assert.assertEquals;
@@ -32,15 +31,14 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @since 29.01.2009
- * @version 1.0
  */
 public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
@@ -72,8 +70,6 @@ public class TcsRdfImportConfiguratorTest extends CdmTransactionalIntegrationTes
 		assertEquals("Number of TaxonNames should be 5", 5, nameService.count(null));
 	}
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

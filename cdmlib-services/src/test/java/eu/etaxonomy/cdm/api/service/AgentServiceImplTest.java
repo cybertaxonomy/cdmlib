@@ -45,10 +45,10 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
-    private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
-
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AgentServiceImplTest.class);
+    private static final Logger logger = Logger.getLogger(AgentServiceImplTest.class);
+
+    private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
 
     @SpringBeanByType
     private IAgentService service;

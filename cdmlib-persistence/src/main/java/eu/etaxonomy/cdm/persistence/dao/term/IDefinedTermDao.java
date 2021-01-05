@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.term;
 
 import java.net.URI;
@@ -34,9 +33,8 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-
-
-public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
+public interface IDefinedTermDao
+        extends IIdentifiableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
 
 	/**
 	 * @param iso639 a two or three letter language code according to iso639-1 or iso639-2
@@ -67,7 +65,6 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationAbbrev(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
 
 	public long countDefinedTermByRepresentationAbbrev(String text, Class<? extends DefinedTermBase> clazz);
-
 
     /**
      * Returns a List of Media that represent a given DefinedTerm instance
@@ -109,7 +106,6 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @return
 	 */
 	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,  List<OrderHint> orderHints, List<String> propertyPaths);
-
 
 	/**
 	 * Returns a count of NamedArea instances (optionally filtered by type or level)

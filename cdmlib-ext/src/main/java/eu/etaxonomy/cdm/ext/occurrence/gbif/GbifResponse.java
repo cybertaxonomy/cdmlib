@@ -20,25 +20,21 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * holds the endpoint URL of the original record and the {@link GbifDataSetProtocol}
  * @author pplitzner
  * @since 27.05.2014
- *
  */
 public class GbifResponse extends DataResponse {
-
-
 
     private final GbifDataSetProtocol dataSetProtocol;
 
     private final TaxonName scientificName;
+
     /**
      * @param derivedUnitFacade
      * @param dataSetUrl
      */
     public GbifResponse(DerivedUnitFacade derivedUnitFacade, URI dataSetUrl, GbifDataSetProtocol dataSetProtocol, String [] tripleID, TaxonName scientificName) {
         super(derivedUnitFacade,dataSetUrl, tripleID);
-       this.dataSetProtocol = dataSetProtocol;
-
+        this.dataSetProtocol = dataSetProtocol;
         this.scientificName = scientificName;
-
     }
 
     public DerivedUnitFacade getDerivedUnitFacade() {
@@ -49,9 +45,6 @@ public class GbifResponse extends DataResponse {
         return dataSetUri;
     }
 
-    /**
-     * @return the dataSetProtocol
-     */
     public GbifDataSetProtocol getDataSetProtocol() {
         return dataSetProtocol;
     }
@@ -60,11 +53,7 @@ public class GbifResponse extends DataResponse {
         return tripleID;
     }
 
-    /**
-     * @return the scientificName
-     */
     public TaxonName getScientificName() {
         return scientificName;
     }
-
 }

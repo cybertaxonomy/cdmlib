@@ -123,7 +123,7 @@ public class MediaRepresentation extends VersionableEntity {
 	 * @throws InstantiationException
 	 */
 	public static<T extends MediaRepresentationPart> MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size, Class<T> clazz) {
-		if (uri == null || CdmUtils.isEmpty(uri.toString())){
+		if (uri == null || isBlank(uri.toString())){
 			return null;
 		}
 		MediaRepresentationPart part;
@@ -211,7 +211,7 @@ public class MediaRepresentation extends VersionableEntity {
 		MediaRepresentation result = (MediaRepresentation)super.clone();
 
 		//media representations
-		result.mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
+		result.mediaRepresentationParts = new ArrayList<>();
 		for (MediaRepresentationPart mediaRepresentationPart: this.mediaRepresentationParts){
 			result.mediaRepresentationParts.add(mediaRepresentationPart.clone());
 		}

@@ -6,15 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.match;
 
 import java.net.URI;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -76,25 +73,12 @@ public class DefaultMatchStrategyTest {
 
 	private IBook book3;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
 		termInitializer.initialize();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		team1 = Team.NewInstance();
@@ -135,13 +119,6 @@ public class DefaultMatchStrategyTest {
 		book2.setLsid(lsid2);
 		((Reference) book2).setNomenclaturallyRelevant(true);
 
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 //********************* TEST *********************************************/

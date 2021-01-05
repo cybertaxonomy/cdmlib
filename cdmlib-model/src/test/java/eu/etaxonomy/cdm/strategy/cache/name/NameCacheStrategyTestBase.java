@@ -24,8 +24,6 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 public class NameCacheStrategyTestBase {
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 
-
-
 	protected Method getMethod(Class<?> clazz, String methodName, Class<?> paramClazzes){
 		Method method;
 		try {

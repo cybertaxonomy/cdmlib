@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
-
 /**
 * This service allows to query the Biodiversity collection index {@link http://www.biodiversitycollectionsindex.org}
 * @author a.mueller
@@ -87,10 +86,10 @@ public class BciServiceWrapper
 
 		String SruOperation = "searchRetrieve";
 
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		List<NameValuePair> pairs = new ArrayList<>();
 		pairs.add(new BasicNameValuePair("code", SruOperation));
 
-		Map<String, String> requestHeaders = new HashMap<String, String>();
+		Map<String, String> requestHeaders = new HashMap<>();
 		requestHeaders.put("Accept-Charset", "UTF-8");
 
 		try {

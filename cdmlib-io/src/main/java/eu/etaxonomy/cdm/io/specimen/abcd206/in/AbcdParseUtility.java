@@ -32,12 +32,10 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 /**
  * @author pplitzner
  * @since 16.06.2015
- *
  */
 public class AbcdParseUtility {
 
     private static final Logger logger = Logger.getLogger(AbcdParseUtility.class);
-
 
     public static URI parseFirstUri(NodeList nodeList, SpecimenImportReport report){
         URI uri = null;
@@ -175,5 +173,4 @@ public class AbcdParseUtility {
         }
         return unitAssociationWrapper;
     }
-
 }

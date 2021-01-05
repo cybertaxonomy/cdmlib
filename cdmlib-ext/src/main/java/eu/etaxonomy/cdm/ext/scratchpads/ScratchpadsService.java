@@ -114,35 +114,26 @@ public class ScratchpadsService {
 							HttpResponse response = UriUtils.getResponse(uri, null);
 							if (UriUtils.isOk(response)) {
 
-
 								logger.debug("There is a dwca " + websiteName);
 
 								try {
 									inputStream = UriUtils.getInputStream(url.toURI());
 
 									num++;
-
 									if (inputStream != null) {
-
 										copyDwcaZip(inputStream, websiteName);
 										//createDwcaZip(inputStream);
 									}
-
 								} catch (HttpException e) {
 									// TODO Auto-generated catch block
 									logger.error("Failed to get dwca for " + websiteName + " as there was an error " + e);
 								}
-
 							}
-
 						}
 					}
 				}
 			}
-
 			inputStream.close();
-
-
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		} catch (IOException ie) {
@@ -212,15 +203,10 @@ public class ScratchpadsService {
 		}
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 
 		ScratchpadsService spService = new ScratchpadsService();
 		spService.harvest();
 		// TODO Auto-generated method stub
-
 	}
-
 }

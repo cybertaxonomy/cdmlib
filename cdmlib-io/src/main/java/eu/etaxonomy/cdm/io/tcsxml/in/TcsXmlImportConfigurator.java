@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.io.InputStream;
@@ -37,7 +36,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
-
 	private boolean doMetaData = true;
 	private boolean doSpecimen = true;
 
@@ -51,8 +49,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	private boolean doRelTaxa = true;
 
 	private boolean doGetMissingNames = true;
-
-
 
 	public boolean isDoGetMissingNames() {
 		return doGetMissingNames;
@@ -161,9 +157,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		super.setSource(uri);
 	}
 
-	/**
-	 * @return
-	 */
 	public Element getSourceRoot(){
 		URI source = getSource();
 		try {

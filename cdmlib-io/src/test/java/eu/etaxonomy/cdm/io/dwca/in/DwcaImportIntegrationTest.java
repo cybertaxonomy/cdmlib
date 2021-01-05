@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  */
 @Transactional(TransactionMode.ROLLBACK)
 public class DwcaImportIntegrationTest  extends CdmTransactionalIntegrationTest{
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportIntegrationTest.class);
 
@@ -41,9 +42,7 @@ public class DwcaImportIntegrationTest  extends CdmTransactionalIntegrationTest{
 
 	private URI uri;
 	private DwcaImportConfigurator configurator;
-	/**
-	 * @throws java.lang.Exception
-	 */
+
 	@Before
 	public void setUp() throws Exception {
 		String inputFile = "/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip";

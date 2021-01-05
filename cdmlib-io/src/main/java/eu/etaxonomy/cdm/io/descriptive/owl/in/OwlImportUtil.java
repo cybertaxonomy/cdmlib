@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author pplitzner
  * @since May 26, 2019
- *
  */
 public class OwlImportUtil {
 

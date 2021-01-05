@@ -43,11 +43,9 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
-
 /**
  * @author pplitzner
  * @since Mar 26, 2015
- *
  */
 public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
@@ -64,11 +62,8 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private List<TypedEntityReference<TaxonName>> determinedNames;
 
     private String originalLabelInfo;
-
     private String exsiccatum;
-
     private String mostSignificantIdentifier;
-
 
     /**
      * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and

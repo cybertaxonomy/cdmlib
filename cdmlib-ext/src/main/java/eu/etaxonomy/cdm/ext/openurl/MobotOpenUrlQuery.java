@@ -13,7 +13,6 @@ import java.net.URI;
 /**
  * @author a.kohlbecker
  * @since 17.12.2010
- *
  */
 public class MobotOpenUrlQuery {
 	public MobotOpenUrlServiceWrapper.ReferenceType refType;

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml;
 
 import static org.junit.Assert.assertNotNull;
@@ -33,10 +32,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
-	CdmTcsXmlImport cdmTcsXmlImport;
+	private CdmTcsXmlImport cdmTcsXmlImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
@@ -64,5 +63,4 @@ public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

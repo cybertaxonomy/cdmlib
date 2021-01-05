@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import static org.junit.Assert.assertNotNull;
@@ -29,20 +28,18 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @since 29.01.2009
- * @version 1.0
  */
 //@Ignore("Test class is just a copy of the ABCD import test. It still needs to be adapted")
 public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	IOccurrenceService occurrenceService;
-
+	private IOccurrenceService occurrenceService;
 
 	private IImportConfigurator configurator;
 
@@ -80,5 +77,4 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

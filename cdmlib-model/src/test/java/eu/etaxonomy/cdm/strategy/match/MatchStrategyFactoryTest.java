@@ -54,9 +54,7 @@ public class MatchStrategyFactoryTest {
 
 	@Before
 	public void setUp() throws Exception {
-
 		institution1 = Institution.NewNamedInstance("Institution1");
-
 	}
 
 //********************* TEST *********************************************/

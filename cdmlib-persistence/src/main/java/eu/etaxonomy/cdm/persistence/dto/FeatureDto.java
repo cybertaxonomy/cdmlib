@@ -65,7 +65,6 @@ public class FeatureDto extends TermDto {
         this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
         this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
         this.recommendedModifierEnumeration = recommendedModifierEnumeration;
-
     }
 
     static public FeatureDto fromTerm(Feature term) {

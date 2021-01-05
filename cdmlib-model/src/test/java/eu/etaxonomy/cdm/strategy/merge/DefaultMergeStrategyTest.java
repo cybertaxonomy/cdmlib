@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -84,28 +83,16 @@ public class DefaultMergeStrategyTest {
 	private int hasProblem2 = 1;
 	private LSID lsid2;
 
-
-	private Reference book3;
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
 		termInitializer.initialize();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		bookMergeStrategy = DefaultMergeStrategy.NewInstance(Reference.class);
@@ -145,14 +132,6 @@ public class DefaultMergeStrategyTest {
 		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
 		book2.setLsid(lsid2);
 		book2.setNomenclaturallyRelevant(true);
-
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 //********************* TEST *********************************************/

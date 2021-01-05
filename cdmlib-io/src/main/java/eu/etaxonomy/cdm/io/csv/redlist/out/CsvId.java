@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -20,9 +20,9 @@ import eu.etaxonomy.cdm.model.common.LSID;
 /**
  * @author a.mueller
  * @since 29.04.2011
- *
  */
 public class CsvId {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CsvId.class);
 
@@ -31,13 +31,13 @@ public class CsvId {
 	private UUID uuidId;
 	private URI uriId;
 	private LSID lsidId;
-	
+
 	private CsvTaxExportConfiguratorRedlist config;
-	
+
 	public CsvId(CsvTaxExportConfiguratorRedlist config){
 		this.config = config;
 	}
-	
+
 	public void setId(Integer id){
 		this.intId = id;
 	}
@@ -47,7 +47,6 @@ public class CsvId {
 	public void setId(LSID lsid){
 		this.lsidId = lsid;
 	}
-	
 
 	public void setId(CdmBase cdmBase) {
 		this.setId(cdmBase.getId());
@@ -56,7 +55,7 @@ public class CsvId {
 			this.setId(CdmBase.deproxy(cdmBase,IdentifiableEntity.class).getLsid());
 		}
 	}
-	
+
 	public String getId(){
 		Object object;
 		if (config.isUseIdWherePossible()){
@@ -74,10 +73,8 @@ public class CsvId {
 		}
 		return nullSafe(object);
 	}
-	
+
 	private String nullSafe(Object o){
 		return o == null ? null : o.toString();
 	}
-
-	
 }

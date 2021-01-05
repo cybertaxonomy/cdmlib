@@ -121,7 +121,7 @@ public class MediaTest {
     @Test
     public void testClone() {
         try {
-            Media mediaClone = (Media)media1.clone();
+            Media mediaClone = media1.clone();
             Assert.assertSame("Artist must be the same", team1, mediaClone.getArtist());
             Assert.assertTrue("Clone must have a default language description", mediaClone.getAllDescriptions().containsKey(Language.DEFAULT()));
             Assert.assertEquals("Description1.text must be the equal", languageString1.getText(), mediaClone.getAllDescriptions().get(Language.DEFAULT()).getText() );

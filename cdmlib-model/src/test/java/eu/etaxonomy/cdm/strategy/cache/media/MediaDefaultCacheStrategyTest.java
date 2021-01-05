@@ -5,8 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
-
+*/
 package eu.etaxonomy.cdm.strategy.cache.media;
 
 
@@ -25,44 +24,36 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.mueller
- *
  */
 public class MediaDefaultCacheStrategyTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		new DefaultTermInitializer().initialize();
 	}
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
+
 	@Before
 	public void setUp() throws Exception {
 	}
 
-	
 //*********************** TESTS ****************************************************/
-	
+
 	@Test
 	public void testGetTitleCache(){
-		
+
 		try {
 			Media media = Media.NewInstance();
 			media.putTitle(Language.DEFAULT(), "My best media");
 			Assert.assertEquals("Wrong title cache for media", "My best media", media.getTitleCache());
-			
+
 			media = Media.NewInstance();
 			Assert.assertTrue("Wrong title cache for media", media.getTitleCache().startsWith("- empty"));
-			
+
 			MediaRepresentation representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/myFileName.jpg"), 0, null);
 			media.addRepresentation(representation);
 			Assert.assertEquals("Wrong title cache for media", "myFileName.jpg", media.getTitleCache());
 			media.removeRepresentation(representation);
-			
+
 			representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/"), 0, null);
 			media.addRepresentation(representation);
 			Assert.assertEquals("Wrong title cache for media", "www.abc.de/", media.getTitleCache());
@@ -71,13 +62,12 @@ public class MediaDefaultCacheStrategyTest {
 			Assert.fail("URI syntax exception");
 		}
 	}
-	
-	@Test 
+
+	@Test
 	public void testHandleEmptyUri(){
 		Media media = Media.NewInstance();
 		MediaRepresentation representation;
 		representation = MediaRepresentation.NewInstance(null, null, null, 0, null);
 		media.addRepresentation(representation);
 	}
-	
 }

@@ -455,8 +455,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
     public void testIgnoreExistingSpecimensWithDna(){
         UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
 
-
-
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_B_10_0066577.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);

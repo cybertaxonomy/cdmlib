@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +17,6 @@ import java.util.UUID;
 
 import org.hibernate.TypeMismatchException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -34,15 +32,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
-	IMediaRepresentationPartDao dao;
+	private IMediaRepresentationPartDao dao;
 
 	@SpringBeanByType
-	IDefinedTermDao definedTermDao;
-
-
-	@Before
-	public void setUp() {
-	}
+	private IDefinedTermDao definedTermDao;
 
 	@Test
 	public void testCount() {
@@ -79,7 +72,6 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 				Assert.fail("Only an URISyntaxException should occurr but exception was of type " + e.getClass().getName());
 			}
 		}
-
 	}
 
 	@Test
@@ -98,7 +90,6 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 		} catch (URISyntaxException e) {
 			Assert.fail("URI should be ok");
 		}
-
 	}
 
 	@Test
@@ -122,13 +113,7 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
  * Base class for XML imports
  * @author a.mueller
  * @since 28.06.2011
- *
  */
 public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STATE>, STATE extends XmlImportState<CONFIG, ?>>
             extends CdmImportBase<CONFIG, STATE>
@@ -50,7 +49,6 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		XMLEvent next = reader.nextEvent();
 		fireSchemaConflictEvent(type, elName, next);
 	}
-
 
 	/**
 	 * @param r
@@ -85,7 +83,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		return isStartingElement(next, elName);
 	}
 
-	protected boolean isStartingElement(XMLEvent event, String elName) throws XMLStreamException {
+	protected boolean isStartingElement(XMLEvent event, String elName) {
 		boolean result = false;
 		boolean isStart = event.isStartElement();
 		if (isStart){
@@ -95,7 +93,6 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 		}
 		return result;
 	}
-
 
 	protected boolean isEndingElement(XMLEventReader reader, String elName) throws XMLStreamException {
 		XMLEvent next;
@@ -137,13 +134,6 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 			}
 	}
 
-
-	/**
-	 * @param elName
-	 * @param next
-	 * @param message
-	 * @param type
-	 */
 	private void fireSchemaConflictEvent(String expectedType, String expectedName, XMLEvent next) {
 		String message = "Schema conflict: expected %s '%s' but was %s ";
 		String eventString;

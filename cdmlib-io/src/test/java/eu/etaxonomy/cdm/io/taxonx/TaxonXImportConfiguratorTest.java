@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.taxonx;
 
 import static org.junit.Assert.assertNotNull;
@@ -29,15 +28,14 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @since 29.01.2009
- * @version 1.0
  */
 public class TaxonXImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
@@ -68,13 +66,6 @@ public class TaxonXImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	//	assertEquals("Number of TaxonNames should be 5", 5, nameService.count());
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

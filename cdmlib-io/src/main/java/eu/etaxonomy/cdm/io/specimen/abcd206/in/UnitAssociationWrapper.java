@@ -17,7 +17,6 @@ import org.w3c.dom.NodeList;
  * the parameters of the association.
  * @author pplitzner
  * @since Jun 24, 2015
- *
  */
 public class UnitAssociationWrapper {
 
@@ -29,7 +28,6 @@ public class UnitAssociationWrapper {
     public NodeList getAssociatedUnits() {
         return associatedUnits;
     }
-
     public void setAssociatedUnits(NodeList associatedUnits) {
         this.associatedUnits = associatedUnits;
     }
@@ -37,7 +35,6 @@ public class UnitAssociationWrapper {
     public String getAssociationType() {
         return associationType;
     }
-
     public void setAssociationType(String associationType) {
         this.associationType = associationType;
     }
@@ -45,23 +42,14 @@ public class UnitAssociationWrapper {
     public String getPrefix() {
         return prefix;
     }
-
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
-    /**
-     * @return the accesPoint
-     */
     public URI getAccesPoint() {
         return accesPoint;
     }
-
-    /**
-     * @param accesPoint the accesPoint to set
-     */
     public void setAccesPoint(URI accesPoint) {
         this.accesPoint = accesPoint;
     }
-
 }

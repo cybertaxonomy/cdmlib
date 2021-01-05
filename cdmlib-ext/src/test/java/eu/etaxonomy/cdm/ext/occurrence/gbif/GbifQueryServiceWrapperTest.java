@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 /**
  * @author pplitzner
  * @since 20.05.2014
- *
  */
 public class GbifQueryServiceWrapperTest {
 

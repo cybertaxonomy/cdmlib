@@ -24,10 +24,10 @@ import eu.etaxonomy.cdm.model.description.Character;
  *
  * @author pplitzner
  * @since Aug 28, 2019
- *
  */
 @Component("characterOwlImport")
-public class CharacterOwlImport extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
+public class CharacterOwlImport
+        extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;
 

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.common;
 
 import java.io.File;
@@ -58,13 +57,11 @@ import org.apache.log4j.Logger;
 /**
  * @author n.hoffmann
  * @since Sep 23, 2010
- * @version 1.0
  */
 public class UriUtils {
     private static final Logger logger = Logger.getLogger(UriUtils.class);
 
     protected static final String URI_IS_NOT_ABSOLUTE = "URI is not absolute (protocol is missing)";
-
 
     public enum HttpMethod{
         GET,
@@ -73,11 +70,6 @@ public class UriUtils {
 
     /**
      * see {@link #getInputStream(URI, Map)}
-     *
-     * @param uri
-     * @return
-     * @throws IOException
-     * @throws HttpException
      */
     public static InputStream getInputStream(URI uri) throws IOException, HttpException{
         return getInputStream(uri, null);
@@ -85,11 +77,6 @@ public class UriUtils {
 
     /**
      * Retrieves an {@link InputStream input stream} of the resource located at the given uri.
-     *
-     * @param uri
-     * @return
-     * @throws IOException
-     * @throws HttpException
      */
     public static InputStream getInputStream(URI uri, Map<String, String> requestHeaders) throws IOException, HttpException{
 
@@ -226,7 +213,7 @@ public class UriUtils {
      */
     public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         // Create an instance of HttpClient.
-        HttpClient  client = new DefaultHttpClient();
+        HttpClient client = new DefaultHttpClient();
 
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
@@ -239,7 +226,6 @@ public class UriUtils {
         } catch (NoSuchAlgorithmException e2) {
             throw new RuntimeException("Registration of ssl support failed", e2);
         }
-
 
         HttpUriRequest method;
         switch (httpMethod) {
@@ -267,7 +253,7 @@ public class UriUtils {
 
         //TODO  method.setFollowRedirects(followRedirects);
 
-        logger.debug("sending "+httpMethod+" request: " + uri);
+        if (logger.isDebugEnabled()){logger.debug("sending "+httpMethod+" request: " + uri);}
 
         return client.execute(method);
     }
@@ -295,7 +281,7 @@ public class UriUtils {
         }
 
         if(qparams == null){
-            qparams = new ArrayList<NameValuePair>(0);
+            qparams = new ArrayList<>(0);
         }
         String query = null;
         if(! qparams.isEmpty()){

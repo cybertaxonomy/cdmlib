@@ -97,9 +97,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
 
         importConfigurator = SDDImportConfigurator.NewInstance(uri, loadedDataSource);
         exportConfigurator = SDDExportConfigurator.NewInstance(loadedDataSource, exporturlStr);
-
     }
-
 
     @Test
     @Ignore
@@ -166,13 +164,6 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
         return dataSource;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

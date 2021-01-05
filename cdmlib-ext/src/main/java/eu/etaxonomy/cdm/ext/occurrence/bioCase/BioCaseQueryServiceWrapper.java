@@ -47,9 +47,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * It sends a {@link OccurenceQuery} via HTTP POST to a given provider
  * @author pplitzner
  * @since 13.09.2013
- *
  */
-
 @Service
 @Transactional(readOnly = true)
 public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{

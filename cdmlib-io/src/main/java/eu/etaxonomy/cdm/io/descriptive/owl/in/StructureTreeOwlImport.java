@@ -33,15 +33,12 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author pplitzner
  * @since Apr 24, 2019
- *
  */
 @Component("structureTreeOwlImport")
 public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;
-
-    static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(StructureTreeOwlImport.class);
-
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(StructureTreeOwlImport.class);
 
     @Override
     protected boolean doCheck(StructureTreeOwlImportState state) {
@@ -60,7 +57,7 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         while(iterator.hasNext()){
             Resource treeResource = iterator.next();
             UUID treeUuid = UUID.fromString(treeResource.getProperty(OwlUtil.propUuid).getString());
-            TermTree termTree = getTermTreeService().find(treeUuid);
+            TermTree<?> termTree = getTermTreeService().find(treeUuid);
             if(termTree==null){
                 String type = treeResource.getProperty(OwlUtil.propType).getString();
                 TermTree<Feature> featureTree = TermTree.NewInstance(TermType.getByKey(type));
@@ -97,9 +94,9 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
             // import term
             UUID termUuid = UUID.fromString(termResource.getProperty(OwlUtil.propUuid).getString());
             T term = (T)getTermService().find(termUuid);
-            if(term==null){
+            if(term == null){
                 term = (T)OwlImportUtil.createTerm(termResource, this, model, state);
-                term = (T) getTermService().save(term);
+                term = getTermService().save(term);
                 vocabulary.addTerm(term); // only add term if it does not already exist
             }
 
@@ -153,11 +150,8 @@ public class StructureTreeOwlImport extends CdmImportBase<StructureTreeOwlImport
         return featureState;
     }
 
-
-
     @Override
     protected boolean isIgnore(StructureTreeOwlImportState state) {
         return false;
     }
-
 }

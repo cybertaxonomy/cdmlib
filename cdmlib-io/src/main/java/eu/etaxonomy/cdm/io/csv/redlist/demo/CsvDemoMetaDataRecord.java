@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class CsvDemoMetaDataRecord  {
 	@SuppressWarnings("unused")
@@ -45,7 +44,6 @@ public class CsvDemoMetaDataRecord  {
 		this.fileLocation = fileLocation;
 		this.setRowType(rowType);
 	}
-
 
 	protected class FieldEntry{
 		int index;
