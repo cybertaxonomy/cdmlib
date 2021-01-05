@@ -77,7 +77,6 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		taxonConcept.setTitle("Lorem ipsum");
 		taxonConcept.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0,DateTimeZone.UTC));
 
-
 		Relation relation = new Relation();
 		relation.setResource(new URI("http://www.example.org/"));
 		taxonConcept.setRelation(relation);
@@ -117,10 +116,10 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		StringType englishDescription = new StringType();
 		englishDescription.setLang("en");
 		englishDescription.setValue("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tincidunt pretium quam, id tristique sem iaculis vitae. Vestibulum pharetra eros in ligula rutrum imperdiet. In lorem dui, cursus a suscipit in, pulvinar eget nisl. Phasellus ut nunc eu mauris adipiscing luctus non vel lorem. Suspendisse volutpat faucibus ante, nec bibendum libero consectetur sed. Nullam non posuere neque. Nulla egestas ullamcorper mauris nec tincidunt. Duis id nibh justo. Mauris vel felis et mi eleifend auctor a ac dui. Morbi in urna leo, eu varius lorem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi mollis nunc eget purus ullamcorper eget pulvinar sapien bibendum. Donec et velit augue, eu pretium mauris. Maecenas lorem leo, malesuada vitae tempor a, gravida quis dolor. Pellentesque lacus velit, sagittis quis posuere ac, rutrum a lacus. Cras dolor ligula, hendrerit at porta sed, posuere euismod mi. Sed sit amet velit turpis.");
-		Map<Object,StringType> hasContent = new HashMap<Object,StringType>();
+		Map<Object,StringType> hasContent = new HashMap<>();
 		hasContent.put(englishDescription.getValue(),englishDescription);
 		infoItem.setHasContent(hasContent);
-		Set<InfoItem> infoItems = new HashSet<InfoItem>();
+		Set<InfoItem> infoItems = new HashSet<>();
 		infoItems.add(infoItem);
 		speciesProfileModel.setHasInformation(infoItems);
 	}
@@ -135,7 +134,10 @@ public class RdfViewTest extends UnitilsJUnit4 {
 
 		String resource = "/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf";
 		System.out.println(new String(outputStream.toByteArray()));
-		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
+
+		XMLAssert.assertXMLEqual(
+		        new InputStreamReader(this.getClass().getResourceAsStream(resource)),
+		        new StringReader(new String(outputStream.toByteArray())));
 	}
 
 	@Test
@@ -155,18 +157,18 @@ public class RdfViewTest extends UnitilsJUnit4 {
 	@Test
 	public void testNameInformationRdf() throws Exception {
 
-		Map model = new HashMap<String,List<NameInformation>>();
-		List niList = new ArrayList();
+		Map<String,List<NameInformation>> model = new HashMap<>();
+		List<NameInformation> niList = new ArrayList<>();
 		NameInformation ni = new NameInformation();
 		ni.setRequest("64cf8cf8-f56a-4411-8f49-c3dc95ea257a");
 		ni.setResponse("Platalea leucorodia Linnaeus, 1758",
 				"Platalea leucorodia",
 				"Species",
-				new HashSet(),
+				new HashSet<>(),
 				null,
-				new HashSet(),
-				new HashSet(),
-				new HashSet());
+				new HashSet<>(),
+				new HashSet<>(),
+				new HashSet<>());
 		ni.getResponse().addToTaxonUuids("1a5bcb42-146f-42e5-9136-1b21d170163e");
 		niList.add(ni);
 		model.put("64cf8cf8-f56a-4411-8f49-c3dc95ea257a", niList);
@@ -184,7 +186,4 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		String resource = "/eu/etaxonomy/cdm/remote/view/NameInformationTest.rdf";
 		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
 	}
-
-
-
 }

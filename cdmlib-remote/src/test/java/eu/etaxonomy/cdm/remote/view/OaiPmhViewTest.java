@@ -79,7 +79,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
         XMLUnit.setIgnoreWhitespace(true);
 
-        model = new HashMap<String,Object>();
+        model = new HashMap<>();
         identifyView = new IdentifyView();
         identifyView.setMarshaller(marshaller);
 

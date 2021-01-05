@@ -106,11 +106,9 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 			representation.addRepresentationPart(part1);
 			dao.save(part1);
 			commit();
-
 		} catch (URISyntaxException e) {
 			Assert.fail("URI should be ok");
 		}
-
 	}
 
     @Override
