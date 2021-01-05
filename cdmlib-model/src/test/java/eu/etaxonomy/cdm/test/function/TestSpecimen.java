@@ -9,13 +9,13 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;

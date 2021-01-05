@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;

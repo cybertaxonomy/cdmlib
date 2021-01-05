@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.api.service.media;
 
 import java.awt.Point;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +17,7 @@ import java.util.regex.Matcher;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;

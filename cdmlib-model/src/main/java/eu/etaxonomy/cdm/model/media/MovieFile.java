@@ -9,18 +9,17 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import java.net.URI;
-
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author m.doering

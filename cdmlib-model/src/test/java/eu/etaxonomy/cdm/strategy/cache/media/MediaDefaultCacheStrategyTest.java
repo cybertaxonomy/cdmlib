@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.media;
 
-
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.junit.Assert;
@@ -17,6 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.ext.openurl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +19,7 @@ import java.util.Map;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.reference.Reference;

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 import java.util.Map;
 

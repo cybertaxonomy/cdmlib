@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,7 +34,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -78,6 +80,7 @@ public class Contact implements Serializable, Cloneable {
 	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
+    @FieldBridge(impl = UriBridge.class)
 	@ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "contact_urls_element" /*, length=330  */)  //length >255 does not work in InnoDB AUD tables for Key length of (REV, id, url) key
 	private final List<String> urls = new ArrayList<>();

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.validation;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
@@ -23,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;

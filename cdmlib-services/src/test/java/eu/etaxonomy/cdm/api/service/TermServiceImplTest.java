@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,6 +25,7 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;

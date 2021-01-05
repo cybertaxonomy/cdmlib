@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 
 import javax.xml.bind.JAXBException;

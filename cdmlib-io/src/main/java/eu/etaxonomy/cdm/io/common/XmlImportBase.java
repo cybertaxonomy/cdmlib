@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.NoSuchElementException;
 
 import javax.xml.namespace.QName;
@@ -28,6 +27,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 
@@ -123,7 +123,7 @@ public abstract class XmlImportBase<CONFIG extends XmlImportConfiguratorBase<STA
 	protected InputStream getInputStream(CONFIG config) {
 			try {
 				URI uri = config.getSource();
-				File file = new File(uri);
+				File file = new File(uri.getJavaUri());
 				InputStream is = new FileInputStream(file);
 				return is;
 			}catch (Exception e) {

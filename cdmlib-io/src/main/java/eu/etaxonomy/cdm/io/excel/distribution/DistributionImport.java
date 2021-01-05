@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.io.excel.distribution;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

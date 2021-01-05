@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.location;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +36,7 @@ import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;

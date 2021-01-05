@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;

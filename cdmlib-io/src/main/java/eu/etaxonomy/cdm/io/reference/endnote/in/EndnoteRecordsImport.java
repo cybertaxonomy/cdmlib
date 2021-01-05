@@ -15,7 +15,7 @@
  */
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;

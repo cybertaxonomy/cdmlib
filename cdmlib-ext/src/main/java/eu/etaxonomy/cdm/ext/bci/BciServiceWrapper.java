@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;

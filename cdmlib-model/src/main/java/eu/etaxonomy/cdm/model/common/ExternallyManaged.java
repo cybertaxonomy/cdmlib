@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
-import java.net.URI;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -28,8 +27,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -73,6 +75,7 @@ public class ExternallyManaged implements Cloneable, Serializable, ICheckEmpty{
     //Actionable link on e.g. on a webservice
     @XmlElement(name = "ExternalLink")
     @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = UriBridge.class)
     @Type(type="uriUserType")
     @Column(name="externalLink")
     private URI externalLink;

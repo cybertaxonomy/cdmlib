@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

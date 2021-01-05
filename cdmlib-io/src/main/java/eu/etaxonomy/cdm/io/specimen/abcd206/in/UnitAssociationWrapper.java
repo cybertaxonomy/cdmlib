@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
-import java.net.URI;
-
 import org.w3c.dom.NodeList;
+
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * Wrapper class which hold the list of associated units and

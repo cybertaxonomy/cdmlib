@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;

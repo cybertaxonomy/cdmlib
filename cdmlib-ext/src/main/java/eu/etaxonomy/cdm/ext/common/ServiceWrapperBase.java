@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.ext.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.UriUtils.HttpMethod;
 import eu.etaxonomy.cdm.model.common.CdmBase;

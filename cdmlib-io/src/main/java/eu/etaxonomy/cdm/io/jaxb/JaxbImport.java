@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -85,7 +85,7 @@ public class JaxbImport
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
 			logger.info("Unmarshalling " + urlFileName);
-			File file = new File(uri);
+			File file = new File(uri.getJavaUri());
 			logger.debug("Absolute path: " + file.getAbsolutePath());
 			dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, file);
 

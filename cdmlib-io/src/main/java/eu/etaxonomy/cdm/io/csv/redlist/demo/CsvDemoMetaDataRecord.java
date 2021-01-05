@@ -8,11 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author a.mueller

@@ -8,8 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.common.mapping.berlinModel;
 
-import java.net.URI;
-
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 
 /**

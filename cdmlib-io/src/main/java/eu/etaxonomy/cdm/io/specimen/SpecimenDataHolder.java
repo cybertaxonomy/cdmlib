@@ -8,12 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.specimen;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Identification;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 

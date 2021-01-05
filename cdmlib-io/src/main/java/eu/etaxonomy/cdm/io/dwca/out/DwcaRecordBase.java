@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +22,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;

@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.term;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;

@@ -9,8 +9,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import java.beans.Transient;
-import java.net.URI;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;

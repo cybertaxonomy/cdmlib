@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.media;
 
-import java.net.URI;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -29,7 +27,10 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
@@ -61,6 +62,7 @@ public class Rights extends LanguageStringBase {
 	//external location of copyright text
 	@XmlElement(name = "URI")
 	@Field(analyze = Analyze.NO)
+    @FieldBridge(impl = UriBridge.class)
 	@Type(type="uriUserType")
 	private URI uri;
 

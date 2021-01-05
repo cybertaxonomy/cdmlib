@@ -8,8 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.net.URI;
-
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 

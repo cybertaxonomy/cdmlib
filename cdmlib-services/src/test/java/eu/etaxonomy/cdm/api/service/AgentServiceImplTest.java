@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -25,6 +24,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;

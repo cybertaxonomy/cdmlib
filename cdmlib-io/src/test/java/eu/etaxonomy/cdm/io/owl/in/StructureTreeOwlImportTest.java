@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.descriptive.owl.in.StructureTreeOwlImportConfigurator;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -86,7 +86,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
     @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testImportStructureTree() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/test_structures.owl");
-        URI uri = url.toURI();
+        URI uri = URI.fromUrl(url);
         assertNotNull(url);
         StructureTreeOwlImportConfigurator configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
 
@@ -173,7 +173,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
     @DataSet(value="/eu/etaxonomy/cdm/database/BlankDataSet.xml")
     public void testImportPropertyTreeAndVocabulary() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/owl/in/properties.owl");
-        URI uri = url.toURI();
+        URI uri = URI.fromUrl(url);
         assertNotNull(url);
         StructureTreeOwlImportConfigurator configurator = StructureTreeOwlImportConfigurator.NewInstance(uri);
 

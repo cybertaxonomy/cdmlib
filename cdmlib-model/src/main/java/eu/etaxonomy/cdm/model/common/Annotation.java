@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +29,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 /**

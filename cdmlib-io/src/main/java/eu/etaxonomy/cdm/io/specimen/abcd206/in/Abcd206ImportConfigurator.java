@@ -9,10 +9,10 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.InputStream;
-import java.net.URI;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;

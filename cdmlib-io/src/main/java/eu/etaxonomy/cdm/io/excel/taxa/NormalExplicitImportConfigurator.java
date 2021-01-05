@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;

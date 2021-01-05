@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.in.CdmTcsXmlImport;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
@@ -44,7 +45,7 @@ public class CdmTcsXmlImportTest extends CdmTransactionalIntegrationTest {
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = TcsXmlImportConfigurator.NewInstance(url.toURI(), null);
+		configurator = TcsXmlImportConfigurator.NewInstance(URI.fromUrl(url), null);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 

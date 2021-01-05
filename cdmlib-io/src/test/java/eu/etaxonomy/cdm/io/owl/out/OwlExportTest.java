@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.owl.out;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;

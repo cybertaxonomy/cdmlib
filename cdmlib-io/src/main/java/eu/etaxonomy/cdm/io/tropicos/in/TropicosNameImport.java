@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.tropicos.in;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;

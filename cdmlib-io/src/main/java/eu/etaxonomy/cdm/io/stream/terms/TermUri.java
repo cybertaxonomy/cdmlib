@@ -8,10 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.stream.terms;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author a.mueller

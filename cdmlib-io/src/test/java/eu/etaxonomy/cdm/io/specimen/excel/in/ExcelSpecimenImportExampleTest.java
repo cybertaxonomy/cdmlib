@@ -29,6 +29,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -63,7 +64,7 @@ public class ExcelSpecimenImportExampleTest extends
 			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls";
 			URL url = this.getClass().getResource(inputFile);
 			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
+			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(URI.fromUrl(url), null,false);
 			configurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
 			assertNotNull("Configurator could not be created", configurator);
 		} catch (URISyntaxException e) {
@@ -76,7 +77,7 @@ public class ExcelSpecimenImportExampleTest extends
 			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx";
 			URL url = this.getClass().getResource(inputFile);
 			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-			configuratorXslx = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
+			configuratorXslx = SpecimenCdmExcelImportConfigurator.NewInstance(URI.fromUrl(url), null,false);
 			configuratorXslx.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
 			assertNotNull("Configurator could not be created", configurator);
 		} catch (URISyntaxException e) {

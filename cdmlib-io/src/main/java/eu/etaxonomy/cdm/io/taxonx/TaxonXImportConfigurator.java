@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.io.InputStream;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;

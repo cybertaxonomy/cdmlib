@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;

@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.strategy.match;
 
-import java.net.URI;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -17,6 +15,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;

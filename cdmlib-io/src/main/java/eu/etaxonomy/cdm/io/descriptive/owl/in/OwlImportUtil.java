@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,6 +21,7 @@ import com.hp.hpl.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;

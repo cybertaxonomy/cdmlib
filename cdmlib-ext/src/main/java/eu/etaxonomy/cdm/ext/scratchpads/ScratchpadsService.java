@@ -14,7 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
@@ -28,6 +27,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 
 
@@ -52,10 +52,10 @@ public class ScratchpadsService {
 
 		try {
 			URL url = new URL(SCRATCHPADS_JSON_ENDPOINT);
-			boolean isAvailable = UriUtils.isServiceAvailable(url.toURI());
+			boolean isAvailable = UriUtils.isServiceAvailable(URI.fromUrl(url));
 
 			if (isAvailable) {
-				inputStream = UriUtils.getInputStream(url.toURI());
+				inputStream = UriUtils.getInputStream(URI.fromUrl(url));
 			}
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"), 8);
@@ -85,7 +85,7 @@ public class ScratchpadsService {
 					if (fieldWebsite.startsWith("http")) {
 
 						url = new URL(fieldWebsite + "/dwca.zip");
-						URI uri = url.toURI();
+						URI uri = URI.fromUrl(url);
 						isAvailable = UriUtils.isServiceAvailable(uri);
 						logger.debug("Is " + fieldWebsite + " available :" + isAvailable);
 
@@ -117,8 +117,7 @@ public class ScratchpadsService {
 								logger.debug("There is a dwca " + websiteName);
 
 								try {
-									inputStream = UriUtils.getInputStream(url.toURI());
-
+									inputStream = UriUtils.getInputStream(URI.fromUrl(url));
 									num++;
 									if (inputStream != null) {
 										copyDwcaZip(inputStream, websiteName);

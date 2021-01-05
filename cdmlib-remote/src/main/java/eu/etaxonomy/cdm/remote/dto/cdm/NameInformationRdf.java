@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.remote.dto.cdm;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Iterator;

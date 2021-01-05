@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.specimen;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

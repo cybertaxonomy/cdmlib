@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.term;
 
-import java.net.URI;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -26,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

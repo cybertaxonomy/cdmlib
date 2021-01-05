@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -51,6 +50,7 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;

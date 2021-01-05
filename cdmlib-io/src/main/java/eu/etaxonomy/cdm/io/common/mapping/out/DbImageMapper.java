@@ -8,13 +8,13 @@
 */
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
-import java.net.URI;
 import java.sql.Types;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.TextData;

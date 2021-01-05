@@ -10,11 +10,11 @@ package eu.etaxonomy.cdm.ext.common;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

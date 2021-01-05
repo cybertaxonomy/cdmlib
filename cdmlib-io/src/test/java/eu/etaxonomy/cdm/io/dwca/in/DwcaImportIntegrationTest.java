@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.dwca.in;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -23,6 +22,7 @@ import org.unitils.database.annotations.Transactional;
 import org.unitils.database.util.TransactionMode;
 import org.unitils.spring.annotation.SpringBeanByName;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -47,10 +47,10 @@ public class DwcaImportIntegrationTest  extends CdmTransactionalIntegrationTest{
 	public void setUp() throws Exception {
 		String inputFile = "/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip";
 		URL url = this.getClass().getResource(inputFile);
-		uri = url.toURI();
+		uri = URI.fromUrl(url);
 		assertNotNull("URI for the test file '" + inputFile + "' does not exist", uri);
 		try {
-			configurator = DwcaImportConfigurator.NewInstance(url.toURI(), null);
+			configurator = DwcaImportConfigurator.NewInstance(URI.fromUrl(url), null);
 			configurator.addObserver(new LoggingIoObserver());
 		} catch (URISyntaxException e) {
 			e.printStackTrace();

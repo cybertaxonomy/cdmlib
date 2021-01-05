@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -20,6 +19,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.api.service.TermServiceImpl.TermMovePosition;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;

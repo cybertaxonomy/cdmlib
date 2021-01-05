@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.facade;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +25,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;

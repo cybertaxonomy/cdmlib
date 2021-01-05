@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,6 +42,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;

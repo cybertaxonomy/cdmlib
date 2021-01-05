@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.List;
 import java.util.UUID;
 

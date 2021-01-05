@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +23,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -109,7 +109,7 @@ public class SpecimenImportReport {
         PrintStream out;
         if(reportUri != null){
             try {
-                out = new PrintStream(new File(reportUri));
+                out = new PrintStream(new File(reportUri.getJavaUri()));
             } catch (FileNotFoundException e) {
                 logger.warn("Report file could not be found.");
                 out = System.out;

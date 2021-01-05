@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
@@ -38,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
@@ -102,7 +102,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
             importConfigurator.setGetSiblings(false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -151,7 +151,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -176,7 +176,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -205,7 +205,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -350,7 +350,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -406,7 +406,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -472,7 +472,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -527,7 +527,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -587,7 +587,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -640,7 +640,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();

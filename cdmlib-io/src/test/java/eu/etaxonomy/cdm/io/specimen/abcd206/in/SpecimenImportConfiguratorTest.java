@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
@@ -40,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -107,7 +107,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
         try {
-            configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            configurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -119,7 +119,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		URL url2 = this.getClass().getResource(inputFile2);
 		assertNotNull("URL for the test file '" + inputFile2 + "' does not exist", url2);
 		try {
-			configurator2 = Abcd206ImportConfigurator.NewInstance(url2.toURI(), null,false);
+			configurator2 = Abcd206ImportConfigurator.NewInstance(new URI(url2), null,false);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();
@@ -202,7 +202,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -231,7 +231,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -268,7 +268,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -311,7 +311,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -331,7 +331,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -356,7 +356,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -381,7 +381,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -431,7 +431,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
             importConfigurator.setDnaSoure(null);
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -461,7 +461,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
             importConfigurator.setDnaSoure(URI.create("https://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=DNA_Bank"));
 
         } catch (URISyntaxException e) {
@@ -500,7 +500,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	        importConfigurator.setDnaSoure(null);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
@@ -614,7 +614,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	    Abcd206ImportConfigurator importConfigurator = null;
 	    try {
-	        importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+	        importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
 	    } catch (URISyntaxException e) {
 	        e.printStackTrace();
 	        Assert.fail();
@@ -662,7 +662,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();
@@ -716,7 +716,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
         Abcd206ImportConfigurator importConfigurator = null;
         try {
-            importConfigurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+            importConfigurator = Abcd206ImportConfigurator.NewInstance(new URI(url), null,false);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail();

@@ -1,11 +1,11 @@
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
 import org.dozer.ConfigurableCustomConverter;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 
 /**

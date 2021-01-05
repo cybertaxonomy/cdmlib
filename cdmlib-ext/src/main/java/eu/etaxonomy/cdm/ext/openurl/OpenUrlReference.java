@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.ext.openurl;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlServiceWrapper.ReferenceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 

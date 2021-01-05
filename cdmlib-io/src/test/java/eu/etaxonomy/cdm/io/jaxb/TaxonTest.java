@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 import org.junit.Test;
 

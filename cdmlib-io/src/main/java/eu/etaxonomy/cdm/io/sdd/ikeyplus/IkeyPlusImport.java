@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.sdd.ikeyplus;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;

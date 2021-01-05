@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.net.URI;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
@@ -19,6 +18,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
 import eu.etaxonomy.cdm.model.description.Feature;

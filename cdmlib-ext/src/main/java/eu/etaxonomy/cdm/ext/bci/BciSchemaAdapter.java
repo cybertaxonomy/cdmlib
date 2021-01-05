@@ -10,8 +10,6 @@ package eu.etaxonomy.cdm.ext.bci;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +21,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;

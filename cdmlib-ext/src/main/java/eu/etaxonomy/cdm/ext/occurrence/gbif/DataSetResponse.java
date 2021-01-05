@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * Wrapper object for the parameters that are parsed from a GBIF dataset query

@@ -8,9 +8,8 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
-import java.net.URI;
-
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.DataResponse;
 
 /**

@@ -1,7 +1,7 @@
 package eu.etaxonomy.cdm.io.stream.excel;
 
 import java.io.InputStream;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 import org.apache.log4j.Logger;
 

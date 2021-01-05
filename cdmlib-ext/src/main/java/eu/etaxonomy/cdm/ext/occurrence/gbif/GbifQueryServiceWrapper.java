@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Collection;
@@ -19,6 +18,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.utils.URIBuilder;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -65,7 +65,7 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
 
             if(UriUtils.isServiceAvailable(uri, 10000)){
                 logger.info("Querying GBIF service with " + builder.build());
-                return GbifJsonOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
+                return GbifJsonOccurrenceParser.parseJsonRecords(executeHttpGet(new URI(builder.build()), null));
             }
             else{
                 logger.error("Querying " + uri + " got a timeout!");

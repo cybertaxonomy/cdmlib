@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;

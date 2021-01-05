@@ -453,13 +453,13 @@ public class ManifestComposer {
                     }
                     if(right.getUri() != null){
                         if(!licenseAbbrev.isEmpty()) {
-                            licenseAbbrev =  htmlLink(right.getUri(), licenseAbbrev);
+                            licenseAbbrev =  htmlLink(right.getUri().getJavaUri(), licenseAbbrev);
                         } else if(!licenseText.isEmpty()) {
-                            licenseText =  htmlLink(right.getUri(), licenseText);
+                            licenseText =  htmlLink(right.getUri().getJavaUri(), licenseText);
                         } else {
-                            licenseText =  htmlLink(right.getUri(), right.getUri().toString());
+                            licenseText =  htmlLink(right.getUri().getJavaUri(), right.getUri().toString());
                         }
-                        license.add(right.getUri());
+                        license.add(right.getUri().getJavaUri());
                     }
                     rightText = licenseAbbrev + (licenseText.isEmpty() ? "" : " ") + licenseText;
                 }

@@ -8,7 +8,7 @@
 
 package eu.etaxonomy.cdm.remote.json.processor.value;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;

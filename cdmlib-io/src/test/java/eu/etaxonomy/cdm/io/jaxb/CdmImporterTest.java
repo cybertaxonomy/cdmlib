@@ -33,6 +33,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class CdmImporterTest extends CdmTransactionalIntegrationTest{
@@ -45,7 +46,7 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	@Before
 	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest-input.xml");
-		configurator = JaxbImportConfigurator.NewInstance(url.toURI(),null);
+		configurator = JaxbImportConfigurator.NewInstance(URI.fromUrl(url),null);
 	}
 
 	@Test

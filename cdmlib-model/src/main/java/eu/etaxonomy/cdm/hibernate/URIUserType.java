@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.hibernate;
 
-
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,6 +20,8 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * This class maps java.net.URI to Types.CLOB

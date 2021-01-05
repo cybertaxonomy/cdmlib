@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.net.URI;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;

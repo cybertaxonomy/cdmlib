@@ -1,6 +1,6 @@
 package eu.etaxonomy.cdm.io.taxonx2013;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.Map;
 
 import org.apache.log4j.Logger;

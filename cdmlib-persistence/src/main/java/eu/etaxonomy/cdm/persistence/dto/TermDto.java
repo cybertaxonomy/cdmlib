@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;

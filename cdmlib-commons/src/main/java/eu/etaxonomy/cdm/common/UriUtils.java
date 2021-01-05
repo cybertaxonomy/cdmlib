@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -93,7 +92,7 @@ public class UriUtils {
                 throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
             }
         }else if (uri.getScheme().equals("file")){
-            File file = new File(uri);
+            File file = new File(uri.getJavaUri());
             return new FileInputStream(file);
         }else{
             throw new RuntimeException("Protocol not handled yet: " + uri.getScheme());
@@ -140,7 +139,7 @@ public class UriUtils {
                 throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
             }
         }else if ("file".equals(uri.getScheme())){
-            File file = new File(uri);
+            File file = new File(uri.getJavaUri());
             return file.length();
         }else{
             throw new RuntimeException("Protocol not handled yet: " + uri.getScheme());
@@ -230,17 +229,17 @@ public class UriUtils {
         HttpUriRequest method;
         switch (httpMethod) {
         case GET:
-            method = new HttpGet(uri);
+            method = new HttpGet(uri.getJavaUri());
             break;
         case POST:
-            HttpPost httpPost = new HttpPost(uri);
+            HttpPost httpPost = new HttpPost(uri.getJavaUri());
             if(entity!=null){
                 httpPost.setEntity(entity);
             }
             method = httpPost;
             break;
         default:
-            method = new HttpPost(uri);
+            method = new HttpPost(uri.getJavaUri());
             break;
         }
 
@@ -295,7 +294,7 @@ public class UriUtils {
         uriBuilder.setPath(path);
         uriBuilder.setQuery(query);
         uriBuilder.setFragment(fragment);
-        return uriBuilder.build();
+        return new URI(uriBuilder.build());
     }
 
     /**
@@ -356,7 +355,7 @@ public class UriUtils {
 
         //Http
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet(serviceUri);
+        HttpGet httpget = new HttpGet(serviceUri.getJavaUri());
 
 
         if(timeout!=null){
@@ -435,7 +434,7 @@ public class UriUtils {
         try {
             // this is the step that can fail, and so
             // it should be this step that should be fixed
-            uri = url.toURI();
+            uri = new URI(url);
         } catch (URISyntaxException e) {
             // OK if we are here, then obviously the URL did
             // not comply with RFC 2396. This can only
@@ -454,7 +453,7 @@ public class UriUtils {
                 throw new IllegalArgumentException("broken URL: " + url);
             }
         }
-        return new File(uri);
+        return new File(uri.getJavaUri());
     }
 
     public static boolean checkServiceAvailable(String host, int port){

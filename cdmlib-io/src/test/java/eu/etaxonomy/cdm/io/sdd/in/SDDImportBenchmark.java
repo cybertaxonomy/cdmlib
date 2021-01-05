@@ -25,6 +25,7 @@ import com.carrotsearch.junitbenchmarks.BenchmarkOptions;
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -49,7 +50,7 @@ public class SDDImportBenchmark extends CdmTransactionalIntegrationTest {
     public void setUp() throws URISyntaxException {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/Cichorieae-DA.sdd.xml");
         Assert.assertNotNull(url);
-        configurator = SDDImportConfigurator.NewInstance(url.toURI(), null);
+        configurator = SDDImportConfigurator.NewInstance(URI.fromUrl(url), null);
     }
 
     @BenchmarkOptions(benchmarkRounds = 1, warmupRounds = 0)

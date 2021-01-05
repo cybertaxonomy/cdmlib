@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportStateBase;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 

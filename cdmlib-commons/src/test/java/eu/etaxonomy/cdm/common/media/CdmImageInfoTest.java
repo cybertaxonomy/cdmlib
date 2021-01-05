@@ -6,7 +6,6 @@ package eu.etaxonomy.cdm.common.media;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
@@ -38,10 +38,10 @@ public class CdmImageInfoTest {
     @Before
     public void setUp() throws Exception {
         URL jpegUrl = CdmImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.jpg");
-        jpegUri = jpegUrl.toURI();
+        jpegUri = new URI(jpegUrl);
 
         URL tiffUrl = CdmImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.tif");
-        tiffUri = tiffUrl.toURI();
+        tiffUri = new URI(tiffUrl);
 
         remotePngUri = URI.create("https://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
     }

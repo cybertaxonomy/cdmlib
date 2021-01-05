@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.fact.categorical.in;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;

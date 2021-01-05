@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.dwca.in;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -19,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
 import eu.etaxonomy.cdm.io.stream.CsvStream;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
@@ -39,7 +39,7 @@ public class DwcaZipToStreamConverterTest {
 	public void setUp() throws Exception {
 		String inputFile = "/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest-input.zip";
 		URL url = this.getClass().getResource(inputFile);
-		uri = url.toURI();
+		uri = URI.fromUrl(url);
 		assertNotNull("URI for the test file '" + inputFile + "' does not exist", uri);
 		converter = DwcaZipToStreamConverter.NewInstance(uri);
 		assertNotNull("Converter must be created",converter);

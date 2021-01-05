@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.distribution.excelupdate;
 
-import java.net.URI;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;

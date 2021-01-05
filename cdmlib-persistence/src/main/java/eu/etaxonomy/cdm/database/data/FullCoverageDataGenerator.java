@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.database.data;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +19,7 @@ import org.joda.time.DateTime;
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
@@ -22,6 +21,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationPartDao;

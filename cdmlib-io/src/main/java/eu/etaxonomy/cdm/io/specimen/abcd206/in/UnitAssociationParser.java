@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 

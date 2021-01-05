@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,9 +34,12 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -69,8 +71,9 @@ public class TermVocabulary<T extends DefinedTermBase>
 	// Software can go and grap these terms incl. labels and description.
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
-	@Type(type="uriUserType")
 	@Field(analyze = Analyze.NO)
+    @FieldBridge(impl = UriBridge.class)
+	@Type(type="uriUserType")
 	private URI termSourceUri;
 
 	@XmlElementWrapper(name = "Terms")

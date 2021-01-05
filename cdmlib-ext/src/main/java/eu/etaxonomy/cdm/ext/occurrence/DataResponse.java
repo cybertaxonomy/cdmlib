@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author k.luther

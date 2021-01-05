@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.dto.tdwg;
 
-import java.net.URI;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -19,6 +18,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.LinkType;

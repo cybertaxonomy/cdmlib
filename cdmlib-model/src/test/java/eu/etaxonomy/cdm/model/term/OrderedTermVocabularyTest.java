@@ -13,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.URI;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -21,6 +20,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class OrderedTermVocabularyTest extends EntityTestBase {

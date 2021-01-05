@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +18,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.format.CdmFormatterFactory;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
 import eu.etaxonomy.cdm.format.description.DefaultCategoricalDescriptionBuilder;

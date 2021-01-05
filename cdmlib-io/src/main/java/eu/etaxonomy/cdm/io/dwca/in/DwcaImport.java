@@ -8,11 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import java.net.URI;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.stream.CsvStream;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;

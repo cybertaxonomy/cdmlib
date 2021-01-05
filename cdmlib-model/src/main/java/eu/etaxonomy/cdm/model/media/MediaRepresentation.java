@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.media;
 
 
 import java.lang.reflect.Constructor;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +36,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**

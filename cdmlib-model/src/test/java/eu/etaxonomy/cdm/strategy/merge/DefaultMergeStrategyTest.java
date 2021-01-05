@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.strategy.merge;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -22,6 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;

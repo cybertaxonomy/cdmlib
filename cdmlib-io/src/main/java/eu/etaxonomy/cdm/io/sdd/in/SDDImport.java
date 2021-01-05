@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
@@ -1599,8 +1599,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							try{
 								URL url = new URL(href);
 
-								imageMetaData = CdmImageInfo.NewInstance(url.toURI(), 0);
-								image = ImageFile.NewInstance(url.toURI(), null, imageMetaData);
+								imageMetaData = CdmImageInfo.NewInstance(URI.fromUrl(url), 0);
+								image = ImageFile.NewInstance(URI.fromUrl(url), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
 							} catch (IOException ioe) {
@@ -1613,7 +1613,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
 							imageMetaData = CdmImageInfo.NewInstance(new URI(fi), 0); //file
-							image = ImageFile.NewInstance(file.toURI(), null, imageMetaData);
+							image = ImageFile.NewInstance(URI.fromFile(file), null, imageMetaData);
 						}
 						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 						representation.addRepresentationPart(image);

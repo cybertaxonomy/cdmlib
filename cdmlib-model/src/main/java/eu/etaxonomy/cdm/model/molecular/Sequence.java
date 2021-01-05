@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,6 +38,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.Reference;

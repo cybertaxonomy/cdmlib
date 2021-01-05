@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.term;
 
 import java.lang.reflect.Constructor;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +46,7 @@ import org.hibernate.search.annotations.ClassBridge;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.AnnotationType;

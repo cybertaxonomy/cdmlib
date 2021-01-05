@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -62,6 +61,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;

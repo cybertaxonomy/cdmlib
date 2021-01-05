@@ -9,11 +9,11 @@
 
 package eu.etaxonomy.cdm.io.common.mapping.out;
 
-import java.net.URI;
 import java.sql.Types;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 

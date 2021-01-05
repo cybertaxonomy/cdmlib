@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.InputStreamReader;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 import org.junit.Assert;
 import org.junit.Test;

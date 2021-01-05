@@ -9,11 +9,11 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SequenceString;

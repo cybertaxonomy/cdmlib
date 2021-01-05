@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +38,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
