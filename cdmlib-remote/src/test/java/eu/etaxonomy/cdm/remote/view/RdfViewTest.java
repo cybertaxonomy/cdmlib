@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,6 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem;
@@ -125,7 +125,6 @@ public class RdfViewTest extends UnitilsJUnit4 {
 	}
 
 	@Test
-	@Ignore
 	public void testMarshalRdf() throws Exception {
 		rdf.addThing(taxonConcept);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

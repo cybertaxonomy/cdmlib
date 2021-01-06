@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.remote.dto.tdwg.voc;
 
 import java.io.Serializable;
-import java.net.URI;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,13 +20,12 @@ import javax.xml.bind.annotation.XmlType;
 public abstract class LinkType {
 
 	@XmlAttribute(namespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
-    protected URI resource;
+    protected java.net.URI resource;
 
 	public Serializable getResource() {
 		return resource;
 	}
-
-    public void setResource(eu.etaxonomy.cdm.common.URI resource) {
-        this.resource = resource.getJavaUri();
+    public void setResource(java.net.URI resource) {
+        this.resource = resource;
     }
 }
