@@ -33,7 +33,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem;
-import eu.etaxonomy.cdm.remote.dto.tdwg.voc.PublicationCitation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.StringType;
@@ -80,7 +79,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		Relation relation = new Relation();
 		relation.setResource(new URI("http://www.example.org/"));
 		taxonConcept.setRelation(relation);
-		PublicationCitation publicationCitation = new PublicationCitation();
+//		PublicationCitation publicationCitation = new PublicationCitation();
 		taxonConcept.setPublishedIn("Lorem ipsum dolor");
 
 		Team team = new Team();
@@ -90,7 +89,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 
 		TaxonRelationshipTerm taxonRelationshipTerm = new TaxonRelationshipTerm();
 		taxonRelationshipTerm.setIdentifier(new URI("http://rs.e-taxonomy.eu/voc/TaxonRelationshipTerm.rdf"));
-		Set<Relationship> relationships = new HashSet<Relationship>();
+		Set<Relationship> relationships = new HashSet<>();
 		Relationship relationship = new Relationship();
 		relationship.setRelationshipCategory(taxonRelationshipTerm);
 		TaxonConcept t = new TaxonConcept();
@@ -106,7 +105,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		speciesProfileModel1.setIdentifier(new URI("urn:lsid:example.org:descriptions:1"));
 		speciesProfileModel1.setTitle("Description of Aus aus");
 
-		Set<SpeciesProfileModel> speciesProfileModels = new HashSet<SpeciesProfileModel>();
+		Set<SpeciesProfileModel> speciesProfileModels = new HashSet<>();
 		speciesProfileModels.add(speciesProfileModel1);
 		taxonConcept.setDescribedBy(speciesProfileModels);
 		rdf = new Rdf();
