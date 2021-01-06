@@ -24,9 +24,9 @@ import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 import eu.etaxonomy.cdm.common.URI;
 
 /**
- * This class maps java.net.URI to Types.CLOB
- * @author a.mueller
+ * This class maps eu.etaxonomy.cdm.common.URI to Types.CLOB
  *
+ * @author a.mueller
  */
 public class URIUserType extends AbstractUserType implements UserType {
 	private static final long serialVersionUID = -5825017496962569105L;
