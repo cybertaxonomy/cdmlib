@@ -119,6 +119,10 @@ public class URI
         return javaUri;
     }
 
+    public File toFile(){
+        return new File(javaUri);
+    }
+
 //******************************** Wrapper methods *********************/
 
     public URL toURL() throws MalformedURLException{
