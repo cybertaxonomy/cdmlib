@@ -22,7 +22,6 @@ import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.oxm.Marshaller;
 import org.unitils.UnitilsJUnit4;
@@ -147,12 +146,12 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		marshaller.marshal(rdf, new StreamResult(writer));
 		writer.close();
 
+		//TODO is this not yet implemented or why is it commented (uncommenting results in diff error)
 //		String resource = "/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf";
 //		System.out.println(new String(outputStream.toByteArray()));
 //		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
 	}
 
-	@Ignore
 	@Test
 	public void testNameInformationRdf() throws Exception {
 
