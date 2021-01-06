@@ -79,6 +79,10 @@ public class URI
         javaUri = new java.net.URI(protocol, userInfo, host, port, path, query, ref);
     }
 
+    public URI(String scheme, String authority, String path, String query, String fragment) throws URISyntaxException{
+        javaUri = new java.net.URI(scheme, authority, path, query, fragment);
+    }
+
 //************************************ GETTER ***********************************/
 
     public java.net.URI getJavaUri(){
