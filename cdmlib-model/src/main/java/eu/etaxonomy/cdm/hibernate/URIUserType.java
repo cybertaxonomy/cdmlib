@@ -65,13 +65,13 @@ public class URIUserType extends AbstractUserType implements UserType {
 	@Override
 	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
 			throws HibernateException, SQLException {
-		if (value == null) {
-          StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
-      } else {
-    	  URI uri = (URI) value;
-          StandardBasicTypes.STRING.nullSafeSet(statement, uri.toString(), index, session);
-      }
-    }
+	    if (value == null) {
+		    StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
+        } else {
+            URI uri = (URI) value;
+            StandardBasicTypes.STRING.nullSafeSet(statement, uri.toString(), index, session);
+        }
+	}
 
     /**
      * @param value value being copied

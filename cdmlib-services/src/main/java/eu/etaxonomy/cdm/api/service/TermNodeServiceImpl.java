@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -257,8 +256,6 @@ public class TermNodeServiceImpl
         return result;
     }
 
-
-
     @Override
     public UpdateResult saveCharacterNodeDtoList(List<CharacterNodeDto> dtos){
         MergeResult<TermNode> mergeResult;
@@ -268,7 +265,6 @@ public class TermNodeServiceImpl
         dtos.stream().forEach(dto -> nodeUuids.add(dto.getUuid()));
         List<TermNode> nodes = dao.list(nodeUuids, null, 0, null, null);
         //check all attributes for changes and adapt
-        Iterator<CharacterNodeDto> dtoIterator = dtos.iterator();
         for (TermNode<Character> node: nodes){
             for (CharacterNodeDto dto: dtos){
     //            TermNodeDto dto = dtoIterator.next();
@@ -323,7 +319,6 @@ public class TermNodeServiceImpl
                         for (Representation rep: deleteRepresentations){
                             character.removeRepresentation(rep);
                         }
-
                     }
 
 //                  structural modifier
@@ -359,7 +354,7 @@ public class TermNodeServiceImpl
                     if (!uuids.isEmpty()){
                         terms = termService.load(uuids, null);
                         Set<StatisticalMeasure> statisticalMeasures = new HashSet<>();
-                        for (DefinedTermBase term: terms){
+                        for (DefinedTermBase<?> term: terms){
                             if (term instanceof StatisticalMeasure){
                                 statisticalMeasures.add((StatisticalMeasure)term);
                             }
@@ -397,11 +392,8 @@ public class TermNodeServiceImpl
                     node.setTerm(character);
                     mergeResult = dao.merge(node, true);
                     result.addUpdatedObject(mergeResult.getMergedEntity());
-
                 }
-
             }
-
         }
         return result;
     }
