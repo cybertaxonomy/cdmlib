@@ -237,7 +237,7 @@
         <entry key="eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
         </entry>
-        <entry key="java.net.URI">
+        <entry key="eu.etaxonomy.cdm.common.URI">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
         </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus">
