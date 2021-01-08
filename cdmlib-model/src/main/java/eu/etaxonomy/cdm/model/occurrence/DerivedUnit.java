@@ -176,10 +176,6 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		}
 	}
 
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static DerivedUnit NewPreservedSpecimenInstance(){
 		DerivedUnit result = new DerivedUnit(SpecimenOrObservationType.PreservedSpecimen);
 		return result;
