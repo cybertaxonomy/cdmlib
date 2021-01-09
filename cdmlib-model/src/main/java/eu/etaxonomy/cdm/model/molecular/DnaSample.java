@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.DnaSampleDefaultCacheStrategy;
 
 /**
  * A DNA Sample is the extracted DNA of a given tissue sample. It may be stored in
@@ -105,7 +105,7 @@ public class DnaSample extends DerivedUnit {
 
 	protected DnaSample() {  //protected for Javassist, otherwise private
 		super(SpecimenOrObservationType.DnaSample);
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
+		this.cacheStrategy = new DnaSampleDefaultCacheStrategy();
 	}
 
 //************ GETTER / SETTER  **********************************/
