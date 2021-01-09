@@ -13,32 +13,24 @@ import static org.junit.Assert.assertNotNull;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  * @since 18.09.2017
- *
  */
-public class ViralNameDefaultCacheStrategyTest {
+public class ViralNameDefaultCacheStrategyTest extends TermTestBase {
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ViralNameDefaultCacheStrategyTest.class);
 
     private TaxonNameDefaultCacheStrategy strategy;
     private TaxonName viralName;
-
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-        vocabularyStore.initialize();
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -46,12 +38,8 @@ public class ViralNameDefaultCacheStrategyTest {
         viralName = TaxonNameFactory.NewViralInstance(Rank.SPECIES()); //TODO do viral names have ranks? See comment on #IViralName
     }
 
-
 /********* TEST *******************************************/
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy#NewInstance()}.
-     */
     @Test
     public final void testNewInstance() {
         assertNotNull(strategy);
@@ -63,8 +51,5 @@ public class ViralNameDefaultCacheStrategyTest {
 
         viralName.setTitleCache("My virus", true);
         Assert.assertEquals("My virus", strategy.getTitleCache(viralName));
-
    }
-
-
 }

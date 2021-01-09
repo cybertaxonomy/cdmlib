@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
@@ -35,7 +34,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
@@ -47,7 +45,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.mueller
  * @since 26.11.2008
  */
-public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
+public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase {
+
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDefaultCacheStrategyTest.class);
 
@@ -76,12 +75,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     private TeamOrPersonBase<?> exBasAuthor;
     private Reference citationRef;
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-        vocabularyStore.initialize();
-    }
-
     @Before
     public void setUp() throws Exception {
         strategy = TaxonNameDefaultCacheStrategy.NewInstance();
@@ -106,23 +99,16 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         citationRef = ReferenceFactory.newGeneric();
         citationRef.setTitleCache(referenceTitle, true);
-
     }
 
 //**************************** TESTS **************************************************
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testGetTitleCache() {
         Assert.assertEquals(speciesNameString, speciesName.getTitleCache());
         //TODO not yet completed
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testGetFullTitleCache() {
         subSpeciesName.setNomenclaturalReference(citationRef);
@@ -139,14 +125,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 		botName.setAuthorshipCache("Author");
 		Assert.assertFalse(botName.getFullTitleCache().contains("bot."));
 		//TODO #4288
-		System.out.println(botName.getFullTitleCache());
+//		System.out.println(botName.getFullTitleCache());
     }
 
-
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testGetNameCache() {
         assertEquals("Species Name should be Abies alba", speciesNameString, speciesName.getNameCache());
@@ -199,7 +180,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("", "Genus", zooName.getNameCache());
         zooName.setRank(Rank.SUBSECTION_ZOOLOGY());
         Assert.assertEquals("", "Genus", zooName.getNameCache());
-
     }
 
     @Test
@@ -219,9 +199,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertEquals("Empty infrageneric epithet must be neglegted", "Lepidocaryum tenue var. tenue", botName.getNameCache());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testGetAuthorshipCache() {
         this.speciesName.setCombinationAuthorship(author);
@@ -245,9 +222,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertEquals(atomizedTitleCache, speciesName.getFullTitleCache());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getAuthorshipCache(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testHybridNames() {
         //Note \u00D7 : hybrid sign (multiplication sign)
@@ -342,7 +316,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
 
     	//TODO add more tests when specification of exact behaviour is clearer
-
     }
 
     @Test
@@ -475,14 +448,8 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         zooName.setProtectedAuthorshipCache(true);
         Assert.assertNull("AuthorshipCache should be null", zooName.getAuthorshipCache());
 
-
-
-
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setNameAuthorSeperator(java.lang.String)}.
-     */
     @Test
     public void testGetSetNameAuthorSeperator() {
         String authorSeparator = "authorSeparator";
@@ -492,10 +459,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertNull(strategy.getNameAuthorSeperator());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setBasionymStart(java.lang.String)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getBasionymStart()}.
-     */
     @Test
     public void testGetSetBasionymStart() {
         String basStart = "start";
@@ -505,10 +468,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertNull(strategy.getBasionymStart());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setBasionymEnd(java.lang.String)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getBasionymEnd()}.
-    */
     @Test
     public void testGetSetBasionymEnd() {
         String basEnd = "end";
@@ -518,10 +477,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertNull(strategy.getBasionymEnd());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setExAuthorSeperator(java.lang.String)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getExAuthorSeperator()}.
-     */
     @Test
     public void testGetSetExAuthorSeperator() {
         String exAuthorSeparator = "exAuthorSeparator";
@@ -531,10 +486,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertNull(strategy.getExAuthorSeperator());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#setBasionymAuthorCombinationAuthorSeperator(java.lang.CharSequence)}.
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getBasionymAuthorCombinationAuthorSeperator()}.
-     */
     @Test
     public void testSetBasionymAuthorCombinationAuthorSeperator() {
         String basComSeparator = "basComSeparator";
@@ -582,7 +533,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         nonViralName.setSpecificEpithet("myspecies");
         nonViralName.setInfraGenericEpithet("Infragenus");
 
-
         aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
         aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameCache);
@@ -607,9 +557,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.cache.name.TaxonNameDefaultCacheStrategy#getTaggedName(eu.etaxonomy.cdm.model.name.NonViralName)}.
-     */
     @Test
     public void testGetTaggedNameSpeciesAggregate() {
         TaxonName speciesAggregate = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIESAGGREGATE());
@@ -621,7 +568,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("3rd tag must be aggregate marker", "aggr.",taggedName.get(2).getText());
     }
 
-
     @Test
     public void testGetTaggedNameSubspecies(){
         List<TaggedText> taggedName = strategy.getTaggedName(subSpeciesName);
@@ -630,7 +576,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Third tag should be subspecies rank, and rank abbreviatioin should be subsp.", "subsp.", taggedName.get(2).getText());
         Assert.assertEquals("Fourth tag should be 'beta'", "beta", taggedName.get(3).getText());
         //to be continued
-
     }
 
     @Test
@@ -645,7 +590,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     	Assert.assertEquals("<b><i>Abies alba</i></b> <i>L.</i>", strategy.getTitleCache(speciesName, rules));
     	rules = new HTMLTagRules().addRule(TagEnum.name, "i").addRule(TagEnum.name, "b").addRule(TagEnum.authors, "b");
     	Assert.assertEquals("<b><i>Abies alba</i> L.</b>", strategy.getTitleCache(speciesName, rules));
-
     }
 
     @Test //#2888
@@ -676,6 +620,4 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         String expected = String.format("Ophrys %skastelli E. Klein nothosubsp. kastelli", UTF8.HYBRID.toString());
         Assert.assertEquals("", expected, name.getTitleCache());
     }
-
-
 }

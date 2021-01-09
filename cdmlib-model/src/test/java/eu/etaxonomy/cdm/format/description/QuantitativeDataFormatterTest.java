@@ -12,19 +12,15 @@ import java.math.BigDecimal;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.format.ICdmFormatter;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
-import eu.etaxonomy.cdm.format.description.QuantitativeDataFormatter;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Test for {@link QuantitativeDataFormatter}.
@@ -32,7 +28,7 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  * @author a.mueller
  * @since 12.03.2020
  */
-public class QuantitativeDataFormatterTest {
+public class QuantitativeDataFormatterTest extends TermTestBase {
 
     private StatisticalMeasurementValue min1;
     private StatisticalMeasurementValue max1;
@@ -43,13 +39,6 @@ public class QuantitativeDataFormatterTest {
         min1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(), new BigDecimal("0.1"));
         max1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), new BigDecimal("1.3"));
         n1 = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.SAMPLE_SIZE(), new BigDecimal("2"));
-    }
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        if (Language.DEFAULT() == null){
-            new DefaultTermInitializer().initialize();
-        }
     }
 
     @Test

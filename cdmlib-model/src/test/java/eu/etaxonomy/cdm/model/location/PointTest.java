@@ -8,25 +8,23 @@
 */
 package eu.etaxonomy.cdm.model.location;
 
-
 import java.text.ParseException;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.location.Point.Direction;
 import eu.etaxonomy.cdm.model.location.Point.Sexagesimal;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 04.06.2010
- *
  */
-public class PointTest {
+public class PointTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PointTest.class);
 
@@ -41,20 +39,6 @@ public class PointTest {
 
 	private ReferenceSystem referenceSystem;
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		if (ReferenceSystem.WGS84() == null){
-			new DefaultTermInitializer().initialize();
-		}
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		longitude1 = 23.123556;
@@ -68,9 +52,6 @@ public class PointTest {
 
 		point1 = Point.NewInstance(longitude1, latitude1, referenceSystem, errorRadius);
 		point2 = Point.NewInstance();
-
-
-
 	}
 
 //********************** TESTS *****************************
@@ -140,8 +121,6 @@ public class PointTest {
 		Sexagesimal sexagesimal1 = Sexagesimal.NewInstance(0, 0, 0, Direction.WEST);
 		Sexagesimal sexagesimal2 = Sexagesimal.NewInstance(2, 2, 2, Direction.WEST);
 		Assert.assertNotSame("", sexagesimal1, sexagesimal2);
-
-
 	}
 
 	@Test
@@ -185,12 +164,6 @@ public class PointTest {
 		} catch (ParseException e) {
 			Assert.fail("No parsing error should occur");
 		}
-
-
-
-
-
-
 
 
 //		Assert.assertTrue("Southern must be negative", conversionResults.convertedCoord < 0);
@@ -285,7 +258,4 @@ public class PointTest {
 			Assert.fail("No parsing error should occur");
 		}
 	}
-
-
-
 }

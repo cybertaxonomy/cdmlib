@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import java.util.HashMap;
@@ -38,6 +37,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.term.VocabularyEnum;
 
 public class TestingTermInitializer extends DefaultTermInitializer {
+
     private static final Logger logger = Logger.getLogger(TestingTermInitializer.class);
 
     protected PlatformTransactionManager transactionManager;
@@ -50,7 +50,6 @@ public class TestingTermInitializer extends DefaultTermInitializer {
     private Resource termsDataSet;
 
     private Resource termsDtd;
-
 
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
@@ -74,7 +73,6 @@ public class TestingTermInitializer extends DefaultTermInitializer {
     public void setTermsDtd(Resource termsDtd) {
         this.termsDtd = termsDtd;
     }
-
 
     @PostConstruct
     @Override

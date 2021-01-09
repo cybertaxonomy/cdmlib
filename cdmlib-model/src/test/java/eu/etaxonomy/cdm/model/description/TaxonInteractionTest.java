@@ -12,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -20,33 +19,17 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 23.04.2018
- *
  */
-public class TaxonInteractionTest {
-
+public class TaxonInteractionTest extends EntityTestBase {
 
     private Taxon taxon;
     private TaxonInteraction taxonInteraction;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        if (Language.DEFAULT() == null){
-            DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-            vocabularyStore.initialize();
-        }
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
 
@@ -58,12 +41,10 @@ public class TaxonInteractionTest {
         taxonInteraction.putDescription(langString);
     }
 
-
     @Test
     public void testClone(){
-        TaxonInteraction clone = (TaxonInteraction)taxonInteraction.clone();
+        TaxonInteraction clone = taxonInteraction.clone();
         assertNotEquals(clone.getDescription().get(Language.ENGLISH()), taxonInteraction.getDescription().get(Language.ENGLISH()));
         assertEquals(clone.getDescription(Language.ENGLISH()),taxonInteraction.getDescription(Language.ENGLISH()));
     }
-
 }

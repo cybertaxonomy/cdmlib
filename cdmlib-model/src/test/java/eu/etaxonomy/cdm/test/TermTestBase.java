@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
- * There is a copy of this class in cdmlib-model.
+ * This is a copy of the same class in cdmlib-test
  *
  * @author a.kohlbecker
  * @since Feb 21, 2018

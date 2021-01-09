@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -30,16 +29,16 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  * @since 15.08.2018
- *
  */
-public class TaxonRelationshipsDTOTest {
+public class TaxonRelationshipsDTOTest extends TermTestBase {
+
     private TaxonRelationship taxonRel;
     private Reference relSec;
 
@@ -57,19 +56,6 @@ public class TaxonRelationshipsDTOTest {
     Person toNameAuthor;
     private List<Language> languages;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        if (Language.DEFAULT() == null){
-            new DefaultTermInitializer().initialize();
-        }
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         fromName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -154,8 +140,5 @@ public class TaxonRelationshipsDTOTest {
         deduplicated = misapplications.get(2);
         Assert.assertEquals(9, deduplicated.size());
         Assert.assertSame(duplicateWithoutRelSec2.getTaggedText().get(6), deduplicated.get(8));
-
-
     }
-
 }

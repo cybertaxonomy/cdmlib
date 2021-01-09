@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.strategy.match;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.DOI;
@@ -25,8 +24,8 @@ import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Test class for {@link MatchStrategyFactory}
@@ -34,7 +33,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.mueller
  * @since 03.08.2009
  */
-public class MatchStrategyFactoryTest {
+public class MatchStrategyFactoryTest extends TermTestBase {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MatchStrategyFactoryTest.class);
@@ -44,12 +43,6 @@ public class MatchStrategyFactoryTest {
 	private IMatchStrategyEqual matchStrategy;
 
 	private Institution institution1;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
-		termInitializer.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {

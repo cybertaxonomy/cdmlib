@@ -27,15 +27,11 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.validation.constraint.InReferenceValidator;
 import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
 
-
 /**
- *
  * @author ben.clark
- *
  */
 @SuppressWarnings("unused")
 public class ReferenceValidationTest extends ValidationTestBase {
@@ -45,13 +41,10 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 		book = ReferenceFactory.newBook();
 		book.setTitleCache("Lorem ipsum", true);
 		book.setIsbn("1-919795-99-5");
 	}
-
 
 /****************** TESTS *****************************/
 
@@ -66,7 +59,6 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
 	@Test
 	public final void testLevel2ValidationWithValidISBN() {
-
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
@@ -89,7 +81,6 @@ public class ReferenceValidationTest extends ValidationTestBase {
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 
-
    @Test
     public final void testLevel3ValidationWithInValidInReference() {
 
@@ -108,7 +99,6 @@ public class ReferenceValidationTest extends ValidationTestBase {
         assertHasConstraintOnValidator((Set)constraintViolations, InReferenceValidator.class);
     }
 
-
 	@Test
 	public final void testValidationAfterCasting(){
 		((Reference)book).castReferenceToArticle();
@@ -125,8 +115,5 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
         myRef.setInBook(book);
         assertNoConstraintOnValidator((Set)validator.validate(myRef, Level3.class), NoRecursiveInReferenceValidator.class);
-
 	}
-
-
 }

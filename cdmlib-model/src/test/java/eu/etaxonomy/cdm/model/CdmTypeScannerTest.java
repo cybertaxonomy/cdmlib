@@ -22,17 +22,16 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 /**
  * @author a.kohlbecker
  * @since Jul 31, 2014
- *
  */
 public class CdmTypeScannerTest {
 
     @Test
-    public void testCdmModelTypes() throws ClassNotFoundException {
+    public void testCdmModelTypes() {
 
         boolean includeAbstract = true;
         boolean includeInterfaces = false;
 
-        CdmTypeScanner scanner = new CdmTypeScanner<CdmBase>(includeAbstract, includeInterfaces);
+        CdmTypeScanner<CdmBase> scanner = new CdmTypeScanner<>(includeAbstract, includeInterfaces);
 
         scanner.addIncludeFilter(new CdmAssignableTypeFilter(IdentifiableEntity.class, includeAbstract, includeInterfaces));
 

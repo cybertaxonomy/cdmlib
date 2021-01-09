@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2017 EDIT
 * European Distributed Institute of Taxonomy
@@ -11,31 +10,26 @@ package eu.etaxonomy.cdm.strategy.homotypicgroup;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  * @since 22.04.2017
- *
  */
-public class BasionymRelationCreatorTest {
+public class BasionymRelationCreatorTest extends TermTestBase {
 
-    /**
-     *
-     */
     private static final String SPECIUS = "specius";
+
     private Taxon taxon1;
     private Synonym synonym1;
     private Synonym synonym2;
@@ -49,20 +43,6 @@ public class BasionymRelationCreatorTest {
     private Person person3;
     private BasionymRelationCreator guesser;
 
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        if (NameRelationshipType.BASIONYM() == null){
-            new DefaultTermInitializer().initialize();
-        }
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         guesser = new BasionymRelationCreator();
@@ -189,5 +169,4 @@ public class BasionymRelationCreatorTest {
         Assert.assertEquals("Accepted and synonym1 should have same homotypic group", accName1.getHomotypicalGroup(), synName1.getHomotypicalGroup());
         Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym1.getType());
     }
-
 }

@@ -5,14 +5,12 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
-
+*/
 package eu.etaxonomy.cdm.model.agent;
 
 import java.util.GregorianCalendar;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +18,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 /**
  * @author a.babadshanjan
- *
  */
 public class InstitutionalMembershipTest {
 
@@ -28,9 +25,9 @@ public class InstitutionalMembershipTest {
 
 	@Before
 	public void onSetUp() throws Exception {
-		
+
 		mship = InstitutionalMembership.NewInstance();
-		
+
 		mship.setPerson(new Person("Steve", "Miller", "Mil."));
 		GregorianCalendar joined = new GregorianCalendar(1967, 4, 23);
 		GregorianCalendar resigned = new GregorianCalendar(1999, 0, 10);

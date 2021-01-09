@@ -6,30 +6,25 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
-
 
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 18.06.2009
- * @version 1.0
  */
-public class HomotypicalGroupTest {
-	private static final Logger logger = Logger.getLogger(HomotypicalGroupTest.class);
+public class HomotypicalGroupTest extends EntityTestBase {
+
+	@SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(HomotypicalGroupTest.class);
 
 	private static HomotypicalGroup group1;
 	private static HomotypicalGroup group2;
@@ -38,38 +33,12 @@ public class HomotypicalGroupTest {
 	private static TaxonName name3;
 	private static TaxonName name4;
 
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		new DefaultTermInitializer().initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SUBSPECIES());
 		name4 = TaxonNameFactory.NewBotanicalInstance(Rank.VARIETY());
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 //*********************** TESTS ***********************************************/
@@ -88,7 +57,6 @@ public class HomotypicalGroupTest {
 		basionyms =  name2.getHomotypicalGroup().getBasionyms();
 		Assert.assertEquals("Number of basionyms should be 2", 2, basionyms.size());
 //		Assert.assertEquals("", name2, basionyms.iterator().next());
-
 	}
 
 	@Test
@@ -106,7 +74,6 @@ public class HomotypicalGroupTest {
 		name4.addReplacedSynonym(name2, null, null, null, null);
 		Set<NameRelationship> rels = name2.getHomotypicalGroup().getBasionymAndReplacedSynonymRelations();
 		Assert.assertEquals("Number of relations should be 3", 3, rels.size());
-
 	}
 
 	@Test
@@ -151,7 +118,7 @@ public class HomotypicalGroupTest {
 		Assert.assertEquals(name1, name4.getBasionym());
 		Assert.assertEquals(1, hg.getBasionyms().size());
 
-		hg.removeGroupBasionym(name1);
+		HomotypicalGroup.removeGroupBasionym(name1);
 		Assert.assertEquals(0, hg.getBasionyms().size());
 
 		Assert.assertEquals(0, name2.getBasionyms().size());
@@ -160,23 +127,20 @@ public class HomotypicalGroupTest {
 		Assert.assertEquals(null, name4.getBasionym());
 
 	}
-	/*
-	@Test
-	public void testClone(){
-		group1 = HomotypicalGroup.NewInstance();
 
-		group1.addTypifiedName(name1);
-		group1.addTypifiedName(name2);
-		group1.setGroupBasionym(name1);
-		HomotypicalGroup clone =(HomotypicalGroup)group1.clone();
-
-		Assert.assertEquals(clone.getTypifiedNames().size(), group1.getTypifiedNames().size());
-		TaxonName cloneBasionym = clone.getBasionyms().iterator().next();
-		TaxonName group1Basionym = group1.getBasionyms().iterator().next();
-		Assert.assertNotSame(cloneBasionym, group1Basionym);
-	}
-	*/
-
-
-
+// TODO clone not yet implemented in HomotypicalGroup
+//	@Test
+//	public void testClone(){
+//		group1 = HomotypicalGroup.NewInstance();
+//
+//		group1.addTypifiedName(name1);
+//		group1.addTypifiedName(name2);
+//		group1.setGroupBasionym(name1);
+//		HomotypicalGroup clone =(HomotypicalGroup)group1.clone();
+//
+//		Assert.assertEquals(clone.getTypifiedNames().size(), group1.getTypifiedNames().size());
+//		TaxonName cloneBasionym = clone.getBasionyms().iterator().next();
+//		TaxonName group1Basionym = group1.getBasionyms().iterator().next();
+//		Assert.assertNotSame(cloneBasionym, group1Basionym);
+//	}
 }

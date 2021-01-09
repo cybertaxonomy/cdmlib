@@ -6,21 +6,22 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.test.unit;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Superclass for all (hibernate)entities to test if certain (hibernate) needs are fulfilled.
  * E.g. testing if all persistent getter have an according setter.
- * @author a.mueller
  *
+ * @author a.mueller
  */
-public abstract class EntityTestBase {
-	private static Logger logger = Logger.getLogger(EntityTestBase.class);
+public abstract class EntityTestBase extends TermTestBase {
+
+    private static Logger logger = Logger.getLogger(EntityTestBase.class);
 
 	protected Class<CdmBase> clazzToTest = clazzToTest();
 	protected Class<CdmBase> clazzToTest(){

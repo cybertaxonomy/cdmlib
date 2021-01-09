@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,29 +16,23 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.babadshanjan
  * @since 19.05.2009
  */
-public class SpecimenTypeDesignationTest {
+public class SpecimenTypeDesignationTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignationTest.class);
 
 	private SpecimenTypeDesignation term1 = null;
 	private SpecimenTypeDesignation term2 = null;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() {
@@ -89,6 +81,4 @@ public class SpecimenTypeDesignationTest {
         BeanUtils.getPropertyDescriptors(NomenclaturalStatusType.class);
         BeanUtils.getPropertyDescriptors(Rank.class);
     }
-
-
 }

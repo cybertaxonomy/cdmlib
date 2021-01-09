@@ -6,51 +6,29 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
-
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author k.luther
  * @since 11.04.2011
  */
-public class DescriptionElementTest {
-@SuppressWarnings("unused")
-private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
+public class DescriptionElementTest extends EntityTestBase {
 
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		if (Language.DEFAULT() == null){
-		    DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		    vocabularyStore.initialize();
-		}
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-
-	}
+    @SuppressWarnings("unused")
+    private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 
 /* ************************** TESTS **********************************************************/
-
 
 	@Test
 	public void testGetModifiersVocabulary(){
@@ -78,15 +56,10 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		ethnicGroupVoc.addTerm(scots);
 		data.addModifier(scots);
 
-
 		List<DefinedTerm> modifiers = data.getModifiers(plantPartVoc);
 		Assert.assertEquals("There should be 2 modifiers of type 'plant part'", 2, modifiers.size());
 		Assert.assertEquals("There should be 3 terms in the 'plant part' vocabulary", 3, plantPartVoc.size());
 		Assert.assertEquals("There should be 1 modifiers of type 'ethnic group'", 1, data.getModifiers(ethnicGroupVoc).size());
 		Assert.assertEquals("There should be 3 modifiers all together", 3, data.getModifiers().size());
-
 	}
-
 }
-
-

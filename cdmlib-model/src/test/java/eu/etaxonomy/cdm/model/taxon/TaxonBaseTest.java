@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import static org.junit.Assert.assertEquals;
@@ -16,9 +15,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -29,14 +26,13 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
- *
  */
 public class TaxonBaseTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonBaseTest.class);
 
@@ -48,15 +44,6 @@ public class TaxonBaseTest extends EntityTestBase {
 	private Synonym synonym1;
 	private Taxon freeT;
 
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		sec= ReferenceFactory.newBook();
@@ -70,18 +57,8 @@ public class TaxonBaseTest extends EntityTestBase {
 		freeT = Taxon.NewInstance(null, null);
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 /**************** TESTS **************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#getName()}.
-	 */
 	@Test
 	public final void testGetName() {
 		assertEquals(name1.getTitleCache(), taxon1.getName().getTitleCache());
@@ -101,11 +78,8 @@ public class TaxonBaseTest extends EntityTestBase {
 //		assertTrue(name2.getSynonyms().contains(synonym1));
 //	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#isDoubtful()}.
-	 */
 	@Test
-	public final void testIsDoubtful() {
+	public final void testIsSetDoubtful() {
 		boolean oldValue;
 		oldValue = taxon1.isDoubtful();
 		taxon1.setDoubtful(!oldValue);
@@ -114,26 +88,12 @@ public class TaxonBaseTest extends EntityTestBase {
 		assertEquals( oldValue, taxon1.isDoubtful());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#setDoubtful(boolean)}.
-	 */
-	@Test
-	public final void testSetDoubtful() {
-		//covered by testIsDoubtful
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#getSec()}.
-	 */
 	@Test
 	public final void testGetSec() {
 		assertEquals(sec.getTitleCache(), taxon1.getSec().getTitleCache());
 		assertNull(freeT.getSec());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonBase#setSec(eu.etaxonomy.cdm.model.reference.Reference)}.
-	 */
 	@Test
 	public final void testSetSec() {
 		assertNull(freeT.getSec());
@@ -143,7 +103,6 @@ public class TaxonBaseTest extends EntityTestBase {
 	}
 
 	@Test
-
 	public final void testClone(){
 
 		TaxonName test = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -155,44 +114,40 @@ public class TaxonBaseTest extends EntityTestBase {
 		secRef.setTitle("Test ...");
 		freeT.setSec(secRef);
 		freeT.setName(test);
-		Taxon clone = (Taxon)freeT.clone();
+		Taxon clone = freeT.clone();
 		assertSame(freeT.getSec(), clone.getSec());  //this was assertNull first, but we realized that it is not intuitive to remove the sec when cloning.
 		assertSame(freeT.getName(), clone.getName());
 	}
 
-	  /*
-	    * Moved from IdentifiableEntityTest to here due to #922
-	    */
-	   @Test
-	   public void testCompareTo() {
+    /*
+     * Moved from IdentifiableEntityTest to here due to #922
+     */
+    @Test
+    public void testCompareTo() {
 
-	       TaxonName abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
-	       abies.setNameCache("Abies");
-	       abies.setTitleCache("Abies", true);
-	       Reference sec = ReferenceFactory.newArticle();
-	       sec.setTitle("Abies alba Ref");
+        TaxonName abies = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+        abies.setNameCache("Abies");
+        abies.setTitleCache("Abies", true);
+        Reference sec = ReferenceFactory.newArticle();
+        sec.setTitle("Abies alba Ref");
 
-	       Taxon abiesTaxon = Taxon.NewInstance(abies, sec);
+        Taxon abiesTaxon = Taxon.NewInstance(abies, sec);
 
-	       TaxonName abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
-	       abiesMill.setNameCache("Abies");
-	       abiesMill.setTitleCache("Abies Mill.", true);
-	       Taxon abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);
+        TaxonName abiesMill = TaxonNameFactory.NewNonViralInstance(Rank.GENUS(), null);
+        abiesMill.setNameCache("Abies");
+        abiesMill.setTitleCache("Abies Mill.", true);
+        Taxon abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);
 
-	       int result = 0;
+        int result = 0;
 
-	       // "Abies" < "Abies Mill."
-	       result = abies.compareToName(abiesMill);
-	       assertTrue(result < 0);
+        // "Abies" < "Abies Mill."
+        result = abies.compareToName(abiesMill);
+        assertTrue(result < 0);
 
-	       abiesTaxon = abies.getTaxa().iterator().next();
+        abiesTaxon = abies.getTaxa().iterator().next();
 
-	       assertTrue(abiesTaxon.compareToTaxon(abiesTaxon) == 0);
-
-	       assertTrue(abiesMillTaxon.compareToTaxon(abiesTaxon) > 0);
-
-	       assertTrue(abiesTaxon.compareToTaxon(abiesMillTaxon) < 0);
-
-
-	   }
+        assertTrue(abiesTaxon.compareToTaxon(abiesTaxon) == 0);
+        assertTrue(abiesMillTaxon.compareToTaxon(abiesTaxon) > 0);
+        assertTrue(abiesTaxon.compareToTaxon(abiesMillTaxon) < 0);
+    }
 }

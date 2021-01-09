@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
@@ -34,25 +33,20 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 28.06.2008
  */
-public class TaxonNameTest {
+public class TaxonNameTest extends EntityTestBase {
+
 	private static final Logger logger = Logger.getLogger(TaxonNameTest.class);
 
 	private TaxonName nameBase1;
 	private TaxonName nameBase2;
 	private Reference ref1;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -64,7 +58,7 @@ public class TaxonNameTest {
 	    ref1.setDatePublished(TimePeriodParser.parseStringVerbatim("1988"));
 	}
 
-/** *************************  TESTS ******************************************************/
+/***************************  TESTS ******************************************************/
 
 	@Test
 	public void testSetReferenceWithListener(){
@@ -849,5 +843,4 @@ public class TaxonNameTest {
        nameBase1.addRelationshipToName(nameBase2, NameRelationshipType.CONSERVED_AGAINST());
        Assert.assertTrue(nameBase1.isValid());
    }
-
 }

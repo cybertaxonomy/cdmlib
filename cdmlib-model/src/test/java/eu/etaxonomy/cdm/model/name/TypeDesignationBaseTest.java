@@ -9,36 +9,20 @@
 package eu.etaxonomy.cdm.model.name;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 18.04.2018
- *
  */
-public class TypeDesignationBaseTest {
+public class TypeDesignationBaseTest extends EntityTestBase {
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        if (Language.DEFAULT() == null){
-            new DefaultTermInitializer().initialize();
-        }
-    }
-
-    /**
-     * Test method for {@link TypeDesignationStatusBase#clone()}.
-     */
     @SuppressWarnings("cast")
     @Test
     public void testClone(){
@@ -62,7 +46,7 @@ public class TypeDesignationBaseTest {
         Assert.assertNotNull(status);
 
         //clone
-        SpecimenTypeDesignation clonedDesignation = (SpecimenTypeDesignation)originalDesignation.clone();
+        SpecimenTypeDesignation clonedDesignation = originalDesignation.clone();
 
         //post assert
         Assert.assertEquals(2, name1.getTypeDesignations().size());
@@ -74,6 +58,5 @@ public class TypeDesignationBaseTest {
 
         Assert.assertSame(citation, clonedDesignation.getCitation());
         Assert.assertSame(status, clonedDesignation.getTypeStatus());
-
     }
 }

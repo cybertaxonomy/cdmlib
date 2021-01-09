@@ -18,7 +18,6 @@ import java.util.GregorianCalendar;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -32,13 +31,12 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.mueller
- *
  */
-public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
+public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
+
 	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategyTest.class);
 
 	private static final String familyNameString = "Familia";
@@ -63,20 +61,8 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private TeamOrPersonBase<?> basAuthor;
 	private TeamOrPersonBase<?> exBasAuthor;
 	private Reference citationRef;
-	ReferenceFactory refFactory;
+	private ReferenceFactory refFactory;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		strategy = TaxonNameDefaultCacheStrategy.NewInstance();

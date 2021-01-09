@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
@@ -14,10 +13,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -37,12 +34,6 @@ public class NameTypeDesignationStatusTest extends EntityTestBase {
 	private static final UUID uuidSubsequentMonotypy = UUID.fromString("2b5806d8-31b0-406e-a32a-4adac0c89ae4");
 	private static final UUID uuidSubsequentDesignation = UUID.fromString("3e449e7d-a03c-4431-a7d3-aa258406f6b2");
 	private static final UUID uuidTautonymy = UUID.fromString("84521f09-3e10-43f5-aa6f-2173a55a6790");
-
-	@BeforeClass
-	public static void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Test
 	public void testNameTypeDesignationStatusStringString() {
@@ -89,5 +80,4 @@ public class NameTypeDesignationStatusTest extends EntityTestBase {
 	public void testTAUTONOMY() {
 		assertEquals(uuidTautonymy,  NameTypeDesignationStatus.TAUTONYMY().getUuid());
 	}
-
 }

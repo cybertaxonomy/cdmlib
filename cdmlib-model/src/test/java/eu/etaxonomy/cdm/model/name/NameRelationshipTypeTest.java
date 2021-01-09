@@ -11,10 +11,8 @@ package eu.etaxonomy.cdm.model.name;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -27,13 +25,6 @@ public class NameRelationshipTypeTest extends EntityTestBase {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameRelationshipTypeTest.class);
-
-
-	@BeforeClass
-	public static void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
     @Test
     public void testNomenclaturalStanding() {

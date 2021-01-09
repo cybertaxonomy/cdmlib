@@ -6,15 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.media;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -22,13 +18,14 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 05.08.2009
  */
-public class MediaTest {
+public class MediaTest extends EntityTestBase {
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(MediaTest.class);
 
@@ -45,13 +42,7 @@ public class MediaTest {
     private static URI uriString1;
     private static URI uriString2;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        DefaultTermInitializer termInitializer = new DefaultTermInitializer();
-        termInitializer.initialize();
+    {
         try {
             uriString1 = new URI("http://Pathtoimage1/");
             uriString2 = new URI("http://Path_to_image_2/");
@@ -59,19 +50,8 @@ public class MediaTest {
             e.printStackTrace();
             Assert.fail("Error in URI syntax");
         }
-
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         media1 = Media.NewInstance();
@@ -105,18 +85,8 @@ public class MediaTest {
 
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
-
 //***************** TESTS *********************************/
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#clone()}.
-     */
     @Test
     public void testClone() {
         try {
@@ -148,17 +118,11 @@ public class MediaTest {
 
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#addRepresentation(eu.etaxonomy.cdm.model.media.MediaRepresentation)}.
-     */
     @Test
     public void testAddRepresentation() {
         Assert.assertTrue("Representations must contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#removeRepresentation(eu.etaxonomy.cdm.model.media.MediaRepresentation)}.
-     */
     @Test
     public void testRemoveRepresentation() {
         Assert.assertTrue("Representations must contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
@@ -170,17 +134,11 @@ public class MediaTest {
         Assert.assertEquals("Number of representations must be 0", 0, media1.getRepresentations().size());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#addRights(eu.etaxonomy.cdm.model.media.Rights)}.
-     */
     @Test
     public void testAddRights() {
         Assert.assertTrue("Rights must contain rights1", media1.getRights().contains(rights1));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#removeRights(eu.etaxonomy.cdm.model.media.Rights)}.
-     */
     @Test
     public void testRemoveRights() {
         Assert.assertTrue("Rights must contain rights1", media1.getRights().contains(rights1));
@@ -189,17 +147,11 @@ public class MediaTest {
         Assert.assertEquals("Number of rights must be 0", 0, media1.getRights().size());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#addTitle(eu.etaxonomy.cdm.model.common.LanguageString)}.
-     */
     @Test
     public void testAddTitle() {
         Assert.assertSame("Title must be the same", languageString2, media1.getAllTitles().get(Language.DEFAULT()) );
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#removeTitle(eu.etaxonomy.cdm.model.common.Language)}.
-     */
     @Test
     public void testRemoveTitle() {
         Assert.assertSame("Title must be the same", languageString2, media1.getAllTitles().get(Language.DEFAULT()) );
@@ -210,27 +162,17 @@ public class MediaTest {
         Assert.assertFalse("Title must not contain languageString2", languageString2.equals(media1.getAllTitles().get(Language.DEFAULT())));
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#getMediaCreated()}.
-     */
     @Test
     public void testGetMediaCreated() {
         Assert.assertEquals("Media created year must be 2002", "2002", media1.getMediaCreated().getYear());
-
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#getDescription()}.
-     */
     @Test
     public void testGetDescription() {
         Assert.assertTrue("Clone must have a default language description", media1.getAllDescriptions().containsKey(Language.DEFAULT()));
         Assert.assertSame("Description1 must be the same", languageString1, media1.getAllDescriptions().get(Language.DEFAULT()) );
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#addDescription(eu.etaxonomy.cdm.model.common.LanguageString)}.
-     */
     @Test
     public void testAddDescriptionLanguageString() {
         Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
@@ -241,9 +183,6 @@ public class MediaTest {
         Assert.assertEquals("Default language description must be languageString2", languageString2, media1.getAllDescriptions().get(Language.DEFAULT()) );
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#addDescription(java.lang.String, eu.etaxonomy.cdm.model.common.Language)}.
-     */
     @Test
     public void testAddDescriptionStringLanguage() {
         Assert.assertTrue("Clone must have a german language description", media1.getAllDescriptions().containsKey(Language.GERMAN()));
@@ -255,9 +194,6 @@ public class MediaTest {
         Assert.assertSame("Default language description must be 'testDesc2'", "testDesc2", media1.getAllDescriptions().get(Language.DEFAULT()).getText() );
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.model.media.Media#removeDescription(eu.etaxonomy.cdm.model.common.Language)}.
-     */
     @Test
     public void testRemoveDescription() {
         Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
@@ -272,5 +208,4 @@ public class MediaTest {
         media1.removeDescription(Language.GERMAN());
         Assert.assertEquals("Number of descriptions must be 0", 0, media1.getAllDescriptions().size() );
     }
-
 }

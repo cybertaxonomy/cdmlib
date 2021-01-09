@@ -11,29 +11,18 @@ package eu.etaxonomy.cdm.strategy.cache.media;
 import java.net.URISyntaxException;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  */
-public class MediaDefaultCacheStrategyTest {
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		new DefaultTermInitializer().initialize();
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
+public class MediaDefaultCacheStrategyTest extends TermTestBase {
 
 //*********************** TESTS ****************************************************/
 

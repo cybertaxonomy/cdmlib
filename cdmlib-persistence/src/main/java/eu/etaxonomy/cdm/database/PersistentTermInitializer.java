@@ -68,7 +68,6 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         return omit;
     }
 
-
     @Autowired
     public void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
         this.vocabularyDao = vocabularyDao;
@@ -91,7 +90,6 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
     public void initialize() {
         super.initialize();
     }
-
 
     @Override
     public void doInitialize(){

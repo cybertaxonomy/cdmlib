@@ -16,13 +16,12 @@ import org.junit.Test;
 /**
  * @author a.kohlbecker
  * @since Jun 13, 2016
- *
  */
 public class HHH_9751_UtilTest extends Assert {
 
     @Test
     public void testNullRemoval() {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.add("1");
         list.add("2");
         list.add(null);
@@ -34,5 +33,4 @@ public class HHH_9751_UtilTest extends Assert {
         assertEquals(3, list.size());
         assertNotNull(list.get(2));
     }
-
 }

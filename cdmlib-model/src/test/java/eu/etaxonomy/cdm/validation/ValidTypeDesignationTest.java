@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import org.apache.log4j.Logger;
@@ -21,10 +20,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.validation.constraint.TypeDesignationValidator;
-
-
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -35,7 +31,8 @@ import eu.etaxonomy.cdm.validation.constraint.TypeDesignationValidator;
  * @author a.mueller
  */
 public class ValidTypeDesignationTest extends ValidationTestBase {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ValidTypeDesignationTest.class);
 
     static Class<?> validatorClass = TypeDesignationValidator.class;
@@ -47,12 +44,8 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
     private TaxonName name2;
     private DerivedUnit specimen;
 
-
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name1.setNameCache("Aus aus");
 
@@ -61,7 +54,6 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 
 	    specimen = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 	}
-
 
 /****************** TESTS *****************************/
 
@@ -79,7 +71,6 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 
         nameDesignation.setNotDesignated(true);
         validateHasNoConstraint(nameDesignation, validatorClass, group);
-
     }
 
     @Test
@@ -96,7 +87,5 @@ public class ValidTypeDesignationTest extends ValidationTestBase {
 
         specimenDesignation.setNotDesignated(true);
         validateHasNoConstraint(specimenDesignation, validatorClass, group);
-
     }
-
 }

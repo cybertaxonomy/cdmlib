@@ -1,12 +1,11 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
- 
 package eu.etaxonomy.cdm.model.term.init;
 
 import static org.junit.Assert.assertEquals;
@@ -23,15 +22,15 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author AM
- *
  */
 public class DefaultTermInitializerTest {
-	static Logger logger = Logger.getLogger(DefaultTermInitializerTest.class);
+
+    static Logger logger = Logger.getLogger(DefaultTermInitializerTest.class);
 
 	private DefaultTermInitializer defaultVocabularyStore;
 	private UUID uuidEnglish;
 	private UUID uuidGerman;
-	
+
 	@Before
 	public void setUp() {
 		defaultVocabularyStore = new DefaultTermInitializer();
@@ -41,13 +40,10 @@ public class DefaultTermInitializerTest {
 
 /*********************** TEST *************************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.term.DefaultTermInitializer#loadBasicTerms()}.
-	 */
 	@Test
 	public void testInitialize() {
 		defaultVocabularyStore.initialize();
-		
+
 		assertNotNull("ENGLISH should not be null",Language.ENGLISH());
 		assertEquals("The uuid of ENGLISH should equal e9f8cdb7-6819-44e8-95d3-e2d0690c3523",uuidEnglish,Language.ENGLISH().getUuid());
 		assertNotNull("ENGLISH should have an ENGLISH representation",Language.ENGLISH().getRepresentation(Language.ENGLISH()));

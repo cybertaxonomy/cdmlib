@@ -17,13 +17,15 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Assert;
 
+import eu.etaxonomy.cdm.test.TermTestBase;
+
 /**
  * Class providing some base functionality for validator testing
+ *
  * @author a.mueller
  * @since 18.02.2015
- *
  */
-public abstract class ValidationTestBase {
+public abstract class ValidationTestBase extends TermTestBase{
 
     protected Validator validator;
 
@@ -51,10 +53,6 @@ public abstract class ValidationTestBase {
         assertHasConstraintOnValidator(constraintViolations, validatorClass, true);
     }
 
-    /**
-     * @param constraintViolations
-     * @return
-     */
     private void assertHasConstraintOnValidator(Set<ConstraintViolation<Object>> constraintViolations, Class validatorClass, boolean requiresViolation) {
         boolean hasViolation = false;
         for (ConstraintViolation<?> violation : constraintViolations){

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
@@ -18,7 +17,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
@@ -32,13 +30,14 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 04.03.2016
  */
-public class HomotypicGroupTaxonComparatorTest {
+public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
+
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparatorTest.class);
 
@@ -61,15 +60,6 @@ public class HomotypicGroupTaxonComparatorTest {
     private Synonym synonym2;
     private Synonym synonym3;
 
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-        vocabularyStore.initialize();
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         sec = ReferenceFactory.newBook();
@@ -105,8 +95,6 @@ public class HomotypicGroupTaxonComparatorTest {
         list = new ArrayList<>();
 
         taxon1 = Taxon.NewInstance(botName1, sec);
-
-
     }
 
     private void setNameParts(INonViralName name, String genus, String speciesEpi) {
@@ -114,7 +102,6 @@ public class HomotypicGroupTaxonComparatorTest {
         name.setSpecificEpithet(speciesEpi);
         name.getTitleCache();
     }
-
 
 /******************** TESTS *****************************************************/
 
@@ -159,8 +146,6 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals("other basionym group should come later but with basionym first",
                             botName5, list.get(2).getName());
         Assert.assertEquals(botName3, list.get(3).getName());
-
-
     }
 
     @Test
@@ -183,7 +168,6 @@ public class HomotypicGroupTaxonComparatorTest {
 
         botName4.getHomotypicalGroup().setUuid(uuidFirst);
         botName5.getHomotypicalGroup().setUuid(uuidSecond);
-
 
         //start test
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
@@ -224,7 +208,6 @@ public class HomotypicGroupTaxonComparatorTest {
         taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
         botName2.addBasionym(botName4);
 
-
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
@@ -241,7 +224,6 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals(botName3, list.get(1).getName());
         Assert.assertEquals(botName4, list.get(2).getName());
         Assert.assertEquals(botName2, list.get(3).getName());
-
 
         //add replaced synonym relation between basionyms
         botName5.addReplacedSynonym(botName4, null, null, null, null);
@@ -276,7 +258,6 @@ public class HomotypicGroupTaxonComparatorTest {
         taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
         botName2.addBasionym(botName4);
 
-
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
@@ -299,7 +280,6 @@ public class HomotypicGroupTaxonComparatorTest {
     @Test
     public void testCompare_BasionymGroupsWithRanks2() {
 
-
         botName2.setRank(Rank.VARIETY());
         botName2.setInfraSpecificEpithet("varbbbb");
 
@@ -312,7 +292,6 @@ public class HomotypicGroupTaxonComparatorTest {
         botName5.setRank(Rank.VARIETY());
         botName5.setInfraSpecificEpithet("vareee");
 
-
         HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
         taxon1.addHeterotypicSynonymName(botName3);
         taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
@@ -323,7 +302,6 @@ public class HomotypicGroupTaxonComparatorTest {
         botName2.addBasionym(botName5);
         botName4.addBasionym(botName5);
 
-
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
 
@@ -331,7 +309,6 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals("subspecies should come next", botName4, list.get(1).getName());
         Assert.assertEquals("variety with b should come next", botName2, list.get(2).getName());
         Assert.assertEquals("variety with c should come last", botName3, list.get(3).getName());
-
     }
 
     @Test
@@ -349,7 +326,6 @@ public class HomotypicGroupTaxonComparatorTest {
         synonym2 = taxon1.addHeterotypicSynonymName(botName2);
         taxon1.addHeterotypicSynonymName(botName4, null, null, homotypicalGroup);
 //        botName2.addBasionym(botName4);
-
 
         list.addAll(taxon1.getSynonyms());
         Collections.sort(list, new HomotypicGroupTaxonComparator(null));
@@ -378,7 +354,6 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals(botName2, list.get(1).getName());
         Assert.assertEquals("Nom illeg basionym group should come last", botName5, list.get(2).getName());
         Assert.assertEquals("Names with nom. illeg. as basionym should stay in basionym group", botName3, list.get(3).getName());
-
     }
 
     @Test  //failing selenium test
@@ -396,7 +371,6 @@ public class HomotypicGroupTaxonComparatorTest {
 
         Assert.assertEquals("Earlier nom. illeg. should come next", botName3, list.get(0).getName());
         Assert.assertEquals("Later name should come last", botName2, list.get(1).getName());
-
     }
 
     @Test
@@ -431,7 +405,6 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals(botName2, list.get(1).getName());
         Assert.assertEquals(botName3, list.get(2).getName());
         Assert.assertEquals(botName5, list.get(3).getName());
-
     }
 
     @Test
@@ -452,8 +425,5 @@ public class HomotypicGroupTaxonComparatorTest {
         Assert.assertEquals(botName1, list.get(0).getName());
         Assert.assertEquals(botName3, list.get(1).getName());
         Assert.assertEquals(botName5, list.get(2).getName());
-
-
     }
-
 }

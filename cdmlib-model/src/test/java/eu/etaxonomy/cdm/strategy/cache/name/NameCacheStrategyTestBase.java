@@ -16,13 +16,15 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Base class for testing name cache strategies
  * @author a.mueller
  */
-public class NameCacheStrategyTestBase {
-	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
+public class NameCacheStrategyTestBase extends TermTestBase {
+
+    private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 
 	protected Method getMethod(Class<?> clazz, String methodName, Class<?> paramClazzes){
 		Method method;

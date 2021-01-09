@@ -37,17 +37,17 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author m.venin
  * @author a.mueller
  * @since 16.12.2010
  */
-public class PolytomousKeyGeneratorTest {
+public class PolytomousKeyGeneratorTest extends TermTestBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PolytomousKeyGeneratorTest.class);
@@ -134,9 +134,6 @@ public class PolytomousKeyGeneratorTest {
 
 	@Before
 	public void setUp() throws Exception {
-	    if(Language.DEFAULT() == null){
-            new DefaultTermInitializer().initialize();
-        }
 
 	    featureShape = createFeature("Shape of the head", uuidFeatureShape, CATEGORICAL);
 	    featurePresence = createFeature("Presence of wings", uuidFeaturePresence, CATEGORICAL);
@@ -620,7 +617,7 @@ public class PolytomousKeyGeneratorTest {
         Set<DescriptionElementBase> result = new HashSet<>();
         for (DescriptionElementBase deb : elements){
             try {
-                result.add((DescriptionElementBase)deb.clone());
+                result.add(deb.clone());
             } catch (CloneNotSupportedException e) {
                 throw new RuntimeException(e);
             }

@@ -16,30 +16,23 @@ import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
+public class MolecularTest extends EntityTestBase {
 
-public class MolecularTest {
-	@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(MolecularTest.class);
 
 	private DnaSample dnaSample;
 	private DefinedTerm marker;
 	private PhylogeneticTree phyloTree;
 	private Sequence seq;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {
