@@ -28,7 +28,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrategy;
 
 /**
  * Instances of MediaSpecimen represent a specimen which IS a media (photo, drawing, ...).
@@ -86,7 +86,7 @@ public class MediaSpecimen extends DerivedUnit {
 
 	private MediaSpecimen(SpecimenOrObservationType type) {
 		super(type);
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
+		this.cacheStrategy = new MediaSpecimenDefaultCacheStrategy();
 	}
 
 
