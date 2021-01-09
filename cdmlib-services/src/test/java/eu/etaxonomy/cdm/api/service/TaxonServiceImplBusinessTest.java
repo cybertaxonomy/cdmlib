@@ -207,9 +207,6 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 //		Assert.assertNull("Synonym should not be used in a name anymore", s1.getName());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#changeSynonymToRelatedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
-	 */
 	@Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
 	public final void testChangeSynonymToRelatedTaxon() {
@@ -227,7 +224,6 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		//check removeTaxonBase()
 		//UUID s1UUID = service.update(s1);
 		UUID newTaxonUUID = service.save(newTaxon).getUuid();
-
 
 		s1 =(Synonym)service.find(s1.getUuid());
 		newTaxon = (Taxon)service.find(newTaxonUUID);
@@ -293,7 +289,6 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
 		Assert.assertFalse("s2 must not be in t1 homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
 
-
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, homotypicSynonym.getHomotypicGroup(), null, true);
 
@@ -308,7 +303,6 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		Assert.assertEquals("'t1' must have exactly 2 homotypic synonyms", 2, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
 		Assert.assertEquals("'t1' must have exactly 2 names in homotypic group", 2, t1.getHomotypicSynonymsByHomotypicGroup(null).size());
 		Assert.assertEquals("'t1' homotypic group must include 3 names (t1, s2, homotypicSynonym)", 3, t1.getHomotypicGroup().getTypifiedNames().size());
-
 
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, t2.getHomotypicGroup(), t2, false);
@@ -340,5 +334,4 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

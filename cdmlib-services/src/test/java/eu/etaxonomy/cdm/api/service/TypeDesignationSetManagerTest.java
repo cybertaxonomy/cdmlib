@@ -256,7 +256,6 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
                     "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Nametype: Prionus coriatius L."
                     , typeDesignationManager.print(true, true, true)
                     );
-
         }
 
         //see #9262

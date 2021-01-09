@@ -161,7 +161,6 @@ public class URI
         return javaUri.getQuery();
     }
 
-
 //****************************** equals *****************************/
 
     @Override
@@ -195,6 +194,4 @@ public class URI
     public String toString() {
         return javaUri.toString();
     }
-
-
 }

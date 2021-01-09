@@ -113,5 +113,4 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }
