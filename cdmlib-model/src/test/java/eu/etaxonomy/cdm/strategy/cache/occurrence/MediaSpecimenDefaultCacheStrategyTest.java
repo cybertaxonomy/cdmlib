@@ -49,5 +49,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         specimen.setCollection(null);
         specimen.setAccessionNumber(null);
         Assert.assertEquals("Media title", strategy.getTitleCache(specimen));
+
+        Assert.assertNull(strategy.getTitleCache(null));
     }
 }

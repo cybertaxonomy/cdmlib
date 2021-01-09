@@ -12,16 +12,14 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
-import eu.etaxonomy.cdm.strategy.StrategyBase;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
- * A default cache strategy for MediaSpecimen.
+ * A default cache strategy for {@link MediaSpecimen}.
  * TODO This is a <b>preliminary</b> implementation to have at least one default cache strategy.
  * It will need improvement later on.
+ *
+ *  #5573, #7612
  *
  * Also see DerivedUnitFacadeCacheStrategy in Service Layer.
  *
@@ -29,8 +27,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @since 08.01.2021
  */
 public class MediaSpecimenDefaultCacheStrategy
-        extends StrategyBase
-        implements IIdentifiableEntityCacheStrategy<MediaSpecimen>{
+        extends OccurrenceCacheStrategyBase<MediaSpecimen>{
 
     private static final long serialVersionUID = 798148956185549004L;
     @SuppressWarnings("unused")
@@ -44,32 +41,18 @@ public class MediaSpecimenDefaultCacheStrategy
 	}
 
 	@Override
-    public String getTitleCache(MediaSpecimen mediaSpecimen) {
-		if (mediaSpecimen == null){
-			return null;
-		}else{
-			String result = "";
-			//add code if it exists
-			if (mediaSpecimen.getCollection() != null){
-			    Collection collection = mediaSpecimen.getCollection();
-			    if (isNotBlank(collection.getCode())){
-			        result = CdmUtils.concat("", result, collection.getCode());
-			    }
-			}
-			result = CdmUtils.concat(" ", result, CdmUtils.Ne(mediaSpecimen.getAccessionNumber()));
-			String mediaTitle = mediaSpecimen.getMediaSpecimen() == null? null : mediaSpecimen.getMediaSpecimen().getTitleCache();
-			if (isNotBlank(mediaTitle)){
-			    if (isNotBlank(result)){
-			        result += " (" + mediaTitle +")";
-			    }else{
-			        result = mediaTitle;
-			    }
-			}
-			if (isBlank(result)){
-			    result = mediaSpecimen.toString();
-			}
-
-			return result;
+    protected String doGetTitleCache(MediaSpecimen specimen) {
+	    //add code if it exists
+        String result = getCollectionAndAccession(specimen);
+		String mediaTitle = specimen.getMediaSpecimen() == null? null : specimen.getMediaSpecimen().getTitleCache();
+		if (isNotBlank(mediaTitle)){
+		    if (isNotBlank(result)){
+		        result += " (" + mediaTitle +")";
+		    }else{
+		        result = mediaTitle;
+		    }
 		}
+
+		return result;
 	}
 }
