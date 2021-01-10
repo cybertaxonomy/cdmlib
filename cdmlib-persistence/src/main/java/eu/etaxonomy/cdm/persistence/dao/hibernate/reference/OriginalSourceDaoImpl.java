@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import java.util.HashMap;
@@ -33,8 +32,11 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
  * @since 17.07.2008
  */
 @Repository
-public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> implements	IOriginalSourceDao {
-	@SuppressWarnings("unused")
+public class OriginalSourceDaoImpl
+        extends CdmEntityDaoBase<OriginalSourceBase>
+        implements	IOriginalSourceDao {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceDaoImpl.class);
 
 	public OriginalSourceDaoImpl() {

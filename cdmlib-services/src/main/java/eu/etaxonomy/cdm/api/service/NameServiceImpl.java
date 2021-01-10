@@ -116,6 +116,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 public class NameServiceImpl
           extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
           implements INameService {
+
     static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 
     @Autowired
@@ -148,12 +149,14 @@ public class NameServiceImpl
     // @Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;
 
+//***************************** CONSTRUCTOR **********************************/
+
     /**
      * Constructor
      */
     public NameServiceImpl(){}
 
-//********************* METHODS ****************************************************************//
+//********************* METHODS ***********************************************//
 
     @Override
     @Transactional(readOnly = false)

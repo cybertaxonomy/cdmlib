@@ -423,7 +423,4 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonName> {
      */
     public long countByFullTitle(Class<TaxonName> clazz, String queryString, MatchMode matchmode,
             List<Criterion> criteria);
-
-
-
 }
