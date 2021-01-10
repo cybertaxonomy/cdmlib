@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
-
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
 
@@ -37,5 +38,9 @@ public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
 	 */
 	public List<OriginalSourceBase> findOriginalSourceByIdInSource(String idInSource, String idNamespace);
 
+    public <T extends DescriptionElementSource> List<T> listWithNameUsedInSource(Class<T> clazz, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths);
+
+    public <T extends DescriptionElementSource> Long countWithNameUsedInSource(Class<T> clazz);
 
 }

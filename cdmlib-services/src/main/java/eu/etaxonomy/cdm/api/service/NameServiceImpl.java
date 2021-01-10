@@ -70,6 +70,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -95,8 +96,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
-import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -120,18 +120,16 @@ public class NameServiceImpl
     static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 
     @Autowired
-    protected ITermVocabularyDao vocabularyDao;
+    private IOccurrenceService occurrenceService;
     @Autowired
-    protected IOrderedTermVocabularyDao orderedVocabularyDao;
+    private ICollectionService collectionService;
     @Autowired
-    protected IOccurrenceService occurrenceService;
+    private ITaxonService taxonService;
     @Autowired
-    protected ICollectionService collectionService;
-    @Autowired
-    protected ITaxonService taxonService;
+    private ICommonService commonService;
     @Autowired
     @Qualifier("sourcedEntityDao")
-    protected ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
+    private ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
     @Autowired
@@ -143,7 +141,7 @@ public class NameServiceImpl
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
     @Autowired
-    protected ICommonService commonService;
+    private IOriginalSourceDao sourcedDao;
 
     @Autowired
     // @Qualifier("defaultBeanInitializer")
@@ -530,6 +528,19 @@ public class NameServiceImpl
     @Override
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
         return homotypicalGroupDao.list(limit, start);
+    }
+
+
+    @Override
+    public List<NomenclaturalSource> listOriginalSpellings(Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Long numberOfResults = sourcedDao.countWithNameUsedInSource(NomenclaturalSource.class);
+        List<NomenclaturalSource> results = new ArrayList<>();
+        if(numberOfResults > 0) {
+            results = sourcedDao.listWithNameUsedInSource(NomenclaturalSource.class, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+        return results;
     }
 
     @Override

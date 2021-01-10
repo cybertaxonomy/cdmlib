@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -304,6 +305,19 @@ public interface INameService
 	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.
 
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
+
+    /**
+     * Returns all or a page of all original spellings in the database.
+     * As original spellings are
+     *
+     * @param pageSize the page size
+     * @param pageStart the number of the page
+     * @param orderHints the order hints
+     * @param propertyPaths the property path to initialize the resulting objects
+     * @return list of nomenclatural the filter criteria
+     */
+    public List<NomenclaturalSource> listOriginalSpellings(Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
      * Returns all or a page of all taxon name relationships in the database.

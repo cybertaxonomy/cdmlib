@@ -18,14 +18,18 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -107,5 +111,33 @@ public class OriginalSourceDaoImpl
         List<OriginalSourceBase> results = crit.list();
 
 		return results;
+	}
+
+	@Override
+    public <T extends DescriptionElementSource>  Long countWithNameUsedInSource(Class<T> clazz){
+        Criteria criteria = getSession().createCriteria(HybridRelationship.class);
+
+        clazz = clazz != null? clazz : (Class<T>) DescriptionElementSource.class;
+        Criteria crit = getSession().createCriteria(clazz);
+        //count
+        criteria.setProjection(Projections.rowCount());
+        long result = (Long)criteria.uniqueResult();
+
+        return result;
+	}
+
+
+	@Override
+	public <T extends DescriptionElementSource> List<T> listWithNameUsedInSource(Class<T> clazz,
+	        Integer pageSize, Integer pageNumber,List<OrderHint> orderHints, List<String> propertyPaths){
+	    clazz = clazz != null? clazz : (Class<T>) DescriptionElementSource.class;
+	    Criteria crit = getSession().createCriteria(clazz);
+	    crit.add(Restrictions.isNotNull("nameUsedInSource"));
+
+	    crit.addOrder(Order.desc("created"));
+	    @SuppressWarnings({ "unchecked" })
+	    List<T> results = crit.list();
+
+	    return results;
 	}
 }
