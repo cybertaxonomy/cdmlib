@@ -87,7 +87,7 @@ public class TypeDesignationSetFormatter {
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
         if(withNameIfAvailable && manager.getTypifiedNameCache() != null){
-            finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(), TypedEntityReference.fromEntity(manager.getTypifiedName()));
+            finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(), TypedEntityReference.fromEntity(manager.getTypifiedName(), false));
             finalBuilder.addPostSeparator(POST_NAME_SEPARTOR);
         }
 
@@ -189,7 +189,7 @@ public class TypeDesignationSetFormatter {
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
         }
 
-        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes), TypedEntityReference.fromEntity(typeDes));
+        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes), TypedEntityReference.fromEntity(typeDes, false));
 //        workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
         if (withCitation){
@@ -226,7 +226,7 @@ public class TypeDesignationSetFormatter {
         if (ref != null){
             DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
             String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
-            workingsetBuilder.add(TagEnum.reference, shortCitation, TypedEntityReference.fromEntity(ref));
+            workingsetBuilder.add(TagEnum.reference, shortCitation, TypedEntityReference.fromEntity(ref, false));
         }
     }
 

@@ -26,26 +26,38 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
 
     private Class<T> type;
 
+    /**
+     * @deprecated use factory method instead (TODO: to be made protected once no longer used publicly)
+     */
+    @Deprecated
     public TypedEntityReference(Class<T> type, UUID uuid, String label) {
         super(uuid, label);
         this.type = type;
     }
 
+    /**
+     * @deprecated use factory method instead (TODO; to be made protected once no longer used publicly)
+     */
+    @Deprecated
     public TypedEntityReference(Class<T> type, UUID uuid) {
         super(uuid, null);
         this.type = type;
     }
 
-    public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
+    public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity, boolean withLabel) {
         if(entity == null) {
             return null;
         }
         entity = HibernateProxyHelper.deproxy(entity);
-        if(IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
+        if(withLabel && IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
             return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid(), ((IdentifiableEntity)entity).getTitleCache());
         } else {
             return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
         }
+    }
+
+    public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
+        return TypedEntityReference.fromEntity(entity, true);
     }
 
     public Class<T> getType() {
