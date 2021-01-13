@@ -262,6 +262,7 @@ public class DefaultReferenceCacheStrategy
         return result.toString();
     }
 
+    //TODO this method should probably be unified with getCitation(Reference reference, String microReference)
     @Override
     public String createShortCitation(Reference reference, String citationDetail, Boolean withYearBrackets) {
         if (withYearBrackets == null){
