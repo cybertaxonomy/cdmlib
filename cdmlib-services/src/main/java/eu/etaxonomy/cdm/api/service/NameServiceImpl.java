@@ -400,7 +400,7 @@ public class NameServiceImpl
     @Override
     @Deprecated
     public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByTitle(titleCache, matchMode, null, null, null, propertyPaths);
+        List<TaxonName> result = dao.findByTitle(titleCache, matchMode, null, null, null, propertyPaths);
         return result;
     }
 
@@ -844,12 +844,9 @@ public class NameServiceImpl
 
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
-
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
 
         return searchResults;
@@ -859,7 +856,7 @@ public class NameServiceImpl
     public Pager<NameRelationship> pageNameRelationships(TaxonName name, Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, direction, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
@@ -870,7 +867,7 @@ public class NameServiceImpl
     @Override
     public Pager<NameRelationship> pageFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
@@ -881,7 +878,7 @@ public class NameServiceImpl
     @Override
     public Pager<NameRelationship> pageToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
