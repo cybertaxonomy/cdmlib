@@ -287,7 +287,8 @@ public class DefaultReferenceCacheStrategy
             }else{
                 List<Person> teamMembers = team.getTeamMembers();
                 int etAlPosition = 2;
-                for (int i = 1; i <= teamMembers.size() && i <= etAlPosition; i++){
+                for (int i = 1; i <= teamMembers.size() &&
+                        (i < etAlPosition || teamMembers.size() == etAlPosition && !team.isHasMoreMembers()) ; i++){
                     Person teamMember = teamMembers.get(i-1);
                     if(teamMember == null){
                         // this can happen in UIs in the process of adding new members

@@ -741,5 +741,47 @@ public class DefaultReferenceCacheStrategyTest {
 //      Assert.assertEquals("Unexpected title cache.", "auct.", webPage1.getTitleCache());
 //  }
 
+    @Test
+    public void testCreateShortCitation(){
+        book1.setTitle("My book");
+        book1.setAuthorship(bookTeam1);
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        Assert.assertEquals("Unexpected title cache.", "Book Author, My book. 1975", book1.getTitleCache());
+
+        book1.setTitleCache(null, false);
+        book1.setEdition("ed. 3");
+
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975", book1.getCacheStrategy().createShortCitation((Reference)book1, null, false));
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975", book1.getCacheStrategy().createShortCitation((Reference)book1, "", false));
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
+        Assert.assertEquals("Unexpected title cache.", "Book Author (1975: 55)", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", true));
+
+        //1 person
+        Person person1 = Person.NewInstance("Pers.", "Person", "P.", "Percy");
+        Team team = Team.NewInstance(person1);
+        book1.setAuthorship(team);
+        Assert.assertEquals("Unexpected title cache.", "Person 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
+        team.setHasMoreMembers(true);
+        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
+        team.setHasMoreMembers(false);
+
+        //2 persons
+        Person person2 = Person.NewInstance("Lers.", "Lerson", "L.", "Lercy");
+        team.addTeamMember(person2);
+        Assert.assertEquals("Unexpected title cache.", "Person & Lerson 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
+        team.setHasMoreMembers(true);
+        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
+        team.setHasMoreMembers(false);
+
+        //3 persons
+        Person person3 = Person.NewInstance("Gers.", "Gerson", "G.", "Gercy");
+        team.addTeamMember(person3);
+        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
+        team.setHasMoreMembers(true);
+        Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
+        team.setHasMoreMembers(false);  //in case we want to continue test
+
+
+    }
 
 }
