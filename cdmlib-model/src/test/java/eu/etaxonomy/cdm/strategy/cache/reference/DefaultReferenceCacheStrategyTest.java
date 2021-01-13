@@ -732,7 +732,6 @@ public class DefaultReferenceCacheStrategyTest {
         Assert.assertEquals("Unexpected title cache.",
                 "Authorteam, D., Flora of Israel Online - http://flora.huji.ac.il [accessed 2001-01-05]",
                 webPage1.getTitleCache());
-
     }
 
 //  @Test

@@ -308,7 +308,6 @@ public class DefaultReferenceCacheStrategy
         return shortCitation;
     }
 
-
     /**
      * Adds the citationDetail to the titleCache string that is returned from a method as data is not
      * accurately parsed.
@@ -358,18 +357,6 @@ public class DefaultReferenceCacheStrategy
             shortCitation = person.getTitleCache();
         }
         return shortCitation;
-    }
-
-    private static String concatString(Team team, List<Person> teamMembers, int i, String std_team_concatination, String final_team_concatination) {
-        String concat;
-        if (i <= 1){
-            concat = "";
-        }else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size())){
-            concat = std_team_concatination;
-        }else{
-            concat = final_team_concatination;
-        }
-        return concat;
     }
 
     @Override

@@ -12,7 +12,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class TeamDefaultCacheStrategyTest {
 	private static Person person1;
 	private static Person person2;
 	private static Person person3;
-	private static Person person4;
+	private static Person emptyPerson;
 
 	@Before
 	public void setUp() throws Exception {
@@ -60,16 +59,12 @@ public class TeamDefaultCacheStrategyTest {
 		person3 = Person.NewInstance();
 		person3.setNomenclaturalTitle("P3NomT");
 
-		person4 = Person.NewInstance(); //empty person
+		emptyPerson = Person.NewInstance(); //empty person
 
 		team1.addTeamMember(person1);
 		team2.addTeamMember(person2);
 		team2.addTeamMember(person1);
 		team2.addTeamMember(person3);
-	}
-
-	@After
-	public void tearDown() throws Exception {
 	}
 
 //**************************************** TESTS **************************************
@@ -141,7 +136,7 @@ public class TeamDefaultCacheStrategyTest {
 		        StringUtils.isNotBlank(team3.getTitleCache()));
 
 
-		//don't take to serious, may be also something different, but not empty
+		//don't take to exact, may be also something different, but not empty
 		Assert.assertEquals("team3 title cache should should be empty team replacement string",
 		        TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getTitleCache());
 	}
@@ -167,7 +162,6 @@ public class TeamDefaultCacheStrategyTest {
         Assert.assertEquals("team2 full title should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.'",
                 "P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.", team2.getFullTitle());
 
-
         //don't take to serious, may be also something different, but not empty
         Assert.assertEquals("team3 full title should should be empty team replacement string",
                 TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getFullTitle());
@@ -181,4 +175,5 @@ public class TeamDefaultCacheStrategyTest {
 		person1.setGivenName("O.");
 		Assert.assertEquals("team1 title cache should be P1LN, O.", "P1LN, O.", team1.getTitleCache());
 	}
+
 }
