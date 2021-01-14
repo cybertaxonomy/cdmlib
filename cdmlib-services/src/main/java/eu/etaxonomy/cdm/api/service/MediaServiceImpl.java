@@ -197,13 +197,7 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         while(textData.getMedia().contains(media)){
             textData.removeMedia(media);
         }
-        //if the textData contains text it should not be deleted
-        if (textData.getMedia().isEmpty() && textData.getMultilanguageText().isEmpty()){
-            desc.removeElement(textData);
-        }
-        if (desc.getElements().isEmpty()){
-            describable.removeDescription(desc);
-        }
+
         return describable;
     }
 
