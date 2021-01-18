@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -454,7 +453,6 @@ public class SpecimenTest {
         DerivationEvent.NewSimpleInstance(specimen3, specimen2, DerivationEventType.GATHERING_IN_SITU());
         DerivationEvent.NewSimpleInstance(theSpecimen, specimen3, DerivationEventType.GATHERING_IN_SITU());
 
-        Logger.getLogger(DerivedUnit.class).setLevel(Level.TRACE);
         rootSOBs = theSpecimen.collectRootUnits(SpecimenOrObservationBase.class);
         assertEquals(3, rootSOBs.size());
         rootSOBsSorted = rootSOBs.stream().sorted(new ByTtitleCacheComparator()).collect(Collectors.toList());
