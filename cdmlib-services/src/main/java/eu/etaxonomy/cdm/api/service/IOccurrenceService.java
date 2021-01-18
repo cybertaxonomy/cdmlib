@@ -345,6 +345,18 @@ public interface IOccurrenceService
     public Collection<FieldUnit> findFieldUnits(UUID specimenUuid, List<String> propertyPaths);
 
     /**
+     * Retrieves top most originals for a {@link SpecimenOrObservationBase} in the derivation graph by recursively
+     * walking all {@link DerivationEvent}s.
+     * In most cases item in the returned collection will be {@link FieldUnit FieldUnits} but also DerivedUnits are possible, in
+     * cases where no FieledUnit exists.
+     *
+     * @param specimenUuid the UUID of the specimen
+     * @param propertyPaths the property path
+     * @return either a collection of root units
+     */
+    public Collection<SpecimenOrObservationBase> findRootUnits(UUID specimenUuid, List<String> propertyPaths);
+
+    /**
      * @param clazz
      * @param queryString
      * @param languages

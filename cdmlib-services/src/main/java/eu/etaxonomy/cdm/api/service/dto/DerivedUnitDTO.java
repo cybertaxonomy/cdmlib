@@ -170,7 +170,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         setPreferredStableUri(derivedUnit.getPreferredStableUri());
 
         // citation
-        Collection<FieldUnit> fieldUnits = derivedUnit.collectFieldUnits();
+        Collection<FieldUnit> fieldUnits = derivedUnit.collectRootUnits(FieldUnit.class);
         if (fieldUnits.size() == 1) {
             setCitation(fieldUnits.iterator().next().getTitleCache());
         }

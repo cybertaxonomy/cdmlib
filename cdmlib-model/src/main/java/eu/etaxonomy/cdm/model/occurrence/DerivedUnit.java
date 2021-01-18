@@ -81,7 +81,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> implements Cloneable{
 	private static final long serialVersionUID = -3525746216270843517L;
 
-	private static final Logger logger = Logger.getLogger(DnaSample.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnit.class);
 
 	@XmlElement(name = "Collection")
 	@XmlIDREF
@@ -398,26 +398,57 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
     }
 
     /**
-     * Collects all FieldUnits in the parent branches of the derivation graph.
+     * Collects all top most units (FieldUnits, DerivedUnits) in the parent branches of the derivation graph.
      * <p>
      * <b>NOTE:</b> As this method walks the derivation graph it should only be used in a transactional context or
      * it must be assured that the whole graph is initialized.
+     *
+     * @param typeRestriction
+     *  Restricts the returned entities to a specific type of unit.
      */
-    public java.util.Collection<FieldUnit> collectFieldUnits() {
-        java.util.Collection<FieldUnit> fieldUnits = new HashSet<>();
+    public <T extends SpecimenOrObservationBase> java.util.Collection<T> collectRootUnits(Class<T> typeRestriction) {
+        return collectRootUnits(typeRestriction, new HashSet<>());
+    }
+
+    private <T extends SpecimenOrObservationBase> java.util.Collection<T> collectRootUnits(Class<T> typeRestriction, Set<SpecimenOrObservationBase<?>> cycleDetection) {
+
+        if(typeRestriction == null) {
+            typeRestriction = (Class<T>) SpecimenOrObservationBase.class;
+        }
+
+        cycleDetection.add(this);
+
+        java.util.Collection<T> rootUnits = new HashSet<>();
         Set<SpecimenOrObservationBase> originals = getOriginals();
+
         if (originals != null && !originals.isEmpty()) {
             for (SpecimenOrObservationBase<?> original : originals) {
                 if (original.isInstanceOf(FieldUnit.class)) {
-                    fieldUnits.add(HibernateProxyHelper.deproxy(original, FieldUnit.class));
-                }
-                else if(original.isInstanceOf(DerivedUnit.class)){
+                    if(typeRestriction.isAssignableFrom(FieldUnit.class)) {
+                        if(logger.isTraceEnabled()) {logger.trace(" [" + original + "] <-- " + this );}
+                        rootUnits.add(HibernateProxyHelper.deproxy(original, typeRestriction));
+                    }
+                    // otherwise this entity can be ignored
+                } else if(original.isInstanceOf(DerivedUnit.class)){
                     DerivedUnit originalDerivedUnit = HibernateProxyHelper.deproxy(original, DerivedUnit.class);
-                    fieldUnits.addAll(originalDerivedUnit.collectFieldUnits());
+                    if(!cycleDetection.contains(originalDerivedUnit)) {
+                        rootUnits.addAll(originalDerivedUnit.collectRootUnits(typeRestriction, cycleDetection));
+                    } else {
+                        // circular graph path found, this should not exist but is not prevented by the cdmlib
+                        // using this as rootNode
+                        if(logger.isTraceEnabled()) {logger.trace("CYCLE! "+ originalDerivedUnit + " <-- [" + this + "] <-- ...");}
+                        rootUnits.add((T)this);
+                    }
                 }
             }
+        } else {
+            // no more originals for this DerivedUnit.
+            // Potential FieldUnits have been filtered out one call before in the recursion
+            if(isInstanceOf(typeRestriction)) {
+                rootUnits.add(HibernateProxyHelper.deproxy(this, typeRestriction));
+            }
         }
-        return fieldUnits;
+        return rootUnits;
     }
 
 // ******* GETTER / SETTER for preserved specimen only ******************/

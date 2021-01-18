@@ -635,10 +635,9 @@ public class OccurrenceServiceImpl
         //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
         //from which this DerivedUnit was derived until all FieldUnits are found.
 
-        // FIXME: use HQL queries to increase performance
+        // FIXME: use HQL queries to avoid entity instantiation and to increase performance
 
-        SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid, propertyPaths);
-//        specimen = HibernateProxyHelper.deproxy(specimen, SpecimenOrObservationBase.class);
+        SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid);
         Collection<FieldUnit> fieldUnits = new ArrayList<>();
         if (specimen == null){
             return null;
@@ -647,11 +646,33 @@ public class OccurrenceServiceImpl
             fieldUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
         }
         else if(specimen.isInstanceOf(DerivedUnit.class)){
-            fieldUnits.addAll(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class).collectFieldUnits());
+            fieldUnits.addAll(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class).collectRootUnits(FieldUnit.class));
         }
 
         fieldUnits = beanInitializer.initializeAll(fieldUnits, propertyPaths);
         return fieldUnits;
+    }
+
+    @Override
+    @Transactional(readOnly=true)
+    public Collection<SpecimenOrObservationBase> findRootUnits(UUID derivedUnitUuid, List<String> propertyPaths) {
+
+        // FIXME: use HQL queries to avoid entity instantiation and to increase performance
+
+        SpecimenOrObservationBase<?> specimen = load(derivedUnitUuid);
+        Collection<SpecimenOrObservationBase> rootUnits = new ArrayList<>();
+        if (specimen == null){
+            return null;
+        }
+        if (specimen.isInstanceOf(FieldUnit.class)) {
+            rootUnits.add(HibernateProxyHelper.deproxy(specimen, FieldUnit.class));
+        }
+        else if(specimen.isInstanceOf(DerivedUnit.class)){
+            rootUnits.addAll(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class).collectRootUnits(SpecimenOrObservationBase.class));
+        }
+
+        rootUnits = beanInitializer.initializeAll(rootUnits, propertyPaths);
+        return rootUnits;
     }
 
 
