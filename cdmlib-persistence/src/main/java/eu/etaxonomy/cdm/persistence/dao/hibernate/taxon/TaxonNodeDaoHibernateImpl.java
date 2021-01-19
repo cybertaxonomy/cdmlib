@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -275,12 +276,24 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         return null;
     }
-
     @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths){
+        return listChildrenOf(node,null, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths, null);
+    }
 
-        if (recursive == true){
+
+    @Override
+    public List<TaxonNode> listChildrenOf(TaxonNode node, List<TaxonNode> result, Integer pageSize, Integer pageIndex,
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator){
+
+        if (result == null){
+            result = new ArrayList<>();
+        }
+        if (!result.contains(node)){
+            result.add(node);
+        }
+        if (recursive == true && comparator == null ){
     		Criteria crit = childrenOfCriteria(node, includeUnpublished);
 
     		if(pageSize != null) {
@@ -296,7 +309,21 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
-    	}else{
+    	} else if (recursive == true){
+    	    List<TaxonNode> children = node.getChildNodes();
+    	    Collections.sort(children, comparator);
+    	    for (TaxonNode child: children){
+    	        if (!result.contains(child)){
+    	            result.add(child);
+    	        }
+    	        if (child.hasChildNodes()){
+    	            listChildrenOf(child, result, pageSize, pageIndex,
+    	                    recursive, includeUnpublished, propertyPaths,comparator);
+    	        }
+    	    }
+    	    return result;
+
+        } else{
     		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), null,
     		       includeUnpublished, pageSize, pageIndex, propertyPaths);
     	}

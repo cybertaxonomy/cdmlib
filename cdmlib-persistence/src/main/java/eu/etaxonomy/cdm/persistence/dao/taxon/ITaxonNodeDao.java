@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -193,6 +194,19 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
+
+    /**
+     * @param node
+     * @param pageSize
+     * @param pageIndex
+     * @param recursive
+     * @param includeUnpublished
+     * @param propertyPaths
+     * @param comparator
+     * @return
+     */
+    List<TaxonNode> listChildrenOf(TaxonNode node, List<TaxonNode> result, Integer pageSize, Integer pageIndex, boolean recursive,
+            boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator);
 
 
 }

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -143,8 +142,10 @@ public class TaxonNodeServiceImpl
 
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
-        if (recursive == true){
+        if (recursive == true && sortMode == null){
         	childNodes  = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, null);
+        }else if (recursive && sortMode != null){
+            childNodes = dao.listChildrenOf(taxonNode, new ArrayList<TaxonNode>(), null, null, recursive, includeUnpublished, propertyPaths, sortMode.newComparator());
         }else if (includeUnpublished){
             childNodes = new ArrayList<>(taxonNode.getChildNodes());
         }else{
@@ -158,10 +159,10 @@ public class TaxonNodeServiceImpl
 
         HHH_9751_Util.removeAllNull(childNodes);
 
-        if (sortMode != null){
-            Comparator<TaxonNode> comparator = sortMode.newComparator();
-        	Collections.sort(childNodes, comparator);
-        }
+//        if (sortMode != null){
+//            Comparator<TaxonNode> comparator = sortMode.newComparator();
+//        	Collections.sort(childNodes, comparator);
+//        }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }
@@ -1180,14 +1181,23 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, Authentication authentication, boolean openChildren){
-        Set<TaxonNode> nodes = new HashSet<>();
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode){
+        List<TaxonNode> nodes = new ArrayList<>();
         if (openChildren){
             List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
+            List<TaxonNode> children = new ArrayList<>();
+
             for (TaxonNode node: parentNodes){
-                nodes.addAll(listChildrenOf(node, null, null, true, true, propertyPaths));
+                children.addAll(loadChildNodesOfTaxonNode(node,
+                        propertyPaths, true,  true,
+                        sortMode));
+//                children.addAll(listChildrenOf(node, null, null, true, true, propertyPaths));
+//                Collections.sort(children, new TaxonNodeByRankAndNameComparator());
+
+                nodes.addAll(children);
             }
-            nodes.addAll(parentNodes);
+
+
 
         }
         List<TaxonDistributionDTO> result = new ArrayList<>();
@@ -1243,7 +1253,7 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids,
             List<String> propertyPaths, boolean openChildren) {
-        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren);
+        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren, null);
     }
 
 

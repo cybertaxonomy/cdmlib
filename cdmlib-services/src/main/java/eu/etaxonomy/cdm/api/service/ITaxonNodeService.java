@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -274,7 +275,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
 
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
-            Authentication authentication, boolean openChildren);
+            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode);
 
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
 
