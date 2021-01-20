@@ -2985,10 +2985,21 @@ public class TaxonServiceImpl
             Taxon taxon = (Taxon)load(taxonBaseUuid, propertyPaths);
 
             result = isDeletableForTaxon(references, taxonConfig );
+
+            if (taxonConfig.isDeleteNameIfPossible()){
+                result.includeResult(nameService.isDeletable(taxon.getName().getUuid(), taxonConfig.getNameDeletionConfig()));
+            }
         }else{
             SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
             result = isDeletableForSynonym(references, synonymConfig);
+            if (synonymConfig.isDeleteNameIfPossible()){
+                DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig());
+                if (!nameResult.isOk()){
+                    result.addExceptions(nameResult.getExceptions());
+                }
+            }
         }
+
         return result;
     }
 
@@ -3002,6 +3013,7 @@ public class TaxonServiceImpl
                 result.addRelatedObject(ref);
                 result.setAbort();
             }
+
         }
 
         return result;
