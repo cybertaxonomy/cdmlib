@@ -2987,7 +2987,10 @@ public class TaxonServiceImpl
             result = isDeletableForTaxon(references, taxonConfig );
 
             if (taxonConfig.isDeleteNameIfPossible()){
-                result.includeResult(nameService.isDeletable(taxon.getName().getUuid(), taxonConfig.getNameDeletionConfig()));
+                DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), taxonConfig.getNameDeletionConfig());
+                if (!nameResult.isOk()){
+                    result.addExceptions(nameResult.getExceptions());
+                }
             }
         }else{
             SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
