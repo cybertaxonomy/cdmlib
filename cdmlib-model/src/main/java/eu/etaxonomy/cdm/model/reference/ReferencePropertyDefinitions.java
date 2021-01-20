@@ -44,6 +44,7 @@ public class ReferencePropertyDefinitions {
     private static Map<String, String> iPrintSeries = new HashMap<>();
     private static Map<String, String> iThesis = new HashMap<>();
     private static Map<String, String> iReport = new HashMap<>();
+    private static Map<String, String> iPersonalCommunication = new HashMap<>();
     private static Map<String, String> all = new HashMap<>();
 
     static {
@@ -110,6 +111,8 @@ public class ReferencePropertyDefinitions {
         iReport = merge(iPublicationBase);
         put(iReport, "institution");
 
+        iPersonalCommunication = merge(iReference, iWithAuthorAndDate);
+
         all = merge(iThesis, iPrintSeries, iInProceedings, iJournal, iArticle, iBook, iBookSection, iProceedings, iPrintedUnitBase, iVolumeReference, iReport);
     }
 
@@ -148,7 +151,7 @@ public class ReferencePropertyDefinitions {
         case Patent:
             return all;
         case PersonalCommunication:
-            return all;
+            return iPersonalCommunication;
         case PrintSeries:
             return iPublicationBase;
         case Proceedings:
