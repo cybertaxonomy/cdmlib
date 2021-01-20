@@ -787,10 +787,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
         }else if (isNotBlank(area.getIdInVocabulary())){
         	title.append(area.getIdInVocabulary());
         }
-        if (area.getLevel() == null){
-        	title.append(" - ");
-        	title.append(area.getClass().getSimpleName());
-        }else{
+        if (area.getLevel() != null){
         	title.append(" - ");
         	Representation levelRepresentation = area.getLevel().getPreferredRepresentation(language);
         	String levelString = getPreferredAreaLabel(area.getLevel(), levelRepresentation);
