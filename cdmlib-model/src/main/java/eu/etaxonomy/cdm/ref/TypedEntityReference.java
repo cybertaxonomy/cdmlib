@@ -56,6 +56,19 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         }
     }
 
+    /**
+     * Casts the <code>TypedEntityReference</code> to the <code>subType</code> if possible.
+     *
+     * @throws ClassCastException
+     *  If the {@link #type} is not a super type of <code>subType</code>.
+     */
+    public <T extends CdmBase> TypedEntityReference<T> castTo(Class<T> subType){
+        if(!type.isAssignableFrom(subType)) {
+            throw new ClassCastException("Cannot cast " + type.getName() + " to " + subType.getName());
+        }
+        return new TypedEntityReference<>(subType, getUuid());
+    }
+
     public static  <T extends CdmBase> TypedEntityReference<T> fromEntity(T entity) {
         return TypedEntityReference.fromEntity(entity, true);
     }
