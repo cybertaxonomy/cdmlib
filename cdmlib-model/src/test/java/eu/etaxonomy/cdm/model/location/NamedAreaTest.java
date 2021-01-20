@@ -54,7 +54,7 @@ public class NamedAreaTest extends EntityTestBase {
 		Assert.assertEquals("Germany - Country", NamedArea.labelWithLevel(Country.GERMANY(), Language.DEFAULT()));
 		Assert.assertEquals("Germany - TDWG Level 3", NamedArea.labelWithLevel(getAreaByTdwgAbbreviation("GER"), Language.DEFAULT()));
 		NamedArea namedArea2 = NamedArea.NewInstance("Description for Named Area 2", "", "NA2");
-		Assert.assertEquals("NA2 - NamedArea", NamedArea.labelWithLevel(namedArea2, Language.DEFAULT()));
+		Assert.assertEquals("NA2", NamedArea.labelWithLevel(namedArea2, Language.DEFAULT()));
 		NamedArea namedArea3 = NamedArea.NewInstance("Description for Named Area 3", null, " ");
 		Assert.assertEquals("Description for Named Area 3", NamedArea.labelWithLevel(namedArea3, Language.DEFAULT()));
 
