@@ -56,7 +56,7 @@ public class NamedAreaTest extends EntityTestBase {
 		NamedArea namedArea2 = NamedArea.NewInstance("Description for Named Area 2", "", "NA2");
 		Assert.assertEquals("NA2 - NamedArea", NamedArea.labelWithLevel(namedArea2, Language.DEFAULT()));
 		NamedArea namedArea3 = NamedArea.NewInstance("Description for Named Area 3", null, " ");
-		Assert.assertEquals("Description for Named Area 3 - NamedArea", NamedArea.labelWithLevel(namedArea3, Language.DEFAULT()));
+		Assert.assertEquals("Description for Named Area 3", NamedArea.labelWithLevel(namedArea3, Language.DEFAULT()));
 
 		//TODO include Vocabulay information
 	}
