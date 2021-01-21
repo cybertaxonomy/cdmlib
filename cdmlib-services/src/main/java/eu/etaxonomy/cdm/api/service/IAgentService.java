@@ -105,8 +105,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 *
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
-	public List<UuidAndTitleCache<AgentBase>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
-
+	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
 
 	/**
      * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
