@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 @XmlEnum
 public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
-
     //NonViral
     @XmlEnumValue("NonViral")
     NonViral(UUID.fromString("04f88497-a66a-41b1-9b98-0dd22df6307f"), "NonViral","TaxonName", null, null),

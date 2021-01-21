@@ -195,10 +195,10 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-           query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString);
         }
         if (limit != null){
-           query.setMaxResults(limit);
+            query.setMaxResults(limit);
         }
 
         return getUuidAndAbbrevTitleCache(query);
