@@ -173,7 +173,6 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		return getUuidAndTitleCache(query);
 	}
 
-
 	@Override
     public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern){
         Session session = getSession();

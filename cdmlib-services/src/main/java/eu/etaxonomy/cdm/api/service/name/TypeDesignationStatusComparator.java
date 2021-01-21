@@ -14,7 +14,6 @@ import eu.etaxonomy.cdm.model.term.OrderedTermComparator;
 
 /**
  * @author a.kohlbecker
- *
  */
 public class TypeDesignationStatusComparator<T extends TypeDesignationStatusBase<T>>  extends OrderedTermComparator<T> {
     @Override

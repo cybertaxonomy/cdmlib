@@ -132,11 +132,11 @@ public class AgentServiceImpl
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache() {
 		return dao.getTeamUuidAndTitleCache();
 	}
-
-	@Override
-	public List<UuidAndTitleCache<AgentBase>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
-		return dao.getUuidAndAbbrevTitleCache(Institution.class, limit, pattern);
-	}
+//
+//	@Override
+//	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
+//		return dao.getUuidAndAbbrevTitleCache(Institution.class, limit, pattern);
+//	}
 
 	@Override
 	@Transactional(readOnly = false)

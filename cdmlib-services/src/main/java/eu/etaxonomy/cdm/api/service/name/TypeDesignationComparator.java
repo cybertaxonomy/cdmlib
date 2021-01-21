@@ -15,11 +15,10 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 /**
  * @author k.luther
  * @since 06.09.2018
- *
  */
 public class TypeDesignationComparator implements Comparator<TypeDesignationBase> {
 
-
+    @SuppressWarnings("rawtypes")
     private TypeDesignationStatusComparator statusComparator = new TypeDesignationStatusComparator();
 
     @SuppressWarnings("unchecked")

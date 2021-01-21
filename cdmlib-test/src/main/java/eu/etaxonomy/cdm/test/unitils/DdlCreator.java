@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.test.unitils;
 
-
 import java.util.EnumSet;
 
 import org.hibernate.boot.Metadata;
@@ -102,6 +101,4 @@ public class DdlCreator {
 
         //approaches for JPA and eclipselink can be found here: https://stackoverflow.com/questions/297438/auto-generate-data-schema-from-jpa-annotated-entity-classes;
     }
-
 }
-
