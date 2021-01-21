@@ -26,27 +26,22 @@ public class TypeDesignationComparator implements Comparator<TypeDesignationBase
     @Override
     public int compare(TypeDesignationBase o1, TypeDesignationBase o2) {
 
-        if (o1 == null && o2 == null){
+        if (o1 == o2){
             return 0;
-        }
-        if(o1==null){
+        }else if(o1==null){
             return 1;
-        }
-        if(o2==null){
+        }else if(o2==null){
             return -1;
         }
-        int result = 0;
-        if(o1.getTypeStatus()==null ){
-            if (o2.getTypeStatus() != null){
-                return 1;
-            }
-        }
-        if (o2.getTypeStatus() == null){
-            return -1;
-        }
-        if(result == 0 && (o1.getTypeStatus() == null || o2.getTypeStatus() == null)){
+
+        if (o1.getTypeStatus()==null && o2.getTypeStatus()==null){
             return o1.getUuid().compareTo(o2.getUuid());
+        }else if (o1.getTypeStatus() != null && o2.getTypeStatus() != null){
+            return statusComparator.compare(o1.getTypeStatus(), o2.getTypeStatus()) ;
+        }else if (o1.getTypeStatus()==null){
+            return 1;
+        }else {
+            return -1;  //o2.getTypeStatus()==null
         }
-        return statusComparator.compare(o1.getTypeStatus(), o2.getTypeStatus()) ;
     }
 }
