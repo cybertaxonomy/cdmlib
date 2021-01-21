@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -211,7 +210,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     /**
      * Creates a new taxon node for the given existing taxon with the given existing parent taxon node.
      */
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref);
+//    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref);
 
     /**
      * Sets the secundum reference for all taxa of the given subtree.

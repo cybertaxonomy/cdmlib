@@ -830,10 +830,13 @@ public class TaxonNodeServiceImpl
 
         UpdateResult result = new UpdateResult();
         TaxonName name = null;
+        Taxon taxon = null;
         if (taxonDto.getNameUuid() != null){
             name = nameService.load(taxonDto.getNameUuid());
 
-        }else{
+        }else if (taxonDto.getTaxonUuid() != null){
+            taxon = (Taxon) taxonService.load(taxonDto.getTaxonUuid());
+        }else {
             UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
                     taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
             result.addUpdatedObjects(tmpResult.getUpdatedObjects());
@@ -853,11 +856,14 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
+        Taxon newTaxon = null;
+       if (taxon != null){
+           newTaxon = Taxon.NewInstance(name, sec);
+           newTaxon.setPublish(taxonDto.isPublish());
+       }else{
+           newTaxon = taxon;
+       }
 
-       Taxon newTaxon = Taxon.NewInstance(name, sec);
-       newTaxon.setPublish(taxonDto.isPublish());
-//       UUID taxonUuid = taxonService.saveOrUpdate(newTaxon);
-//       newTaxon = (Taxon) taxonService.load(taxonUuid);
 
        TaxonNode parent = dao.load(parentNodeUuid);
        TaxonNode child = null;
@@ -962,27 +968,27 @@ public class TaxonNodeServiceImpl
         return result;
     }
 
-    @Override
-    @Transactional
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref){
-        UpdateResult result = new UpdateResult();
-        TaxonNode parent = dao.load(parentNodeUuid);
-        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-        TaxonNode child = null;
-        try{
-            child = parent.addChildTaxon(taxon, parent.getReference(), parent.getMicroReference());
-        }catch(Exception e){
-            result.addException(e);
-            result.setError();
-            return result;
-        }
-
-        result.addUpdatedObject(parent);
-        if (child != null){
-            result.setCdmEntity(child);
-        }
-        return result;
-    }
+//    @Override
+//    @Transactional
+//    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref){
+//        UpdateResult result = new UpdateResult();
+//        TaxonNode parent = dao.load(parentNodeUuid);
+//        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
+//        TaxonNode child = null;
+//        try{
+//            child = parent.addChildTaxon(taxon, parent.getReference(), parent.getMicroReference());
+//        }catch(Exception e){
+//            result.addException(e);
+//            result.setError();
+//            return result;
+//        }
+//
+//        result.addUpdatedObject(parent);
+//        if (child != null){
+//            result.setCdmEntity(child);
+//        }
+//        return result;
+//    }
 
     @Override
     @Transactional
