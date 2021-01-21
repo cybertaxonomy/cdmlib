@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.TypeDesignationStatusFilter;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -652,5 +653,14 @@ public interface INameService
     public UpdateResult parseName(String taxonNameString, NomenclaturalCode code, Rank preferredRank, boolean doDeduplicate);
 
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank, boolean doEmpty, boolean doDeduplicate);
+
+    /**
+     * checks whether the name can be deleted if the taxon with taxonUuid will be deleted, too
+     * @param name
+     * @param config
+     * @param taxonUuid
+     * @return
+     */
+    DeleteResult isDeletable(UUID nameUuid, DeleteConfiguratorBase config, UUID taxonUuid);
 
 }

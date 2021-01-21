@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.Term;
@@ -180,7 +181,7 @@ public class NameServiceImpl
         }
 
         try{
-            result = this.isDeletable(name, config);
+            result = this.isDeletable(name, config, null);
         }catch(Exception e){
             result.addException(e);
             result.setError();
@@ -980,7 +981,7 @@ public class NameServiceImpl
     }
 
 
-    public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config, UUID taxonUuid){
         DeleteResult result = new DeleteResult();
 
         NameDeletionConfigurator nameConfig = null;
@@ -1014,9 +1015,16 @@ public class NameServiceImpl
         }
 
         //concepts
-        if (! name.getTaxonBases().isEmpty()){
-            result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
-            result.setAbort();
+
+        if (! name.getTaxonBases().isEmpty() ){
+            boolean isDeletableTaxon = true;
+            List <TaxonBase> notDeletedTaxonBases = name.getTaxonBases().stream()
+                    .filter((taxonBase) -> !taxonBase.getUuid().equals(taxonUuid))
+                    .collect(Collectors.toList());
+            if (!notDeletedTaxonBases.isEmpty()){
+                result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
+                result.setAbort();
+            }
         }
 
         //hybrid relationships
@@ -1039,8 +1047,9 @@ public class NameServiceImpl
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
             }
+
             //DescriptionElementSource#nameUsedInSource
-            else if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+            else if (referencingObject.isInstanceOf(DescriptionElementSource.class) && !referencingObject.isInstanceOf(NomenclaturalSource.class) ){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
@@ -1087,7 +1096,13 @@ public class NameServiceImpl
     @Override
     public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
         TaxonName name = this.load(nameUUID);
-        return isDeletable(name, config);
+        return isDeletable(name, config, null);
+    }
+
+    @Override
+    public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config, UUID taxonUuid){
+        TaxonName name = this.load(nameUUID);
+        return isDeletable(name, config, taxonUuid);
     }
 
     @Override
