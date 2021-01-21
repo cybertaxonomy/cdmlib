@@ -177,18 +177,14 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	@Override
     public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern){
         Session session = getSession();
-        String clazzString = "";
 
-        if (clazz == null){
-            clazzString = " FROM " + type.getSimpleName();
-        }else {
-            clazzString = " FROM " + clazz.getSimpleName();
-        }
+        clazz = clazz == null? type : clazz;
+        String clazzString = " FROM " + type.getSimpleName();
 
         Query query = null;
-        String whereClause = " WHERE ";
+
         if (pattern != null){
-            whereClause += "nomenclaturalTitle LIKE :pattern";
+            String whereClause = " WHERE nomenclaturalTitle LIKE :pattern";
             if (pattern.startsWith("*")){
                 whereClause += " OR titleCache LIKE :pattern";
             }
