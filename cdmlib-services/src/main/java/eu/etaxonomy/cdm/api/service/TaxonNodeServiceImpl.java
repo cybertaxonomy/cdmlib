@@ -846,7 +846,7 @@ public class TaxonNodeServiceImpl
         if (taxonDto.getSecUuid() != null ){
             sec = referenceService.load(taxonDto.getSecUuid());
         }
-        if (!name.isPersited()){
+        if (name != null && !name.isPersited()){
             for (HybridRelationship rel : name.getHybridChildRelations()){
                 if (!rel.getHybridName().isPersited()) {
                     nameService.save(rel.getHybridName());
@@ -857,7 +857,7 @@ public class TaxonNodeServiceImpl
             }
         }
         Taxon newTaxon = null;
-       if (taxon != null){
+       if (taxon == null){
            newTaxon = Taxon.NewInstance(name, sec);
            newTaxon.setPublish(taxonDto.isPublish());
        }else{
