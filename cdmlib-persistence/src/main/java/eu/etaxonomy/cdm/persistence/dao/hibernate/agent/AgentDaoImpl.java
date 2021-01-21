@@ -174,10 +174,10 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	}
 
 	@Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern){
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern){
         Session session = getSession();
 
-        clazz = clazz == null? type : clazz;
+        clazz = clazz == null? (Class)type : clazz;
         String clazzString = " FROM " + type.getSimpleName();
 
         Query query = null;

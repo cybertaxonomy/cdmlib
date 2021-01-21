@@ -114,7 +114,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
      *
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern);
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
 
     /**
      * @param teamUuid

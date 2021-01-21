@@ -253,7 +253,7 @@ public class AgentServiceImpl
 	}
 
     @Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern) {
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern) {
         return dao.getUuidAndAbbrevTitleCache(clazz, null, pattern);
     }
 
