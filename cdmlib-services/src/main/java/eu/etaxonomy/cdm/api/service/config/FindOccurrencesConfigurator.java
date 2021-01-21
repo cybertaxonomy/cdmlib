@@ -17,11 +17,11 @@ import eu.etaxonomy.cdm.persistence.query.AssignmentStatus;
 /**
  * @author pplitzner
  * @since Apr 13, 2015
- *
  */
-public class FindOccurrencesConfigurator extends IdentifiableServiceConfiguratorImpl<SpecimenOrObservationBase>{
+public class FindOccurrencesConfigurator
+        extends IdentifiableServiceConfiguratorImpl<SpecimenOrObservationBase>{
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3225141895711379298L;
 
     private SpecimenOrObservationType specimenType;
     private UUID associatedTaxonUuid;

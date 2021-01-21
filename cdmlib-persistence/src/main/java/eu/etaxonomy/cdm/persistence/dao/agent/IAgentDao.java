@@ -105,31 +105,11 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
 
-	/**
-	 * @return
-	 */
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
 
-    /**
-     * @param clazz
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern);
+    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern);
 
-    /**
-     * @param clazz
-     * @param queryString
-     * @param matchmode
-     * @param criterion
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
-    List<AgentBase> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode,
+    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
 }

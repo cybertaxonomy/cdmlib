@@ -205,13 +205,11 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     }
 
 	@Override
-    public List<AgentBase> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<String> params = new HashSet<>();
         params.add("titleCache");
         params.add("nomenclaturalTitle");
 
 	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
-
-
 }

@@ -165,7 +165,6 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 */
 	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
 
-
-    public List<AgentBase> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<AgentBase> config);
+    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<T> config);
 
 }

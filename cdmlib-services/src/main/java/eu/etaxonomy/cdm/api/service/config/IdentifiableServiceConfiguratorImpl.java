@@ -39,8 +39,8 @@ public class IdentifiableServiceConfiguratorImpl<T extends IIdentifiableEntity>
 	private List<OrderHint> orderHints;
 
 	@Override
-	public Class<? extends T> getClazz() {
-		return clazz;
+	public Class<T> getClazz() {
+		return (Class)clazz;
 	}
 
 	@Override
