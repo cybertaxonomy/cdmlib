@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -810,7 +809,6 @@ public class TaxonNodeServiceImpl
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
 
-
         List<TaxonNodeAgentRelation> records = null;
 
         long count = dao.countTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid);
@@ -858,36 +856,34 @@ public class TaxonNodeServiceImpl
             }
         }
         Taxon newTaxon = null;
-       if (taxon == null){
-           newTaxon = Taxon.NewInstance(name, sec);
-           newTaxon.setPublish(taxonDto.isPublish());
-       }else{
-           newTaxon = taxon;
-       }
+        if (taxon == null){
+            newTaxon = Taxon.NewInstance(name, sec);
+            newTaxon.setPublish(taxonDto.isPublish());
+        }else{
+            newTaxon = taxon;
+        }
 
+        TaxonNode parent = dao.load(parentNodeUuid);
+        TaxonNode child = null;
+        if (source != null){
+            if (source.isPersited()){
+                source = (DescriptionElementSource) sourceDao.load(source.getUuid());
+            }
+            if (source.getCitation() != null){
+                source.setCitation(referenceService.load(source.getCitation().getUuid()));
+            }
+            if (source.getNameUsedInSource() !=null){
+                source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
+            }
+        }
 
-       TaxonNode parent = dao.load(parentNodeUuid);
-       TaxonNode child = null;
-       Reference ref = null;
-       if (source != null){
-           if (source.isPersited()){
-               source = (DescriptionElementSource) sourceDao.load(source.getUuid());
-           }
-           if (source.getCitation() != null){
-               source.setCitation(referenceService.load(source.getCitation().getUuid()));
-           }
-           if (source.getNameUsedInSource() !=null){
-               source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
-           }
-       }
+        try{
+            child = parent.addChildTaxon(newTaxon, source);
+            child.setStatus(status);
 
-       try{
-           child = parent.addChildTaxon(newTaxon, source);
-           child.setStatus(status);
-
-           if (statusNote != null){
-               child.getStatusNote().putAll(statusNote);
-           }
+            if (statusNote != null){
+                child.getStatusNote().putAll(statusNote);
+            }
 
         }catch(Exception e){
             result.addException(e);
