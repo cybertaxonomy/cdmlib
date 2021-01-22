@@ -55,8 +55,8 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
             return 1;
         }
 
-        Integer rankTax1 = node1.getTaxon() != null ? node1.getTaxon().getName().getRank().getOrderIndex(): null;
-        Integer rankTax2 = node2.getTaxon() != null ? node2.getTaxon().getName().getRank().getOrderIndex(): null;
+        Integer rankTax1 = getRankOrder(node1);
+        Integer rankTax2 = getRankOrder(node2);
 
         //first compare ranks, if ranks are equal (or both null) compare names or taxon title cache if names are null
         int rankOrder = OrderIndexComparator.instance().compare(rankTax1, rankTax2);
@@ -98,6 +98,14 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
         }else{
             //rankTax2.isHigher(rankTax1)
             return rankOrder;
+        }
+    }
+
+    private Integer getRankOrder(TaxonNode node) {
+        if (node.getNullSafeRank() != null){
+            return node.getNullSafeRank().getOrderIndex();
+        }else{
+            return null;
         }
     }
 

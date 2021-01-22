@@ -1052,6 +1052,11 @@ public class TaxonNode
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
     }
 
+    @Transient
+    public TaxonName getNullSafeName() {
+        return getTaxon() == null? null: getTaxon().getName();
+    }
+
     public void removeNullValueFromChildren(){
         try {
             //HHH_9751_Util.removeAllNull(childNodes);
