@@ -144,7 +144,7 @@ public class ClassificationServiceImpl
             Rank rank, boolean includeUnpublished, Integer pageSize, Integer pageIndex, TaxonNodeDtoSortMode sortMode,
             List<String> propertyPaths) {
         List<TaxonNode> list = listRankSpecificRootNodes(classification, subtree, rank, includeUnpublished, pageSize, pageIndex, propertyPaths);
-        return list.stream().filter(e ->  e != null).map(e -> new TaxonNodeDto(e)).sorted(sortMode.newComparator()).collect(Collectors.toList());
+        return list.stream().filter(e ->  e != null).map(e -> new TaxonNodeDto(e)).sorted(sortMode.comparator()).collect(Collectors.toList());
     }
 
     @Override
@@ -340,7 +340,7 @@ public class ClassificationServiceImpl
 
         List<TaxonNode> results = dao.listChildrenOf(
                 taxon, classification, subtree, includeUnpublished, pageSize, pageIndex, propertyPaths);
-        Comparator<TaxonNodeDto> comparator = sortMode.newComparator();
+        Comparator<TaxonNodeDto> comparator = sortMode.comparator();
         // TODO order during the hibernate query in the dao?
         List<TaxonNodeDto> dtos = results.stream().map(e -> new TaxonNodeDto(e)).sorted(comparator).collect(Collectors.toList());
         return dtos;

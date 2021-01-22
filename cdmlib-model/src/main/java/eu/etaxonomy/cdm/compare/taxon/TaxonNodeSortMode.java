@@ -6,29 +6,23 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 public enum TaxonNodeSortMode {
 
-	NaturalOrder(TaxonNodeNaturalComparator.class),
+	NaturalOrder(new TaxonNodeNaturalComparator()),
 	/**
      * sorts by TaxonName titleCaches and rank associated with the taxonNodes
      */
-	RankAndAlphabeticalOrder(TaxonNodeByRankAndNameComparator.class),
+	RankAndAlphabeticalOrder(new TaxonNodeByRankAndNameComparator()),
 	/**
 	 * sorts by TaxonName titleCaches associated with the taxonNodes
 	 */
-	AlphabeticalOrder(TaxonNodeByNameComparator.class);
+	AlphabeticalOrder(new TaxonNodeByNameComparator());
 
-	private Class<? extends Comparator<TaxonNode>> type;
+    private Comparator<TaxonNode> comparator;
 
-    TaxonNodeSortMode(Class<? extends Comparator<TaxonNode>> type){
-	    this.type = type;
-	}
+    private TaxonNodeSortMode(Comparator<TaxonNode> comparator){
+        this.comparator = comparator;
+    }
 
-    public Comparator<TaxonNode> newComparator() {
-        try {
-            return type.newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public Comparator<TaxonNode> comparator() {
+        return comparator;
     }
 }

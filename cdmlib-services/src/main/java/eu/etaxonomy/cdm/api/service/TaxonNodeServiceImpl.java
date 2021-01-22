@@ -145,7 +145,7 @@ public class TaxonNodeServiceImpl
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
         if (recursive == true){
-            Comparator<TaxonNode> comparator = sortMode == null? null : sortMode.newComparator();
+            Comparator<TaxonNode> comparator = sortMode == null? null : sortMode.comparator();
             childNodes = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, propertyPaths, comparator);
         }else if (includeUnpublished){
             childNodes = new ArrayList<>(taxonNode.getChildNodes());
