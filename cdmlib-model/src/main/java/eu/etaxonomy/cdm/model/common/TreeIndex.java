@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import eu.etaxonomy.cdm.compare.TreeIndexComparator;
+import eu.etaxonomy.cdm.compare.common.TreeIndexComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.TermNode;
 

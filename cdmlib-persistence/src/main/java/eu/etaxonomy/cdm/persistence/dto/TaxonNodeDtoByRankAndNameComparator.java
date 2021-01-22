@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.compare.OrderIndexComparator;
+import eu.etaxonomy.cdm.compare.common.OrderIndexComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;

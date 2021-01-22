@@ -21,9 +21,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
-
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -396,10 +395,6 @@ public class TypeDesignationSetManager {
 
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
         return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable).format(this);
-    }
-
-    private boolean isNotBlank(String str){
-        return StringUtils.isNotBlank(str);
     }
 
     class DataIntegrityException extends Exception {

@@ -469,10 +469,8 @@ public class OccurrenceServiceImpl
             UUID associatedTaxonUuid, List<String> propertyPaths) {
 
         Set<Taxon> taxa = new HashSet<>();
-        Set<Integer> occurrenceIds = new HashSet<>();
         Set<FieldUnitDTO> fieldUnitDTOs = new HashSet<>();
         HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen = new HashMap<>();
-        List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
         boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
         // Integer limit = PagerUtils.limitFor(pageSize);
@@ -533,10 +531,7 @@ public class OccurrenceServiceImpl
         });
 
         return orderdDTOs;
-
     }
-
-
 
     @Override
     @Transactional
@@ -675,7 +670,6 @@ public class OccurrenceServiceImpl
         return rootUnits;
     }
 
-
     /**
      * Recursively searches all {@link DerivationEvent}s to find all "originals" ({@link SpecimenOrObservationBase})
      * from which this DerivedUnit was derived until all FieldUnits are found.
@@ -761,7 +755,7 @@ public class OccurrenceServiceImpl
         DerivedUnitDTO derivedUnitDTO = null;
 
         Map<UUID, SpecimenOrObservationBaseDTO> cycleDetectionMap = new HashMap<>();
-        SpecimenOrObservationBase derivative = dao.load(derivedUnitUuid);
+        SpecimenOrObservationBase<?> derivative = dao.load(derivedUnitUuid);
         if(derivative != null){
             if (derivative instanceof FieldUnit){
                 fieldUnitDTO = FieldUnitDTO.fromEntity((FieldUnit)derivative);
@@ -800,11 +794,9 @@ public class OccurrenceServiceImpl
                                 }
                             }
                         }
-
                     } else {
                         cycleDetectionMap.put(originalDTO.getUuid(), originalDTO);
                     }
-
 
                     if (originalDTO instanceof FieldUnitDTO){
                         fieldUnitDTO = (FieldUnitDTO)originalDTO;

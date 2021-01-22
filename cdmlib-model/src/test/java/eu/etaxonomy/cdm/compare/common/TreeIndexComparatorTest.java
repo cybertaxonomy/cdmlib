@@ -6,19 +6,17 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.compare.common;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.compare.TreeIndexComparator;
+import eu.etaxonomy.cdm.compare.common.TreeIndexComparator;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
-
 
 /**
  * @author a.mueller
  * @since 12.09.2016
- *
  */
 public class TreeIndexComparatorTest {
 
@@ -55,5 +53,4 @@ public class TreeIndexComparatorTest {
         Assert.assertTrue(0 < comparator.compare(ti10_30_11, ti10_20));
 
     }
-
 }

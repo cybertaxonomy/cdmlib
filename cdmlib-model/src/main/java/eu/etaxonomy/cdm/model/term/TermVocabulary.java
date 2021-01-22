@@ -197,14 +197,12 @@ public class TermVocabulary<T extends DefinedTermBase>
 	 * @return
 	 */
 	public SortedSet<T> getTermsOrderedByLabels(Language language){
-		TermLanguageComparator<T> comp = new TermLanguageComparator<>();
-		comp.setCompareLanguage(language);
+		TermLanguageComparator<T> comp = new TermLanguageComparator<>(Language.DEFAULT(), language);
 
 		SortedSet<T> result = new TreeSet<>(comp);
 		result.addAll(getTerms());
 		return result;
 	}
-
 
 	public TermVocabulary<T> readCsvLine(List<String> csvLine) {
 		return readCsvLine(csvLine, Language.CSV_LANGUAGE());

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.io.Serializable;
 import java.util.List;
 
-import eu.etaxonomy.cdm.compare.OrderIndexComparator;
+import eu.etaxonomy.cdm.compare.common.OrderIndexComparator;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 

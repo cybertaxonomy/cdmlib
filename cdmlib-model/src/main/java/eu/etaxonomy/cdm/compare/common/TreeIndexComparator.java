@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.compare;
+package eu.etaxonomy.cdm.compare.common;
 
 import java.util.Comparator;
 
@@ -50,7 +50,5 @@ public class TreeIndexComparator implements Comparator<TreeIndex>{
             }
         }
         return -1;
-
     }
-
 }

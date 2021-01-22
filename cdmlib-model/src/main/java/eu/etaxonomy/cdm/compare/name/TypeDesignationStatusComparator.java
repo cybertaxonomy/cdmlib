@@ -6,21 +6,22 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service.name;
+package eu.etaxonomy.cdm.compare.name;
 
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.NullTypeDesignationStatus;
+import eu.etaxonomy.cdm.compare.term.OrderedTermComparator;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.term.OrderedTermComparator;
 
 /**
  * @author a.kohlbecker
  */
-public class TypeDesignationStatusComparator<T extends TypeDesignationStatusBase<T>>  extends OrderedTermComparator<T> {
+public class TypeDesignationStatusComparator<T extends TypeDesignationStatusBase<T>>
+        extends OrderedTermComparator<T> {
+
     @Override
     public int compare(T o1, T o2) {
         // fix inverted order of cdm terms by -1*
 
-        if(o1 == null && o2 == null || o1 instanceof NullTypeDesignationStatus && o2 instanceof NullTypeDesignationStatus){
+        if(o1 == o2 || o1 instanceof NullTypeDesignationStatus && o2 instanceof NullTypeDesignationStatus){
             return 0;
         }
         if(o1 == null || o1 instanceof NullTypeDesignationStatus){
