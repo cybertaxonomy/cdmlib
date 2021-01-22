@@ -16,7 +16,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.compare.taxon.TaxonNaturalComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -191,7 +191,7 @@ public class TaxonNodeByNameComparatorTest {
         taxonNodes.addAll(classification.getChildNodes());
 
         // order using default settings
-        TaxonNaturalComparator taxonNodeComparator = new TaxonNaturalComparator();
+        TaxonNodeNaturalComparator taxonNodeComparator = new TaxonNodeNaturalComparator();
        // Collections.sort(taxonNodes, taxonNodeComparator);
 
         int i = 0;

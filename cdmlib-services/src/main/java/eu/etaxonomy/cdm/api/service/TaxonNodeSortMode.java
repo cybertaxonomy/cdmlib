@@ -2,14 +2,14 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.compare.taxon.TaxonNaturalComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 public enum TaxonNodeSortMode {
 
-	NaturalOrder(TaxonNaturalComparator.class),
+	NaturalOrder(TaxonNodeNaturalComparator.class),
 	/**
      * sorts by TaxonName titleCaches and rank associated with the taxonNodes
      */

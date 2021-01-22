@@ -34,7 +34,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
-import eu.etaxonomy.cdm.compare.taxon.TaxonNaturalComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -572,7 +572,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	nodes.add(classification.addParentChild(pinus, pinusPampa, null, null));
     	classificationService.saveClassification(classification);
     	//this.taxonNodeService.save(nodes);
-    	TaxonNaturalComparator comparator = new TaxonNaturalComparator();
+    	TaxonNodeNaturalComparator comparator = new TaxonNodeNaturalComparator();
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
 

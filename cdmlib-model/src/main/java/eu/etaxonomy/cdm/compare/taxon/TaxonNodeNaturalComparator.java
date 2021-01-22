@@ -19,11 +19,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  *
  * @author k.luther
  */
-public class TaxonNaturalComparator implements Comparator<TaxonNode> {
+public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 
-    public TaxonNaturalComparator(){
+    public TaxonNodeNaturalComparator(){
 		super();
-
 	}
 
 	@SuppressWarnings("null")
@@ -59,13 +58,13 @@ public class TaxonNaturalComparator implements Comparator<TaxonNode> {
 		String lastEqualAncestorTreeIndex = "";
 		List<TaxonNode> ancestorAndNode= new ArrayList<>();
 		ancestorAndNode.add(node1);
-		ancestorAndNode.addAll(node1.getAncestors());
+		ancestorAndNode.addAll(node1.getAncestorList());
 		java.util.Collections.sort(ancestorAndNode, new TreeIndexComparator());
 
 
 		List<TaxonNode> ancestorAndNode2= new ArrayList<>();
         ancestorAndNode2.add(node2);
-        ancestorAndNode2.addAll(node2.getAncestors());
+        ancestorAndNode2.addAll(node2.getAncestorList());
         java.util.Collections.sort(ancestorAndNode2, new TreeIndexComparator());
 
 		for (int i = 0; i < splitNode1.length; i++){
