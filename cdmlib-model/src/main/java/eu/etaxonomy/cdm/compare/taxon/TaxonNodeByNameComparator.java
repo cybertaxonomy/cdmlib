@@ -22,7 +22,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 
 /**
- * Comparator that compares two TaxonNode instances by the titleCache of their referenced names.
+ * Comparator that compares two TaxonNode instances by the titleCache of their
+ * referenced names.
+ *
  * @author a.kohlbecker
  * @since 24.06.2009
  */
@@ -156,7 +158,7 @@ public class TaxonNodeByNameComparator
             titleCache = String.valueOf(taxonNode.getId());
         }
         if (logger.isTraceEnabled()){logger.trace("SortableTitleCache: " + titleCache);}
-//        System.out.println(titleCache);
+
         return titleCache;
     }
 

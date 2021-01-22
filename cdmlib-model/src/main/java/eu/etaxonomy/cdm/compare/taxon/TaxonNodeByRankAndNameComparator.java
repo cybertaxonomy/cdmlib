@@ -64,15 +64,12 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
         //first compare ranks, if ranks are equal (or both null) compare names or taxon title cache if names are null
         int rankOrder = OrderIndexComparator.instance().compare(rankTax1, rankTax2);
 
-        if (rankOrder == 0) {
-            List<TaggedText> taggedText1 = null;
-            List<TaggedText> taggedText2 = null;
-            if (node1.getTaxon() != null ){
-                taggedText1 = node1.getTaxon().getName() != null? node1.getTaxon().getName().getTaggedName() : node1.getTaxon().getTaggedTitle();
-            }
-            if (node2.getTaxon() != null ){
-                taggedText2 = node2.getTaxon().getName() != null? node2.getTaxon().getName().getTaggedName() : node2.getTaxon().getTaggedTitle();
-            }
+        if (rankOrder != 0){
+            return rankOrder;
+        }else {
+            List<TaggedText> taggedText1 = getTaggedText(node1);
+            List<TaggedText> taggedText2 = getTaggedText(node2);;
+
             if (taggedText1 != null && taggedText2 != null){
                 //same rank, order by name
                 String sortableName1 = "";
@@ -98,9 +95,16 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
                 //this is maybe not 100% correct, we need to compare name cases, but it is a very rare case
                 return node1.getUuid().compareTo(node2.getUuid());
             }
+        }
+    }
+
+    private List<TaggedText> getTaggedText(TaxonNode node) {
+        if (node == null || node.getTaxon() == null){
+            return null;
         }else{
-            //rankTax2.isHigher(rankTax1)
-            return rankOrder;
+            return node.getNullSafeName() != null?
+                node.getNullSafeName().getTaggedName() :
+                node.getTaxon().getTaggedTitle();
         }
     }
 
