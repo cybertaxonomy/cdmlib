@@ -6,12 +6,14 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.taxon;
+package eu.etaxonomy.cdm.compare.taxon;
 
 import java.io.Serializable;
 import java.util.List;
 
 import eu.etaxonomy.cdm.compare.common.OrderIndexComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 

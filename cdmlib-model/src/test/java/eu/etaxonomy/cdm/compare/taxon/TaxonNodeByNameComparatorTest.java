@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.taxon;
+package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,11 +16,16 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.compare.taxon.TaxonNaturalComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.kohlbecker

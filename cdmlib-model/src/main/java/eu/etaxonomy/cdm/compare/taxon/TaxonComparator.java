@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.taxon;
+package eu.etaxonomy.cdm.compare.taxon;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * This class makes available a method to compare two {@link TaxonBase taxa} by
@@ -36,18 +37,13 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonComparator.class);
 
-	private boolean includeRanks = false;
+	final private boolean includeRanks;
 
-    /**
-     * @param includeRanks
-     */
     public TaxonComparator() {
         super();
+        this.includeRanks = false;
     }
 
-    /**
-     * @param includeRanks
-     */
     public TaxonComparator(boolean includeRanks) {
         super();
         this.includeRanks = includeRanks;

@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.taxon;
+package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +17,8 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -27,6 +29,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**

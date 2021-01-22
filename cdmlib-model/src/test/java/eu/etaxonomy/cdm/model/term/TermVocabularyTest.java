@@ -26,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.compare.term.TermIdInVocabularyComparator;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 

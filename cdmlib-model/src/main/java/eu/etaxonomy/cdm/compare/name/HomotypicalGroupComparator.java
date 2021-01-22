@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.compare.name;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,9 +15,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 
 public class HomotypicalGroupComparator implements
 		Comparator<HomotypicalGroup>, Serializable {

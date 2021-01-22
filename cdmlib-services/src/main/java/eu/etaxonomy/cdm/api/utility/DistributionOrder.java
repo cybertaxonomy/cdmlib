@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.api.utility;
 import java.util.Comparator;
 import java.util.Set;
 
-import eu.etaxonomy.cdm.api.service.DistributionNodeByAreaLabelComparator;
 import eu.etaxonomy.cdm.common.TreeNode;
+import eu.etaxonomy.cdm.compare.description.DistributionNodeByAreaLabelComparator;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 

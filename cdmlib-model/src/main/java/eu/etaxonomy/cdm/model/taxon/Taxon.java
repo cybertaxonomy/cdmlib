@@ -49,6 +49,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;

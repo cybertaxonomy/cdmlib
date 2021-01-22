@@ -39,6 +39,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.compare.term.TermLanguageComparator;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.common.ExternallyManaged;
 import eu.etaxonomy.cdm.model.common.Language;

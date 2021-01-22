@@ -42,6 +42,10 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNaturalComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;

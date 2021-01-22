@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.compare.description;
 
 import java.util.Set;
 
@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.TreeNode;
+import eu.etaxonomy.cdm.compare.description.DistributionNodeByAreaLabelComparator;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.test.TermTestBase;
@@ -21,12 +22,10 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 /**
  * @author a.mueller
  * @since 10.03.2017
- *
  */
 public class DistributionNodeByAreaLabelComparatorTest extends TermTestBase {
 
     private static DistributionNodeByAreaLabelComparator comparator = new DistributionNodeByAreaLabelComparator();
-
 
     @Test
     public void testComparatorContract() {
@@ -46,5 +45,4 @@ public class DistributionNodeByAreaLabelComparatorTest extends TermTestBase {
 
         Assert.assertTrue(result1.equals(-result2));
     }
-
 }

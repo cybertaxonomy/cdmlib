@@ -6,11 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.compare.name;
 
 import java.util.Comparator;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 
 /**
  * @author k.luther
@@ -18,9 +22,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class TypeComparator implements Comparator<TypeDesignationBase<?>> {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compare(TypeDesignationBase<?> o1, TypeDesignationBase<?> o2) {
         /*
@@ -68,10 +69,6 @@ public class TypeComparator implements Comparator<TypeDesignationBase<?>> {
         return result;
     }
 
-    /**
-     * @param o1
-     * @return
-     */
     private TypeDesignationStatusBase<?> getStatus(TypeDesignationBase<?> td) {
         if (td.isInstanceOf(TypeDesignationBase.class)){
             return CdmBase.deproxy(td, TypeDesignationBase.class).getTypeStatus();
@@ -80,40 +77,20 @@ public class TypeComparator implements Comparator<TypeDesignationBase<?>> {
         }
     }
 
-    /**
-     * @param status1
-     * @param status2
-     * @return
-     */
     private int compareNumber(SpecimenTypeDesignation status1, SpecimenTypeDesignation status2) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    /**
-     * @param status1
-     * @param status2
-     * @return
-     */
     private int compareCollector(SpecimenTypeDesignation status1, SpecimenTypeDesignation status2) {
         // TODO Auto-generated method stub
         return 0;
     }
 
-    /**
-     * @param status1
-     * @param status2
-     * @return
-     */
     private int compareLand(SpecimenTypeDesignation type1, SpecimenTypeDesignation type2) {
         return 0;
     }
 
-    /**
-     * @param status1
-     * @param status2
-     * @return
-     */
     private int compareStatus(TypeDesignationStatusBase status1, TypeDesignationStatusBase status2) {
         //Status der Typen: a) holo, lecto, neo, syn, b) epi, paralecto, c) para (wenn überhaupt) – die jeweiligen iso immer direct mit dazu
 

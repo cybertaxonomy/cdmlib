@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.taxon;
+package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * This class orders synonyms of a homotypic group,
