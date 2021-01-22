@@ -27,6 +27,7 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
 
 	@Override
     public int compare(TaxonNode node1, TaxonNode node2) {
+
 	    boolean node1Excluded = node1.isExcluded();
         boolean node2Excluded = node2.isExcluded();
         boolean node1Unplaced = node1.isUnplaced();

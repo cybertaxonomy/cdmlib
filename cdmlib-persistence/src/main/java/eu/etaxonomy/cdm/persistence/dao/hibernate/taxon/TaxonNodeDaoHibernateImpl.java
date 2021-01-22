@@ -309,6 +309,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
+
     	} else if (recursive == true){
     	    List<TaxonNode> children = node.getChildNodes();
     	    Collections.sort(children, comparator);

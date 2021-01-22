@@ -940,8 +940,6 @@ public class TaxonNode
     /**
      * Returns the ancestor taxon nodes, that do have a taxon attached
      * (excludes the root node) starting with the highest
-     *
-     * @return
      */
     @Transient
     public List<TaxonNode> getAncestorList(){
@@ -959,7 +957,6 @@ public class TaxonNode
 
     /**
      * Whether this TaxonNode is a direct child of the classification TreeNode
-     * @return
      */
     @Transient
     public boolean isTopmostNode(){

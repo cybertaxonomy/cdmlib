@@ -21,19 +21,14 @@ public enum TaxonNodeDtoSortMode {
 
 	private Class<? extends Comparator<TaxonNodeDto>> type;
 
-    TaxonNodeDtoSortMode(Class<? extends Comparator<TaxonNodeDto>> type){
+    private TaxonNodeDtoSortMode(Class<? extends Comparator<TaxonNodeDto>> type){
 	    this.type = type;
 	}
 
-    /**
-     * @return
-     */
     public Comparator<TaxonNodeDto> newComparator() {
         try {
             return type.newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException |IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
