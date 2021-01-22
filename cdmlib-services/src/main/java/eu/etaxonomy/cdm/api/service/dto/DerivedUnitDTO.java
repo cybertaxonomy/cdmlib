@@ -147,23 +147,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         mostSignificantIdentifier = derivedUnit.getMostSignificantIdentifier();
 
         //specimen identifier
-        FormatKey collectionKey = FormatKey.COLLECTION_CODE;
-        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, collectionKey);
-        if (CdmUtils.isBlank(specimenIdentifier)) {
-            collectionKey = FormatKey.COLLECTION_NAME;
-        }
-        if(CdmUtils.isNotBlank(derivedUnit.getMostSignificantIdentifier())){
-            specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
-                    collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
-                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
-        }
-        if(CdmUtils.isBlank(specimenIdentifier)){
-            specimenIdentifier = derivedUnit.getTitleCache();
-        }
-        if(CdmUtils.isBlank(specimenIdentifier)){
-            specimenIdentifier = derivedUnit.getUuid().toString();
-        }
-        setSpecimenIdentifier(specimenIdentifier);
+        setSpecimenIdentifier(composeSpecimenIdentifier(derivedUnit));
 
 
         //preferred stable URI
@@ -211,7 +195,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         }
 
         // assemble derivation tree summary
-        setDerivateDataDTO(DerivateDataDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
+        setDerivateDataDTO(DerivationTreeSummaryDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
 
         if(derivedUnit.getStoredUnder() != null) {
             storedUnder = TypedEntityReference.fromEntity(derivedUnit.getStoredUnder());
@@ -219,6 +203,25 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         originalLabelInfo = derivedUnit.getOriginalLabelInfo();
         exsiccatum = derivedUnit.getExsiccatum();
 
+    }
+    protected String composeSpecimenIdentifier(DerivedUnit derivedUnit) {
+        FormatKey collectionKey = FormatKey.COLLECTION_CODE;
+        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, collectionKey);
+        if (CdmUtils.isBlank(specimenIdentifier)) {
+            collectionKey = FormatKey.COLLECTION_NAME;
+        }
+        if(CdmUtils.isNotBlank(derivedUnit.getMostSignificantIdentifier())){
+            specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
+                    collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
+                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+        }
+        if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getTitleCache();
+        }
+        if(CdmUtils.isBlank(specimenIdentifier)){
+            specimenIdentifier = derivedUnit.getUuid().toString();
+        }
+        return specimenIdentifier;
     }
 
     @Override

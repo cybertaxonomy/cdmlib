@@ -43,7 +43,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private int id;
     private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData;
-    private DerivateDataDTO derivateDataDTO;
+    private DerivationTreeSummaryDTO derivateDataDTO;
     protected String taxonName;
 
     protected String citation;
@@ -152,14 +152,14 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     /**
      * @return the derivateDataDTO
      */
-    public DerivateDataDTO getDerivateDataDTO() {
+    public DerivationTreeSummaryDTO getDerivateDataDTO() {
         return derivateDataDTO;
     }
 
     /**
      * @param derivateDataDTO the derivateDataDTO to set
      */
-    public void setDerivateDataDTO(DerivateDataDTO derivateDataDTO) {
+    public void setDerivateDataDTO(DerivationTreeSummaryDTO derivateDataDTO) {
         this.derivateDataDTO = derivateDataDTO;
         if(derivateDataDTO != null) {
             setHasSpecimenScan(isHasSpecimenScan() || !derivateDataDTO.getSpecimenScans().isEmpty());

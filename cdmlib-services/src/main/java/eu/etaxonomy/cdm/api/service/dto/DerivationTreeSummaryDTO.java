@@ -33,14 +33,18 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
+ * Provides summary information on media, DNA, molecular data and scans
+ * found in the derivation tree including the current {@link SpecimenOrObservationBase}
+ * instance.
+ *
  * @author pplitzner
  * @since Mar 26, 2015
  */
-public class DerivateDataDTO implements Serializable {
+public class DerivationTreeSummaryDTO implements Serializable {
 
     private static final long serialVersionUID = 8329871164348514709L;
 
-    private static final Logger logger = Logger.getLogger(DerivateDataDTO.class);
+    private static final Logger logger = Logger.getLogger(DerivationTreeSummaryDTO.class);
 
     private List<Link> specimenScans = new ArrayList<>();
     private List<MolecularData> molecularDataList = new ArrayList<>();
@@ -48,9 +52,21 @@ public class DerivateDataDTO implements Serializable {
     private List<UUID> specimenScanUuids = new ArrayList<>();
     private List<UUID> detailImageUuids = new ArrayList<>();
 
-    public static DerivateDataDTO fromEntity(SpecimenOrObservationBase<?> specimenOrObservation, String specimenIdentifier) {
+    /**
+     * Factory method to create the summary information on media, DNA, molecular data and scans
+     * found in the derivation tree including the passed {@link SpecimenOrObservationBase specimenOrObservation}
+     *
+     * @param specimenOrObservation
+     *      The {@link SpecimenOrObservationBase} to create the summary for.
+     * @param specimenIdentifier
+     *      In case of a {@link DerivedUnit} being passed to this factory method, the <code>specimenIdentifier</code> should
+     *      be set to the result of {@link DerivedUnitDTO#composeSpecimenIdentifier(DerivedUnit)}
+     * @return
+     *      The new instance.
+     */
+    public static DerivationTreeSummaryDTO fromEntity(SpecimenOrObservationBase<?> specimenOrObservation, String specimenIdentifier) {
 
-        DerivateDataDTO derivateDataDTO = new DerivateDataDTO();
+        DerivationTreeSummaryDTO derivateDataDTO = new DerivationTreeSummaryDTO();
 
         Collection<DerivedUnit> childDerivates = specimenOrObservation.collectDerivedUnits();
         for (DerivedUnit childDerivate : childDerivates) {
@@ -73,7 +89,7 @@ public class DerivateDataDTO implements Serializable {
                         final DefinedTerm dnaMarker = sequence.getDnaMarker();
                         Link providerLink = null;
                         if(boldUri!=null && dnaMarker!=null){
-                            providerLink = new DerivateDataDTO.Link(boldUri, dnaMarker.getLabel());
+                            providerLink = new DerivationTreeSummaryDTO.Link(boldUri, dnaMarker.getLabel());
                         }
                         MolecularData molecularData = derivateDataDTO.addProviderLink(providerLink);
 

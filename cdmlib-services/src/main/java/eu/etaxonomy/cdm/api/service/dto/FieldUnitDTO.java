@@ -154,7 +154,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
         }
 
         // assemble derivate data DTO
-        DerivateDataDTO derivateDataDTO = DerivateDataDTO.fromEntity(fieldUnit, null);
+        DerivationTreeSummaryDTO derivateDataDTO = DerivationTreeSummaryDTO.fromEntity(fieldUnit, null);
         setDerivateDataDTO(derivateDataDTO);
 
         // assemble citation
