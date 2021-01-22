@@ -43,7 +43,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private int id;
     private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData;
-    private DerivationTreeSummaryDTO derivateDataDTO;
+    private DerivationTreeSummaryDTO derivationTreeSummary;
     protected String taxonName;
 
     protected String citation;
@@ -152,19 +152,19 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     /**
      * @return the derivateDataDTO
      */
-    public DerivationTreeSummaryDTO getDerivateDataDTO() {
-        return derivateDataDTO;
+    public DerivationTreeSummaryDTO getDerivationTreeSummary() {
+        return derivationTreeSummary;
     }
 
     /**
-     * @param derivateDataDTO the derivateDataDTO to set
+     * @param derivationTreeSummary the derivateDataDTO to set
      */
-    public void setDerivateDataDTO(DerivationTreeSummaryDTO derivateDataDTO) {
-        this.derivateDataDTO = derivateDataDTO;
-        if(derivateDataDTO != null) {
-            setHasSpecimenScan(isHasSpecimenScan() || !derivateDataDTO.getSpecimenScans().isEmpty());
-            setHasDetailImage(isHasDetailImage() || !derivateDataDTO.getDetailImages().isEmpty());
-            setHasDna(isHasDna() || !derivateDataDTO.getMolecularDataList().isEmpty());
+    public void setDerivationTreeSummary(DerivationTreeSummaryDTO derivationTreeSummary) {
+        this.derivationTreeSummary = derivationTreeSummary;
+        if(derivationTreeSummary != null) {
+            setHasSpecimenScan(isHasSpecimenScan() || !derivationTreeSummary.getSpecimenScans().isEmpty());
+            setHasDetailImage(isHasDetailImage() || !derivationTreeSummary.getDetailImages().isEmpty());
+            setHasDna(isHasDna() || !derivationTreeSummary.getMolecularDataList().isEmpty());
         }
     }
 

@@ -195,7 +195,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         }
 
         // assemble derivation tree summary
-        setDerivateDataDTO(DerivationTreeSummaryDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
+        setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
 
         if(derivedUnit.getStoredUnder() != null) {
             storedUnder = TypedEntityReference.fromEntity(derivedUnit.getStoredUnder());
