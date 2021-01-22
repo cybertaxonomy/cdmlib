@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurato
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -279,7 +280,7 @@ public interface IOccurrenceService
 
 
     /**
-     * Lists all instances of {@link FieldUnit} which are
+     * Lists all root units which are
      * associated <b>directly or indirectly</b>with the <code>taxon</code> specified
      * as parameter. "Indirectly" means that a sub derivate of the FieldUnit is
      * directly associated with the given taxon.
@@ -302,6 +303,7 @@ public interface IOccurrenceService
      *
      * @param <T>
      * @param type
+     *  Restriction to a specific subtype, may be null.
      * @param associatedTaxon
      * @param Set<TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
      * @param maxDepth TODO
@@ -311,18 +313,26 @@ public interface IOccurrenceService
      * @param propertyPaths
      * @return
      */
-    public Collection<SpecimenOrObservationBase> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(Class<T> type, Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
+
+
+    /**
+     * @deprecated replace by {@link #listRootUnitsByAssociatedTaxon(Class, Taxon, List, List)}
+     */
+    @Deprecated
+    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * See {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
      */
-    public Pager<SpecimenOrObservationBase> pageFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+    public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * See {@link #listByAssociatedTaxon(Class, Set, Taxon, Integer, Integer, Integer, List, List)}
      *
      * @param type
+     *  Restriction to subtype of <code>SpecimenOrObservationBase</code>, can be NULL.
      * @param includeRelationships
      * @param associatedTaxon
      * @param maxDepth
@@ -687,10 +697,10 @@ public interface IOccurrenceService
             FindOccurrencesConfigurator config);
 
 
-    FieldUnitDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
+    SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
 
 
-    List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
+    List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid, List<String> propertyPaths);
 
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);

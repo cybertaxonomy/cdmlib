@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -119,15 +119,15 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 
     }
 
-    @RequestMapping(value = "specimensOrObservationsByAssociatedTaxon", method = RequestMethod.GET)
-    public List<FieldUnitDTO> doListOccurrencesByAssociatedTaxon(
+    @RequestMapping(value = "rootUnitDTOsByAssociatedTaxon", method = RequestMethod.GET)
+    public List<SpecimenOrObservationBaseDTO> doListlistRootUnitDTOsByAssociatedTaxon(
             @RequestParam(value = "uuid", required = true) UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) {
-        logger.info("doListOccurrencesByAssociatedTaxon() - " + requestPathAndQuery(request));
+        logger.info("doListlistRootUnitDTOByAssociatedTaxon() - " + requestPathAndQuery(request));
 
-        List<FieldUnitDTO> fieldUnitDtos = service.findFieldUnitDTOByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
-        return fieldUnitDtos;
+        List<SpecimenOrObservationBaseDTO> sobDTOs = service.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        return sobDTOs;
     }
 
     /**
@@ -219,19 +219,19 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 //   }
 
     @RequestMapping(method = RequestMethod.GET, value = "byGeneticAccessionNumber" )
-    public FieldUnitDTO doGetByGeneticAccessionNumber(
+    public SpecimenOrObservationBaseDTO doGetByGeneticAccessionNumber(
             @RequestParam(value="accessionNumber", required = true) String accessionNumber,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doGetByGeneticAccessionNumber() - " + requestPathAndQuery(request));
 
-       FieldUnitDTO fieldUnitDto = service.findByAccessionNumber(accessionNumber, null);
-       if(fieldUnitDto == null ) {
+       SpecimenOrObservationBaseDTO sobDto = service.findByAccessionNumber(accessionNumber, null);
+       if(sobDto == null ) {
            response.setHeader("Failure", "No DNA available for accession number ");
            HttpStatusMessage.create("No DNA available for accession number " + accessionNumber, 400).send(response);
            return null;
        }
-       return fieldUnitDto;
+       return sobDto;
     }
 
 

@@ -24,8 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -86,42 +85,23 @@ public class OccurrencePortalController extends OccurrenceController
         this.service = service;
     }
 
-    @RequestMapping(value = { "derivateHierarchy" }, method = RequestMethod.GET)
-    public FieldUnitDTO doGetDerivateHierarchy(
+    @RequestMapping(value = { "asDTO" }, method = RequestMethod.GET)
+    public SpecimenOrObservationBaseDTO doGetAsDTO(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
+            HttpServletResponse response) {
 
-        logger.info("doGetDerivateHierarchy() " + requestPathAndQuery(request));
-
-        SpecimenOrObservationBase<?> sob = service.load(uuid);
-        if(sob instanceof FieldUnit){
-            FieldUnit fieldUnit = (FieldUnit)sob;
-            if(fieldUnit.isPublish()){
-                return service.assembleFieldUnitDTO(fieldUnit);
-
-            }
-        }
-        return null;
-    }
-
-    @RequestMapping(value = { "specimenDerivates" }, method = RequestMethod.GET)
-    public DerivedUnitDTO doGetSpecimenDerivates(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
-
-        logger.info("doGetSpecimenDerivates() " + requestPathAndQuery(request));
-
+        logger.info("doGetAsDTO() " + requestPathAndQuery(request));
 
         SpecimenOrObservationBase<?> sob = service.load(uuid);
-        if(sob instanceof DerivedUnit){
-            DerivedUnit derivedUnit = (DerivedUnit) sob;
-            if(derivedUnit.isPublish()){
-                DerivedUnitDTO dto = service.assembleDerivedUnitDTO(derivedUnit);
-                return dto;
+        if(sob.isPublish()) {
+            if(sob instanceof FieldUnit){
+                return service.assembleFieldUnitDTO((FieldUnit)sob);
+            } else {
+                return service.assembleDerivedUnitDTO((DerivedUnit)sob);
             }
         }
+        // FIXME proper http code
         return null;
     }
 

@@ -210,7 +210,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
             addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
 
-        // assemble sub derivatives
+        // assemble derivation tree summary
         setDerivateDataDTO(DerivateDataDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
 
         if(derivedUnit.getStoredUnder() != null) {

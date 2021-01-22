@@ -410,6 +410,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
         return collectRootUnits(typeRestriction, new HashSet<>());
     }
 
+
     private <T extends SpecimenOrObservationBase> java.util.Collection<T> collectRootUnits(Class<T> typeRestriction, Set<SpecimenOrObservationBase<?>> cycleDetection) {
 
         if(typeRestriction == null) {
