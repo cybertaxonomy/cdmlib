@@ -21,16 +21,19 @@ public class TypedEntityComparator implements Comparator<TypedEntityReference<Ty
 
     @Override
     public int compare(TypedEntityReference<TypeDesignationBase<?>> o1, TypedEntityReference<TypeDesignationBase<?>> o2) {
-        if(o1==null){
+        if (o1==o2){
+            return 0;
+        }else if(o1==null){
             return 1;
-        }
-        if(o2==null){
+        }else if(o2==null){
             return -1;
         }
-        if(o1.getUuid()==null){
+
+        //AM: TODO why is uuid == null be sorted explicitly?
+        if(o1.getUuid()==null && o2.getUuid()!=null){
             return 1;
         }
-        if(o2.getUuid()==null){
+        if(o2.getUuid()==null && o1.getUuid()!=null){
             return-1;
         }
 
