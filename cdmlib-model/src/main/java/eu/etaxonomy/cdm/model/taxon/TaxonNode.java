@@ -1066,13 +1066,6 @@ public class TaxonNode
         }
     }
 
-    private void setStatus(TaxonNodeStatus status, boolean value) {
-        if (value){
-            this.status = status;
-        }else if (this.status != null && this.status.equals(status)){
-            this.status = null;
-        }
-    }
     private boolean hasStatus(TaxonNodeStatus status) {
         return CdmUtils.nullSafeEqual(this.status, status);
     }
@@ -1136,4 +1129,5 @@ public class TaxonNode
     public String getMicroReference() {
         return getCitationMicroReference();
     }
+
 }

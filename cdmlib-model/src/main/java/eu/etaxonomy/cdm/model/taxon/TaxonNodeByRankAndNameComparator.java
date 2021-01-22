@@ -18,10 +18,10 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 /**
  * @author k.luther
  * @since 18.03.2010
- *
  */
 public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator implements Serializable {
-	private static final long serialVersionUID = 2596641007876609704L;
+
+    private static final long serialVersionUID = 2596641007876609704L;
 
 	@Override
     public int compare(TaxonNode node1, TaxonNode node2) {
@@ -112,6 +112,4 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
     public String getTaxonTitle(TaxonBase<?> taxon, TaxonNode node) {
         return (taxon == null) ? node.getUuid().toString(): taxon.getTitleCache();
     }
-
-
 }
