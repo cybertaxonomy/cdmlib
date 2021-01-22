@@ -968,28 +968,6 @@ public class TaxonNodeServiceImpl
         return result;
     }
 
-//    @Override
-//    @Transactional
-//    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref){
-//        UpdateResult result = new UpdateResult();
-//        TaxonNode parent = dao.load(parentNodeUuid);
-//        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-//        TaxonNode child = null;
-//        try{
-//            child = parent.addChildTaxon(taxon, parent.getReference(), parent.getMicroReference());
-//        }catch(Exception e){
-//            result.addException(e);
-//            result.setError();
-//            return result;
-//        }
-//
-//        result.addUpdatedObject(parent);
-//        if (child != null){
-//            result.setCdmEntity(child);
-//        }
-//        return result;
-//    }
-
     @Override
     @Transactional
     public UpdateResult addTaxonNodeAgentRelation(UUID taxonNodeUUID, UUID agentUUID, DefinedTerm relationshipType){
