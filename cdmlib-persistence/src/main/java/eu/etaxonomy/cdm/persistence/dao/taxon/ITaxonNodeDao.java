@@ -67,7 +67,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
-            boolean recursive, boolean includeUnpublished, List<String> propertyPaths);
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator);
 
     public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive, boolean includeUnpublished);
 
@@ -169,19 +169,4 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
-
-    /**
-     * @param node
-     * @param pageSize
-     * @param pageIndex
-     * @param recursive
-     * @param includeUnpublished
-     * @param propertyPaths
-     * @param comparator
-     * @return
-     */
-    List<TaxonNode> listChildrenOf(TaxonNode node, List<TaxonNode> result, Integer pageSize, Integer pageIndex, boolean recursive,
-            boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator);
-
-
 }

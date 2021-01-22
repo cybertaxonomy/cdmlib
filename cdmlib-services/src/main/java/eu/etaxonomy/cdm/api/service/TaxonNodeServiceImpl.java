@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -142,10 +144,9 @@ public class TaxonNodeServiceImpl
 
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
-        if (recursive == true && sortMode == null){
-        	childNodes  = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, null);
-        }else if (recursive && sortMode != null){
-            childNodes = dao.listChildrenOf(taxonNode, new ArrayList<TaxonNode>(), null, null, recursive, includeUnpublished, propertyPaths, sortMode.newComparator());
+        if (recursive == true){
+            Comparator<TaxonNode> comparator = sortMode == null? null : sortMode.newComparator();
+            childNodes = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, propertyPaths, comparator);
         }else if (includeUnpublished){
             childNodes = new ArrayList<>(taxonNode.getChildNodes());
         }else{
@@ -170,7 +171,7 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths){
-        return dao.listChildrenOf(node, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths);
+        return dao.listChildrenOf(node, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths, null);
     }
 
     @Override
