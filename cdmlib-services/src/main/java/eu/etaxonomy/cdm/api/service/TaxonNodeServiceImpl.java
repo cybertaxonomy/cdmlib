@@ -828,57 +828,60 @@ public class TaxonNodeServiceImpl
             TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
 
         UpdateResult result = new UpdateResult();
-        TaxonName name = null;
-        Taxon taxon = null;
-        if (taxonDto.getNameUuid() != null){
-            name = nameService.load(taxonDto.getNameUuid());
-
-        }else if (taxonDto.getTaxonUuid() != null){
-            taxon = (Taxon) taxonService.load(taxonDto.getTaxonUuid());
-        }else {
-            UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
-                    taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
-            result.addUpdatedObjects(tmpResult.getUpdatedObjects());
-            name = (TaxonName)tmpResult.getCdmEntity();
-        }
-        Reference sec = null;
-        if (taxonDto.getSecUuid() != null ){
-            sec = referenceService.load(taxonDto.getSecUuid());
-        }
-        if (name != null && !name.isPersited()){
-            for (HybridRelationship rel : name.getHybridChildRelations()){
-                if (!rel.getHybridName().isPersited()) {
-                    nameService.save(rel.getHybridName());
-                }
-                if (!rel.getParentName().isPersited()) {
-                    nameService.save(rel.getParentName());
-                }
-            }
-        }
-        Taxon newTaxon = null;
-        if (taxon == null){
-            newTaxon = Taxon.NewInstance(name, sec);
-            newTaxon.setPublish(taxonDto.isPublish());
-        }else{
-            newTaxon = taxon;
-        }
-
-        TaxonNode parent = dao.load(parentNodeUuid);
         TaxonNode child = null;
-        if (source != null){
-            if (source.isPersited()){
-                source = (DescriptionElementSource) sourceDao.load(source.getUuid());
-            }
-            if (source.getCitation() != null){
-                source.setCitation(referenceService.load(source.getCitation().getUuid()));
-            }
-            if (source.getNameUsedInSource() !=null){
-                source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
-            }
-        }
-
+        TaxonNode parent = null;
         try{
-            child = parent.addChildTaxon(newTaxon, source);
+            TaxonName name = null;
+            Taxon taxon = null;
+            if (taxonDto.getTaxonUuid() != null){
+                taxon = (Taxon) taxonService.load(taxonDto.getTaxonUuid());
+                if (taxon == null){
+                    throw new RuntimeException("Taxon for not found for id " + taxonDto.getTaxonUuid());
+                }
+            }else{
+                if (taxonDto.getNameUuid() != null){
+                    name = nameService.load(taxonDto.getNameUuid());
+                    if (name == null){
+                        throw new RuntimeException("Taxon name not found for id " + taxonDto.getTaxonUuid());
+                    }
+                } else {
+                    UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
+                            taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
+                    result.addUpdatedObjects(tmpResult.getUpdatedObjects());
+                    name = (TaxonName)tmpResult.getCdmEntity();
+                }
+                Reference sec = null;
+                if (taxonDto.getSecUuid() != null ){
+                    sec = referenceService.load(taxonDto.getSecUuid());
+                }
+                if (name != null && !name.isPersited()){
+                    for (HybridRelationship rel : name.getHybridChildRelations()){
+                        if (!rel.getHybridName().isPersited()) {
+                            nameService.save(rel.getHybridName());
+                        }
+                        if (!rel.getParentName().isPersited()) {
+                            nameService.save(rel.getParentName());
+                        }
+                    }
+                }
+                taxon = Taxon.NewInstance(name, sec);
+                taxon.setPublish(taxonDto.isPublish());
+            }
+
+            parent = dao.load(parentNodeUuid);
+            if (source != null){
+                if (source.isPersited()){
+                    source = (DescriptionElementSource) sourceDao.load(source.getUuid());
+                }
+                if (source.getCitation() != null){
+                    source.setCitation(referenceService.load(source.getCitation().getUuid()));
+                }
+                if (source.getNameUsedInSource() !=null){
+                    source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
+                }
+            }
+
+            child = parent.addChildTaxon(taxon, source);
             child.setStatus(status);
 
             if (statusNote != null){
