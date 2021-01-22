@@ -1,10 +1,7 @@
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
-import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
-import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByRankAndNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 public enum TaxonNodeSortMode {
@@ -25,9 +22,6 @@ public enum TaxonNodeSortMode {
 	    this.type = type;
 	}
 
-    /**
-     * @return
-     */
     public Comparator<TaxonNode> newComparator() {
         try {
             return type.newInstance();
