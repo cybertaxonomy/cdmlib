@@ -697,6 +697,11 @@ public interface IOccurrenceService
             FindOccurrencesConfigurator config);
 
 
+    /**
+     * Collects the <code>FieldUnits</code> which are at the root of the derivation event
+     * graph in which the {@link DerivedUnit} with the specified <code>findByAccessionNumber</code>
+     * is found.
+     */
     SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
 
 

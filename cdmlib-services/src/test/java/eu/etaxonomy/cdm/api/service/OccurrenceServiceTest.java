@@ -1162,7 +1162,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         SpecimenOrObservationBaseDTO findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null);
 
         assertNotNull(findByAccessionNumber);
-        assertTrue(findByAccessionNumber.getDerivatives().size() == 1);
+        assertEquals(3, findByAccessionNumber.getDerivatives().size());
        // assertTrue(findByAccessionNumber.contains(derivedUnit1));
        // assertTrue(findByAccessionNumber.get(0).get.equals(dnaSampleWithSequence));
     }
