@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -17,7 +18,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
  * @since Aug 31, 2018
  *
  */
-public class SourceDTO {
+public class SourceDTO implements Serializable{
 
     private UUID uuid;
     String citationDetail;
