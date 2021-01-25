@@ -365,16 +365,11 @@ public class OccurrenceServiceImpl
         // FIXME the filter for SpecimenOrObservationType.PreservedSpecimen has been preserved from the former implementation (see commit 07e3f63c7d  and older)
         // it is questionable if this filter makes sense for all use cases or if it is only a sensible default for the
         // compressed specimen table in the cdm-dataportal (see #6816, #6870)
-        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit, EnumSet.of(SpecimenOrObservationType.PreservedSpecimen));
+        EnumSet<SpecimenOrObservationType> typeIncludeFilter = EnumSet.of(SpecimenOrObservationType.PreservedSpecimen);
+        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit, typeIncludeFilter);
         return fieldUnitDTO;
     }
 
-
-    @Override
-    @Deprecated
-    public String getMostSignificantIdentifier(DerivedUnit derivedUnit) {
-        return derivedUnit.getMostSignificantIdentifier();
-    }
 
     @Override
     @Transactional
@@ -383,10 +378,33 @@ public class OccurrenceServiceImpl
         if (!getSession().contains(derivedUnit)) {
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
+        DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null, null);
+
+        // individuals associations
         Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(derivedUnit, null, null, null, null);
-        DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, individualsAssociations);
+        if(individualsAssociations != null) {
+            for (IndividualsAssociation individualsAssociation : individualsAssociations) {
+                if (individualsAssociation.getInDescription() != null) {
+                    if (individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)) {
+                        TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
+                        Taxon taxon = taxonDescription.getTaxon();
+                        if (taxon != null) {
+                            derivedUnitDTO.addAssociatedTaxon(taxon);
+                        }
+                    }
+                }
+            }
+        }
+
         return derivedUnitDTO;
     }
+
+    @Override
+    @Deprecated
+    public String getMostSignificantIdentifier(DerivedUnit derivedUnit) {
+        return derivedUnit.getMostSignificantIdentifier();
+    }
+
 
     private Set<DerivedUnitDTO> getDerivedUnitDTOsFor(SpecimenOrObservationBaseDTO specimenDto, DerivedUnit specimen, HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
         Set<DerivedUnitDTO> derivedUnits = new HashSet<>();
@@ -501,15 +519,15 @@ public class OccurrenceServiceImpl
                     .stream()
                     .map(u -> HibernateProxyHelper.deproxy(u, SpecimenOrObservationBase.class))
                     .collect(Collectors.toSet());
-            for (SpecimenOrObservationBase<?> o : perTaxonOccurrences) {
-              if (o.isInstanceOf(DerivedUnit.class)){
-                    DerivedUnit derivedUnit = (DerivedUnit)o;
+            for (SpecimenOrObservationBase<?> unit : perTaxonOccurrences) {
+                unit = HibernateProxyHelper.deproxy(unit);
+                if (unit instanceof DerivedUnit){
+                    DerivedUnit derivedUnit = (DerivedUnit)unit;
                     DerivedUnitDTO derivedUnitDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit);
-                    if (o.isInstanceOf(DnaSample.class)) {
-                        derivedUnitDTO = new DNASampleDTO((DnaSample)o);
+                    if (unit instanceof DnaSample) {
+                        derivedUnitDTO = DNASampleDTO.fromEntity((DnaSample)unit);
                     } else {
-                        derivedUnit = HibernateProxyHelper.deproxy(o, DerivedUnit.class);
-                        derivedUnitDTO = new DerivedUnitDTO((DerivedUnit)o);
+                        derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null, null);
                     }
                     if (alreadyCollectedSpecimen.get(derivedUnitDTO.getUuid()) == null){
                         alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
@@ -517,7 +535,8 @@ public class OccurrenceServiceImpl
                     derivedUnitDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
                     rootUnitDTOs.addAll(findRootUnitDTO(derivedUnitDTO, alreadyCollectedSpecimen));
                 } else {
-                    rootUnitDTOs.add(FieldUnitDTO.fromEntity((FieldUnit)o));
+                    // only other option is FieldUnit
+                    rootUnitDTOs.add(FieldUnitDTO.fromEntity((FieldUnit)unit));
                 }
             }
         }
@@ -549,9 +568,9 @@ public class OccurrenceServiceImpl
                     return StringUtils.compare(du1.getLabel(), du2.getLabel());
                  }
                 if(o1 instanceof FieldUnitDTO && o2 instanceof DerivedUnitDTO) {
-                    return 1;
-                } else {
                     return -1;
+                } else {
+                    return 1;
                 }
             }
         });
@@ -790,7 +809,7 @@ public class OccurrenceServiceImpl
                 return fieldUnitDTO;
             } else {
                 // must be a DerivedUnit otherwise
-                derivedUnitDTO = DerivedUnitDTO.fromEntity((DerivedUnit)derivative, null);
+                derivedUnitDTO = DerivedUnitDTO.fromEntity((DerivedUnit)derivative);
                 while(true){
 
                     Set<SpecimenOrObservationBaseDTO> originals = originalDTOs(derivedUnitDTO.getUuid());
@@ -860,7 +879,7 @@ public class OccurrenceServiceImpl
             if(sob instanceof FieldUnit) {
                 dtos.add(FieldUnitDTO.fromEntity((FieldUnit)sob));
             } else {
-                dtos.add(DerivedUnitDTO.fromEntity((DerivedUnit)sob, null));
+                dtos.add(DerivedUnitDTO.fromEntity((DerivedUnit)sob));
             }
         }
         return dtos;

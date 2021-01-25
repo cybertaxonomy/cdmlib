@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +28,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -40,6 +39,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
@@ -75,55 +75,55 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      * @return <code>null</code> or the new DerivedUnitDTO
      */
     public static DerivedUnitDTO fromEntity(DerivedUnit entity){
-        return fromEntity(entity, null);
+        return fromEntity(entity, null, null, null);
     }
+
     /**
+     * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
+     * added as DerivedUnitDTO to the {@link SpecimenOrObservationBaseDTO#getDerivatives() derivative DTOs}.
+     *
      * @param entity
      *   The entity to create the dto for
-     * @param individualsAssociations
-     *    <b>WARNING</b> This parameter will be removed in future versions. IndividualsAssociation should better be retrieved in a separate
-     *    action, since individualsAssociations are not accessible from the DerivedUnit side. A service level method call is needed to
-     *    retrieve them, so it would be required to access the OccurrenceServiceImpl from inside of this DTO factory method, which is
-     *    bad OO design. The other option is implemented here, requires all calling Objects to pass the IndividualsAssociations as parameter.
-     * @return <code>null</code> or the new DerivedUnitDTO
-     * @deprecated see comment on the parameter <code>individualsAssociations</code>
+     * @param maxDepth
+     *   The maximum number of levels to walk into the derivatives
+     * @param specimenOrObservationTypeFilter
+     *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
+     * @param unitLabelsByCollection
+     *   see {@link #assembleDerivatives(SpecimenOrObservationBase, java.util.EnumSet, Map).
+     * @return
+     *  The DTO
      */
-    @Deprecated
-    public static DerivedUnitDTO fromEntity(DerivedUnit entity, Collection<IndividualsAssociation> individualsAssociations){
+    public static DerivedUnitDTO fromEntity(DerivedUnit entity, Integer maxDepth,
+            EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter,
+            Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String>> unitLabelsByCollection){
+
         if(entity == null) {
             return null;
         }
         DerivedUnitDTO dto =  new DerivedUnitDTO(entity);
 
-        // individuals associations
-        if(individualsAssociations != null) {
-            for (IndividualsAssociation individualsAssociation : individualsAssociations) {
-                if (individualsAssociation.getInDescription() != null) {
-                    if (individualsAssociation.getInDescription().isInstanceOf(TaxonDescription.class)) {
-                        TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(individualsAssociation.getInDescription(), TaxonDescription.class);
-                        Taxon taxon = taxonDescription.getTaxon();
-                        if (taxon != null) {
-                            dto.addAssociatedTaxon(taxon);
-                        }
-                    }
-                }
-            }
-        }
+        // ---- assemble derivation tree summary
+        //      this data should be sufficient in clients for showing the unit in a list view
+        dto.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(entity, dto.getSpecimenIdentifier()));
+        // ---- assemble derivatives
+        //      this data is is often only required for clients in order to show the details of the derivation tree
+        dto.assembleDerivatives(entity, specimenOrObservationTypeFilter, unitLabelsByCollection);
+
         return dto;
     }
-
 
     /**
      * @param derivedUnit
      */
     public DerivedUnitDTO(DerivedUnit derivedUnit) {
         super(derivedUnit);
+
         // experimental feature, not yet exposed in method signature
         boolean cleanAccessionNumber = false;
         accessionNumber = derivedUnit.getAccessionNumber();
         preferredStableUri = derivedUnit.getPreferredStableUri();
         if (derivedUnit.getCollection() != null){
-            setCollectioDTo(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+            setCollectioDTO(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
             if(cleanAccessionNumber && getCollection().getCode() != null) {
                 accessionNumber = accessionNumber.replaceFirst("^" + Pattern.quote(getCollection().getCode()) + "-", "");
             }
@@ -153,13 +153,13 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         //preferred stable URI
         setPreferredStableUri(derivedUnit.getPreferredStableUri());
 
-        // citation
+        // label
         Collection<FieldUnit> fieldUnits = derivedUnit.collectRootUnits(FieldUnit.class);
         if (fieldUnits.size() == 1) {
-            setCitation(fieldUnits.iterator().next().getTitleCache());
+            setSummaryLabel(fieldUnits.iterator().next().getTitleCache());
         }
         else{
-            setCitation("No Citation available. This specimen either has no or multiple field units.");
+            setSummaryLabel("No Citation available. This specimen either has no or multiple field units.");
         }
 
         // character state data
@@ -182,6 +182,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
                 }
             }
         }
+
         // check type designations
         Collection<SpecimenTypeDesignation> specimenTypeDesignations = derivedUnit.getSpecimenTypeDesignations();
         for (SpecimenTypeDesignation specimenTypeDesignation : specimenTypeDesignations) {
@@ -194,9 +195,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
             addTypes(typeStatus!=null?typeStatus.getLabel():"", typedTaxaNames);
         }
 
-        // assemble derivation tree summary
-        setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(derivedUnit, getSpecimenIdentifier()));
-
         if(derivedUnit.getStoredUnder() != null) {
             storedUnder = TypedEntityReference.fromEntity(derivedUnit.getStoredUnder());
         }
@@ -204,6 +202,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         exsiccatum = derivedUnit.getExsiccatum();
 
     }
+
     protected String composeSpecimenIdentifier(DerivedUnit derivedUnit) {
         FormatKey collectionKey = FormatKey.COLLECTION_CODE;
         String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, collectionKey);
