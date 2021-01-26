@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author cmathew
  * @since 7 Jul 2015
- *
  */
 public class CdmPreDataChangeListener
         implements PreInsertEventListener, PreUpdateEventListener {
@@ -81,7 +80,6 @@ public class CdmPreDataChangeListener
         } finally {
             return false;
         }
-
     }
 
     //from former SaveOrUpdateOrMergeEntityListener
@@ -89,7 +87,6 @@ public class CdmPreDataChangeListener
         if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
             cacheDeterminationNames(entity);
             generateCaches(entity);
-
         }
     }
 
@@ -101,7 +98,6 @@ public class CdmPreDataChangeListener
             }
         }
     }
-
 
     public static void generateCaches(Object entity){
         if (entity != null){
@@ -159,13 +155,10 @@ public class CdmPreDataChangeListener
                 if (identifiableEntity.hasEmptyTitleCache()){
                     identifiableEntity.setTitleCache(identifiableEntity.toString(), false);
                 }
-
-
             }else if(Amplification.class.isAssignableFrom(entityClazz)) {
                 Amplification amplification = (Amplification)entity;
                 amplification.updateCache();
             }
         }
     }
-
 }

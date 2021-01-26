@@ -484,11 +484,7 @@ public class TaxonNameDefaultCacheStrategy
 
     }
 
-
-
-
 //***************************** PRIVATES ***************************************/
-
 
     private boolean isAggregateWithAuthorship(TaxonName nonViralName, Rank rank) {
 		if (rank == null){
@@ -497,7 +493,6 @@ public class TaxonNameDefaultCacheStrategy
 			return rank.isSpeciesAggregate() && ( isNotBlank(nonViralName.getAuthorshipCache()) || nonViralName.getNomenclaturalReference() != null );
 		}
 	}
-
 
 	/**
      * Returns the tag list for an autonym taxon.
