@@ -425,21 +425,25 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
      *
      * @param sob
      *      The Unit to assemble the derivatives information for
-     *  @param includeTypes
+     * @param maxDepth
+     *   The maximum number of derivation events levels up to which derivatives are to be assembled.
+     *   <code>NULL</code> means infinitely.
+     * @param includeTypes
      *      Allows for positive filtering by {@link SpecimenOrObservationType}.
      *      Filter is disabled when <code>NULL</code>. This only affects the derivatives assembled in the
-     *      {@link #derivatives} list. The <code>unitLabelsByCollection</code> ar always collected for the
+     *      {@link #derivatives} list. The <code>unitLabelsByCollection</code> are always collected for the
      *      whole bouquet of derivatives.
-     *  @param unitLabelsByCollection
+     * @param unitLabelsByCollection
      *      A map to record the unit labels (most significant identifier + collection code) per collection.
      *      Optional parameter, may be <code>NULL</code>.
      */
     protected void assembleDerivatives(SpecimenOrObservationBase<?> sob,
-            EnumSet<SpecimenOrObservationType> includeTypes,
+            Integer maxDepth, EnumSet<SpecimenOrObservationType> includeTypes,
             Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String>> unitLabelsByCollection) {
 
+        boolean doDescend = maxDepth == null || maxDepth > 0;
+        Integer nextLevelMaxDepth = maxDepth != null ? maxDepth - 1 : null;
         for (DerivedUnit derivedUnit : sob.collectDerivedUnits()) {
-
             if(!derivedUnit.isPublish()){
                 continue;
             }
@@ -461,9 +465,8 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 }
             }
 
-
-            if (includeTypes == null || includeTypes.contains(derivedUnit.getRecordBasis())) {
-                DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit);
+            if (doDescend && (includeTypes == null || includeTypes.contains(derivedUnit.getRecordBasis()))) {
+                DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, nextLevelMaxDepth, includeTypes, null);
                 addDerivate(derivedUnitDTO);
                 setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
                 // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in

@@ -903,6 +903,18 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     }
 
+    /**
+     * Structure is as follows:
+     *
+     *  FieldUnit(FU,4999):"filedUnit1"
+     *    |
+     *    +---> DerivedUnit(FS,5000):"testUnit1"
+     *        |
+     *        + ---> DerivedUnit(DS,5001):"dna"
+     *            |
+     *            + ---> DnaSample(DS,5004):"dnaSample"
+     *
+     */
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testFindOcurrences.xml")
     public void testFindOccurrences() {
@@ -1162,7 +1174,10 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         SpecimenOrObservationBaseDTO findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null);
 
         assertNotNull(findByAccessionNumber);
-        assertEquals(3, findByAccessionNumber.getDerivatives().size());
+        // logger.setLevel(Level.TRACE);
+        logger.trace("root unit: " + findByAccessionNumber.getLabel());
+        logger.trace("derivatives:\n\t" + findByAccessionNumber.getDerivatives().stream().map(du -> du.toString() + ":" + du.getLabel()).collect(Collectors.joining("\n\t")));
+        assertEquals(1, findByAccessionNumber.getDerivatives().size());
        // assertTrue(findByAccessionNumber.contains(derivedUnit1));
        // assertTrue(findByAccessionNumber.get(0).get.equals(dnaSampleWithSequence));
     }

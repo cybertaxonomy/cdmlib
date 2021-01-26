@@ -366,7 +366,7 @@ public class OccurrenceServiceImpl
         // it is questionable if this filter makes sense for all use cases or if it is only a sensible default for the
         // compressed specimen table in the cdm-dataportal (see #6816, #6870)
         EnumSet<SpecimenOrObservationType> typeIncludeFilter = EnumSet.of(SpecimenOrObservationType.PreservedSpecimen);
-        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit, typeIncludeFilter);
+        FieldUnitDTO fieldUnitDTO = FieldUnitDTO.fromEntity(fieldUnit, null, typeIncludeFilter);
         return fieldUnitDTO;
     }
 
@@ -764,6 +764,7 @@ public class OccurrenceServiceImpl
             }
             // FIXME allow handling multiple originals
             SpecimenOrObservationBase<?> original = originals.get(0);
+            original = HibernateProxyHelper.deproxy(original);
 
             if (alreadyCollectedSpecimen.containsKey(original.getUuid())){
                 alreadyCollectedSpecimen.get(original.getUuid()).addDerivate(derivedUnitDTO);
@@ -774,12 +775,15 @@ public class OccurrenceServiceImpl
                 if(!rootUnitDTOs.containsKey(original.getUuid())){
                     // the direct derivatives of the field unit are added in the factory method, so it is guaranteed that
                     // the derivedUnitDTO is already contained.
-                    SpecimenOrObservationBaseDTO originalDTO = SpecimenOrObservationDTOFactory.fromEntity(original);
-                    if (originalDTO instanceof FieldUnitDTO){
+                    // ----
+                    // Don't assemble derivatives for the field unit, since we have them collected already
+                    // when ascending to the originals, we only want to collect those derivatives which are on the path up to the root
+                    final Integer maxDepth = 0;
+                    SpecimenOrObservationBaseDTO originalDTO = SpecimenOrObservationDTOFactory.fromEntity(original, maxDepth);
+                    originalDTO.addDerivate(derivedUnitDTO);
+                    if (original instanceof FieldUnit){
                         rootUnitDTOs.put(originalDTO.getUuid(), originalDTO);
                     }else{
-                        // must be a DerivedUnitDTO then
-                        originalDTO.addDerivate(derivedUnitDTO);
                         _findRootUnitDTO((DerivedUnitDTO) originalDTO, rootUnitDTOs, alreadyCollectedSpecimen);
                     }
                 }

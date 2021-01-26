@@ -49,14 +49,31 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
      *
      * @param fieldUnit
      *     The FieldUnit entity to create a DTO for. Is null save.
-     * @param specimenOrObservationTypeFilter
+     * @param typeIncludeFilter
      *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
      */
-	public static FieldUnitDTO fromEntity(FieldUnit entity, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter){
+    public static FieldUnitDTO fromEntity(FieldUnit entity, Integer maxDepth, EnumSet<SpecimenOrObservationType> typeIncludeFilter){
         if(entity == null) {
             return null;
         }
-        return new FieldUnitDTO(entity, specimenOrObservationTypeFilter);
+        return new FieldUnitDTO(entity, maxDepth, typeIncludeFilter);
+    }
+
+	/**
+     * Factory method for the construction of a FieldUnitDTO.
+     * <p>
+     * The direct derivatives are added to the field {@link #getDerivatives() derivates}.
+     *
+     *
+     * @param fieldUnit
+     *     The FieldUnit entity to create a DTO for. Is null save.
+     * @param typeIncludeFilter
+     *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
+     * @deprecated use {@link #fromEntity(FieldUnit, Integer, EnumSet)}
+     */
+    @Deprecated
+	public static FieldUnitDTO fromEntity(FieldUnit entity, EnumSet<SpecimenOrObservationType> typeIncludeFilter){
+        return fromEntity(entity, null, typeIncludeFilter);
     }
 
 	/**
@@ -64,14 +81,17 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	 *
 	 * @param fieldUnit
 	 *     The FieldUnit entity to create a DTO for
-	 * @param specimenOrObservationTypeFilter
+	 * @param maxDepth
+     *   The maximum number of derivation events levels up to which derivatives are to be collected.
+     *   <code>NULL</code> means infinitely.
+	 * @param typeIncludeFilter
 	 *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
 	 */
-    private FieldUnitDTO(FieldUnit fieldUnit, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter ) {
+    private FieldUnitDTO(FieldUnit fieldUnit, Integer maxDepth, EnumSet<SpecimenOrObservationType> typeIncludeFilter ) {
         super(fieldUnit);
 
-        if(specimenOrObservationTypeFilter == null) {
-            specimenOrObservationTypeFilter = EnumSet.allOf(SpecimenOrObservationType.class);
+        if(typeIncludeFilter == null) {
+            typeIncludeFilter = EnumSet.allOf(SpecimenOrObservationType.class);
         }
         if (fieldUnit.getGatheringEvent() != null){
             gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
@@ -102,7 +122,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
         }
 
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
-        assembleDerivatives(fieldUnit, specimenOrObservationTypeFilter, unitIdenfierLabelsByCollections);
+        assembleDerivatives(fieldUnit, maxDepth, typeIncludeFilter, unitIdenfierLabelsByCollections);
 
         // assemble derivate data DTO
         DerivationTreeSummaryDTO derivateDataDTO = DerivationTreeSummaryDTO.fromEntity(fieldUnit, null);

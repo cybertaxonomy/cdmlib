@@ -85,7 +85,8 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      * @param entity
      *   The entity to create the dto for
      * @param maxDepth
-     *   The maximum number of levels to walk into the derivatives
+     *   The maximum number of derivation events levels up to which derivatives are to be collected.
+     *   <code>NULL</code> means infinitely.
      * @param specimenOrObservationTypeFilter
      *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
      * @param unitLabelsByCollection
@@ -107,7 +108,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         dto.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(entity, dto.getSpecimenIdentifier()));
         // ---- assemble derivatives
         //      this data is is often only required for clients in order to show the details of the derivation tree
-        dto.assembleDerivatives(entity, specimenOrObservationTypeFilter, unitLabelsByCollection);
+        dto.assembleDerivatives(entity, maxDepth, specimenOrObservationTypeFilter, unitLabelsByCollection);
 
         return dto;
     }
