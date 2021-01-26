@@ -589,14 +589,10 @@ public class OccurrenceServiceImpl
     public  SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
 
         DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, null);
-        DerivedUnitDTO derivedUnitDTO;
-        HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen = new HashMap<>();
-
+        DerivedUnitDTO dnaSampleDTO;
         if (dnaSample != null){
-            derivedUnitDTO = new DNASampleDTO(dnaSample);
-            alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-            derivedUnitDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivedUnitDTO, dnaSample, alreadyCollectedSpecimen));
-            Collection<SpecimenOrObservationBaseDTO> fieldUnitDTOs = this.findRootUnitDTO(derivedUnitDTO, alreadyCollectedSpecimen);
+            dnaSampleDTO = new DNASampleDTO(dnaSample);
+            Collection<SpecimenOrObservationBaseDTO> fieldUnitDTOs = this.findRootUnitDTO(dnaSampleDTO, new HashMap<>());
             // FIXME change return type to Collection<FieldUnitDTO>
             if(fieldUnitDTOs.isEmpty()) {
                 return null;
