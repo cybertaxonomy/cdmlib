@@ -3533,6 +3533,9 @@ public class TaxonName
     }
     @Override
     public boolean isBotanical() {
+        if (nameType == null){
+            throw new RuntimeException("Name has no nameType: " +  this.getUuid() + ", " + getId()+ ", species epi: " + getSpecificEpithet() );
+        }
         return nameType.isBotanical();
     }
     @Override
