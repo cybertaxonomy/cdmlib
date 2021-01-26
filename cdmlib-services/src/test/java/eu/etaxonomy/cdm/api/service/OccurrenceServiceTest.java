@@ -1171,7 +1171,7 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(ignoreAssignmentStatusSpecimens.contains(derivedUnit1));
         assertTrue(ignoreAssignmentStatusSpecimens.contains(tissue));
 
-        SpecimenOrObservationBaseDTO findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null);
+        SpecimenOrObservationBaseDTO findByAccessionNumber = occurrenceService.findByGeneticAccessionNumber("ACC_DNA",  null);
 
         assertNotNull(findByAccessionNumber);
         // logger.setLevel(Level.TRACE);

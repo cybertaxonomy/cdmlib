@@ -579,7 +579,14 @@ public class OccurrenceServiceImpl
 
     @Override
     @Transactional
+    @Deprecated
     public  SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
+        return findByAccessionNumber(accessionNumberString, orderHints);
+    }
+
+    @Override
+    @Transactional
+    public  SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String accessionNumberString, List<OrderHint> orderHints)  {
 
         DnaSample dnaSample = dao.findByGeneticAccessionNumber(accessionNumberString, null);
         DerivedUnitDTO derivedUnitDTO;

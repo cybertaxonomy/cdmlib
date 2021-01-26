@@ -225,7 +225,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             HttpServletResponse response) throws IOException {
         logger.info("doGetByGeneticAccessionNumber() - " + requestPathAndQuery(request));
 
-       SpecimenOrObservationBaseDTO sobDto = service.findByAccessionNumber(accessionNumber, null);
+       SpecimenOrObservationBaseDTO sobDto = service.findByGeneticAccessionNumber(accessionNumber, null);
        if(sobDto == null ) {
            response.setHeader("Failure", "No DNA available for accession number ");
            HttpStatusMessage.create("No DNA available for accession number " + accessionNumber, 400).send(response);

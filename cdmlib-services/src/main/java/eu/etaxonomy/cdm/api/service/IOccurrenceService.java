@@ -701,8 +701,18 @@ public interface IOccurrenceService
      * Collects the <code>FieldUnits</code> which are at the root of the derivation event
      * graph in which the {@link DerivedUnit} with the specified <code>findByAccessionNumber</code>
      * is found.
+     *
+     * @deprecated method name unclear and thus replaced by {@link #findByGeneticAccessionNumber(String, List)}
      */
+    @Deprecated
     SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
+
+    /**
+     * Collects the <code>FieldUnits</code> which are at the root of the derivation event
+     * graph in which the {@link DnaSample} with the specified <code>accessionNumberString</code>
+     * is found.
+     */
+    SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
 
 
     List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
