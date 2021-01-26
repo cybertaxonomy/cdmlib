@@ -137,7 +137,6 @@ public class OccurrenceServiceImpl
         logger.debug("Load OccurrenceService Bean");
     }
 
-
     @Override
     @Transactional(readOnly = false)
     public UpdateResult updateCaches(Class<? extends SpecimenOrObservationBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<SpecimenOrObservationBase> cacheStrategy, IProgressMonitor monitor) {
@@ -599,7 +598,6 @@ public class OccurrenceServiceImpl
             }
         }
         return null;
-
     }
 
     @Override
@@ -632,7 +630,6 @@ public class OccurrenceServiceImpl
         int totalHits = topDocsResultSet != null ? topDocsResultSet.totalGroupCount : 0;
 
         return new DefaultPagerImpl<>(pageNumber, Long.valueOf(totalHits), pageSize, searchResults);
-
     }
 
     private LuceneSearch prepareByFullTextSearch(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Rectangle bbox,
@@ -1561,21 +1558,13 @@ public class OccurrenceServiceImpl
         return countByTitle(config);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<FieldUnit> findFieldUnitsForGatheringEvent(UUID gatheringEventUuid) {
         return dao.findFieldUnitsForGatheringEvent(gatheringEventUuid, null, null, null, null);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids) {
-
         return dao.findPointsForFieldUnitList(fieldUnitUuids);
     }
 }
