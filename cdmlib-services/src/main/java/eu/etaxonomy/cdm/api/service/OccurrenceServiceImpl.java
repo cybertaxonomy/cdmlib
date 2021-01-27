@@ -404,22 +404,27 @@ public class OccurrenceServiceImpl
         return derivedUnit.getMostSignificantIdentifier();
     }
 
+    /**
+     * TODO there is a very similar function in {@link SpecimenOrObservationBaseDTO#assembleDerivative}.
+     * If possible we should avoid using this function here by the method in <code>SpecimenOrObservationBaseDTO</code>.
+     */
+    private Set<DerivedUnitDTO> getDerivedUnitDTOsFor(SpecimenOrObservationBaseDTO specimenDto, DerivedUnit specimen,
+            HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
 
-    private Set<DerivedUnitDTO> getDerivedUnitDTOsFor(SpecimenOrObservationBaseDTO specimenDto, DerivedUnit specimen, HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
         Set<DerivedUnitDTO> derivedUnits = new HashSet<>();
-
         for (DerivationEvent derivationEvent : specimen.getDerivationEvents()) {
             for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 if (!alreadyCollectedSpecimen.containsKey(specimenDto.getUuid())){
-                    DerivedUnitDTO dto;
-                    if (derivative instanceof DnaSample) {
-                        dto = new DNASampleDTO(derivative);
-                    } else {
-                        dto = new DerivedUnitDTO(derivative);
-                    }
+                    DerivedUnitDTO dto = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivative, 0);
                     alreadyCollectedSpecimen.put(dto.getUuid(), dto);
                     dto.addAllDerivatives(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
                     derivedUnits.add(dto);
+                } else {
+                    if(alreadyCollectedSpecimen.get(specimenDto.getUuid()).getDerivatives().isEmpty() && !derivative.getDerivationEvents().isEmpty()) {
+                        // we need to add the missing derivatives!
+                        SpecimenOrObservationBaseDTO dto = alreadyCollectedSpecimen.get(specimenDto.getUuid());
+                        alreadyCollectedSpecimen.get(specimenDto.getUuid()).addAllDerivatives(getDerivedUnitDTOsFor(dto, derivative, alreadyCollectedSpecimen));
+                    }
                 }
             }
         }
@@ -500,17 +505,15 @@ public class OccurrenceServiceImpl
 
         Set<Taxon> taxa = new HashSet<>();
         Set<SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashSet<>();
-        HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen = new HashMap<>();
         boolean includeUnpublished = INCLUDE_UNPUBLISHED;
 
         Taxon associatedTaxon = (Taxon) taxonService.load(associatedTaxonUuid);
-
         if (includedRelationships != null) {
             taxa = taxonService.listRelatedTaxa(associatedTaxon, includedRelationships, null, includeUnpublished, null, null, null);
         }
-
         taxa.add(associatedTaxon);
 
+        HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedUnits = new HashMap<>();
         for (Taxon taxon : taxa) {
             // TODO there might be a good potential to speed up the whole processing by collecting all entities first
             // and to create the DTOs in a second step
@@ -521,21 +524,23 @@ public class OccurrenceServiceImpl
             for (SpecimenOrObservationBase<?> unit : perTaxonOccurrences) {
                 unit = HibernateProxyHelper.deproxy(unit);
                 if (unit instanceof DerivedUnit){
-                    DerivedUnit derivedUnit = (DerivedUnit)unit;
-                    DerivedUnitDTO derivedUnitDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit);
-                    if (unit instanceof DnaSample) {
-                        derivedUnitDTO = DNASampleDTO.fromEntity((DnaSample)unit);
-                    } else {
-                        derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null, null);
+                    DerivedUnitDTO derivativeDTO;
+                    if (!alreadyCollectedUnits.containsKey(unit.getUuid())){
+                        DerivedUnit derivedUnit = (DerivedUnit)unit;
+                        derivativeDTO = (DerivedUnitDTO) SpecimenOrObservationDTOFactory.fromEntity(derivedUnit, null);
+                        if (unit instanceof DnaSample) {
+                            derivativeDTO = DNASampleDTO.fromEntity((DnaSample)unit);
+                        } else {
+                            derivativeDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null, null);
+                        }
+                        alreadyCollectedUnits.put(derivativeDTO.getUuid(), derivativeDTO);
+                        derivativeDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivativeDTO, derivedUnit, alreadyCollectedUnits));
                     }
-                    if (alreadyCollectedSpecimen.get(derivedUnitDTO.getUuid()) == null){
-                        alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
-                    }
-                    derivedUnitDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivedUnitDTO, derivedUnit, alreadyCollectedSpecimen));
-                    rootUnitDTOs.addAll(findRootUnitDTO(derivedUnitDTO, alreadyCollectedSpecimen));
+                    derivativeDTO = (DerivedUnitDTO) alreadyCollectedUnits.get(unit.getUuid());
+                    rootUnitDTOs.addAll(findRootUnitDTO(derivativeDTO, alreadyCollectedUnits));
                 } else {
                     // only other option is FieldUnit
-                    rootUnitDTOs.add(FieldUnitDTO.fromEntity((FieldUnit)unit));
+                    rootUnitDTOs.add(FieldUnitDTO.fromEntity((FieldUnit)unit, 0, null));
                 }
             }
         }
@@ -729,10 +734,12 @@ public class OccurrenceServiceImpl
      * @return
      *  The collection of all Field Units that are accessible from the derivative from where the search was started.
      */
-    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTO(DerivedUnitDTO derivedUnitDTO, HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
-        HashMap<UUID, SpecimenOrObservationBaseDTO> fieldUnitDTOs = new HashMap<>();
-        _findRootUnitDTO(derivedUnitDTO, fieldUnitDTOs, alreadyCollectedSpecimen);
-        return fieldUnitDTOs.values();
+    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTO(DerivedUnitDTO derivedUnitDTO,
+            HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
+
+        HashMap<UUID, SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashMap<>();
+        _findRootUnitDTO(derivedUnitDTO, rootUnitDTOs, alreadyCollectedSpecimen);
+        return rootUnitDTOs.values();
 
     }
 
@@ -767,7 +774,7 @@ public class OccurrenceServiceImpl
             original = HibernateProxyHelper.deproxy(original);
 
             if (alreadyCollectedSpecimen.containsKey(original.getUuid())){
-                alreadyCollectedSpecimen.get(original.getUuid()).addDerivate(derivedUnitDTO);
+                alreadyCollectedSpecimen.get(original.getUuid()).addDerivative(derivedUnitDTO);
     //            if ( alreadyCollectedSpecimen.get(specimen.getUuid()) instanceof FieldUnitDTO){
     //                ((FieldUnitDTO)alreadyCollectedSpecimen.get(specimen.getUuid())).getTaxonRelatedDerivedUnits().add(derivedUnitDTO.getUuid());
     //            }
@@ -780,18 +787,20 @@ public class OccurrenceServiceImpl
                     // when ascending to the originals, we only want to collect those derivatives which are on the path up to the root
                     final Integer maxDepth = 0;
                     SpecimenOrObservationBaseDTO originalDTO = SpecimenOrObservationDTOFactory.fromEntity(original, maxDepth);
-                    originalDTO.addDerivate(derivedUnitDTO);
+                    originalDTO.addDerivative(derivedUnitDTO);
+                    alreadyCollectedSpecimen.put(originalDTO.getUuid(), originalDTO);
                     if (original instanceof FieldUnit){
                         rootUnitDTOs.put(originalDTO.getUuid(), originalDTO);
                     }else{
                         _findRootUnitDTO((DerivedUnitDTO) originalDTO, rootUnitDTOs, alreadyCollectedSpecimen);
                     }
+                } else {
+                    SpecimenOrObservationBaseDTO previouslyFoundRootUnit = rootUnitDTOs.get(original.getUuid());
+                    if(!previouslyFoundRootUnit.getDerivatives().stream().anyMatch(uDTO -> uDTO.getUuid().equals(derivedUnitDTO.getUuid()))) {
+                        previouslyFoundRootUnit.addDerivative(derivedUnitDTO);
+                    }
                 }
             }
-          //  }
-    //        if (fieldUnitDto != null){
-    //            fieldUnitDto.addTaxonRelatedDerivedUnits(derivedUnitDTO);
-    //        }
         } else {
             rootUnitDTOs.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
         }
@@ -852,7 +861,7 @@ public class OccurrenceServiceImpl
                     if (originalDTO instanceof FieldUnitDTO){
                         fieldUnitDTO = (FieldUnitDTO)originalDTO;
                         if(derivedUnitDTO != null){
-                            fieldUnitDTO.addDerivate(derivedUnitDTO);
+                            fieldUnitDTO.addDerivative(derivedUnitDTO);
                         }
                         break;
                     }else{
@@ -860,7 +869,7 @@ public class OccurrenceServiceImpl
                         if (derivedUnitDTO == null){
                             derivedUnitDTO = (DerivedUnitDTO)originalDTO;
                         } else {
-                            originalDTO.addDerivate(derivedUnitDTO);
+                            originalDTO.addDerivative(derivedUnitDTO);
                             derivedUnitDTO = (DerivedUnitDTO)originalDTO;
                         }
                     }

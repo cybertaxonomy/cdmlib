@@ -323,7 +323,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.derivatives = derivatives;
     }
 
-    public void addDerivate(DerivedUnitDTO derivate){
+    public void addDerivative(DerivedUnitDTO derivate){
         if (this.derivatives == null){
             this.derivatives = new HashSet<>();
         }
@@ -467,7 +467,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
             if (doDescend && (includeTypes == null || includeTypes.contains(derivedUnit.getRecordBasis()))) {
                 DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, nextLevelMaxDepth, includeTypes, null);
-                addDerivate(derivedUnitDTO);
+                addDerivative(derivedUnitDTO);
                 setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
                 // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in
                 // setDerivateDataDTO(), see below
