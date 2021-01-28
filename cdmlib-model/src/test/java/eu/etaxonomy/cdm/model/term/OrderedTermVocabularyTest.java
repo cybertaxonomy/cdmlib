@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import static org.junit.Assert.assertEquals;
@@ -14,7 +13,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.URI;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -22,8 +20,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
-
 
 public class OrderedTermVocabularyTest extends EntityTestBase {
 	@SuppressWarnings("unused")
@@ -134,7 +132,6 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 		assertEquals(2, oVoc1.getLowerTerms(otb1).size());
 		assertEquals(otb2, oVoc1.getLowerTerms(otb1).last());
 	}
-
 
 	@Test
 	@Ignore

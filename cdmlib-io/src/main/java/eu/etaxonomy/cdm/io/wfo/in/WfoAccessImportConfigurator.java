@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.wfo.in;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;

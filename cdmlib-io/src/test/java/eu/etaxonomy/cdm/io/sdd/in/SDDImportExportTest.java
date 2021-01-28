@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -30,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -76,7 +76,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
         // input data
         //URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDDImportTest-input3.xml");
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/ant.sdd.xml");
-        URI uri = url.toURI();
+        URI uri = URI.fromUrl(url);
 
         // export data
         String exporturlStr = "SDDImportExportTest.sdd.xml";
@@ -97,9 +97,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
 
         importConfigurator = SDDImportConfigurator.NewInstance(uri, loadedDataSource);
         exportConfigurator = SDDExportConfigurator.NewInstance(loadedDataSource, exporturlStr);
-
     }
-
 
     @Test
     @Ignore
@@ -166,13 +164,6 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
         return dataSource;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

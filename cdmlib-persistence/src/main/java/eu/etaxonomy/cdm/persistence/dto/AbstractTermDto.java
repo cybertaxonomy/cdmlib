@@ -10,12 +10,12 @@
 package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.term.TermType;
 /**
  * @author pplitzner
  * @date 05.11.2018
- *
  */
 public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto> {
 
@@ -38,9 +37,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     private String representation_L10n_text = null;
     private String titleCache;
 
-    protected AbstractTermDto(){
-
-    }
+    protected AbstractTermDto(){}
 
     public AbstractTermDto(UUID uuid, Set<Representation> representations, String titleCache) {
         this.uuid = uuid;
@@ -49,8 +46,6 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
         for(Representation rep: representations){
             this.representations.add(rep.clone());
         }
-
-
     }
 
     /**
@@ -98,7 +93,6 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
 
     public void addRepresentation(Representation representation) {
         representations.add(representation);
-
     }
 
     public String getRepresentation_L10n_abbreviatedLabel() {
@@ -116,8 +110,6 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
     public void setRepresentation_L10n_text(String representation_L10n_text) {
         this.representation_L10n_text = representation_L10n_text;
     }
-
-
 
     public UUID getUuid() {
         return uuid;
@@ -162,11 +154,9 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
         return null;
     }
 
-
     public String getTitleCache() {
         return titleCache;
     }
-
 
     public void setTitleCache(String titleCache) {
         this.titleCache = titleCache;
@@ -220,5 +210,4 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
         }
         return uuid.compareTo(o.getUuid());
     }
-
 }

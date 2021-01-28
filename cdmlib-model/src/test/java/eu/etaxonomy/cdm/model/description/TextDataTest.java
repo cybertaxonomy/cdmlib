@@ -20,38 +20,27 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 23.04.2008
  */
-public class TextDataTest {
-	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(TextDataTest.class);
+public class TextDataTest extends EntityTestBase {
 
+    @SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(TextDataTest.class);
 
 	private TextData textDataLeer;
 	private TextData textData1;
 	private TextFormat format1;
 	private LanguageString languageString1;
 
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		textDataLeer = TextData.NewInstance();
@@ -62,9 +51,6 @@ public class TextDataTest {
 
 /* ************************** TESTS **********************************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#NewInstance()}.
-	 */
 	@Test
 	public void testNewInstance() {
 		assertNotNull(textDataLeer);
@@ -74,9 +60,6 @@ public class TextDataTest {
 		assertNull(textDataLeer.getFormat());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#NewInstance()}.
-	 */
 	@Test
 	public void testNewInstanceStringLanguageTextFormat() {
 		assertNotNull(textData1);
@@ -88,10 +71,6 @@ public class TextDataTest {
 		assertSame(format1, textData1.getFormat());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#TextData()}.
-	 */
 	@Test
 	public void testTextData() {
 		textDataLeer = new TextData();
@@ -102,18 +81,12 @@ public class TextDataTest {
 		assertNull(textDataLeer.getFormat());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#getTexts()}.
-	 */
 	@Test
 	public void testGetText() {
 		assertNotNull(textData1.getText(Language.DEFAULT()));
 		assertNull(textDataLeer.getText(Language.DEFAULT()));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#getMultilanguageText()}.
-	 */
 	@Test
 	public void testGetMultilanguageText() {
 		assertNotNull(textData1.getMultilanguageText());
@@ -170,9 +143,6 @@ public class TextDataTest {
 		assertEquals(null, textDataLeer.getText(Language.CHINESE()));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#addText(eu.etaxonomy.cdm.model.common.LanguageString)}.
-	 */
 	@Test
 	public void testPutTextLanguageString() {
 		LanguageString deutsch = LanguageString.NewInstance("xx", Language.GERMAN());
@@ -191,9 +161,6 @@ public class TextDataTest {
 		assertEquals(null, textDataLeer.getText(Language.CHINESE()));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#removeText(eu.etaxonomy.cdm.model.common.Language)}.
-	 */
 	@Test
 	public void testRemoveText() {
 		assertEquals(1, textData1.countLanguages());
@@ -209,10 +176,6 @@ public class TextDataTest {
 		assertEquals(1, textData1.countLanguages());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#getFormat()}.
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#setFormat(eu.etaxonomy.cdm.model.description.TextFormat)}.
-	 */
 	@Test
 	public void testGetSetFormat() {
 		textDataLeer.setFormat(format1);
@@ -221,9 +184,6 @@ public class TextDataTest {
 		assertNull(textDataLeer.getFormat());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.description.TextData#countLanguages()}.
-	 */
 	@Test
 	public void testCountLanguages() {
 		assertEquals(1, textData1.countLanguages());
@@ -235,12 +195,11 @@ public class TextDataTest {
 		assertEquals(1, textData1.countLanguages());
 		textData1.removeText(Language.DEFAULT());
 		assertEquals(0, textData1.countLanguages());
-
 	}
 
 	@Test
 	public void testClone(){
-		TextData clone = (TextData) textData1.clone();
+		TextData clone = textData1.clone();
 		LanguageString langStringClone = clone.getLanguageText(Language.DEFAULT());
 		LanguageString langString = textData1.getLanguageText(Language.DEFAULT());
 		assertEquals(langStringClone.getText(), langString.getText());
@@ -256,6 +215,4 @@ public class TextDataTest {
 		assertNotSame(clone.get(Language.ENGLISH()), test.get(Language.ENGLISH()));
 		assertEquals(clone.get(Language.ENGLISH()).getText(), test.get(Language.ENGLISH()).getText());
 	}
-
-
 }

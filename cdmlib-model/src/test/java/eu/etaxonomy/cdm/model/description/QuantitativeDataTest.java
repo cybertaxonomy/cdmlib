@@ -14,28 +14,17 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 23.04.2018
- *
  */
-public class QuantitativeDataTest {
+public class QuantitativeDataTest extends EntityTestBase {
 
     private QuantitativeData quantData;
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        if (Language.DEFAULT() == null){
-            DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-            vocabularyStore.initialize();
-        }
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -49,11 +38,10 @@ public class QuantitativeDataTest {
 
     @Test
     public void testClone(){
-        QuantitativeData clone = (QuantitativeData) quantData.clone();
+        QuantitativeData clone = quantData.clone();
         BigDecimal cloneValue = clone.getStatisticalValues().iterator().next().getValue();
         BigDecimal origValue = quantData.getStatisticalValues().iterator().next().getValue();
         assertTrue(origValue == cloneValue);
         assertNotSame(clone.getStatisticalValues().iterator().next(), quantData.getStatisticalValues().iterator().next());
     }
-
 }

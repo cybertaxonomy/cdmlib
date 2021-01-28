@@ -49,6 +49,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -1390,8 +1392,8 @@ public class Taxon
      * @see			#getHomotypicSynonymyGroups()
      * @see			SynonymType
      * @deprecated as the method currently returns data not matching the original description of the method
-     * as an ordered list (according to date of publication) of synonyms with same secundum as <i>this</i> taxon.
-     * In future this method will either be removed or semantics may change.
+     *    as an ordered list (according to date of publication) of synonyms with same secundum as <i>this</i> taxon.<BR>
+     *    In future this method will either be removed or semantics may change.
      */
     @Deprecated
     @Transient
@@ -1704,7 +1706,9 @@ public class Taxon
         return clone(true, true, true, true);
     }
 
-    public Taxon clone(boolean withSynonyms, boolean withTaxonRelations, boolean withDescriptions, boolean withMedia) {
+    public Taxon clone(boolean withSynonyms, boolean withTaxonRelations, boolean withDescriptions,
+            boolean withMedia) {
+
         Taxon result;
         result = (Taxon)super.clone();
 

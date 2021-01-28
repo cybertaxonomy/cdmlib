@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +19,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -35,11 +33,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class TaxonTest extends EntityTestBase {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonTest.class);
 
 	private Reference sec;
@@ -56,12 +54,6 @@ public class TaxonTest extends EntityTestBase {
 	private Taxon freeT;
 	private Taxon misTaxon1;
 	private Taxon misTaxon2;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -144,9 +136,6 @@ public class TaxonTest extends EntityTestBase {
 		assertEquals("The taxon has not properly been removed from the description", null, desc.getTaxon());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#getTaxonRelations()}.
-	 */
 	@Test
 	public void testGetTaxonRelations() {
 		Taxon taxon = Taxon.NewInstance(null, null);
@@ -155,9 +144,6 @@ public class TaxonTest extends EntityTestBase {
 		assertTrue("There should be exactly one relationship", relationships.size() == 1);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#removeTaxonRelation(eu.etaxonomy.cdm.model.taxon.TaxonRelationship)}.
-	 */
 	@Test
 	public void testRemoveTaxonRelation() {
 		Taxon taxon = Taxon.NewInstance(null, null);
@@ -169,9 +155,6 @@ public class TaxonTest extends EntityTestBase {
 		assertTrue("There should be no taxon relationships", taxon.getTaxonRelations().size() == 0);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addTaxonRelation(eu.etaxonomy.cdm.model.taxon.TaxonRelationship)}.
-	 */
 	@Test
 	public void testAddTaxonRelationTaxonRelationship() {
 		Taxon taxon = Taxon.NewInstance(null, null);
@@ -198,6 +181,7 @@ public class TaxonTest extends EntityTestBase {
         Assert.assertEquals("We should have two names in the homotypic group",
                 2, homotypicGroupOfSynonym.getTypifiedNames().size());
     }
+
     @Test
     public void testAddHomotypicSynonym(){
         TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(null);
@@ -248,10 +232,9 @@ public class TaxonTest extends EntityTestBase {
 				1, taxon.getSynonymsInGroup(homotypicGroupViaTaxon).size());
 	}
 
-
 	@Test
 	public void testClone(){
-		Taxon clone = (Taxon)child2.clone();
+		Taxon clone = child2.clone();
 		assertNotNull(clone);
 		assertEquals(0,clone.getTaxonNodes().size());
 		assertSame(clone.getName(), child2.getName());
@@ -263,5 +246,4 @@ public class TaxonTest extends EntityTestBase {
 	    BeanUtils.getPropertyDescriptors(Taxon.class);
 	    BeanUtils.getPropertyDescriptors(Synonym.class);
 	}
-
 }

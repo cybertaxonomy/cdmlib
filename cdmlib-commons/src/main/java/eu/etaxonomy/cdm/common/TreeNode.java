@@ -107,7 +107,7 @@ public class TreeNode<T,S> {
      */
     public void addChild(TreeNode<T,S> child) {
         if (children == null) {
-            children = new ArrayList<TreeNode<T,S>>();
+            children = new ArrayList<>();
         }
         children.add(child);
     }
@@ -141,7 +141,8 @@ public class TreeNode<T,S> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("{").append(getData().toString()).append(",[");
+
+        sb.append("{").append(getData() == null ? "null" : getData().toString()).append(",[");
         int i = 0;
         for (TreeNode<T,S> e : getChildren()) {
             if (i > 0) {
@@ -154,17 +155,9 @@ public class TreeNode<T,S> {
         return sb.toString();
     }
 
-    /**
-     *
-     * @return the nodeId
-     */
     public S getNodeId() {
         return nodeId;
     }
-
-    /**
-     * @param nodeId the nodeId to set
-     */
     public void setNodeId(S nodeId) {
         this.nodeId = nodeId;
     }

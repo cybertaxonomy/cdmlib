@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
@@ -52,6 +51,7 @@ public abstract class DaoBase {
     public SessionFactory getSessionFactory() {
         return factory;
     }
+
     protected Session getSession(){
         Session session ;
         try {
@@ -117,8 +117,6 @@ public abstract class DaoBase {
         return result;
     }
 
-
-
     // -------------- hql, query and criteria helper methods -------------- //
 
     protected void addFieldPredicate(StringBuilder hql, String field, Optional<String> value) {
@@ -146,6 +144,7 @@ public abstract class DaoBase {
             }
         }
     }
+
     protected void addPageSizeAndNumber(FullTextQuery query, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
             query.setMaxResults(pageSize);
@@ -168,11 +167,6 @@ public abstract class DaoBase {
         }
     }
 
-    /**
-     * @param limit
-     * @param start
-     * @param criteria
-     */
     protected void addPageSizeAndNumber(Criteria criteria, Integer pageSize, Integer pageNumber) {
         if(pageSize != null) {
             criteria.setMaxResults(pageSize);
@@ -195,12 +189,6 @@ public abstract class DaoBase {
         }
     }
 
-
-    /**
-     * @param limit
-     * @param start
-     * @param query
-     */
     protected void addLimitAndStart(Query query, Integer limit, Integer start) {
         if(limit != null) {
             if(start != null) {
@@ -242,6 +230,7 @@ public abstract class DaoBase {
             }
         }
     }
+
     protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
         //FIXME preliminary hardcoded type:
         SortField.Type type = SortField.Type.STRING;
@@ -289,14 +278,7 @@ public abstract class DaoBase {
         return orderString;
     }
 
-    /**
-     * @param hql
-     * @param orderHints
-     */
     protected void addOrder(StringBuilder hql, String alias, List<OrderHint> orderHints) {
         hql.append(orderByClause(alias, orderHints));
      }
-
-   // ---------------------------- //
-
 }

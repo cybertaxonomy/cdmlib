@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -88,7 +87,7 @@ public class TypeDesignationSetFormatter {
         TaggedTextBuilder finalBuilder = new TaggedTextBuilder();
 
         if(withNameIfAvailable && manager.getTypifiedNameCache() != null){
-            finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(), new TypedEntityReference<>(TaxonName.class, manager.getTypifiedName().getUuid()));
+            finalBuilder.add(TagEnum.name, manager.getTypifiedNameCache(), TypedEntityReference.fromEntity(manager.getTypifiedName(), false));
             finalBuilder.addPostSeparator(POST_NAME_SEPARTOR);
         }
 
@@ -170,7 +169,7 @@ public class TypeDesignationSetFormatter {
 
         //designation + sources
         int typeDesignationCount = 0;
-        for(TypeDesignationDTO typeDesignationDTO : createSortedList(typeDesignationWorkingSet, typeStatus)) {
+        for(TypeDesignationDTO<?> typeDesignationDTO : createSortedList(typeDesignationWorkingSet, typeStatus)) {
             TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
 
             typeDesignationCount = buildTaggedTextForSingleType(typeDes, withCitation,
@@ -190,7 +189,7 @@ public class TypeDesignationSetFormatter {
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
         }
 
-        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes), new TypedEntityReference<>(typeDes.getClass(), typeDes.getUuid()));
+        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes), TypedEntityReference.fromEntity(typeDes, false));
 //        workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
 
         if (withCitation){
@@ -227,7 +226,7 @@ public class TypeDesignationSetFormatter {
         if (ref != null){
             DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
             String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
-            workingsetBuilder.add(TagEnum.reference, shortCitation, new TypedEntityReference<>(source.getClass(), ref.getUuid()));
+            workingsetBuilder.add(TagEnum.reference, shortCitation, TypedEntityReference.fromEntity(ref, false));
         }
     }
 
@@ -297,10 +296,10 @@ public class TypeDesignationSetFormatter {
         return result;
     }
 
-    private static String stringify(SpecimenTypeDesignation td, boolean useFullTitleCache) {
+    private static String stringify(SpecimenTypeDesignation td, boolean useTitleCache) {
         String  result = "";
 
-        if(useFullTitleCache){
+        if(useTitleCache){
             if(td.getTypeSpecimen() != null){
                 String nameTitleCache = td.getTypeSpecimen().getTitleCache();
                 //TODO is this needed?

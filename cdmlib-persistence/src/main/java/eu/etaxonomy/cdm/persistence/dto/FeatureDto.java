@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -65,7 +65,6 @@ public class FeatureDto extends TermDto {
         this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
         this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
         this.recommendedModifierEnumeration = recommendedModifierEnumeration;
-
     }
 
     static public FeatureDto fromTerm(Feature term) {

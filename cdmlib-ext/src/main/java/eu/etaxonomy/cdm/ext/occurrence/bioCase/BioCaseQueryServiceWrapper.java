@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +34,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
@@ -47,9 +47,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * It sends a {@link OccurenceQuery} via HTTP POST to a given provider
  * @author pplitzner
  * @since 13.09.2013
- *
  */
-
 @Service
 @Transactional(readOnly = true)
 public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{

@@ -8,27 +8,24 @@
 */
 package eu.etaxonomy.cdm.ext.openurl;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.openurl.MobotOpenUrlServiceWrapper.ReferenceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.kohlbecker
  * @since 16.12.2010
- *
  */
 public class OpenUrlReference extends Reference {
 
+    private static final long serialVersionUID = 5523159432429746682L;
+    public static final Logger logger = Logger.getLogger(OpenUrlReference.class);
 
 	private static final String PAGETHUMB_BASE_URI = "http://www.biodiversitylibrary.org/pagethumb/";
-
-	public static final Logger logger = Logger.getLogger(OpenUrlReference.class);
-
-	private static final long serialVersionUID = 1L;
 
 	private URI itemUri;
 

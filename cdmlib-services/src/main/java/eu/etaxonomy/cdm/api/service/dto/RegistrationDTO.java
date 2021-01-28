@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
@@ -89,21 +90,15 @@ public class RegistrationDTO {
              submitterUserName = reg.getSubmitter().getUsername();
          }
 
-        if(hasName(reg)){
-            citation = reg.getName().getNomenclaturalReference();
-            citationDetail = reg.getName().getNomenclaturalMicroReference();
-            name = new EntityReference(reg.getName().getUuid(), reg.getName().getTitleCache());
+         if(hasName(reg)){
+             name = new EntityReference(reg.getName().getUuid(), reg.getName().getTitleCache());
+         }
+        DescriptionElementSource publishedUnit = findPublishedUnit(reg);
+        if(publishedUnit != null) {
+            citation = publishedUnit.getCitation();
+            citationDetail = publishedUnit.getCitationMicroReference();
         }
-        if(hasTypifications(reg)){
-            if(!reg.getTypeDesignations().isEmpty()){
-                for(TypeDesignationBase<?> td : reg.getTypeDesignations()){
-                    if(citation == null) {
-                        citation = td.getCitation();
-                        citationDetail = td.getCitationMicroReference();
-                    }
-                }
-            }
-        }
+
         switch(registrationType) {
         case EMPTY:
             summary = "BLANK REGISTRATION";
@@ -147,11 +142,27 @@ public class RegistrationDTO {
         makeNomenclaturalCitationString();
     }
 
-    private boolean hasTypifications(Registration reg) {
+    public static DescriptionElementSource findPublishedUnit(Registration reg) {
+        DescriptionElementSource publishedUnit = null;
+        if(hasName(reg)){
+            publishedUnit = reg.getName().getNomenclaturalSource();
+        } else if(hasTypifications(reg)){
+            if(!reg.getTypeDesignations().isEmpty()){
+                for(TypeDesignationBase<?> td : reg.getTypeDesignations()){
+                    if(td.getSource() != null) {
+                        publishedUnit = td.getSource();
+                    }
+                }
+            }
+        }
+        return publishedUnit;
+    }
+
+    private static boolean hasTypifications(Registration reg) {
         return reg.getTypeDesignations() != null && reg.getTypeDesignations().size() > 0;
     }
 
-    private boolean hasName(Registration reg) {
+    private static boolean hasName(Registration reg) {
         return reg.getName() != null;
     }
 

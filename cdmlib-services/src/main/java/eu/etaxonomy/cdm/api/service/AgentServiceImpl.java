@@ -67,7 +67,6 @@ public class AgentServiceImpl
 		if (logger.isDebugEnabled()) { logger.debug("Load AgentService Bean"); }
 	}
 
-
 	@Override
 	@Transactional(readOnly = false)
     public UpdateResult updateCaches(Class<? extends AgentBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<AgentBase> cacheStrategy, IProgressMonitor monitor) {
@@ -134,7 +133,7 @@ public class AgentServiceImpl
 	}
 
 	@Override
-	public List<UuidAndTitleCache<AgentBase>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
+	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
 		return dao.getUuidAndAbbrevTitleCache(Institution.class, limit, pattern);
 	}
 
@@ -219,28 +218,31 @@ public class AgentServiceImpl
 
 	@Override
 	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException {
+	    if (person == null){
+	        throw new IllegalArgumentException("Person does not exist.");
+	    }
 	    UpdateResult result = new UpdateResult();
         Team team = Team.NewInstance();
-		ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
-		strategy.setDefaultMergeMode(MergeMode.SECOND);
-		strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
-		strategy.setDeleteSecondObject(true);
+        ConvertMergeStrategy strategy = ConvertMergeStrategy.NewInstance(TeamOrPersonBase.class);
+        strategy.setDefaultMergeMode(MergeMode.SECOND);
+        strategy.setDefaultCollectionMergeMode(MergeMode.SECOND);
+        if (person.isProtectedTitleCache() || !person.getTitleCache().startsWith("Person#")){  //the later is for checking if the person is empty, this can be done better
+            team.setTitleCache(person.getTitleCache(), true);  //as there are no members we set the titleCache to protected (as long as titleCache does not take the protected nomenclatural title but results in '-empty team-' in this situation); for some reason it is necessary to also set the title cache as well here, otherwise it is recomputed during the merge
+        }
+        strategy.setMergeMode("protectedTitleCache", MergeMode.FIRST); //as we do not add team members, the titleCache of the new team should be always protected
+        strategy.setDeleteSecondObject(true);
+        team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);  //sets the protected flag always to true, this is necessary as long as person does not have a nomenclatural title cache; maybe setting the protected title itself is not necessary but does no harm
 
-
-		if (! genericDao.isMergeable(team, person, strategy)){
+        if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
 		}
 		try {
-			//this.save(team);
-			team.setProtectedNomenclaturalTitleCache(false);
-			team.setProtectedTitleCache(true);
-			team.setTitleCache(person.getTitleCache(), true);
-			team =(Team) this.save(team);
+			team = this.save(team);
 			genericDao.merge(team, person, strategy);
-			//team.addTeamMember(person);
 
-			//this.save(team);
-//			team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);
+			//Note: we decided  never add the old person as (first) member of the team as there are not many usecases for this.
+			//But we may try to parse the old person into members which may handle the case that teams have been stored as unparsed persons
+
 		} catch (Exception e) {
 			throw new MergeException("Unhandled merge exception", e);
 		}
@@ -249,17 +251,13 @@ public class AgentServiceImpl
         return result;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IAgentService#getUuidAndAbbrevTitleCache()
-     */
     @Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern) {
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern) {
         return dao.getUuidAndAbbrevTitleCache(clazz, null, pattern);
     }
 
     @Override
-    public List<AgentBase> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<AgentBase> config){
+    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<T> config){
         return dao.findByTitleAndAbbrevTitle(config.getClazz(),config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
     }
-
 }

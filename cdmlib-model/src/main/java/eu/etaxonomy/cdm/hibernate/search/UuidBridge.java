@@ -16,7 +16,6 @@ import org.hibernate.search.bridge.StringBridge;
 /**
  * @author andreas
  * @since Jun 19, 2012
- *
  */
 public class UuidBridge implements StringBridge {
 

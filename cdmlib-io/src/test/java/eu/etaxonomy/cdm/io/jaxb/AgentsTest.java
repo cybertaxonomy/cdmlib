@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStreamReader;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 import org.joda.time.DateTimeFieldType;
 import org.junit.Test;

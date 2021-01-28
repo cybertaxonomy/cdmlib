@@ -6,10 +6,8 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +35,10 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -66,6 +67,7 @@ public abstract class TermBase
 
     @XmlElement(name = "URI")
     @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = UriBridge.class)
     @Type(type="uriUserType")
     private URI uri;
 
@@ -288,7 +290,7 @@ public abstract class TermBase
 
         result.representations = new HashSet<Representation>();
         for (Representation rep : this.representations){
-            result.representations.add((Representation)rep.clone());
+            result.representations.add(rep.clone());
         }
 
         return result;

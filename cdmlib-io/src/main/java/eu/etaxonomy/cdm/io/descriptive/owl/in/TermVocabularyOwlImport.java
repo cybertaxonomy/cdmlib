@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
@@ -21,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.descriptive.owl.OwlUtil;
@@ -29,18 +29,15 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
- *
  * @author pplitzner
  * @since May 27, 2019
- *
  */
 @Component("termVocabularyOwlImport")
-public class TermVocabularyOwlImport extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
+public class TermVocabularyOwlImport
+        extends CdmImportBase<StructureTreeOwlImportConfigurator, StructureTreeOwlImportState> {
 
     private static final long serialVersionUID = -3659780404413458511L;
-
-    static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TermVocabularyOwlImport.class);
-
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(TermVocabularyOwlImport.class);
 
     @Override
     protected boolean doCheck(StructureTreeOwlImportState state) {

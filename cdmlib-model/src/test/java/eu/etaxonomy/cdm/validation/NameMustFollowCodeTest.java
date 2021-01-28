@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.validation.constraint.NameMustFollowCodeValidator;
 
 /**
@@ -45,8 +44,6 @@ public class NameMustFollowCodeTest extends ValidationTestBase {
 
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 		nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());
 		viralName = TaxonNameFactory.NewViralInstance(Rank.SPECIES());
 		zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());

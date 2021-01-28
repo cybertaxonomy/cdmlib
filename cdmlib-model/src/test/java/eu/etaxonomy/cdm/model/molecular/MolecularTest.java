@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -16,18 +16,17 @@ import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
+public class MolecularTest extends EntityTestBase {
 
-public class MolecularTest {
-	@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(MolecularTest.class);
 
 	private DnaSample dnaSample;
@@ -35,16 +34,6 @@ public class MolecularTest {
 	private PhylogeneticTree phyloTree;
 	private Sequence seq;
 
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		dnaSample = DnaSample.NewInstance();
@@ -77,14 +66,12 @@ public class MolecularTest {
 	@Test
 	public void testClone() throws URISyntaxException{
 
-
-		PhylogeneticTree phyloTreeClone = (PhylogeneticTree)phyloTree.clone();
+		PhylogeneticTree phyloTreeClone = phyloTree.clone();
 		assertTrue(phyloTreeClone.getUsedSequences().size() == 2);
 
 		assertNotSame(phyloTreeClone.getUsedSequences().iterator().next(), phyloTree.getUsedSequences().iterator().next());
 
-
-		Sequence sequenceClone = (Sequence)seq.clone();
+		Sequence sequenceClone = seq.clone();
 //		assertEquals(sequenceClone.getChromatograms().iterator().next().getAllTitles().get(0),seq.getChromatograms().iterator().next().getAllTitles().get(0));
 //
 //		Iterator<Media> mediaIteratorClone = sequenceClone.getChromatograms().iterator();
@@ -94,7 +81,6 @@ public class MolecularTest {
 //		test = (Media)mediaIteratorClone.next();
 //		LanguageString titleClone = test.getTitle(Language.ENGLISH());
 //		assertEquals(title, titleClone);
-
 
 		assertTrue (sequenceClone.getGeneticAccessionNumber().equals(seq.getGeneticAccessionNumber()));
 		assertNotNull(sequenceClone.getGenBankUri());
@@ -117,14 +103,8 @@ public class MolecularTest {
 				} else {
                     testBool = false;
                 }
-
 			}
 		}
 		assertTrue(testBool);
-
-
-
-
 	}
-
 }

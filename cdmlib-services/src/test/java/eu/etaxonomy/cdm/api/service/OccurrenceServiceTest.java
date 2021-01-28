@@ -30,7 +30,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -903,6 +903,18 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
 
     }
 
+    /**
+     * Structure is as follows:
+     *
+     *  FieldUnit(FU,4999):"filedUnit1"
+     *    |
+     *    +---> DerivedUnit(FS,5000):"testUnit1"
+     *        |
+     *        + ---> DerivedUnit(DS,5001):"dna"
+     *            |
+     *            + ---> DnaSample(DS,5004):"dnaSample"
+     *
+     */
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testFindOcurrences.xml")
     public void testFindOccurrences() {
@@ -1159,10 +1171,13 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(ignoreAssignmentStatusSpecimens.contains(derivedUnit1));
         assertTrue(ignoreAssignmentStatusSpecimens.contains(tissue));
 
-        FieldUnitDTO findByAccessionNumber = occurrenceService.findByAccessionNumber("ACC_DNA",  null);
+        SpecimenOrObservationBaseDTO findByAccessionNumber = occurrenceService.findByGeneticAccessionNumber("ACC_DNA",  null);
 
         assertNotNull(findByAccessionNumber);
-        assertTrue(findByAccessionNumber.getDerivatives().size() == 1);
+        // logger.setLevel(Level.TRACE);
+        logger.trace("root unit: " + findByAccessionNumber.getLabel());
+        logger.trace("derivatives:\n\t" + findByAccessionNumber.getDerivatives().stream().map(du -> du.toString() + ":" + du.getLabel()).collect(Collectors.joining("\n\t")));
+        assertEquals(1, findByAccessionNumber.getDerivatives().size());
        // assertTrue(findByAccessionNumber.contains(derivedUnit1));
        // assertTrue(findByAccessionNumber.get(0).get.equals(dnaSampleWithSequence));
     }

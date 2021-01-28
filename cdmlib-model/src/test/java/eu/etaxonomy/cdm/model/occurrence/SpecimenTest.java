@@ -18,7 +18,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -32,6 +35,7 @@ import com.ibm.lsid.MalformedLSIDException;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -53,6 +57,17 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  * @since 28.10.2008
  */
 public class SpecimenTest {
+
+    /**
+     * @author a.kohlbecker
+     * @since Jan 18, 2021
+     */
+    private final class ByTtitleCacheComparator implements Comparator<IdentifiableEntity> {
+        @Override
+        public int compare(IdentifiableEntity o1, IdentifiableEntity o2) {
+            return o1.getTitleCache().compareTo(o2.getTitleCache());
+        }
+    }
 
     private static final Logger logger = Logger.getLogger(SpecimenTest.class);
 
@@ -203,7 +218,7 @@ public class SpecimenTest {
 
 		//Null test is not full implemented, but an error is thrown if null throws
 		//null pointer exception somewhere
-		DerivedUnit specimenNullClone = (DerivedUnit)specimen.clone();
+		DerivedUnit specimenNullClone = specimen.clone();
 
 		String accessionNumber = "accNumber";
 		String catalogNumber = "catNumber";
@@ -281,7 +296,7 @@ public class SpecimenTest {
 		} catch (InterruptedException e) {
 			//ignore
 		}
-		DerivedUnit specimenClone = (DerivedUnit)specimen.clone();
+		DerivedUnit specimenClone = specimen.clone();
 
 		assertFalse(id == specimenClone.getId());
 		assertFalse(created.equals(specimenClone.getCreated()));
@@ -347,7 +362,6 @@ public class SpecimenTest {
 		assertEquals(1, specimenClone.getSources().size());
 	}
 
-
     @Test
     public void beanTests(){
 //      #5307 Test that BeanUtils does not fail
@@ -356,5 +370,96 @@ public class SpecimenTest {
         BeanUtils.getPropertyDescriptors(FieldUnit.class);
         BeanUtils.getPropertyDescriptors(MediaSpecimen.class);
         BeanUtils.getPropertyDescriptors(DnaSample.class);
+    }
+
+    @Test
+    public void testCollectRootUnits() {
+
+        java.util.Collection<SpecimenOrObservationBase> rootSOBs;
+
+        DerivedUnit theSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+        theSpecimen.setTitleCache("*SP*", true);
+
+        rootSOBs = theSpecimen.collectRootUnits(null);
+        assertEquals(1, rootSOBs.size());
+        assertEquals(theSpecimen, rootSOBs.iterator().next());
+
+        rootSOBs = theSpecimen.collectRootUnits(SpecimenOrObservationBase.class);
+        assertEquals(1, rootSOBs.size());
+        assertEquals(theSpecimen, rootSOBs.iterator().next());
+
+        java.util.Collection<DerivedUnit> rootDUs = theSpecimen.collectRootUnits(DerivedUnit.class);
+        assertEquals(1, rootDUs.size());
+        assertEquals(theSpecimen, rootDUs.iterator().next());
+
+        java.util.Collection<FieldUnit> rootFUs = theSpecimen.collectRootUnits(FieldUnit.class);
+        assertTrue(rootFUs.isEmpty());
+
+        // -- one FieldUnit as root ----------------------------------------
+
+        FieldUnit fieldUnit1 = FieldUnit.NewInstance();
+        fieldUnit1.setTitleCache("FU1", true);
+        DerivationEvent.NewSimpleInstance(fieldUnit1, theSpecimen, DerivationEventType.GATHERING_IN_SITU());
+
+        rootSOBs = theSpecimen.collectRootUnits(null);
+        assertEquals(1, rootSOBs.size());
+        assertEquals(fieldUnit1, rootSOBs.iterator().next());
+
+        rootSOBs = theSpecimen.collectRootUnits(SpecimenOrObservationBase.class);
+        assertEquals(1, rootSOBs.size());
+        assertEquals(fieldUnit1, rootSOBs.iterator().next());
+
+        rootDUs = theSpecimen.collectRootUnits(DerivedUnit.class);
+        assertTrue(rootDUs.isEmpty());
+
+        rootFUs = theSpecimen.collectRootUnits(FieldUnit.class);
+        assertEquals(1, rootFUs.size());
+        assertEquals(fieldUnit1, rootFUs.iterator().next());
+
+        // -- multiple roots ------------------------------------------
+
+        DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
+        specimen1.setTitleCache("SP1", true);
+        theSpecimen.getDerivedFrom().addOriginal(specimen1);
+
+        rootSOBs = theSpecimen.collectRootUnits(null);
+        assertEquals(2, rootSOBs.size());
+
+        rootSOBs = theSpecimen.collectRootUnits(SpecimenOrObservationBase.class);
+        assertEquals(2, rootSOBs.size());
+        List<SpecimenOrObservationBase> rootSOBsSorted = rootSOBs.stream().sorted(new ByTtitleCacheComparator()).collect(Collectors.toList());
+        assertEquals(fieldUnit1, rootSOBsSorted.get(0));
+        assertEquals(specimen1, rootSOBsSorted.get(1));
+
+        FieldUnit fieldUnit2 = FieldUnit.NewInstance();
+        fieldUnit2.setTitleCache("FU2", true);
+        DerivationEvent.NewSimpleInstance(fieldUnit2, specimen1, DerivationEventType.GATHERING_IN_SITU());
+
+        rootSOBs = theSpecimen.collectRootUnits(SpecimenOrObservationBase.class);
+        assertEquals(2, rootSOBs.size());
+        rootSOBsSorted = rootSOBs.stream().sorted(new ByTtitleCacheComparator()).collect(Collectors.toList());
+        assertEquals(fieldUnit1, rootSOBsSorted.get(0));
+        assertEquals(fieldUnit2, rootSOBsSorted.get(1));
+
+        // -- multiple roots & cycle detection ------------------------------------------
+
+        DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
+        specimen2.setTitleCache("SP2", true);
+
+        DerivedUnit specimen3 = DerivedUnit.NewPreservedSpecimenInstance();
+        specimen3.setTitleCache("SP3", true);
+
+        theSpecimen.getDerivedFrom().addOriginal(specimen2);
+        DerivationEvent.NewSimpleInstance(specimen3, specimen2, DerivationEventType.GATHERING_IN_SITU());
+        DerivationEvent.NewSimpleInstance(theSpecimen, specimen3, DerivationEventType.GATHERING_IN_SITU());
+
+        rootSOBs = theSpecimen.collectRootUnits(SpecimenOrObservationBase.class);
+        assertEquals(3, rootSOBs.size());
+        rootSOBsSorted = rootSOBs.stream().sorted(new ByTtitleCacheComparator()).collect(Collectors.toList());
+        assertEquals(fieldUnit1, rootSOBsSorted.get(0));
+        assertEquals(fieldUnit2, rootSOBsSorted.get(1));
+        assertEquals(specimen3, rootSOBsSorted.get(2));
+
+
     }
 }

@@ -826,7 +826,6 @@ public class CdmGenericDaoImpl
 		getSession().saveOrUpdate(cdmMetaData);
 	}
 
-
 	@Override
     public List<CdmMetaData> getMetaData() {
 		Session session = getSession();

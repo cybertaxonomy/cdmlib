@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import static org.junit.Assert.assertEquals;
@@ -14,10 +13,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -28,13 +24,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.babadshanjan
  * @since 02.02.2009
  */
-public class IdentifiableEntityTest {
+public class IdentifiableEntityTest extends EntityTestBase {
 
 	private TaxonName abies;
 	private TaxonName abiesMill;
@@ -53,26 +49,7 @@ public class IdentifiableEntityTest {
 	private TaxonName abiesBalsamea;
 	private Taxon abiesBalsameaTaxon;
 //	private Taxon abiesAlbaxPinusBetaTaxon;
-	/**
-	 * @throws java.lang.Exception
-	 */
 
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-
-	}
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 
@@ -123,20 +100,8 @@ public class IdentifiableEntityTest {
 		abiesAlbaxPinusBeta.setHybridFormula(true);
 		abiesAlbaxPinusBeta.addHybridParent(abiesAlba, HybridRelationshipType.FIRST_PARENT(), null);
 		abiesAlbaxPinusBeta.addHybridParent(pinusBeta, HybridRelationshipType.SECOND_PARENT(), null);
-
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.IdentifiableEntity)}.
-	 */
 	@Test
 	public void testAddCredit() {
 		assertNotNull("A list should always be returned",abies.getCredits());
@@ -154,9 +119,6 @@ public class IdentifiableEntityTest {
 		assertEquals("Credit0 should be last in list", text3, abies.getCredits(2).getText());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.IdentifiableEntity)}.
-	 */
 	@Test
 	public void testRemoveCredit() {
 		assertNotNull("A list should always be returned",abies.getCredits());
@@ -180,7 +142,7 @@ public class IdentifiableEntityTest {
 
 	@Test
 	public void testClone(){
-		IdentifiableEntity<?> clone = (IdentifiableEntity<?>)abies.clone();
+		IdentifiableEntity<?> clone = abies.clone();
 		assertNotNull(clone);
 		assertEquals(clone.annotations, abies.annotations);
 		assertEquals(clone.markers, abies.markers);

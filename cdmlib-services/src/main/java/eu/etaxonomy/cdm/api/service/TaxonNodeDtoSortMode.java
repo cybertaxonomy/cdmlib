@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Comparator;
@@ -9,32 +17,23 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoNaturalComparator;
 
 public enum TaxonNodeDtoSortMode {
 
-	NaturalOrder(TaxonNodeDtoNaturalComparator.class),
+	NaturalOrder(new TaxonNodeDtoNaturalComparator()),
 	/**
      * sorts by TaxonName titleCaches and rank associated with the taxonNodes
      */
-	RankAndAlphabeticalOrder(TaxonNodeDtoByRankAndNameComparator.class),
+	RankAndAlphabeticalOrder(new TaxonNodeDtoByRankAndNameComparator()),
 	/**
 	 * sorts by TaxonName titleCaches associated with the taxonNodes
 	 */
-	AlphabeticalOrder(TaxonNodeDtoByNameComparator.class);
+	AlphabeticalOrder(new TaxonNodeDtoByNameComparator());
 
-	private Class<? extends Comparator<TaxonNodeDto>> type;
+	private Comparator<TaxonNodeDto> comparator;
 
-    TaxonNodeDtoSortMode(Class<? extends Comparator<TaxonNodeDto>> type){
-	    this.type = type;
+    private TaxonNodeDtoSortMode(Comparator<TaxonNodeDto> comparator){
+	    this.comparator = comparator;
 	}
 
-    /**
-     * @return
-     */
-    public Comparator<TaxonNodeDto> newComparator() {
-        try {
-            return type.newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public Comparator<TaxonNodeDto> comparator() {
+        return comparator;
     }
 }

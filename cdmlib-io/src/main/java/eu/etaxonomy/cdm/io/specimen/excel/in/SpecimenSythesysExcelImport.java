@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;

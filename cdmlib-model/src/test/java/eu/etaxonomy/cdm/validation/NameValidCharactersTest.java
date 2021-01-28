@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import static org.junit.Assert.assertFalse;
@@ -27,8 +26,6 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -37,7 +34,6 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author ben.clark
- *
  */
 @SuppressWarnings("unused")
 public class NameValidCharactersTest extends ValidationTestBase  {
@@ -47,8 +43,6 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("balsamea");
@@ -57,7 +51,6 @@ public class NameValidCharactersTest extends ValidationTestBase  {
 		name.setTitleCache("Abies balsamea L.", true);
 		name.setFullTitleCache("Abies balsamea L.");
 	}
-
 
 /****************** TESTS *****************************/
 
@@ -143,6 +136,5 @@ public class NameValidCharactersTest extends ValidationTestBase  {
         name.setAuthorshipCache("L\\u05EB", true);
         constraintViolations  = validator.validate(name, Level2.class);
         assertHasConstraintOnValidator((Set)constraintViolations, PatternValidator.class);
-
     }
 }

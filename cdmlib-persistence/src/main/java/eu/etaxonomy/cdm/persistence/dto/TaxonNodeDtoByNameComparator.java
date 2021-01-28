@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
+import eu.etaxonomy.cdm.compare.taxon.ITaxonNodeComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 
 /**
  * @author k.luther/a.kohlbecker

@@ -77,7 +77,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *         with @Repository?
  */
 @Repository
-public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
+public abstract class CdmEntityDaoBase<T extends CdmBase>
+        extends DaoBase
+        implements ICdmEntityDao<T> {
 
     private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
@@ -359,7 +361,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public T save(T newInstance) throws DataAccessException {
+    public <S extends T> S save(S newInstance) throws DataAccessException {
         if (newInstance == null) {
             logger.warn("Object to save should not be null. NOP");
             return null;

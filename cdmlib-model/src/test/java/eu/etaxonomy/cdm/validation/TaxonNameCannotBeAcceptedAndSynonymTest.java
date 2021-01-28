@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import static org.junit.Assert.assertTrue;
@@ -27,8 +26,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -37,7 +34,6 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author ben.clark
- *
  */
 public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 	@SuppressWarnings("unused")
@@ -54,8 +50,6 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 		name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name3 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -70,7 +64,6 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends ValidationTestBase{
 		synonym = Synonym.NewInstance(name3, sec1);
 		synonym.setTitleCache("Aus ceus", true);
 	}
-
 
 /****************** TESTS *****************************/
 

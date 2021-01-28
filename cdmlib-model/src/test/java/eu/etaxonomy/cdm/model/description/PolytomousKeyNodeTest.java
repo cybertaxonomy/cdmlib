@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2018 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.assertEquals;
@@ -7,24 +15,18 @@ import static org.junit.Assert.assertTrue;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class PolytomousKeyNodeTest {
+public class PolytomousKeyNodeTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PolytomousKeyNodeTest.class);
 
 	private PolytomousKey key1;
 	private Taxon taxon1;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -32,7 +34,7 @@ public class PolytomousKeyNodeTest {
 		key1.setTitleCache("My Test Key", true);
 		PolytomousKeyNode root = key1.getRoot();
 		root.setQuestion(KeyStatement.NewInstance("Is this Aus bus?"));
-		
+
 		// child1
 		taxon1 = Taxon.NewInstance(null, null);
 		taxon1.setTitleCache("Aus bus L.", true);
@@ -47,14 +49,14 @@ public class PolytomousKeyNodeTest {
 		PolytomousKeyNode child2 = PolytomousKeyNode.NewInstance("No");
 		child2.setTaxon(taxon2);
 		root.addChild(child2);
-		
+
 		// child3
 		Taxon taxon3 = Taxon.NewInstance(null, null);
 		taxon3.setTitleCache("Cus dus subs. rus L.", true);
 		PolytomousKeyNode child3 = PolytomousKeyNode.NewInstance("Long and wide");
 		child3.setTaxon(taxon3);
 		child1.addChild(child3);
-		
+
 		// child4
 		Taxon taxon4 = Taxon.NewInstance(null, null);
 		taxon4.setTitleCache("Cus dus subs. zus L.", true);
@@ -66,14 +68,13 @@ public class PolytomousKeyNodeTest {
 		child3.setSubkey(key2);
 
 		child4.setOtherNode(key2.getRoot());
-		
+
 		PolytomousKeyNode child5 = PolytomousKeyNode.NewInstance("Long and narrow");
 		child3.addChild(child5);
 
 	}
 
-	// ********************* Tests
-	// *******************************************************/
+	// ********************* Tests ***************************************/
 
 	@Test
 	public void testNodeNumber() {
@@ -86,20 +87,18 @@ public class PolytomousKeyNodeTest {
 		PolytomousKeyNode child3 = child1.getChildAt(0);
 		Assert.assertEquals("Child3 should have node number = 3", Integer.valueOf(3),child3.getNodeNumber());
 		PolytomousKeyNode child4 = child1.getChildAt(1);
-		Assert.assertEquals("Child4 should have node number  = null", null,child4.getNodeNumber());		
-		
+		Assert.assertEquals("Child4 should have node number  = null", null,child4.getNodeNumber());
 	}
-	
+
 	@Test
 	public void testClone(){
 		PolytomousKeyNode rootNode = key1.getRoot();
-		PolytomousKeyNode clone = (PolytomousKeyNode)rootNode.clone();
+		PolytomousKeyNode clone = rootNode.clone();
 		assertNotNull(clone);
 		assertEquals(clone.getFeature(), rootNode.getFeature());
 		assertEquals(clone.getKey(), rootNode.getKey());
 		assertTrue(clone.getChildren().size() == 0);
 		assertTrue(rootNode.getChildren().size()>0);
-			
 	}
 
 	@Test
@@ -115,5 +114,4 @@ public class PolytomousKeyNodeTest {
 
 		Assert.assertEquals("Parent node should have no children", 0, parent.getChildren().size());
 	}
-
 }

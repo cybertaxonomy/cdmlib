@@ -28,7 +28,7 @@ public class SubtreeCloneConfigurator implements Serializable {
     //might be replaced by a TaxonNodeFilter in future (but requires treebuilding and handling for missing inbetween taxa a tree)
     private Set<UUID> subTreeUuids;
 
-    private String classificationName = "Taxon subtree clone";
+    private String newClassificationName = "Taxon subtree clone";
 
     private boolean reuseClassificationReference = false;
      //used only if reuseClassificationReferenceUuid == false
@@ -64,6 +64,8 @@ public class SubtreeCloneConfigurator implements Serializable {
      private UUID relationshipReferenceUuid = null;
      private Reference relationshipReference;
 
+     private boolean doRecursive = true;  //once TaxonNodeFilter is used this is not neeeded anymore
+
 
     /**
      * Creates a default instance with default values. E.g. reuseNames is <code>true</code>.
@@ -80,33 +82,34 @@ public class SubtreeCloneConfigurator implements Serializable {
                 false, true, null,
                 true, null,
                 null,
-                true
+                true, true
                 );
     }
 
     public static SubtreeCloneConfigurator NewInstance(Set<UUID> subTreeUuids, String classificationName,
             boolean reuseClassificationReference, UUID classificationReferenceUuid, boolean reuseTaxa,
             boolean reuseTaxonSecundum, UUID taxonSecundumUuid, boolean reuseParentChildReference,
-            UUID parentChildReferenceUuid, TaxonRelationshipType relationTypeToOldTaxon, boolean reuseNames){
+            UUID parentChildReferenceUuid, TaxonRelationshipType relationTypeToOldTaxon, boolean reuseNames,
+            boolean doRecursive){
         return new SubtreeCloneConfigurator(subTreeUuids, classificationName,
             reuseClassificationReference, classificationReferenceUuid,
             reuseTaxa, reuseTaxonSecundum, taxonSecundumUuid,
             reuseParentChildReference, parentChildReferenceUuid,
             relationTypeToOldTaxon,
-            reuseNames);
+            reuseNames, doRecursive);
     }
 
 
 // ******************************** CONSTRUCTOR ********************************/
 
-    private SubtreeCloneConfigurator(Set<UUID> subTreeUuids, String classificationName,
+    private SubtreeCloneConfigurator(Set<UUID> subTreeUuids, String newClassificationName,
             boolean reuseClassificationReference, UUID classificationReferenceUuid,
             boolean reuseTaxa, boolean reuseTaxonSecundum, UUID taxonSecundumUuid,
             boolean reuseParentChildReference, UUID parentChildReferenceUuid,
             TaxonRelationshipType relationTypeToOldTaxon,
-            boolean reuseNames) {
+            boolean reuseNames, boolean doRecursive) {
         this.subTreeUuids = subTreeUuids;
-        this.classificationName = classificationName;
+        this.newClassificationName = newClassificationName;
         this.reuseClassificationReference = reuseClassificationReference;
         this.classificationReferenceUuid = classificationReferenceUuid;
         this.reuseTaxa = reuseTaxa;
@@ -116,6 +119,7 @@ public class SubtreeCloneConfigurator implements Serializable {
         this.parentChildReferenceUuid = parentChildReferenceUuid;
         this.relationTypeToOldTaxon = relationTypeToOldTaxon;
         this.reuseNames = reuseNames;
+        this.doRecursive = doRecursive;
     }
 
 // ******************** GETTER / SETTER ********************************/
@@ -127,11 +131,11 @@ public class SubtreeCloneConfigurator implements Serializable {
         this.subTreeUuids = subTreeUuid;
     }
 
-    public String getClassificationName() {
-        return classificationName;
+    public String getNewClassificationName() {
+        return newClassificationName;
     }
-    public void setClassificationName(String classificationName) {
-        this.classificationName = classificationName;
+    public void setNewClassificationName(String newClassificationName) {
+        this.newClassificationName = newClassificationName;
     }
 
     public UUID getClassificationReferenceUuid() {
@@ -172,6 +176,13 @@ public class SubtreeCloneConfigurator implements Serializable {
     public boolean isReuseNames() {
         return reuseNames;
     }
+    /**
+     * @param reuseNames
+     * @deprecated  as it is not fully implemented yet and generally not recommended
+     *          to clone names in a database; see comments in #9349 why name cloning
+     *          needs to be done with care
+     */
+    @Deprecated
     public void setReuseNames(boolean reuseNames) {
         this.reuseNames = reuseNames;
     }
@@ -324,5 +335,17 @@ public class SubtreeCloneConfigurator implements Serializable {
      */
     public void setIncludeTaxonRelationshipsExcludingManAndProParte(boolean includeTaxonRelationshipsExcludingManAndProParte) {
         this.includeTaxonRelationshipsExcludingManAndProParte = includeTaxonRelationshipsExcludingManAndProParte;
+    }
+
+    public boolean isDoRecursive() {
+        return doRecursive;
+    }
+    /**
+     * If set to <code>true</code> also clone children. Default is <code>true</code>.
+     *
+     * @param doRecursive
+     */
+    public void setDoRecursive(boolean doRecursive) {
+        this.doRecursive = doRecursive;
     }
 }

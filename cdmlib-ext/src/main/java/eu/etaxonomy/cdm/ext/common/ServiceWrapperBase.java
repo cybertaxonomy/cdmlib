@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.ext.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.UriUtils.HttpMethod;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @since 24.08.2010
- *
  */
 public class ServiceWrapperBase<T extends CdmBase> {
 
@@ -71,15 +70,11 @@ public class ServiceWrapperBase<T extends CdmBase> {
 
 	public void addSchemaAdapter(SchemaAdapterBase schemaAdapter){
 		if(schemaAdapterMap == null){
-			schemaAdapterMap = new HashMap<String, SchemaAdapterBase<T>>();
+			schemaAdapterMap = new HashMap<>();
 		}
 		schemaAdapterMap.put(schemaAdapter.getShortName(), schemaAdapter);
 	}
 
-
-	/**
-	 * @return the schemaAdapterMap
-	 */
 	public Map<String, SchemaAdapterBase<T>> getSchemaAdapterMap() {
 		return schemaAdapterMap;
 	}
@@ -156,7 +151,6 @@ public class ServiceWrapperBase<T extends CdmBase> {
 		}
 	}
 
-
 	/**
 	 * Creates a {@link URI} based on the {@link ServiceWrapperBase#baseUrl} and the given subPath and qParams
 	 * @param subPath the sub path of the URI to be created
@@ -184,6 +178,4 @@ public class ServiceWrapperBase<T extends CdmBase> {
 //
 //		return uri;
 	}
-
-
 }

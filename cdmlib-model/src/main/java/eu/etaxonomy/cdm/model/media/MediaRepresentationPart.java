@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +30,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -58,6 +60,7 @@ public class MediaRepresentationPart extends VersionableEntity {
 
 	// where the media file is stored
 	@XmlElement(name = "URI")
+    @FieldBridge(impl = UriBridge.class)
 	@Type(type="uriUserType")
 	private URI uri;
 

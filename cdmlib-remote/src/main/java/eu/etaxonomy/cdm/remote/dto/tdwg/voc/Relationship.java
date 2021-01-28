@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,16 +24,16 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
 })
 @XmlRootElement(name = "Relationship",namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 public class Relationship extends BaseThing {
-	
+
 	@XmlElement(name = "fromTaxon", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private FromTaxon fromTaxon;
-	
+
 	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private RelationshipCategory relationshipCategory;
-	
+
 	@XmlElement(name = "toTaxon", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private ToTaxon toTaxon;
-	
+
 	public TaxonConcept getFromTaxon() {
 		return fromTaxon != null ? fromTaxon.getTaxonConcept() : null;
 	}
@@ -49,7 +49,7 @@ public class Relationship extends BaseThing {
 	public void setRelationshipCategory(TaxonRelationshipTerm relationshipCategory) {
 		this.relationshipCategory = new RelationshipCategory(relationshipCategory,false);
 	}
-	
+
 	public TaxonRelationshipTerm getRelationshipCategoryRelation() {
 		return relationshipCategory != null ? relationshipCategory.getTaxonRelationshipTerm() : null;
 	}
@@ -71,39 +71,39 @@ public class Relationship extends BaseThing {
         "taxonConcept"
     })
 	public static class FromTaxon extends LinkType {
-		
+
 		@XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private TaxonConcept taxonConcept;
 
 		protected FromTaxon() {}
-		
+
 		protected FromTaxon(TaxonConcept taxonConcept) {
 	        if(taxonConcept != null && taxonConcept.getIdentifier() != null) {
 			    //this.setResource(taxonConcept.getIdentifier());
 	        	this.setTaxonConcept(taxonConcept);
 	        }
 		}
-		
+
 		protected TaxonConcept getTaxonConcept() {
 			return taxonConcept;
 		}
 
 		protected void setTaxonConcept(TaxonConcept taxonConcept) {
 			this.taxonConcept = taxonConcept;
-		}		
+		}
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "ToTaxon", propOrder = {
         "taxonConcept"
     })
 	public static class ToTaxon extends LinkType {
-		
+
 		@XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private TaxonConcept taxonConcept;
-		
+
 		protected ToTaxon() {}
-		
+
 		protected ToTaxon(TaxonConcept taxonConcept) {
 			    this.setTaxonConcept(taxonConcept);
 		}
@@ -115,25 +115,26 @@ public class Relationship extends BaseThing {
 		protected void setTaxonConcept(TaxonConcept taxonConcept) {
 			this.taxonConcept = taxonConcept;
 		}
-		
+
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "RelationshipCategory", propOrder = {
         "taxonRelationshipTerm"
     })
 	public static class RelationshipCategory extends LinkType {
-		
+
 		@XmlElement(name = "TaxonRelationshipTerm", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private TaxonRelationshipTerm taxonRelationshipTerm;
-		
+
 		protected RelationshipCategory() {}
-		
+
 		protected RelationshipCategory(TaxonRelationshipTerm taxonRelationshipTerm, boolean useRelation) {
 			if(useRelation) {
 			    if(taxonRelationshipTerm != null) {
-			    	if(taxonRelationshipTerm.getIdentifier() != null)
-			    	this.setResource(taxonRelationshipTerm.getIdentifier());
+			    	if(taxonRelationshipTerm.getIdentifier() != null) {
+                        this.setResource(taxonRelationshipTerm.getIdentifier());
+                    }
 			    }  else {
 			    	this.taxonRelationshipTerm = taxonRelationshipTerm;
 			    }
@@ -153,6 +154,6 @@ public class Relationship extends BaseThing {
 		protected RelationshipCategory(TaxonRelationshipTerm taxonRelationshipTerm) {
 			this.taxonRelationshipTerm = taxonRelationshipTerm;
 		}
-		
+
 	}
 }

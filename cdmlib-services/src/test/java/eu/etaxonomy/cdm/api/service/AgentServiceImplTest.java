@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -16,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -26,6 +24,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -35,6 +34,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -45,13 +45,10 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  */
 public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
-    /**
-     *
-     */
-    private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
-
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AgentServiceImplTest.class);
+    private static final Logger logger = Logger.getLogger(AgentServiceImplTest.class);
+
+    private static final UUID UUID_EHRENBERG = UUID.fromString("6363ae88-ec57-4b23-8235-6c86fbe59446");
 
     @SpringBeanByType
     private IAgentService service;
@@ -59,14 +56,15 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     @SpringBeanByType
     private INameService nameSerivce;
 
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
     })
     public void testConvertPerson2Team(){
-    	String fullAuthor = "Original author";
+
+        //create data
+        String fullAuthor = "Original author";
     	String nomTitle = "Abrev. aut.";
     	Person person = Person.NewTitledInstance(fullAuthor);
     	person.setNomenclaturalTitle(nomTitle);
@@ -76,24 +74,63 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	name.setCombinationAuthorship(person);
     	person.addAnnotation(annotation);
 
-    	service.save(person);
     	nameSerivce.save(name);
 
     	Team team = null;
-    	UpdateResult result = null;
-		try {
-		    result = service.convertPerson2Team(person);
-		    team = (Team) result.getCdmEntity();
-		} catch (MergeException e) {
-			Assert.fail("No Merge exception should be thrown");
-		}
-    	Assert.assertNotNull(team);
-    	//Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
-    	//Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
-    	Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
-       	Assert.assertNotNull("Contact must be copied too", team.getContact());
-    	Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
+	    try {
+	        UpdateResult result = service.convertPerson2Team(person);
+	        team = (Team) result.getCdmEntity();
+	    } catch (MergeException e) {
+	        Assert.fail("No Merge exception should be thrown");
+	    }
+	    Assert.assertNotNull(team);
+	    Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
+	    Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+	    Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
+	    Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
+	    Assert.assertNotNull("Contact must be copied too", team.getContact());
+	    Assert.assertEquals("Team must be combination author now", team, name.getCombinationAuthorship());
 
+	    //test un-protected titleCache
+	    Person person2 = person.clone();
+	    person2.setProtectedTitleCache(false);
+	    Assert.assertEquals("Title cache must be equal", nomTitle, person2.getTitleCache());
+	    service.save(person2);
+
+	    try{
+	        UpdateResult result = service.convertPerson2Team(person2);
+	        team = (Team) result.getCdmEntity();
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+        }
+	    Assert.assertEquals("Title cache must be equal", person2.getTitleCache(), team.getTitleCache());
+        Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+        Assert.assertTrue("Nom. title must be protected", team.isProtectedNomenclaturalTitleCache());
+
+        //test fully empty
+        person2 = person2.clone();
+        person2.setNomenclaturalTitle(null);  //now it is fully empty
+        Assert.assertEquals("Title cache must be equal", "Person#0<"+person2.getUuid()+">", person2.getTitleCache());  //expected value may change when toString() implementation changes for Person class
+
+        service.save(person2);
+        try{
+            UpdateResult result = service.convertPerson2Team(person2.getUuid());
+            team = (Team) result.getCdmEntity();
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+        }
+        Assert.assertEquals("If person was completely empty we don't expect the title cache to be taken from person.nomenclaturalTitle", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getTitleCache());
+        Assert.assertFalse("If person was completely empty we don't expect the title cache to be protected", team.isProtectedTitleCache());
+        Assert.assertEquals("Nom. title must be equal", person2.getNomenclaturalTitle(), team.getNomenclaturalTitle());
+
+        try{
+            service.convertPerson2Team(person2.getUuid());
+            Assert.fail("Non-existing person should throw an exception");
+        } catch (MergeException e) {
+            Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
+        }catch (IllegalArgumentException e) {
+            //nothing to do
+        }
     }
 
     private Contact getContact(){

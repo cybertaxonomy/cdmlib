@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2018 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.assertNotNull;
@@ -9,23 +17,17 @@ import java.io.PrintStream;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class PolytomousKeyTest {
+public class PolytomousKeyTest extends EntityTestBase {
+
 	private static Logger logger = Logger.getLogger(PolytomousKeyTest.class);
 
 	private PolytomousKey key1;
 	private Taxon taxon1;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -110,7 +112,7 @@ public class PolytomousKeyTest {
 
 	@Test
 	public void testClone() {
-		PolytomousKey clone = (PolytomousKey) key1.clone();
+		PolytomousKey clone = key1.clone();
 		assertNotNull(clone.getRoot());
 		assertNotSame(clone.getRoot(), key1.getRoot());
 		assertTrue(clone.getRoot().getChildren().size() == 0);

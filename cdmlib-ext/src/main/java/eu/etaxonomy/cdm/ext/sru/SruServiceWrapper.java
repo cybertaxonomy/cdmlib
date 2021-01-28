@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.ext.sru;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,15 +19,14 @@ import java.util.Map;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-
 /**
  * @author a.kohlbecker
  * @since 24.08.2010
- *
  */
 public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 
@@ -75,12 +73,11 @@ public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 		pairs.add(new BasicNameValuePair("query", cqlQuery));
 		pairs.add(new BasicNameValuePair("recordSchema", recordSchema));
 
-		Map<String, String> requestHeaders = new HashMap<String, String>();
+		Map<String, String> requestHeaders = new HashMap<>();
 		requestHeaders.put("Accept-Charset", "UTF-8");
 
 		try {
 			URI requestUri = createUri(null, pairs);
-
 
 			InputStream stream = executeHttpGet(requestUri, requestHeaders);
 			return schemaAdapter.getCmdEntities(stream);
@@ -94,9 +91,5 @@ public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 		}
 
 		return null;
-
 	}
-
-
-
 }

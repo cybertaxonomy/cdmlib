@@ -9,16 +9,16 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -37,21 +37,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * as it does not map to a single attribute
  * @author a.mueller
  * @since 12.05.2009
- * @version 1.0
  */
 public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, Taxon> implements IDbImportMapper<DbImportStateBase<?,?>,Taxon>{
 	private static final Logger logger = Logger.getLogger(DbImportImageGalleryMapper.class);
 
 //************************** FACTORY METHODS ***************************************************************/
 
-	/**
-	 * @param dbAttributeString
-	 * @param uuid
-	 * @param label
-	 * @param text
-	 * @param labelAbbrev
-	 * @return
-	 */
 	public static DbImportImageGalleryMapper NewInstance(String dbAttributeString){
 		return new DbImportImageGalleryMapper(dbAttributeString);
 	}
@@ -61,21 +52,12 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 
 //******************************** CONSTRUCTOR *****************************************************************/
 
-	/**
-	 * @param dbAttributeString
-	 * @param extensionType
-	 */
 	private DbImportImageGalleryMapper(String dbAttributeString) {
 		super(dbAttributeString, dbAttributeString);
 	}
 
 //****************************** METHODS ***************************************************/
 
-	/**
-	 * @param service
-	 * @param state
-	 * @param tableName
-	 */
 	public void initialize(ITermService service, DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
 		try {
@@ -89,28 +71,19 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	public TaxonBase invoke(ResultSet rs, TaxonBase taxonBase) throws SQLException {
 		String dbValue = rs.getString(getSourceAttribute());
 		return invoke(dbValue, taxonBase);
 	}
 
-	/**
-	 * @param dbValue
-	 * @param identifiableEntity
-	 * @return
-	 */
 	private TaxonBase invoke(String dbValue, TaxonBase taxonBase){
-		if (ignore || CdmUtils.isEmpty(dbValue)){
+		if (ignore || StringUtils.isBlank(dbValue)){
 			return taxonBase;
 		}
 		boolean createNew = true;
 		Taxon taxon;
 		if (taxonBase.isInstanceOf(Synonym.class)){
-			Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
+			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			if (synonym.getAcceptedTaxon() != null){
 				logger.warn("Media will be added to a synonyms accepted taxon");
 				taxon = synonym.getAcceptedTaxon();
@@ -118,7 +91,7 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 				throw new IllegalArgumentException("TaxonBase was of type synonym and does not belong to an accepted taxon");
 			}
 		}else{
-			taxon = taxonBase.deproxy(taxonBase, Taxon.class);
+			taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 		}
 
 		TaxonDescription imageGallery = taxon.getImageGallery(createNew);

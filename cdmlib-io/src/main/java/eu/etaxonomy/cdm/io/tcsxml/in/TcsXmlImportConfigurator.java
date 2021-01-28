@@ -6,13 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -20,6 +18,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -37,7 +36,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
-
 	private boolean doMetaData = true;
 	private boolean doSpecimen = true;
 
@@ -51,8 +49,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 	private boolean doRelTaxa = true;
 
 	private boolean doGetMissingNames = true;
-
-
 
 	public boolean isDoGetMissingNames() {
 		return doGetMissingNames;
@@ -161,9 +157,6 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		super.setSource(uri);
 	}
 
-	/**
-	 * @return
-	 */
 	public Element getSourceRoot(){
 		URI source = getSource();
 		try {

@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.tdwg.voc;
 
 import java.util.HashSet;
@@ -20,13 +28,13 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
 })
 @XmlRootElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 public class SpeciesProfileModel extends Description implements CycleRecoverable {
-	
+
 	@XmlElement(name = "aboutTaxon", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private AboutTaxon aboutTaxon;
-	
+
 	@XmlElement(name = "hasInformation", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private Set<HasInformation> hasInformations = null;
-	
+
 	public TaxonConcept getAboutTaxon() {
 		return aboutTaxon != null ? aboutTaxon.getTaxonConcept() : null;
 	}
@@ -34,7 +42,7 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 	public void setAboutTaxon(TaxonConcept taxonConcept) {
 		this.aboutTaxon = new AboutTaxon(taxonConcept, false);
 	}
-	
+
 	public TaxonConcept getAboutTaxonRelation() {
 		return aboutTaxon != null ? aboutTaxon.getTaxonConcept() : null;
 	}
@@ -42,10 +50,10 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 	public void setAboutTaxonRelation(TaxonConcept taxonConcept) {
 		this.aboutTaxon = new AboutTaxon(taxonConcept, true);
 	}
-	
+
 	public Set<InfoItem> getHasInformation() {
 		if(hasInformations != null) {
-			Set<InfoItem> infoItems = new HashSet<InfoItem>();
+			Set<InfoItem> infoItems = new HashSet<>();
 			for(HasInformation hasInformation : hasInformations) {
 				infoItems.add(hasInformation.getInfoItem());
 			}
@@ -57,7 +65,7 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 
 	public void setHasInformation(Set<InfoItem> infoItems) {
 		if(infoItems != null) {
-		  this.hasInformations = new HashSet<HasInformation>();
+		  this.hasInformations = new HashSet<>();
 		  for(InfoItem infoItem : infoItems) {
 			hasInformations.add( new HasInformation(infoItem));
 		  }
@@ -65,7 +73,7 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 			hasInformations = null;
 		}
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "AboutTaxon", propOrder = {
         "taxonConcept"
@@ -73,9 +81,9 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 	public static class AboutTaxon extends LinkType {
 		@XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private TaxonConcept taxonConcept;
-		
+
         protected AboutTaxon() {}
-		
+
         protected AboutTaxon(TaxonConcept taxonConcept, boolean useRelation) {
         	if(useRelation) {
 			    if(taxonConcept != null && taxonConcept.getIdentifier() != null) {
@@ -96,7 +104,7 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 			this.taxonConcept = taxonConcept;
 		}
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "HasInformation", propOrder = {
         "infoItem"
@@ -105,13 +113,13 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 
 		@XmlElement(name = "InfoItem", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 		private InfoItem infoItem;
-		
+
 		protected HasInformation() {}
-		
+
 		protected HasInformation(InfoItem infoItem) {
 			this.infoItem = infoItem;
 		}
-		
+
 		protected InfoItem getInfoItem() {
 			return infoItem;
 		}
@@ -121,7 +129,8 @@ public class SpeciesProfileModel extends Description implements CycleRecoverable
 		}
 	}
 
-	public Object onCycleDetected(Context context) {
+	@Override
+    public Object onCycleDetected(Context context) {
 		SpeciesProfileModel speciesProfileModel = new SpeciesProfileModel();
 		speciesProfileModel.setIdentifier(super.getIdentifier());
 		speciesProfileModel.setTitle(super.getTitle());

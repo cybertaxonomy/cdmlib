@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -238,5 +238,14 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy<? ext
 	public void removeUrl(URI url) {
 		getNewOrExistingContact(false).removeUrl(url);
 	}
+
+    @Override
+    public AgentBase<S> clone() throws CloneNotSupportedException {
+        AgentBase<S> result = (AgentBase<S>)super.clone();
+
+        result.setContact(this.contact == null ? null : this.contact.clone());
+        //nothing to do: contact
+        return result;
+    }
 
 }

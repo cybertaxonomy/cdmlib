@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +29,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
@@ -51,6 +53,38 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 	private static final long serialVersionUID = -4484677078599520233L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Annotation.class);
+
+// ***************************** ATTRIBUTES **************************/
+
+    //TODO do we need to add it to JAXB? #4706
+    @XmlElementWrapper(name = "IntextReferences", nillable = true)
+    @XmlElement(name = "IntextReference")
+    @OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+//  @Merge(MergeMode.ADD_CLONE)
+    private Set<IntextReference> intextReferences = new HashSet<>();
+
+    //Human annotation
+    @XmlElement(name = "Commentator")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
+    private Person commentator;
+
+    @XmlElement(name = "AnnotationType")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AnnotationType annotationType;
+
+    // for external annotations/comments the URI of these can be set.
+    // should be useful to implement trackback, pingback or linkback:
+    // http://en.wikipedia.org/wiki/Linkback
+    @XmlElement(name = "LinkbackUri")
+    @FieldBridge(impl = UriBridge.class)
+    @Type(type="uriUserType")
+    private URI linkbackUri;
 
 	/**
 	 * Factory method.
@@ -76,37 +110,6 @@ public class Annotation extends LanguageStringBase implements IIntextReferencabl
 	public static Annotation NewDefaultLanguageInstance(String text){
 		return new Annotation(text, Language.DEFAULT());
 	}
-
-// ***************************** ATTRIBUTES **************************/
-
-    //TODO do we need to add it to JAXB? #4706
-    @XmlElementWrapper(name = "IntextReferences", nillable = true)
-    @XmlElement(name = "IntextReference")
-    @OneToMany(mappedBy="languageString", fetch=FetchType.LAZY, orphanRemoval=true)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-//  @Merge(MergeMode.ADD_CLONE)
-    private Set<IntextReference> intextReferences = new HashSet<>();
-
-	//Human annotation
-	@XmlElement(name = "Commentator")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private Person commentator;
-
-    @XmlElement(name = "AnnotationType")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-	private AnnotationType annotationType;
-
-	// for external annotations/comments the URI of these can be set.
-	// should be useful to implement trackback, pingback or linkback:
-	// http://en.wikipedia.org/wiki/Linkback
-	@XmlElement(name = "LinkbackUri")
-	@Type(type="uriUserType")
-	private URI linkbackUri;
 
 
 // *********** CONSTRUCTOR **************************************/

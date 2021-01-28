@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -39,16 +39,16 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 
 	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private AccordingTo accordingTo;
-	
+
 	@XmlElement(name = "hasName", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private HasName hasName;
-	
+
 	@XmlElement(name = "hasRelationship", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private Set<HasRelationship> hasRelationships = null;
-	
+
 	@XmlElement(name = "describedBy", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private Set<DescribedBy> describedBys = null;
-	
+
 	public Set<Relationship> getHasRelationship() {
 		if(hasRelationships != null) {
 			Set<Relationship> relationships = new HashSet<Relationship>();
@@ -63,7 +63,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 
 	public void setHasRelationship(Set<Relationship> relationships) {
 		if(relationships != null) {
-		  this.hasRelationships = new HashSet<HasRelationship>();
+		  this.hasRelationships = new HashSet<>();
 		  for(Relationship relationship : relationships) {
 			hasRelationships.add( new HasRelationship(relationship));
 		  }
@@ -71,10 +71,10 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 			hasRelationships = null;
 		}
 	}
-	
+
 	public Set<SpeciesProfileModel> getDescribedBy() {
 		if(describedBys != null) {
-			Set<SpeciesProfileModel> speciesProfileModels = new HashSet<SpeciesProfileModel>();
+			Set<SpeciesProfileModel> speciesProfileModels = new HashSet<>();
 			for(DescribedBy describedBy : describedBys) {
 				speciesProfileModels.add(describedBy.getSpeciesProfileModel());
 			}
@@ -102,7 +102,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 	public void setHasName(TaxonName taxonName) {
 		this.hasName = new HasName(taxonName, false);
 	}
-	
+
 	public TaxonName getHasNameRelation() {
 		return hasName != null ? hasName.getTaxonName() : null;
 	}
@@ -114,7 +114,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 	public Boolean isPrimary() {
 		return primary;
 	}
-	
+
 	public Actor getAccordingTo() {
 		return accordingTo != null ? accordingTo.getActor() : null;
 	}
@@ -122,7 +122,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 	public void setAccordingTo(Actor accordingTo) {
 		this.accordingTo = new AccordingTo(accordingTo, false);
 	}
-	
+
 	public Actor getAccordingToRelation() {
 		return accordingTo != null ? accordingTo.getActor() : null;
 	}
@@ -134,7 +134,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 	public void setPrimary(Boolean primary) {
 		this.primary = primary;
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "HasName", propOrder = {
         "taxonName"
@@ -142,9 +142,9 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 	public static class HasName extends LinkType {
 		@XmlElement(name = "TaxonName", namespace = "http://rs.tdwg.org/ontology/voc/TaxonName#")
 		private TaxonName taxonName;
-		
+
         protected HasName() {}
-		
+
         protected HasName(TaxonName taxonName, boolean useRelation) {
         	if(useRelation) {
 			    if(taxonName != null && taxonName.getIdentifier() != null) {
@@ -165,7 +165,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 			this.taxonName = taxonName;
 		}
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "HasRelationship", propOrder = {
         "relationship"
@@ -174,13 +174,13 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 
 		@XmlElement(name = "Relationship", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private Relationship relationship;
-		
+
 		public HasRelationship() {}
-		
+
 		public HasRelationship(Relationship relationship) {
 			this.relationship = relationship;
 		}
-		
+
 		public Relationship getRelationship() {
 			return relationship;
 		}
@@ -189,7 +189,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 			this.relationship = relationship;
 		}
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "AccordingTo", propOrder = {
         "actor"
@@ -201,9 +201,9 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 			@XmlElement(name = "Team", namespace = "http://rs.tdwg.org/ontology/voc/Team#", type = Team.class)
 		})
 		private Actor actor;
-		
+
 		protected AccordingTo() {}
-		
+
 		protected AccordingTo(Actor actor, boolean useRelation) {
 			if(useRelation) {
 			    if(actor != null && actor.getIdentifier() != null) {
@@ -215,7 +215,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 				this.actor = actor;
 			}
 		}
-		
+
 		protected Actor getActor() {
 			return actor;
 		}
@@ -224,7 +224,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 			this.actor = actor;
 		}
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "DescribedBy", propOrder = {
         "speciesProfileModel"
@@ -233,13 +233,13 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 
 		@XmlElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 		private SpeciesProfileModel speciesProfileModel;
-		
+
 		protected DescribedBy() {}
-		
+
 		protected DescribedBy(SpeciesProfileModel speciesProfileModel) {
 			this.speciesProfileModel = speciesProfileModel;
 		}
-		
+
 		protected SpeciesProfileModel getSpeciesProfileModel() {
 			return speciesProfileModel;
 		}
@@ -249,7 +249,8 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 		}
 	}
 
-	public Object onCycleDetected(Context context) {
+	@Override
+    public Object onCycleDetected(Context context) {
 		TaxonConcept taxonConcept = new TaxonConcept();
 		taxonConcept.setIdentifier(super.getIdentifier());
 		taxonConcept.setTitle(super.getTitle());

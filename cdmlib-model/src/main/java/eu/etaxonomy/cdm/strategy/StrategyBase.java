@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.strategy;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -20,6 +19,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.ORCID;
 import eu.etaxonomy.cdm.model.common.CdmBase;

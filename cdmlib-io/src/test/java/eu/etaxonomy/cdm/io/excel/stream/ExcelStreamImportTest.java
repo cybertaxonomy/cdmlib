@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.events.LoggingIoObserver;
@@ -85,14 +86,14 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 		String inputFile = "/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport-TestInput.xls";
 		URL url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = ExcelStreamImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+		configurator = ExcelStreamImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configurator);
 		configurator.addObserver(new LoggingIoObserver());
 
 		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
 		url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		uuidConfigurator = ExcelStreamImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+		uuidConfigurator = ExcelStreamImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configurator);
 
 	}

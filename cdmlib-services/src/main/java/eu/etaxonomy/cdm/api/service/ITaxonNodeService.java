@@ -19,11 +19,13 @@ import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CreateTaxonDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -209,7 +211,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     /**
      * Creates a new taxon node for the given existing taxon with the given existing parent taxon node.
      */
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref);
+//    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref);
 
     /**
      * Sets the secundum reference for all taxa of the given subtree.
@@ -272,20 +274,15 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	public List<TaxonNodeDto> taxonNodeDtoParentRank(Classification classification, Rank rank, TaxonBase<?> taxonBase);
 
-    /**
-     * @param nodeUuids
-     * @param propertyPaths
-     * @param authentication
-     * @param openChildren
-     * @return
-     */
-    List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
-            Authentication authentication, boolean openChildren);
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
+            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode);
+
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
 
     /**
-     * @param nodeUuids
-     * @param propertyPaths
-     * @return
+     * Clones a subtree including all taxa and taxon nodes.
+
+     * @param config the configurator for the cloning
      */
-    List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, boolean openChildren);
+    public UpdateResult cloneSubtree(SubtreeCloneConfigurator config);
 }

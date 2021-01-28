@@ -125,10 +125,6 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         }
     }
 
-    /**
-     * @param result
-     * @return
-     */
     protected String replaceEmptyTitleByNomTitle(String result) {
         if (isBlank(result)){
             result = nomenclaturalTitle;
@@ -139,4 +135,12 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         return result;
     }
 
+    @Override
+    public TeamOrPersonBase clone() throws CloneNotSupportedException {
+        @SuppressWarnings("rawtypes")
+        TeamOrPersonBase<?> result = (TeamOrPersonBase)super.clone();
+
+        //nothing to do: collectorTitle, nomenclaturalTitle;
+        return result;
+    }
 }

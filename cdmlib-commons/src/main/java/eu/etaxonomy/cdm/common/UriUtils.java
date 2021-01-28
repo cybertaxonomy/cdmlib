@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.common;
 
 import java.io.File;
@@ -16,7 +15,6 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -58,13 +56,11 @@ import org.apache.log4j.Logger;
 /**
  * @author n.hoffmann
  * @since Sep 23, 2010
- * @version 1.0
  */
 public class UriUtils {
     private static final Logger logger = Logger.getLogger(UriUtils.class);
 
     protected static final String URI_IS_NOT_ABSOLUTE = "URI is not absolute (protocol is missing)";
-
 
     public enum HttpMethod{
         GET,
@@ -73,11 +69,6 @@ public class UriUtils {
 
     /**
      * see {@link #getInputStream(URI, Map)}
-     *
-     * @param uri
-     * @return
-     * @throws IOException
-     * @throws HttpException
      */
     public static InputStream getInputStream(URI uri) throws IOException, HttpException{
         return getInputStream(uri, null);
@@ -85,11 +76,6 @@ public class UriUtils {
 
     /**
      * Retrieves an {@link InputStream input stream} of the resource located at the given uri.
-     *
-     * @param uri
-     * @return
-     * @throws IOException
-     * @throws HttpException
      */
     public static InputStream getInputStream(URI uri, Map<String, String> requestHeaders) throws IOException, HttpException{
 
@@ -106,7 +92,7 @@ public class UriUtils {
                 throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
             }
         }else if (uri.getScheme().equals("file")){
-            File file = new File(uri);
+            File file = new File(uri.getJavaUri());
             return new FileInputStream(file);
         }else{
             throw new RuntimeException("Protocol not handled yet: " + uri.getScheme());
@@ -153,7 +139,7 @@ public class UriUtils {
                 throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
             }
         }else if ("file".equals(uri.getScheme())){
-            File file = new File(uri);
+            File file = new File(uri.getJavaUri());
             return file.length();
         }else{
             throw new RuntimeException("Protocol not handled yet: " + uri.getScheme());
@@ -226,7 +212,7 @@ public class UriUtils {
      */
     public static HttpResponse getResponseByType(URI uri, Map<String, String> requestHeaders, HttpMethod httpMethod, HttpEntity entity) throws IOException, ClientProtocolException {
         // Create an instance of HttpClient.
-        HttpClient  client = new DefaultHttpClient();
+        HttpClient client = new DefaultHttpClient();
 
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
@@ -240,21 +226,20 @@ public class UriUtils {
             throw new RuntimeException("Registration of ssl support failed", e2);
         }
 
-
         HttpUriRequest method;
         switch (httpMethod) {
         case GET:
-            method = new HttpGet(uri);
+            method = new HttpGet(uri.getJavaUri());
             break;
         case POST:
-            HttpPost httpPost = new HttpPost(uri);
+            HttpPost httpPost = new HttpPost(uri.getJavaUri());
             if(entity!=null){
                 httpPost.setEntity(entity);
             }
             method = httpPost;
             break;
         default:
-            method = new HttpPost(uri);
+            method = new HttpPost(uri.getJavaUri());
             break;
         }
 
@@ -267,7 +252,7 @@ public class UriUtils {
 
         //TODO  method.setFollowRedirects(followRedirects);
 
-        logger.debug("sending "+httpMethod+" request: " + uri);
+        if (logger.isDebugEnabled()){logger.debug("sending "+httpMethod+" request: " + uri);}
 
         return client.execute(method);
     }
@@ -295,7 +280,7 @@ public class UriUtils {
         }
 
         if(qparams == null){
-            qparams = new ArrayList<NameValuePair>(0);
+            qparams = new ArrayList<>(0);
         }
         String query = null;
         if(! qparams.isEmpty()){
@@ -309,7 +294,7 @@ public class UriUtils {
         uriBuilder.setPath(path);
         uriBuilder.setQuery(query);
         uriBuilder.setFragment(fragment);
-        return uriBuilder.build();
+        return new URI(uriBuilder.build());
     }
 
     /**
@@ -370,7 +355,7 @@ public class UriUtils {
 
         //Http
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet(serviceUri);
+        HttpGet httpget = new HttpGet(serviceUri.getJavaUri());
 
 
         if(timeout!=null){
@@ -449,7 +434,7 @@ public class UriUtils {
         try {
             // this is the step that can fail, and so
             // it should be this step that should be fixed
-            uri = url.toURI();
+            uri = new URI(url);
         } catch (URISyntaxException e) {
             // OK if we are here, then obviously the URL did
             // not comply with RFC 2396. This can only
@@ -468,7 +453,7 @@ public class UriUtils {
                 throw new IllegalArgumentException("broken URL: " + url);
             }
         }
-        return new File(uri);
+        return new File(uri.getJavaUri());
     }
 
     public static boolean checkServiceAvailable(String host, int port){

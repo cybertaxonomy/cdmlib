@@ -33,8 +33,6 @@ public class Reference2SourceMover extends SchemaUpdaterStepBase {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Reference2SourceMover.class);
 
-    private static final String stepName = "Move Reference 2 Source";
-
     private final String tableName;
     private final String citationsIdAttr;
     private final String detailAttr;
@@ -42,21 +40,21 @@ public class Reference2SourceMover extends SchemaUpdaterStepBase {
     private final String sourceType;
     private final String dtype;
 
-    public static final Reference2SourceMover NewInstance(List<ISchemaUpdaterStep> stepList, String tableName,
+    public static final Reference2SourceMover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName,
             String citationsIdAttr, String detailAttr, String sourceAttr){
-        Reference2SourceMover result = new Reference2SourceMover(stepList, tableName, citationsIdAttr, detailAttr, sourceAttr, null, null);
+        Reference2SourceMover result = new Reference2SourceMover(stepList, stepName, tableName, citationsIdAttr, detailAttr, sourceAttr, null, null);
 
         return result;
     }
 
-    public static final Reference2SourceMover NewInstance(List<ISchemaUpdaterStep> stepList, String tableName,
+    public static final Reference2SourceMover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName,
             String citationsIdAttr, String detailAttr, String sourceAttr, String dtype, String sourceType){
-        Reference2SourceMover result = new Reference2SourceMover(stepList, tableName, citationsIdAttr, detailAttr, sourceAttr, sourceType, dtype);
+        Reference2SourceMover result = new Reference2SourceMover(stepList, stepName, tableName, citationsIdAttr, detailAttr, sourceAttr, sourceType, dtype);
 
         return result;
     }
 
-    protected Reference2SourceMover(List<ISchemaUpdaterStep> stepList, String tableName,
+    protected Reference2SourceMover(List<ISchemaUpdaterStep> stepList, String stepName, String tableName,
             String citationsIdAttr, String detailAttr, String sourceAttr, String sourceType, String dtype) {
         super(stepList, stepName);
         this.tableName = tableName;
@@ -65,6 +63,7 @@ public class Reference2SourceMover extends SchemaUpdaterStepBase {
         this.sourceAttr = sourceAttr;
         this.sourceType = sourceType == null? "PTS" : sourceType;
         this.dtype = dtype == null? "DescriptionElementSource" : dtype;
+        this.stepName = stepName;
     }
 
     @Override

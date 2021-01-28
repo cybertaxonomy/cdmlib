@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -36,12 +34,6 @@ public class BotanicalNameTest extends EntityTestBase{
 
 	private TaxonName botanicalName1;
 	private IBotanicalName botanicalName2;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -161,10 +153,10 @@ public class BotanicalNameTest extends EntityTestBase{
 		botanicalName1.setGenusOrUninomial("Aus");
 		botanicalName1.setRank(Rank.GENUS());
 		botanicalName1.setAnamorphic(true);
-		TaxonName clone = (TaxonName)botanicalName1.clone();
+		TaxonName clone = botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", true, clone.isAnamorphic());
 		botanicalName1.setAnamorphic(false);
-		clone = (TaxonName)botanicalName1.clone();
+		clone = botanicalName1.clone();
 		Assert.assertEquals("Anamorphic should be equal", false, clone.isAnamorphic());
 	}
 

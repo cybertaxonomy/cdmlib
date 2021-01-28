@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -34,7 +34,7 @@ public class KeyActivator {
         String yyy = "/eu/etaxonomy/cdm/io/sdd/Cichorieae-fullSDD.xml";
 
         URL url = KeyActivator.class.getResource(yyy);
-        URI uri = url.toURI();
+        URI uri = URI.fromUrl(url);
         IImportConfigurator config = IkeyPlusImportConfigurator.NewInstance(uri, destination);
 
         keyImport.invoke(config);

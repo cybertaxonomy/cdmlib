@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import static org.junit.Assert.assertNotNull;
@@ -22,6 +21,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -29,20 +29,18 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @since 29.01.2009
- * @version 1.0
  */
 //@Ignore("Test class is just a copy of the ABCD import test. It still needs to be adapted")
 public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	IOccurrenceService occurrenceService;
-
+	private IOccurrenceService occurrenceService;
 
 	private IImportConfigurator configurator;
 
@@ -51,7 +49,7 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 		String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = SpecimenSynthesysExcelImportConfigurator.NewInstance(url.toURI(), null, false);
+		configurator = SpecimenSynthesysExcelImportConfigurator.NewInstance(URI.fromUrl(url), null, false);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 
@@ -80,5 +78,4 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

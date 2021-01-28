@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.term.init.TermLoader;
  * @since 02.03.2009
  */
 public class DefaultTermInitializerTest {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializerTest.class);
 

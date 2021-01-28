@@ -26,10 +26,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.permission.User;
@@ -82,57 +80,36 @@ public class CdmBaseTest extends EntityTestBase{
 
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
 	private static CdmBase getTestCdmBase(){
 		return new TestCdmBaseClass();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		cdmBase = null;
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		cdmBase = getTestCdmBase();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-
 	private void removeExistingListeners(CdmBase cdmBase){
 		Field fieldPropChangeSupport;
 		PropertyChangeSupport propertyChangeSupport = null;
 		try {
-			Class clazz = CdmBase.class;
+			Class<?> clazz = CdmBase.class;
 			fieldPropChangeSupport = clazz.getDeclaredField("propertyChangeSupport");
 			fieldPropChangeSupport.setAccessible(true);
 			propertyChangeSupport = (PropertyChangeSupport)fieldPropChangeSupport.get(cdmBase);
 		} catch (SecurityException e) {
-			fail();
+			fail();return;
 		} catch (IllegalArgumentException e) {
-			fail();
+			fail();return;
 		} catch (NoSuchFieldException e) {
-			fail();
+			fail();return;
 		} catch (IllegalAccessException e) {
-			fail();
+			fail();return;
 		}
 		PropertyChangeListener[] listeners = propertyChangeSupport.getPropertyChangeListeners();
 		for (PropertyChangeListener listener : listeners){
@@ -143,12 +120,9 @@ public class CdmBaseTest extends EntityTestBase{
 		assertFalse(cdmBase.hasListeners("id"));
 		assertFalse(cdmBase.hasListeners("uuid"));
 	}
+
 /*************** TESTS **************************************************/
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#CdmBase()}.
-	 */
 	@Test
 	public void testCdmBase() {
 		assertTrue(cdmBase != null);
@@ -193,7 +167,6 @@ public class CdmBaseTest extends EntityTestBase{
 		cdmBase.setUuid(uuid);
 		assertTrue(listener.isChanged());
 	}
-
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#removePropertyChangeListener(java.beans.PropertyChangeListener)}.
@@ -242,9 +215,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertFalse(listener.isChanged());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#hasListeners(java.lang.String)}.
-	 */
 	@Test
 	public void testHasListeners() {
 		String prop = "uuid";
@@ -405,9 +375,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertEquals(newValue, listener.getNewValue());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#getId()}.
-	 */
 	@Test
 	public void testGetId() {
 		assertEquals(0, cdmBase.getId());
@@ -416,9 +383,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertEquals(id, cdmBase.getId());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#setId(int)}.
-	 */
 	@Test
 	public void testSetId() {
 		int id = 22;
@@ -426,9 +390,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertEquals(id, cdmBase.getId());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#getUuid()}.
-	 */
 	@Test
 	public void testGetUuid() {
 		assertNotNull(cdmBase.getUuid());
@@ -439,9 +400,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertEquals(uuid, cdmBase.getUuid());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#setUuid(java.util.UUID)}.
-	 */
 	@Test
 	public void testSetUuid() {
 		UUID uuid = UUID.randomUUID();
@@ -449,9 +407,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertEquals(uuid, cdmBase.getUuid());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#getCreated()}.
-	 */
 	@Test
 	public void testGetCreated() {
 		assertNotNull(cdmBase.getCreated());
@@ -463,9 +418,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertEquals(dateTime, cdmBase.getCreated());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#setCreated(java.util.Calendar)}.
-	 */
 	@Test
 	public void testSetCreated() {
 		DateTime calendar = new DateTime();
@@ -481,9 +433,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertFalse(calendarFalse.equals(calendar));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#getCreatedBy()}.
-	 */
 	@Test
 	public void testGetCreatedBy() {
 		assertNull(cdmBase.getCreatedBy());
@@ -493,9 +442,6 @@ public class CdmBaseTest extends EntityTestBase{
 		assertSame(user, cdmBase.getCreatedBy());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#setCreatedBy(eu.etaxonomy.cdm.model.agent.Person)}.
-	 */
 	@Test
 	public void testSetCreatedBy() {
 		User person = User.NewInstance(null, null);
@@ -512,11 +458,8 @@ public class CdmBaseTest extends EntityTestBase{
 
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#equals(java.lang.Object)}.
-	 */
 	@Test
-	public void testEqualsObject() {
+	public void testEquals() {
 		ICdmBase cdmBase2 = getTestCdmBase();
 		cdmBase2.setUuid(cdmBase.getUuid());
 		cdmBase2.setCreated(cdmBase.getCreated());
@@ -526,21 +469,16 @@ public class CdmBaseTest extends EntityTestBase{
 		assertFalse(cdmBase.equals(null));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
-	 */
 	@Test
 	public void testToString() {
 		String expected = cdmBase.getClass().getSimpleName()+"#"+cdmBase.getId()+"<"+cdmBase.getUuid()+">";
 		assertEquals(expected, cdmBase.toString());
 	}
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmBase#clone()}.
-	 */
+
 	@Test
 	public void testClone(){
 		try {
-			CdmBase clone = (CdmBase) cdmBase.clone();
+			CdmBase clone = cdmBase.clone();
 			assertNotSame(clone, cdmBase);
 			assertEquals(clone.getId(), cdmBase.getId());
 			assertFalse(clone.getUuid().equals(cdmBase.getUuid()));
@@ -548,13 +486,7 @@ public class CdmBaseTest extends EntityTestBase{
 			assertNull(clone.getCreatedBy());
 
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			fail();
 		}
-
-
-
 	}
-
-
 }

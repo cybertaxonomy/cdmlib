@@ -45,8 +45,8 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     private final IDefinedTermDao termDao;
 
     public DistributionTree(IDefinedTermDao termDao){
-        TreeNode<Set<Distribution>, NamedArea> rootElement = new TreeNode<Set<Distribution>, NamedArea>();
-        List<TreeNode<Set<Distribution>, NamedArea>> children = new ArrayList<TreeNode<Set<Distribution>, NamedArea>>();
+        TreeNode<Set<Distribution>, NamedArea> rootElement = new TreeNode<>();
+        List<TreeNode<Set<Distribution>, NamedArea>> children = new ArrayList<>();
         rootElement.setChildren(children);
         setRootElement(rootElement);
         this.termDao = termDao;
@@ -121,9 +121,9 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     private void loadAllParentAreas(Set<NamedArea> areas) {
 
         List<NamedArea> parentAreas = null;
-        Set<NamedArea> childAreas = new HashSet<NamedArea>(areas.size());
+        Set<NamedArea> childAreas = new HashSet<>(areas.size());
         for(NamedArea areaProxy : areas) {
-            NamedArea deproxied = HibernateProxyHelper.deproxy(areaProxy, NamedArea.class);
+            NamedArea deproxied = HibernateProxyHelper.deproxy(areaProxy);
             childAreas.add(deproxied);
         }
 
@@ -207,7 +207,6 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
         addDistributionToSubTree(distribution, newList, child);
     }
 
-
     /**
      * Areas for which no distribution data is available and which are marked as hidden (Marker) are omitted, see #5112
      *
@@ -223,7 +222,7 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @return the path through area hierarchy from the <code>area</code> given as parameter to the root
      */
     private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds, Set<NamedArea> distributionAreas, Set<MarkerType> hiddenAreaMarkerTypes){
-        List<NamedArea> result = new ArrayList<NamedArea>();
+        List<NamedArea> result = new ArrayList<>();
         if (!matchesLevels(area, omitLevelIds)){
             result.add(area);
         }
@@ -254,11 +253,6 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
         return result;
     }
 
-    /**
-     * @param area
-     * @param levels
-     * @return
-     */
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {
         if(omitLevelIds.isEmpty()) {
             return false;

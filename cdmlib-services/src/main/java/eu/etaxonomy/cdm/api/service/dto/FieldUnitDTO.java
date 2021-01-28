@@ -13,16 +13,12 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -53,14 +49,31 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
      *
      * @param fieldUnit
      *     The FieldUnit entity to create a DTO for. Is null save.
-     * @param specimenOrObservationTypeFilter
+     * @param typeIncludeFilter
      *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
      */
-	public static FieldUnitDTO fromEntity(FieldUnit entity, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter){
+    public static FieldUnitDTO fromEntity(FieldUnit entity, Integer maxDepth, EnumSet<SpecimenOrObservationType> typeIncludeFilter){
         if(entity == null) {
             return null;
         }
-        return new FieldUnitDTO(entity, specimenOrObservationTypeFilter);
+        return new FieldUnitDTO(entity, maxDepth, typeIncludeFilter);
+    }
+
+	/**
+     * Factory method for the construction of a FieldUnitDTO.
+     * <p>
+     * The direct derivatives are added to the field {@link #getDerivatives() derivates}.
+     *
+     *
+     * @param fieldUnit
+     *     The FieldUnit entity to create a DTO for. Is null save.
+     * @param typeIncludeFilter
+     *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
+     * @deprecated use {@link #fromEntity(FieldUnit, Integer, EnumSet)}
+     */
+    @Deprecated
+	public static FieldUnitDTO fromEntity(FieldUnit entity, EnumSet<SpecimenOrObservationType> typeIncludeFilter){
+        return fromEntity(entity, null, typeIncludeFilter);
     }
 
 	/**
@@ -68,14 +81,17 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	 *
 	 * @param fieldUnit
 	 *     The FieldUnit entity to create a DTO for
-	 * @param specimenOrObservationTypeFilter
+	 * @param maxDepth
+     *   The maximum number of derivation events levels up to which derivatives are to be collected.
+     *   <code>NULL</code> means infinitely.
+	 * @param typeIncludeFilter
 	 *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
 	 */
-    private FieldUnitDTO(FieldUnit fieldUnit, EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter ) {
+    private FieldUnitDTO(FieldUnit fieldUnit, Integer maxDepth, EnumSet<SpecimenOrObservationType> typeIncludeFilter ) {
         super(fieldUnit);
 
-        if(specimenOrObservationTypeFilter == null) {
-            specimenOrObservationTypeFilter = EnumSet.allOf(SpecimenOrObservationType.class);
+        if(typeIncludeFilter == null) {
+            typeIncludeFilter = EnumSet.allOf(SpecimenOrObservationType.class);
         }
         if (fieldUnit.getGatheringEvent() != null){
             gatheringEvent = GatheringEventDTO.newInstance(fieldUnit.getGatheringEvent());
@@ -105,86 +121,46 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             setDate(gatheringEvent.getGatheringDate());
         }
 
-        // Herbaria map
-        Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<>();
-        // List of accession numbers for citation
-        List<String> preservedSpecimenAccessionNumbers = new ArrayList<>();
-
-        // NOTE!
-        // the derivation graph seems to be walked two times in here
-        // 1. below in the for loop
-        // 2. in the call to DerivateDataDTO.fromEntity below
-        Set<DerivationEvent> derivationEvents = fieldUnit.getDerivationEvents();
-        for (DerivationEvent derivationEvent : derivationEvents) {
-            Set<DerivedUnit> derivatives = derivationEvent.getDerivatives();
-            for (DerivedUnit derivedUnit : derivatives) {
-                if(!derivedUnit.isPublish()){
-                    continue;
-                }
-                // collect accession numbers for citation
-                String identifier = derivedUnit.getMostSignificantIdentifier();
-                // collect collections for herbaria column
-                eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
-                if (collection != null) {
-                    //combine collection with identifier
-                    if (identifier != null) {
-                        if(collection.getCode()!=null){
-                            identifier = (collection.getCode()!=null?collection.getCode():"[no collection]")+" "+identifier;
-                        }
-                        preservedSpecimenAccessionNumbers.add(identifier);
-                    }
-
-                    Integer herbariumCount = collectionToCountMap.get(collection);
-                    if (herbariumCount == null) {
-                        herbariumCount = 0;
-                    }
-                    collectionToCountMap.put(collection, herbariumCount + 1);
-                }
-                if (specimenOrObservationTypeFilter.contains(derivedUnit.getRecordBasis())) {
-                    DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit);
-                    addDerivate(derivedUnitDTO);
-                    setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
-                    // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in
-                    // setDerivateDataDTO(), see below
-                    setHasDetailImage(isHasDetailImage() || derivedUnitDTO.isHasDetailImage());
-                    setHasDna(isHasDna() || derivedUnitDTO.isHasDna());
-                    setHasSpecimenScan(isHasSpecimenScan() || derivedUnitDTO.isHasSpecimenScan());
-                }
-            }
-        }
+        Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
+        assembleDerivatives(fieldUnit, maxDepth, typeIncludeFilter, unitIdenfierLabelsByCollections);
 
         // assemble derivate data DTO
-        DerivateDataDTO derivateDataDTO = DerivateDataDTO.fromEntity(fieldUnit, null);
-        setDerivateDataDTO(derivateDataDTO);
+        DerivationTreeSummaryDTO derivateDataDTO = DerivationTreeSummaryDTO.fromEntity(fieldUnit, null);
+        setDerivationTreeSummary(derivateDataDTO);
 
         // assemble citation
-        String citation = fieldUnit.getTitleCache();
-        if((CdmUtils.isBlank(citation) || citation.equals(IdentifiableEntityDefaultCacheStrategy.TITLE_CACHE_GENERATION_NOT_IMPLEMENTED))
+        String summaryLabel = fieldUnit.getTitleCache();
+        if((CdmUtils.isBlank(summaryLabel) || summaryLabel.equals(IdentifiableEntityDefaultCacheStrategy.TITLE_CACHE_GENERATION_NOT_IMPLEMENTED))
                 && !fieldUnit.isProtectedTitleCache()){
             fieldUnit.setTitleCache(null);
-            citation = fieldUnit.getTitleCache();
+            summaryLabel = fieldUnit.getTitleCache();
         }
-        if (!preservedSpecimenAccessionNumbers.isEmpty()) {
-            citation += " (";
-            for (String accessionNumber : preservedSpecimenAccessionNumbers) {
-                if (!accessionNumber.isEmpty()) {
-                    citation += accessionNumber + SEPARATOR_STRING;
+
+        List<String> derivativesAccessionNumbers = new ArrayList<>();
+        for(List<String> labels : unitIdenfierLabelsByCollections.values()) {
+            derivativesAccessionNumbers.addAll(labels);
+        }
+        if (!derivativesAccessionNumbers.isEmpty()) {
+            summaryLabel += " (";
+            for (String accessionNumber : derivativesAccessionNumbers) {
+                if (accessionNumber != null && !accessionNumber.isEmpty()) {
+                    summaryLabel += accessionNumber + SEPARATOR_STRING;
                 }
             }
-            citation = removeTail(citation, SEPARATOR_STRING);
-            citation += ")";
+            summaryLabel = removeTail(summaryLabel, SEPARATOR_STRING);
+            summaryLabel += ")";
         }
-        setCitation(citation);
+        setSummaryLabel(summaryLabel);
 
         // assemble herbaria string
         String herbariaString = "";
-        for (Entry<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> e : collectionToCountMap.entrySet()) {
-            eu.etaxonomy.cdm.model.occurrence.Collection collection = e.getKey();
+        for (eu.etaxonomy.cdm.model.occurrence.Collection collection : unitIdenfierLabelsByCollections.keySet()) {
+            int unitCount = unitIdenfierLabelsByCollections.get(collection).size();
             if (collection.getCode() != null) {
                 herbariaString += collection.getCode();
             }
-            if (e.getValue() > 1) {
-                herbariaString += "(" + e.getValue() + ")";
+            if (unitCount > 1) {
+                herbariaString += "(" + unitCount + ")";
             }
             herbariaString += SEPARATOR_STRING;
         }

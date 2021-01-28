@@ -75,6 +75,7 @@ public class AbcdDnaParser {
             parseSpecimenUnit((Element)specimenUnitList.item(0), dnaSample);
         }
         NodeList unitExtensions = item.getElementsByTagName(prefix+"UnitExtensions");
+        System.err.println(item.toString());
         for(int i=0;i<unitExtensions.getLength();i++){
             if(unitExtensions.item(i) instanceof Element){
                 Element unitExtension = (Element) unitExtensions.item(i);

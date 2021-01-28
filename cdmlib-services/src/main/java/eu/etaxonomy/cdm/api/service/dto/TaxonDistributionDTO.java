@@ -13,11 +13,10 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 
 /**
  * @author k.luther
@@ -26,65 +25,58 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public class TaxonDistributionDTO implements Serializable{
 
     private static final long serialVersionUID = -6565463192135410612L;
-    private UUID taxonUUID;
-    private String nameCache;
-    private Integer rankOrderIndex = null;
-    private String rankLabel = null;
+    private TaxonNodeDto nodeDto;
     private TaxonDescriptionDTO descriptionsWrapper;
     private String concatenatedSynonyms = null;
-    private String parentNameCache = null;
+    private TaxonNodeDto parentNodeDto = null;
 
     public TaxonDistributionDTO(TaxonNode node){
-        this.taxonUUID = node.getTaxon().getUuid();
+        nodeDto = new TaxonNodeDto(node);
+        parentNodeDto = new TaxonNodeDto(node.getParent());
+
         Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
 
-        if (taxon.getName() != null){
-            this.nameCache = taxon.getName().getNameCache();
-        }
-        if (nameCache == null){
-            nameCache = taxon.getTitleCache();
-        }
-        TaxonName name = CdmBase.deproxy(taxon.getName());
-        if (name != null && name.getRank() != null){
-            this.rankOrderIndex = name.getRank().getOrderIndex();
-            this.rankLabel = name.getRank().getLabel();
-        }else{
-            this.rankOrderIndex = null;
-            this.rankLabel = null;
-        }
-        Taxon parentTaxon = HibernateProxyHelper.deproxy(node.getParent().getTaxon());
 
-        setParentNameCache(parentTaxon.getName().getNameCache());
         this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
         concatenateSynonyms(taxon);
     }
 
    /* ------ Getter / Setter -----------*/
     public UUID getTaxonUuid() {
-        return taxonUUID;
+        if (nodeDto != null){
+            return nodeDto.getTaxonUuid();
+        }
+        return null;
     }
 
     public String getNameCache() {
-        return nameCache;
-    }
-    public void setNameCache(String nameCache) {
-        this.nameCache = nameCache;
+        if (nodeDto != null){
+            return nodeDto.getNameCache();
+        }
+        return null;
+
     }
 
+
     public String getRankString() {
-        return rankLabel;
+        if (nodeDto != null){
+            return nodeDto.getRankLabel();
+        }
+        return null;
     }
 
     public Integer getRankOrderIndex() {
-        return rankOrderIndex;
+        if (nodeDto != null){
+            return nodeDto.getRankOrderIndex();
+        }
+        return null;
     }
 
-    public void setRank(Rank rank) {
-        if (rank != null){
-            this.rankOrderIndex = rank.getOrderIndex();
-            this.rankLabel = rank.getLabel();
-        }
+    public TaxonNodeDto getTaxonNodeDto(){
+        return nodeDto;
     }
+
+
 
     public TaxonDescriptionDTO getDescriptionsWrapper() {
         return descriptionsWrapper;
@@ -104,11 +96,9 @@ public class TaxonDistributionDTO implements Serializable{
        }
     }
 
-    public String getParentNameCache() {
-        return parentNameCache;
+    public TaxonNodeDto getParentDto() {
+        return parentNodeDto;
     }
 
-    public void setParentNameCache(String parentNameCache) {
-        this.parentNameCache = parentNameCache;
-    }
+
 }

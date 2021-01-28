@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import org.apache.log4j.Logger;
@@ -19,11 +18,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.validation.constraint.ValidTaxonomicYearValidator;
-
-
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -32,8 +28,6 @@ import eu.etaxonomy.cdm.validation.constraint.ValidTaxonomicYearValidator;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author ben.clark
- *
- *
  */
 public class ValidTaxonomicYearTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
@@ -42,17 +36,13 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
     static Class<ValidTaxonomicYearValidator> validatorClass = ValidTaxonomicYearValidator.class;
     static Class<Level3> group = Level3.class;
 
-
 	private IBotanicalName name;
 
 	private Reference beforeLineeRef;
     private Reference afterLineeRef;
 
-
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
@@ -65,9 +55,7 @@ public class ValidTaxonomicYearTest extends ValidationTestBase {
 
 	    afterLineeRef = ReferenceFactory.newBook();
 	    afterLineeRef.setDatePublished(TimePeriodParser.parseStringVerbatim("1754"));
-
 	}
-
 
 /****************** TESTS *****************************/
 

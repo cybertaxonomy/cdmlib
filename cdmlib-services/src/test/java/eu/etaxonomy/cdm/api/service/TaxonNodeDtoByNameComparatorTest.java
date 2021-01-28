@@ -16,6 +16,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -23,26 +25,18 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonNaturalComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByNameComparator;
 
 /**
  * @author a.kohlbecker
  * @since 18.07.2011
- *
  */
 public class TaxonNodeDtoByNameComparatorTest {
 
     private static final Logger logger = Logger.getLogger(TaxonNodeDtoByNameComparatorTest.class);
 
-
-    /**
-     * test method for {@link TaxonNodeByNameComparator#compare(eu.etaxonomy.cdm.model.taxon.TaxonNode
-     * , eu.etaxonomy.cdm.model.taxon.TaxonNode) }
-     */
     @Test
     @Ignore
     public void testCompare() {
@@ -139,10 +133,6 @@ public class TaxonNodeDtoByNameComparatorTest {
 
     }
 
-    /**
-     * test method for {@link TaxonNodeByNameComparator#compare(eu.etaxonomy.cdm.model.taxon.TaxonNode
-     * , eu.etaxonomy.cdm.model.taxon.TaxonNode) }
-     */
     @Test
     @Ignore
     public void testCompareNaturalOrder() {
@@ -186,7 +176,7 @@ public class TaxonNodeDtoByNameComparatorTest {
         taxonNodes.addAll(classification.getChildNodes());
 
         // order using default settings
-        TaxonNaturalComparator taxonNodeComparator = new TaxonNaturalComparator();
+        TaxonNodeNaturalComparator taxonNodeComparator = new TaxonNodeNaturalComparator();
        // Collections.sort(taxonNodes, taxonNodeComparator);
 
         int i = 0;
@@ -215,6 +205,4 @@ public class TaxonNodeDtoByNameComparatorTest {
         Assert.assertEquals(nameCache_3, classification.getChildNodes().get(i).getTaxon().getName().getNameCache());
 
     }
-
-
 }

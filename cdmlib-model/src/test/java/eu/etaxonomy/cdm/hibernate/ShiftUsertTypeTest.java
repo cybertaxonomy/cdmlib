@@ -1,9 +1,15 @@
 /**
- * 
- */
+* Copyright (C) 2016 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
+import java.sql.Types;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,31 +19,21 @@ import eu.etaxonomy.cdm.model.molecular.SingleReadAlignment.Shift;
 
 /**
  * @author a.mueller
- *
  */
 public class ShiftUsertTypeTest {
 
 	private ShiftUserType shiftUserType;
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
+
 	@Before
 	public void setUp() throws Exception {
 		shiftUserType = new ShiftUserType();
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.hibernate.ShiftUserType#deepCopy(java.lang.Object)}.
-	 */
 	@Test
 	public void testDeepCopyObject() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.hibernate.ShiftUserType#disassemble(java.lang.Object)}.
-	 */
 	@Test
 	public void testDisassembleObject() {
 		Serializable nullValue = this.shiftUserType.disassemble(null);
@@ -50,9 +46,6 @@ public class ShiftUsertTypeTest {
 		Assert.assertEquals("2,3;3,-1", twoValues);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.hibernate.ShiftUserType#nullSafeGet(java.sql.ResultSet, java.lang.String[], org.hibernate.engine.spi.SessionImplementor, java.lang.Object)}.
-	 */
 	@Test
 	public void testNullSafeGetString() {
 		Shift[] emptyResult = shiftUserType.nullSafeGet("");
@@ -61,30 +54,20 @@ public class ShiftUsertTypeTest {
 		Assert.assertEquals(1, singleResult.length);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.hibernate.ShiftUserType#nullSafeSet(java.sql.PreparedStatement, java.lang.Object, int, org.hibernate.engine.spi.SessionImplementor)}.
-	 */
 	@Test
 	public void testNullSafeSet() {
 		//TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.hibernate.ShiftUserType#returnedClass()}.
-	 */
 	@Test
 	public void testReturnedClass() {
 		Class<?> returnedClass = new ShiftUserType().returnedClass();
 		Assert.assertEquals(Shift[].class, returnedClass);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.hibernate.ShiftUserType#sqlTypes()}.
-	 */
 	@Test
 	public void testSqlTypes() {
 		int[] sqlTypes = new ShiftUserType().sqlTypes();
-//		Assert.assertEquals(new int[]{ Types.CLOB }, sqlTypes);
+		Assert.assertArrayEquals(new int[]{Types.CLOB}, sqlTypes);
 	}
-
 }

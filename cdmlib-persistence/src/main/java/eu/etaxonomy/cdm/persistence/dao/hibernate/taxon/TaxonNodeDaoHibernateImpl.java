@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -275,28 +276,43 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         return null;
     }
-
     @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
-            boolean recursive, boolean includeUnpublished, List<String> propertyPaths){
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator){
+        return listChildrenOfRecursive(node,new ArrayList<>(), pageSize, pageIndex, recursive, includeUnpublished, propertyPaths, comparator);
+    }
 
-        if (recursive == true){
+    private List<TaxonNode> listChildrenOfRecursive(TaxonNode node, List<TaxonNode> previousResult, Integer pageSize, Integer pageIndex,
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator){
+
+        if (!previousResult.contains(node)){
+            previousResult.add(node);
+        }
+        if (recursive == true && comparator == null ){
     		Criteria crit = childrenOfCriteria(node, includeUnpublished);
 
-    		if(pageSize != null) {
-                crit.setMaxResults(pageSize);
-                if(pageIndex != null) {
-                    crit.setFirstResult(pageIndex * pageSize);
-                } else {
-                    crit.setFirstResult(0);
-                }
-            }
+    		this.addPageSizeAndNumber(crit, pageSize, pageIndex);
     		@SuppressWarnings("unchecked")
             List<TaxonNode> results = crit.list();
     		results.remove(node);
     		defaultBeanInitializer.initializeAll(results, propertyPaths);
     		return results;
-    	}else{
+
+    	} else if (recursive == true){
+    	    List<TaxonNode> children = node.getChildNodes();
+    	    Collections.sort(children, comparator);
+    	    for (TaxonNode child: children){
+    	        if (!previousResult.contains(child)){
+    	            previousResult.add(child);
+    	        }
+    	        if (child.hasChildNodes()){
+    	            previousResult = listChildrenOfRecursive(child, previousResult, pageSize, pageIndex,
+    	                    recursive, includeUnpublished, propertyPaths,comparator);
+    	        }
+    	    }
+    	    return previousResult;
+
+        } else{
     		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), null,
     		       includeUnpublished, pageSize, pageIndex, propertyPaths);
     	}

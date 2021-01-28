@@ -14,16 +14,17 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
+ * There is a copy of this class in cdmlib-model.
+ *
  * @author a.kohlbecker
  * @since Feb 21, 2018
  */
-public class TermTestBase {
+public abstract class TermTestBase {
 
     @BeforeClass
     public final static void intitializeTermsIfNeeded() {
-        DefaultTermInitializer defaultTermInitializer = new DefaultTermInitializer();
         if(Language.DEFAULT() == null){
-            defaultTermInitializer.initialize();
+            new DefaultTermInitializer().initialize();
         }
     }
 }

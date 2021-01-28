@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.reference;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.URI;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -51,8 +50,10 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
+import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -328,6 +329,7 @@ public class Reference
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
 	@Field(analyze = Analyze.NO)
+    @FieldBridge(impl = UriBridge.class)
 	@Type(type="uriUserType")
 	private URI uri;
 

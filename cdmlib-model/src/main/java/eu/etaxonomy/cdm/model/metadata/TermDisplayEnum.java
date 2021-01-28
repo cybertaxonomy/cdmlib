@@ -11,9 +11,9 @@ package eu.etaxonomy.cdm.model.metadata;
 /**
  * @author k.luther
  * @since 09.01.2019
- *
  */
 public enum TermDisplayEnum implements IKeyLabel{
+
     IdInVocabulary("IdInVocabulary", "ID in Vocabulary"),
     Symbol1("Symbol1", "Symbol 1"),
     Symbol2("Symbol2", "Symbol 2"),

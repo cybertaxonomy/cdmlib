@@ -64,7 +64,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         String referenceColumnName = "citation_id";
         String microReferenceColumnName = "citationMicroReference";
         String sourceColumnName = "source_id";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+        Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
 
         //6581
         //move name relationship reference to source
@@ -73,7 +73,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         referenceColumnName = "citation_id";
         microReferenceColumnName = "citationMicroReference";
         sourceColumnName = "source_id";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+        Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
 
         //6581
         //move taxon relationship reference to source
@@ -82,7 +82,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         referenceColumnName = "citation_id";
         microReferenceColumnName = "citationMicroReference";
         sourceColumnName = "source_id";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+        Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
 
         //6581
         //move hybrid relationship reference to source
@@ -91,7 +91,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         referenceColumnName = "citation_id";
         microReferenceColumnName = "citationMicroReference";
         sourceColumnName = "source_id";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+        Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
 
         //6581
         //move type designation reference to source
@@ -100,7 +100,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         referenceColumnName = "citation_id";
         microReferenceColumnName = "citationMicroReference";
         sourceColumnName = "source_id";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
+        Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName);
 
         //6581
         //move nomenclatural reference to nomenclatural source
@@ -111,7 +111,7 @@ public class SchemaUpdater_5152_5180 extends SchemaUpdaterBase {
         sourceColumnName = "nomenclaturalSource_id";
         String sourceType = "NOR";
         String dtype = "NomenclaturalSource";
-        Reference2SourceMover.NewInstance(stepList, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
+        Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
         //9094
         // update TaxonNode.source from IdentifiableSource to DescriptionElementSource

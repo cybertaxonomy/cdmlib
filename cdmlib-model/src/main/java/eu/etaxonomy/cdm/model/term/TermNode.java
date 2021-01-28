@@ -87,7 +87,6 @@ public class TermNode <T extends DefinedTermBase>
 	@JoinColumn(name="parent_id")
 	private TermNode<T> parent;
 
-
     @XmlElement(name = "treeIndex")
     @Column(length=255)
     private String treeIndex;

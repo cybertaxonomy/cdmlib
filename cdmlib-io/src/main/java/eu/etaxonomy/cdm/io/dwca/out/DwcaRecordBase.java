@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.dwca.out;
 
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +22,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -46,9 +46,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public abstract class DwcaRecordBase {
+
 	private static final Logger logger = Logger.getLogger(DwcaRecordBase.class);
 
 	//TODO Collection_SEPARATOR
@@ -76,11 +76,9 @@ public abstract class DwcaRecordBase {
 	    doWrite(state, writer);
 	}
 
-
 	public void writeCsv(DwcaTaxExportState state){
 	    state.getResult().addWarning(this.getClass().getName() + ".writeCsv() not yet implemented!");
 	}
-
 
 	protected abstract void registerKnownFields();
 
@@ -92,13 +90,11 @@ public abstract class DwcaRecordBase {
 	private Integer id;
 	private UUID uuid;
 
-
 	protected DwcaRecordBase(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		this.metaDataRecord = metaDataRecord;
 		this.count = metaDataRecord.inc();
 		this.config = config;
 	}
-
 
 	public void setId(Integer id) {
 		this.id = id;

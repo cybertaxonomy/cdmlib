@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertFalse;
@@ -22,6 +21,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -36,7 +36,8 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * This test checks of all the business logic methods do what they are expected to do.
@@ -44,17 +45,18 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author n.hoffmann
  * @since Dec 16, 2010
  */
-public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
+public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTest {
+
+    @SpringBeanByType
+    private ITaxonService service;
+
+    @SpringBeanByType
+    private INameService nameService;
 
 	private Synonym s1;
 	private Synonym s2;
 	private Taxon t2;
 	private Taxon t1;
-	@SpringBeanByType
-	private ITaxonService service;
-
-	@SpringBeanByType
-	private INameService nameService;
 	private String referenceDetail;
 	private Reference reference;
 	private SynonymType homoTypicSynonymType;
@@ -64,9 +66,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	private INonViralName t1n;
 	private TaxonName s2n;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		//service = new TaxonServiceImpl();
@@ -206,14 +205,10 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		}
 
 //		Assert.assertNull("Synonym should not be used in a name anymore", s1.getName());
-
-
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#changeSynonymToRelatedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
-	 */
 	@Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="../../database/ClearDBDataSet.xml")
 	public final void testChangeSynonymToRelatedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymType);
 		t1.addSynonym(s2, homoTypicSynonymType);
@@ -230,7 +225,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		//UUID s1UUID = service.update(s1);
 		UUID newTaxonUUID = service.save(newTaxon).getUuid();
 
-
 		s1 =(Synonym)service.find(s1.getUuid());
 		newTaxon = (Taxon)service.find(newTaxonUUID);
 		assertNull(s1);
@@ -244,7 +238,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
         //UUID s1UUID = service.update(s1);
         newTaxonUUID = service.save(newTaxon).getUuid();
 
-
         s2 =(Synonym)service.find(s2.getUuid());
         newTaxon = (Taxon)service.find(newTaxonUUID);
         assertNull(s2);
@@ -252,7 +245,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
         assertFalse(synonymName.getTaxonBases().contains(s2));
         assertTrue(synonymName.getTaxonBases().contains(newTaxon));
 	}
-
 
 	@Test
 	public void changeHomotypicalGroupOfSynonym(){
@@ -297,7 +289,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("'t1' must have exactly 1 basionym relationships", 1, t1.getName().getBasionyms().size());
 		Assert.assertFalse("s2 must not be in t1 homotypic group", s2.getHomotypicGroup().equals(t1.getHomotypicGroup()));
 
-
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, homotypicSynonym.getHomotypicGroup(), null, true);
 
@@ -312,7 +303,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		Assert.assertEquals("'t1' must have exactly 2 homotypic synonyms", 2, t1.getHomotypicSynonymsByHomotypicSynonymType().size());
 		Assert.assertEquals("'t1' must have exactly 2 names in homotypic group", 2, t1.getHomotypicSynonymsByHomotypicGroup(null).size());
 		Assert.assertEquals("'t1' homotypic group must include 3 names (t1, s2, homotypicSynonym)", 3, t1.getHomotypicGroup().getTypifiedNames().size());
-
 
 		//do it
 		service.changeHomotypicalGroupOfSynonym(s2, t2.getHomotypicGroup(), t2, false);
@@ -342,8 +332,6 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 
 	}
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

@@ -6,13 +6,11 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Set;
 
@@ -24,19 +22,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.validation.constraint.InReferenceValidator;
 import eu.etaxonomy.cdm.validation.constraint.NoRecursiveInReferenceValidator;
 
-
 /**
- *
  * @author ben.clark
- *
  */
 @SuppressWarnings("unused")
 public class ReferenceValidationTest extends ValidationTestBase {
@@ -46,13 +41,10 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 		book = ReferenceFactory.newBook();
 		book.setTitleCache("Lorem ipsum", true);
 		book.setIsbn("1-919795-99-5");
 	}
-
 
 /****************** TESTS *****************************/
 
@@ -67,7 +59,6 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
 	@Test
 	public final void testLevel2ValidationWithValidISBN() {
-
         Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
@@ -90,7 +81,6 @@ public class ReferenceValidationTest extends ValidationTestBase {
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 
-
    @Test
     public final void testLevel3ValidationWithInValidInReference() {
 
@@ -109,7 +99,6 @@ public class ReferenceValidationTest extends ValidationTestBase {
         assertHasConstraintOnValidator((Set)constraintViolations, InReferenceValidator.class);
     }
 
-
 	@Test
 	public final void testValidationAfterCasting(){
 		((Reference)book).castReferenceToArticle();
@@ -126,8 +115,5 @@ public class ReferenceValidationTest extends ValidationTestBase {
 
         myRef.setInBook(book);
         assertNoConstraintOnValidator((Set)validator.validate(myRef, Level3.class), NoRecursiveInReferenceValidator.class);
-
 	}
-
-
 }

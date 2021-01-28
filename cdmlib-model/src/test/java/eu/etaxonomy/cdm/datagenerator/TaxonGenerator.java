@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.datagenerator;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -29,9 +28,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * This class offers functionality to create test taxa and descriptions.
  *
  * @author m.doering
- *
  */
 public class TaxonGenerator {
+
 	private static String[] genera = {"Carex", "Abies", "Belladonna", "Dracula", "Maria", "Calendula", "Polygala", "Vincia"};
 	private static String[] epitheta = {"vulgaris", "magdalena", "officinalis", "alba", "negra", "communa", "alpina", "rotundifolia", "greutheriana", "helventica", "allemania", "franca"};
 	private static String[] ranks = {"subsp", "var", "f"};
@@ -76,7 +75,6 @@ public class TaxonGenerator {
         botSpecies4.setCombinationAuthorship(deCandolle);
         Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec);
         childTaxon.addSynonym(homoSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
-
 
         //2nd child species taxon that is the child of genus taxon
         IBotanicalName botSpecies2= TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());

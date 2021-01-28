@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.Term;
@@ -70,6 +71,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.Registration;
@@ -95,8 +97,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
-import eu.etaxonomy.cdm.persistence.dao.term.IOrderedTermVocabularyDao;
-import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -116,21 +117,20 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 public class NameServiceImpl
           extends IdentifiableServiceBase<TaxonName,ITaxonNameDao>
           implements INameService {
+
     static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 
     @Autowired
-    protected ITermVocabularyDao vocabularyDao;
+    private IOccurrenceService occurrenceService;
     @Autowired
-    protected IOrderedTermVocabularyDao orderedVocabularyDao;
+    private ICollectionService collectionService;
     @Autowired
-    protected IOccurrenceService occurrenceService;
+    private ITaxonService taxonService;
     @Autowired
-    protected ICollectionService collectionService;
-    @Autowired
-    protected ITaxonService taxonService;
+    private ICommonService commonService;
     @Autowired
     @Qualifier("sourcedEntityDao")
-    protected ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
+    private ISourcedEntityDao<SourcedEntityBase<?>> sourcedEntityDao;
     @Autowired
     private INomenclaturalStatusDao nomStatusDao;
     @Autowired
@@ -142,18 +142,20 @@ public class NameServiceImpl
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
     @Autowired
-    protected ICommonService commonService;
+    private IOriginalSourceDao sourcedDao;
 
     @Autowired
     // @Qualifier("defaultBeanInitializer")
     protected IBeanInitializer defaultBeanInitializer;
+
+//***************************** CONSTRUCTOR **********************************/
 
     /**
      * Constructor
      */
     public NameServiceImpl(){}
 
-//********************* METHODS ****************************************************************//
+//********************* METHODS ***********************************************//
 
     @Override
     @Transactional(readOnly = false)
@@ -179,7 +181,7 @@ public class NameServiceImpl
         }
 
         try{
-            result = this.isDeletable(name, config);
+            result = this.isDeletable(name, config, null);
         }catch(Exception e){
             result.addException(e);
             result.setError();
@@ -399,7 +401,7 @@ public class NameServiceImpl
     @Override
     @Deprecated
     public List<TaxonName> findNamesByTitleCache(String titleCache, MatchMode matchMode, List<String> propertyPaths){
-        List result = dao.findByTitle(titleCache, matchMode, null, null, null, propertyPaths);
+        List<TaxonName> result = dao.findByTitle(titleCache, matchMode, null, null, null, propertyPaths);
         return result;
     }
 
@@ -527,6 +529,19 @@ public class NameServiceImpl
     @Override
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
         return homotypicalGroupDao.list(limit, start);
+    }
+
+
+    @Override
+    public List<NomenclaturalSource> listOriginalSpellings(Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        Long numberOfResults = sourcedDao.countWithNameUsedInSource(NomenclaturalSource.class);
+        List<NomenclaturalSource> results = new ArrayList<>();
+        if(numberOfResults > 0) {
+            results = sourcedDao.listWithNameUsedInSource(NomenclaturalSource.class, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+        return results;
     }
 
     @Override
@@ -830,12 +845,9 @@ public class NameServiceImpl
 
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
 
-        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
-
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
 
-        @SuppressWarnings("rawtypes")
         List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
 
         return searchResults;
@@ -845,7 +857,7 @@ public class NameServiceImpl
     public Pager<NameRelationship> pageNameRelationships(TaxonName name, Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, direction, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
@@ -856,7 +868,7 @@ public class NameServiceImpl
     @Override
     public Pager<NameRelationship> pageFromNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
@@ -867,7 +879,7 @@ public class NameServiceImpl
     @Override
     public Pager<NameRelationship> pageToNameRelationships(TaxonName name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         List<NameRelationship> results = listNameRelationships(name, Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths);
-        return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
     }
 
     @Override
@@ -969,7 +981,7 @@ public class NameServiceImpl
     }
 
 
-    public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config){
+    public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config, UUID taxonUuid){
         DeleteResult result = new DeleteResult();
 
         NameDeletionConfigurator nameConfig = null;
@@ -1003,9 +1015,16 @@ public class NameServiceImpl
         }
 
         //concepts
-        if (! name.getTaxonBases().isEmpty()){
-            result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
-            result.setAbort();
+
+        if (! name.getTaxonBases().isEmpty() ){
+            boolean isDeletableTaxon = true;
+            List <TaxonBase> notDeletedTaxonBases = name.getTaxonBases().stream()
+                    .filter((taxonBase) -> !taxonBase.getUuid().equals(taxonUuid))
+                    .collect(Collectors.toList());
+            if (!notDeletedTaxonBases.isEmpty()){
+                result.addException(new Exception("Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion."));
+                result.setAbort();
+            }
         }
 
         //hybrid relationships
@@ -1028,8 +1047,9 @@ public class NameServiceImpl
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
             }
+
             //DescriptionElementSource#nameUsedInSource
-            else if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+            else if (referencingObject.isInstanceOf(DescriptionElementSource.class) && !referencingObject.isInstanceOf(NomenclaturalSource.class) ){
                 String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
@@ -1076,7 +1096,13 @@ public class NameServiceImpl
     @Override
     public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config){
         TaxonName name = this.load(nameUUID);
-        return isDeletable(name, config);
+        return isDeletable(name, config, null);
+    }
+
+    @Override
+    public DeleteResult isDeletable(UUID nameUUID, DeleteConfiguratorBase config, UUID taxonUuid){
+        TaxonName name = this.load(nameUUID);
+        return isDeletable(name, config, taxonUuid);
     }
 
     @Override

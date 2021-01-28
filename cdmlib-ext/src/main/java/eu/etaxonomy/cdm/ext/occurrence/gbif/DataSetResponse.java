@@ -8,13 +8,12 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * Wrapper object for the parameters that are parsed from a GBIF dataset query
  * @author pplitzner
  * @since 02.06.2014
- *
  */
 public class DataSetResponse {
 
@@ -23,51 +22,30 @@ public class DataSetResponse {
     private String unitId;
     private String abcdSchema;
 
-    /**
-     * @return the protocol
-     */
     public GbifDataSetProtocol getProtocol() {
         return protocol;
     }
-    /**
-     * @param protocol the protocol to set
-     */
     public void setProtocol(GbifDataSetProtocol protocol) {
         this.protocol = protocol;
     }
-    /**
-     * @return the endpoint
-     */
+
     public URI getEndpoint() {
         return endpoint;
     }
-    /**
-     * @param endpoint the endpoint to set
-     */
     public void setEndpoint(URI endpoint) {
         this.endpoint = endpoint;
     }
-    /**
-     * @return the unitId
-     */
+
     public String getUnitId() {
         return unitId;
     }
-    /**
-     * @param unitId the unitId to set
-     */
     public void setUnitId(String unitId) {
         this.unitId = unitId;
     }
-    /**
-     * @return the abcdSchema
-     */
+
     public String getAbcdSchema() {
         return abcdSchema;
     }
-    /**
-     * @param abcdSchema the abcdSchema to set
-     */
     public void setAbcdSchema(String abcdSchema) {
         this.abcdSchema = abcdSchema;
     }

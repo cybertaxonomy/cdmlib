@@ -25,16 +25,20 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 public class SpecimenOrObservationDTOFactory {
 
     public static SpecimenOrObservationBaseDTO fromEntity(SpecimenOrObservationBase entity) {
+       return fromEntity(entity, null);
+    }
+
+    public static SpecimenOrObservationBaseDTO fromEntity(SpecimenOrObservationBase entity, Integer maxDepth) {
         if(entity == null) {
             return null;
         }
         if (entity.isInstanceOf(FieldUnit.class)) {
-            return FieldUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, FieldUnit.class));
+            return FieldUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, FieldUnit.class), maxDepth, null);
         } else {
             if (entity.isInstanceOf(DnaSample.class)){
                 return new DNASampleDTO(HibernateProxyHelper.deproxy(entity, DnaSample.class)); // FIXME use factory method
             } else {
-                return DerivedUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, DerivedUnit.class));
+                return DerivedUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, DerivedUnit.class), maxDepth, null, null);
             }
         }
     }

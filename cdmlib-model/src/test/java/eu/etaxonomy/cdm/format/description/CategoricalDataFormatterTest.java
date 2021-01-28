@@ -10,18 +10,14 @@ package eu.etaxonomy.cdm.format.description;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.format.ICdmFormatter;
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
-import eu.etaxonomy.cdm.format.description.CategoricalDataFormatter;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Test for {@link CategoricalDataFormatter}.
@@ -29,7 +25,7 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  * @author a.mueller
  * @since 11.03.2020
  */
-public class CategoricalDataFormatterTest {
+public class CategoricalDataFormatterTest extends TermTestBase {
 
     private State state1;
     private State state2;
@@ -46,13 +42,6 @@ public class CategoricalDataFormatterTest {
         stateData1 = StateData.NewInstance(state1);
         stateData2 = StateData.NewInstance(state2);
         stateData3 = StateData.NewInstance(state3);
-    }
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        if (Language.DEFAULT() == null){
-            new DefaultTermInitializer().initialize();
-        }
     }
 
     @Test

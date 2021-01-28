@@ -57,12 +57,11 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
 	private static final long serialVersionUID = -7204587330204725285L;
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
 
-
 //********************************** Constructor *********************************/
 
   	//for hibernate use only
   	@Deprecated
-  	protected TypeDesignationStatusBase(){super(TermType.Unknown);};
+  	protected TypeDesignationStatusBase(){super(TermType.Unknown);}
 
 	/**
 	 * Class constructor: creates a new empty type designation status instance.

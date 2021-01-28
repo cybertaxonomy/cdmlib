@@ -262,6 +262,7 @@ public class DefaultReferenceCacheStrategy
         return result.toString();
     }
 
+    //TODO this method should probably be unified with getCitation(Reference reference, String microReference)
     @Override
     public String createShortCitation(Reference reference, String citationDetail, Boolean withYearBrackets) {
         if (withYearBrackets == null){
@@ -287,7 +288,8 @@ public class DefaultReferenceCacheStrategy
             }else{
                 List<Person> teamMembers = team.getTeamMembers();
                 int etAlPosition = 2;
-                for (int i = 1; i <= teamMembers.size() && i < etAlPosition; i++){
+                for (int i = 1; i <= teamMembers.size() &&
+                        (i < etAlPosition || teamMembers.size() == etAlPosition && !team.isHasMoreMembers()) ; i++){
                     Person teamMember = teamMembers.get(i-1);
                     if(teamMember == null){
                         // this can happen in UIs in the process of adding new members
@@ -298,7 +300,7 @@ public class DefaultReferenceCacheStrategy
                 }
                 if (teamMembers.size() == 0){
                     shortCitation = TeamDefaultCacheStrategy.EMPTY_TEAM;
-                } else if (team.isHasMoreMembers() || teamMembers.size() >= etAlPosition){
+                } else if (team.isHasMoreMembers() || teamMembers.size() > etAlPosition){
                     shortCitation += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
                 }
             }
@@ -307,7 +309,6 @@ public class DefaultReferenceCacheStrategy
 
         return shortCitation;
     }
-
 
     /**
      * Adds the citationDetail to the titleCache string that is returned from a method as data is not
@@ -358,18 +359,6 @@ public class DefaultReferenceCacheStrategy
             shortCitation = person.getTitleCache();
         }
         return shortCitation;
-    }
-
-    private static String concatString(Team team, List<Person> teamMembers, int i, String std_team_concatination, String final_team_concatination) {
-        String concat;
-        if (i <= 1){
-            concat = "";
-        }else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size())){
-            concat = std_team_concatination;
-        }else{
-            concat = final_team_concatination;
-        }
-        return concat;
     }
 
     @Override

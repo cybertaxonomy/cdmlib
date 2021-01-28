@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.CdmEntityIdentifier;
@@ -44,6 +44,8 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HHH_9751_Util;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -63,7 +65,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.permission.Operation;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
@@ -78,6 +79,8 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
@@ -94,6 +97,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class TaxonNodeServiceImpl
            extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao>
            implements ITaxonNodeService{
+
     private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 
     @Autowired
@@ -117,9 +121,14 @@ public class TaxonNodeServiceImpl
     @Autowired
     private IOriginalSourceDao sourceDao;
 
-
     @Autowired
     private ITaxonNodeFilterDao nodeFilterDao;
+
+    @Autowired
+    private IReferenceDao referenceDao;
+
+    @Autowired
+    private IClassificationDao classificationDao;
 
     @Autowired
     IProgressMonitorService progressMonitorService;
@@ -135,7 +144,8 @@ public class TaxonNodeServiceImpl
         getSession().refresh(taxonNode);
         List<TaxonNode> childNodes;
         if (recursive == true){
-        	childNodes  = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, null);
+            Comparator<TaxonNode> comparator = sortMode == null? null : sortMode.comparator();
+            childNodes = dao.listChildrenOf(taxonNode, null, null, recursive, includeUnpublished, propertyPaths, comparator);
         }else if (includeUnpublished){
             childNodes = new ArrayList<>(taxonNode.getChildNodes());
         }else{
@@ -149,10 +159,10 @@ public class TaxonNodeServiceImpl
 
         HHH_9751_Util.removeAllNull(childNodes);
 
-        if (sortMode != null){
-            Comparator<TaxonNode> comparator = sortMode.newComparator();
-        	Collections.sort(childNodes, comparator);
-        }
+//        if (sortMode != null){
+//            Comparator<TaxonNode> comparator = sortMode.newComparator();
+//        	Collections.sort(childNodes, comparator);
+//        }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }
@@ -160,7 +170,7 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths){
-        return dao.listChildrenOf(node, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths);
+        return dao.listChildrenOf(node, pageSize, pageIndex, recursive, includeUnpublished, propertyPaths, null);
     }
 
     @Override
@@ -799,7 +809,6 @@ public class TaxonNodeServiceImpl
     public Pager<TaxonNodeAgentRelation> pageTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths) {
 
-
         List<TaxonNodeAgentRelation> records = null;
 
         long count = dao.countTaxonNodeAgentRelations(taxonUuid, classificationUuid, agentUuid, rankUuid, relTypeUuid);
@@ -819,57 +828,65 @@ public class TaxonNodeServiceImpl
             TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
 
         UpdateResult result = new UpdateResult();
-        TaxonName name = null;
-        if (taxonDto.getNameUuid() != null){
-            name = nameService.load(taxonDto.getNameUuid());
-
-        }else{
-            UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
-                    taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
-            result.addUpdatedObjects(tmpResult.getUpdatedObjects());
-            name = (TaxonName)tmpResult.getCdmEntity();
-        }
-        Reference sec = null;
-        if (taxonDto.getSecUuid() != null ){
-            sec = referenceService.load(taxonDto.getSecUuid());
-        }
-        if (!name.isPersited()){
-            for (HybridRelationship rel : name.getHybridChildRelations()){
-                if (!rel.getHybridName().isPersited()) {
-                    nameService.save(rel.getHybridName());
+        TaxonNode child = null;
+        TaxonNode parent = null;
+        try{
+            TaxonName name = null;
+            Taxon taxon = null;
+            if (taxonDto.getTaxonUuid() != null){
+                taxon = (Taxon) taxonService.load(taxonDto.getTaxonUuid());
+                if (taxon == null){
+                    throw new RuntimeException("Taxon for not found for id " + taxonDto.getTaxonUuid());
                 }
-                if (!rel.getParentName().isPersited()) {
-                    nameService.save(rel.getParentName());
+            }else{
+                if (taxonDto.getNameUuid() != null){
+                    name = nameService.load(taxonDto.getNameUuid());
+                    if (name == null){
+                        throw new RuntimeException("Taxon name not found for id " + taxonDto.getTaxonUuid());
+                    }
+                } else {
+                    UpdateResult tmpResult = nameService.parseName(taxonDto.getTaxonNameString(),
+                            taxonDto.getCode(), taxonDto.getPreferredRank(),  true);
+                    result.addUpdatedObjects(tmpResult.getUpdatedObjects());
+                    name = (TaxonName)tmpResult.getCdmEntity();
+                }
+                Reference sec = null;
+                if (taxonDto.getSecUuid() != null ){
+                    sec = referenceService.load(taxonDto.getSecUuid());
+                }
+                if (name != null && !name.isPersited()){
+                    for (HybridRelationship rel : name.getHybridChildRelations()){
+                        if (!rel.getHybridName().isPersited()) {
+                            nameService.save(rel.getHybridName());
+                        }
+                        if (!rel.getParentName().isPersited()) {
+                            nameService.save(rel.getParentName());
+                        }
+                    }
+                }
+                taxon = Taxon.NewInstance(name, sec);
+                taxon.setPublish(taxonDto.isPublish());
+            }
+
+            parent = dao.load(parentNodeUuid);
+            if (source != null){
+                if (source.isPersited()){
+                    source = (DescriptionElementSource) sourceDao.load(source.getUuid());
+                }
+                if (source.getCitation() != null){
+                    source.setCitation(referenceService.load(source.getCitation().getUuid()));
+                }
+                if (source.getNameUsedInSource() !=null){
+                    source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
                 }
             }
-        }
 
-       Taxon newTaxon = Taxon.NewInstance(name, sec);
-//       UUID taxonUuid = taxonService.saveOrUpdate(newTaxon);
-//       newTaxon = (Taxon) taxonService.load(taxonUuid);
+            child = parent.addChildTaxon(taxon, source);
+            child.setStatus(status);
 
-       TaxonNode parent = dao.load(parentNodeUuid);
-       TaxonNode child = null;
-       Reference ref = null;
-       if (source != null){
-           if (source.isPersited()){
-               source = (DescriptionElementSource) sourceDao.load(source.getUuid());
-           }
-           if (source.getCitation() != null){
-               source.setCitation(referenceService.load(source.getCitation().getUuid()));
-           }
-           if (source.getNameUsedInSource() !=null){
-               source.setNameUsedInSource(nameService.load(source.getNameUsedInSource().getUuid()));
-           }
-       }
-
-       try{
-           child = parent.addChildTaxon(newTaxon, source);
-           child.setStatus(status);
-
-           if (statusNote != null){
-               child.getStatusNote().putAll(statusNote);
-           }
+            if (statusNote != null){
+                child.getStatusNote().putAll(statusNote);
+            }
 
         }catch(Exception e){
             result.addException(e);
@@ -948,28 +965,6 @@ public class TaxonNodeServiceImpl
         child = mergeNode.getMergedEntity();
         result.addUpdatedObject(child.getParent());
         result.setCdmEntity(child);
-        return result;
-    }
-
-    @Override
-    @Transactional
-    public UpdateResult createNewTaxonNode(UUID parentNodeUuid, UUID taxonUuid, UUID refUuid, String microref){
-        UpdateResult result = new UpdateResult();
-        TaxonNode parent = dao.load(parentNodeUuid);
-        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-        TaxonNode child = null;
-        try{
-            child = parent.addChildTaxon(taxon, parent.getReference(), parent.getMicroReference());
-        }catch(Exception e){
-            result.addException(e);
-            result.setError();
-            return result;
-        }
-
-        result.addUpdatedObject(parent);
-        if (child != null){
-            result.setCdmEntity(child);
-        }
         return result;
     }
 
@@ -1170,14 +1165,23 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, Authentication authentication, boolean openChildren){
-        Set<TaxonNode> nodes = new HashSet<>();
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode){
+        List<TaxonNode> nodes = new ArrayList<>();
         if (openChildren){
             List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
+            List<TaxonNode> children = new ArrayList<>();
+
             for (TaxonNode node: parentNodes){
-                nodes.addAll(listChildrenOf(node, null, null, true, true, propertyPaths));
+                children.addAll(loadChildNodesOfTaxonNode(node,
+                        propertyPaths, true,  true,
+                        sortMode));
+//                children.addAll(listChildrenOf(node, null, null, true, true, propertyPaths));
+//                Collections.sort(children, new TaxonNodeByRankAndNameComparator());
+
+                nodes.addAll(children);
             }
-            nodes.addAll(parentNodes);
+
+
 
         }
         List<TaxonDistributionDTO> result = new ArrayList<>();
@@ -1233,6 +1237,107 @@ public class TaxonNodeServiceImpl
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids,
             List<String> propertyPaths, boolean openChildren) {
-        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren);
+        return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren, null);
     }
+
+
+    @Override
+    @Transactional(readOnly = false)
+    public UpdateResult cloneSubtree(SubtreeCloneConfigurator config) {
+        UpdateResult result = new UpdateResult();
+
+        if (config.getSubTreeUuids().isEmpty()){
+            return result;
+        }
+
+        //TODO error handling
+        Reference taxonSecundum = config.isReuseTaxa() || config.isReuseTaxonSecundum() || config.getTaxonSecundumUuid() == null ?
+                null : referenceDao.findByUuid(config.getTaxonSecundumUuid());
+        config.setTaxonSecundum(taxonSecundum);
+
+        Reference parentChildReference = config.isReuseParentChildReference() || config.getParentChildReferenceUuid() == null ?
+                null : referenceDao.findByUuid(config.getParentChildReferenceUuid());
+        config.setParentChildReference(parentChildReference);
+
+        Reference taxonRelationshipReference = config.getRelationTypeToOldTaxon() == null ?
+                null : referenceDao.findByUuid(config.getRelationshipReferenceUuid());
+        config.setRelationshipReference(taxonRelationshipReference);
+
+        Classification classificationClone = Classification.NewInstance(config.getNewClassificationName());
+
+        if (config.isReuseClassificationReference()){
+            TaxonNode anyNode = dao.findByUuid(config.getSubTreeUuids().iterator().next());
+            if (anyNode != null){
+                Reference oldClassificationRef = anyNode.getClassification().getReference();
+                classificationClone.setReference(oldClassificationRef);
+            }
+        }else if (config.getClassificationReferenceUuid() != null) {
+            Reference classificationReference = referenceDao.findByUuid(config.getClassificationReferenceUuid());
+            classificationClone.setReference(classificationReference);
+        }
+
+        //clone taxa and taxon nodes
+//      List<Integer> childNodeIds = taxonNodeService.idList(taxonNodeFilter);
+//      List<TaxonNode> childNodes = taxonNodeService.loadByIds(childNodeIds, null);
+        List<TaxonNode> rootNodes = this.find(config.getSubTreeUuids());
+        for (TaxonNode taxonNode : rootNodes) {
+            cloneTaxonRecursive(taxonNode, classificationClone.getRootNode(), config);
+        }
+        classificationDao.saveOrUpdate(classificationClone);
+        result.setCdmEntity(classificationClone);
+        return result;
+    }
+
+    private void cloneTaxonRecursive(TaxonNode originalParentNode, TaxonNode parentNodeClone,
+            SubtreeCloneConfigurator config){
+
+        Taxon originalTaxon = CdmBase.deproxy(originalParentNode.getTaxon());
+        TaxonNode childNodeClone;
+        if (originalTaxon != null){
+            String microReference = null;
+            if (config.isReuseTaxa()){
+                childNodeClone = parentNodeClone.addChildTaxon(originalTaxon, config.getParentChildReference(), microReference);
+            }else{
+                Taxon cloneTaxon = originalTaxon.clone(config.isIncludeSynonymsIncludingManAndProParte(),
+                        config.isIncludeTaxonRelationshipsExcludingManAndProParte(),
+                        config.isIncludeDescriptiveData(), config.isIncludeMedia());
+
+                //name
+                if (!config.isReuseNames()){
+                    cloneTaxon.setName(cloneTaxon.getName().clone());
+                    //TODO needs further handling for name relationships etc., see #9349
+                    cloneTaxon.getSynonyms().forEach(syn ->
+                        syn.setName(syn.getName() == null ? null : syn.getName().clone()));
+                }
+
+                if (!config.isReuseTaxonSecundum()){
+                    cloneTaxon.setSec(config.getTaxonSecundum());
+                }
+
+                //add relation between taxa
+                if (config.getRelationTypeToOldTaxon() != null){
+                    TaxonRelationship rel = cloneTaxon.addTaxonRelation(originalParentNode.getTaxon(), config.getRelationTypeToOldTaxon(),
+                            config.getRelationshipReference(), microReference);
+                    rel.setDoubtful(config.isRelationDoubtful());
+                }
+                childNodeClone = parentNodeClone.addChildTaxon(cloneTaxon, config.getParentChildReference(), microReference);
+            }
+
+            //probably necessary as taxon nodes do not cascade
+            dao.saveOrUpdate(childNodeClone);
+
+        }else{
+            childNodeClone = parentNodeClone;
+        }
+        //add children
+        if (config.isDoRecursive()){
+            List<TaxonNode> originalChildNodes = originalParentNode.getChildNodes();
+            HHH_9751_Util.removeAllNull(originalChildNodes);
+
+            for (TaxonNode originalChildNode : originalChildNodes) {
+                cloneTaxonRecursive(originalChildNode, childNodeClone, config);
+            }
+        }
+    }
+
 }

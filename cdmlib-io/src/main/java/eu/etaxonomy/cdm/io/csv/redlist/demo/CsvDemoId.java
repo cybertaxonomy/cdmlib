@@ -1,18 +1,18 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
-import java.net.URI;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.common.LSID;
 /**
  * @author a.mueller
  * @since 29.04.2011
- *
  */
 public class CsvDemoId {
 	@SuppressWarnings("unused")
@@ -31,14 +30,14 @@ public class CsvDemoId {
 	private UUID uuidId;
 	private URI uriId;
 	private LSID lsidId;
-	
+
 	private CsvDemoExportConfigurator config;
-	
+
 	public CsvDemoId(CsvDemoExportConfigurator config){
 		this.config = config;
 	}
-	
-	
+
+
 	public void setId(Integer id){
 		this.intId = id;
 	}
@@ -48,7 +47,7 @@ public class CsvDemoId {
 	public void setId(LSID lsid){
 		this.lsidId = lsid;
 	}
-	
+
 
 	public void setId(CdmBase cdmBase) {
 		this.setId(cdmBase.getId());
@@ -57,7 +56,7 @@ public class CsvDemoId {
 			this.setId(CdmBase.deproxy(cdmBase,IdentifiableEntity.class).getLsid());
 		}
 	}
-	
+
 	public String getId(){
 		Object object;
 		if (config.isUseIdWherePossible()){
@@ -75,10 +74,10 @@ public class CsvDemoId {
 		}
 		return nullSafe(object);
 	}
-	
+
 	private String nullSafe(Object o){
 		return o == null ? null : o.toString();
 	}
 
-	
+
 }

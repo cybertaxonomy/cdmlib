@@ -10,10 +10,9 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 
-import java.net.URI;
-
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
@@ -65,12 +64,6 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
         MARKER
     }
 
-
-	/**
-	 * @param uri
-	 * @param destination
-	 * @param defaultTransformer
-	 */
 	protected DwcaDataImportConfiguratorBase(URI uri, ICdmDataSource destination, IInputTransformer defaultTransformer) {
 		super(defaultTransformer);
 		this.setSource(uri);
@@ -173,14 +166,12 @@ public abstract class DwcaDataImportConfiguratorBase<STATE extends DwcaDataImpor
         this.doSynonymRelationships = doSynonymRelationships;
     }
 
-
     public boolean isDoHigherRankRelationships() {
         return doHigherRankRelationships;
     }
     public void setDoHigherRankRelationships(boolean doHigherRankRelationships) {
         this.doHigherRankRelationships = doHigherRankRelationships;
     }
-
 
     public boolean isDoLowerRankRelationships() {
         return doLowerRankRelationships;

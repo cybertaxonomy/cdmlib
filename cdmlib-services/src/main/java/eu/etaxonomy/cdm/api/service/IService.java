@@ -304,7 +304,7 @@ public interface IService<T extends ICdmBase>{
      * @param newInstance the new entity to be persisted
      * @return The new persistent entity
      */
-    public T save(T newInstance);
+    public <S extends T> S save(S newInstance);
 
     /**
      * Save a new entity or update the persistent state of an existing

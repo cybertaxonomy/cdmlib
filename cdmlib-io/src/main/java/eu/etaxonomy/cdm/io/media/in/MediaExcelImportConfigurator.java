@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.media.in;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

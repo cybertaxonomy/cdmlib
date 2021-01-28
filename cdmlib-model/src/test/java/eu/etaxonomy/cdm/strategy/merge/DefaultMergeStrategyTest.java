@@ -6,23 +6,19 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.merge;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -48,14 +44,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  * @since 03.08.2009
  */
-public class DefaultMergeStrategyTest {
+public class DefaultMergeStrategyTest extends TermTestBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultMergeStrategyTest.class);
 
@@ -84,28 +81,6 @@ public class DefaultMergeStrategyTest {
 	private int hasProblem2 = 1;
 	private LSID lsid2;
 
-
-	private Reference book3;
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
-		termInitializer.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		bookMergeStrategy = DefaultMergeStrategy.NewInstance(Reference.class);
@@ -145,38 +120,21 @@ public class DefaultMergeStrategyTest {
 		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
 		book2.setLsid(lsid2);
 		book2.setNomenclaturallyRelevant(true);
-
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 //********************* TEST *********************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#NewInstance(java.lang.Class)}.
-	 */
 	@Test
 	public void testNewInstance() {
 		Assert.assertNotNull(bookMergeStrategy);
 		Assert.assertEquals(Reference.class, bookMergeStrategy.getMergeClass());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#getMergeMode(java.lang.String)}.
-	 */
 	@Test
 	public void testGetMergeMode() {
 		Assert.assertEquals("Merge mode for title should be MergeMode.FIRST", MergeMode.FIRST, bookMergeStrategy.getMergeMode("title"));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#getMergeMode(java.lang.String)}.
-	 */
 	@Test
 	public void testGetSetMergeMode() {
 		//legal value
@@ -214,15 +172,8 @@ public class DefaultMergeStrategyTest {
 		} catch (Exception e) {
 			//ok
 		}
-
-
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#invoke(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable)}.
-	 * @throws MergeException
-	 */
 	@Test
 	public void testInvokeReferences() throws MergeException {
 		INomenclaturalReferenceCacheStrategy cacheStrategy1 = book1.getCacheStrategy();
@@ -252,14 +203,12 @@ public class DefaultMergeStrategyTest {
 		Assert.assertEquals("Has problem must be hasProblem2", hasProblem2, book1.getParsingProblem());
 		Assert.assertEquals("nomenclaturally relevant must have value true (AND semantics)", true, book1.isNomenclaturallyRelevant() );
 
-
 		//CdmBase
 		Assert.assertSame("Authorship must be the one of book2", team2, book1.getAuthorship());
 		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInReference());
 
 		//Transient
 		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.getCacheStrategy());
-
 
 		//UserType
 		Assert.assertSame("Created must be created2", created2, book1.getCreated());
@@ -268,7 +217,6 @@ public class DefaultMergeStrategyTest {
 		Assert.assertEquals("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
 		//TODO this may not be correct
 		Assert.assertSame("LSID must be LSID2", lsid2, book1.getLsid());
-
 
 		//TODO
 		//	book1.setProblemEnds(end);
@@ -310,13 +258,7 @@ public class DefaultMergeStrategyTest {
 		Assert.assertSame("school must be school2", school2, thesis1.getSchool());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#invoke(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable)}.
-	 * @throws MergeException
-	 */
 	@Test
-	//@Ignore
 	public void testInvokeTxonNames() throws MergeException {
 		IMergeStrategy botNameMergeStrategy = DefaultMergeStrategy.NewInstance(TaxonName.class);
 		TaxonName botName1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -391,13 +333,8 @@ public class DefaultMergeStrategyTest {
 		//Taxa
 		Assert.assertEquals("TaxonName of taxon1 must be name1", botName1, taxon1.getName());
 		Assert.assertEquals("TaxonName of taxon2 must be name2", botName2, taxon2.getName());
-
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#invoke(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable)}.
-	 * @throws MergeException
-	 */
 	@Test
 	public void testInvokeAgents() throws MergeException {
 		IMergeStrategy teamMergeStrategy = DefaultMergeStrategy.NewInstance(Team.class);
@@ -479,7 +416,5 @@ public class DefaultMergeStrategyTest {
 		for (InstitutionalMembership institutionalMembership : person1.getInstitutionalMemberships()){
 			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
 		}
-
 	}
-
 }

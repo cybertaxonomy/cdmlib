@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -90,25 +91,25 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		String inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls";
 		URL url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+		configurator = NormalExplicitImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configurator);
 
 		inputFile = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.testUuid-input.xls";
 		url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could be created", configurator);
 
 		String inputFileXslx = "/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xlsx";
 		url = this.getClass().getResource(inputFileXslx);
 	 	assertNotNull("URL for the test file '" + inputFileXslx + "' does not exist", url);
-		configuratorXslx = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+		configuratorXslx = NormalExplicitImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
 		assertNotNull("Configurator could not be created", configuratorXslx);
 
 		String inputFileTropicos = "/eu/etaxonomy/cdm/io/excel/taxa/ExcelTropicosImportExampleTest-input.xlsx";
         url = this.getClass().getResource(inputFileTropicos);
         assertNotNull("URL for the test file '" + inputFileTropicos + "' does not exist", url);
-        configuratorTropicos = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
+        configuratorTropicos = NormalExplicitImportConfigurator.NewInstance(URI.fromUrl(url), null, NomenclaturalCode.ICNAFP, null);
         assertNotNull("Configurator could not be created", configuratorTropicos);
 	}
 

@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import static org.junit.Assert.assertEquals;
@@ -29,6 +28,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -45,13 +45,13 @@ public class ExcelSpecimenImportExampleTest extends
 		CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	IOccurrenceService occurrenceService;
+	private IOccurrenceService occurrenceService;
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator configuratorXslx;
@@ -63,7 +63,7 @@ public class ExcelSpecimenImportExampleTest extends
 			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls";
 			URL url = this.getClass().getResource(inputFile);
 			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
+			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(URI.fromUrl(url), null,false);
 			configurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
 			assertNotNull("Configurator could not be created", configurator);
 		} catch (URISyntaxException e) {
@@ -76,18 +76,13 @@ public class ExcelSpecimenImportExampleTest extends
 			String inputFile = "/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xlsx";
 			URL url = this.getClass().getResource(inputFile);
 			assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-			configuratorXslx = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
+			configuratorXslx = SpecimenCdmExcelImportConfigurator.NewInstance(URI.fromUrl(url), null,false);
 			configuratorXslx.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
 			assertNotNull("Configurator could not be created", configurator);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail("Xslx configurator could not be created");
 		}
-
-
-
-
-
 	}
 
 	@Test
@@ -96,7 +91,6 @@ public class ExcelSpecimenImportExampleTest extends
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
-
 
 	 @Test
 //	 @Ignore  //does not run together with testResultSet or others
@@ -165,12 +159,8 @@ public class ExcelSpecimenImportExampleTest extends
 //		} catch (FileNotFoundException e) {
 //			Assert.fail(e.getLocalizedMessage());
 //		}
-
 	}
 
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }

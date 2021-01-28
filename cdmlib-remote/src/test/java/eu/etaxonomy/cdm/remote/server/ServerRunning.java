@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.remote.server;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Arrays;
@@ -43,6 +42,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.springframework.web.util.UriUtils;
+
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * <p>
@@ -278,7 +279,7 @@ public class ServerRunning implements MethodRule {
     public String getForRedirect(String path, final HttpHeaders headers) {
         ResponseEntity<Void> response = client.exchange(getUrl(path), HttpMethod.GET, new HttpEntity<Void>((Void) null,
                 headers), Void.class);
-        URI location = response.getHeaders().getLocation();
+        URI location = new URI(response.getHeaders().getLocation());
         try {
             return URLDecoder.decode(location.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -386,7 +387,5 @@ public class ServerRunning implements MethodRule {
                 throw new IllegalArgumentException("Could not create URI from [" + builder + "]: " + ex, ex);
             }
         }
-
     }
-
 }

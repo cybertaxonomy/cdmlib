@@ -105,8 +105,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 *
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
-	public List<UuidAndTitleCache<AgentBase>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
-
+	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
 
 	/**
      * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
@@ -114,7 +113,7 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
      *
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern);
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
 
     /**
      * @param teamUuid
@@ -155,13 +154,16 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * <BR>
 	 * If the person can not be replaced a {@link MergeException} is thrown.
 	 *
+	 * The new team is created by setting the titleCache and nomenclaturalTitle to protected
+	 * and copy it. Also supplemental data is copied to the team.
+	 * The old person is fully deleted, not added as member to the new team.
+	 *
 	 * @param person the {@link Person} to be converted
 	 * @return the new team that replaces the given person
 	 * @throws MergeException if anything else goes wrong during merge
 	 */
 	public UpdateResult convertPerson2Team(Person person) throws MergeException, IllegalArgumentException;
 
-
-    public List<AgentBase> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<AgentBase> config);
+    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(IIdentifiableEntityServiceConfigurator<T> config);
 
 }

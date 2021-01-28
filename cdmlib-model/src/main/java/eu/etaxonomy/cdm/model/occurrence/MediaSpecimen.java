@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,7 +28,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrategy;
 
 /**
  * Instances of MediaSpecimen represent a specimen which IS a media (photo, drawing, ...).
@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * number. The individuum shown by the media may or may not be a collection specimen on it's own.
  * Often it is not, which may be the reason why a picture (or other media) is taken instead.
  * This is often the case for older (type) specimen which have only be drawn or painted.
- * Also it may be the cases for small biota which can not be individualized 
+ * Also it may be the cases for small biota which can not be individualized
  * or preserved accordingly and may therefore be photographed instead.
  *
  * @author a.mueller
@@ -50,13 +50,13 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
-public class MediaSpecimen extends DerivedUnit implements Cloneable {
+public class MediaSpecimen extends DerivedUnit {
 	private static final long serialVersionUID = -5717424451590705378L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MediaSpecimen.class);
-	
+
 // ****************** FACTORY METHOD *****************/
-	
+
 	/**
 	 * Factory method.
 	 * @param type must be {@link SpecimenOrObservationType#Media} or a subtype of it.
@@ -66,8 +66,8 @@ public class MediaSpecimen extends DerivedUnit implements Cloneable {
 		return new MediaSpecimen(type);
 	}
 
-// ************** ATTRIBUTES ****************************/	
-		
+// ************** ATTRIBUTES ****************************/
+
 	@XmlElement(name = "sequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -76,21 +76,21 @@ public class MediaSpecimen extends DerivedUnit implements Cloneable {
 	private Media mediaSpecimen;
 
 // ******************* CONSTRUCTOR *************************/
-	
+
 	/**
 	 * Constructor
 	 */
 	private MediaSpecimen() {
 		this(SpecimenOrObservationType.Media);
 	}
-	
+
 	private MediaSpecimen(SpecimenOrObservationType type) {
 		super(type);
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
+		this.cacheStrategy = new MediaSpecimenDefaultCacheStrategy();
 	}
 
-	
-//************ GETTER / SETTER  **********************************/	
+
+//************ GETTER / SETTER  **********************************/
 
 	/**
 	 * The media which represents this specimen. It is important to realize
@@ -98,7 +98,7 @@ public class MediaSpecimen extends DerivedUnit implements Cloneable {
 	 * but it is the specimen itself. Therefore this method should only be used
 	 * for specimen which ARE media.<BR>
 	 * This is often the case for older (type) specimen which have only be drawn or painted.
-	 * Also it may be the cases for small biota which can not be individualized 
+	 * Also it may be the cases for small biota which can not be individualized
 	 * or preserved accordingly and may therefore be photographed instead.
 	 */
 	public Media getMediaSpecimen() {
@@ -111,21 +111,21 @@ public class MediaSpecimen extends DerivedUnit implements Cloneable {
 	public void setMediaSpecimen(Media mediaSpecimen) {
 		this.mediaSpecimen = mediaSpecimen;
 	}
-	
+
 // ************* Convenience Getter / Setter ************/
-	
-	
-
-//*********** CLONE **********************************/	
 
 
-	/** 
+
+//*********** CLONE **********************************/
+
+
+	/**
 	 * Clones <i>this</i> dna sample. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> dna sample
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link Specimen Specimen}.
-	 * @throws CloneNotSupportedException 
-	 * 
+	 * @throws CloneNotSupportedException
+	 *
 	 * @see Specimen#clone()
 	 * @see DerivedUnit#clone()
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()

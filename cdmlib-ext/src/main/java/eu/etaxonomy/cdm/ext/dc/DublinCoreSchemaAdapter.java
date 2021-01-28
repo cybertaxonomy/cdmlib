@@ -10,8 +10,6 @@ package eu.etaxonomy.cdm.ext.dc;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +21,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -38,39 +37,24 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  */
 public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 
-
-
-	static URI identifier = null;
+	private static URI identifier = null;
 
 	static String nameSpace = "http://purl.org/dc/elements/1.1/";
 
 	static {
-		try {
-			identifier = new URI("info:srw/schema/1/dc-v1.1");
-		} catch (URISyntaxException e) {
-			// should never happen
-		}
+	    identifier = URI.create("info:srw/schema/1/dc-v1.1");
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getIdentifier()
-	 */
 	@Override
 	public URI getIdentifier() {
 		return identifier;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getShortName()
-	 */
 	@Override
 	public String getShortName() {
 		return "dc";
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.ext.schema.SchemaAdapter#getCmdEntities(java.io.Reader)
-	 */
 	@Override
 	public List<Reference> getCmdEntities(InputStream inputStream) {
 
@@ -85,7 +69,6 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 			logger.error(e);
 		}
 
-
 		DcSaxHandler handler = new DcSaxHandler();
 
 	    try {
@@ -99,7 +82,6 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 		} catch (IOException e) {
 			logger.error(e);
 		}
-
 
 		return handler.referenceList;
 	}
@@ -119,8 +101,6 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 		Reference reference = null;
 
 		String dcFieldName = null;
-
-
 
 		@Override
 		public void startElement(String uri, String localName,
@@ -153,7 +133,6 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 					}
 				}
 			}
-
 		}
 
 		@Override
@@ -173,14 +152,11 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 					reference.setPublisher(text);
 				}
 				if(dcFieldName.equals(DC_CREATOR)){
-					TeamOrPersonBase authorship = new Team();
+					TeamOrPersonBase<?> authorship = new Team();
 					authorship.setTitleCache(text, true);
 					reference.setAuthorship(authorship);
 				}
-
 			}
 		}
-
 	}
-
 }

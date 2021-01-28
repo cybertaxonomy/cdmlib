@@ -1,6 +1,6 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

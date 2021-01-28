@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -224,8 +225,6 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
 
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
             String result = typeDesignationManager.print(true, true, true);
-//            Logger.getLogger(this.getClass()).debug(result);
-            assertNotNull(result);
             assertEquals(
                     "Prionus L."
                     , result
@@ -244,6 +243,17 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
 
             assertEquals(
                     "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Nametype: Prionus coriatius L."
+                    , typeDesignationManager.print(true, true, true)
+                    );
+
+            DerivedUnit specimen = std_HT.getTypeSpecimen();
+            specimen.setProtectedTitleCache(false);
+            Collection collection = Collection.NewInstance();
+            collection.setName("My collection");
+            specimen.setCollection(collection);
+
+            assertEquals(
+                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Nametype: Prionus coriatius L."
                     , typeDesignationManager.print(true, true, true)
                     );
         }
@@ -279,7 +289,6 @@ public class TypeDesignationSetManagerTest  extends TermTestBase{
                     typeDesignationManager.print(true, false, true));
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L.",
                     typeDesignationManager.print(false, false, true));
-
 
         }
 

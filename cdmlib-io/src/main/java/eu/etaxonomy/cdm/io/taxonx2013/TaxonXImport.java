@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;

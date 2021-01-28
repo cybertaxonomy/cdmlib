@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.hibernate;
 
 import java.io.Serializable;
@@ -30,7 +29,8 @@ import eu.etaxonomy.cdm.common.DOI;
  * @since 05.09.2013
  */
 public class DOIUserType  extends AbstractUserType implements UserType {
-	private static final long serialVersionUID = 2227841000128722278L;
+
+    private static final long serialVersionUID = 2227841000128722278L;
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DOIUserType.class);

@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.apache.log4j.Logger;
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.stream.IPartitionableConverter;
 import eu.etaxonomy.cdm.io.stream.IReader;
@@ -67,7 +67,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * @author a.mueller
  * @since 22.11.2011
- *
  */
 public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>
         extends PartitionableConverterBase<CONFIG, STATE>
@@ -84,9 +83,6 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 
 	private final NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
 
-	/**
-	 * @param state
-	 */
 	public DwcTaxonStreamItem2CdmTaxonConverter(STATE state) {
 		super(state);
 	}

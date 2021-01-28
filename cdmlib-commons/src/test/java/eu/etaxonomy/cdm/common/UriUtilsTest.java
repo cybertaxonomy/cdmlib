@@ -2,33 +2,22 @@ package eu.etaxonomy.cdm.common;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Assert;
 
 import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class UriUtilsTest {
+
     private static final Logger logger = Logger.getLogger(UriUtilsTest.class);
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() throws Exception {
-    }
 
 //********************* TESTS **********************************************/
 
@@ -40,17 +29,15 @@ public class UriUtilsTest {
             String fragment = "frag";
             URI uri = UriUtils.createUri(baseUrl, subPath, null, fragment);
             Assert.assertEquals("http://www.abc.de/fgh#frag", uri.toString());
-            List<NameValuePair> qparams = new ArrayList<NameValuePair>(0);
+            List<NameValuePair> qparams = new ArrayList<>(0);
             NameValuePair pair1 = new BasicNameValuePair("param1","value1");
             qparams.add(pair1);
             uri = UriUtils.createUri(baseUrl, subPath, qparams, fragment);
             Assert.assertEquals("http://www.abc.de/fgh?param1=value1#frag", uri.toString());
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         } catch (URISyntaxException e) {
-            e.printStackTrace();
             Assert.fail(e.getMessage());
         }
     }
@@ -64,25 +51,25 @@ public class UriUtilsTest {
             logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
         }
     }
-    
+
     @Test
     public void testGetResourceLengthNull2() throws ClientProtocolException, IOException, HttpException{
         if(UriUtils.isInternetAvailable(null)){
-        	URI uri;
 			try {
-				uri = new URI("http:/www.abc.de:8080/xyz");
+				@SuppressWarnings("unused")
+                URI uri = new URI("http:/www.abc.de:8080/xyz");
 				System.out.println("  sdf");
 //				Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            
+
         } else {
             logger.warn("Test: testGetResourceLength() skipped, since internet is not available");
         }
     }
-    
+
     @Test
     public void testGetResourceLengthMissingProtocol() throws ClientProtocolException, HttpException{
     	URI uri;
@@ -95,7 +82,7 @@ public class UriUtilsTest {
 			Assert.assertNotNull(e.getMessage().equals(UriUtils.URI_IS_NOT_ABSOLUTE));
 		}
     }
-    
+
     @Test
     public void testGetResourceLengthUnknownProtocol() throws ClientProtocolException, HttpException{
     	URI uri;

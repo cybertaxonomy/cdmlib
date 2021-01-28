@@ -6,13 +6,11 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +29,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.common.StreamUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -1112,8 +1111,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         // state.getDataHolder().getUnitID());
                         URI lastAccessPoint = state.getActualAccessPoint();
                         state.setActualAccessPoint(dnaSource);
+                        String oldPrefix = state.getPrefix();
+                        state.setPrefix(unitAssociationWrapper.getPrefix());
                         handleSingleUnit(state, associatedUnits.item(m), false);
                         state.setActualAccessPoint(lastAccessPoint);
+                        state.setPrefix(oldPrefix);
                         DerivedUnit associatedUnit = state.getDerivedUnitBase();
                         FieldUnit associatedFieldUnit = null;
                         java.util.Collection<FieldUnit> associatedFieldUnits = state.getCdmRepository()

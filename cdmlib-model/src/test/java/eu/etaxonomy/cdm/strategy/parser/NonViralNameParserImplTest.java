@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.parser;
 
 import static org.junit.Assert.assertEquals;
@@ -26,7 +25,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -54,15 +52,15 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Tests for {@link NonViralNameParserImpl}.
  *
  * @author a.mueller
  */
-public class NonViralNameParserImplTest {
+public class NonViralNameParserImplTest extends TermTestBase {
 
     private static final NomenclaturalCode ICNAFP = NomenclaturalCode.ICNAFP;
     private static final NomenclaturalCode ICZN = NomenclaturalCode.ICZN;
@@ -92,12 +90,6 @@ public class NonViralNameParserImplTest {
     private NonViralNameParserImpl parser ;
     private NomenclaturalCode botanicCode;
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        DefaultTermInitializer termInitializer = new DefaultTermInitializer();
-        termInitializer.initialize();
-    }
-
     @Before
     public void setUp() throws Exception {
         parser = NonViralNameParserImpl.NewInstance();
@@ -106,17 +98,11 @@ public class NonViralNameParserImplTest {
 
 /*************** TEST *********************************************/
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#NEW_INSTANCE()}.
-     */
     @Test
     public final void testNewInstance() {
         assertNotNull(parser);
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#TaxonNameParserBotanicalNameImpl()}.
-     */
     @Test
     public final void testTaxonNameParserBotanicalNameImpl() {
         logger.warn("Not yet implemented"); // TODO
@@ -147,12 +133,8 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("Name should not include reference part", "Abies alba Mess., L. & Mill.", name.getTitleCache());
         Assert.assertEquals("Name should have authorship with 2 authors", 3, ((Team)name.getCombinationAuthorship()).getTeamMembers().size());
         Assert.assertEquals("Mess., L. & Mill., Sp. Pl., ed. 3. 1987", name.getNomenclaturalReference().getTitleCache());
-
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
-     */
     @Test
     public final void testParseSimpleName() {
 
@@ -183,12 +165,8 @@ public class NonViralNameParserImplTest {
         parser.parseSimpleName(rosa, "Rosaceaex", rosa.getRank(), true);
         assertEquals("Rosaceaex have rank family", Rank.FAMILY(), rosa.getRank());
         assertFalse("Rosaceaex must have no rank warning", rosa.hasProblem(ParserProblem.CheckRank));
-
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseSubGenericFullName(java.lang.String)}.
-     */
     @Test
     public final void testParseSubGenericFullName() {
         String zooSpeciesWithSubgenus = "Bacanius (Mullerister) rombophorus (Aube, 1843)";
@@ -227,17 +205,11 @@ public class NonViralNameParserImplTest {
         Assert.assertEquals("", botName.getAuthorshipCache());
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseSubGenericSimpleName(java.lang.String)}.
-     */
     @Test
     public final void testParseSubGenericSimpleName() {
         logger.warn("Not yet implemented"); // TODO
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
-     */
     @Test
     public final void testParseFullNameUnicode() {
 
@@ -274,13 +246,8 @@ public class NonViralNameParserImplTest {
         assertEquals("Linden", exBasionymTeam3.getNomenclaturalTitle());
         String title = nameBasionymExAuthor2.getTitleCache();
         assertEquals("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", title);
-
     }
 
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
-     */
     @Test
     public final void testParseFullName() {
         try {
@@ -583,9 +550,6 @@ public class NonViralNameParserImplTest {
         name1 = parser.parseReferencedName(nameStr);
         assertEquals(nameStr.replace("E. Kl", "E.Kl"), name1.getTitleCache()); //we expect the cache strategy to create the same result
         parser.setRemoveSpaceAfterDot(false);
-
-
-
     }
 
     @Test
@@ -799,7 +763,6 @@ public class NonViralNameParserImplTest {
         assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
     }
 
-
     @Test
     public final void testUnrankedNames() {
         try {
@@ -892,7 +855,6 @@ public class NonViralNameParserImplTest {
 //        }
     }
 
-
     @Test
     public final void testHybridsRemoval(){
         //if the parser input already has hybridrelationships they need to be removed
@@ -927,7 +889,6 @@ public class NonViralNameParserImplTest {
         parser.parseReferencedName(name1, hybridCache, Rank.SPECIES(), makeEmpty);
         assertEquals("After parsing another string there should still be 2 parents, but different ones", 2, name1.getHybridChildRelations().size());
         assertFalse("Name must not have parsing problems", name1.hasProblem());
-
 
         hybridCache = "Calendula arvensis Mill.";
         makeEmpty = true;

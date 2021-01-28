@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.tdwg.voc;
 
 import java.util.HashMap;
@@ -27,25 +35,25 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.Description;
 })
 @XmlRootElement(name = "InfoItem", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 public class InfoItem extends Description {
-	
+
 	@XmlElement(name = "associatedTaxon", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private AssociatedTaxon associatedTaxon;
-	
+
 	@XmlElement(name = "category", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private DefinedTermLinkType category;
-	
+
 	@XmlElement(name = "context", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private Set<StringType> context;
-	
+
 	@XmlElement(name = "hasContent", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private Set<StringType> hasContent;
-	
+
 	@XmlElement(name = "contextValue", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private Set<DefinedTermLinkType> contextValues = null;
-	
+
 	@XmlElement(name = "hasValue", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
 	private Set<DefinedTermLinkType> hasValues = null;
-	
+
 	public TaxonConcept getAssociatedTaxon() {
 		return associatedTaxon != null ? associatedTaxon.getTaxonConcept() : null;
 	}
@@ -53,7 +61,7 @@ public class InfoItem extends Description {
 	public void setAssociatedTaxon(TaxonConcept taxonConcept) {
 		this.associatedTaxon = new AssociatedTaxon(taxonConcept, false);
 	}
-	
+
 	public TaxonConcept getAssocatedTaxonRelation() {
 		return associatedTaxon != null ? associatedTaxon.getTaxonConcept() : null;
 	}
@@ -61,7 +69,7 @@ public class InfoItem extends Description {
 	public void setAssociatedTaxonRelation(TaxonConcept taxonConcept) {
 		this.associatedTaxon = new AssociatedTaxon(taxonConcept, true);
 	}
-	
+
 	public Map<Object,StringType> getContext() {
 		if(context != null) {
 			Map<Object,StringType> contextMap = new HashMap<Object,StringType>();
@@ -103,7 +111,7 @@ public class InfoItem extends Description {
 			this.hasContent = null;
 		}
 	}
-	
+
 	public DefinedTerm getCategory() {
 		return category != null ? category.getDefinedTerm() : null;
 	}
@@ -111,7 +119,7 @@ public class InfoItem extends Description {
 	public void setCategory(DefinedTerm definedTerm) {
 		this.category = new DefinedTermLinkType(definedTerm, false);
 	}
-	
+
 	public DefinedTerm getCategoryRelation() {
 		return category != null ? category.getDefinedTerm() : null;
 	}
@@ -119,7 +127,7 @@ public class InfoItem extends Description {
 	public void setCategoryRelation(DefinedTerm definedTerm) {
 		this.category = new DefinedTermLinkType(definedTerm, true);
 	}
-	
+
 	public Set<DefinedTerm> getContextValue() {
 		if(contextValues != null) {
 			Set<DefinedTerm> definedTerms = new HashSet<DefinedTerm>();
@@ -142,7 +150,7 @@ public class InfoItem extends Description {
 			contextValues = null;
 		}
 	}
-	
+
 	public DefinedTerm getSingleContextValue() {
 		if(contextValues != null) {
 			DefinedTerm definedTerm = null;
@@ -163,7 +171,7 @@ public class InfoItem extends Description {
 			contextValues = null;
 		}
 	}
-	
+
 	public Set<DefinedTerm> getHasValue() {
 		if(hasValues != null) {
 			Set<DefinedTerm> definedTerms = new HashSet<DefinedTerm>();
@@ -186,7 +194,7 @@ public class InfoItem extends Description {
 			hasValues = null;
 		}
 	}
-	
+
 	public DefinedTerm getHasSingleValue() {
 		if(hasValues != null) {
 			DefinedTerm definedTerm = null;
@@ -201,7 +209,7 @@ public class InfoItem extends Description {
 
 	public void setHasSingleValue(DefinedTerm definedTerm) {
 		if(definedTerm != null) {
-		  this.hasValues = new HashSet<DefinedTermLinkType>();		 
+		  this.hasValues = new HashSet<DefinedTermLinkType>();
 		  hasValues.add( new DefinedTermLinkType(definedTerm,false));
 		} else {
 			hasValues = null;
@@ -215,9 +223,9 @@ public class InfoItem extends Description {
 	public static class AssociatedTaxon extends LinkType {
 		@XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private TaxonConcept taxonConcept;
-		
+
         protected AssociatedTaxon() {}
-		
+
         protected AssociatedTaxon(TaxonConcept taxonConcept, boolean useRelation) {
         	if(useRelation) {
 			    if(taxonConcept != null && taxonConcept.getIdentifier() != null) {
@@ -238,7 +246,7 @@ public class InfoItem extends Description {
 			this.taxonConcept = taxonConcept;
 		}
 	}
-	
+
 	@XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "DefinedTermLinkType", propOrder = {
         "definedTerm"
@@ -249,9 +257,9 @@ public class InfoItem extends Description {
 	 	 @XmlElement(name = "GeographicRegion", namespace = "http://rs.tdwg.org/ontology/voc/GeographicRegion#", type = GeographicRegion.class)
 	 	})
 		private DefinedTerm definedTerm;
-		
+
         protected DefinedTermLinkType() {}
-		
+
         protected DefinedTermLinkType(DefinedTerm definedTerm, boolean useRelation) {
         	if(useRelation) {
 			    if(definedTerm != null && definedTerm.getIdentifier() != null) {

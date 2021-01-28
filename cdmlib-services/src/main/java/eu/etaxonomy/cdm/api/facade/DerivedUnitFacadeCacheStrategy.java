@@ -58,10 +58,10 @@ public class DerivedUnitFacadeCacheStrategy
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 
 	        if(!skipFieldUnit){
-	                result += fieldStrategy.getFieldData(facade);
+	            result += fieldStrategy.getFieldData(facade);
 	        }
 
-			//Exsiccatum
+			//exsiccatum
 			String exsiccatum = null;
 			try {
 				exsiccatum = facade.getExsiccatum();
@@ -138,6 +138,9 @@ public class DerivedUnitFacadeCacheStrategy
 		String code = "";
 		if(facade.getCollection() != null){
 			code = facade.getCollection().getCode();
+			if (StringUtils.isBlank(code)){
+			    code = facade.getCollection().getName();
+			}
 			if (StringUtils.isBlank(code)){
 				Institution institution = facade.getCollection().getInstitute();
 				if (institution != null){

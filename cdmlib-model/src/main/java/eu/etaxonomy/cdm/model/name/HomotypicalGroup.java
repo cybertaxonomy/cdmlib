@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import java.util.HashSet;
@@ -29,7 +28,6 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
-
 
 /**
  * The homotypical group class represents a set of {@link TaxonName taxon names} associated
@@ -376,7 +374,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	/**
 	 * Returns all taxon names in the homotypical group that have a 'is_basionym_for' (zool.: 'is_original_combination_for') relationship.
-	 * @return
 	 */
 	@Transient
 	public Set<TaxonName> getBasionyms(){
@@ -390,7 +387,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 
 	/**
 	 * Returns all taxon names in the homotypical group that have a 'is_replaced_synonym_for' relationship.
-	 * @return
 	 */
 	@Transient
 	public Set<TaxonName> getReplacedSynonym(){
@@ -405,7 +401,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	/**
 	 * Returns the name relationships that represent either a basionym (original combination) relationship or
 	 * a replaced synonym relationship.
-	 * @return
 	 */
 	@Transient
 	public Set<NameRelationship> getBasionymAndReplacedSynonymRelations(){
@@ -466,6 +461,4 @@ public class HomotypicalGroup extends AnnotatableEntity {
 			return false;
 		}
 	}
-
-
 }

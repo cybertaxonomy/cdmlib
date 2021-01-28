@@ -6,10 +6,10 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,22 +32,13 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
- *
  */
 public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
 	public UUID delete(TaxonNode persistentObject, boolean deleteChildren);
 
-	/**
-    *
-    * @return
-    */
    public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end);
 
-    /**
-     * @param classification
-     * @return
-     */
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
 
     /**
@@ -76,7 +67,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid);
 
     public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex,
-            boolean recursive, boolean includeUnpublished, List<String> propertyPaths);
+            boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator);
 
     public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive, boolean includeUnpublished);
 
@@ -173,26 +164,9 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid);
 
-    /**
-     * @param limit
-     * @param pattern
-     * @param classificationUuid
-     * @param inclide
-     * @return
-     */
-    List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid, boolean includeDoubtful);
+    public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid, boolean includeDoubtful);
 
-    /**
-     * @param classification
-     * @param limit
-     * @param pattern
-     * @param searchForClassifications
-     * @param includeDoubtful
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
+    public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(
             Classification classification, Integer limit, String pattern, boolean searchForClassifications,
             boolean includeDoubtful);
-
-
 }

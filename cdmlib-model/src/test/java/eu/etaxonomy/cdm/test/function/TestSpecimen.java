@@ -9,13 +9,13 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -47,9 +47,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * @author AM
  * @since 09.05.2008
- * @version 1.0
  */
 public class TestSpecimen {
+
 	private static final Logger logger = Logger.getLogger(TestSpecimen.class);
 
 	public void testSpecimen(){
@@ -67,7 +67,6 @@ public class TestSpecimen {
 		String institutionCode = "Inst444";
 		institution.setCode(institutionCode);
 		collection.setInstitute(institution);
-
 
 		logger.info("Create determination event");
 		DeterminationEvent determinationEvent = DeterminationEvent.NewInstance();
@@ -99,7 +98,6 @@ public class TestSpecimen {
 		LanguageString locality = LanguageString.NewInstance(localityString, Language.DEFAULT());
 		gatheringEvent.setLocality(locality);
 
-
 		logger.info("Create new specimen ...");
 		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setCatalogNumber("JE 00004506");
@@ -107,7 +105,6 @@ public class TestSpecimen {
 		specimen.setCollection(collection);
 		String annotation = "originally designated as type specimen 2000, but corrected 2005-11";
 		specimen.addAnnotation(Annotation.NewDefaultLanguageInstance(annotation));
-
 
 		Media media = Media.NewInstance();
 		URI uri = null;
@@ -136,17 +133,15 @@ public class TestSpecimen {
 		fieldUnit.addDerivationEvent(derivationEvent);
 		fieldUnit.setGatheringEvent(gatheringEvent);
 
-
 		//type information
 		//typified by
-
 
 		logger.warn("Specimen: " + specimen);
 		DerivationEvent dEvent = specimen.getDerivedFrom();
 		logger.warn("DerivationEvent: " + dEvent);
 		Set<SpecimenOrObservationBase> originals = dEvent.getOriginals();
 		logger.warn("Originals: " + originals);
-		for (SpecimenOrObservationBase original : originals){
+		for (SpecimenOrObservationBase<?> original : originals){
 			if (original instanceof FieldUnit){
 				FieldUnit fieldUnit2 = (FieldUnit)original;
 				logger.warn("FieldUnit: " + fieldUnit2);
@@ -164,9 +159,6 @@ public class TestSpecimen {
 		System.out.println("\nEnd ...");
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void  main(String[] args) {
 		TestSpecimen sc = new TestSpecimen();
     	sc.test();

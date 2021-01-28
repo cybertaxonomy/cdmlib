@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
@@ -65,7 +64,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	private IInputTransformer inputTransformer;
 
-
 	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<>();
 	private Map<UUID, MarkerType> markerTypeMap = new HashMap<>();
 	private Map<UUID, AnnotationType> annotationTypeMap = new HashMap<>();
@@ -113,8 +111,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 
 	}
 
-
-
 	/**
 	 * Resets (empties) all maps which map a uuid to a {@link DefinedTermBase term}.
 	 * This is usually needed when a a new transaction is opened and user defined terms are reused.
@@ -140,7 +136,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		rankMap = new HashMap<>();
 		nomenclaturalStatusTypeMap = new HashMap<>();
 	}
-
 
 	//different type of stores that are used by the known imports
 	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
@@ -168,9 +163,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		return treeUuidMap.size();
 	}
 
-	/**
-	 * @return the treeUuid
-	 */
 	public UUID getTreeUuid(Reference ref) {
 		return treeUuidMap.get(ref);
 	}

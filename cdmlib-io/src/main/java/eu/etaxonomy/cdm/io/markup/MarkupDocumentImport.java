@@ -162,7 +162,7 @@ public class MarkupDocumentImport
 
 
 	@Override
-    public boolean isStartingElement(XMLEvent event, String elName) throws XMLStreamException {
+    public boolean isStartingElement(XMLEvent event, String elName) {
 		return super.isStartingElement(event, elName);
 	}
 

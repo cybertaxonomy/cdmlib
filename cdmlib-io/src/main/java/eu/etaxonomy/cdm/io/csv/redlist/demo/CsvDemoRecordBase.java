@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +23,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.stream.terms.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -46,10 +46,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 /**
  * @author a.mueller, a.oppermann
  * @since 20.04.2011
- *
  */
-
 public abstract class CsvDemoRecordBase {
+
 	private static final Logger logger = Logger.getLogger(CsvDemoRecordBase.class);
 
 	//TODO Collection_SEPARATOR
@@ -72,13 +71,11 @@ public abstract class CsvDemoRecordBase {
 	private Integer id;
 	private UUID uuid;
 
-
 	protected CsvDemoRecordBase(CsvDemoMetaDataRecord metaDataRecord, CsvDemoExportConfigurator config){
 		this.metaDataRecord = metaDataRecord;
 		this.count = metaDataRecord.inc();
 		this.config = config;
 	}
-
 
 	public void setId(Integer id) {
 		this.id = id;
@@ -120,7 +117,6 @@ public abstract class CsvDemoRecordBase {
 	protected void print(AgentBase<?> agent, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(agent == null ? null : getAgent(agent), writer, addSeparator, fieldKey);
 	}
-
 
 	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(language, writer, addSeparator, fieldKey.getUriString());

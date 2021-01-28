@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.hibernate;
 
-
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,10 +21,12 @@ import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
+import eu.etaxonomy.cdm.common.URI;
+
 /**
- * This class maps java.net.URI to Types.CLOB
- * @author a.mueller
+ * This class maps eu.etaxonomy.cdm.common.URI to Types.CLOB
  *
+ * @author a.mueller
  */
 public class URIUserType extends AbstractUserType implements UserType {
 	private static final long serialVersionUID = -5825017496962569105L;
@@ -45,7 +45,6 @@ public class URIUserType extends AbstractUserType implements UserType {
 	public int[] sqlTypes() {
 		return SQL_TYPES;
 	}
-
 
 	@Override
 	public URI nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
@@ -66,13 +65,13 @@ public class URIUserType extends AbstractUserType implements UserType {
 	@Override
 	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
 			throws HibernateException, SQLException {
-		if (value == null) {
-          StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
-      } else {
-    	  URI uri = (URI) value;
-          StandardBasicTypes.STRING.nullSafeSet(statement, uri.toString(), index, session);
-      }
-    }
+	    if (value == null) {
+		    StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
+        } else {
+            URI uri = (URI) value;
+            StandardBasicTypes.STRING.nullSafeSet(statement, uri.toString(), index, session);
+        }
+	}
 
     /**
      * @param value value being copied
@@ -89,5 +88,4 @@ public class URIUserType extends AbstractUserType implements UserType {
             throw new TypeMismatchException(e.getMessage());
         }
     }
-
 }

@@ -8,12 +8,11 @@
  */
 package eu.etaxonomy.cdm.ext.openurl;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author a.kohlbecker
  * @since 17.12.2010
- *
  */
 public class MobotOpenUrlQuery {
 	public MobotOpenUrlServiceWrapper.ReferenceType refType;

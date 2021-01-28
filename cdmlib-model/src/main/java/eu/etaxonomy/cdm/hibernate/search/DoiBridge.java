@@ -26,5 +26,4 @@ public class DoiBridge implements StringBridge {
         }
         return null;
     }
-
 }

@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.config.FindOccurrencesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRelationshipsDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
@@ -317,16 +318,32 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         return new StringResultDTO(String.valueOf(countSpecimen));
     }
 
+    /**
+     *
+     * @deprecated replaced by rootUnitDTOs
+     */
+    @Deprecated
     @RequestMapping(value = "fieldUnitDTOs", method = RequestMethod.GET)
-    public List<FieldUnitDTO> doListFieldUnitDTOs(
+    public List<SpecimenOrObservationBaseDTO> doListFieldUnitDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         logger.info("doListFieldUnitDTOs() - " + request.getRequestURI());
 
-        List<FieldUnitDTO> fieldUnitDtos = occurrenceService.findFieldUnitDTOByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
+        return rootUnitDtos.stream().filter(dto -> dto instanceof FieldUnitDTO).collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "rootUnitDTOs", method = RequestMethod.GET)
+    public List<SpecimenOrObservationBaseDTO> doListRooUnitDTOs(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("rootUnitDTOs() - " + request.getRequestURI());
+
+        List<SpecimenOrObservationBaseDTO> rootUnitDtos = occurrenceService.listRootUnitDTOsByAssociatedTaxon(null, uuid, OccurrenceController.DERIVED_UNIT_INIT_STRATEGY);
            // List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
-        return fieldUnitDtos;
+        return rootUnitDtos;
     }
 
     @RequestMapping(value = "specimensOrObservations", method = RequestMethod.GET)
@@ -348,15 +365,15 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         }
     }
 
-    @RequestMapping(value = "associatedFieldUnits", method = RequestMethod.GET)
-    public Pager<SpecimenOrObservationBase> doGetFieldUnits(
+    @RequestMapping(value = "associatedRootUnits", method = RequestMethod.GET)
+    public Pager<SpecimenOrObservationBase> doGetAssociatedRootUnits(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "maxDepth", required = false) Integer maxDepth,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetFieldUnits() - " + request.getRequestURI());
+        logger.info("doGetAssociatedRootUnits() - " + request.getRequestURI());
 
         TaxonBase<?> taxonBase = service.load(uuid);
         taxonBase = checkExistsAndAccess(taxonBase, NO_UNPUBLISHED, response);
@@ -368,8 +385,9 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
             pagerParams.normalizeAndValidate(response);
 
-            return occurrenceService.pageFieldUnitsByAssociatedTaxon(null, (Taxon) taxonBase, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
+            return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
         }else{
+            // FIXME proper HTTP code response
             return null;
         }
     }

@@ -12,7 +12,7 @@
  *
  * Copyright © 1997 World Wide Web Consortium, (Massachusetts
  * Institute of Technology, European Research Consortium for
- * Informatics and Mathematics, Keio University). All Rights Reserved. 
+ * Informatics and Mathematics, Keio University). All Rights Reserved.
  * This work is distributed under the W3C® Software License [1] in the
  * hope that it will be useful, but WITHOUT ANY WARRANTY; without even
  * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -84,8 +84,8 @@ public class UrlUtf8Coder{
    * @param s The string to be encoded
    * @return The encoded string
    */
-  public static String encode(String s)
-  {
+  public static String encode(String s){
+
     StringBuffer sbuf = new StringBuffer();
     int len = s.length();
     for (int i = 0; i < len; i++) {
@@ -117,7 +117,7 @@ public class UrlUtf8Coder{
     }
     return sbuf.toString();
   }
-  
+
 	/*
 	 * Created: 17 April 1997
 	 * Author: Bert Bos <bert@w3.org>
@@ -126,7 +126,7 @@ public class UrlUtf8Coder{
 	 *
 	 * Copyright © 1997 World Wide Web Consortium, (Massachusetts
 	 * Institute of Technology, European Research Consortium for
-	 * Informatics and Mathematics, Keio University). All Rights Reserved. 
+	 * Informatics and Mathematics, Keio University). All Rights Reserved.
 	 * This work is distributed under the W3C® Software License [1] in the
 	 * hope that it will be useful, but WITHOUT ANY WARRANTY; without even
 	 * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -144,7 +144,7 @@ public class UrlUtf8Coder{
 	      switch (ch = s.charAt(i)) {
 		case '%':
 		  ch = s.charAt (++i) ;
-		  int hb = (Character.isDigit ((char) ch) 
+		  int hb = (Character.isDigit ((char) ch)
 			    ? ch - '0'
 			    : 10+Character.toLowerCase((char) ch) - 'a') & 0xF ;
 		  ch = s.charAt (++i) ;
@@ -162,7 +162,10 @@ public class UrlUtf8Coder{
 	      /* Decode byte b as UTF-8, sumb collects incomplete chars */
 	      if ((b & 0xc0) == 0x80) {			// 10xxxxxx (continuation byte)
 		sumb = (sumb << 6) | (b & 0x3f) ;	// Add 6 bits to sumb
-		if (--more == 0) sbuf.append((char) sumb) ; // Add char to sbuf
+		if (--more == 0)
+         {
+            sbuf.append((char) sumb) ; // Add char to sbuf
+        }
 	      } else if ((b & 0x80) == 0x00) {		// 0xxxxxxx (yields 7 bits)
 		sbuf.append((char) b) ;			// Store in sbuf
 	      } else if ((b & 0xe0) == 0xc0) {		// 110xxxxx (yields 5 bits)
@@ -185,5 +188,4 @@ public class UrlUtf8Coder{
 	    }
 	    return sbuf.toString() ;
 	  }
-
 }

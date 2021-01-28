@@ -14,6 +14,7 @@ package eu.etaxonomy.cdm.model.metadata;
  *
  */
 public enum TermComboEnum implements IKeyLabel{
+
     IdInVocabulary("IdInVocabulary", "ID in Vocabulary"),
     Symbol1("Symbol1", "Symbol 1"),
     Symbol2("Symbol2", "Symbol 2"),

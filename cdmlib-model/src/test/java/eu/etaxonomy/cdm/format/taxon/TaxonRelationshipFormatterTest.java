@@ -12,10 +12,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.format.taxon.TaxonRelationshipFormatter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -28,9 +26,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * Test to test the {@link TaxonRelationshipFormatter}.
@@ -38,7 +36,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author a.mueller
  * @since 14.08.2018
  */
-public class TaxonRelationshipFormatterTest {
+public class TaxonRelationshipFormatterTest extends TermTestBase{
 
     private static boolean WITHOUT_NAME = true;
 
@@ -61,13 +59,6 @@ public class TaxonRelationshipFormatterTest {
     private Person cheek;
     private Person toSecAuthor;
     private List<Language> languages;
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        if (Language.DEFAULT() == null){
-            new DefaultTermInitializer().initialize();
-        }
-    }
 
     @Before
     public void setUp() throws Exception {

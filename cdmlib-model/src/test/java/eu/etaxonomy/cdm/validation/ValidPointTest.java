@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import static org.junit.Assert.assertTrue;
@@ -22,33 +21,24 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
-
 
 /**
- *
  * @author a.mueller
- *
  */
 @SuppressWarnings("unused")
 public class ValidPointTest extends ValidationTestBase{
 	private static final Logger logger = Logger.getLogger(ValidPointTest.class);
 
-
-	GatheringEvent gatheringEvent;
-	Point point = new Point();
+	private GatheringEvent gatheringEvent;
+	private Point point = new Point();
 
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 		gatheringEvent = GatheringEvent.NewInstance();
 
 		Set<ConstraintViolation<GatheringEvent>> constraintViolations  = validator.validate(gatheringEvent, Level2.class);
         assertTrue("There should not be a constraint violation as gathering with NO exact location is allowed",constraintViolations.isEmpty());
-
 	}
-
 
 /****************** TESTS *****************************/
 
@@ -71,5 +61,4 @@ public class ValidPointTest extends ValidationTestBase{
 	    validateHasNoConstraint(point, NotNullValidator.class, Level2.class);
 	    validateHasNoConstraint(gatheringEvent, NotNullValidator.class, Level2.class);
    }
-
 }

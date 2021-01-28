@@ -8,9 +8,9 @@
 */
 package eu.etaxonomy.cdm.io.distribution.excelupdate;
 
-import java.net.URI;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @since 06.04.2017
- *
  */
 public class ExcelDistributionUpdateConfigurator extends ExcelImportConfiguratorBase{
 
@@ -35,34 +34,22 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
         return result;
     }
 
-    /**
-     * @param uri
-     * @param destination
-     * @param transformer
-     */
     protected ExcelDistributionUpdateConfigurator(URI uri, ICdmDataSource destination, UUID areaVocabularyUuid) {
         super(uri, destination, null);
         this.areaVocabularyUuid = areaVocabularyUuid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <STATE extends ImportStateBase> STATE getNewState() {
         return (STATE)new ExcelDistributionUpdateState(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
                 ExcelDistributionUpdate.class
         };
     }
-
 
     @Override
     public boolean isValid(){
@@ -72,7 +59,6 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
             return false;
         }
     }
-
 
     @Override
     public Reference getSourceReference() {
@@ -108,5 +94,4 @@ public class ExcelDistributionUpdateConfigurator extends ExcelImportConfigurator
     public void setCreateNewDistribution(boolean createNewDistribution) {
         this.createNewDistribution = createNewDistribution;
     }
-
 }

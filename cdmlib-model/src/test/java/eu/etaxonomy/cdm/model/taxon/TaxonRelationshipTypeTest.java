@@ -9,31 +9,17 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 26.02.2019
- *
  */
-public class TaxonRelationshipTypeTest {
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        if (Language.ENGLISH() == null){
-            new DefaultTermInitializer().initialize();
-        }
-    }
-
-    @Before
-    public void setUp() throws Exception {
-    }
+public class TaxonRelationshipTypeTest extends EntityTestBase {
 
     @Test
     public void testRepresentations() {
@@ -63,5 +49,4 @@ public class TaxonRelationshipTypeTest {
     private String abbrev(TaxonRelationshipType relType) {
         return relType.getPreferredRepresentation((Language)null).getAbbreviatedLabel();
     }
-
 }

@@ -53,14 +53,14 @@ public class TermNodeDto implements Serializable{
 //        TermTree termTree = HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class);
 //        tree = TermTreeDto.fromTree(termTree);
 //        treeIndex = node.treeIndex();
-        List<TermNodeDto> children = new ArrayList();
+        List<TermNodeDto> children = new ArrayList<>();
         for (Object o: node.getChildNodes()){
             if (o instanceof TermNode){
-                TermNode child = (TermNode)o;
+                TermNode<?> child = (TermNode<?>)o;
 
                 if (child != null){
                     if(child.getTerm().getTermType().equals(TermType.Character)){
-                        children.add(CharacterNodeDto.fromTermNode(child, treeDto));
+                        children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
                     }else{
                         children.add(TermNodeDto.fromNode(child, treeDto));
                     }

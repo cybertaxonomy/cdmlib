@@ -1,41 +1,41 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.io.csv.redlist.out;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
+
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
-public class CsvMetaDataRecordRedlist  {
+public class CsvMetaDataRecordRedlist {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CsvMetaDataRecordRedlist.class);
-	
+
 	private String fileLocation;
 	private String rowType;
-	
+
 	private boolean isCore;
 	private int currentIndex = 0;
 	private boolean isMetaData = false;  //is this record about meta data (should be true for MetaData and EML)
-	
+
 	private int count = 0;
-	
-	private List<FieldEntry> fieldEntryList = new ArrayList<CsvMetaDataRecordRedlist.FieldEntry>();
-	protected List<String> fieldList = new ArrayList<String>();
-	
-	
+
+	private List<FieldEntry> fieldEntryList = new ArrayList<>();
+	protected List<String> fieldList = new ArrayList<>();
+
 	public CsvMetaDataRecordRedlist(boolean isCore, String fileLocation, String rowType){
 		FieldEntry idEntry = new FieldEntry();
 		idEntry.index = currentIndex++;
@@ -46,14 +46,13 @@ public class CsvMetaDataRecordRedlist  {
 		this.setRowType(rowType);
 	}
 
-
 	protected class FieldEntry{
 		int index;
 		URI term = null;
 		String defaultValue = null;
 		String elementName = "field";
 	}
-	
+
 	public void addFieldEntry(URI term, String defaultValue){
 		FieldEntry fieldEntry = new FieldEntry();
 		fieldEntry.index = currentIndex++;
@@ -61,10 +60,10 @@ public class CsvMetaDataRecordRedlist  {
 		fieldEntry.defaultValue = defaultValue;
 		this.fieldEntryList.add(fieldEntry);
 	}
-	
+
 	//TODO needed?
 //	public abstract List<String> getHeaderList();
-	
+
 //	public List<URI> getTermList(){
 //		List<URI> result = new ArrayList<URI>();
 //		for (String key : fieldList){
@@ -78,16 +77,16 @@ public class CsvMetaDataRecordRedlist  {
 //		}
 //		return result;
 //	}
-	
+
 	public boolean hasEntries(){
 		return fieldEntryList.size() > 1;
 	}
-	
+
 	public List<FieldEntry> getEntries(){
 		return fieldEntryList;
 	}
-	
-	
+
+
 	public String getFileLocation() {
 		return fileLocation;
 	}
@@ -123,16 +122,9 @@ public class CsvMetaDataRecordRedlist  {
 	public boolean isMetaData() {
 		return isMetaData;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+
 	@Override
 	public String toString() {
 		return this.fileLocation;
 	}
-
-	
-
 }

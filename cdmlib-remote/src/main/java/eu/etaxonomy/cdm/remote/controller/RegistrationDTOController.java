@@ -111,7 +111,13 @@ public class RegistrationDTOController
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetByIdentifier() " + requestPathAndQuery(request));
-        return pageRegistrationDTOs(identifier, true, 0, 2, response).getRecords().get(0);
+        Pager<RegistrationDTO> registrationDTOsPager = pageRegistrationDTOs(identifier, true, 0, 2, response);
+        if(registrationDTOsPager == null) {
+            HttpStatusMessage.create("No registration found for " + identifier + " ", HttpServletResponse.SC_NOT_FOUND).send(response);
+            return null;
+        } else {
+            return registrationDTOsPager.getRecords().get(0);
+        }
     }
 
     @ApiImplicitParams({

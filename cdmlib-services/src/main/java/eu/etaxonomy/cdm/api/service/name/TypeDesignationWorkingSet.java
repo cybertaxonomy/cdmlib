@@ -13,13 +13,13 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
@@ -41,7 +41,7 @@ public class TypeDesignationWorkingSet
 
     private static final long serialVersionUID = -1329007606500890729L;
 
-    public static final NullTypeDesignationStatus NULL_STATUS = new NullTypeDesignationStatus();
+    public static final NullTypeDesignationStatus NULL_STATUS = NullTypeDesignationStatus.SINGLETON();
 
     private String label = null;
 
@@ -118,20 +118,6 @@ public class TypeDesignationWorkingSet
         return isSpecimenTypeDesigationWorkingSet() ? TypeDesignationWorkingSetType.SPECIMEN_TYPE_DESIGNATION_WORKINGSET : TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET;
     }
 
-    @SuppressWarnings({ "deprecation", "serial" })
-    static class NullTypeDesignationStatus extends TypeDesignationStatusBase<NullTypeDesignationStatus>{
-
-        @Override
-        public void resetTerms() {}
-
-        @Override
-        protected void setDefaultTerms(TermVocabulary<NullTypeDesignationStatus> termVocabulary) {}
-
-        @Override
-        public boolean hasDesignationSource() {
-            return false;
-        }
-    }
 
     public enum TypeDesignationWorkingSetType {
         SPECIMEN_TYPE_DESIGNATION_WORKINGSET,

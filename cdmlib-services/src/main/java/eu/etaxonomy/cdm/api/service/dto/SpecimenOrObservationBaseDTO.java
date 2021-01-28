@@ -13,8 +13,10 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -43,10 +45,10 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private int id;
     private TreeSet<AbstractMap.SimpleEntry<String, String>> characterData;
-    private DerivateDataDTO derivateDataDTO;
+    private DerivationTreeSummaryDTO derivationTreeSummary;
     protected String taxonName;
 
-    protected String citation;
+    protected String summaryLabel;
     protected boolean hasDetailImage;
     private boolean hasCharacterData;
     private boolean hasDna;
@@ -152,19 +154,19 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     /**
      * @return the derivateDataDTO
      */
-    public DerivateDataDTO getDerivateDataDTO() {
-        return derivateDataDTO;
+    public DerivationTreeSummaryDTO getDerivationTreeSummary() {
+        return derivationTreeSummary;
     }
 
     /**
-     * @param derivateDataDTO the derivateDataDTO to set
+     * @param derivationTreeSummary the derivateDataDTO to set
      */
-    public void setDerivateDataDTO(DerivateDataDTO derivateDataDTO) {
-        this.derivateDataDTO = derivateDataDTO;
-        if(derivateDataDTO != null) {
-            setHasSpecimenScan(isHasSpecimenScan() || !derivateDataDTO.getSpecimenScans().isEmpty());
-            setHasDetailImage(isHasDetailImage() || !derivateDataDTO.getDetailImages().isEmpty());
-            setHasDna(isHasDna() || !derivateDataDTO.getMolecularDataList().isEmpty());
+    public void setDerivationTreeSummary(DerivationTreeSummaryDTO derivationTreeSummary) {
+        this.derivationTreeSummary = derivationTreeSummary;
+        if(derivationTreeSummary != null) {
+            setHasSpecimenScan(isHasSpecimenScan() || !derivationTreeSummary.getSpecimenScans().isEmpty());
+            setHasDetailImage(isHasDetailImage() || !derivationTreeSummary.getDetailImages().isEmpty());
+            setHasDna(isHasDna() || !derivationTreeSummary.getMolecularDataList().isEmpty());
         }
     }
 
@@ -257,16 +259,20 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.hasSpecimenScan = hasSpecimenScan;
     }
     /**
-     * @return the citation
+     * @return The summary of all DerivedUnit identifiers with the label of
+     * this SpecimenOrObservationBase.
+     * This label is usually being user for citing the unit in publications.
      */
-    public String getCitation() {
-        return citation;
+    public String getSummaryLabel() {
+        return summaryLabel;
     }
+
     /**
-     * @param citation the citation to set
+     * Summary of all DerivedUnit identifiers with the label of this SpecimenOrObservationBase.
+     * This label is usually being user for citing the unit in publications.
      */
-    public void setCitation(String citation) {
-        this.citation = citation;
+    public void setSummaryLabel(String summaryLabel) {
+        this.summaryLabel = summaryLabel;
     }
 
 
@@ -300,7 +306,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     /**
      * @param collection the collection to set
      */
-    public void setCollectioDTo(CollectionDTO collection) {
+    public void setCollectioDTO(CollectionDTO collection) {
         this.collection = collection;
     }
 
@@ -317,7 +323,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.derivatives = derivatives;
     }
 
-    public void addDerivate(DerivedUnitDTO derivate){
+    public void addDerivative(DerivedUnitDTO derivate){
         if (this.derivatives == null){
             this.derivatives = new HashSet<>();
         }
@@ -351,6 +357,8 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         }
         return dtos;
     }
+
+
 
     public DerivationEventDTO getDerivationEvent() {
         return derivationEvent;
@@ -405,6 +413,67 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                         getListOfMedia().add(dto);
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * TODO !
+     * the derivation graph seems to be walked two times in here
+     * 1. below in the for loop
+     * 2. in the call to DerivateDataDTO.fromEntity below
+     *
+     * @param sob
+     *      The Unit to assemble the derivatives information for
+     * @param maxDepth
+     *   The maximum number of derivation events levels up to which derivatives are to be assembled.
+     *   <code>NULL</code> means infinitely.
+     * @param includeTypes
+     *      Allows for positive filtering by {@link SpecimenOrObservationType}.
+     *      Filter is disabled when <code>NULL</code>. This only affects the derivatives assembled in the
+     *      {@link #derivatives} list. The <code>unitLabelsByCollection</code> are always collected for the
+     *      whole bouquet of derivatives.
+     * @param unitLabelsByCollection
+     *      A map to record the unit labels (most significant identifier + collection code) per collection.
+     *      Optional parameter, may be <code>NULL</code>.
+     */
+    protected void assembleDerivatives(SpecimenOrObservationBase<?> sob,
+            Integer maxDepth, EnumSet<SpecimenOrObservationType> includeTypes,
+            Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String>> unitLabelsByCollection) {
+
+        boolean doDescend = maxDepth == null || maxDepth > 0;
+        Integer nextLevelMaxDepth = maxDepth != null ? maxDepth - 1 : null;
+        for (DerivedUnit derivedUnit : sob.collectDerivedUnits()) {
+            if(!derivedUnit.isPublish()){
+                continue;
+            }
+
+            if(unitLabelsByCollection != null) {
+                // collect accession numbers for citation
+                // collect collections for herbaria column
+                eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
+                if (collection != null) {
+                    //combine collection with identifier
+                    String identifier = derivedUnit.getMostSignificantIdentifier();
+                    if (identifier != null && collection.getCode()!=null) {
+                        identifier = (collection.getCode()!=null?collection.getCode():"[no collection]")+" "+identifier;
+                    }
+                    if(!unitLabelsByCollection.containsKey(collection)) {
+                        unitLabelsByCollection.put(collection, new ArrayList<>());
+                    }
+                    unitLabelsByCollection.get(collection).add(identifier);
+                }
+            }
+
+            if (doDescend && (includeTypes == null || includeTypes.contains(derivedUnit.getRecordBasis()))) {
+                DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, nextLevelMaxDepth, includeTypes, null);
+                addDerivative(derivedUnitDTO);
+                setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
+                // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in
+                // setDerivateDataDTO(), see below
+                setHasDetailImage(isHasDetailImage() || derivedUnitDTO.isHasDetailImage());
+                setHasDna(isHasDna() || derivedUnitDTO.isHasDna());
+                setHasSpecimenScan(isHasSpecimenScan() || derivedUnitDTO.isHasSpecimenScan());
             }
         }
     }

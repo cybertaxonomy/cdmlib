@@ -15,13 +15,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class OrderedTermBaseTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermBaseTest.class);
 
@@ -29,12 +29,6 @@ public class OrderedTermBaseTest extends EntityTestBase {
 	private OrderedTermBase otb2;
 	private OrderedTermBase otb3;
 	private OrderedTermBase otb4;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
 
 	@Before
 	public void setUp() throws Exception {

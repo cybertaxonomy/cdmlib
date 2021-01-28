@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.sdd.in;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
@@ -25,6 +24,7 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.sdd.ikeyplus.IkeyPlusImport;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -45,7 +45,7 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
         String yyy = "/eu/etaxonomy/cdm/io/sdd/Cichorieae-fullSDD.xml";
 
         URL url = this.getClass().getResource(yyy);
-        URI uri = url.toURI();
+        URI uri = URI.fromUrl(url);
         Assert.assertNotNull(url);
 //        configurator = SDDImportConfigurator.NewInstance(uri, null);
         sddUri = uri;
@@ -79,5 +79,4 @@ public class IkeyPlusImportTest extends CdmTransactionalIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

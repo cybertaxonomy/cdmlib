@@ -33,6 +33,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class CdmImporterTest extends CdmTransactionalIntegrationTest{
@@ -45,9 +46,8 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	@Before
 	public void setUp() throws URISyntaxException {
 		URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest-input.xml");
-		configurator = JaxbImportConfigurator.NewInstance(url.toURI(),null);
+		configurator = JaxbImportConfigurator.NewInstance(URI.fromUrl(url),null);
 	}
-
 
 	@Test
 	public void testInit() {
@@ -58,7 +58,6 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 //		filter2.excludeTable("RIGHTS");
 //		printDataSet(System.out, filter2);
 	}
-
 
 	@Test
 	@DataSet
@@ -77,24 +76,22 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	protected void testExpectedDataSet(InputStream dataSet) {
 		try {
 			IDatabaseConnection databaseConnection = getConnection();
-			
+
 //			InputStreamReader dtdStream = CdmUtils.getUtf8ResourceReader("eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd");
-			
+
 			FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
 
 //			builder.setMetaDataSetFromDtd(dtdStream);  //needed?
 			IDataSet expectedDataSet = builder.build(dataSet);
 			expectedDataSet = removeRights(expectedDataSet);
-			ReplacementDataSet replDataSet = new ReplacementDataSet( expectedDataSet); 
+			ReplacementDataSet replDataSet = new ReplacementDataSet( expectedDataSet);
 			replDataSet.addReplacementObject("[null]", null);
 			expectedDataSet = replDataSet;
-			
+
 			IDataSet actualDataSet = databaseConnection.createDataSet();
 			actualDataSet = removeRights(actualDataSet);
 			actualDataSet = new FilteredDataSet(expectedDataSet.getTableNames(),actualDataSet);
-			
-			
-			
+
 			Assertion.assertEquals(expectedDataSet, actualDataSet);
 
 		} catch (Exception e) {
@@ -102,7 +99,6 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 			fail("No exception expected in database validation method");
 		}
 	}
-
 
 	/**
 	 * @param expectedDataSet
@@ -122,13 +118,6 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 		return filteredDataSet;
 	}
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-        
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

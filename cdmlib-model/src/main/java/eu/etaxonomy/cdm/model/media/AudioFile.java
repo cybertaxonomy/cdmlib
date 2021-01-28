@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import java.net.URI;
-
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,6 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author m.doering
@@ -33,6 +33,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 public class AudioFile extends MediaRepresentationPart {
+
 	private static final long serialVersionUID = 2327736023969971196L;
 	private static final Logger logger = Logger.getLogger(AudioFile.class);
 

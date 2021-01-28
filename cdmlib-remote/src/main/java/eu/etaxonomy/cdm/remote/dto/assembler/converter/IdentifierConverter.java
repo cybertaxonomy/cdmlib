@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
 import java.net.MalformedURLException;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 

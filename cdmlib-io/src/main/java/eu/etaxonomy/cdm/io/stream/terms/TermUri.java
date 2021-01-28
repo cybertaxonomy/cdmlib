@@ -8,22 +8,22 @@
 */
 package eu.etaxonomy.cdm.io.stream.terms;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
+
 /**
  * @author a.mueller
  * @since 27.04.2011
- *
  */
 public enum TermUri {
+
 	CDM_SOURCE_REFERENCE("http://eu.etaxonomy.cdm.io.common.sourceReference"),
 	CDM_SOURCE_IDNAMESPACE("http://eu.etaxonomy.cdm.io.common.originalSourceBase.idNamespace"),
 	CDM_SOURCE_IDINSOURCE("http://eu.etaxonomy.cdm.io.common.originalSourceBase.idInSource"),
-	
-	
+
 	DC_ACCESS_RIGHTS("http://purl.org/dc/terms/accessRights"),
 	DC_AUDIENCE("http://purl.org/dc/terms/audience"),
 	DC_BIBLIOGRAPHIC_CITATION("http://purl.org/dc/terms/bibliographicCitation"),
@@ -57,7 +57,6 @@ public enum TermUri {
 	GBIF_IS_PREFERRED_NAME("http://rs.gbif.org/terms/1.0/isPreferredName"),
 	GBIF_VERBATIM_LABEL("http://rs.gbif.org/terms/1.0/verbatimLabel"),
 	GBIF_IS_EXTINCT("http://rs.gbif.org/terms/1.0/isExtinct"),
-
 
 	IUCN_THREAD_STATUS("http://iucn.org/terms/threatStatus"),
 
@@ -155,8 +154,6 @@ public enum TermUri {
 	FOAF_ACCOUNT_NAME("http://xmlns.com/foaf/spec/#term_accountName"),
 
 	DWC_COORDINATES_SYSTEM("http://rs.tdwg.org/dwc/terms/verbatimCoordinateSystem"),
-
-
 	;
 
 	@SuppressWarnings("unused")
@@ -172,7 +169,6 @@ public enum TermUri {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 	public String getUriString(){
 		return this.uri.toString();
@@ -195,5 +191,4 @@ public enum TermUri {
 		}
 		return null;
 	}
-
 }

@@ -8,17 +8,16 @@
 */
 package eu.etaxonomy.cdm.io.descriptive.owl.in;
 
-import java.net.URI;
-
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author pplitzner
  * @since Apr 24, 2019
- *
  */
-public class StructureTreeOwlImportConfigurator extends ImportConfiguratorBase<StructureTreeOwlImportState, URI> {
+public class StructureTreeOwlImportConfigurator
+        extends ImportConfiguratorBase<StructureTreeOwlImportState, URI> {
 
     private static final long serialVersionUID = -7981427548996602252L;
 

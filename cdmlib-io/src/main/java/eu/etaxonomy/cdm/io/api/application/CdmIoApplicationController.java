@@ -12,7 +12,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 public class CdmIoApplicationController extends CdmApplicationController {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmIoApplicationController.class);
 
 
@@ -52,27 +53,14 @@ public class CdmIoApplicationController extends CdmApplicationController {
                 hibernateConfig, omitTermLoading, null);
     }
 
-	/**
-	 * @return
-	 */
 	protected static ClassPathResource getClasspathResource() {
 		return new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 	}
 
-
-	/**
-	 * Constructor.
-	 * @param applicationContextResource
-	 * @param dataSource
-	 * @param dbSchemaValidation
-	 * @param omitTermLoading
-	 * @param progressMonitor
-	 */
 	protected CdmIoApplicationController(Resource applicationContextResource, ICdmDataSource dataSource,
 	        DbSchemaValidation dbSchemaValidation, HibernateConfiguration hibernateConfig,
 			boolean omitTermLoading, IProgressMonitor progressMonitor) {
 		super(applicationContextResource, dataSource, dbSchemaValidation, hibernateConfig,
 		        omitTermLoading, progressMonitor, null);
 	}
-
 }

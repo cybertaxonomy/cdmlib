@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -32,7 +31,6 @@ import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
  * nomenclatural and taxonomic sense of these words.
  *
  * @author ben.clark
- *
  */
 public class MustHaveAuthorityTest extends ValidationTestBase {
 	@SuppressWarnings("unused")
@@ -42,8 +40,6 @@ public class MustHaveAuthorityTest extends ValidationTestBase {
 
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
 		name.setGenusOrUninomial("Aus");

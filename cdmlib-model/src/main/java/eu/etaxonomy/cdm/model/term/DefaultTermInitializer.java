@@ -21,10 +21,10 @@ import eu.etaxonomy.cdm.model.term.init.TermLoader;
 
 /**
  * @author a.mueller
- *
  */
 public class DefaultTermInitializer implements ITermInitializer {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializer.class);
 	protected ITermLoader termLoader = new TermLoader();
 
@@ -47,7 +47,6 @@ public class DefaultTermInitializer implements ITermInitializer {
 			TermVocabulary<?> voc  = termLoader.loadTerms(vocabularyEnum, terms);
 			setDefinedTerms(vocabularyEnum.getClazz(),voc);
 		}
-
 	}
 
 	protected void setDefinedTerms(Class<? extends DefinedTermBase<?>> clazz, TermVocabulary<?> vocabulary) {
@@ -67,7 +66,6 @@ public class DefaultTermInitializer implements ITermInitializer {
 		}
 	}
 
-
     public void setOmit(boolean omit) {
         this.omit = omit;
     }
@@ -75,6 +73,4 @@ public class DefaultTermInitializer implements ITermInitializer {
     public boolean isOmit() {
         return omit;
     }
-
-
 }

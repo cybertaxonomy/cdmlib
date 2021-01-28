@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
@@ -16,57 +15,33 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
- *
  */
 public class NonViralNameTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(NonViralNameTest.class);
 
+	private INonViralName nonViralName1;
+	private INonViralName nonViralName2;
 
-	INonViralName nonViralName1;
-	INonViralName nonViralName2;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		nonViralName1 = TaxonNameFactory.NewBotanicalInstance(null);
 		nonViralName2 = TaxonNameFactory.NewBotanicalInstance(null);
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 // ******************* TESTS ***********************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#generateTitle()}.
-	 */
 	@Test
 	public final void testGenerateTitle() {
 		String fullName = "Abies alba subsp. beta (L.) Mill.";
@@ -77,34 +52,22 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals("", nonViralName2.generateTitle());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#isCodeCompliant()}.
-	 */
 	@Test
 	public final void testIsCodeCompliant() {
 		logger.warn("Not yet implemented"); // TODO
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#NonViralName()}.
-	 */
 	@Test
 	public final void testNonViralName() {
 		assertNotNull(nonViralName1);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#NonViralName(eu.etaxonomy.cdm.model.name.Rank)}.
-	 */
 	@Test
 	public final void testNonViralNameRank() {
 		INonViralName nonViralName = TaxonNameFactory.NewNonViralInstance(Rank.GENUS());
 		assertNotNull(nonViralName);
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#NonViralName(eu.etaxonomy.cdm.model.name.Rank, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.agent.Agent, eu.etaxonomy.cdm.model.reference.INomenclaturalReference, java.lang.String)}.
-	 */
 	@Test
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Team agent = Team.NewInstance();
@@ -135,10 +98,6 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(null, nonViralName2.getCombinationAuthorship());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getExCombinationAuthorship()}.
-	 */
 	@Test
 	public final void testGetSetExCombinationAuthorship() {
 		Team team1 = Team.NewInstance();
@@ -150,11 +109,6 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(null, nonViralName2.getExCombinationAuthorship());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getCombinationAuthorship()}.
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#setCombinationAuthorship(eu.etaxonomy.cdm.model.agent.Agent)}.
-	 */
 	@Test
 	public final void testGetSetBasionymAuthorship() {
 		Team team1 = Team.NewInstance();
@@ -166,10 +120,6 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(null, nonViralName2.getBasionymAuthorship());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getExCombinationAuthorship()}.
-	 */
 	@Test
 	public final void testGetSetExBasionymAuthorship() {
 		Team team1 = Team.NewInstance();
@@ -181,10 +131,6 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(null, nonViralName2.getExBasionymAuthorship());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getGenusOrUninomial()}.
-	 */
 	@Test
 	public final void testGetSetGenusOrUninomial() {
 		nonViralName1.setGenusOrUninomial("Genus");
@@ -195,9 +141,6 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(null, nonViralName2.getGenusOrUninomial());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getInfragenericEpithet()}.
-	 */
 	@Test
 	public final void testGetSetInfraGenericEpithet() {
 		nonViralName1.setInfraGenericEpithet("InfraGenus");
@@ -208,9 +151,6 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(null, nonViralName2.getInfraGenericEpithet());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getSpecificEpithet()}.
-	 */
 	@Test
 	public final void testGetSetSpecificEpithet() {
 		nonViralName1.setSpecificEpithet("specEpi");
@@ -221,9 +161,6 @@ public class NonViralNameTest extends EntityTestBase {
 		assertEquals(null, nonViralName2.getSpecificEpithet());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getInfraSpecificEpithet()}.
-	 */
 	@Test
 	public final void testGetSetInfraSpecificEpithet() {
 		nonViralName1.setInfraSpecificEpithet("InfraSpecEpi");
@@ -374,7 +311,7 @@ public class NonViralNameTest extends EntityTestBase {
 		HybridRelationship childRel = nonViralName1.addHybridChild(child, HybridRelationshipType.FEMALE_PARENT(), "child rule");
 
 
-		INonViralName clone = (INonViralName)(nonViralName1).clone();
+		INonViralName clone = (nonViralName1).clone();
 		Assert.assertEquals("Genus should be equal", "Aus", clone.getGenusOrUninomial());
 		Assert.assertEquals("Infragenus should be equal", "Infaus", clone.getInfraGenericEpithet());
 		Assert.assertEquals("Specific epithet should be equal", "bus", clone.getSpecificEpithet());

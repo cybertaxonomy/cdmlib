@@ -8,16 +8,16 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
+
 /**
  * @author a.mueller
  * @since 20.04.2011
- *
  */
 public class DwcaMetaDataRecord  {
 	@SuppressWarnings("unused")
@@ -35,7 +35,6 @@ public class DwcaMetaDataRecord  {
 	private List<FieldEntry> fieldEntryList = new ArrayList<>();
 	protected List<String> fieldList = new ArrayList<>();
 
-
 	public DwcaMetaDataRecord(boolean isCore, String fileLocation, String rowType){
 		FieldEntry idEntry = new FieldEntry();
 		idEntry.index = currentIndex++;
@@ -45,7 +44,6 @@ public class DwcaMetaDataRecord  {
 		this.fileLocation = fileLocation;
 		this.setRowType(rowType);
 	}
-
 
 	protected class FieldEntry{
 		int index;
@@ -129,7 +127,4 @@ public class DwcaMetaDataRecord  {
 	public String toString() {
 		return this.fileLocation;
 	}
-
-
-
 }

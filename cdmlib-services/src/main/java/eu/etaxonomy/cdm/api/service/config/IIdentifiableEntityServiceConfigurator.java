@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface IIdentifiableEntityServiceConfigurator<T extends IIdentifiableEntity>
             extends Serializable {
 
-	public Class<? extends T> getClazz();
+	public Class<T> getClazz();
 
 	public void setClazz(Class<? extends T> clazz);
 

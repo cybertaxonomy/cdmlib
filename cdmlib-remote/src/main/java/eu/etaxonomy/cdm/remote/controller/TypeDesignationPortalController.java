@@ -33,12 +33,13 @@ public class TypeDesignationPortalController extends TypeDesignationController {
             "typifiedNames.nomenclaturalReference.authorship.$",
             "typifiedNames.nomenclaturalReference.inReference.authorship.$",
             "typifiedNames.nomenclaturalReference.inReference.inReference.authorship.$",
-            "citation.authorship.$",
             "typeSpecimen.media",
             "registrations.institution",
             "text",
-            "sources.links.description",
-            "sources.citation"
+            "source.citation.authorship.$", // the lectotype source
+            "source.links.description", // the lectotype source
+            "sources.links.description", // other sources
+            "sources.citation.authorship.$" // other sources
     });
 
     public TypeDesignationPortalController() {

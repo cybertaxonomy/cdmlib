@@ -62,9 +62,10 @@ public interface ICdmBase {
 
 	public void setCreatedBy(User createdBy);
 
-    /**
-     * @param class1
-     * @return
+	/**
+     * Tests if the object is assignable from the type
+     * defined as parameter <code>clazz</code>, regardless
+     * whether it is an actual entity or hibernate proxy.
      */
     public boolean isInstanceOf(Class<? extends CdmBase> clazz);
 

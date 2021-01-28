@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 
 import org.dozer.CustomConverter;

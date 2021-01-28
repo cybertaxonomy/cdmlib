@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.sdd.ikeyplus;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;

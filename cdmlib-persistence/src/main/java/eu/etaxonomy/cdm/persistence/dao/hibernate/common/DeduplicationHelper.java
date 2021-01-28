@@ -84,14 +84,12 @@ public class DeduplicationHelper {
 		}
 	}
 
-
 	public <T extends CdmBase>  void merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		@SuppressWarnings("unchecked")
 		Class<T> clazz = (Class<T>)cdmBase1.getClass();
 		@SuppressWarnings("unchecked")
 		Class<T> clazz2 = (Class<T>)cdmBase2.getClass();
 
-//		SessionFactory sessionFactory = session.getSessionFactory();
 		if (mergeStrategy == null){
 			mergeStrategy = DefaultMergeStrategy.NewInstance(cdmBase1.getClass());
 		}
@@ -117,7 +115,6 @@ public class DeduplicationHelper {
 				//TODO should we better use clazz2 here?
 				mergeExternal(cdmBase1, cdmBase2, clazz, session);
 			}
-
 
 			if (cdmBase2.getId() > 0){
 				session.saveOrUpdate(cdmBase2);
@@ -147,7 +144,6 @@ public class DeduplicationHelper {
 
 			//flush
 			session.flush();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		    throw new MergeException(e);
@@ -162,14 +158,12 @@ public class DeduplicationHelper {
 	 * @throws IllegalArgumentException
 	 * @throws NullPointerException
 	 */
-
 	private <T extends CdmBase> void checkMergeValid(T cdmBase1, T cdmBase2, IMergeStrategy strategy)throws IllegalArgumentException, NullPointerException{
 		if (cdmBase1 == null || cdmBase2 == null){
 			throw new NullPointerException("Merge arguments must not be (null)");
 		}
 		cdmBase1 = HibernateProxyHelper.deproxy(cdmBase1);
 		cdmBase2 = HibernateProxyHelper.deproxy(cdmBase2);
-
 
 		if (cdmBase1.getClass() != cdmBase2.getClass()){
 			boolean reallocationPossible = checkOnlyReallocationAllowed(cdmBase1.getClass(), cdmBase2.getClass());
@@ -190,7 +184,7 @@ public class DeduplicationHelper {
 		Class<T> clazz2 = (Class<T>)cdmBase2.getClass();
 		//FIXME do we need to compute the cloneSet? See #reallocateReferences for comparison
 		//this is only a copy from there. Maybe we do not need the cloneSet at all here
-		Set<ICdmBase> cloneSet = new HashSet<ICdmBase>();
+		Set<ICdmBase> cloneSet = new HashSet<>();
 		Set<ReferenceHolder> holderSet;
 		try {
 			boolean result = true;
@@ -201,11 +195,7 @@ public class DeduplicationHelper {
 				}
 			}
 			return result;
-		} catch (ClassNotFoundException e) {
-			return false;
-		} catch (NoSuchFieldException e) {
-			return false;
-		} catch (MergeException e) {
+		} catch (ClassNotFoundException | NoSuchFieldException | MergeException e) {
 			return false;
 		}
 	}
@@ -357,7 +347,7 @@ public class DeduplicationHelper {
 		for (Annotation annotation : annotatableEntity2.getAnnotations()){
 			Annotation clone = null;
 			try {
-				clone = (Annotation)annotation.clone();
+				clone = annotation.clone();
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -374,7 +364,7 @@ public class DeduplicationHelper {
 		for (Marker marker : annotatableEntity2.getMarkers()){
 			Marker clone = null;
 			try {
-				clone = (Marker)marker.clone();
+				clone = marker.clone();
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -405,7 +395,7 @@ public class DeduplicationHelper {
 		List<Extension> removeListExtension = new ArrayList<>();
 		for (Extension changeObject : identifiableEntity2.getExtensions()){
 			try {
-				Extension clone = (Extension)changeObject.clone();
+				Extension clone = changeObject.clone();
 				identifiableEntity1.addExtension(clone);
 				removeListExtension.add(changeObject);
 			} catch (CloneNotSupportedException e) {
@@ -421,7 +411,7 @@ public class DeduplicationHelper {
 		List<Identifier<?>> removeListIdentifier = new ArrayList<>();
 		for (Identifier<?> changeObject : identifiableEntity2.getIdentifiers()){
 			try {
-				Identifier<?> clone = (Identifier<?>)changeObject.clone();
+				Identifier<?> clone = changeObject.clone();
 				identifiableEntity1.addIdentifier(clone);
 				removeListIdentifier.add(changeObject);
 			} catch (CloneNotSupportedException e) {

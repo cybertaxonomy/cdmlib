@@ -14,7 +14,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
-import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -50,6 +49,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -74,6 +74,7 @@ public interface ICdmRepository{
     public void rollbackTransaction(TransactionStatus txStatus);
 
 	public Object getBean(String string);
+
 
     public IAnnotationService getAnnotationService();
 
@@ -130,7 +131,7 @@ public interface ICdmRepository{
 	public ConversationHolder NewConversation();
 
 	public ICollectionService getCollectionService();
-	
+
 	public ILongRunningTasksService getLongRunningTasksService();
 
 	/**
@@ -168,6 +169,8 @@ public interface ICdmRepository{
 
 	public IEntityConstraintViolationService getEntityConstraintViolationService();
 
+    public IRegistrationService getRegistrationService();
+
 	/**
 	 * @return the configured PermissionEvaluator, usually the
 	 *         {@link CdmPermissionEvaluator}
@@ -176,5 +179,4 @@ public interface ICdmRepository{
 
 	void authenticate(String username, String password);
 
-    public IRegistrationService getRegistrationService();
 }

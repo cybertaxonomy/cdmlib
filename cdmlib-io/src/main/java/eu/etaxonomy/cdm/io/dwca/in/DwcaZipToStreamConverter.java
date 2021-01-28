@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import org.apache.log4j.Logger;
 import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Archive;
 import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
@@ -46,9 +46,9 @@ import eu.etaxonomy.cdm.io.stream.terms.TermUri;
  * This class transforms a Darwin Core Archive zip file into a set of CSVReaderInputStreams.
  * For each data file included in the zip it creates one stream by evaluating the meta file.
  * Ecological metadata handling is still unclear.
+ *
  * @author a.mueller
  * @since 17.10.2011
- *
  */
 public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 	private static Logger logger = Logger.getLogger(DwcaZipToStreamConverter.class);
@@ -67,7 +67,6 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			TermUri.GBIF_DESCRIPTION,
 			TermUri.GBIF_DISTRIBUTION,
 			TermUri.GBIF_IMAGE
-
 	);
 
 	private final URI dwcaZip;
@@ -80,18 +79,12 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		return new DwcaZipToStreamConverter(dwcaZip);
 	}
 
-
 //************************ CONSTRUCTOR *********************************/
 
-	/**
-	 * Constructor
-	 * @param dwcaZip
-	 */
 	public DwcaZipToStreamConverter(URI dwcaZip) {
 		this.dwcaZip = dwcaZip;
 		initArchive();
 	}
-
 
 	protected Archive getArchive(){
 			return this.archive;
@@ -259,12 +252,8 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 //	}
 //
 
-	/**
-	 * @return
-	 * @throws IOException
-	 */
 	private InputStream makeInputStream(String name) throws IOException {
-		File file = new File(dwcaZip);
+		File file = new File(dwcaZip.getJavaUri());
 		if (! file.isFile() || ! file.exists()){
 			String message = "URI is not a file: %s";
 			throw new IOException(String.format(message, dwcaZip.toString()));
@@ -286,8 +275,4 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 		InputStream metaInputStream = zip.getInputStream(metaEntry);
 		return metaInputStream;
 	}
-
-
-
-
 }

@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since Oct 6, 2020
  */
 public class CharacterDto extends FeatureDto {
+
     private static final long serialVersionUID = 1743178749047550590L;
 
     private TermNodeDto structure;
@@ -32,25 +33,6 @@ public class CharacterDto extends FeatureDto {
     private TermNodeDto property;
     private TermDto propertyModifier;
 
-
-    /**
-     * @param uuid
-     * @param representations
-     * @param partOfUuid
-     * @param kindOfUuid
-     * @param vocabularyUuid
-     * @param orderIndex
-     * @param idInVocabulary
-     * @param vocRepresentations
-     * @param isAvailableForTaxon
-     * @param isAvailableForTaxonName
-     * @param isAvailableForOccurrence
-     * @param titleCache
-     * @param structure
-     * @param structureModifier
-     * @param property
-     * @param propertyModifier
-     */
     public CharacterDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations,
             boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence,
@@ -65,9 +47,6 @@ public class CharacterDto extends FeatureDto {
         this.setTermType(TermType.Character);
     }
 
-    /**
-     * @param character
-     */
     public static CharacterDto fromCharacter(Character character) {
        TermVocabulary voc = character.getVocabulary();
 
@@ -76,18 +55,15 @@ public class CharacterDto extends FeatureDto {
            recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary(modVoc));
        }
 
-
        Set<TermDto> recommendedStatisticalMeasuresDtos = new HashSet<>();
        for (StatisticalMeasure term: character.getRecommendedStatisticalMeasures()){
            recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm(term));
        }
 
-
        Set<TermVocabularyDto> supportedCategoricalDtos = new HashSet<>();
        for (TermVocabulary<State> catVoc: character.getSupportedCategoricalEnumerations()){
            supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(catVoc));
        }
-
 
        Set<TermDto> recommendedMeasurementUnitsDtos = new HashSet<>();
        for (MeasurementUnit term: character.getRecommendedMeasurementUnits()){
@@ -101,12 +77,9 @@ public class CharacterDto extends FeatureDto {
        return dto;
     }
 
-
-
     public TermNodeDto getStructure() {
         return structure;
     }
-
     public void setStructure(TermNodeDto structure) {
         this.structure = structure;
     }
@@ -114,7 +87,6 @@ public class CharacterDto extends FeatureDto {
     public TermDto getStructureModifier() {
         return structureModifier;
     }
-
     public void setStructureModifier(TermDto structureModifier) {
         this.structureModifier = structureModifier;
     }
@@ -122,7 +94,6 @@ public class CharacterDto extends FeatureDto {
     public TermNodeDto getProperty() {
         return property;
     }
-
     public void setProperty(TermNodeDto property) {
         this.property = property;
     }
@@ -130,10 +101,7 @@ public class CharacterDto extends FeatureDto {
     public TermDto getPropertyModifier() {
         return propertyModifier;
     }
-
     public void setPropertyModifier(TermDto propertyModifier) {
         this.propertyModifier = propertyModifier;
     }
-
-
 }

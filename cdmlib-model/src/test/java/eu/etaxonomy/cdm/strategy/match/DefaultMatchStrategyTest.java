@@ -6,20 +6,15 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.match;
-
-import java.net.URI;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -39,14 +34,15 @@ import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.IPrintSeries;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  * @since 03.08.2009
  */
-public class DefaultMatchStrategyTest {
-	@SuppressWarnings("unused")
+public class DefaultMatchStrategyTest extends TermTestBase {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultMatchStrategyTest.class);
 
 	private DefaultMatchStrategy matchStrategy;
@@ -76,25 +72,6 @@ public class DefaultMatchStrategyTest {
 
 	private IBook book3;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
-		termInitializer.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		team1 = Team.NewInstance();
@@ -137,18 +114,8 @@ public class DefaultMatchStrategyTest {
 
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 //********************* TEST *********************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#NewInstance(java.lang.Class)}.
-	 */
 	@Test
 	public void testNewInstance() {
 		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
@@ -156,9 +123,6 @@ public class DefaultMatchStrategyTest {
 //		Assert.assertEquals(Reference.class, matchStrategy.getMatchClass());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#getMatchMode(java.lang.String)}.
-	 */
 	@Test
 	public void testGetMatchMode() {
 		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
@@ -166,9 +130,6 @@ public class DefaultMatchStrategyTest {
 //		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL_REQUIRED", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#getMatchMode(java.lang.String)}.
-	 */
 	@Test
 	public void testGetSetMatchMode() {
 		//legal value
@@ -233,9 +194,7 @@ public class DefaultMatchStrategyTest {
 		botName1.setAuthorshipCache("authorCache1");
 		botName2.setAuthorshipCache("authorCache1");
 		Assert.assertTrue("Names with cached authors should match", matchStrategy.invoke(botName1, botName2).isSuccessful());
-
 	}
-
 
 	@Test
 	public void testInvokeReferences() throws MatchException {
@@ -254,7 +213,6 @@ public class DefaultMatchStrategyTest {
 		Assert.assertFalse("Books with no title should not match", matchStrategy.invoke(book1, bookClone).isSuccessful());
 		book1.setTitle(originalTitle);
 		bookClone.setTitle(originalTitle);
-
 
 		bookClone.setInSeries(printSeries2);
 		Assert.assertFalse("Cloned book with differing print series should not match", matchStrategy.invoke(book1, bookClone).isSuccessful());
@@ -299,7 +257,6 @@ public class DefaultMatchStrategyTest {
 		section2.setTitle("SecTitle");
 		section2.setPages("22-33");
 
-
 		IMatchStrategyEqual bookSectionMatchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertTrue("Equal BookSections should match", bookSectionMatchStrategy.invoke(section1, section2).isSuccessful());
 		section2.setInBook(bookTitle2);
@@ -338,11 +295,6 @@ public class DefaultMatchStrategyTest {
 		Assert.assertTrue("Books with matching authors should not match", matchStrategy.invoke(book1, book2).isSuccessful());
 	}
 
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#invoke(eu.etaxonomy.cdm.strategy.match.IMergable, eu.etaxonomy.cdm.strategy.match.IMergable)}.
-	 * @throws MatchException
-	 */
 	@Test
 	public void testInvokeTaxonNames() throws MatchException {
 		matchStrategy = DefaultMatchStrategy.NewInstance(TaxonName.class);
@@ -360,14 +312,11 @@ public class DefaultMatchStrategyTest {
 		botName2.setSpecificEpithet("species1");
 		Assert.assertTrue("Similar names with titles set should match", matchStrategy.invoke(botName1, botName2).isSuccessful());
 
-
 		botName1.setAnamorphic(true);
 		botName2.setAnamorphic(false);
 		Assert.assertFalse("Similar names with differing boolean marker values should not match", matchStrategy.invoke(botName1, botName2).isSuccessful());
 		botName2.setAnamorphic(true);
 		Assert.assertTrue("Similar names with same boolean marker values should match", matchStrategy.invoke(botName1, botName2).isSuccessful());
-
-
 
 //		//name relations
 //		botName2.addBasionym(botName3, book1, "p.22", null);
@@ -387,13 +336,8 @@ public class DefaultMatchStrategyTest {
 		botName2.setCombinationAuthorship(team2);
 		Assert.assertTrue("Similar teams should match", DefaultMatchStrategy.NewInstance(Team.class).invoke(team1, team2).isSuccessful());
 		Assert.assertTrue("Similar names with matching authors should match", matchStrategy.invoke(botName1, botName2).isSuccessful());
-
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#invoke(IMatchable, IMatchable), eu.etaxonomy.cdm.strategy.match.IMatchable)}.
-	 * @throws MatchException
-	 */
 	@Test
 	public void testInvokeAgents() throws MatchException {
 		IMatchStrategyEqual matchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
@@ -416,7 +360,6 @@ public class DefaultMatchStrategyTest {
 		//restore
 		team2.setNomenclaturalTitle("nomTitle1");
 		Assert.assertTrue("Agents with equal nomenclatural titles should match", matchStrategy.invoke(team1, team2).isSuccessful());
-
 
 		Person person1 = Person.NewTitledInstance("person1");
 		person1.setProtectedTitleCache(true);
@@ -443,12 +386,5 @@ public class DefaultMatchStrategyTest {
 		team2.removeTeamMember(person1);
 		team2.addTeamMember(person1);
 		Assert.assertFalse("Teams with matching members in wrong order should not match", matchStrategy.invoke(team1, team2).isSuccessful());
-
 	}
-
-	@Test
-	public void testInvokeTeamOrPersonBase(){
-
-	}
-
 }

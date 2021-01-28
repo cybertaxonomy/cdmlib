@@ -23,7 +23,8 @@ public class CreateTaxonDTO implements Serializable{
     private static final long serialVersionUID = 9183429250677087219L;
 
     //uuid to a persisted name
-    private UUID nameUuid;
+    private UUID nameUuid = null;
+    private UUID taxonUuid = null;
     //name string if no persisted name is used
     private String taxonNameString;
     private NomenclaturalCode nomenclaturalCode;
@@ -49,11 +50,30 @@ public class CreateTaxonDTO implements Serializable{
         this.preferredRank = preferredRank;
     }
 
+    public CreateTaxonDTO(UUID taxonUuid, boolean isDoubtful,
+            String appendedPhrase, boolean isPublish, String taxonNameString,
+            NomenclaturalCode nomenclaturalCode, Rank preferredRank){
+        this.taxonUuid = taxonUuid;
+        this.isDoubtful = isDoubtful;
+        this.appendedPhrase= appendedPhrase;
+        this.isPublish = isPublish;
+        this.taxonNameString = taxonNameString;
+        this.nomenclaturalCode = nomenclaturalCode;
+        this.preferredRank = preferredRank;
+    }
+
     public UUID getNameUuid() {
         return nameUuid;
     }
     public void setNameUuid(UUID nameUuid) {
         this.nameUuid = nameUuid;
+    }
+
+    public UUID getTaxonUuid() {
+        return taxonUuid;
+    }
+    public void setTaxonUuid(UUID taxonUuid) {
+        this.taxonUuid = taxonUuid;
     }
 
     public UUID getSecUuid() {

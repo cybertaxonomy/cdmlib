@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.validation;
 
 import java.util.Set;
@@ -27,10 +26,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.validation.constraint.BasionymsMustShareEpithetsAndAuthorsValidator;
-
-
 
 /**
  * NOTE: In this test, the words "valid" and "invalid", loaded though
@@ -39,11 +35,10 @@ import eu.etaxonomy.cdm.validation.constraint.BasionymsMustShareEpithetsAndAutho
  * nomenclatural and taxonomic sense of these words.
  *
  * @author ben.clark
- *
- *
  */
 public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(BasionymsMustShareEpithetsAndAuthorsTest.class);
 
 	private IBotanicalName name;
@@ -51,12 +46,9 @@ public class BasionymsMustShareEpithetsAndAuthorsTest extends ValidationTestBase
 	private Person author1;
 	private Person author2;
 
-
-
 	@Before
 	public void setUp() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
+
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Aus");
 		name.setSpecificEpithet("aus");

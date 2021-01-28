@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 
 /**
  * @author a.mueller
- *
  */
 @Repository
 public class TypeDesignationDaoHibernateImpl
@@ -52,12 +51,10 @@ public class TypeDesignationDaoHibernateImpl
 		return results;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<TypeDesignationStatusBase> getTypeDesignationStatusInUse() {
         Query query = getSession().createQuery("select distinct tdb.typeStatus from TypeDesignationBase tdb");
+        @SuppressWarnings("unchecked")
         List<TypeDesignationStatusBase> terms = query.list();
         return terms;
     }

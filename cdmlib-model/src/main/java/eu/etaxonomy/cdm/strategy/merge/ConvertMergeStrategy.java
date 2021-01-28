@@ -17,19 +17,15 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 /**
  * @author k.luther
  * @since 27.08.2015
- *
  */
 public class ConvertMergeStrategy extends DefaultMergeStrategy {
 
    private static final long serialVersionUID = -1046274562281576696L;
 
    private boolean deleteSecondObject = false;
-    /**
-     * @param mergeClazz
-     */
+
     protected ConvertMergeStrategy(Class<? extends CdmBase> mergeClazz) {
         super(mergeClazz);
-
     }
 
     public static ConvertMergeStrategy NewInstance(Class<? extends CdmBase> mergeClazz){
@@ -48,5 +44,4 @@ public class ConvertMergeStrategy extends DefaultMergeStrategy {
     protected <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception{
         super.mergeCollectionFieldNoFirst(mergeFirst, mergeSecond, field, mergeMode, deleteSet, clonedObjects);
     }
-
 }

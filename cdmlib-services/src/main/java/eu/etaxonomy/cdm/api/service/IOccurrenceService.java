@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurato
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -279,50 +280,17 @@ public interface IOccurrenceService
 
 
     /**
-     * Lists all instances of {@link FieldUnit} which are
-     * associated <b>directly or indirectly</b>with the <code>taxon</code> specified
-     * as parameter. "Indirectly" means that a sub derivate of the FieldUnit is
-     * directly associated with the given taxon.
-     * SpecimenOrObservationBase instances can be associated to taxa in multiple
-     * ways, all these possible relations are taken into account:
-     * <ul>
-     * <li>The {@link IndividualsAssociation} elements in a
-     * {@link TaxonDescription} contain {@link DerivedUnit}s</li>
-     * <li>{@link SpecimenTypeDesignation}s may be associated with any
-     * {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
-     * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent}
-     * of the {@link SpecimenOrObservationBase}</li>
-     * </ul>
-     * Further more there also can be taxa which are associated with the taxon
-     * in question (parameter associatedTaxon) by {@link TaxonRelationship}s. If
-     * the parameter <code>includeRelationships</code> is containing elements,
-     * these according {@TaxonRelationshipType}s and
-     * directional information will be used to collect further
-     * {@link SpecimenOrObservationBase} instances found this way.
-     *
-     * @param <T>
-     * @param type
-     * @param associatedTaxon
-     * @param Set<TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
-     * @param maxDepth TODO
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
+     * @deprecated replace by {@link #listRootUnitsByAssociatedTaxon(Class, Taxon, List, List)}
      */
-    public Collection<SpecimenOrObservationBase> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
+    @Deprecated
+    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
 
-    /**
-     * See {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
-     */
-    public Pager<SpecimenOrObservationBase> pageFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * See {@link #listByAssociatedTaxon(Class, Set, Taxon, Integer, Integer, Integer, List, List)}
      *
      * @param type
+     *  Restriction to subtype of <code>SpecimenOrObservationBase</code>, can be NULL.
      * @param includeRelationships
      * @param associatedTaxon
      * @param maxDepth
@@ -343,6 +311,18 @@ public interface IOccurrenceService
      * if this was a FieldUnit or an empty collection if no FieldUnits were found
      */
     public Collection<FieldUnit> findFieldUnits(UUID specimenUuid, List<String> propertyPaths);
+
+    /**
+     * Retrieves top most originals for a {@link SpecimenOrObservationBase} in the derivation graph by recursively
+     * walking all {@link DerivationEvent}s.
+     * In most cases item in the returned collection will be {@link FieldUnit FieldUnits} but also DerivedUnits are possible, in
+     * cases where no FieledUnit exists.
+     *
+     * @param specimenUuid the UUID of the specimen
+     * @param propertyPaths the property path
+     * @return either a collection of root units
+     */
+    public Collection<SpecimenOrObservationBase> findRootUnits(UUID specimenUuid, List<String> propertyPaths);
 
     /**
      * @param clazz
@@ -675,11 +655,113 @@ public interface IOccurrenceService
             FindOccurrencesConfigurator config);
 
 
-    FieldUnitDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
+    /**
+     * Collects the <code>FieldUnits</code> which are at the root of the derivation event
+     * graph in which the {@link DerivedUnit} with the specified <code>findByAccessionNumber</code>
+     * is found.
+     *
+     * @deprecated method name unclear and thus replaced by {@link #findByGeneticAccessionNumber(String, List)}
+     */
+    @Deprecated
+    SpecimenOrObservationBaseDTO findByAccessionNumber(String accessionNumberString, List<OrderHint> orderHints);
 
+    /**
+     * Collects the <code>FieldUnits</code> which are at the root of the derivation event
+     * graph in which the {@link DnaSample} with the specified <code>accessionNumberString</code>
+     * is found.
+     */
+    SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
 
-    List<FieldUnitDTO> findFieldUnitDTOByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
+    /**
+     * Finds the units which are associated to a taxon
+     * (<code>associatedTaxonUuid</code>) and returns all related root units
+     * with the derivation branches up to the derivatives associated with the
+     * taxon and the full derivation sub-tree of those.
+     * <p>
+     * Requirements as stated in the below linked tickets:
+     * <ol>
+     * <li>The derivation trees (derivatives, sub-derivatives,
+     * sub-sub-derivatives, ....) of each of the root units will be included in
+     * the result items in
+     * ({@link SpecimenOrObservationBaseDTO#getDerivatives()})</li>
+     * <li>.... should contain all derivates of a derivate determined to the
+     * taxon or its name and all elements should be displayed only once.
+     * ....</li>
+     * <li>... also sollen beim DerivateTree eigentlich auch nur die Derivate
+     * angezeigt werden, die über Taxon Association oder Determination an einem
+     * Taxon oder Namen hängen und ihre direkten Eltern und Kinder (+
+     * KindesKinder…).
+     * <li>Also im Endeffekt muss man die Derivate raus suchen, die eine
+     * Assoziation zu dem Taxon haben und dann die direkten Vorgänger und die
+     * Nachfolger finden. Andere Derivate, die von Origin Derivaten abstammen
+     * würden erstmal nicht dazugehören, außer sie sind ebenfalls mit dem Taxon
+     * assoziiert....</li>
+     * <ul>
+     *
+     * Related tickets:
+     *
+     * <ul>
+     * <li>https://dev.e-taxonomy.eu/redmine/issues/7599</li>
+     * <li>https://dev.e-taxonomy.eu/redmine/issues/9216</li>
+     * </ul>
+     *
+     * @param includedRelationships
+     *  TODO
+     * @param associatedTaxonUuid
+     *  The uuid of the taxon for which associated derivatives are to be found.
+     * @param propertyPaths
+     *  The bean initialization strategy
+     * @return
+     *  The list of root units with fully or partially assembled derivation graph.
+     */
+    List<SpecimenOrObservationBaseDTO> listRootUnitDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includedRelationships,
             UUID associatedTaxonUuid, List<String> propertyPaths);
+
+
+    /**
+     * Lists all root units which are
+     * associated <b>directly or indirectly</b>with the <code>taxon</code> specified
+     * as parameter. "Indirectly" means that a sub derivate of the FieldUnit is
+     * directly associated with the given taxon.
+     * SpecimenOrObservationBase instances can be associated to taxa in multiple
+     * ways, all these possible relations are taken into account:
+     * <ul>
+     * <li>The {@link IndividualsAssociation} elements in a
+     * {@link TaxonDescription} contain {@link DerivedUnit}s</li>
+     * <li>{@link SpecimenTypeDesignation}s may be associated with any
+     * {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
+     * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent}
+     * of the {@link SpecimenOrObservationBase}</li>
+     * </ul>
+     * Further more there also can be taxa which are associated with the taxon
+     * in question (parameter associatedTaxon) by {@link TaxonRelationship}s. If
+     * the parameter <code>includeRelationships</code> is containing elements,
+     * these according {@TaxonRelationshipType}s and
+     * directional information will be used to collect further
+     * {@link SpecimenOrObservationBase} instances found this way.
+     *
+     * @param <T>
+     * @param type
+     *  Restriction to a specific subtype, may be null.
+     * @param associatedTaxon
+     * @param Set<TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
+     * @param maxDepth TODO
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public <T extends SpecimenOrObservationBase> Collection<T> listRootUnitsByAssociatedTaxon(Class<T> type, Taxon associatedTaxon, List<OrderHint> orderHints, List<String> propertyPaths);
+
+
+    /**
+     * See {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
+     */
+    public <T extends SpecimenOrObservationBase> Pager<T> pageRootUnitsByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+
 
     public List<Point> findPointsForFieldUnitList(List<UUID> fieldUnitUuids);
 

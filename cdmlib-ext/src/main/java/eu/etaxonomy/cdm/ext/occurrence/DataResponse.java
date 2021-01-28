@@ -8,12 +8,11 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence;
 
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 
 /**
  * @author k.luther
  * @since 21.02.2017
- *
  */
 public class DataResponse {
     protected final URI dataSetUri;
@@ -22,18 +21,9 @@ public class DataResponse {
 
     protected final Object dataHolder;
 
-    /**
-     * @param derivedUnitFacade
-     * @param dataSetUrl
-     */
     public DataResponse(Object abcdDataHolder, URI dataSetUrl,  String [] tripleID) {
-
         this.dataHolder = abcdDataHolder;
         this.dataSetUri = dataSetUrl;
-
         this.tripleID = tripleID;
-
-
     }
-
 }

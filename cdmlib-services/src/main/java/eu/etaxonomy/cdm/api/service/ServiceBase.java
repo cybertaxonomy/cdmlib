@@ -281,7 +281,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
-    public T save(T newInstance) {
+    public <S extends T> S save(S newInstance) {
         return dao.save(newInstance);
     }
 

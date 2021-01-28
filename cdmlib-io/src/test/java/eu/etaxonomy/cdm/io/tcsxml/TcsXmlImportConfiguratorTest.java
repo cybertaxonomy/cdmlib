@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.tcsxml;
 
 import static org.junit.Assert.assertEquals;
@@ -26,6 +25,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
@@ -36,15 +36,14 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.mueller
  * @since 29.01.2009
- * @version 1.0
  */
 public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	private IImportConfigurator configurator;
 
@@ -54,7 +53,7 @@ public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 		String inputFile = "/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-		configurator = TcsXmlImportConfigurator.NewInstance(url.toURI(), null);
+		configurator = TcsXmlImportConfigurator.NewInstance(URI.fromUrl(url), null);
 		assertNotNull("Configurator could not be created", configurator);
 	}
 
@@ -78,5 +77,4 @@ public class TcsXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
 }

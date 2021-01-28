@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.term;
 
 import javax.persistence.Entity;
@@ -164,7 +163,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>>
         }
     }
 
-
     /**
      * If this term is lower than the parameter term, true is returned, else false.
      * If the parameter term is null, an Exception is thrown.
@@ -175,7 +173,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>>
         return (this.compareTo(orderedTerm) < 0 );
     }
 
-
     /**
      * If this term is higher than the parameter term, true is returned, else false.
      * If the parameter term is null, an Exception is thrown.
@@ -185,7 +182,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>>
     public boolean isHigher(T orderedTerm){
         return (this.compareTo(orderedTerm) > 0 );
     }
-
 
     /**
      * @deprecated To be used only by OrderedTermVocabulary

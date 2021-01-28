@@ -78,7 +78,10 @@ public class HibernateProxyHelper {
         }
 	 }
 
-
+	/**
+	 * Tests if the entity or hibernate proxy <code>object</code> is assignable from the type
+	 * defined as parameter <code>clazz</code>.
+	 */
 	public static boolean isInstanceOf(Object object, Class clazz) throws ClassCastException {
 	     if (clazz == null || object == null){
 	    	 return false;

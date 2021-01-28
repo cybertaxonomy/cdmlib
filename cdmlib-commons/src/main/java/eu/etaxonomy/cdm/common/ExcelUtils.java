@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.common;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
 import java.text.DateFormat;
 import java.text.Format;
 import java.util.ArrayList;

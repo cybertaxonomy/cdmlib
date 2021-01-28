@@ -837,11 +837,8 @@ public class TaxonNode
 	    }
 	}
 
-
     /**
-     * Returns a set containing this node and all nodes that are descendants of this node
-     *
-     * @return
+     * Returns a set containing this node and all nodes that are descendants of this node.
      */
 	@Transient
     protected Set<TaxonNode> getDescendants(){
@@ -943,8 +940,6 @@ public class TaxonNode
     /**
      * Returns the ancestor taxon nodes, that do have a taxon attached
      * (excludes the root node) starting with the highest
-     *
-     * @return
      */
     @Transient
     public List<TaxonNode> getAncestorList(){
@@ -962,7 +957,6 @@ public class TaxonNode
 
     /**
      * Whether this TaxonNode is a direct child of the classification TreeNode
-     * @return
      */
     @Transient
     public boolean isTopmostNode(){
@@ -1055,6 +1049,11 @@ public class TaxonNode
         return hasTaxon() ? getTaxon().getNullSafeRank() : null;
     }
 
+    @Transient
+    public TaxonName getNullSafeName() {
+        return getTaxon() == null? null: getTaxon().getName();
+    }
+
     public void removeNullValueFromChildren(){
         try {
             //HHH_9751_Util.removeAllNull(childNodes);
@@ -1064,13 +1063,6 @@ public class TaxonNode
         }
     }
 
-    private void setStatus(TaxonNodeStatus status, boolean value) {
-        if (value){
-            this.status = status;
-        }else if (this.status != null && this.status.equals(status)){
-            this.status = null;
-        }
-    }
     private boolean hasStatus(TaxonNodeStatus status) {
         return CdmUtils.nullSafeEqual(this.status, status);
     }
@@ -1082,6 +1074,11 @@ public class TaxonNode
      * modifying only some of the attributes.<BR><BR>
      * The child nodes are not copied.<BR>
      * The taxon and parent are the same as for the original taxon node. <BR>
+     * <BR>
+     * Note: Cloning taxon nodes with cloning taxa (and children) is a complex
+     * issue which is better be handled in service layer logic. See according
+     * clone method in classification service
+     * or taxon node service there.
      *
      * @see java.lang.Object#clone()
      */
@@ -1129,4 +1126,5 @@ public class TaxonNode
     public String getMicroReference() {
         return getCitationMicroReference();
     }
+
 }

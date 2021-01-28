@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.model.media;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +9,8 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.common.URI;
 
 public class MediaUtilsTest {
 

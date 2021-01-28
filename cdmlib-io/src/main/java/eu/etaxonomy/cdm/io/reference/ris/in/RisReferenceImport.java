@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.io.reference.ris.in;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
+import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;

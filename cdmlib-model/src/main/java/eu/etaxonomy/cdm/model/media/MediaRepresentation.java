@@ -6,12 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.media;
 
-
 import java.lang.reflect.Constructor;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +34,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -123,7 +120,7 @@ public class MediaRepresentation extends VersionableEntity {
 	 * @throws InstantiationException
 	 */
 	public static<T extends MediaRepresentationPart> MediaRepresentation NewInstance(String mimeType, String suffix, URI uri, Integer size, Class<T> clazz) {
-		if (uri == null || CdmUtils.isEmpty(uri.toString())){
+		if (uri == null || isBlank(uri.toString())){
 			return null;
 		}
 		MediaRepresentationPart part;
@@ -211,7 +208,7 @@ public class MediaRepresentation extends VersionableEntity {
 		MediaRepresentation result = (MediaRepresentation)super.clone();
 
 		//media representations
-		result.mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
+		result.mediaRepresentationParts = new ArrayList<>();
 		for (MediaRepresentationPart mediaRepresentationPart: this.mediaRepresentationParts){
 			result.mediaRepresentationParts.add(mediaRepresentationPart.clone());
 		}

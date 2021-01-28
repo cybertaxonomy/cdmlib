@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.model.term;
 
 import static org.junit.Assert.assertEquals;
@@ -8,12 +16,13 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
-public class TermTreeTest {
+public class TermTreeTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermTreeTest.class);
 
@@ -23,15 +32,6 @@ public class TermTreeTest {
 	private TermNode<Feature> node3;
 	private TermNode<Feature> node4;
 
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		testTree = TermTree.NewFeatureInstance();
@@ -41,12 +41,14 @@ public class TermTreeTest {
 		node3 = node2.addChild(Feature.DESCRIPTION());
 		node4 = node3.addChild(Feature.DISCUSSION());
 	}
+
 //	@Test
 //	public void testSetRoot(){
 //		testTree.setRoot(node2);
 //		assertNotNull(testTree.getRoot());
 //		assertEquals(testTree.getRoot(), node2);
 //	}
+
 	@Test
 	public void testAddChild(){
 		TermNode<Feature> node21 = node1.addChild(Feature.ANATOMY(), 1);
@@ -69,7 +71,7 @@ public class TermTreeTest {
 	@Test
 	public void testClone(){
         TermNode<Feature> node21 = node1.addChild(Feature.ADDITIONAL_PUBLICATION(), 1);
-		TermTree<Feature> clone = (TermTree<Feature>) testTree.clone();
+		TermTree<Feature> clone = testTree.clone();
 
 		assertEquals (clone.getRoot().getTerm(), testTree.getRoot().getTerm());
 		assertNotSame(clone.getRoot(), testTree.getRoot());

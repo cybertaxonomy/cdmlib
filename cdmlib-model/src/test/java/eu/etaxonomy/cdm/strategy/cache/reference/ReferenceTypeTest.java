@@ -1,38 +1,25 @@
 /**
- * 
- */
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
  * @author a.mueller
- *
  */
 public class ReferenceTypeTest {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
 // ****************************** TESTS ***************************************
-	
+
 	@Test
 	public void testIsPrintedUnit(){
 		Assert.assertTrue("Proceedings must be printed unit", ReferenceType.Proceedings.isPrintedUnit());
@@ -52,7 +39,7 @@ public class ReferenceTypeTest {
 		Assert.assertFalse("Thesis must not be printed unit", ReferenceType.Thesis.isPrintedUnit());
 		Assert.assertFalse("WebPage must not be printed unit", ReferenceType.WebPage.isPrintedUnit());
 	}
-	
+
 	@Test
 	public void testIsPublication(){
 		Assert.assertTrue("Proceedings must be publication", ReferenceType.Proceedings.isPublication());
@@ -72,7 +59,7 @@ public class ReferenceTypeTest {
 		Assert.assertTrue("Thesis must be publication", ReferenceType.Thesis.isPublication());
 		Assert.assertTrue("WebPage must be publication", ReferenceType.WebPage.isPublication());
 	}
-	
+
 
 	@Test
 	public void testIsVolumeReference(){
@@ -93,7 +80,7 @@ public class ReferenceTypeTest {
 		Assert.assertFalse("Thesis must not be volume reference", ReferenceType.Thesis.isVolumeReference());
 		Assert.assertFalse("WebPage must not be volume reference", ReferenceType.WebPage.isVolumeReference());
 	}
-	
+
 
 	@Test
 	public void testIsSection(){

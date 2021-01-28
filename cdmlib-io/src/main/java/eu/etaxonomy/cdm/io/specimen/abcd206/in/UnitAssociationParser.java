@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,13 +18,13 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 
 /**
  * @author pplitzner
  * @since 16.06.2015
- *
  */
 public class UnitAssociationParser {
 
@@ -127,45 +126,36 @@ public class UnitAssociationParser {
         if(unitID!=null && datasetAccessPoint!=null){
             BioCaseQueryServiceWrapper serviceWrapper = new BioCaseQueryServiceWrapper();
 
-
             OccurenceQuery query = new OccurenceQuery(unitID);
 
+            try {
+                InputStream inputStream = serviceWrapper.querySiblings(query, datasetAccessPoint);
 
-                InputStream inputStream;
-                try {
-                    inputStream = serviceWrapper.querySiblings(query, datasetAccessPoint);
-
-                    if(inputStream!=null){
+                if(inputStream!=null){
                     UnitAssociationWrapper unitAssociationWrapper = null;
                     try {
                         unitAssociationWrapper = AbcdParseUtility.parseUnitsNodeList(inputStream, report);
-
                     } catch (Exception e) {
                         String exceptionMessage = "An exception occurred during parsing of associated units!";
                         logger.error(exceptionMessage, e);
                         report.addException(exceptionMessage, e);
                     }
 
-
-                    return unitAssociationWrapper;
-                    }
-                    else{
-                        logger.error(unableToLoadMessage);
-                        report.addInfoMessage(unableToLoadMessage);
-                    }
-                } catch (ClientProtocolException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                return unitAssociationWrapper;
+                }else{
+                    logger.error(unableToLoadMessage);
+                    report.addInfoMessage(unableToLoadMessage);
                 }
-
+            } catch (ClientProtocolException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
-            else{
-                report.addInfoMessage(unableToLoadMessage);
-            }
+        }else{
+            report.addInfoMessage(unableToLoadMessage);
+        }
         return null;
     }
-
 }

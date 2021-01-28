@@ -18,43 +18,25 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
  * @author a.mueller
  * @since 23.10.2008
  */
-public class TdwgAreaTest {
+public class TdwgAreaTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TdwgAreaTest.class);
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		new DefaultTermInitializer().initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
 // ************** TESTS *************************************************
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.location.TdwgArea_Old#getAreaByTdwgAbbreviation(java.lang.String)}.
-	 */
 	@Test
 	public void testGetAreaByTdwgAbbreviation() {
 		Language.ENGLISH(); // to make sure Terms are already loaded
@@ -63,18 +45,12 @@ public class TdwgAreaTest {
 		Assert.assertNull(getAreaByTdwgAbbreviation("A1R"));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.location.TdwgArea_Old#getAreaByTdwgLabel(java.lang.String)}.
-	 */
 	@Test
 	public void testGetAreaByTdwgLabel() {
 		Assert.assertEquals("Germany", getAreaByTdwgLabel("Germany").getLabel(Language.ENGLISH()));
 		Assert.assertNull(getAreaByTdwgLabel("A1R"));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.location.TdwgArea_Old#isTdwgAreaLabel(java.lang.String)}.
-	 */
 	@Test
 	public void testIsTdwgAreaLabel() {
 		Assert.assertTrue(isTdwgAreaLabel("Germany"));
@@ -132,9 +108,7 @@ public class TdwgAreaTest {
 		initializer.initialize();
 		NamedArea saoTome = NamedArea.getTdwgTermByUuid(UUID.fromString("c64e07cc-0a58-44b3-ac91-c216d1b91c1f"));
 		assertEquals("Utf8 error", "S\u00E3o Tom\u00E9", saoTome.getLabel());
-
 	}
-
 
 	@Test
 	public void testCompare(){
@@ -142,7 +116,7 @@ public class TdwgAreaTest {
 		//this needs to work correctly
 		TermVocabulary voc = getAreaByTdwgAbbreviation("1").getVocabulary();
 
-		Set<NamedArea> set = new TreeSet<NamedArea>();
+		Set<NamedArea> set = new TreeSet<>();
 		NamedArea area3 = NamedArea.NewInstance();
 		area3.addRepresentation(Representation.NewInstance("Spain", "Spain", "SPA", Language.DEFAULT()));
 		NamedArea area4 = NamedArea.NewInstance();
@@ -154,8 +128,6 @@ public class TdwgAreaTest {
 		set.add(area4);
 		Assert.assertEquals("There must be 2 areas in the set", 2, set.size());
 	}
-
-
 
 //	@Test
 //	public void getHirarchichalAreasTest(){
@@ -279,7 +251,6 @@ public class TdwgAreaTest {
 		return aux;
 	}
 
-
 	private NamedArea getAreaByTdwgAbbreviation(String tdwgAbbrev){
 		return NamedArea.getAreaByTdwgAbbreviation(tdwgAbbrev);
 	}
@@ -291,5 +262,4 @@ public class TdwgAreaTest {
 	private boolean isTdwgAreaLabel(String tdwgLabel){
 		return NamedArea.isTdwgAreaLabel(tdwgLabel);
 	}
-
 }

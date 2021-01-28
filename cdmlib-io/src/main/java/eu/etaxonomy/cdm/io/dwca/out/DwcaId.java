@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.dwca.out;
 
-import java.net.URI;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.common.LSID;
 /**
  * @author a.mueller
  * @since 29.04.2011
- *
  */
 public class DwcaId {
 	@SuppressWarnings("unused")

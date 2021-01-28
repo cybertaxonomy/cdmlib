@@ -72,7 +72,9 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "typeDesignations.typifiedNames.typeDesignations", // important !!
             "typeDesignations.typeSpecimen",
             "typeDesignations.typeName.$",
-            "typeDesignations.citation",
+            "typeDesignations.source.annotations",
+            "typeDesignations.source.links",
+            "typeDesignations.source.markers",
             "typeDesignations.annotations",   // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "typeDesignations.markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "typeDesignations.registrations", // DerivedUnitConverter.copyPropertiesTo(TARGET n)

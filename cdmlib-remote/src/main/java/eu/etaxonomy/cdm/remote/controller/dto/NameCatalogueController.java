@@ -304,7 +304,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
     @RequestMapping(value = { "" }, method = {RequestMethod.GET,RequestMethod.POST} , params = {"query"})
     public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
-    return doGetNameSearch(queries, DEFAULT_SEARCH_TYPE, DEFAULT_MAX_NB_FOR_EXACT_SEARCH, request, response);
+        return doGetNameSearch(queries, DEFAULT_SEARCH_TYPE, DEFAULT_MAX_NB_FOR_EXACT_SEARCH, request, response);
     }
 
     /**
@@ -339,6 +339,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             @RequestParam(value = "type", required = false, defaultValue = DEFAULT_SEARCH_TYPE) String searchType,
             @RequestParam(value = "hits", required = false, defaultValue = DEFAULT_MAX_NB_FOR_EXACT_SEARCH) String hits,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> nsList = new ArrayList<>();
 
@@ -367,10 +368,10 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             stringArray[0] = Character.toUpperCase(stringArray[0]);
             queryWOWildcards = new String(stringArray);
 
-            boolean wc = false;
+            boolean wildcard = false;
 
             if(getMatchModeFromQuery(query) == MatchMode.BEGINNING) {
-                wc = true;
+                wildcard = true;
             }
             logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + query);
 
@@ -378,19 +379,16 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
             try {
                 nameSearchList = service.findByNameExactSearch(
                         queryWOWildcards,
-                        wc,
+                        wildcard,
                         null,
                         false,
                         h);
             } catch (LuceneParseException e) {
-                // TODO Auto-generated catch block
-                //e.printStackTrace();
                 ErrorResponse er = new ErrorResponse();
                 er.setErrorMessage("Could not parse name : " + query);
                 nsList.add(er);
                 continue;
             }
-
 
             // if search is successful then get related information , else return error
             if (nameSearchList != null && !nameSearchList.isEmpty()) {

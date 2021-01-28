@@ -1,50 +1,27 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.strategy.parser;
 
 import org.junit.Assert;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
  * @author a.mueller
  * @since 02.08.2011
- *
  */
-public class NameTypeParserTest {
+public class NameTypeParserTest extends TermTestBase {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		DefaultTermInitializer initializer = new DefaultTermInitializer();
-		initializer.initialize();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NameTypeParser#makeNameTypeStatus(java.lang.String)}.
-	 */
-	@Test
+    @Test
 	public void testMakeNameTypeStatus() {
 		//orig dest
 		String typeString = "original designation";
@@ -54,7 +31,7 @@ public class NameTypeParserTest {
 			Assert.assertEquals("Type should be original designation", NameTypeDesignationStatus.ORIGINAL_DESIGNATION(), type);
 		} catch (UnknownCdmTypeException e) {
 			Assert.fail(typeString + " not recognized");
-		}	
+		}
 		typeString = "original desig.";
 		try {
 			type = NameTypeParser.parseNameTypeStatus(typeString);
@@ -135,8 +112,5 @@ public class NameTypeParserTest {
 		} catch (UnknownCdmTypeException e) {
 			Assert.fail(typeString + " not recognized");
 		}
-
-
-
 	}
 }

@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -174,64 +173,42 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		return getUuidAndTitleCache(query);
 	}
 
-
 	@Override
-    public List<UuidAndTitleCache<AgentBase>> getUuidAndAbbrevTitleCache(Class clazz, Integer limit, String pattern){
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern){
         Session session = getSession();
-        String clazzString = "";
-        if (clazz == null){
-            clazzString = "";
-        }else if (clazz.equals(Team.class)){
-            clazzString = "dtype = 'Team'";
-        } else if (clazz.equals(Person.class)){
-            clazzString = "dtype = 'Person'";
-        }  else if (clazz.equals(Institution.class)){
-            clazzString = "dtype = 'Institution'";
-        } else if (clazz.equals(TeamOrPersonBase.class)){
-            clazzString = "dtype != 'Institution'";
-        }
+
+        clazz = clazz == null? (Class)type : clazz;
+        String clazzString = " FROM " + type.getSimpleName();
 
         Query query = null;
-        String whereClause = " WHERE ";
+
         if (pattern != null){
-            whereClause += "nomenclaturalTitle LIKE :pattern";
+            String whereClause = " WHERE nomenclaturalTitle LIKE :pattern";
             if (pattern.startsWith("*")){
                 whereClause += " OR titleCache LIKE :pattern";
             }
-            if (clazzString != ""){
-                whereClause += " AND " + clazzString;
-            }
 
-
-            query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName()  + whereClause);
-
-
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            if (clazzString != ""){
-                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName() + " WHERE " + clazzString);
-            } else{
-                query = session.createQuery("SELECT uuid, id, nomenclaturalTitle, titleCache FROM " + type.getSimpleName());
-            }
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString);
         }
         if (limit != null){
-           query.setMaxResults(limit);
+            query.setMaxResults(limit);
         }
 
         return getUuidAndAbbrevTitleCache(query);
     }
 
 	@Override
-    public List<AgentBase> findByTitleAndAbbrevTitle(Class clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<String> params = new HashSet<>();
         params.add("titleCache");
         params.add("nomenclaturalTitle");
 
 	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
-
-
 }

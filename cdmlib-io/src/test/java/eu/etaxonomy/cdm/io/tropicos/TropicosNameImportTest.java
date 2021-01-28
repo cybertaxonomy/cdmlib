@@ -24,6 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.ImportResult;
 import eu.etaxonomy.cdm.io.tropicos.in.TropicosNameImportConfigurator;
@@ -33,11 +34,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
-
 /**
  * @author a.mueller
  * @since 15.11.2017
- *
  */
 public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
 
@@ -65,8 +64,8 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
             URL urlLong = this.getClass().getResource(inputFileLong);
             assertNotNull("URL for the test file '" + inputFileLong + "' does not exist", urlLong);
 
-            configShort = TropicosNameImportConfigurator.NewInstance(url.toURI(), null);
-            configLong = TropicosNameImportConfigurator.NewInstance(urlLong.toURI(), null);
+            configShort = TropicosNameImportConfigurator.NewInstance(URI.fromUrl(url), null);
+            configLong = TropicosNameImportConfigurator.NewInstance(URI.fromUrl(urlLong), null);
 
 
         } catch (Exception e) {
@@ -128,9 +127,6 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
 
         Integer expected = 118;  //did not count yet
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
-
-
-
     }
 
     @Override

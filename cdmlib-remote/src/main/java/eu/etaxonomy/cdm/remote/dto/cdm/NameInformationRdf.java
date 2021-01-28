@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.dto.cdm;
 
 import java.net.URI;
@@ -32,10 +31,8 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept.HasRelationship;
  * This class is an RDF representation of the {@link eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation NameInformation}
  *
  * @author c.mathew
- * @version 1.1.0
  * @since 25-Nov-2012
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameInformation", propOrder = {
 		"scientificNameID",
@@ -48,33 +45,33 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept.HasRelationship;
 })
 @XmlRootElement(name = "NameInformation", namespace = "http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#")
 public class NameInformationRdf extends BaseThing {
-	
+
 	@XmlElement(namespace = "http://rs.tdwg.org/dwc/terms/")
 	private String scientificNameID;
-	
+
 	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonName#")
 	private String nameComplete;
-	
+
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
 	private String title;
-	
+
 	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonName#")
-	private String rankString;	
-	
+	private String rankString;
+
 	@XmlElement(namespace = "http://purl.org/dc/terms/")
 	private String references;
 
 	@XmlElement(namespace = "http://rs.tdwg.org/dwc/terms/")
 	private List<String> typeStatus;
-	
+
 
 	@XmlElement(name = "hasRelationship", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private Set<HasRelationship> hasRelationships = null;
-	
+
 	@XmlTransient
 	private Set<String> taxonUuids;
-	
-	
+
+
 	public Set<String> getTaxonUuids() {
 		return taxonUuids;
 	}
@@ -84,14 +81,14 @@ public class NameInformationRdf extends BaseThing {
 		Set<Relationship> relationships = new HashSet<Relationship>();
 		Iterator<String> itr = taxonUuids.iterator();
 		while(itr.hasNext()) {
-			String uuid = itr.next();			
+			String uuid = itr.next();
 			try {
 				TaxonConcept tc = new TaxonConcept();
 				tc.setIdentifier(new URI("urn:uuid:" + uuid));
 				Relationship rel = new Relationship();
 				rel.setToTaxon(tc);
 				relationships.add(rel);
-				
+
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
@@ -105,11 +102,11 @@ public class NameInformationRdf extends BaseThing {
 	public String getScientificNameID() {
 		return scientificNameID;
 	}
-	
+
 	public void setScientificNameID(String scientificNameID) {
 		this.scientificNameID = scientificNameID;
 	}
-	
+
 	public String getNameComplete() {
 		return nameComplete;
 	}
@@ -118,11 +115,13 @@ public class NameInformationRdf extends BaseThing {
 		this.nameComplete = nameComplete;
 	}
 
-	public String getTitle() {
+	@Override
+    public String getTitle() {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	@Override
+    public void setTitle(String title) {
 		this.title = title;
 	}
 
@@ -133,7 +132,7 @@ public class NameInformationRdf extends BaseThing {
 	public void setRankString(String rankString) {
 		this.rankString = rankString;
 	}
-	
+
 	public String getReferences() {
 		return references;
 	}
@@ -141,7 +140,7 @@ public class NameInformationRdf extends BaseThing {
 	public void setReferences(String references) {
 		this.references = references;
 	}
-	
+
 	public List<String> getTypeStatus() {
 		return typeStatus;
 	}

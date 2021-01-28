@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import static org.junit.Assert.assertEquals;
@@ -18,7 +17,6 @@ import java.lang.reflect.Method;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -28,13 +26,13 @@ import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 
 /**
  * @author a.mueller
  */
 public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZoologicalNameCacheStrategyTest.class);
 
 	private TaxonNameDefaultCacheStrategy strategy;
@@ -65,12 +63,6 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	private final Integer publicationYear = 1928;
 	private final Integer originalPublicationYear = 1860;
 
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-		vocabularyStore.initialize();
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		strategy = TaxonNameDefaultCacheStrategy.NewInstance();
@@ -99,7 +91,6 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
 	}
-
 
 /********* TEST *******************************************/
 
@@ -172,7 +163,6 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		assertEquals("TitleCache must be updated", "Abies alba subsp. beta " + "(ExBas. N. ex Basio, A., 1860) Exaut. ex L., 1928", subSpeciesName.getTitleCache());
 
 		assertNull("Authorship cache for null must return null", strategy.getAuthorshipCache(null));
-
 	}
 
 	@Test
@@ -199,7 +189,6 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		assertEquals(subSpeciesNameString, strategy.getNameCache(subSpeciesName));
 		assertEquals(varietyNameString, strategy.getNameCache(varName));
 	}
-
 
 	@Test
 	public final void testAutonyms() {
