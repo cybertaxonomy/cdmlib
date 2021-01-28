@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
@@ -163,8 +164,18 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
     public void testMicroReference(){
         TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
         String secMicroRef = "p. 553";
+
+        //not atomized
         taxonBase.setSecMicroReference(secMicroRef);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: p. 553",
                 taxonBase.getTitleCache());
+
+        //atomized
+        sec.setAuthorship(Team.NewTitledInstance("Team", "T."));
+        sec.setDatePublished(TimePeriodParser.parseStringVerbatim("1798"));
+        taxonBase.setTitleCache(null);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Team, 1798: p. 553",
+                taxonBase.getTitleCache());
+
     }
 }
