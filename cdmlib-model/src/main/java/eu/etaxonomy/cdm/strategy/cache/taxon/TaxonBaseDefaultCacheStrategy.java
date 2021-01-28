@@ -116,7 +116,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         List<TaggedText> tags = new ArrayList<>();
 
         Reference ref = taxonBase.getSec();
-        ref = HibernateProxyHelper.deproxy(ref, Reference.class);
+        ref = HibernateProxyHelper.deproxy(ref);
         String secRef;
         if (ref == null){
             //missing sec
@@ -145,7 +145,6 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         if (isNotBlank(taxonBase.getSecMicroReference())){
             tags.add(new TaggedText(TagEnum.separator, ": "));
             tags.add(new TaggedText(TagEnum.secMicroReference, taxonBase.getSecMicroReference()));
-
         }
         return tags;
     }
