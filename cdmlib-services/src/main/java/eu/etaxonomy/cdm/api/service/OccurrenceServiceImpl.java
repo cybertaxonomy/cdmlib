@@ -759,11 +759,6 @@ public class OccurrenceServiceImpl
             alreadyCollectedSpecimen.put(derivedUnitDTO.getUuid(), derivedUnitDTO);
         }
 
-        // FIXME defining propertyPaths inside of transactional service method makes no sense. see also #9253
-        propertyPaths.add("descriptions.elements.media.title");
-        propertyPaths.add("kindOfUnit");
-        propertyPaths.add("derivedFrom");
-
         List<SpecimenOrObservationBase> originals = dao.findOriginalsForDerivedUnit(derivedUnitDTO.getUuid(), propertyPaths);
         if (originals.size() > 0){
             if (originals.size() > 1){
