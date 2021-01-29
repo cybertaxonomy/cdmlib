@@ -418,11 +418,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     }
 
     /**
-     * TODO !
-     * the derivation graph seems to be walked two times in here
-     * 1. below in the for loop
-     * 2. in the call to DerivateDataDTO.fromEntity below
-     *
      * @param sob
      *      The Unit to assemble the derivatives information for
      * @param maxDepth
