@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashSet;
@@ -54,7 +53,6 @@ import eu.etaxonomy.cdm.strategy.cache.description.DescriptiveDataSetDefaultCach
  * @author h.fradin
  * @since 12.08.2009
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptiveDataSet", propOrder = {
     "representations",
@@ -138,7 +136,6 @@ public class DescriptiveDataSet
 	public static DescriptiveDataSet NewInstance(){
         return new DescriptiveDataSet();
     }
-
 
 // *******************CONSTRUCTOR **********************************/
 	/**
@@ -391,7 +388,7 @@ public class DescriptiveDataSet
 			//representations
 			result.representations = new HashSet<>();
 			for (Representation rep : this.representations){
-				result.addRepresentation((Representation)rep.clone());
+				result.addRepresentation(rep.clone());
 			}
 
 			//subtree filter
@@ -413,5 +410,4 @@ public class DescriptiveDataSet
 			return null;
 		}
 	}
-
 }

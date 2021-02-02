@@ -521,7 +521,7 @@ public class PolytomousKey
                 result.addGeographicalScope(area);
             }
 
-            result.root = (PolytomousKeyNode) this.root.clone();
+            result.root = this.root.clone();
 
             result.scopeRestrictions = new HashSet<DefinedTerm>();
             for (DefinedTerm scope : this.scopeRestrictions) {

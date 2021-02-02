@@ -261,10 +261,10 @@ public class Team extends TeamOrPersonBase<Team> {
 			return this.nomenclaturalTitle;
 		}
 		if (nomenclaturalTitle == null){
-			this.nomenclaturalTitle = cacheStrategy.getNomenclaturalTitle(this);
+			this.nomenclaturalTitle = getCacheStrategy().getNomenclaturalTitle(this);
 		}else{
 			//as long as team members to not inform the team about changes the cache must be created new each time
-			nomenclaturalTitle = cacheStrategy.getNomenclaturalTitle(this);
+			nomenclaturalTitle = getCacheStrategy().getNomenclaturalTitle(this);
 		}
 		return nomenclaturalTitle;
 	}
@@ -352,7 +352,7 @@ public class Team extends TeamOrPersonBase<Team> {
             String oldNomTitleCache = this.nomenclaturalTitle;
             this.protectedNomenclaturalTitleCache = false;
 
-            String newNomTitleCache = cacheStrategy.getNomenclaturalTitle(this);
+            String newNomTitleCache = getCacheStrategy().getNomenclaturalTitle(this);
 
             if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newNomTitleCache) ){
                  this.setNomenclaturalTitle(null, false);

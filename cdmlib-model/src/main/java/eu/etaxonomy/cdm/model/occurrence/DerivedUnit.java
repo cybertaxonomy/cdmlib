@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.HashSet;
@@ -56,7 +55,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  *
  * @author m.doering
  * @since 08-Nov-2007 13:06:52
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DerivedUnit", propOrder = {
@@ -78,9 +76,10 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 // even if hibernate complains "Abstract classes can never insert index documents. Remove @Indexed."
 // this is needed, otherwise the fields of the also abstract super class are missed during indexing
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
-public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> implements Cloneable{
-	private static final long serialVersionUID = -3525746216270843517L;
+public class DerivedUnit
+        extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<? extends DerivedUnit>> {
 
+    private static final long serialVersionUID = -3525746216270843517L;
 	private static final Logger logger = Logger.getLogger(DerivedUnit.class);
 
 	@XmlElement(name = "Collection")
@@ -184,11 +183,11 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 //************************** CONSTRUCTOR *********************************/
 
 	//Constructor: For hibernate use only
-	protected DerivedUnit() {
+	@SuppressWarnings("deprecation")
+    protected DerivedUnit() {
 	    super();
         initDefaultCacheStrategy();
 	}
-
 
     /**
 	 * Constructor
@@ -235,35 +234,16 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
             String facadeClassName = facadeStrategyClassName;
             Class<?> facadeClass = Class.forName(facadeClassName);
             try {
-                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                this.setCacheStrategy((IIdentifiableEntityCacheStrategy)facadeClass.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException("Cache strategy for DerivedUnit could not be instantiated", e);
             }
         } catch (ClassNotFoundException e) {
-            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<>();
+            this.setCacheStrategy(new IdentifiableEntityDefaultCacheStrategy<>());
         }
     }
-//
-//    private static Class<?> facadeCacheStrategyClass;
-//
-//
-//    @Override
-//    protected void setFacadeCacheStrategyClass(Class<?> facadeCacheStrategyClass){
-//        this.facadeCacheStrategyClass = facadeCacheStrategyClass;
-//    }
-//
-//
-//    @Override
-//    protected Class<?> getFacadeCacheStrategyClass(){
-//	    return facadeCacheStrategyClass;
-//	}
-
-
 
 // ******************** GETTER / SETTER *************************************/
-
 
 	public DerivationEvent getDerivedFrom() {
 		return derivedFrom;
@@ -506,7 +486,4 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 			return null;
 		}
 	}
-
-
-
 }

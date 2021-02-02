@@ -33,5 +33,4 @@ public class SpecimenDescriptionDefaultCacheStrategy extends DescriptionBaseDefa
 	protected IdentifiableEntity getDescriptionEntity(SpecimenDescription description) {
 	    return description.getDescribedSpecimenOrObservation();
 	}
-
 }

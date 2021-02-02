@@ -120,6 +120,7 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 
     private static final String facadeStrategyClassName =
             "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldUnitCacheStrategy";
+
     /**
      * Sets the default cache strategy
      */
@@ -129,14 +130,13 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
             String facadeClassName = facadeStrategyClassName;
             Class<?> facadeClass = Class.forName(facadeClassName);
             try {
-                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                this.setCacheStrategy((IIdentifiableEntityCacheStrategy)facadeClass.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException("Cache strategy for FieldUnit could not be instantiated", e);
+
             }
         } catch (ClassNotFoundException e) {
-            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
+            this.setCacheStrategy(new IdentifiableEntityDefaultCacheStrategy<FieldUnit>());
         }
     }
 

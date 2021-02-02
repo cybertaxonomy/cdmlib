@@ -101,7 +101,7 @@ public class TaxonDescription
     @FieldBridge(impl=NotNullAwareIdBridge.class)
     private Taxon taxon;
 
-
+//*********************** FACTORY *********************************/
 
     /**
      * Creates a new empty taxon description instance.

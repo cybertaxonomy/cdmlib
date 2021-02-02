@@ -70,7 +70,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- *
  */
 public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
@@ -1121,6 +1120,4 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
 }

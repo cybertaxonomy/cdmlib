@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 /**
  * @author a.mueller
  * @since 07.05.2018
- *
  */
 public class DescriptiveDataSetDefaultCacheStrategy
             extends IdentifiableEntityDefaultCacheStrategy<DescriptiveDataSet> {

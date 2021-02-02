@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.common;
 
 import java.util.UUID;
@@ -16,7 +15,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
-public class IdentifiableEntityDefaultCacheStrategy<T extends IdentifiableEntity> extends StrategyBase implements IIdentifiableEntityCacheStrategy<T> {
+public class IdentifiableEntityDefaultCacheStrategy<T extends IdentifiableEntity>
+        extends StrategyBase
+        implements IIdentifiableEntityCacheStrategy<T> {
 
     public static final String TITLE_CACHE_GENERATION_NOT_IMPLEMENTED = "-title cache generation not implemented-";
 
@@ -36,5 +37,4 @@ public class IdentifiableEntityDefaultCacheStrategy<T extends IdentifiableEntity
 	protected UUID getUuid() {
 		return uuid;
 	}
-
 }

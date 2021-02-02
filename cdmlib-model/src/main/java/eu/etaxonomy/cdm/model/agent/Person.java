@@ -206,7 +206,8 @@ public class Person extends TeamOrPersonBase<Person>{
 
 // *********************** GETTER SETTER ADDER **********************************/
 
-	/**
+
+    /**
 	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to <i>this</i> person.
 	 *
 	 * @see     InstitutionalMembership

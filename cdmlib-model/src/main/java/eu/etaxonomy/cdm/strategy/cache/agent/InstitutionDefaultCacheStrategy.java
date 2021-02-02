@@ -24,27 +24,23 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * Maybe it will need improvement later on.
  * @author a.mueller
  * @since 07.04.2010
- *
  */
-public class InstitutionDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Institution> {
-	private static final long serialVersionUID = 4586884860596045736L;
+public class InstitutionDefaultCacheStrategy
+        extends StrategyBase
+        implements IIdentifiableEntityCacheStrategy<Institution> {
+
+    private static final long serialVersionUID = 4586884860596045736L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Collection.class);
 
 	public static UUID uuid = UUID.fromString("20a61a6f-aac9-422e-a95f-20dfacd35b65");
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
-	 */
 	@Override
     public String getTitleCache(Institution institution) {
 		if (institution == null){
@@ -64,5 +60,6 @@ public class InstitutionDefaultCacheStrategy extends StrategyBase implements IId
 			return result;
 		}
 	}
+
 
 }

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         implements ITaxonCacheStrategy<T> {
 
     private static final long serialVersionUID = 5769890979070021350L;
+
     final static UUID uuid = UUID.fromString("931e48f0-2033-11de-8c30-0800200c9a66");
 
 	@Override

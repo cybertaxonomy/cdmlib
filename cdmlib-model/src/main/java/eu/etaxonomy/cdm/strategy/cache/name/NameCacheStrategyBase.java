@@ -45,13 +45,9 @@ public abstract class NameCacheStrategyBase
 
     final static UUID uuid = UUID.fromString("817ae5b5-3ac2-414b-a134-a9ae86cba040");
 
-    /**
-     * Constructor
-     */
     public NameCacheStrategyBase() {
         super();
     }
-
 
     @Override
     public String getFullTitleCache(TaxonName taxonName, HTMLTagRules htmlTagRules) {
@@ -69,12 +65,6 @@ public abstract class NameCacheStrategyBase
         return getFullTitleCache(taxonName, null);
     }
 
-
-    /**
-     * @param nonViralName
-     * @param tags
-     * @return
-     */
     @Override
     public List<TaggedText> getNomStatusTags(TaxonName taxonName, boolean includeSeparatorBefore,
             boolean includeSeparatorAfter) {
@@ -135,7 +125,6 @@ public abstract class NameCacheStrategyBase
         }
     }
 
-
     /**
      * Generates and returns the title cache of the given name.
      * The title cache in general includes the name and the authorship and year for some types of names.
@@ -174,7 +163,6 @@ public abstract class NameCacheStrategyBase
         }else{
             return doGetTaggedTitle(taxonName);
         }
-
     }
 
     protected abstract List<TaggedText> doGetTaggedTitle(TaxonName taxonName);
@@ -221,7 +209,6 @@ public abstract class NameCacheStrategyBase
         //nomenclatural status
         tags.addAll(getNomStatusTags(taxonName, true, false));
         return tags;
-
     }
 
     protected void addOriginalSpelling(List<TaggedText> tags, TaxonName taxonName){
@@ -299,5 +286,4 @@ public abstract class NameCacheStrategyBase
     protected String createString(List<TaggedText> tags, HTMLTagRules htmlTagRules) {
         return TaggedCacheHelper.createString(tags, htmlTagRules);
     }
-
 }

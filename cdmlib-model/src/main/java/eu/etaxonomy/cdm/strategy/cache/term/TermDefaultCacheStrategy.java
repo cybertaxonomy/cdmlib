@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 /**
  * @author a.mueller
  * @since 19.05.2010
- *
  */
 public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEntityDefaultCacheStrategy<T> implements IIdentifiableEntityCacheStrategy<T> {
 	private static final long serialVersionUID = 7687293307791110547L;
@@ -61,5 +60,4 @@ public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEn
 		}
 		return result;
 	}
-
 }

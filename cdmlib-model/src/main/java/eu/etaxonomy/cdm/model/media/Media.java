@@ -110,7 +110,6 @@ public class Media
     @IndexedEmbedded
     private TimePeriod mediaCreated;
 
-
     // TODO once hibernate annotations support custom collection type
     // private MultilanguageText description = new MultilanguageText();
     @XmlElement(name = "MediaDescription")
@@ -189,9 +188,6 @@ public class Media
 
 //********************************* CONSTRUCTOR **************************/
 
-    /**
-     * Constructor
-     */
     protected Media() {
         super();
         setMediaCacheStrategy();
@@ -228,10 +224,10 @@ public class Media
         }
     }
 
-    public AgentBase getArtist(){
+    public AgentBase<?> getArtist(){
         return this.artist;
     }
-    public void setArtist(AgentBase artist){
+    public void setArtist(AgentBase<?> artist){
         this.artist = artist;
     }
 
@@ -293,8 +289,8 @@ public class Media
 
     @Transient
     public String getTitleCacheByLanguage(Language lang){
-        if (cacheStrategy != null){
-            return ((MediaDefaultCacheStrategy)cacheStrategy).getTitleCacheByLanguage(this, lang);
+        if (getCacheStrategy() != null){
+            return ((MediaDefaultCacheStrategy)getCacheStrategy()).getTitleCacheByLanguage(this, lang);
         }else{
             return null;
         }

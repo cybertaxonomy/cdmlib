@@ -204,10 +204,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
     protected DefinedTermBase(TermType type) {
         super(type);
     }
+
     public DefinedTermBase(TermType type, String description, String label, String labelAbbrev) {
         super(type, description, label, labelAbbrev);
     }
-
 
 //********************** GETTER /SETTER *************************************
 
@@ -218,13 +218,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
       @Override
       public void setIdInVocabulary(String idInVocabulary) {
-
           this.idInVocabulary = CdmUtils.isBlank(idInVocabulary)? null : idInVocabulary;
       }
 
       @Override
       public T getKindOf(){
-
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
               LazyInitializer li = proxy.getHibernateLazyInitializer();
@@ -238,23 +236,18 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
           this.kindOf = kindOf;
       }
 
-
       @Override
       public Set<T> getGeneralizationOf(){
           return this.generalizationOf;
       }
-
       protected void setGeneralizationOf(Set<T> value) {
           this.generalizationOf = value;
       }
-
       public void addGeneralizationOf(T generalization) {
           checkTermType(generalization);
           generalization.setKindOf(this);
           this.generalizationOf.add(generalization);
       }
-
-
       public void removeGeneralization(T generalization) {
           if(generalizationOf.contains(generalization)){
               generalization.setKindOf(null);
@@ -339,7 +332,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
       protected void setVocabulary(TermVocabulary<T> newVocabulary) {
           this.vocabulary = newVocabulary;
     }
-
 
     public String getSymbol() {
         return symbol;

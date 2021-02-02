@@ -112,6 +112,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
         return result;
     }
 
+//******************* CONSTRUCTOR ***********************/
 
 	/**
 	 * Class constructor.
@@ -130,7 +131,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 */
 	public Set<DefinedTerm> getTypes(){
 		if(types == null) {
-			this.types = new HashSet<DefinedTerm>();
+			this.types = new HashSet<>();
 		}
 		return this.types;
 	}

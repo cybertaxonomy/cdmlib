@@ -258,7 +258,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 //************************* GETTER / SETTER ***********************/
 
-
     /**@see #recordBasis */
     public SpecimenOrObservationType getRecordBasis() {
         return recordBasis;

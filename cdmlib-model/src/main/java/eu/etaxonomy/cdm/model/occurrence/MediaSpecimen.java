@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.MediaSpecimenDefaultCacheStrat
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public class MediaSpecimen extends DerivedUnit {
+
 	private static final long serialVersionUID = -5717424451590705378L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MediaSpecimen.class);
@@ -77,18 +78,18 @@ public class MediaSpecimen extends DerivedUnit {
 
 // ******************* CONSTRUCTOR *************************/
 
-	/**
-	 * Constructor
-	 */
 	private MediaSpecimen() {
 		this(SpecimenOrObservationType.Media);
 	}
 
 	private MediaSpecimen(SpecimenOrObservationType type) {
 		super(type);
-		this.cacheStrategy = new MediaSpecimenDefaultCacheStrategy();
 	}
 
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.setCacheStrategy(new MediaSpecimenDefaultCacheStrategy());
+    }
 
 //************ GETTER / SETTER  **********************************/
 

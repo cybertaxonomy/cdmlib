@@ -117,7 +117,8 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
         return result;
     }
 
-// ************* CONSTRUCTORS *************/
+// ********************* CONSTRUCTORS ******************************/
+
 	/**
 	 * Class constructor: creates a new empty synonym instance.
 	 *

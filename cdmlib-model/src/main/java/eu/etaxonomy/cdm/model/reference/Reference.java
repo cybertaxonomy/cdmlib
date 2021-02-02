@@ -401,10 +401,7 @@ public class Reference
         addPropertyChangeListener(listener);
     }
 
-
 //*************************** GETTER / SETTER ******************************************/
-
-
 
     // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
     @Override
@@ -948,10 +945,9 @@ public class Reference
     public String getNomenclaturalCitation(String microReference) {
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getLabel();
 		if (getCacheStrategy() == null){
-			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
-			return null;
+		    throw new IllegalStateException("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 		}else{
-		    return cacheStrategy.getNomenclaturalCitation(this, microReference);
+		    return getCacheStrategy().getNomenclaturalCitation(this, microReference);
 		}
 	}
 
@@ -1123,11 +1119,6 @@ public class Reference
     	return this.cacheStrategy;
     }
 
-	@Override
-    public void setCacheStrategy(INomenclaturalReferenceCacheStrategy referenceCacheStrategy) {
-		this.cacheStrategy = referenceCacheStrategy;
-	}
-
    @Override
    public boolean updateCaches(){
        //TODO shouldn't this be moved to the cache strategy?
@@ -1141,9 +1132,9 @@ public class Reference
        if (this.protectedAbbrevTitleCache == false){
            String oldAbbrevTitleCache = this.abbrevTitleCache;
 
-           String newAbbrevTitleCache = getTruncatedCache(cacheStrategy.getFullAbbrevTitleString(this));
+           String newAbbrevTitleCache = getTruncatedCache(getCacheStrategy().getFullAbbrevTitleString(this));
            if (newAbbrevTitleCache.equals("")){
-               newAbbrevTitleCache = cacheStrategy.getTitleCache(this);
+               newAbbrevTitleCache = getCacheStrategy().getTitleCache(this);
            }
 
            if ( oldAbbrevTitleCache == null   || ! oldAbbrevTitleCache.equals(newAbbrevTitleCache) ){
@@ -1161,7 +1152,6 @@ public class Reference
         }
         return result;
     }
-
 
 //*********************** CLONE ********************************************************/
 
@@ -1202,9 +1192,4 @@ public class Reference
 			return super.toString();
 		}
 	}
-
-
-
-
 }
-

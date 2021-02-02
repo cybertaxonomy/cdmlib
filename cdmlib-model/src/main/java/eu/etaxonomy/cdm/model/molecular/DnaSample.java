@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DnaSampleDefaultCacheStrategy;
 //@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public class DnaSample extends DerivedUnit {
+
 	private static final long serialVersionUID = -2978411330023671805L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
@@ -103,6 +104,10 @@ public class DnaSample extends DerivedUnit {
 
 // ******************* CONSTRUCTOR *************************/
 
+    /**
+     * @deprecated for hibernate use only
+     */
+    @Deprecated
 	protected DnaSample() {  //protected for Javassist, otherwise private
 		super(SpecimenOrObservationType.DnaSample);
 		this.cacheStrategy = new DnaSampleDefaultCacheStrategy();
@@ -110,7 +115,7 @@ public class DnaSample extends DerivedUnit {
 
 //************ GETTER / SETTER  **********************************/
 
-	//sequencings
+    //sequencings
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}

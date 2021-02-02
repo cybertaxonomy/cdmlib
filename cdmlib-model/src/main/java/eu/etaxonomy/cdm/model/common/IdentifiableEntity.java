@@ -651,10 +651,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     public S getCacheStrategy() {
         return this.cacheStrategy;
     }
-    /**
-     * @see 	#getCacheStrategy()
-     */
-
     public void setCacheStrategy(S cacheStrategy) {
         this.cacheStrategy = cacheStrategy;
     }
