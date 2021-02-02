@@ -123,9 +123,6 @@ public class Collection
 
 // ******************** CONSTRUCTOR *************************/
 
-	/**
-	 * Constructor
-	 */
 	protected Collection() {
 		super();
 		this.cacheStrategy = new CollectionDefaultCacheStrategy();
@@ -134,6 +131,7 @@ public class Collection
 // ******************* GETTER / SETTER ************************/
 
 
+// ******************* GETTER / SETTER ************************/
 
 	/**
 	 * The {@link Institution institution} this collection belongs to.

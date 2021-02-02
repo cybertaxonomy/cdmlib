@@ -198,10 +198,6 @@ public class TaxonName
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
 
-//    @XmlTransient
-//    @Transient
-//    private PropertyChangeListener sourceListener;
-
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
      */

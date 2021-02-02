@@ -164,7 +164,6 @@ public class DerivedUnit
 
 // ******************** FACTORY METHOD **********************************/
 
-
 	public static DerivedUnit NewInstance(SpecimenOrObservationType type) {
 		if (type.isMedia()){
 			return MediaSpecimen.NewInstance(type);
@@ -234,12 +233,12 @@ public class DerivedUnit
             String facadeClassName = facadeStrategyClassName;
             Class<?> facadeClass = Class.forName(facadeClassName);
             try {
-                this.setCacheStrategy((IIdentifiableEntityCacheStrategy)facadeClass.newInstance());
+                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Cache strategy for DerivedUnit could not be instantiated", e);
             }
         } catch (ClassNotFoundException e) {
-            this.setCacheStrategy(new IdentifiableEntityDefaultCacheStrategy<>());
+            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<>();
         }
     }
 

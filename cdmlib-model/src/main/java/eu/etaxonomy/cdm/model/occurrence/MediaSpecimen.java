@@ -88,7 +88,7 @@ public class MediaSpecimen extends DerivedUnit {
 
     @Override
     protected void initDefaultCacheStrategy() {
-        this.setCacheStrategy(new MediaSpecimenDefaultCacheStrategy());
+        this.cacheStrategy = new MediaSpecimenDefaultCacheStrategy();
     }
 
 //************ GETTER / SETTER  **********************************/

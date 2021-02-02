@@ -165,7 +165,7 @@ public class PolytomousKey
         this.cacheStrategy = PolytomousKeyDefaultCacheStrategy.NewInstance();
     }
 
-    // ************************ GETTER/ SETTER
+// ************************ GETTER/ SETTER
 
     /**
      * Returns the topmost {@link PolytomousKeyNode polytomous key node} (root

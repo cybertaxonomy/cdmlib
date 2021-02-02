@@ -149,7 +149,7 @@ public class TaxonDescription
     public TaxonDescription(){
         super();
         this.cacheStrategy = new TaxonDescriptionDefaultCacheStrategy();
-        }
+    }
 
 //************************** METHODS **********************************************/
 

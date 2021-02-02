@@ -157,6 +157,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         this.created = new DateTime().withMillisOfSecond(0);
     }
 
+    //TODO are these 2 methods really needed, looks they are not used except for NewEntityListenerTest
     public static void setNewEntityListener(NewEntityListener nel) {
         newEntityListener = nel;
     }
@@ -169,7 +170,6 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 
     /**
      * see {@link PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)}
-     * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);

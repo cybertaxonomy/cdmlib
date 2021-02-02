@@ -130,13 +130,13 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
             String facadeClassName = facadeStrategyClassName;
             Class<?> facadeClass = Class.forName(facadeClassName);
             try {
-                this.setCacheStrategy((IIdentifiableEntityCacheStrategy)facadeClass.newInstance());
+                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException("Cache strategy for FieldUnit could not be instantiated", e);
 
             }
         } catch (ClassNotFoundException e) {
-            this.setCacheStrategy(new IdentifiableEntityDefaultCacheStrategy<FieldUnit>());
+            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
         }
     }
 
