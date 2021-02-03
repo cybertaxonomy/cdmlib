@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -176,6 +177,11 @@ public class Classification
         setReference(reference);
         this.rootNode = new TaxonNode();
         rootNode.setClassification(this);
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = ClassificationDefaultCacheStrategy.NewInstance();
     }
 
 //********************** xxxxxxxxxxxxx ******************************************/
@@ -640,20 +646,6 @@ public class Classification
 	public void removeDescription(Language language){
 		this.description.remove(language);
 	}
-
-    @Override
-    public String generateTitle() {
-        //TODO implement as cache strategy
-        if (protectedTitleCache){
-            return this.titleCache;
-        }else if (name != null){
-            return name.getText();
-        }else if (reference != null){
-            return this.reference.getTitleCache();
-        }else{
-            return this.toString();
-        }
-    }
 
     public int compareTo(Object o) {
         //TODO needs to be implemented
