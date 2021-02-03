@@ -242,12 +242,6 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 		}
 	}
 
-
-	/**
-     * @param state
-     * @param typeSpecimen
-     * @param typeInfo
-     */
     private void handleNotSeen(MarkupImportState state, DerivedUnit typeSpecimen, TypeInfo typeInfo) {
         if (typeInfo.notSeen){
             String text = "n.v. for " + state.getConfig().getSourceReference().getAbbrevTitleCache();

@@ -89,10 +89,10 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @XmlRootElement(name = "AmplificationResult")
 @Entity
 @Audited
-public class AmplificationResult extends AnnotatableEntity implements Cloneable{
+public class AmplificationResult extends AnnotatableEntity{
+
 	private static final long serialVersionUID = -8614860617229484621L;
 	private static final Logger logger = Logger.getLogger(AmplificationResult.class);
-
 
     /** @see #getDnaSample() */
 	@XmlElement( name = "DnaSample")
