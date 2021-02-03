@@ -148,6 +148,10 @@ public class TaxonDescription
      */
     public TaxonDescription(){
         super();
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
         this.cacheStrategy = new TaxonDescriptionDefaultCacheStrategy();
     }
 

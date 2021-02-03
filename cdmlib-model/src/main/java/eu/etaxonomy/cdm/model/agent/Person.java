@@ -180,8 +180,6 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	protected Person() {
 		super();
-		this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
-
 	}
 
 	/**
@@ -203,6 +201,11 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.setNomenclaturalTitle(nomenclaturalTitel);
 		logger.debug("after - Set nomenclatural Title");
 	}
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
+    }
 
 // *********************** GETTER SETTER ADDER **********************************/
 

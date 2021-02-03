@@ -143,11 +143,14 @@ public class DescriptiveDataSet
 	 */
 	protected DescriptiveDataSet() {
 		super();
-		this.cacheStrategy = new DescriptiveDataSetDefaultCacheStrategy();
 	}
 
-// ******************** GETTER / SETTER ************************/
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = DescriptiveDataSetDefaultCacheStrategy.NewInstance();
+    }
 
+// ******************** GETTER / SETTER ************************/
 
 	public Set<TaxonNode> getTaxonSubtreeFilter() {
         return taxonSubtreeFilter;

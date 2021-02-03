@@ -24,6 +24,12 @@ public class SpecimenDescriptionDefaultCacheStrategy extends DescriptionBaseDefa
 		return uuid;
 	}
 
+    public static SpecimenDescriptionDefaultCacheStrategy NewInstance() {
+        return new SpecimenDescriptionDefaultCacheStrategy();
+    }
+
+    private SpecimenDescriptionDefaultCacheStrategy(){}
+
 	@Override
 	protected String getDescriptionName() {
 	    return "Specimen description";

@@ -95,6 +95,10 @@ public class TaxonNameDescription
      */
     private TaxonNameDescription() {
         super();
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
         this.cacheStrategy = new TaxonNameDescriptionDefaultCacheStrategy();
     }
 

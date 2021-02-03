@@ -377,7 +377,6 @@ public class Reference
 		} else{
 			this.type = type;
 		}
-		this.setCacheStrategy(DefaultReferenceCacheStrategy.NewInstance());
 	}
 
 // *********************** LISTENER ************************/
@@ -1115,8 +1114,8 @@ public class Reference
 //*************************** CACHE STRATEGIES ******************************/
 
     @Override
-    public INomenclaturalReferenceCacheStrategy getCacheStrategy() {
-    	return this.cacheStrategy;
+    protected void initDefaultCacheStrategy() {
+        this.setCacheStrategy(DefaultReferenceCacheStrategy.NewInstance());
     }
 
    @Override

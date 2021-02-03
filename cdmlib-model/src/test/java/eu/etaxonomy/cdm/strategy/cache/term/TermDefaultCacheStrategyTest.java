@@ -35,7 +35,7 @@ public class TermDefaultCacheStrategyTest extends TermTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		strategy = new TermDefaultCacheStrategy<>();
+		strategy = TermDefaultCacheStrategy.NewInstance(null);
 	}
 
 //******************************* TEST **********************************************

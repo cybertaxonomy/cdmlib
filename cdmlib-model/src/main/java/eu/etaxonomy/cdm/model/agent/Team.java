@@ -135,9 +135,13 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
 	 */
 	public Team() {
-		this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
 		addListenersToMembers();
 	}
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
+    }
 
 	/**
 	 * Adds a property change listener to all team members.

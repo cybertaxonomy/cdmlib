@@ -62,8 +62,12 @@ public class SpecimenDescription
 // ***************************** CONSTRUCTOR *********************/
     public SpecimenDescription() {
 		super();
-		this.cacheStrategy = new SpecimenDescriptionDefaultCacheStrategy();
 	}
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = SpecimenDescriptionDefaultCacheStrategy.NewInstance();
+    }
 
 //*********************** CLONE ********************************************************/
 

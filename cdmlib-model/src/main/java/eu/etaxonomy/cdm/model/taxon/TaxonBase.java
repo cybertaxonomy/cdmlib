@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
@@ -196,6 +197,11 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         }
         this.setSec(sec);
         this.setSecMicroReference(secDetail);
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = (S)new TaxonBaseDefaultCacheStrategy();
     }
 
 //********* METHODS **************************************/

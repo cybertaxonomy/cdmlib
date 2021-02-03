@@ -67,7 +67,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
@@ -222,18 +221,14 @@ public class Taxon
 
     //TODO should be private, but still produces Spring init errors
     @Deprecated
-    public Taxon(){
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
-    }
+    public Taxon(){}
 
     private Taxon(TaxonName taxonName, Reference sec){
         super(taxonName, sec, null);
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
     }
 
     private Taxon(TaxonName taxonName, Reference sec, String secMicroReference){
         super(taxonName, sec, secMicroReference);
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
     }
 
 //********* METHODS **************************************/

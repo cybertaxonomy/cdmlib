@@ -651,6 +651,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
     public S getCacheStrategy() {
+        if (this.cacheStrategy == null){
+            initDefaultCacheStrategy();
+        }
         return this.cacheStrategy;
     }
     public void setCacheStrategy(S cacheStrategy) {
@@ -666,6 +669,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             return getCacheStrategy().getTitleCache(this);
         }
     }
+
+    /**
+     * Subclasses should implement setting the default cache strategy
+     */
+    protected abstract void initDefaultCacheStrategy();
 
 //****************** CLONE ************************************************/
 

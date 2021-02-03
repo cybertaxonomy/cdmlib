@@ -249,13 +249,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         this.recordBasis = recordBasis;
     }
 
-
-    /**
-     * Subclasses should implement setting the default cache strate
-     */
-    protected abstract void initDefaultCacheStrategy();
-
-
 //************************* GETTER / SETTER ***********************/
 
     /**@see #recordBasis */

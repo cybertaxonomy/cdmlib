@@ -125,11 +125,12 @@ public class Collection
 
 	protected Collection() {
 		super();
-		this.cacheStrategy = new CollectionDefaultCacheStrategy();
 	}
 
-// ******************* GETTER / SETTER ************************/
-
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = new CollectionDefaultCacheStrategy();
+    }
 
 // ******************* GETTER / SETTER ************************/
 

@@ -35,6 +35,13 @@ public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEn
 		return uuid;
 	}
 
+	@SuppressWarnings({ })
+    public static <T extends TermBase> TermDefaultCacheStrategy<T> NewInstance(@SuppressWarnings("unused") Class<T> clazz){
+	    return new TermDefaultCacheStrategy<T>();
+	}
+
+	private TermDefaultCacheStrategy(){}
+
 	@Override
 	public String getTitleCache(T term) {
 		String result = null;

@@ -597,9 +597,7 @@ public class TaxonName
      * @see #TaxonName(HomotypicalGroup)
      * @see #TaxonName(Rank, HomotypicalGroup)
      */
-    protected TaxonName() {
-        this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-    }
+    protected TaxonName() {}
 
     /**
      * Class constructor: creates a new taxon name instance
@@ -768,6 +766,11 @@ public class TaxonName
         } catch (SecurityException e1) {
             throw e1;
         }
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
     }
 
 // ****************** GETTER / SETTER ****************************/

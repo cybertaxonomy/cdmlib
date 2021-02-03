@@ -190,13 +190,12 @@ public class Media
 
     protected Media() {
         super();
-        setMediaCacheStrategy();
     }
 
-    private void setMediaCacheStrategy() {
-//      if (getClass() == Media.class){
-    	this.cacheStrategy = MediaDefaultCacheStrategy.NewInstance();
-//      }
+    @Override
+    protected void initDefaultCacheStrategy() {
+        //if (getClass() == Media.class) in future we may distinguish cache strategies for subclasses
+        this.cacheStrategy = MediaDefaultCacheStrategy.NewInstance();
     }
 
 // ********************* GETTER / SETTER    **************************/

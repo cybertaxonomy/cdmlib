@@ -35,6 +35,11 @@ public class InstitutionDefaultCacheStrategy
 
 	public static UUID uuid = UUID.fromString("20a61a6f-aac9-422e-a95f-20dfacd35b65");
 
+    public static InstitutionDefaultCacheStrategy NewInstance() {
+        return new InstitutionDefaultCacheStrategy();
+    }
+
+    private InstitutionDefaultCacheStrategy(){}
 
 	@Override
 	protected UUID getUuid() {

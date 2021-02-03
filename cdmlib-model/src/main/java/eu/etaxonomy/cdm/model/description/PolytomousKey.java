@@ -162,6 +162,10 @@ public class PolytomousKey
         root = PolytomousKeyNode.NewInstance();
         root.setNodeNumber(getStartNumber());
         root.setKey(this);
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
         this.cacheStrategy = PolytomousKeyDefaultCacheStrategy.NewInstance();
     }
 

@@ -119,8 +119,14 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 */
 	protected Institution() {
 		super();
-		this.cacheStrategy = new InstitutionDefaultCacheStrategy();
 	}
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = InstitutionDefaultCacheStrategy.NewInstance();
+    }
+
+//*************** Methods ******************************/
 
 	/**
 	 * Returns the set of institution types (categories)
