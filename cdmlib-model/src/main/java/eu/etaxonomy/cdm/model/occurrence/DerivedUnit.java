@@ -169,7 +169,15 @@ public class DerivedUnit
 			return MediaSpecimen.NewInstance(type);
 		}else if (type.equals(SpecimenOrObservationType.DnaSample) || type.isKindOf(SpecimenOrObservationType.DnaSample)){
 			return DnaSample.NewInstance();
-		}else{
+		}else if (type.equals(SpecimenOrObservationType.TissueSample) || type.isKindOf(SpecimenOrObservationType.TissueSample)){
+            //for now we store TissueSample as DnaSample to allow adding sequences and other DnaSample data to it directly
+		    //this is because sometimes explicit DnaSample data does not exist as it is not preserved
+		    //In this case a Sequence or Amplification is directly added to the Tissue Sample.
+		    //In theory also TissueSample could be missing so this should be possible also for other
+		    //SpecimenOrObservationType units.
+		    //This is a reason why DnaSample and DerivedUnit should be unified.
+		    return DnaSample.NewInstance();
+        }else{
 			return new DerivedUnit(type);
 		}
 	}

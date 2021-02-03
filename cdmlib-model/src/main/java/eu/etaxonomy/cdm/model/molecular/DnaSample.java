@@ -71,8 +71,12 @@ public class DnaSample extends DerivedUnit {
 	 * @return a new and empty DnaSample
 	 */
 	public static DnaSample NewInstance(){
-		return new DnaSample();
+		return new DnaSample(SpecimenOrObservationType.DnaSample);
 	}
+
+    public static DnaSample NewTissueSampleAsDnaSampleInstance(){
+        return new DnaSample(SpecimenOrObservationType.TissueSample);
+    }
 
 // ************** ATTRIBUTES ****************************/
 
@@ -109,9 +113,21 @@ public class DnaSample extends DerivedUnit {
      */
     @Deprecated
 	protected DnaSample() {  //protected for Javassist, otherwise private
-		super(SpecimenOrObservationType.DnaSample);
-		this.cacheStrategy = new DnaSampleDefaultCacheStrategy();
+		super();
 	}
+
+	private  DnaSample(SpecimenOrObservationType type) {  //protected for Javassist, otherwise private
+        super(type);
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        if (SpecimenOrObservationType.DnaSample.equals(this.getRecordBasis())){
+            this.cacheStrategy = new DnaSampleDefaultCacheStrategy();
+        }else{
+            super.initDefaultCacheStrategy();
+        }
+    }
 
 //************ GETTER / SETTER  **********************************/
 
