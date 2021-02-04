@@ -78,7 +78,8 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
     private eu.etaxonomy.cdm.remote.view.oaipmh.rdf.GetRecordView rdfGetRecordView;
 
-    private URI serverURI;
+    private URI oahServerURI;
+    private static URI dozerXsdServerURI = URI.create("http://dozer.sourceforge.net/");
 
     @Before
     public void setUp() throws Exception {
@@ -116,9 +117,9 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
         request = new MockHttpServletRequest();
 
-        serverURI = new URI("http://memory.loc.gov");
+        oahServerURI = new URI("http://memory.loc.gov");
 
-        request.setServerName(serverURI.toString());
+        request.setServerName(oahServerURI.toString());
         request.setServerPort(80);
         response = new MockHttpServletResponse();
     }
@@ -126,7 +127,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testIdentifyView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable()){
             return;
         }
 
@@ -152,7 +153,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testGetRecordView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -174,7 +175,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testRdfGetRecordView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -195,7 +196,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testListMetadataFormatsView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable()){
             return;
         }
 
@@ -207,7 +208,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testListSetsView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable()){
             return;
         }
 
@@ -224,7 +225,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testListIdentifiersView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -261,7 +262,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testListRecordsView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -294,9 +295,19 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         //System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    private boolean serviceIsAvailable() {
-        if(!UriUtils.isServiceAvailable(serverURI)) {
-            logger.info("Service " + serverURI.toString() + " unavailable");
+    private boolean oaiServiceIsAvailable() {
+        if(!UriUtils.isServiceAvailable(oahServerURI)) {
+            logger.warn("Service " + oahServerURI.toString() + " unavailable");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean dozerXsdIsAvailable() {
+        // dozer requires access to dozer.sourceforge.net to test schema (.xsd/.dtd)
+        if(!UriUtils.isServiceAvailable(dozerXsdServerURI)) {
+            logger.warn("Service " + dozerXsdServerURI.toString() + " unavailable");
             return false;
         } else {
             return true;

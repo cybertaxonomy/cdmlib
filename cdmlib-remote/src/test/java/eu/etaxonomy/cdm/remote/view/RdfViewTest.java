@@ -163,6 +163,10 @@ public class RdfViewTest extends UnitilsJUnit4 {
 	@Test
 	public void testNameInformationRdf() throws Exception {
 
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
+            return;
+        }
+
 		Map<String,List<NameInformation>> model = new HashMap<>();
 		List<NameInformation> niList = new ArrayList<>();
 		NameInformation ni = new NameInformation();

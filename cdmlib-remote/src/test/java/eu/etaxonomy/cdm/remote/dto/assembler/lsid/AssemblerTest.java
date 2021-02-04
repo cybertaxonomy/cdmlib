@@ -45,7 +45,6 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -76,6 +75,7 @@ import eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
+import eu.etaxonomy.cdm.remote.view.OaiPmhViewTest;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -193,15 +193,14 @@ public class AssemblerTest extends UnitilsJUnit4 {
     @Ignore
     @Test
     public void testDeepMapping() {
+
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
+            return;
+        }
+
         for(int i = 0; i < 3; i++) {
             Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
             taxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
-        }
-
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
-            return;
         }
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
@@ -228,9 +227,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     @Test
     public void testLazyInitializationExceptionWithProxy() throws Exception {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
@@ -249,9 +246,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     @Test
     public void testLazyInitializationExceptionWithPersistentCollection() throws Exception {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
@@ -272,9 +267,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     @Test
     public void testSpeciesProfileModelMapping() {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
@@ -286,9 +279,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     @Test
     public void testSimpleDarwinCoreMapping() {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
@@ -306,9 +297,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
     @Test
     public void testOAIDublinCoreMapping() {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
