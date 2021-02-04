@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -139,6 +140,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public static UUID SPECIES2_NAME_UUID = UUID.fromString("0267ab67-483e-4da5-b654-11013b242c22");
     public static UUID SPECIES2_UUID = UUID.fromString("e20eb549-ced6-4e79-9d74-44f0792a4929");
     public static UUID SYNONYM2_NAME_UUID = UUID.fromString("7c17c811-4201-454b-8108-7be7c91c0938");
+    public static UUID SYNONYM2_UUID = UUID.fromString("2520b103-bd89-4ac1-99e4-e3bfcedfd4eb");
     public static UUID SPECIES5_NAME_UUID = UUID.fromString("0c6ecaac-804d-49e5-a33f-1b7ee77439e3");
 
 /****************** TESTS *****************************/
@@ -308,7 +310,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = null;
         UpdateResult result = new UpdateResult();
         try {
-            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true);
+            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, null, null, true);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Invocation of change method should not throw an exception");
         }
@@ -324,6 +326,127 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("New taxon should have 1 synonym relationship (the old homotypic synonym)", 1, ((Taxon)result.getCdmEntity()).getSynonyms().size());
     }
 
+    @Test
+    public final void testChangeSynonymToAcceptedTaxonWithSecHandlingAlwaysDelete(){
+        Taxon genus = getTestTaxon();
+        TaxonNode node = genus.getTaxonNodes().iterator().next();
+        Taxon taxon = null;
+        UpdateResult result = new UpdateResult();
+
+
+        try {
+            result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), null, null, SecReferenceHandlingEnum.AlwaysDelete, true);
+        } catch (HomotypicalGroupChangeException e) {
+            Assert.fail("Invocation of change method should not throw an exception");
+        }
+        taxWithSyn = null;
+        //test flush (resave deleted object)
+        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
+        taxWithSyn = (Taxon)service.find(SPECIES2_UUID);
+        TaxonNode taxNodeNew = nodeService.find(result.getCdmEntity().getUuid());
+        Taxon taxNew = taxNodeNew.getTaxon();
+        assertNull(syn);
+        assertNotNull(taxWithSyn);
+        assertNotNull(taxNew);
+        assertNull(taxNew.getSec());
+
+
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
+    public final void testChangeSynonymToAcceptedTaxonWithSecHandlingAlwaysKeep(){
+        Taxon genus = getTestTaxon();
+        TaxonNode node = genus.getTaxonNodes().iterator().next();
+        Taxon taxon = null;
+        UpdateResult result = new UpdateResult();
+        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
+        Reference sec = ReferenceFactory.newBook();
+        sec.setTitleCache("Flora Cuba", true);
+        syn.setSec(sec);
+        service.saveOrUpdate(syn);
+        try {
+            result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), null, null, SecReferenceHandlingEnum.KeepAlways, true);
+        } catch (HomotypicalGroupChangeException e) {
+            Assert.fail("Invocation of change method should not throw an exception");
+        }
+        taxWithSyn = null;
+        //test flush (resave deleted object)
+        syn = service.find(SYNONYM2_UUID);
+        taxWithSyn = (Taxon)service.find(SPECIES2_UUID);
+        TaxonNode taxNodeNew = nodeService.find(result.getCdmEntity().getUuid());
+        Taxon taxNew = taxNodeNew.getTaxon();
+        assertNull(syn);
+        assertNotNull(taxWithSyn);
+        assertNotNull(taxNew);
+        assertNotNull(taxNew.getSec());
+        assertEquals(sec, taxNew.getSec());
+
+    }
+
+    @Test
+    public final void testChangeSynonymToAcceptedTaxonWithSecHandlingUseNewParentSec(){
+        Taxon genus = getTestTaxon();
+        TaxonNode node = genus.getTaxonNodes().iterator().next();
+        Taxon taxon = null;
+        UpdateResult result = new UpdateResult();
+        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
+        Reference sec = ReferenceFactory.newBook();
+        sec.setTitleCache("Flora Cuba", true);
+        syn.setSec(sec);
+        service.saveOrUpdate(syn);
+        try {
+            result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), null, null, SecReferenceHandlingEnum.UseNewParentSec, true);
+        } catch (HomotypicalGroupChangeException e) {
+            Assert.fail("Invocation of change method should not throw an exception");
+        }
+        taxWithSyn = null;
+        //test flush (resave deleted object)
+        syn = service.find(SYNONYM2_UUID);
+        taxWithSyn = (Taxon)service.find(SPECIES2_UUID);
+        TaxonNode taxNodeNew = nodeService.find(result.getCdmEntity().getUuid());
+        Taxon taxNew = taxNodeNew.getTaxon();
+        assertNull(syn);
+        assertNotNull(taxWithSyn);
+        assertNotNull(taxNew);
+        assertNotNull(taxNew.getSec());
+        assertEquals(taxWithSyn.getSec(), taxNew.getSec());
+
+    }
+
+    @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
+    public final void testChangeSynonymToAcceptedTaxonWithSecHandlingWarningSelect(){
+        Taxon genus = getTestTaxon();
+        TaxonNode node = genus.getTaxonNodes().iterator().next();
+        Taxon taxon = null;
+        UpdateResult result = new UpdateResult();
+        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
+        Reference sec = ReferenceFactory.newBook();
+        sec.setTitleCache("Flora Cuba", true);
+        Reference newSec = ReferenceFactory.newBook();
+        newSec.setTitleCache("Flora Hawaii", true);
+        UUID newSecUuid = referenceService.saveOrUpdate(newSec);
+        syn.setSec(sec);
+        service.saveOrUpdate(syn);
+        try {
+            result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), newSecUuid, "23", SecReferenceHandlingEnum.WarningSelect, true);
+        } catch (HomotypicalGroupChangeException e) {
+            Assert.fail("Invocation of change method should not throw an exception");
+        }
+        taxWithSyn = null;
+        //test flush (resave deleted object)
+        syn = service.find(SYNONYM2_UUID);
+        taxWithSyn = (Taxon)service.find(SPECIES2_UUID);
+        TaxonNode taxNodeNew = nodeService.find(result.getCdmEntity().getUuid());
+        Taxon taxNew = taxNodeNew.getTaxon();
+        assertNull(syn);
+        assertNotNull(taxWithSyn);
+        assertNotNull(taxNew);
+        assertNotNull(taxNew.getSec());
+        assertEquals(newSec, taxNew.getSec());
+
+    }
 
 
     @Test
@@ -339,7 +462,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = null;
         UpdateResult result = new UpdateResult();
         try {
-            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true);
+            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, null, null, true);
             service.save(taxon);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Invocation of change method should not throw an exception");
@@ -1939,6 +2062,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies4.setCombinationAuthorship(deCandolle);
         botSpecies4.setUuid(SYNONYM_NAME_UUID);
         Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec);
+
         childTaxon.addSynonym(homoSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         service.saveOrUpdate(childTaxon);
 
@@ -1963,6 +2087,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies3.setCombinationAuthorship(deCandolle);
         botSpecies3.setUuid(SYNONYM2_NAME_UUID);
         Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec);
+        heteroSynonym.setUuid(SYNONYM2_UUID);
         childTaxon2.addSynonym(heteroSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         service.saveOrUpdate(childTaxon2);
         //missaplied Name for childTaxon2
