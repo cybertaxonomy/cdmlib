@@ -97,6 +97,7 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -167,6 +168,9 @@ public class TaxonServiceImpl
 
     @Autowired
     private IDescriptionService descriptionService;
+
+    @Autowired
+    private IReferenceService referenceService;
 //
 //    @Autowired
 //    private IOrderedTermVocabularyDao orderedVocabularyDao;
@@ -315,7 +319,7 @@ public class TaxonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) {
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, Reference newSecRef, String microRef, boolean deleteSynonym) {
         UpdateResult result = new UpdateResult();
         TaxonName acceptedName = acceptedTaxon.getName();
         TaxonName synonymName = synonym.getName();
@@ -328,9 +332,7 @@ public class TaxonServiceImpl
             result.setAbort();
             return result;
         }
-
-        Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, synonym.getSec(), synonym.getSecMicroReference());
-
+        Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
         dao.save(newAcceptedTaxon);
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF();
@@ -367,19 +369,51 @@ public class TaxonServiceImpl
     public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid,
             UUID acceptedTaxonUuid,
             UUID newParentNodeUuid,
+            UUID newSec,
+            String microReference,
+            SecReferenceHandlingEnum secHandling,
             boolean deleteSynonym)  {
         UpdateResult result = new UpdateResult();
         Synonym synonym = CdmBase.deproxy(dao.load(synonymUuid), Synonym.class);
         Taxon acceptedTaxon = CdmBase.deproxy(dao.load(acceptedTaxonUuid), Taxon.class);
-        result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, deleteSynonym);
-        Taxon newTaxon = (Taxon)result.getCdmEntity();
         TaxonNode newParentNode = taxonNodeDao.load(newParentNodeUuid);
+        Reference newSecRef = null;
+        switch (secHandling){
+            case AlwaysDelete:
+                newSecRef = null;
+                break;
+            case KeepAlways:
+                newSecRef = synonym.getSec();
+                break;
+            case UseNewParentSec:
+                newSecRef = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
+                break;
+            case KeepWhenSame:
+                Reference parentSec = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
+                Reference synSec = synonym.getSec();
+                if (parentSec != null && synSec != null && parentSec.equals(synSec)){
+                    newSecRef = synonym.getSec();
+                }else{
+                    newSecRef = CdmBase.deproxy(referenceService.load(newSec));
+                }
+            case WarningSelect:
+                newSecRef = CdmBase.deproxy(referenceService.load(newSec));
+
+            default:
+                break;
+        }
+
+
+        result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, newSecRef, microReference, deleteSynonym);
+        Taxon newTaxon = (Taxon)result.getCdmEntity();
+
         TaxonNode newNode = newParentNode.addChildTaxon(newTaxon, null, null);
         taxonNodeDao.save(newNode);
         result.addUpdatedObject(newTaxon);
         result.addUpdatedObject(acceptedTaxon);
         result.setCdmEntity(newNode);
         return result;
+
     }
 
     @Override
@@ -418,6 +452,7 @@ public class TaxonServiceImpl
 */
         // Create a taxon with synonym name
         Taxon fromTaxon = Taxon.NewInstance(synonymName, null);
+        fromTaxon.setPublish(synonym.isPublish());
         save(fromTaxon);
         fromTaxon.setAppendedPhrase(synonym.getAppendedPhrase());
 
@@ -3296,7 +3331,7 @@ public class TaxonServiceImpl
 		return result;
 	}
 
-	@Override
+    @Override
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid, UUID toTaxonUuid){
 		UpdateResult result = new UpdateResult();
 

@@ -1184,6 +1184,7 @@ public class Taxon
      */
     public Synonym addSynonymName(TaxonName synonymName, Reference secReference, String secMicroReference, SynonymType synonymType){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec()); //default sec
+        synonym.setPublish(this.isPublish());
         addSynonym(synonym, synonymType, secReference, secMicroReference);
         return synonym;
     }
@@ -1248,6 +1249,8 @@ public class Taxon
         if (homotypicalGroup != null){
             homotypicalGroup.addTypifiedName(synonymName);
         }
+        synonym.setPublish(this.isPublish());
+
         addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF(), secReference, secDetail);
         return synonym;
     }
@@ -1275,6 +1278,7 @@ public class Taxon
      */
     public Synonym addHomotypicSynonymName(TaxonName synonymName){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
+        synonym.setPublish(this.isPublish());
         addHomotypicSynonym(synonym);
         return synonym;
     }
@@ -1585,6 +1589,37 @@ public class Taxon
         return result;
     }
 
+//    /**
+//     * @see     #getSynonymsGroups()
+//     */
+//    @Transient
+//    public List<Taxon> getProParteSynonyms(){
+//        List<Taxon> result = new ArrayList<>();
+//
+//        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
+//            if (rel.getType().isProParte()){
+//                result.add(rel.getFromTaxon());
+//            }
+//        }
+//        sortBySimpleTitleCacheComparator(result);
+//        return result;
+//    }
+//
+//    /**
+//     * @see     #getSynonymsGroups()
+//     */
+//    @Transient
+//    public List<Taxon> getPartialSynonyms(){
+//        List<Taxon> result = new ArrayList<>();
+//
+//        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
+//            if (rel.getType().isPartial()){
+//                result.add(rel.getFromTaxon());
+//            }
+//        }
+//        sortBySimpleTitleCacheComparator(result);
+//        return result;
+//    }
     private void sortBySimpleTitleCacheComparator(List<Taxon> result) {
 
         Comparator<Taxon> taxonComparator = new Comparator<Taxon>(){
