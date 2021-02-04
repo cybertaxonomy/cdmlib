@@ -314,7 +314,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         OaiDc oaiDcRecordBook = mapper.map(book, OaiDc.class);
 
-        assertEquals(book.getTitle(), book.getTitle());
+        assertEquals(book.getTitle(), oaiDcRecordBook.getTitle());
 
         OaiDc oaiDcRecordBookSection = mapper.map(bookSection, OaiDc.class);
         assertNotNull(oaiDcRecordBookSection.getRelation());
