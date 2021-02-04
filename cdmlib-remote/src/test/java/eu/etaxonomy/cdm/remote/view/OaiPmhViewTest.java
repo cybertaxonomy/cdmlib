@@ -235,9 +235,9 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         model.put("from",from);
         model.put("until", until);
 
-        List<AuditEventRecord<TaxonBase>> r = new ArrayList<AuditEventRecord<TaxonBase>>();
+        List<AuditEventRecord<TaxonBase>> r = new ArrayList<>();
         for(int i = 0; i < 10; i++) {
-            TaxonBase taxon = Taxon.NewInstance(null, null);
+            TaxonBase<?> taxon = Taxon.NewInstance(null, null);
             taxon.setTitleCache("TitleCache", true);
             taxon.setCreated(new DateTime());
             taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:"+i));
@@ -301,7 +301,5 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         } else {
             return true;
         }
-
-
     }
 }
