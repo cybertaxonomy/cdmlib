@@ -51,7 +51,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 
 	public Set<Relationship> getHasRelationship() {
 		if(hasRelationships != null) {
-			Set<Relationship> relationships = new HashSet<Relationship>();
+			Set<Relationship> relationships = new HashSet<>();
 			for(HasRelationship hasRelationship : hasRelationships) {
 				relationships.add(hasRelationship.getRelationship());
 			}
@@ -63,10 +63,10 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 
 	public void setHasRelationship(Set<Relationship> relationships) {
 		if(relationships != null) {
-		  this.hasRelationships = new HashSet<>();
-		  for(Relationship relationship : relationships) {
-			hasRelationships.add( new HasRelationship(relationship));
-		  }
+		    this.hasRelationships = new HashSet<>();
+		    for(Relationship relationship : relationships) {
+		        hasRelationships.add( new HasRelationship(relationship));
+		    }
 		} else {
 			hasRelationships = null;
 		}
@@ -86,7 +86,7 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 
 	public void setDescribedBy(Set<SpeciesProfileModel> speciesProfileModels) {
 		if(speciesProfileModels != null) {
-		  this.describedBys = new HashSet<DescribedBy>();
+		  this.describedBys = new HashSet<>();
 		  for(SpeciesProfileModel speciesProfileModel : speciesProfileModels) {
 			describedBys.add( new DescribedBy(speciesProfileModel));
 		  }

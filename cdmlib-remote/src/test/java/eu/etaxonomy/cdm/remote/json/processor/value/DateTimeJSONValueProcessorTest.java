@@ -17,7 +17,6 @@ import org.junit.Test;
 /**
  * @author a.kohlbecker
  * @since Jan 15, 2019
- *
  */
 public class DateTimeJSONValueProcessorTest {
 

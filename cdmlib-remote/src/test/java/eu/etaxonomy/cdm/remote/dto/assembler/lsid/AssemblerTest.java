@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2010 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.assembler.lsid;
 
 import static org.junit.Assert.assertEquals;
@@ -212,7 +220,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNotNull("TaxonBase.name should be mapped to TaxonConcept.hasName",taxonConcept.getHasName());
         assertEquals("NonViralName.nameCache should be mapped to TaxonName.nameComplete",name.getNameCache(),taxonConcept.getHasName().getNameComplete());
         assertNotNull("Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship",taxonConcept.getHasRelationship());
-        assertEquals("There should be 13 relations in TaxonConcept.hasRelationship",13,taxonConcept.getHasRelationship().size());
+        assertEquals("There should be 13 relations in TaxonConcept.hasRelationship",
+                13, taxonConcept.getHasRelationship().size());
     }
 
     @Ignore
@@ -246,14 +255,17 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return;
         }
 
-        Set<TaxonRelationship> proxy = getUninitializedPersistentCollection(HashSet.class,(HashSet<TaxonRelationship>)taxon.getRelationsToThisTaxon());
+        @SuppressWarnings("unchecked")
+        Set<TaxonRelationship> proxy = getUninitializedPersistentCollection(
+                HashSet.class,(HashSet<TaxonRelationship>)taxon.getRelationsToThisTaxon());
         assert !Hibernate.isInitialized(proxy);
         Field relationsToThisTaxonField = Taxon.class.getDeclaredField("relationsToThisTaxon");
         relationsToThisTaxonField.setAccessible(true);
         relationsToThisTaxonField.set(taxon, proxy);
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
-        assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",taxonConcept.getHasRelationship().isEmpty());
+        assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",
+                taxonConcept.getHasRelationship().isEmpty());
     }
 
     @Ignore
@@ -308,9 +320,9 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNotNull(oaiDcRecordBookSection.getRelation());
     }
 
-    private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz,final T wrappedCollection) {
+    private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz, final T wrappedCollection) {
         final Enhancer enhancer = new Enhancer();
-        List<Class> interfaces = new ArrayList<Class>();
+        List<Class> interfaces = new ArrayList<>();
         interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
         interfaces.add(PersistentCollection.class);
         enhancer.setSuperclass(clazz);

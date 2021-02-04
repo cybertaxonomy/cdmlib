@@ -170,8 +170,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
     @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
     private boolean publish = true;
 
-
 // ************* CONSTRUCTORS *************/
+
     /**
      * Class constructor: creates a new empty (abstract) taxon.
      *

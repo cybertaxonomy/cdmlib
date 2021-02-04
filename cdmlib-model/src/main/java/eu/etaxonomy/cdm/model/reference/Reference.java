@@ -194,7 +194,6 @@ public class Reference
 
 //********************************************************/
 
-
     @XmlElement(name = "Editor")
     @Field
     //TODO Val #3379
