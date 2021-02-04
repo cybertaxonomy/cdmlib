@@ -47,7 +47,6 @@ public class HibernateProxyNullSafeDeepConverter
 		}
 	}
 
-
 	protected Mapper getMapper() {
 		if(mapper == null) {
 			this.setMapper(this.applicationContext.getBean("dozerMapper", Mapper.class));
@@ -79,7 +78,6 @@ public class HibernateProxyNullSafeDeepConverter
 			} catch (Exception e) {
 				throw new MappingException("Converter HibernateProxyNullSafeDeepConverter used incorrectly. Arguments passed in were:"+ destination + " and " + source + " sourceClass " + sourceClass + " destClass " + destClass, e);
 			}
-
 		}
 	}
 

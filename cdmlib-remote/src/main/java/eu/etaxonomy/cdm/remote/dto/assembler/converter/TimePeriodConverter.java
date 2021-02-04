@@ -38,12 +38,10 @@ public class TimePeriodConverter implements CustomConverter {
 			//convert from DateTime -> TimePeriod
 			//FIXME implement
 			return null;
-
 		} else {
 
 			throw new MappingException("Converter TestCustomConverter used incorrectly. Arguments passed in were:"
 					+ existingDestinationFieldValue + " and " + source);
 		}
 	}
-
 }

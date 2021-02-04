@@ -19,13 +19,12 @@ import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.Collect
 
 public class HibernateProxyFieldMapper implements CustomFieldMapper {
 
-
 	@Override
     public boolean mapField(Object source, Object destination, Object sourceFieldValue, ClassMap classMap, FieldMap fieldMapping) {
 
 		if(sourceFieldValue instanceof CollectionProxy) {
 			try {
-				((CollectionProxy)sourceFieldValue).hashCode();
+				((CollectionProxy<?,?>)sourceFieldValue).hashCode();
 			} catch(SessionException se) { // currently no way to tell if is initialized
 				return true;
 			}
@@ -35,6 +34,5 @@ public class HibernateProxyFieldMapper implements CustomFieldMapper {
 		}else {
 			return true;
 		}
-
 	}
 }

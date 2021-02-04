@@ -52,11 +52,11 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
 
     @Before
     public void setUp() throws Exception {
-    
+
         model = new HashMap<String,Object>();
         identifyView = new IdentifyView();
         identifyView.setMarshaller(marshaller);
-        
+
         metaDataRecord = new CsvDemoMetaDataRecord(true, "/tmp", "");
         config = CsvDemoExportConfigurator.NewInstance(null, null);
 
@@ -82,7 +82,7 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
         demoRecord.setScientificName(taxon.getTitleCache());
         demoRecord.setAuthorName("Author");
         demoRecord.setDatasetName("Classification");
-        
+
         ArrayList<CsvDemoRecord> recordList = new ArrayList<CsvDemoRecord>();
         logger.info(recordList.size());
         recordList.add(demoRecord);

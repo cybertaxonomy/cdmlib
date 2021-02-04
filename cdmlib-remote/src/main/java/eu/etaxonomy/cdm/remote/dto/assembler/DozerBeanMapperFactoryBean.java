@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -40,17 +40,17 @@ public class DozerBeanMapperFactoryBean implements FactoryBean, InitializingBean
 
 	  public final void setMappingFiles(final Resource[] mappingFiles) {
 	    this.mappingFiles = mappingFiles;
-	  }
+	}
 
-	  public final void setCustomConverters(final List<CustomConverter> customConverters) {
+	public final void setCustomConverters(final List<CustomConverter> customConverters) {
 	    this.customConverters = customConverters;
-	  }
+	}
 
-	  public final void setEventListeners(final List<DozerEventListener> eventListeners) {
+	public final void setEventListeners(final List<EventListener> eventListeners) {
 	    this.eventListeners = eventListeners;
-	  }
+	}
 
-	  public final void setFactories(final Map<String, BeanFactory> factories) {
+	public final void setFactories(final Map<String, BeanFactory> factories) {
 	    this.factories = factories;
 	  }
 	  
@@ -67,44 +67,50 @@ public class DozerBeanMapperFactoryBean implements FactoryBean, InitializingBean
 	  // ==================================================================================================================================
 	  public final Object getObject() throws Exception {
 	    return this.beanMapper;
-	  }
-	  public final Class<Mapper> getObjectType() {
+	}
+
+	@Override
+    public final Class<Mapper> getObjectType() {
 	    return Mapper.class;
-	  }
-	  public final boolean isSingleton() {
+	}
+
+	@Override
+    public final boolean isSingleton() {
 	    return true;
-	  }
+	}
 
-	  // ==================================================================================================================================
-	  // interface 'InitializingBean'
-	  // ==================================================================================================================================
-	  public final void afterPropertiesSet() throws Exception {
-	    this.beanMapper = new DozerBeanMapper();
+	// ==================================================================================================================================
+	// interface 'InitializingBean'
+	// ==================================================================================================================================
+	@Override
+    public final void afterPropertiesSet() throws Exception {
 
-	    if (this.mappingFiles != null) {
-	      final List<String> mappings = new ArrayList<String>(this.mappingFiles.length);
-	      for (Resource mappingFile : this.mappingFiles) {
-	        mappings.add(mappingFile.getURL().toString());
-	      }
-	      this.beanMapper.setMappingFiles(mappings);
-	    }
+        DozerBeanMapperBuilder beanMapperBuilder = DozerBeanMapperBuilder.create();
+
+        final List<String> mappings = new ArrayList<>(this.mappingFiles.length);
+        if (this.mappingFiles != null) {
+            for (Resource mappingFile : this.mappingFiles) {
+                mappings.add(mappingFile.getURL().toString());
+            }
+            beanMapperBuilder.withMappingFiles(mappings);
+        }
+
 	    if (this.customConverters != null) {
-	      this.beanMapper.setCustomConverters(this.customConverters);
+	        beanMapperBuilder.withCustomConverters(customConverters);
 	    }
 	    if (this.eventListeners != null) {
-	      this.beanMapper.setEventListeners(this.eventListeners);
+	        beanMapperBuilder.withEventListeners(eventListeners);
 	    }
 	    if (this.factories != null) {
-	      this.beanMapper.setFactories(this.factories);
+	        beanMapperBuilder.withBeanFactorys(factories);
 	    }
-	    
-	    if(this.customFieldMapper != null) {
-	    	this.beanMapper.setCustomFieldMapper(customFieldMapper);
-	    }
-	    
-	    if(this.customConvertersWithId != null) {
-	    	this.beanMapper.setCustomConvertersWithId(customConvertersWithId);
-	    }
-	  }
 
+	    if(this.customFieldMapper != null) {
+	        beanMapperBuilder.withCustomFieldMapper(customFieldMapper);
+	    }
+
+	    if(this.customConvertersWithId != null) {
+	        beanMapperBuilder.withCustomConvertersWithIds(customConvertersWithId);
+	    }
 	}
+}

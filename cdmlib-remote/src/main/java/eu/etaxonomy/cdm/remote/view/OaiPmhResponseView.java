@@ -22,22 +22,22 @@ import eu.etaxonomy.cdm.remote.dto.oaipmh.OAIPMH;
  * @see com.ibm.lsid.MetadataResponse
  */
 public abstract class OaiPmhResponseView extends AbstractView {
-	
+
 	private Marshaller marshaller;
-	
+
 	protected Mapper mapper;
-	
+
 	@Autowired
 	@Qualifier("marshaller")
 	public void setMarshaller(Marshaller marshaller) {
 		this.marshaller = marshaller;
 	}
-	
+
 	@Autowired
 	public void setMapper(Mapper mapper) {
 		this.mapper = mapper;
 	}
-	
+
     protected abstract void constructResponse(OAIPMH oaiPmh,Map<String,Object> model);
 
     @Override
