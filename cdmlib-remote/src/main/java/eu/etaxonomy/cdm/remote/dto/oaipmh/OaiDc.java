@@ -1,6 +1,6 @@
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
-import eu.etaxonomy.cdm.common.URI;
+import java.net.URI;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -8,7 +8,7 @@
 
 package eu.etaxonomy.cdm.remote.dto.oaipmh;
 
-import eu.etaxonomy.cdm.common.URI;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
