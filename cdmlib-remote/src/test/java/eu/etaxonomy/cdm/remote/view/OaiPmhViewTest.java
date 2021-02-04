@@ -82,6 +82,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
     @Before
     public void setUp() throws Exception {
+
         XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
         XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
         XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
@@ -138,7 +139,6 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         model.put("earliestDatestamp",ISODateTimeFormat.dateTimeParser().parseDateTime("1990-02-01T12:00:00Z"));
         model.put("adminEmail","somebody@loc.gov");
         model.put("description","<oai-identifier xmlns=\"http://www.openarchives.org/OAI/2.0/oai-identifier\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai-identifier  http://www.openarchives.org/OAI/2.0/oai-identifier.xsd\"><scheme>oai</scheme><repositoryIdentifier>lcoa1.loc.gov</repositoryIdentifier><delimiter>:</delimiter><sampleIdentifier>oai:lcoa1.loc.gov:loc.music/musdi.002</sampleIdentifier></oai-identifier>");
-
 
         request.setRequestURI("/cgi-bin/oai?verb=Identify");
 
