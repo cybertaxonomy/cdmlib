@@ -206,7 +206,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
 
         assertNotNull("map() should return an object", taxonConcept);
-        assertTrue("map() should return a TaxonConcept",taxonConcept instanceof TaxonConcept);
 
         assertEquals("IdentifiableEntity.titleCache should be copied into BaseThing.title",taxon.getTitleCache(),taxonConcept.getTitle());
         assertEquals("IdentifiableEntity.lsid should be copied into BaseThing.identifier",taxon.getLsid().toString(),taxonConcept.getIdentifier().toString());
