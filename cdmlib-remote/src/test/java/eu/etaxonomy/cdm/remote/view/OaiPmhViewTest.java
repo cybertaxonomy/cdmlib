@@ -22,7 +22,6 @@ import org.hibernate.envers.RevisionType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -149,7 +148,6 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(response.getContentAsByteArray())));
     }
 
-    @Ignore
     @Test
     public void testGetRecordView() throws Exception {
 
@@ -171,7 +169,6 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    @Ignore
     @Test
     public void testRdfGetRecordView() throws Exception {
 
@@ -221,7 +218,6 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    @Ignore
     @Test
     public void testListIdentifiersView() throws Exception {
 
@@ -258,7 +254,6 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    @Ignore
     @Test
     public void testListRecordsView() throws Exception {
 

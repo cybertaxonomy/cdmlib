@@ -223,7 +223,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
                 13, taxonConcept.getHasRelationship().size());
     }
 
-    @Ignore
     @Test
     public void testLazyInitializationExceptionWithProxy() throws Exception {
 
@@ -263,7 +262,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
                 taxonConcept.getHasRelationship().isEmpty());
     }
 
-    @Ignore
     @Test
     public void testSpeciesProfileModelMapping() {
 
@@ -275,7 +273,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals(speciesProfileModel.getHasInformation().size(),2);
     }
 
-    @Ignore
     @Test
     public void testSimpleDarwinCoreMapping() {
 
@@ -293,7 +290,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals(Rank.SPECIES().getLabel(), simpleDarwinRecord.getTaxonRank());
     }
 
-    @Ignore
     @Test
     public void testOAIDublinCoreMapping() {
 
