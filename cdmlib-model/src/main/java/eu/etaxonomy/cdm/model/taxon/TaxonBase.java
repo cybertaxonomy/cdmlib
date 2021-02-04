@@ -467,6 +467,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         TaxonBase<S> result;
         try {
             result = (TaxonBase<S>)super.clone();
+            result.setPublish(this.isPublish());
 //            result.setSec(null);
 
             return result;
