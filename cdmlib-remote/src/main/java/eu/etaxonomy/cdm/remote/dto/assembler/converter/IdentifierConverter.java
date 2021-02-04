@@ -16,9 +16,10 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.dozer.CustomConverter;
-import org.dozer.MappingException;
 import org.springframework.web.context.ServletContextAware;
+
+import com.github.dozermapper.core.CustomConverter;
+import com.github.dozermapper.core.MappingException;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;

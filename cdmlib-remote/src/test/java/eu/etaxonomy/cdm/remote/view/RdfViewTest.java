@@ -26,7 +26,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -36,6 +35,8 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;

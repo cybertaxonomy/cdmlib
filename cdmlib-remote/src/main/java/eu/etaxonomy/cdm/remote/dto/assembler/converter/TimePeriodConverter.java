@@ -8,10 +8,10 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-
-import org.dozer.CustomConverter;
-import org.dozer.MappingException;
 import org.joda.time.DateTime;
+
+import com.github.dozermapper.core.CustomConverter;
+import com.github.dozermapper.core.MappingException;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 

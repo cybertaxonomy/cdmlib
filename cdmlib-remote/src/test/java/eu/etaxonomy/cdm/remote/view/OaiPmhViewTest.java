@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.dozer.Mapper;
 import org.hibernate.envers.RevisionType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -30,6 +29,8 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -78,7 +79,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     private eu.etaxonomy.cdm.remote.view.oaipmh.rdf.GetRecordView rdfGetRecordView;
 
     private URI oahServerURI;
-    private static URI dozerXsdServerURI = URI.create("http://dozer.sourceforge.net/");
+    private static URI dozerXsdServerURI = URI.create("https://dozermapper.github.io/");  //for testing https://dozermapper.github.io/schema/bean-mapping.xsd
 
     @Before
     public void setUp() throws Exception {

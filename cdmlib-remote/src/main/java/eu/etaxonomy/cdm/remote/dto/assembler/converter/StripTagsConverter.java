@@ -12,9 +12,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.dozer.CustomConverter;
-import org.dozer.MappingException;
-
+import com.github.dozermapper.core.CustomConverter;
+import com.github.dozermapper.core.MappingException;
 
 public class StripTagsConverter implements CustomConverter {
 

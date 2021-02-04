@@ -62,7 +62,7 @@
     </property>
    </bean>
 
-  <bean id="dozerMapper" class="eu.etaxonomy.cdm.remote.dto.assembler.DozerBeanMapperFactoryBean">
+  <bean id="dozerMapper" class="com.github.dozermapper.spring.DozerBeanMapperFactoryBean">
     <property name="mappingFiles">
       <list>
         <value>classpath:/eu/etaxonomy/cdm/remote/dto/oaipmh/mappings.xml</value>

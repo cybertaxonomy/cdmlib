@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.dozer.CustomConverter;
-import org.dozer.MappingException;
+import com.github.dozermapper.core.CustomConverter;
+import com.github.dozermapper.core.MappingException;
 
 import eu.etaxonomy.cdm.model.common.LSID;
 

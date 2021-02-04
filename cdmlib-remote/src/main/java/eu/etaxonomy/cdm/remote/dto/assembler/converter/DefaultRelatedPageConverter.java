@@ -12,7 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import org.dozer.ConfigurableCustomConverter;
+import com.github.dozermapper.core.ConfigurableCustomConverter;
 
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 
