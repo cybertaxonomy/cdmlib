@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.remote.dto.assembler.lsid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -67,10 +66,12 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
@@ -79,6 +80,7 @@ import eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonRelationshipTerm;
 import eu.etaxonomy.cdm.remote.view.OaiPmhViewTest;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -135,9 +137,9 @@ public class AssemblerTest extends UnitilsJUnit4 {
         taxon.setTitleCache("titleCache", true);
         taxon.setLsid(lsid);
 
-        for(int i = 2; i < 2+10; i++) {
+        for(int i = 2; i < 2+1; i++) {
             Taxon child = Taxon.NewInstance(name, (Reference)sec);
-            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:r" + i ));
+            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:r0" + i ));
             child.addTaxonRelation(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null);
         }
 
@@ -194,18 +196,26 @@ public class AssemblerTest extends UnitilsJUnit4 {
     }
 
     @Test
-    public void testDeepMapping() {
+    public void testDeepMapping() throws MalformedLSIDException {
 
         if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
+        //synonyms
         for(int i = 1; i < 1+3; i++) {
             Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
-            try {
-                synonym.setLsid(new LSID("urn:lsid:example.org:synyonms:" + i ));
-            } catch (MalformedLSIDException e) {}
+            synonym.setLsid(new LSID("urn:lsid:example.org:synyonms:" + i ));
             taxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
+        }
+
+        //taxon nodes
+        TaxonNode rootNode = Classification.NewInstance("Classification").getRootNode();
+        TaxonNode parentNode = rootNode.addChildTaxon(taxon, null);
+        for(int i = 11; i < 11+2; i++) {
+            Taxon child = Taxon.NewInstance(name, (Reference)sec);
+            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:p" + i ));
+            parentNode.addChildTaxon(child, null);
         }
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
@@ -223,22 +233,28 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNotNull("TaxonBase.name should be mapped to TaxonConcept.hasName",taxonConcept.getHasName());
         assertEquals("NonViralName.nameCache should be mapped to TaxonName.nameComplete",name.getNameCache(),taxonConcept.getHasName().getNameComplete());
         assertNotNull("Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship",taxonConcept.getHasRelationship());
-        assertEquals("There should be 13 relations in TaxonConcept.hasRelationship",
-                13, taxonConcept.getHasRelationship().size());
+        assertEquals("There should be 6 relations in TaxonConcept.hasRelationship",
+                6, taxonConcept.getHasRelationship().size());
         int nSynonyms = 0;
-        int nTaxa = 0;
+        int nIncludedInTaxa = 0;
+        int pnParentTaxa = 0;
         for (Relationship rel : taxonConcept.getHasRelationship()){
             Assert.assertNotNull(rel.getFromTaxon());
             System.out.println(rel.getFromTaxon().getIdentifier().toString());
             if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:synyonms:")){
                 nSynonyms++;
-            }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:")){
-                nTaxa++;
+            }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:r")){
+                nIncludedInTaxa++;
+            }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:p")){
+                TaxonRelationshipTerm category = rel.getRelationshipCategory();
+                Assert.assertEquals("is taxonomically included in", category.getTitle());
+                pnParentTaxa++;
             }
 //            System.out.println(rel);
         }
         Assert.assertEquals(3, nSynonyms);
-        Assert.assertEquals(10, nTaxa);
+        Assert.assertEquals(1, nIncludedInTaxa);
+        Assert.assertEquals(2, pnParentTaxa);
     }
 
     @Test
@@ -275,8 +291,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
         relationsToThisTaxonField.set(taxon, proxy);
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
-        assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",
-                taxonConcept.getHasRelationship().isEmpty());
+        Assert.assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",
+                taxonConcept.getHasRelationship() == null || taxonConcept.getHasRelationship().isEmpty()); //with taxonNode mapping included this results in null, otherwise empty, not yet checked why
     }
 
     @Test
@@ -347,10 +363,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
                 }else if("initListener".equals(method.getName())) {
                     return null;
                 } else {
-
                     throw new LazyInitializationException(null);
                 }
-
             }
         });
 

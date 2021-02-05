@@ -101,6 +101,9 @@
         <entry key="stripTagsConverter">
           <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.StripTagsConverter"/>
         </entry>
+        <entry key="constantConverter">
+          <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.ConstantConverter"/>
+        </entry>
 
       </map>
     </property>

@@ -14,9 +14,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.joda.time.DateTime;
 
+import com.github.dozermapper.core.CustomConverter;
 import com.github.dozermapper.core.MappingException;
 
-public class DateTimeConverter implements com.github.dozermapper.core.CustomConverter {
+public class DateTimeConverter implements CustomConverter {
 
 	@Override
     public Object convert(Object destination, Object source, Class<?> destClass, Class<?> sourceClass) {
