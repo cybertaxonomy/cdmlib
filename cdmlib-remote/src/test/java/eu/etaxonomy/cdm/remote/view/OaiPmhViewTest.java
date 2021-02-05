@@ -78,7 +78,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
     private eu.etaxonomy.cdm.remote.view.oaipmh.rdf.GetRecordView rdfGetRecordView;
 
-    private URI oahServerURI;
+    private URI oaiServerURI;
     private static URI dozerXsdServerURI = URI.create("https://dozermapper.github.io/");  //for testing https://dozermapper.github.io/schema/bean-mapping.xsd
 
     @Before
@@ -117,9 +117,9 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
         request = new MockHttpServletRequest();
 
-        oahServerURI = new URI("http://memory.loc.gov");
+        oaiServerURI = new URI("http://memory.loc.gov");
 
-        request.setServerName(oahServerURI.toString());
+        request.setServerName(oaiServerURI.toString());
         request.setServerPort(80);
         response = new MockHttpServletResponse();
     }
@@ -292,8 +292,8 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     }
 
     private boolean oaiServiceIsAvailable() {
-        if(!UriUtils.isServiceAvailable(oahServerURI)) {
-            logger.warn("Service " + oahServerURI.toString() + " unavailable");
+        if(!UriUtils.isServiceAvailable(oaiServerURI)) {
+            logger.warn("Service " + oaiServerURI.toString() + " unavailable");
             return false;
         } else {
             return true;
