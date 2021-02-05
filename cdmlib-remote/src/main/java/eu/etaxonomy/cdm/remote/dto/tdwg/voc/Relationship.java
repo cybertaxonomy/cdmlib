@@ -91,6 +91,13 @@ public class Relationship extends BaseThing {
 		protected void setTaxonConcept(TaxonConcept taxonConcept) {
 			this.taxonConcept = taxonConcept;
 		}
+
+        @Override
+        public String toString() {
+            return "FromTaxon [" + taxonConcept + "]";
+        }
+
+
 	}
 
 	@XmlAccessorType(XmlAccessType.FIELD)
@@ -155,5 +162,15 @@ public class Relationship extends BaseThing {
 			this.taxonRelationshipTerm = taxonRelationshipTerm;
 		}
 
+        @Override
+        public String toString() {
+            return "[" + taxonRelationshipTerm + "]";
+        }
 	}
+
+    @Override
+    public String toString() {
+        return "Relationship [fromTaxon=" + fromTaxon + ", relationshipCategory=" + relationshipCategory + ", toTaxon="
+                + toTaxon + "]";
+    }
 }

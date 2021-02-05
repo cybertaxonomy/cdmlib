@@ -302,4 +302,13 @@ public abstract class BaseThing {
 			return publicationCitation;
 		}
 	}
+
+    @Override
+    public String toString() {
+        if (title != null || identifier != null){
+            return "[title=" + title + ", identifier=" + identifier + "]";
+        }else{
+            return super.toString();
+        }
+    }
 }
