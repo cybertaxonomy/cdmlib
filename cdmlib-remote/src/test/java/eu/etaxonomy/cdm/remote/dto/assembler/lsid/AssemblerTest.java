@@ -35,15 +35,16 @@ import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import com.github.dozermapper.core.Mapper;
+import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -71,9 +72,11 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 import eu.etaxonomy.cdm.remote.view.OaiPmhViewTest;
@@ -132,12 +135,11 @@ public class AssemblerTest extends UnitilsJUnit4 {
         taxon.setTitleCache("titleCache", true);
         taxon.setLsid(lsid);
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 2; i < 2+10; i++) {
             Taxon child = Taxon.NewInstance(name, (Reference)sec);
-            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:" + (2 + i )));
-//            taxon.addTaxonomicChild(child, null,null);
+            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:r" + i ));
+            child.addTaxonRelation(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null);
         }
-
 
         taxonDescription = TaxonDescription.NewInstance();
         taxon.addDescription(taxonDescription);
@@ -191,7 +193,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
-    @Ignore
     @Test
     public void testDeepMapping() {
 
@@ -199,8 +200,11 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return;
         }
 
-        for(int i = 0; i < 3; i++) {
+        for(int i = 1; i < 1+3; i++) {
             Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
+            try {
+                synonym.setLsid(new LSID("urn:lsid:example.org:synyonms:" + i ));
+            } catch (MalformedLSIDException e) {}
             taxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
         }
 
@@ -221,6 +225,20 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNotNull("Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship",taxonConcept.getHasRelationship());
         assertEquals("There should be 13 relations in TaxonConcept.hasRelationship",
                 13, taxonConcept.getHasRelationship().size());
+        int nSynonyms = 0;
+        int nTaxa = 0;
+        for (Relationship rel : taxonConcept.getHasRelationship()){
+            Assert.assertNotNull(rel.getFromTaxon());
+            System.out.println(rel.getFromTaxon().getIdentifier().toString());
+            if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:synyonms:")){
+                nSynonyms++;
+            }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:")){
+                nTaxa++;
+            }
+//            System.out.println(rel);
+        }
+        Assert.assertEquals(3, nSynonyms);
+        Assert.assertEquals(10, nTaxa);
     }
 
     @Test
@@ -241,7 +259,6 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null",taxonConcept.getAccordingTo());
     }
 
-    @Ignore
     @Test
     public void testLazyInitializationExceptionWithPersistentCollection() throws Exception {
 
