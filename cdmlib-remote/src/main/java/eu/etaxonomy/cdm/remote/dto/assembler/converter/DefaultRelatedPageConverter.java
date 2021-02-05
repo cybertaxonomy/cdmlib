@@ -31,7 +31,7 @@ public class DefaultRelatedPageConverter implements ConfigurableCustomConverter 
 		this.relatedPagePrefix = relatedPagePrefix;
 	}
 
-	String parameter = null;
+	private String parameter = null;
 
 	@Override
 	public void setParameter(String parameter) {

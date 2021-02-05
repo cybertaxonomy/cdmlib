@@ -71,6 +71,7 @@
             <b>hasSingleValue</b>
         </field>
     </mapping>
+    
     <!-- taxon package -->
     <mapping>
         <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>

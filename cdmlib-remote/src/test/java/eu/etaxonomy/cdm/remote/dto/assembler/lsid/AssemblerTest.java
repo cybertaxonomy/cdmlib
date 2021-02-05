@@ -337,13 +337,14 @@ public class AssemblerTest extends UnitilsJUnit4 {
             }
         });
 
+        @SuppressWarnings("unchecked")
         T proxy = (T)enhancer.create();
         return proxy;
     }
 
     private <T> T getUninitializedDetachedProxy(final Class<T> clazz,final T wrappedClass) {
         final Enhancer enhancer = new Enhancer();
-        List<Class> interfaces = new ArrayList<Class>();
+        List<Class> interfaces = new ArrayList<>();
         interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
         interfaces.add(HibernateProxy.class);
         enhancer.setSuperclass(clazz);
@@ -372,6 +373,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
             }
         });
 
+        @SuppressWarnings("unchecked")
         T proxy = (T)enhancer.create();
         return proxy;
     }

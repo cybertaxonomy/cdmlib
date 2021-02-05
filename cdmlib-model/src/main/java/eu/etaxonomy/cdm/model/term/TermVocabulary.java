@@ -194,8 +194,6 @@ public class TermVocabulary<T extends DefinedTermBase>
 	/**
 	 * Returns all terms of this vocabulary sorted by their representation defined by the given language.
 	 * If such an representation does not exist, the representation of the default language is testing instead for ordering.
-	 * @param language
-	 * @return
 	 */
 	public SortedSet<T> getTermsOrderedByLabels(Language language){
 		TermLanguageComparator<T> comp = new TermLanguageComparator<>(Language.DEFAULT(), language);
