@@ -114,6 +114,13 @@
           <a-hint>eu.etaxonomy.cdm.model.taxon.Synonym</a-hint>
           <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
         </field>
+        <field>
+          <!-- not fully correct to only use the first node, needs custom converter to implement correctly -->
+          <a>taxonNodes[0].childNodes</a>
+          <b>hasRelationship</b>
+          <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonNode</a-hint>
+          <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
+        </field>
         
         <field>
             <a>descriptions</a>
@@ -176,5 +183,30 @@
        </field-exclude>
     </mapping>
 
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonNode</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
+       <field>
+           <a>taxon</a>
+           <b>fromTaxon</b>
+       </field>
+       <field>
+         <a>parent.taxon</a>
+         <b>toTaxon</b>
+       </field>
+       <field custom-converter-param="taxIncluded" type="one-way" custom-converter-id="constantConverter">
+          <a>this</a>
+          <b>relationshipCategory</b>
+       </field>
+       <field-exclude>
+           <a>createdBy.username</a>
+           <b>creator</b>
+       </field-exclude>
+       <field-exclude>
+           <a>updatedBy.username</a>
+           <b>contributor</b>
+       </field-exclude>
+
+</mapping>
     
 </mappings>
