@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -48,12 +49,13 @@ public class DescriptionUtility {
      * sub area which is not marked to be hidden. The fallback area will be show if there is no {@link Distribution}
      * for any of the non hidden sub-areas. For more detailed discussion on fallback areas see
      * https://dev.e-taxonomy.eu/redmine/issues/4408</li>
-     * <li><b>Prefer computed rule</b>:Computed distributions are preferred over entered or imported elements.
-     * (Computed description elements are identified by the {@link
-     * MarkerType.COMPUTED()}). This means if a entered or imported status
-     * information exist for the same area for which computed data is available,
-     * the computed data has to be given preference over other data.
-     * see parameter <code>preferComputed</code></li>
+     * <li><b>Prefer aggregated rule</b>: if this flag is set to <code>true</code> aggregated
+     * distributions are preferred over non-aggregated elements.
+     * (Aggregated description elements are identified by the description having type
+     * {@link DescriptionType.AGGREGATED_DISTRIBUTION}). This means if an non-aggregated status
+     * information exists for the same area for which aggregated data is available,
+     * the aggregated data has to be given preference over other data.
+     * see parameter <code>preferAggregated</code></li>
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
@@ -74,7 +76,7 @@ public class DescriptionUtility {
      * @param hiddenAreaMarkerTypes
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will
      *            be skipped or acts as fall back area. For more details see <b>Marked area filter</b> above.
-     * @param preferComputed
+     * @param preferAggregated
      *            Computed distributions for the same area will be preferred over edited distributions.
      *            <b>This parameter should always be set to <code>true</code>.</b>
      * @param statusOrderPreference
@@ -85,7 +87,7 @@ public class DescriptionUtility {
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferComputed, boolean statusOrderPreference,
+            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
             boolean subAreaPreference) {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(100); // start with a big map from the beginning!
@@ -141,8 +143,7 @@ public class DescriptionUtility {
         // 2) remove not computed distributions for areas for which computed
         //    distributions exists
         //
-        preferComputed = false;
-        if(preferComputed) {
+        if(preferAggregated) {
             SetMap<NamedArea, Distribution> computedDistributions = new SetMap<>(distributions.size());
             SetMap<NamedArea, Distribution> nonComputedDistributions = new SetMap<>(distributions.size());
             // separate computed and edited Distributions
