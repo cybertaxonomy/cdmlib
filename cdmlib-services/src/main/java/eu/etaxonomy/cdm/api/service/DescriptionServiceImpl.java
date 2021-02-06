@@ -847,7 +847,7 @@ public class DescriptionServiceImpl
 
             }
             try {
-                DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
+                DescriptionElementBase newElement = element.clone();
                 if (setNameInSource) {
                     for (DescriptionElementSource source: newElement.getSources()){
                             if (source.getNameUsedInSource() == null){
