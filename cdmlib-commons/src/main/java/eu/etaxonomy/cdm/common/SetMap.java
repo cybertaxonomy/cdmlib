@@ -108,7 +108,7 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
      * @param value the value to add to the value set
      * @return <code>true</code> if the value already existed in the set.
      */
-    public boolean put(K key, V value){
+    public boolean putItem(K key, V value){
         Set<V> set = map.get(key);
         if (set == null){
             set = new HashSet<>();

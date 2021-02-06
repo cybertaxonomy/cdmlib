@@ -99,7 +99,7 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-            filteredDistributions.put(area,distribution);
+            filteredDistributions.putItem(area,distribution);
         }
 
         // -------------------------------------------------------------------
@@ -191,9 +191,9 @@ public class DescriptionUtility {
             for (Distribution distribution : filteredDistributions.get(area)) {
                 // this is only required for rule 1
                 if(isAggregated(distribution)){
-                    computedDistributions.put(area, distribution);
+                    computedDistributions.putItem(area, distribution);
                 } else {
-                    nonComputedDistributions.put(area,distribution);
+                    nonComputedDistributions.putItem(area,distribution);
                 }
             }
         }
