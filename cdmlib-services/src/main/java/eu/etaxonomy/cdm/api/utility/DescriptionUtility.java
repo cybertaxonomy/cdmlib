@@ -9,14 +9,13 @@
 package eu.etaxonomy.cdm.api.utility;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -89,7 +88,7 @@ public class DescriptionUtility {
             Set<MarkerType> hiddenAreaMarkerTypes, boolean preferComputed, boolean statusOrderPreference,
             boolean subAreaPreference) {
 
-        Map<NamedArea, Set<Distribution>> filteredDistributions = new HashMap<>(100); // start with a big map from the beginning!
+        SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(100); // start with a big map from the beginning!
 
         // sort Distributions by the area
         for(Distribution distribution : distributions){
@@ -98,11 +97,7 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-
-            if(!filteredDistributions.containsKey(area)){
-                filteredDistributions.put(area, new HashSet<>());
-            }
-            filteredDistributions.get(area).add(distribution);
+            filteredDistributions.put(area,distribution);
         }
 
         // -------------------------------------------------------------------
@@ -146,42 +141,32 @@ public class DescriptionUtility {
         // 2) remove not computed distributions for areas for which computed
         //    distributions exists
         //
+        preferComputed = false;
         if(preferComputed) {
-            Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<>(distributions.size());
-            Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<>(distributions.size());
+            SetMap<NamedArea, Distribution> computedDistributions = new SetMap<>(distributions.size());
+            SetMap<NamedArea, Distribution> nonComputedDistributions = new SetMap<>(distributions.size());
             // separate computed and edited Distributions
             for (NamedArea area : filteredDistributions.keySet()) {
                 for (Distribution distribution : filteredDistributions.get(area)) {
                     // this is only required for rule 1
                     if(isAggregated(distribution)){
-                        if(!computedDistributions.containsKey(area)){
-                            computedDistributions.put(area, new HashSet<>());
-                        }
-                        computedDistributions.get(area).add(distribution);
+                        computedDistributions.put(area, distribution);
                     } else {
-                        if(!otherDistributions.containsKey(area)){
-                            otherDistributions.put(area, new HashSet<>());
-                        }
-                        otherDistributions.get(area).add(distribution);
+                        nonComputedDistributions.put(area,distribution);
                     }
                 }
             }
+            //remove nonComputed distributions for which computed distributions exist in the same area
             for(NamedArea keyComputed : computedDistributions.keySet()){
-                otherDistributions.remove(keyComputed);
+                nonComputedDistributions.remove(keyComputed);
             }
             // combine computed and non computed Distributions again
             filteredDistributions.clear();
-            for(NamedArea key : computedDistributions.keySet()){
-                if(!filteredDistributions.containsKey(key)) {
-                    filteredDistributions.put(key, new HashSet<>());
-                }
-                filteredDistributions.get(key).addAll(computedDistributions.get(key));
+            for(NamedArea area : computedDistributions.keySet()){
+                filteredDistributions.put(area, computedDistributions.get(area));  //is it a problem that we use the same interal Set here?
             }
-            for(NamedArea key : otherDistributions.keySet()){
-                if(!filteredDistributions.containsKey(key)) {
-                    filteredDistributions.put(key, new HashSet<>());
-                }
-                filteredDistributions.get(key).addAll(otherDistributions.get(key));
+            for(NamedArea area : nonComputedDistributions.keySet()){
+                filteredDistributions.put(area, nonComputedDistributions.get(area));
             }
         }
         // -------------------------------------------------------------------
@@ -190,7 +175,7 @@ public class DescriptionUtility {
         // -------------------------------------------------------------------
         // 3) statusOrderPreference
         if (statusOrderPreference) {
-            Map<NamedArea, Set<Distribution>> tmpMap = new HashMap<>(filteredDistributions.size());
+            SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributions.size());
             for(NamedArea key : filteredDistributions.keySet()){
                 tmpMap.put(key, byHighestOrderPresenceAbsenceTerm(filteredDistributions.get(key)));
             }
