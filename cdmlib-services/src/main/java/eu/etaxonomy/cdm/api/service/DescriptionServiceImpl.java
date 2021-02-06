@@ -367,7 +367,8 @@ public class DescriptionServiceImpl
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hiddenAreaMarkerTypes, true, statusOrderPreference, false);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hiddenAreaMarkerTypes,
+                false, statusOrderPreference, false);
         distList.clear();
         distList.addAll(filteredDistributions);
 

@@ -152,7 +152,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
+                hideMarkedAreas, false, statusOrderPreference, subAreaPreference);
 
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
                 filteredDistributions,
@@ -245,7 +245,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, hideMarkedAreas, true, statusOrderPreference, false);
+                distributions, hideMarkedAreas, false, statusOrderPreference, false);
         CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
                 recipe,
@@ -356,7 +356,7 @@ public class EditGeoService implements IEditGeoService {
 
         // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
-                true, statusOrderPreference, false);
+                false, statusOrderPreference, false);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);

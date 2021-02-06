@@ -112,7 +112,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          */
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, false, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
     }
@@ -120,7 +120,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testFilterDistributions_subAreaPreference(){
         subAreaPreference = true;
-        boolean preferComputed = true;
+        boolean preferComputed = false;
 
         /*
          * Sub area preference rule: If there is an area with a direct sub area
@@ -186,7 +186,8 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         hideMarkedAreas.add(MarkerType.IMPORTED());
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, false,
+                statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(germany, filteredDistributions.iterator().next().getArea());
     }
@@ -194,7 +195,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testFilterDistributions_fallbackArea_hidden(){
 
-        boolean preferComputed = true;
+        boolean preferComputed = false;
 
         NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
         jugoslavia.setIdInVocabulary("Ju");
@@ -228,7 +229,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testFilterDistributions_fallbackArea_shown_1(){
 
-        boolean preferComputed = true;
+        boolean preferComputed = false;
 
         NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
         jugoslavia.setIdInVocabulary("Ju");
@@ -283,7 +284,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions,
                 hideMarkedAreas,
-                true,
+                false,
                 statusOrderPreference,
                 subAreaPreference);
 
