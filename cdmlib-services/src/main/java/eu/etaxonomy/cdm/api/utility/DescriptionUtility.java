@@ -121,7 +121,7 @@ public class DescriptionUtility {
         if (statusOrderPreference) {
             SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributions.size());
             for(NamedArea key : filteredDistributions.keySet()){
-                tmpMap.put(key, byHighestOrderPresenceAbsenceTerm(filteredDistributions.get(key)));
+                tmpMap.put(key, filterByHighestDistributionStatusForArea(filteredDistributions.get(key)));
             }
             filteredDistributions = tmpMap;
         }
@@ -272,7 +272,7 @@ public class DescriptionUtility {
      *
      * @return the set of distributions with the highest status
      */
-    private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
+    private static Set<Distribution> filterByHighestDistributionStatusForArea(Set<Distribution> distributions){
 
         Set<Distribution> preferred = new HashSet<>();
         PresenceAbsenceTerm highestStatus = null;  //we need to leave generics here as for some reason highestStatus.compareTo later jumps into the wrong class for calling compareTo
