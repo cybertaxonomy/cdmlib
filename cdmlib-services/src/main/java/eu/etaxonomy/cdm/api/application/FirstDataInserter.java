@@ -118,6 +118,10 @@ public class FirstDataInserter extends AbstractDataInserter {
             new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString()
     };
 
+    public static final String[] PUBLISH_GROUP_AUTHORITIES = new String[]{
+            Role.ROLE_PUBLISH.toString()
+    };
+
     public static final String[] EDIT_ALL_TAXA_GROUP_AUTHORITIES = new String[]{
             new CdmAuthority(PermissionClass.TAXONNODE, CREATE_READ_UPDATE_DELETE).toString()
     };
@@ -235,8 +239,9 @@ public class FirstDataInserter extends AbstractDataInserter {
         checkGroup(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID, Group.GROUP_EDITOR_EXTENDED_CREATE_NAME, EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, Group.GROUP_PROJECT_MANAGER_NAME, PROJECT_MANAGER_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_AUTHORITIES);
-        checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE, EDITOR_REFERENCE_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE_NAME, EDITOR_REFERENCE_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_ALLOW_ALL_TAXA_UUID, Group.GROUP_ALLOW_ALL_TAXA_NAME, EDIT_ALL_TAXA_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_PUBLISH_UUID, Group.GROUP_PUBLISH_NAME, PUBLISH_GROUP_AUTHORITIES);
         progressMonitor.worked(1);
     }
 
