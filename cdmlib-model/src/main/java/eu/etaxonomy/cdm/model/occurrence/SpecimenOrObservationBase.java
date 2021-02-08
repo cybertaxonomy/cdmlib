@@ -218,7 +218,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlElement(name = "IdentityCache", required = false)
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
-//    @NotEmpty(groups = Level2.class) // implictly NotNull
+//    @NotEmpty(groups = Level2.class) // implicitly NotNull
     @Fields({
         @Field(store=Store.YES),
         //  If the field is only needed for sorting and nothing else, you may configure it as

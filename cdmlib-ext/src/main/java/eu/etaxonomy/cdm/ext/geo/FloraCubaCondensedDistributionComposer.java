@@ -43,10 +43,6 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
 
     private String internalAreaSeparator = UTF8.EN_DASH.toString() + " ";
 
-
-//    // these status uuids are special for EuroPlusMed and might also be used
-//    private final static UUID REPORTED_IN_ERROR_UUID =  UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
-
     static {
 
         // ==================================================
@@ -59,6 +55,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
     }
 
 // ***************************** GETTER/SETTER ***********************************/
+
     public String getInternalAreaSeparator() {
         return internalAreaSeparator;
     }
@@ -233,7 +230,5 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
                 return - area1.compareTo(area2);
             }
         }
-
     }
-
 }

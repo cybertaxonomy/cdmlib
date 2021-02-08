@@ -31,9 +31,9 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2015
- *
  */
-public class EuroPlusMedCondensedDistributionComposer extends CondensedDistributionComposerBase {
+public class EuroPlusMedCondensedDistributionComposer
+        extends CondensedDistributionComposerBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EuroPlusMedCondensedDistributionComposer.class);
@@ -100,13 +100,13 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
     }
 
     public EuroPlusMedCondensedDistributionComposer() {
-        super();
         replaceCommonAreaLabelStart = true;
         condensedDistribution = new CondensedDistribution();
     }
 
     @Override
-    public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
+    public CondensedDistribution createCondensedDistribution(
+            Collection<Distribution> filteredDistributions,
             List<Language> langs) {
 
         //1. group by PresenceAbsenceTerms
@@ -181,7 +181,6 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
                 } else {
                     condensedDistribution.addIndigenousDistributionItem(status, areaStatusString.toString(), areaLabel);
                 }
-
             }
 
         }
@@ -200,7 +199,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
     private void subAreaLabels(List<Language> langs, Collection<AreaNode> nodes, StringBuilder areaString,
             String statusSymbol, String parentLabel) {
 
-        List<String> subAreaLabels = new ArrayList<String>();
+        List<String> subAreaLabels = new ArrayList<>();
 
         for(AreaNode node : nodes) {
 
