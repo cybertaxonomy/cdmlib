@@ -31,9 +31,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * Tests for {@link FloraCubaCondensedDistributionComposerOld}
  * @author a.mueller
  * @since 07.04.2016
- *
  */
-@Ignore
 public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;

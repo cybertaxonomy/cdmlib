@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
@@ -28,7 +27,6 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.mueller
  * @since 15.06.2016
  */
-@Ignore
 public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
 
     @Test
