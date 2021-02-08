@@ -213,11 +213,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         pattern = pattern.toLowerCase().replace("*", "%") + "%";
         String doubtfulPattern = "?" + pattern;
         if (includeDoubtful){
-            queryString = queryString + "OR t.titleCache LIKE :doubtfulPattern";
+            queryString = queryString + " OR t.titleCache LIKE :doubtfulPattern ";
         }
 
         if(classificationUuid != null){
-        	queryString += "AND cls.uuid = :classificationUuid";
+        	queryString += " AND cls.uuid = :classificationUuid";
         }
         Query query =  getSession().createQuery(queryString);
 
