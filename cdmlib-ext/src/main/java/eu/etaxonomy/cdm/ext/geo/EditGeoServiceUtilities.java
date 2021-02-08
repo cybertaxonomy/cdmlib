@@ -481,7 +481,6 @@ public class EditGeoServiceUtilities {
             }
             //unrecognized tdwg area
             return null;
-
         }else if (voc.getUuid().equals(Country.uuidCountryVocabulary)){
             return "country_earth:gmi_cntry";
         }
