@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,6 +35,7 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;
     private static OrderedTermVocabulary<NamedArea> cubaAreasVocabualary;
+
     private static NamedArea cuba;
     private static NamedArea westernCuba;
     private static NamedArea eastCuba;
@@ -57,10 +57,6 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
     private static UUID uuidStatusNotNativButNaturalised = UUID.fromString("a1e26234-831e-4190-9fe3-011aca09ddba");
     private static UUID uuidStatusDoubtfullyNativeError = UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06");
 
-
-    /**
-     * @throws java.lang.Exception
-     */
     @SuppressWarnings("unchecked")
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -74,10 +70,6 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         makeAreas();
     }
 
-
-    /**
-     *
-     */
     private static void defineSymbolsForExistingTerms() {
         PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA().setSymbol("\u25CF");
         PresenceAbsenceTerm.NATIVE().setSymbol("");
@@ -117,26 +109,15 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
     }
 
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
 // ********************* TESTS ******************************/
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.ext.geo.FloraCubaCondensedDistributionComposerOld#createCondensedDistribution(java.util.Collection, java.util.List)}.
-     */
     @Test
     public void testCreateCondensedDistribution() {
         FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
         composer.setAreaPreTag("<b>");
         composer.setAreaPostTag("</b>");
 
-        Set<Distribution> filteredDistributions = new HashSet<Distribution>();
+        Set<Distribution> filteredDistributions = new HashSet<>();
         filteredDistributions.add(Distribution.NewInstance(cuba, PresenceAbsenceTerm.NATURALISED()));
         filteredDistributions.add(Distribution.NewInstance(eastCuba, statusVoc.findTermByUuid(uuidStatusOccasionallyCultivated)));
         filteredDistributions.add(Distribution.NewInstance(westernCuba, statusVoc.findTermByUuid(uuidStatusDoubtfullyNativeError)));
@@ -149,7 +130,6 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         String condensedString = condensedDistribution.toString();
 
         Assert.assertEquals("Condensed string for Cuba differs", "n<b>Cu</b>(-d<b>CuW</b>(-c<b>PR*</b>) (c)<b>CuE</b>(n<b>Ho</b>)) " + composer.getInternalAreaSeparator() + "<b>Bah</b> ?<b>VM</b> ", condensedString);
-
 
         //TODO work in progress
     }
@@ -183,7 +163,6 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         String condensedString = condensedDistribution.toString();
 
         Assert.assertEquals("Condensed string for Cuba differs", "nCu(-dCuW(-cPR*) (c)CuE(nHo)) " + composer.getInternalAreaSeparator() + "<b>Bah</b> ?<b>VM</b> ", condensedString);
-
 
         //TODO work in progress
     }
@@ -415,7 +394,6 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
 
     }
 
-
     private static PresenceAbsenceTerm makeStatusTerm(String desc, String abbrev, String symbol, boolean absent, UUID uuid) {
         PresenceAbsenceTerm result = PresenceAbsenceTerm.NewPresenceInstance(desc, desc, abbrev);
         result.setAbsenceTerm(absent);
@@ -423,6 +401,4 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         result.setSymbol(symbol);
         return result;
     }
-
-
 }

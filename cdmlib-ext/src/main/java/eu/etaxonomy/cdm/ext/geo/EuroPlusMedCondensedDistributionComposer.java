@@ -89,7 +89,7 @@ public class EuroPlusMedCondensedDistributionComposer
         statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
         statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
 
-        foreignStatusUuids = new HashSet<UUID>();
+        foreignStatusUuids = new HashSet<>();
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.CASUAL().getUuid());

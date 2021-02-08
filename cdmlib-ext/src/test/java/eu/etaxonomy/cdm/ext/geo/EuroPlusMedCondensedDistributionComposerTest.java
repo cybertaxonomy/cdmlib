@@ -66,5 +66,4 @@ public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
 
         Assert.assertEquals("GER(B BW) ?IT [aFR cFR(J) nS]", condensedDistribution.toString());
     }
-
 }
