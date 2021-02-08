@@ -217,7 +217,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
 
         if(classificationUuid != null){
-        	queryString += " AND cls.uuid = :classificationUuid";
+        	queryString += " AND cls.uuid = :classificationUuid ";
         }
         Query query =  getSession().createQuery(queryString);
 
