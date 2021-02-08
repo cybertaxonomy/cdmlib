@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -110,16 +110,13 @@ public class EuroPlusMedCondensedDistributionComposer
             List<Language> langs) {
 
         //1. group by PresenceAbsenceTerms
-        Map<PresenceAbsenceTerm, Collection<NamedArea>> areasByStatus = new HashMap<>();
+        SetMap<PresenceAbsenceTerm, NamedArea> areasByStatus = new SetMap<>();
         for(Distribution d : filteredDistributions) {
             PresenceAbsenceTerm status = d.getStatus();
             if(status == null) {
                 continue;
             }
-            if(!areasByStatus.containsKey(status)) {
-                areasByStatus.put(status, new HashSet<>());
-            }
-            areasByStatus.get(status).add(d.getArea());
+            areasByStatus.putItem(status, d.getArea());
         }
 
         //2. build the area hierarchy
@@ -128,24 +125,18 @@ public class EuroPlusMedCondensedDistributionComposer
             Map<NamedArea, AreaNode> areaNodeMap = new HashMap<>();
 
             for(NamedArea area : areasByStatus.get(status)) {
-                AreaNode node;
-                if(!areaNodeMap.containsKey(area)) {
-                    // putting area into hierarchy as node
+                AreaNode node = areaNodeMap.get(area);
+                if (node == null){
                     node = new AreaNode(area);
                     areaNodeMap.put(area, node);
-                } else {
-                    //  is parent of another and thus already has a node
-                    node = areaNodeMap.get(area);
                 }
 
                 NamedArea parent = findParentIn(area, areasByStatus.get(status));
                 if(parent != null) {
-                    AreaNode parentNode;
-                    if(!areaNodeMap.containsKey(parent)) {
+                    AreaNode parentNode = areaNodeMap.get(parent);;
+                    if (parentNode == null){
                         parentNode = new AreaNode(parent);
                         areaNodeMap.put(parent, parentNode);
-                    } else {
-                        parentNode = areaNodeMap.get(parent);
                     }
                     parentNode.addSubArea(node);
                 }
