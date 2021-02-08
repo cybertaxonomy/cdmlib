@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
@@ -135,13 +134,13 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
     }
 
     @Test
-    @Ignore
     public void testCreateCondensedDistributionOrderSubAreas() {
+
         FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
         composer.setAreaPreTag("");
         composer.setAreaPostTag("");
 
-        Set<Distribution> filteredDistributions = new HashSet<Distribution>();
+        Set<Distribution> filteredDistributions = new HashSet<>();
         filteredDistributions.add(Distribution.NewInstance(cuba, PresenceAbsenceTerm.NATURALISED()));
         filteredDistributions.add(Distribution.NewInstance(eastCuba, statusVoc.findTermByUuid(uuidStatusOccasionallyCultivated)));
         filteredDistributions.add(Distribution.NewInstance(westernCuba, statusVoc.findTermByUuid(uuidStatusDoubtfullyNativeError)));
@@ -162,7 +161,9 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
         String condensedString = condensedDistribution.toString();
 
-        Assert.assertEquals("Condensed string for Cuba differs", "nCu(-dCuW(-cPR*) (c)CuE(nHo)) " + composer.getInternalAreaSeparator() + "<b>Bah</b> ?<b>VM</b> ", condensedString);
+        Assert.assertEquals("Condensed string for Cuba differs",
+                "nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu)) " + composer.getInternalAreaSeparator() + "Bah ?VM ",
+                condensedString);
 
         //TODO work in progress
     }
