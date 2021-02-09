@@ -260,7 +260,6 @@ public class FirstDataInserter extends AbstractDataInserter {
             if(sameNameGroups.size() > 0) {
                 if(reuseExisingGroup) {
                     group = sameNameGroups.get(0);
-                    group.setUuid(groupUuid);
                 } else {
                     throw new RuntimeException("Can not create Group '" + groupName + "' as another group with the same name but diffetent UUID exists.");
                 }
