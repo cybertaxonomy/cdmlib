@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.permission.User;
 import eu.etaxonomy.cdm.persistence.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.permission.Role;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -236,37 +235,25 @@ public class FirstDataInserter extends AbstractDataInserter {
     private void checkDefaultGroups(){
 
         progressMonitor.subTask("Checking default groups");
-        checkGroup(Group.GROUP_EDITOR_UUID, Group.GROUP_EDITOR_NAME, EDITOR_GROUP_AUTHORITIES, false);
-        checkGroup(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID, Group.GROUP_EDITOR_EXTENDED_CREATE_NAME, EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES, false);
-        checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, Group.GROUP_PROJECT_MANAGER_NAME, PROJECT_MANAGER_GROUP_AUTHORITIES, false);
-        checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_AUTHORITIES, false);
-        checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE_NAME, EDITOR_REFERENCE_GROUP_AUTHORITIES, false);
-        checkGroup(Group.GROUP_ALLOW_ALL_TAXA_UUID, Group.GROUP_ALLOW_ALL_TAXA_NAME, EDIT_ALL_TAXA_GROUP_AUTHORITIES, false);
-        checkGroup(Group.GROUP_PUBLISH_UUID, Group.GROUP_PUBLISH_NAME, PUBLISH_GROUP_AUTHORITIES, true);
+        checkGroup(Group.GROUP_EDITOR_UUID, Group.GROUP_EDITOR_NAME, EDITOR_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID, Group.GROUP_EDITOR_EXTENDED_CREATE_NAME, EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, Group.GROUP_PROJECT_MANAGER_NAME, PROJECT_MANAGER_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE_NAME, EDITOR_REFERENCE_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_ALLOW_ALL_TAXA_UUID, Group.GROUP_ALLOW_ALL_TAXA_NAME, EDIT_ALL_TAXA_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_PUBLISH_UUID, Group.GROUP_PUBLISH_NAME, PUBLISH_GROUP_AUTHORITIES);
         progressMonitor.worked(1);
     }
 
     /**
+     * @param newGroups
      * @param groupName
      * @param requiredAuthorities
-     * @param newGroups
-     *   When <code>true</code> a group having the identical name but different uuid,
-     *   will be reused by replacing the UUID with the new one.
      */
-    private void checkGroup(UUID groupUuid, String groupName, String[] requiredAuthorities, boolean reuseExisingGroup) {
+    private void checkGroup(UUID groupUuid, String groupName, String[] requiredAuthorities) {
         Group group = groupService.load(groupUuid);
         if(group == null){
-            List<Group> sameNameGroups = groupService.listByName(groupName, MatchMode.EXACT, null, 10, 0, null, null); // effectively there can only be one result since the name is unique
-            if(sameNameGroups.size() > 0) {
-                if(reuseExisingGroup) {
-                    group = sameNameGroups.get(0);
-                } else {
-                    throw new RuntimeException("Can not create Group '" + groupName + "' as another group with the same name but diffetent UUID exists.");
-                }
-            }
-            if(group == null) {
-                group = Group.NewInstance();
-            }
+            group = Group.NewInstance();
             group.setUuid(groupUuid);
             logger.info("New Group '" + groupName + "' created");
         }
