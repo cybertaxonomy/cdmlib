@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN"
-    "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">
-    
-<mappings>       
+<mappings xmlns="http://dozermapper.github.io/schema/bean-mapping"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping 
+            http://dozermapper.github.io/schema/bean-mapping.xsd">
+     
     <!-- description package -->
     <mapping>
         <class-a>eu.etaxonomy.cdm.model.description.DescriptionBase</class-a>
@@ -70,6 +71,7 @@
             <b>hasSingleValue</b>
         </field>
     </mapping>
+    
     <!-- taxon package -->
     <mapping>
         <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>
@@ -106,15 +108,20 @@
           <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</a-hint>
           <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
         </field>
-        <!-- FIXME: complete mapping #6324 
         <field>
           <a>synonyms</a>
           <b>hasRelationship</b>
           <a-hint>eu.etaxonomy.cdm.model.taxon.Synonym</a-hint>
           <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
-          // Synonym can not be directly mapped to Relationship !!!!
         </field>
-          -->
+        <field>
+          <!-- not fully correct to only use the first node, needs custom converter to implement correctly -->
+          <a>taxonNodes[0].childNodes</a>
+          <b>hasRelationship</b>
+          <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonNode</a-hint>
+          <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
+        </field>
+        
         <field>
             <a>descriptions</a>
             <b>describedBy</b>
@@ -150,5 +157,56 @@
            <b>contributor</b>
        </field-exclude>
     </mapping>
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.taxon.Synonym</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
+       <field>
+           <a>this</a>
+           <b>fromTaxon</b>
+       </field>
+       <field>
+         <a>acceptedTaxon</a>
+         <b>toTaxon</b>
+       </field>
+       <field>
+            <a>type</a>
+            <b>relationshipCategory</b>
+        </field>
+       <field-exclude>
+           <a>createdBy.username</a>
+           <b>creator</b>
+       </field-exclude>
+       <field-exclude>
+           <a>updatedBy.username</a>
+           <b>contributor</b>
+       </field-exclude>
+    </mapping>
+
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonNode</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
+       <field>
+           <a>taxon</a>
+           <b>fromTaxon</b>
+       </field>
+       <field>
+         <a>parent.taxon</a>
+         <b>toTaxon</b>
+       </field>
+       <field custom-converter-param="taxIncluded" type="one-way" custom-converter-id="constantConverter">
+          <a>this</a>
+          <b>relationshipCategory</b>
+       </field>
+       <field-exclude>
+           <a>createdBy.username</a>
+           <b>creator</b>
+       </field-exclude>
+       <field-exclude>
+           <a>updatedBy.username</a>
+           <b>contributor</b>
+       </field-exclude>
+
+</mapping>
     
 </mappings>

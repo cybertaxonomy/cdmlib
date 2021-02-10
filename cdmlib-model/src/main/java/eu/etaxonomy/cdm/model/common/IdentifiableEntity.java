@@ -185,7 +185,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent ev) {
-                if (! "titleCache".equals(ev.getPropertyName()) && !"cacheStrategy".equals(ev.getPropertyName()) && ! isProtectedTitleCache()){
+                if (! "titleCache".equals(ev.getPropertyName())
+                        && !"cacheStrategy".equals(ev.getPropertyName())
+                        && ! isProtectedTitleCache()){
                     titleCache = null;
                 }
             }
@@ -285,7 +287,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             String oldTitleCache = this.titleCache;
 
             @SuppressWarnings("unchecked")
-            String newTitleCache = cacheStrategy.getTitleCache(this);
+            String newTitleCache = getCacheStrategy().getTitleCache(this);
 
             if ( oldTitleCache == null   || ! oldTitleCache.equals(newTitleCache) ){
                 this.setTitleCache(null, false);
@@ -649,12 +651,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
     public S getCacheStrategy() {
+        if (this.cacheStrategy == null){
+            initDefaultCacheStrategy();
+        }
         return this.cacheStrategy;
     }
-    /**
-     * @see 	#getCacheStrategy()
-     */
-
     public void setCacheStrategy(S cacheStrategy) {
         this.cacheStrategy = cacheStrategy;
     }
@@ -668,6 +669,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             return getCacheStrategy().getTitleCache(this);
         }
     }
+
+    /**
+     * Subclasses should implement setting the default cache strategy
+     */
+    protected abstract void initDefaultCacheStrategy();
 
 //****************** CLONE ************************************************/
 

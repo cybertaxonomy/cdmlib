@@ -481,11 +481,8 @@ public class CdmPersistentDataSource
 
 				return persistendDatasource;
 			} catch (ClassNotFoundException e) {
-				logger.error("DataSourceClass not found - stopping application", e);
-				System.exit(-1);
+			    throw new RuntimeException("DataSourceClass not found: " + dataSourceClassName, e);
 			}
-			// will never be reached
-			return null;
 		}
 	}
 

@@ -21,8 +21,8 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
  */
 public class CondensedDistribution {
 
-    private List<DistributionItem> indigenous = new ArrayList<DistributionItem>();
-    private List<DistributionItem> foreign = new ArrayList<DistributionItem>();
+    private List<DistributionItem> indigenous = new ArrayList<>();
+    private List<DistributionItem> foreign = new ArrayList<>();
 
     public List<DistributionItem> getForeign() {
         return foreign;
@@ -88,7 +88,6 @@ public class CondensedDistribution {
     }
 
     public class DistributionItem {
-
 
         private PresenceAbsenceTerm status;
         private String areaStatusLabel;

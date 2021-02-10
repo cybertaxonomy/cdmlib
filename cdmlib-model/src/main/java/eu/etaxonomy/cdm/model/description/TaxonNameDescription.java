@@ -51,7 +51,9 @@ import eu.etaxonomy.cdm.strategy.cache.description.TaxonNameDescriptionDefaultCa
 //@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
-public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>> implements Cloneable{
+public class TaxonNameDescription
+        extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>> {
+
     private static final long serialVersionUID = -7349160369642038687L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonNameDescription.class);
@@ -73,7 +75,6 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
         return new TaxonNameDescription();
     }
 
-
     /**
      * Creates a new taxon name description instance for the given {@link TaxonName name}.
      * The new taxon name description will be also added to the {@link TaxonName#getDescriptions() set of descriptions}
@@ -94,6 +95,10 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
      */
     private TaxonNameDescription() {
         super();
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
         this.cacheStrategy = new TaxonNameDescriptionDefaultCacheStrategy();
     }
 

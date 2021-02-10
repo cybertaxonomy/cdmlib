@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.term.OrderedTermBase;
  * @author k.luther
  * @since 07.02.2018
  */
-public class OrderedTermComparator <T extends DefinedTermBase<?>> implements Comparator<T>{
+public class OrderedTermComparator <T extends DefinedTermBase<T>> implements Comparator<T>{
 
     @Override
     public int compare(T o1, T o2) {

@@ -1,10 +1,18 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-import org.dozer.ConfigurableCustomConverter;
+import com.github.dozermapper.core.ConfigurableCustomConverter;
 
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 
@@ -23,7 +31,7 @@ public class DefaultRelatedPageConverter implements ConfigurableCustomConverter 
 		this.relatedPagePrefix = relatedPagePrefix;
 	}
 
-	String parameter = null;
+	private String parameter = null;
 
 	@Override
 	public void setParameter(String parameter) {
@@ -31,7 +39,8 @@ public class DefaultRelatedPageConverter implements ConfigurableCustomConverter 
 	}
 
 	@Override
-    public Object convert(Object existingDestinationFieldValue,	Object sourceFieldValue, Class<?> destinationClass, Class<?> sourceClass) {
+    public Object convert(Object existingDestinationFieldValue,	Object sourceFieldValue,
+            Class<?> destinationClass, Class<?> sourceClass) {
 		if(sourceFieldValue == null) {
 			return null;
 		}
@@ -51,5 +60,4 @@ public class DefaultRelatedPageConverter implements ConfigurableCustomConverter 
 		}
 		return relation;
 	}
-
 }

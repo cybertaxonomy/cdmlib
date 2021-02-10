@@ -22,10 +22,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 /**
  * @author cmathew
  * @since 30 Sep 2015
- *
  */
-public class NewEntityListenerTest implements NewEntityListener {
-    static Logger logger = Logger.getLogger(NewEntityListenerTest.class);
+public class NewEntityListenerTest
+        implements NewEntityListener {
+
+    private static Logger logger = Logger.getLogger(NewEntityListenerTest.class);
     private Object lastPropValue;
 
     @Override
@@ -43,5 +44,4 @@ public class NewEntityListenerTest implements NewEntityListener {
         nvn.addAnnotation(newAnnotation);
         Assert.assertEquals(newAnnotation, lastPropValue);
     }
-
 }

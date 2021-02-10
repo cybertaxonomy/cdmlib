@@ -67,7 +67,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
@@ -222,18 +221,14 @@ public class Taxon
 
     //TODO should be private, but still produces Spring init errors
     @Deprecated
-    public Taxon(){
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
-    }
+    public Taxon(){}
 
     private Taxon(TaxonName taxonName, Reference sec){
         super(taxonName, sec, null);
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
     }
 
     private Taxon(TaxonName taxonName, Reference sec, String secMicroReference){
         super(taxonName, sec, secMicroReference);
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
     }
 
 //********* METHODS **************************************/
@@ -1189,6 +1184,7 @@ public class Taxon
      */
     public Synonym addSynonymName(TaxonName synonymName, Reference secReference, String secMicroReference, SynonymType synonymType){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec()); //default sec
+        synonym.setPublish(this.isPublish());
         addSynonym(synonym, synonymType, secReference, secMicroReference);
         return synonym;
     }
@@ -1253,6 +1249,8 @@ public class Taxon
         if (homotypicalGroup != null){
             homotypicalGroup.addTypifiedName(synonymName);
         }
+        synonym.setPublish(this.isPublish());
+
         addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF(), secReference, secDetail);
         return synonym;
     }
@@ -1280,6 +1278,7 @@ public class Taxon
      */
     public Synonym addHomotypicSynonymName(TaxonName synonymName){
         Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
+        synonym.setPublish(this.isPublish());
         addHomotypicSynonym(synonym);
         return synonym;
     }
@@ -1590,6 +1589,37 @@ public class Taxon
         return result;
     }
 
+//    /**
+//     * @see     #getSynonymsGroups()
+//     */
+//    @Transient
+//    public List<Taxon> getProParteSynonyms(){
+//        List<Taxon> result = new ArrayList<>();
+//
+//        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
+//            if (rel.getType().isProParte()){
+//                result.add(rel.getFromTaxon());
+//            }
+//        }
+//        sortBySimpleTitleCacheComparator(result);
+//        return result;
+//    }
+//
+//    /**
+//     * @see     #getSynonymsGroups()
+//     */
+//    @Transient
+//    public List<Taxon> getPartialSynonyms(){
+//        List<Taxon> result = new ArrayList<>();
+//
+//        for (TaxonRelationship rel : this.getRelationsToThisTaxon()){
+//            if (rel.getType().isPartial()){
+//                result.add(rel.getFromTaxon());
+//            }
+//        }
+//        sortBySimpleTitleCacheComparator(result);
+//        return result;
+//    }
     private void sortBySimpleTitleCacheComparator(List<Taxon> result) {
 
         Comparator<Taxon> taxonComparator = new Comparator<Taxon>(){

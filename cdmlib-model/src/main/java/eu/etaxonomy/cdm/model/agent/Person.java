@@ -180,8 +180,6 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	protected Person() {
 		super();
-		this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
-
 	}
 
 	/**
@@ -204,9 +202,15 @@ public class Person extends TeamOrPersonBase<Person>{
 		logger.debug("after - Set nomenclatural Title");
 	}
 
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
+    }
+
 // *********************** GETTER SETTER ADDER **********************************/
 
-	/**
+
+    /**
 	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to <i>this</i> person.
 	 *
 	 * @see     InstitutionalMembership

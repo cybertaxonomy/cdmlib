@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
@@ -28,7 +27,6 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.mueller
  * @since 15.06.2016
  */
-@Ignore
 public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
 
     @Test
@@ -53,10 +51,12 @@ public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
         distributions.add(Distribution.NewInstance(germany, PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(berlin, PresenceAbsenceTerm.NATIVE()));
+
         distributions.add(Distribution.NewInstance(italy, PresenceAbsenceTerm.PRESENT_DOUBTFULLY()));
 
         distributions.add(Distribution.NewInstance(france, PresenceAbsenceTerm.CASUAL()));
         distributions.add(Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.CULTIVATED()));
+
         distributions.add(Distribution.NewInstance(spain, PresenceAbsenceTerm.NATURALISED()));
 
         List<Language> languages = new ArrayList<>();
@@ -68,5 +68,4 @@ public class EuroPlusMedCondensedDistributionComposerTest extends TermTestBase {
 
         Assert.assertEquals("GER(B BW) ?IT [aFR cFR(J) nS]", condensedDistribution.toString());
     }
-
 }

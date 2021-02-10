@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 /**
  * @author a.mueller
  * @since 07.05.2018
- *
  */
 public class DescriptiveDataSetDefaultCacheStrategy
             extends IdentifiableEntityDefaultCacheStrategy<DescriptiveDataSet> {
@@ -26,6 +25,17 @@ public class DescriptiveDataSetDefaultCacheStrategy
     private static final long serialVersionUID = 3307740888390159983L;
 
     final static UUID uuid = UUID.fromString("4018e36d-6c6e-4f9e-950c-66e928b51a22");
+
+    @Override
+    protected UUID getUuid() {
+        return uuid;
+    }
+
+    public static DescriptiveDataSetDefaultCacheStrategy NewInstance() {
+        return new DescriptiveDataSetDefaultCacheStrategy();
+    }
+
+    private DescriptiveDataSetDefaultCacheStrategy(){};
 
     @Override
     public String getTitleCache(DescriptiveDataSet descriptiveDataSet) {
@@ -37,10 +47,5 @@ public class DescriptiveDataSetDefaultCacheStrategy
             }
         }
         return super.getTitleCache(descriptiveDataSet);
-    }
-
-    @Override
-    protected UUID getUuid() {
-        return uuid;
     }
 }

@@ -112,14 +112,21 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
         return result;
     }
 
+//******************* CONSTRUCTOR ***********************/
 
 	/**
 	 * Class constructor.
 	 */
 	protected Institution() {
 		super();
-		this.cacheStrategy = new InstitutionDefaultCacheStrategy();
 	}
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = InstitutionDefaultCacheStrategy.NewInstance();
+    }
+
+//*************** Methods ******************************/
 
 	/**
 	 * Returns the set of institution types (categories)
@@ -130,7 +137,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 */
 	public Set<DefinedTerm> getTypes(){
 		if(types == null) {
-			this.types = new HashSet<DefinedTerm>();
+			this.types = new HashSet<>();
 		}
 		return this.types;
 	}

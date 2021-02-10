@@ -1,13 +1,11 @@
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.File;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -20,6 +18,9 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import com.github.dozermapper.core.Mapper;
+
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoExportConfigurator;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoMetaDataRecord;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoRecord;
@@ -52,11 +53,11 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
 
     @Before
     public void setUp() throws Exception {
-    
+
         model = new HashMap<String,Object>();
         identifyView = new IdentifyView();
         identifyView.setMarshaller(marshaller);
-        
+
         metaDataRecord = new CsvDemoMetaDataRecord(true, "/tmp", "");
         config = CsvDemoExportConfigurator.NewInstance(null, null);
 
@@ -82,7 +83,7 @@ public class JsonToCsvViewTest extends UnitilsJUnit4 {
         demoRecord.setScientificName(taxon.getTitleCache());
         demoRecord.setAuthorName("Author");
         demoRecord.setDatasetName("Classification");
-        
+
         ArrayList<CsvDemoRecord> recordList = new ArrayList<CsvDemoRecord>();
         logger.info(recordList.size());
         recordList.add(demoRecord);

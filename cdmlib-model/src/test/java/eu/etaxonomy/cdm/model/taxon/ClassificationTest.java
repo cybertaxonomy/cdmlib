@@ -68,11 +68,7 @@ public class ClassificationTest {
 	private static Reference ref1;
 	private static Reference ref2;
 	private static Reference ref3;
-	//private ReferenceFactory refFactory;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		treeName1 = "Greuther, 1993";
@@ -98,9 +94,6 @@ public class ClassificationTest {
 
 //****************************** TESTS *****************************************/
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Classification#addRoot(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)}.
-	 */
 	@Test
 	public void testAddRoot() {
 		TaxonName synonymName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -160,7 +153,6 @@ public class ClassificationTest {
 		assertEquals("new child node must have the expected reference for parent child relationship", ref1, root1.getReference());
 		assertEquals("new child node must have the expected micro reference for parent child relationship", microRef, root1.getMicroReference());
 		assertEquals("root2 must have 2 children", 2, root2.getChildNodes().size());
-
 	}
 
 	@Test
@@ -221,7 +213,6 @@ public class ClassificationTest {
 		Assert.assertEquals("Micro2", childNode.getMicroReference());
 
 		logger.info("testAddParentChild not yet fully implemented");
-
 	}
 
 	@Test
@@ -379,7 +370,7 @@ public class ClassificationTest {
 		taxonNode121 = taxonNode12.addChildTaxon(taxon121, null, null);
 		taxonNode2 = classification1.addChildTaxon(taxon2, null, null);
 		taxonNode2.addChildTaxon(taxon3, null, null);
-		Classification clone = (Classification)classification1.clone();
+		Classification clone = classification1.clone();
 		assertEquals(classification1.getAllNodes().size(), clone.getAllNodes().size());
 		TaxonNode cloneNode = clone.getNode(taxon1);
 		assertNotSame(cloneNode, taxonNode1);

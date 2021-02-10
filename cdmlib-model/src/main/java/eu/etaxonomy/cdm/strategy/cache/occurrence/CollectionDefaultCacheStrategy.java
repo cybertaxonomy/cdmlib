@@ -26,8 +26,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @since 07.04.2010
  *
  */
-public class CollectionDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Collection>{
-	private static final long serialVersionUID = 457142779236428472L;
+public class CollectionDefaultCacheStrategy
+        extends StrategyBase
+        implements IIdentifiableEntityCacheStrategy<Collection>{
+
+    private static final long serialVersionUID = 457142779236428472L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CollectionDefaultCacheStrategy.class);
 

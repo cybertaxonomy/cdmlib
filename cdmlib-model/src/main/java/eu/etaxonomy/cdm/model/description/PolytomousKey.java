@@ -162,10 +162,14 @@ public class PolytomousKey
         root = PolytomousKeyNode.NewInstance();
         root.setNodeNumber(getStartNumber());
         root.setKey(this);
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
         this.cacheStrategy = PolytomousKeyDefaultCacheStrategy.NewInstance();
     }
 
-    // ************************ GETTER/ SETTER
+// ************************ GETTER/ SETTER
 
     /**
      * Returns the topmost {@link PolytomousKeyNode polytomous key node} (root
@@ -521,7 +525,7 @@ public class PolytomousKey
                 result.addGeographicalScope(area);
             }
 
-            result.root = (PolytomousKeyNode) this.root.clone();
+            result.root = this.root.clone();
 
             result.scopeRestrictions = new HashSet<DefinedTerm>();
             for (DefinedTerm scope : this.scopeRestrictions) {

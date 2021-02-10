@@ -43,9 +43,9 @@ import org.hibernate.search.bridge.builtin.BooleanBridge;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
-import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeByRankAndNameComparator;
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
@@ -169,8 +170,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
     @Field(analyze = Analyze.NO, store = Store.YES, bridge= @FieldBridge(impl=BooleanBridge.class))
     private boolean publish = true;
 
-
 // ************* CONSTRUCTORS *************/
+
     /**
      * Class constructor: creates a new empty (abstract) taxon.
      *
@@ -196,6 +197,11 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         }
         this.setSec(sec);
         this.setSecMicroReference(secDetail);
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = (S)new TaxonBaseDefaultCacheStrategy();
     }
 
 //********* METHODS **************************************/
@@ -461,6 +467,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         TaxonBase<S> result;
         try {
             result = (TaxonBase<S>)super.clone();
+
 //            result.setSec(null);
 
             return result;

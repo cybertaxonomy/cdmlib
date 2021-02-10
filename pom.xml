@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.19.0</version>
+  <version>5.20.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -47,7 +47,7 @@
 	<cglib.version>3.3.0</cglib.version>
 	<aspectj.version>1.9.6</aspectj.version>            <!-- checked 2020-08 -->
 	<geotools.version>23.2</geotools.version>           <!-- checked 2020-08 -->
-    
+    <dozer.version>6.5.0</dozer.version>                <!-- checked 2021-02 -->
     <javadoc.opts>-Xdoclint:none</javadoc.opts>         
   </properties>
   
@@ -800,6 +800,11 @@
         </exclusions>
       </dependency>
       <dependency>
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>3.1</version>
+      </dependency>
+      <dependency>
         <groupId>org.unitils</groupId>
         <artifactId>unitils-dbunit</artifactId>
         <version>${unitils.version}</version>
@@ -1173,10 +1178,20 @@
         <artifactId>wsdl4j</artifactId>
         <version>1.6.3</version>
       </dependency>
+<!--       <dependency> -->
+<!--         <groupId>net.sf.dozer</groupId> -->
+<!--         <artifactId>dozer</artifactId> -->
+<!--         <version>5.5.1</version> -->
+<!--       </dependency> -->
       <dependency>
-        <groupId>net.sf.dozer</groupId>
-        <artifactId>dozer</artifactId>
-        <version>5.3.0</version>
+          <groupId>com.github.dozermapper</groupId>
+          <artifactId>dozer-core</artifactId>
+          <version>${dozer.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.dozermapper</groupId>
+        <artifactId>dozer-spring4</artifactId>
+        <version>${dozer.version}</version>
       </dependency>
       <dependency>
         <groupId>net.sf.ehcache</groupId>

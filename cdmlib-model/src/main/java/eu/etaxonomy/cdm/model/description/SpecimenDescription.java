@@ -40,7 +40,9 @@ import eu.etaxonomy.cdm.strategy.cache.description.SpecimenDescriptionDefaultCac
 //@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 @Configurable
-public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>> implements Cloneable {
+public class SpecimenDescription
+        extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>>{
+
 	private static final long serialVersionUID = -8506790426682192703L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenDescription.class);
@@ -60,8 +62,12 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 // ***************************** CONSTRUCTOR *********************/
     public SpecimenDescription() {
 		super();
-		this.cacheStrategy = new SpecimenDescriptionDefaultCacheStrategy();
 	}
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = SpecimenDescriptionDefaultCacheStrategy.NewInstance();
+    }
 
 //*********************** CLONE ********************************************************/
 

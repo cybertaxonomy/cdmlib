@@ -101,7 +101,7 @@ public class TaxonDescription
     @FieldBridge(impl=NotNullAwareIdBridge.class)
     private Taxon taxon;
 
-
+//*********************** FACTORY *********************************/
 
     /**
      * Creates a new empty taxon description instance.
@@ -148,8 +148,12 @@ public class TaxonDescription
      */
     public TaxonDescription(){
         super();
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
         this.cacheStrategy = new TaxonDescriptionDefaultCacheStrategy();
-        }
+    }
 
 //************************** METHODS **********************************************/
 

@@ -15,14 +15,15 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.dozer.ConfigurableCustomConverter;
-import org.dozer.Mapper;
-import org.dozer.MappingException;
 import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import com.github.dozermapper.core.ConfigurableCustomConverter;
+import com.github.dozermapper.core.Mapper;
+import com.github.dozermapper.core.MappingException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -46,7 +47,6 @@ public class HibernateProxyNullSafeDeepConverter
 			this.parameterList = Arrays.asList(new String[]{parameter});
 		}
 	}
-
 
 	protected Mapper getMapper() {
 		if(mapper == null) {
@@ -79,7 +79,6 @@ public class HibernateProxyNullSafeDeepConverter
 			} catch (Exception e) {
 				throw new MappingException("Converter HibernateProxyNullSafeDeepConverter used incorrectly. Arguments passed in were:"+ destination + " and " + source + " sourceClass " + sourceClass + " destClass " + destClass, e);
 			}
-
 		}
 	}
 

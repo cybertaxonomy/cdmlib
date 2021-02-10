@@ -43,10 +43,6 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
 
     private String internalAreaSeparator = UTF8.EN_DASH.toString() + " ";
 
-
-//    // these status uuids are special for EuroPlusMed and might also be used
-//    private final static UUID REPORTED_IN_ERROR_UUID =  UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
-
     static {
 
         // ==================================================
@@ -59,6 +55,7 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
     }
 
 // ***************************** GETTER/SETTER ***********************************/
+
     public String getInternalAreaSeparator() {
         return internalAreaSeparator;
     }
@@ -73,15 +70,15 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
             List<Language> languages) {
 
         CondensedDistribution result = new CondensedDistribution();
-//      Collection<NamedArea> allAreas = new HashSet<>();
+
         //we expect every area only to have 1 status  (multiple status should have been filtered beforehand)
         Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap = new HashMap<>();
 
 
         //1. compute all areas and their status
-        for(Distribution d : filteredDistributions) {
-            PresenceAbsenceTerm status = d.getStatus();
-            NamedArea area = d.getArea();
+        for(Distribution distr : filteredDistributions) {
+            PresenceAbsenceTerm status = distr.getStatus();
+            NamedArea area = distr.getArea();
 
             //TODO needed? Do we only want to have areas with status?
             if(status == null || area == null) {
@@ -233,7 +230,5 @@ public class FloraCubaCondensedDistributionComposer extends CondensedDistributio
                 return - area1.compareTo(area2);
             }
         }
-
     }
-
 }

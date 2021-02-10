@@ -21,12 +21,6 @@ import eu.etaxonomy.cdm.model.description.Distribution;
  */
 public interface ICondensedDistributionComposer {
 
-    /**
-     * @param filteredDistributions
-     * @param hideMarkedAreas
-     * @param langs
-     * @return
-     */
     public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
             List<Language> langs);
 

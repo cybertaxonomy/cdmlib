@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -31,9 +32,9 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2015
- *
  */
-public class EuroPlusMedCondensedDistributionComposer extends CondensedDistributionComposerBase {
+public class EuroPlusMedCondensedDistributionComposer
+        extends CondensedDistributionComposerBase {
 
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EuroPlusMedCondensedDistributionComposer.class);
@@ -89,7 +90,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
         statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
         statusSymbols.put(PresenceAbsenceTerm.NATURALISED().getUuid(), "n");
 
-        foreignStatusUuids = new HashSet<UUID>();
+        foreignStatusUuids = new HashSet<>();
         foreignStatusUuids.add(PresenceAbsenceTerm.INTRODUCED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.NATURALISED().getUuid());
         foreignStatusUuids.add(PresenceAbsenceTerm.CASUAL().getUuid());
@@ -100,26 +101,23 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
     }
 
     public EuroPlusMedCondensedDistributionComposer() {
-        super();
         replaceCommonAreaLabelStart = true;
         condensedDistribution = new CondensedDistribution();
     }
 
     @Override
-    public CondensedDistribution createCondensedDistribution(Collection<Distribution> filteredDistributions,
+    public CondensedDistribution createCondensedDistribution(
+            Collection<Distribution> filteredDistributions,
             List<Language> langs) {
 
         //1. group by PresenceAbsenceTerms
-        Map<PresenceAbsenceTerm, Collection<NamedArea>> areasByStatus = new HashMap<>();
+        SetMap<PresenceAbsenceTerm, NamedArea> areasByStatus = new SetMap<>();
         for(Distribution d : filteredDistributions) {
             PresenceAbsenceTerm status = d.getStatus();
             if(status == null) {
                 continue;
             }
-            if(!areasByStatus.containsKey(status)) {
-                areasByStatus.put(status, new HashSet<>());
-            }
-            areasByStatus.get(status).add(d.getArea());
+            areasByStatus.putItem(status, d.getArea());
         }
 
         //2. build the area hierarchy
@@ -128,24 +126,18 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
             Map<NamedArea, AreaNode> areaNodeMap = new HashMap<>();
 
             for(NamedArea area : areasByStatus.get(status)) {
-                AreaNode node;
-                if(!areaNodeMap.containsKey(area)) {
-                    // putting area into hierarchy as node
+                AreaNode node = areaNodeMap.get(area);
+                if (node == null){
                     node = new AreaNode(area);
                     areaNodeMap.put(area, node);
-                } else {
-                    //  is parent of another and thus already has a node
-                    node = areaNodeMap.get(area);
                 }
 
                 NamedArea parent = findParentIn(area, areasByStatus.get(status));
                 if(parent != null) {
-                    AreaNode parentNode;
-                    if(!areaNodeMap.containsKey(parent)) {
+                    AreaNode parentNode = areaNodeMap.get(parent);;
+                    if (parentNode == null){
                         parentNode = new AreaNode(parent);
                         areaNodeMap.put(parent, parentNode);
-                    } else {
-                        parentNode = areaNodeMap.get(parent);
                     }
                     parentNode.addSubArea(node);
                 }
@@ -181,7 +173,6 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
                 } else {
                     condensedDistribution.addIndigenousDistributionItem(status, areaStatusString.toString(), areaLabel);
                 }
-
             }
 
         }
@@ -200,7 +191,7 @@ public class EuroPlusMedCondensedDistributionComposer extends CondensedDistribut
     private void subAreaLabels(List<Language> langs, Collection<AreaNode> nodes, StringBuilder areaString,
             String statusSymbol, String parentLabel) {
 
-        List<String> subAreaLabels = new ArrayList<String>();
+        List<String> subAreaLabels = new ArrayList<>();
 
         for(AreaNode node : nodes) {
 

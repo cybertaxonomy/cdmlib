@@ -1,23 +1,27 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-import eu.etaxonomy.cdm.common.URI;
+import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.dozer.CustomConverter;
-import org.dozer.MappingException;
+import com.github.dozermapper.core.CustomConverter;
+import com.github.dozermapper.core.MappingException;
 
-
+/**
+ * @author ben.clark
+ * @since 2009-02-25
+ */
 public class PreferLsidToUriConverter implements CustomConverter {
 
-	public Object convert(Object destination, Object source, Class<?> destClass, Class<?> sourceClass) {
+	@Override
+    public Object convert(Object destination, Object source, Class<?> destClass, Class<?> sourceClass) {
 		if (destination == null) {
 			if(source != null) {
 				try {
@@ -30,8 +34,7 @@ public class PreferLsidToUriConverter implements CustomConverter {
 				return null;
 			}
 		} else {
-		    return destination;	
+		    return destination;
 		}
 	}
-
 }

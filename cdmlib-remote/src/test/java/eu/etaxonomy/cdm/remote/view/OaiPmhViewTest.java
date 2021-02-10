@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.remote.view;
 
 import java.util.ArrayList;
@@ -9,12 +17,10 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.dozer.Mapper;
 import org.hibernate.envers.RevisionType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -23,6 +29,8 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -70,10 +78,12 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
     private eu.etaxonomy.cdm.remote.view.oaipmh.rdf.GetRecordView rdfGetRecordView;
 
-    private URI serverURI;
+    private URI oaiServerURI;
+    private static URI dozerXsdServerURI = URI.create("https://dozermapper.github.io/");  //for testing https://dozermapper.github.io/schema/bean-mapping.xsd
 
     @Before
     public void setUp() throws Exception {
+
         XMLUnit.setControlParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
         XMLUnit.setTestParser("org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
         XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
@@ -107,9 +117,9 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
         request = new MockHttpServletRequest();
 
-        serverURI = new URI("http://memory.loc.gov");
+        oaiServerURI = new URI("http://memory.loc.gov");
 
-        request.setServerName(serverURI.toString());
+        request.setServerName(oaiServerURI.toString());
         request.setServerPort(80);
         response = new MockHttpServletResponse();
     }
@@ -117,7 +127,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testIdentifyView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable()){
             return;
         }
 
@@ -131,7 +141,6 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         model.put("adminEmail","somebody@loc.gov");
         model.put("description","<oai-identifier xmlns=\"http://www.openarchives.org/OAI/2.0/oai-identifier\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/oai-identifier  http://www.openarchives.org/OAI/2.0/oai-identifier.xsd\"><scheme>oai</scheme><repositoryIdentifier>lcoa1.loc.gov</repositoryIdentifier><delimiter>:</delimiter><sampleIdentifier>oai:lcoa1.loc.gov:loc.music/musdi.002</sampleIdentifier></oai-identifier>");
 
-
         request.setRequestURI("/cgi-bin/oai?verb=Identify");
 
         identifyView.render(model, request, response);
@@ -140,11 +149,10 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(response.getContentAsByteArray())));
     }
 
-    @Ignore
     @Test
     public void testGetRecordView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -162,11 +170,10 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    @Ignore
     @Test
     public void testRdfGetRecordView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -187,7 +194,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testListMetadataFormatsView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable()){
             return;
         }
 
@@ -199,7 +206,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
     @Test
     public void testListSetsView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable()){
             return;
         }
 
@@ -212,11 +219,10 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    @Ignore
     @Test
     public void testListIdentifiersView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -227,9 +233,9 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         model.put("from",from);
         model.put("until", until);
 
-        List<AuditEventRecord<TaxonBase>> r = new ArrayList<AuditEventRecord<TaxonBase>>();
+        List<AuditEventRecord<TaxonBase>> r = new ArrayList<>();
         for(int i = 0; i < 10; i++) {
-            TaxonBase taxon = Taxon.NewInstance(null, null);
+            TaxonBase<?> taxon = Taxon.NewInstance(null, null);
             taxon.setTitleCache("TitleCache", true);
             taxon.setCreated(new DateTime());
             taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:"+i));
@@ -249,11 +255,10 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    @Ignore
     @Test
     public void testListRecordsView() throws Exception {
 
-        if(!serviceIsAvailable()){
+        if(!oaiServiceIsAvailable() || !dozerXsdIsAvailable()){
             return;
         }
 
@@ -264,9 +269,9 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         model.put("from",from);
         model.put("until", until);
 
-        List<AuditEventRecord<TaxonBase>> r = new ArrayList<AuditEventRecord<TaxonBase>>();
+        List<AuditEventRecord<TaxonBase>> r = new ArrayList<>();
         for(int i = 0; i < 10; i++) {
-            TaxonBase taxon = Taxon.NewInstance(null, null);
+            TaxonBase<?> taxon = Taxon.NewInstance(null, null);
             taxon.setTitleCache("TitleCache", true);
             taxon.setCreated(new DateTime());
             taxon.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:"+i));
@@ -286,14 +291,22 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
         //System.out.println(new String(response.getContentAsByteArray()));
     }
 
-    private boolean serviceIsAvailable() {
-        if(!UriUtils.isServiceAvailable(serverURI)) {
-            logger.info("Service " + serverURI.toString() + " unavailable");
+    private boolean oaiServiceIsAvailable() {
+        if(!UriUtils.isServiceAvailable(oaiServerURI)) {
+            logger.warn("Service " + oaiServerURI.toString() + " unavailable");
             return false;
         } else {
             return true;
         }
+    }
 
-
+    public static boolean dozerXsdIsAvailable() {
+        // dozer requires access to dozer.sourceforge.net to test schema (.xsd/.dtd)
+        if(!UriUtils.isServiceAvailable(dozerXsdServerURI)) {
+            logger.warn("Service " + dozerXsdServerURI.toString() + " unavailable");
+            return false;
+        } else {
+            return true;
+        }
     }
 }

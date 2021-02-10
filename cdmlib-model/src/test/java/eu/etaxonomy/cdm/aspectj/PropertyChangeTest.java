@@ -64,6 +64,4 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 		public void updateDebugLevel(){
 			logger.setLevel(Level.INFO);
 		}
-
 	}
-

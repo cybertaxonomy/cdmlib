@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.DnaSampleDefaultCacheStrategy;
 //@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public class DnaSample extends DerivedUnit {
+
 	private static final long serialVersionUID = -2978411330023671805L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
@@ -70,8 +71,12 @@ public class DnaSample extends DerivedUnit {
 	 * @return a new and empty DnaSample
 	 */
 	public static DnaSample NewInstance(){
-		return new DnaSample();
+		return new DnaSample(SpecimenOrObservationType.DnaSample);
 	}
+
+    public static DnaSample NewTissueSampleAsDnaSampleInstance(){
+        return new DnaSample(SpecimenOrObservationType.TissueSample);
+    }
 
 // ************** ATTRIBUTES ****************************/
 
@@ -103,14 +108,30 @@ public class DnaSample extends DerivedUnit {
 
 // ******************* CONSTRUCTOR *************************/
 
+    /**
+     * @deprecated for hibernate use only
+     */
+    @Deprecated
 	protected DnaSample() {  //protected for Javassist, otherwise private
-		super(SpecimenOrObservationType.DnaSample);
-		this.cacheStrategy = new DnaSampleDefaultCacheStrategy();
+		super();
 	}
+
+	private  DnaSample(SpecimenOrObservationType type) {  //protected for Javassist, otherwise private
+        super(type);
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        if (SpecimenOrObservationType.DnaSample.equals(this.getRecordBasis())){
+            this.cacheStrategy = new DnaSampleDefaultCacheStrategy();
+        }else{
+            super.initDefaultCacheStrategy();
+        }
+    }
 
 //************ GETTER / SETTER  **********************************/
 
-	//sequencings
+    //sequencings
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}

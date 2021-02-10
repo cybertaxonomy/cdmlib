@@ -13,7 +13,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author cmathew
  * @since 30 Sep 2015
- *
  */
 public interface NewEntityListener {
 

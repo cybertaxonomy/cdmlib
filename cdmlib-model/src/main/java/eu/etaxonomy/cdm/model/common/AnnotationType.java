@@ -64,13 +64,10 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 
 	/**
 	 * Constructor
-	 * @param term
-	 * @param label
 	 */
 	protected AnnotationType(String term, String label, String labelAbbrev) {
 		super(TermType.AnnotationType , term, label, labelAbbrev);
 	}
-
 
 //************************** METHODS ********************************
 

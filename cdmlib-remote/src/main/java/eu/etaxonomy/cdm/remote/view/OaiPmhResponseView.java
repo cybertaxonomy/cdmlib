@@ -7,11 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 
-import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractView;
+
+import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.remote.dto.oaipmh.OAIPMH;
 
@@ -22,22 +23,22 @@ import eu.etaxonomy.cdm.remote.dto.oaipmh.OAIPMH;
  * @see com.ibm.lsid.MetadataResponse
  */
 public abstract class OaiPmhResponseView extends AbstractView {
-	
+
 	private Marshaller marshaller;
-	
+
 	protected Mapper mapper;
-	
+
 	@Autowired
 	@Qualifier("marshaller")
 	public void setMarshaller(Marshaller marshaller) {
 		this.marshaller = marshaller;
 	}
-	
+
 	@Autowired
 	public void setMapper(Mapper mapper) {
 		this.mapper = mapper;
 	}
-	
+
     protected abstract void constructResponse(OAIPMH oaiPmh,Map<String,Object> model);
 
     @Override

@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -130,7 +131,7 @@ public interface ITaxonService
      *          in the homotypic group. It is up to the implementing class to
      *          handle this situation via an exception or in another way.
      */
-    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym) throws HomotypicalGroupChangeException;
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon,Reference newSecRef, String microRef, boolean deleteSynonym) throws HomotypicalGroupChangeException;
 
     /**
      * @param synonymUuid
@@ -140,7 +141,7 @@ public interface ITaxonService
      * @return
      * @throws HomotypicalGroupChangeException
      */
-    public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid, UUID newParentNodeUuid,
+    public UpdateResult changeSynonymToAcceptedTaxon(UUID synonymUuid, UUID acceptedTaxonUuid, UUID newParentNodeUuid, UUID newSecRef, String microRef, SecReferenceHandlingEnum secHandling,
             boolean deleteSynonym)
             throws HomotypicalGroupChangeException;
 

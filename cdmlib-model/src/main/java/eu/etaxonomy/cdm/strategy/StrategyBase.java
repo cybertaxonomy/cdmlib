@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy;
 
 import java.io.Serializable;
@@ -28,9 +27,10 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 
+public abstract class StrategyBase
+        implements IStrategy, Serializable {
 
-public abstract class StrategyBase implements IStrategy, Serializable {
-	private static final long serialVersionUID = -274791080847215663L;
+    private static final long serialVersionUID = -274791080847215663L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StrategyBase.class);
 
@@ -53,10 +53,6 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 		}
 	}
 
-	/**
-	 * @param fieldType
-	 * @return
-	 */
 	protected boolean isPrimitive(Class<?> fieldType) {
 		if (fieldType.isPrimitive()){
 			return true;
@@ -65,10 +61,6 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 		}
 	}
 
-	/**
-	 * @param fieldType
-	 * @return
-	 */
 	protected boolean isSingleCdmBaseObject(Class<?> fieldType) {
 		if (CdmBase.class.isAssignableFrom(fieldType)){
 			return true;
@@ -77,10 +69,6 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 		}
 	}
 
-	/**
-	 * @param fieldType
-	 * @return
-	 */
 	protected boolean isUserType(Class<?> fieldType) {
 		if (	fieldType == TimePeriod.class ||
 		        fieldType == VerbatimTimePeriod.class ||
@@ -124,5 +112,4 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 	protected boolean isBlank(String str){
 		return StringUtils.isBlank(str);
 	}
-
 }

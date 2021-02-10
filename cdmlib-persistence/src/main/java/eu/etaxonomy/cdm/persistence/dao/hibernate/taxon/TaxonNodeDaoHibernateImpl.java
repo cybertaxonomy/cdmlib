@@ -209,15 +209,16 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         		+ "   INNER JOIN tn.classification AS cls "
                 + "   INNER JOIN t.name AS name "
         		+ "   LEFT OUTER JOIN name.rank AS rank"
-        		+ " WHERE t.titleCache LIKE :pattern ";
+        		+ " WHERE (t.titleCache LIKE :pattern ";
         pattern = pattern.toLowerCase().replace("*", "%") + "%";
         String doubtfulPattern = "?" + pattern;
         if (includeDoubtful){
-            queryString = queryString + "OR t.titleCache LIKE :doubtfulPattern";
+            queryString = queryString + " OR t.titleCache LIKE :doubtfulPattern ";
         }
+        queryString = queryString + ") ";
 
         if(classificationUuid != null){
-        	queryString += "AND cls.uuid = :classificationUuid";
+        	queryString += " AND cls.uuid = :classificationUuid ";
         }
         Query query =  getSession().createQuery(queryString);
 

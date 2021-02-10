@@ -64,8 +64,7 @@ import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy
 @Configurable
 @Table(name="Collection", indexes = { @javax.persistence.Index(name = "collectionTitleCacheIndex", columnList = "titleCache") })
 public class Collection
-        extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>>
-        implements Cloneable{
+        extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> {
 
     private static final long serialVersionUID = -7833674897174732255L;
 	private static final Logger logger = Logger.getLogger(Collection.class);
@@ -117,7 +116,6 @@ public class Collection
 
 	/**
 	 * Factory method
-	 * @return
 	 */
 	public static Collection NewInstance(){
 		return new Collection();
@@ -125,17 +123,16 @@ public class Collection
 
 // ******************** CONSTRUCTOR *************************/
 
-	/**
-	 * Constructor
-	 */
 	protected Collection() {
 		super();
-		this.cacheStrategy = new CollectionDefaultCacheStrategy();
 	}
 
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = new CollectionDefaultCacheStrategy();
+    }
+
 // ******************* GETTER / SETTER ************************/
-
-
 
 	/**
 	 * The {@link Institution institution} this collection belongs to.

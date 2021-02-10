@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.19.0</version>
+    <version>5.20.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -14,25 +14,6 @@
 
   <build>
     <plugins>
-    <!--       <plugin> -->
-<!--         <groupId>org.codehaus.mojo</groupId> -->
-<!--         <artifactId>hibernate3-maven-plugin</artifactId> -->
-<!--         <version>3.0</version> -->
-<!--         <configuration> -->
-<!--           <components> -->
-<!--             <component> -->
-<!--               <name>hbm2ddl</name> -->
-<!--               <implementation>annotationconfigurationX</implementation> -->
-<!--             </component> -->
-<!--           </components> -->
-<!--           <componentProperties> -->
-<!--             <namingstrategy>org.hibernate.cfg.DefaultComponentSafeNamingStrategy</namingstrategy> -->
-<!--             <propertyfile>/src/test/resources/dbscripts/hibernate.properties</propertyfile> -->
-<!--             <outputfilename>001_cdm.ddl</outputfilename> -->
-<!--             <configurationfile>/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml</configurationfile> -->
-<!--           </componentProperties> -->
-<!--         </configuration> -->
-<!--       </plugin> -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
             <executions>

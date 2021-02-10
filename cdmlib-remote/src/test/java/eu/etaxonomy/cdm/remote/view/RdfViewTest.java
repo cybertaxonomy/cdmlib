@@ -1,3 +1,11 @@
+/**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 package eu.etaxonomy.cdm.remote.view;
 
 import java.io.BufferedWriter;
@@ -18,7 +26,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -28,6 +35,8 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
+
+import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
 import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
@@ -154,6 +163,10 @@ public class RdfViewTest extends UnitilsJUnit4 {
 
 	@Test
 	public void testNameInformationRdf() throws Exception {
+
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
+            return;
+        }
 
 		Map<String,List<NameInformation>> model = new HashMap<>();
 		List<NameInformation> niList = new ArrayList<>();

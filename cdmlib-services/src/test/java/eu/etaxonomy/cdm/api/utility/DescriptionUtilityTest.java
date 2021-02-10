@@ -56,16 +56,17 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public void testFilterDistributions_computed(){
+    public void testFilterDistributions_aggregated(){
 
         /* 1.
-         * Computed elements are preferred over entered or imported elements.
-         * (Computed description elements are identified by belonging to descriptions
+         * Aggregated elements are preferred over entered or imported elements
+         * if the according flag ist set to true.
+         * (Aggregated description elements are identified by belonging to descriptions
          * which have the type DescriptionType#AGGREGATED_DISTRIBUTION).
-         * This means if a entered or imported status information exist for the same
-         * area for which computed data is available, the computed data has to be
+         * This means if a non-aggregated status information exist for the same
+         * area for which aggregated data is available, the aggregated data has to be
          * given preference over other data.
-         * Note by AM: be aware that according to #5050 the preference of computed
+         * Note by AM: be aware that according to #5050 the preference of aggregated
          * distributions is not valid anymore (for the E+M usecase). However, the functionality
          * might be interesting for future use-cases.
          */
@@ -81,8 +82,8 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         distributions.add(germanyIntroduced);
 
         statusOrderPreference= true;
-        boolean preferComputed = true;
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, preferComputed, statusOrderPreference, subAreaPreference);
+        boolean preferAggregated = true;
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceAbsenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
 
@@ -96,7 +97,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         aggParentDescription.addElement(parentComputedDistribution);
         distributions.add(parentComputedDistribution);
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, preferComputed, statusOrderPreference, subAreaPreference);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(2, filteredDistributions.size());
     }
 
@@ -112,7 +113,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
          */
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.NATIVE()));
         distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceAbsenceTerm.INTRODUCED()));
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, false, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(PresenceAbsenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
     }
@@ -120,15 +121,15 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testFilterDistributions_subAreaPreference(){
         subAreaPreference = true;
-        boolean preferComputed = true;
+        boolean preferAggregated = false;
 
         /*
          * Sub area preference rule: If there is an area with a direct sub area
          * and both areas have the same status only the information on
          * the sub area should be reported, whereas the super area should be
          * ignored.
-         * TODO Note by AM  to me this test is unclear, there seems to be no difference between
-         * "no", "mixed" and "all". From what I saw in the code the "preferComputed" rule
+         * TODO Note by AM:  to me this test is unclear, there seems to be no difference between
+         * "no", "mixed" and "all". From what I saw in the code the "preferAggregated" rule
          * works only on the exact same area so as we use Germany versus Berlin here it may not
          * have any influence and the last 2 tests could be deleted.
          * NOTE2: From now on the marker computed on distributions has no effect anymore.
@@ -143,21 +144,21 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         distributions.add(distGermany);
         distributions.add(distBerlin);
         filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, preferComputed, statusOrderPreference, subAreaPreference);
+                hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // mixed situation
         distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, preferComputed, statusOrderPreference, subAreaPreference);
+                hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // all computed
         distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, preferComputed, statusOrderPreference, subAreaPreference);
+                hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
     }
@@ -186,7 +187,8 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
         hideMarkedAreas.add(MarkerType.IMPORTED());
 
-        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, true, statusOrderPreference, subAreaPreference);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, hideMarkedAreas, false,
+                statusOrderPreference, subAreaPreference);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(germany, filteredDistributions.iterator().next().getArea());
     }
@@ -194,7 +196,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testFilterDistributions_fallbackArea_hidden(){
 
-        boolean preferComputed = true;
+        boolean preferAggregated = false;
 
         NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
         jugoslavia.setIdInVocabulary("Ju");
@@ -217,7 +219,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions,
                 hideMarkedAreas,
-                preferComputed,
+                preferAggregated,
                 statusOrderPreference,
                 subAreaPreference);
 
@@ -228,7 +230,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testFilterDistributions_fallbackArea_shown_1(){
 
-        boolean preferComputed = true;
+        boolean preferAggregated = false;
 
         NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
         jugoslavia.setIdInVocabulary("Ju");
@@ -253,7 +255,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions,
                 hideMarkedAreas,
-                preferComputed,
+                preferAggregated,
                 statusOrderPreference,
                 subAreaPreference);
 
@@ -283,7 +285,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions,
                 hideMarkedAreas,
-                true,
+                false,
                 statusOrderPreference,
                 subAreaPreference);
 

@@ -9,18 +9,18 @@
 package eu.etaxonomy.cdm.api.utility;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
+import eu.etaxonomy.cdm.common.SetMap;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -49,12 +49,13 @@ public class DescriptionUtility {
      * sub area which is not marked to be hidden. The fallback area will be show if there is no {@link Distribution}
      * for any of the non hidden sub-areas. For more detailed discussion on fallback areas see
      * https://dev.e-taxonomy.eu/redmine/issues/4408</li>
-     * <li><b>Prefer computed rule</b>:Computed distributions are preferred over entered or imported elements.
-     * (Computed description elements are identified by the {@link
-     * MarkerType.COMPUTED()}). This means if a entered or imported status
-     * information exist for the same area for which computed data is available,
-     * the computed data has to be given preference over other data.
-     * see parameter <code>preferComputed</code></li>
+     * <li><b>Prefer aggregated rule</b>: if this flag is set to <code>true</code> aggregated
+     * distributions are preferred over non-aggregated elements.
+     * (Aggregated description elements are identified by the description having type
+     * {@link DescriptionType.AGGREGATED_DISTRIBUTION}). This means if an non-aggregated status
+     * information exists for the same area for which aggregated data is available,
+     * the aggregated data has to be given preference over other data.
+     * see parameter <code>preferAggregated</code></li>
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
      * with the highest order is preferred, see
@@ -75,7 +76,7 @@ public class DescriptionUtility {
      * @param hiddenAreaMarkerTypes
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will
      *            be skipped or acts as fall back area. For more details see <b>Marked area filter</b> above.
-     * @param preferComputed
+     * @param preferAggregated
      *            Computed distributions for the same area will be preferred over edited distributions.
      *            <b>This parameter should always be set to <code>true</code>.</b>
      * @param statusOrderPreference
@@ -86,10 +87,10 @@ public class DescriptionUtility {
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferComputed, boolean statusOrderPreference,
+            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
             boolean subAreaPreference) {
 
-        Map<NamedArea, Set<Distribution>> filteredDistributions = new HashMap<>(100); // start with a big map from the beginning!
+        SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(100); // start with a big map from the beginning!
 
         // sort Distributions by the area
         for(Distribution distribution : distributions){
@@ -98,126 +99,116 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-
-            if(!filteredDistributions.containsKey(area)){
-                filteredDistributions.put(area, new HashSet<>());
-            }
-            filteredDistributions.get(area).add(distribution);
+            filteredDistributions.putItem(area,distribution);
         }
 
         // -------------------------------------------------------------------
         // 1) skip distributions having an area with markers matching hideMarkedAreas
         //    but keep distributions for fallback areas
         if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
-            Set<NamedArea> areasHiddenByMarker = new HashSet<>();
-            for(NamedArea area : filteredDistributions.keySet()) {
-                if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
-                    boolean showAsFallbackArea = false;
-                    // if at least one sub area is not hidden by a marker
-                    // this area is a fall-back area for this sub area
-                    for(NamedArea subArea : area.getIncludes()) {
-                        if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
-                            if(filteredDistributions.containsKey(subArea)) {
-                                areasHiddenByMarker.add(subArea);
-                            }
-                        }
-                        // if this sub-area is not marked to be hidden
-                        // the parent area must be visible if there is no
-                        // data for the sub-area
-                        boolean subAreaVisible = filteredDistributions.containsKey(subArea)
-                                && !areasHiddenByMarker.contains(subArea);
-                        showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
-                    }
-                    if (!showAsFallbackArea) {
-                        // this area does not need to be shown as
-                        // fall-back for another area so it will be hidden.
-                        areasHiddenByMarker.add(area);
-                    }
-                }
-            }
-            for(NamedArea area :areasHiddenByMarker) {
-                filteredDistributions.remove(area);
-            }
+            handleHiddenAndFallbackAreas(hiddenAreaMarkerTypes, filteredDistributions);
         }
-        // -------------------------------------------------------------------
-
 
         // -------------------------------------------------------------------
         // 2) remove not computed distributions for areas for which computed
         //    distributions exists
-        //
-        if(preferComputed) {
-            Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<>(distributions.size());
-            Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<>(distributions.size());
-            // separate computed and edited Distributions
-            for (NamedArea area : filteredDistributions.keySet()) {
-                for (Distribution distribution : filteredDistributions.get(area)) {
-                    // this is only required for rule 1
-                    if(isAggregated(distribution)){
-                        if(!computedDistributions.containsKey(area)){
-                            computedDistributions.put(area, new HashSet<>());
-                        }
-                        computedDistributions.get(area).add(distribution);
-                    } else {
-                        if(!otherDistributions.containsKey(area)){
-                            otherDistributions.put(area, new HashSet<>());
-                        }
-                        otherDistributions.get(area).add(distribution);
-                    }
-                }
-            }
-            for(NamedArea keyComputed : computedDistributions.keySet()){
-                otherDistributions.remove(keyComputed);
-            }
-            // combine computed and non computed Distributions again
-            filteredDistributions.clear();
-            for(NamedArea key : computedDistributions.keySet()){
-                if(!filteredDistributions.containsKey(key)) {
-                    filteredDistributions.put(key, new HashSet<>());
-                }
-                filteredDistributions.get(key).addAll(computedDistributions.get(key));
-            }
-            for(NamedArea key : otherDistributions.keySet()){
-                if(!filteredDistributions.containsKey(key)) {
-                    filteredDistributions.put(key, new HashSet<>());
-                }
-                filteredDistributions.get(key).addAll(otherDistributions.get(key));
-            }
+        if(preferAggregated) {
+            handlePreferAggregated(filteredDistributions);
         }
-        // -------------------------------------------------------------------
-
 
         // -------------------------------------------------------------------
         // 3) statusOrderPreference
         if (statusOrderPreference) {
-            Map<NamedArea, Set<Distribution>> tmpMap = new HashMap<>(filteredDistributions.size());
+            SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributions.size());
             for(NamedArea key : filteredDistributions.keySet()){
-                tmpMap.put(key, byHighestOrderPresenceAbsenceTerm(filteredDistributions.get(key)));
+                tmpMap.put(key, filterByHighestDistributionStatusForArea(filteredDistributions.get(key)));
             }
             filteredDistributions = tmpMap;
         }
-        // -------------------------------------------------------------------
-
 
         // -------------------------------------------------------------------
         // 4) Sub area preference rule
         if(subAreaPreference){
-            Set<NamedArea> removeCandidatesArea = new HashSet<>();
-            for(NamedArea key : filteredDistributions.keySet()){
-                if(removeCandidatesArea.contains(key)){
-                    continue;
-                }
-                if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())){
-                    removeCandidatesArea.add(key.getPartOf());
-                }
-            }
-            for(NamedArea removeKey : removeCandidatesArea){
-                filteredDistributions.remove(removeKey);
-            }
+            handleSubAreaPreferenceRule(filteredDistributions);
          }
-        // -------------------------------------------------------------------
 
         return valuesOfAllInnerSets(filteredDistributions.values());
+    }
+
+    private static void handleSubAreaPreferenceRule(SetMap<NamedArea, Distribution> filteredDistributions) {
+        Set<NamedArea> removeCandidatesArea = new HashSet<>();
+        for(NamedArea key : filteredDistributions.keySet()){
+            if(removeCandidatesArea.contains(key)){
+                continue;
+            }
+            if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())){
+                removeCandidatesArea.add(key.getPartOf());
+            }
+        }
+        for(NamedArea removeKey : removeCandidatesArea){
+            filteredDistributions.remove(removeKey);
+        }
+    }
+
+    private static void handleHiddenAndFallbackAreas(Set<MarkerType> hiddenAreaMarkerTypes,
+            SetMap<NamedArea, Distribution> filteredDistributions) {
+        Set<NamedArea> areasHiddenByMarker = new HashSet<>();
+        for(NamedArea area : filteredDistributions.keySet()) {
+            if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
+                boolean showAsFallbackArea = false;
+                // if at least one sub area is not hidden by a marker
+                // this area is a fall-back area for this sub area
+                for(NamedArea subArea : area.getIncludes()) {
+                    if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
+                        if(filteredDistributions.containsKey(subArea)) {
+                            areasHiddenByMarker.add(subArea);
+                        }
+                    }
+                    // if this sub-area is not marked to be hidden
+                    // the parent area must be visible if there is no
+                    // data for the sub-area
+                    boolean subAreaVisible = filteredDistributions.containsKey(subArea)
+                            && !areasHiddenByMarker.contains(subArea);
+                    showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
+                }
+                if (!showAsFallbackArea) {
+                    // this area does not need to be shown as
+                    // fall-back for another area so it will be hidden.
+                    areasHiddenByMarker.add(area);
+                }
+            }
+        }
+        for(NamedArea area :areasHiddenByMarker) {
+            filteredDistributions.remove(area);
+        }
+    }
+
+    private static void handlePreferAggregated(SetMap<NamedArea, Distribution> filteredDistributions) {
+        SetMap<NamedArea, Distribution> computedDistributions = new SetMap<>(filteredDistributions.size());
+        SetMap<NamedArea, Distribution> nonComputedDistributions = new SetMap<>(filteredDistributions.size());
+        // separate computed and edited Distributions
+        for (NamedArea area : filteredDistributions.keySet()) {
+            for (Distribution distribution : filteredDistributions.get(area)) {
+                // this is only required for rule 1
+                if(isAggregated(distribution)){
+                    computedDistributions.putItem(area, distribution);
+                } else {
+                    nonComputedDistributions.putItem(area,distribution);
+                }
+            }
+        }
+        //remove nonComputed distributions for which computed distributions exist in the same area
+        for(NamedArea keyComputed : computedDistributions.keySet()){
+            nonComputedDistributions.remove(keyComputed);
+        }
+        // combine computed and non computed Distributions again
+        filteredDistributions.clear();
+        for(NamedArea area : computedDistributions.keySet()){
+            filteredDistributions.put(area, computedDistributions.get(area));  //is it a problem that we use the same interal Set here?
+        }
+        for(NamedArea area : nonComputedDistributions.keySet()){
+            filteredDistributions.put(area, nonComputedDistributions.get(area));
+        }
     }
 
     private static boolean isAggregated(Distribution distribution) {
@@ -281,7 +272,7 @@ public class DescriptionUtility {
      *
      * @return the set of distributions with the highest status
      */
-    private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
+    private static Set<Distribution> filterByHighestDistributionStatusForArea(Set<Distribution> distributions){
 
         Set<Distribution> preferred = new HashSet<>();
         PresenceAbsenceTerm highestStatus = null;  //we need to leave generics here as for some reason highestStatus.compareTo later jumps into the wrong class for calling compareTo
@@ -316,36 +307,5 @@ public class DescriptionUtility {
         }
         return allValues;
     }
-
-    /**
-     * Provides a consistent string based key of the given NamedArea , see also
-     * {@link #areaKey(Distribution)}
-     *
-     * @param area
-     * @return the string representation of the NamedArea.uuid
-     */
-//    private static String areaKey(NamedArea area){
-//        return String.valueOf(area.getUuid());
-//    }
-
-    /**
-     * Provides a consistent string based key of the given NamedArea contained
-     * in the given distribution, see also {@link #areaKey(Distribution)}
-     *
-     * @param distribution
-     * @return the string representation of the NamedArea.uuid or
-     *         <code>"NULL"</code> in case the Distribution had no NamedArea
-     */
-//    private static String areaKey(Distribution distribution){
-//        StringBuilder keyBuilder = new StringBuilder();
-//
-//        if(distribution.getArea() != null){
-//            keyBuilder.append(distribution.getArea().getUuid());
-//        } else {
-//            keyBuilder.append("NULL");
-//        }
-//
-//        return keyBuilder.toString();
-//    }
 
 }

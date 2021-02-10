@@ -198,10 +198,6 @@ public class TaxonName
     private static final long serialVersionUID = -791164269603409712L;
     private static final Logger logger = Logger.getLogger(TaxonName.class);
 
-//    @XmlTransient
-//    @Transient
-//    private PropertyChangeListener sourceListener;
-
     /**
      * The {@link NomenclaturalCode nomenclatural code} this taxon name is ruled by.
      */
@@ -576,6 +572,7 @@ public class TaxonName
      */
     protected static TaxonName NewInstance(NomenclaturalCode code, Rank rank,
             HomotypicalGroup homotypicalGroup) {
+
         TaxonName result = new TaxonName(code, rank, homotypicalGroup);
         return result;
     }
@@ -583,8 +580,9 @@ public class TaxonName
     //TODO move to TaxonNameFactory
     public static TaxonName NewInstance(NomenclaturalCode code, Rank rank, String genusOrUninomial,
             String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
-            TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
+            TeamOrPersonBase<?> combinationAuthorship, Reference nomenclaturalReference,
             String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
+
         TaxonName result = new TaxonName(code, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorship, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);
         return result;
     }
@@ -599,9 +597,7 @@ public class TaxonName
      * @see #TaxonName(HomotypicalGroup)
      * @see #TaxonName(Rank, HomotypicalGroup)
      */
-    protected TaxonName() {
-        this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
-    }
+    protected TaxonName() {}
 
     /**
      * Class constructor: creates a new taxon name instance
@@ -661,7 +657,7 @@ public class TaxonName
      */
     protected TaxonName(NomenclaturalCode type, Rank rank, String genusOrUninomial,
             String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet,
-            TeamOrPersonBase combinationAuthorship, Reference nomenclaturalReference,
+            TeamOrPersonBase<?> combinationAuthorship, Reference nomenclaturalReference,
             String nomenclMicroRef, HomotypicalGroup homotypicalGroup) {
         this(type, rank, homotypicalGroup);
         setGenusOrUninomial(genusOrUninomial);
@@ -728,11 +724,6 @@ public class TaxonName
         return allFields;
     }
 
-    /**
-     * @param propertyName
-     * @param string
-     * @return
-     */
     private boolean fieldHasCacheUpdateProperty(String propertyName, String cacheName) {
         try {
             java.lang.reflect.Field field = getAllFields().get(propertyName);
@@ -775,6 +766,11 @@ public class TaxonName
         } catch (SecurityException e1) {
             throw e1;
         }
+    }
+
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = TaxonNameDefaultCacheStrategy.NewInstance();
     }
 
 // ****************** GETTER / SETTER ****************************/
@@ -1372,17 +1368,12 @@ public class TaxonName
 //********* METHODS **************************************/
 
     @Override
-    public INameCacheStrategy getCacheStrategy() {
-        return this.cacheStrategy;
-    }
-
-    @Override
     public String generateFullTitle(){
         if (getCacheStrategy() == null){
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
-            return cacheStrategy.getFullTitleCache(this);
+            return getCacheStrategy().getFullTitleCache(this);
         }
     }
 
@@ -1531,7 +1522,7 @@ public class TaxonName
             logger.warn("No CacheStrategy defined for taxon name: " + this.getUuid());
             return null;
         }else{
-            return cacheStrategy.getAuthorshipCache(this);
+            return getCacheStrategy().getAuthorshipCache(this);
         }
     }
 
@@ -1859,7 +1850,7 @@ public class TaxonName
             logger.warn("No CacheStrategy defined for taxon name: " + this.toString());
             return null;
         }else{
-            return cacheStrategy.getNameCache(this);
+            return getCacheStrategy().getNameCache(this);
         }
     }
 
@@ -3571,7 +3562,7 @@ public class TaxonName
         //updates the authorship cache if necessary and via the listener updates all higher caches
         if (protectedAuthorshipCache == false){
             String oldCache = this.authorshipCache;
-            String newCache = cacheStrategy.getAuthorshipCache(this);
+            String newCache = getCacheStrategy().getAuthorshipCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setAuthorshipCache(null, false);
                 this.getAuthorshipCache();
@@ -3585,7 +3576,7 @@ public class TaxonName
         //updates the name cache if necessary and via the listener updates all higher caches
         if (protectedNameCache == false){
             String oldCache = this.nameCache;
-            String newCache = cacheStrategy.getNameCache(this);
+            String newCache = getCacheStrategy().getNameCache(this);
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setNameCache(null, false);
                 this.getNameCache();
@@ -3598,7 +3589,7 @@ public class TaxonName
     private boolean updateFullTitleCache() {
         if (protectedFullTitleCache == false){
             String oldCache = this.fullTitleCache;
-            String newCache = getTruncatedCache(cacheStrategy.getFullTitleCache(this));
+            String newCache = getTruncatedCache(getCacheStrategy().getFullTitleCache(this));
             if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
                 this.setFullTitleCache(null, false);
                 this.getFullTitleCache();

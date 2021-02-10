@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.io.common.Source;
 /**
  * @author a.mueller
  * @since 30.04.2018
- *
  */
 public class TestSource {
     public static void main(String[] arg){
@@ -53,5 +52,4 @@ public class TestSource {
         // write pwd to account store
         return source;
     }
-
 }

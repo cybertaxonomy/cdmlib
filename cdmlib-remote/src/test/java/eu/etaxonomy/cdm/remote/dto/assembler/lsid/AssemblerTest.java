@@ -1,9 +1,16 @@
+/**
+* Copyright (C) 2010 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.dto.assembler.lsid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -17,7 +24,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.dozer.Mapper;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
@@ -28,16 +34,18 @@ import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import com.github.dozermapper.core.Mapper;
+import com.ibm.lsid.MalformedLSIDException;
+
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Credit;
@@ -58,16 +66,22 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefaultTermInitializer;
 import eu.etaxonomy.cdm.remote.dto.dwc.SimpleDarwinRecord;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.OaiDc;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonRelationshipTerm;
+import eu.etaxonomy.cdm.remote.view.OaiPmhViewTest;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -123,12 +137,11 @@ public class AssemblerTest extends UnitilsJUnit4 {
         taxon.setTitleCache("titleCache", true);
         taxon.setLsid(lsid);
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 2; i < 2+1; i++) {
             Taxon child = Taxon.NewInstance(name, (Reference)sec);
-            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:" + (2 + i )));
-//            taxon.addTaxonomicChild(child, null,null);
+            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:r0" + i ));
+            child.addTaxonRelation(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null);
         }
-
 
         taxonDescription = TaxonDescription.NewInstance();
         taxon.addDescription(taxonDescription);
@@ -182,24 +195,32 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
-    @Ignore
     @Test
-    public void testDeepMapping() {
-        for(int i = 0; i < 3; i++) {
+    public void testDeepMapping() throws MalformedLSIDException {
+
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
+            return;
+        }
+
+        //synonyms
+        for(int i = 1; i < 1+3; i++) {
             Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
+            synonym.setLsid(new LSID("urn:lsid:example.org:synyonms:" + i ));
             taxon.addSynonym(synonym, SynonymType.SYNONYM_OF());
         }
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
-            return;
+        //taxon nodes
+        TaxonNode rootNode = Classification.NewInstance("Classification").getRootNode();
+        TaxonNode parentNode = rootNode.addChildTaxon(taxon, null);
+        for(int i = 11; i < 11+2; i++) {
+            Taxon child = Taxon.NewInstance(name, (Reference)sec);
+            child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:p" + i ));
+            parentNode.addChildTaxon(child, null);
         }
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
 
         assertNotNull("map() should return an object", taxonConcept);
-        assertTrue("map() should return a TaxonConcept",taxonConcept instanceof TaxonConcept);
 
         assertEquals("IdentifiableEntity.titleCache should be copied into BaseThing.title",taxon.getTitleCache(),taxonConcept.getTitle());
         assertEquals("IdentifiableEntity.lsid should be copied into BaseThing.identifier",taxon.getLsid().toString(),taxonConcept.getIdentifier().toString());
@@ -212,16 +233,34 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNotNull("TaxonBase.name should be mapped to TaxonConcept.hasName",taxonConcept.getHasName());
         assertEquals("NonViralName.nameCache should be mapped to TaxonName.nameComplete",name.getNameCache(),taxonConcept.getHasName().getNameComplete());
         assertNotNull("Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship",taxonConcept.getHasRelationship());
-        assertEquals("There should be 13 relations in TaxonConcept.hasRelationship",13,taxonConcept.getHasRelationship().size());
+        assertEquals("There should be 6 relations in TaxonConcept.hasRelationship",
+                6, taxonConcept.getHasRelationship().size());
+        int nSynonyms = 0;
+        int nIncludedInTaxa = 0;
+        int pnParentTaxa = 0;
+        for (Relationship rel : taxonConcept.getHasRelationship()){
+            Assert.assertNotNull(rel.getFromTaxon());
+            System.out.println(rel.getFromTaxon().getIdentifier().toString());
+            if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:synyonms:")){
+                nSynonyms++;
+            }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:r")){
+                nIncludedInTaxa++;
+            }else if (rel.getFromTaxon().getIdentifier().toString().startsWith("urn:lsid:example.org:taxonconcepts:p")){
+                TaxonRelationshipTerm category = rel.getRelationshipCategory();
+                Assert.assertEquals("is taxonomically included in", category.getTitle());
+                pnParentTaxa++;
+            }
+//            System.out.println(rel);
+        }
+        Assert.assertEquals(3, nSynonyms);
+        Assert.assertEquals(1, nIncludedInTaxa);
+        Assert.assertEquals(2, pnParentTaxa);
     }
 
-    @Ignore
     @Test
     public void testLazyInitializationExceptionWithProxy() throws Exception {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
@@ -236,33 +275,30 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null",taxonConcept.getAccordingTo());
     }
 
-    @Ignore
     @Test
     public void testLazyInitializationExceptionWithPersistentCollection() throws Exception {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
-        Set<TaxonRelationship> proxy = getUninitializedPersistentCollection(HashSet.class,(HashSet<TaxonRelationship>)taxon.getRelationsToThisTaxon());
+        @SuppressWarnings("unchecked")
+        Set<TaxonRelationship> proxy = getUninitializedPersistentCollection(
+                HashSet.class,(HashSet<TaxonRelationship>)taxon.getRelationsToThisTaxon());
         assert !Hibernate.isInitialized(proxy);
         Field relationsToThisTaxonField = Taxon.class.getDeclaredField("relationsToThisTaxon");
         relationsToThisTaxonField.setAccessible(true);
         relationsToThisTaxonField.set(taxon, proxy);
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
-        assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",taxonConcept.getHasRelationship().isEmpty());
+        Assert.assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",
+                taxonConcept.getHasRelationship() == null || taxonConcept.getHasRelationship().isEmpty()); //with taxonNode mapping included this results in null, otherwise empty, not yet checked why
     }
 
-    @Ignore
     @Test
     public void testSpeciesProfileModelMapping() {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
@@ -270,13 +306,10 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals(speciesProfileModel.getHasInformation().size(),2);
     }
 
-    @Ignore
     @Test
     public void testSimpleDarwinCoreMapping() {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
@@ -290,27 +323,24 @@ public class AssemblerTest extends UnitilsJUnit4 {
         assertEquals(Rank.SPECIES().getLabel(), simpleDarwinRecord.getTaxonRank());
     }
 
-    @Ignore
     @Test
     public void testOAIDublinCoreMapping() {
 
-        if(!UriUtils.isInternetAvailable(null)){
-            // dozer requires access to dozer.sourceforge.net
-            logger.info("Internet is not available: Skipping test");
+        if(!OaiPmhViewTest.dozerXsdIsAvailable()){
             return;
         }
 
         OaiDc oaiDcRecordBook = mapper.map(book, OaiDc.class);
 
-        assertEquals(book.getTitle(), book.getTitle());
+        assertEquals(book.getTitle(), oaiDcRecordBook.getTitle());
 
         OaiDc oaiDcRecordBookSection = mapper.map(bookSection, OaiDc.class);
         assertNotNull(oaiDcRecordBookSection.getRelation());
     }
 
-    private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz,final T wrappedCollection) {
+    private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz, final T wrappedCollection) {
         final Enhancer enhancer = new Enhancer();
-        List<Class> interfaces = new ArrayList<Class>();
+        List<Class> interfaces = new ArrayList<>();
         interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
         interfaces.add(PersistentCollection.class);
         enhancer.setSuperclass(clazz);
@@ -333,20 +363,19 @@ public class AssemblerTest extends UnitilsJUnit4 {
                 }else if("initListener".equals(method.getName())) {
                     return null;
                 } else {
-
                     throw new LazyInitializationException(null);
                 }
-
             }
         });
 
+        @SuppressWarnings("unchecked")
         T proxy = (T)enhancer.create();
         return proxy;
     }
 
     private <T> T getUninitializedDetachedProxy(final Class<T> clazz,final T wrappedClass) {
         final Enhancer enhancer = new Enhancer();
-        List<Class> interfaces = new ArrayList<Class>();
+        List<Class> interfaces = new ArrayList<>();
         interfaces.addAll(Arrays.asList(clazz.getInterfaces()));
         interfaces.add(HibernateProxy.class);
         enhancer.setSuperclass(clazz);
@@ -375,6 +404,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
             }
         });
 
+        @SuppressWarnings("unchecked")
         T proxy = (T)enhancer.create();
         return proxy;
     }

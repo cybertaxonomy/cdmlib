@@ -367,7 +367,8 @@ public class DescriptionServiceImpl
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hiddenAreaMarkerTypes, true, statusOrderPreference, false);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hiddenAreaMarkerTypes,
+                false, statusOrderPreference, false);
         distList.clear();
         distList.addAll(filteredDistributions);
 
@@ -846,7 +847,7 @@ public class DescriptionServiceImpl
 
             }
             try {
-                DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
+                DescriptionElementBase newElement = element.clone();
                 if (setNameInSource) {
                     for (DescriptionElementSource source: newElement.getSources()){
                             if (source.getNameUsedInSource() == null){

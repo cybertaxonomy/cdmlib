@@ -28,9 +28,10 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  *
  * @author a.mueller
  * @since 2013-09-09
- *
  */
-public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPreferencePredicate<Object>{
+public enum PreferencePredicate
+        implements IEnumTerm<PreferencePredicate>, IPreferencePredicate<Object>{
+
     Test(UUID.fromString("b71214ab-2524-4b5d-8e2b-0581767ac839"), "Test", "Test", "Test"),
 
     //Names
@@ -43,20 +44,16 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     //TODO needs "taxon" in modelKey as behavior might be different for specimen and future publishable classes
 //    DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", null),  //default inherit from parent
 
-
     //cdm-vaadin (Distribution UI, Registration UI,  etc)
 	AvailableDistributionStatus(UUID.fromString("6721599e-686b-460e-9d57-cfd364f4b626"), "Available Distribution Status", "distribution.status.term", null),
 	AvailableDistributionAreaVocabularies(UUID.fromString("dd1f35d5-dbf3-426b-9ed3-8b5992cb2e27"), "Available Distribution Area Vocabularies", "distribution.area.voc", null),
 
-
-
     //Common name area vocabularies
-
     CommonNameAreaVocabularies(UUID.fromString("59d68062-b4ff-4c3a-b29d-66bf850c1d82"), "Common Names: Available Vocabularies for Areas of Common Names", "commonname.area.voc", null),
     CommonNameReferencesWithMarker(UUID.fromString("41402495-96a8-47be-9129-cf9b2a4bc189"), "Common Names: Use only References with Common Name Marker", "commonname.reference.useMarked", Boolean.FALSE),
     CommonNameLanguages(UUID.fromString("860b0395-09ad-42f5-9dc7-a277ebc034ea"), "Common name: Languages", "commonname.languages", null),
-    //PreferencePredicates from TaxEditor:
 
+    //PreferencePredicates from TaxEditor:
     TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "Taxon node order", "model.taxon.TNO", NodeOrderEnum.RankAndNameOrder),  //default alphabet + rank
     NameDetailsView(UUID.fromString("3c4ec5f5-feb5-44a8-8533-c3c3484a6869"), "NameDetailsView", "model.editor.NDV", null),
     DeterminationOnlyForFieldUnits(UUID.fromString("91b9224b-6610-4cf1-b3da-d60d6f9d59b1"), "DeterminationOnlyForFieldUnit", "model.editor.DOFU", Boolean.FALSE),
@@ -66,7 +63,6 @@ public enum PreferencePredicate implements IEnumTerm<PreferencePredicate>, IPref
     ShowTaxonNodeWizard(UUID.fromString("af06fbec-635b-4676-8b60-0b98aefda6aa"), "Show TaxonNode wizard", "views.showTaxonNodeWizard", Boolean.TRUE),
     DisableMultiClassification(UUID.fromString("abdf7e40-afe6-4131-9af3-c6b6779ee6be"), "Disable multi-classification functionality", "menu.disableMultiClassification", Boolean.FALSE),
     ShowChecklistPerspective(UUID.fromString("6058762b-893c-4330-bfe7-45d5717d02b2"), "Show checklist perspective as default", "perspective.checklist", Boolean.FALSE),
-
 
     //Sources
     ShowIdInSource(UUID.fromString("de291d1b-d89e-42ee-a7b5-15f306f50785"), "Source Details: Show ID in Source", "sourceDetails.IdInSource", Boolean.TRUE),

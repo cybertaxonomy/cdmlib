@@ -8,24 +8,22 @@
 */
 package eu.etaxonomy.cdm.remote.dto.assembler.converter;
 
-import org.dozer.CustomFieldMapper;
-import org.dozer.classmap.ClassMap;
-import org.dozer.fieldmap.FieldMap;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionException;
 import org.hibernate.envers.internal.entities.mapper.relation.lazy.proxy.CollectionProxy;
 
-
+import com.github.dozermapper.core.CustomFieldMapper;
+import com.github.dozermapper.core.classmap.ClassMap;
+import com.github.dozermapper.core.fieldmap.FieldMap;
 
 public class HibernateProxyFieldMapper implements CustomFieldMapper {
-
 
 	@Override
     public boolean mapField(Object source, Object destination, Object sourceFieldValue, ClassMap classMap, FieldMap fieldMapping) {
 
 		if(sourceFieldValue instanceof CollectionProxy) {
 			try {
-				((CollectionProxy)sourceFieldValue).hashCode();
+				((CollectionProxy<?,?>)sourceFieldValue).hashCode();
 			} catch(SessionException se) { // currently no way to tell if is initialized
 				return true;
 			}
@@ -35,6 +33,5 @@ public class HibernateProxyFieldMapper implements CustomFieldMapper {
 		}else {
 			return true;
 		}
-
 	}
 }

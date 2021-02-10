@@ -472,9 +472,6 @@ public class DerivedUnitFacade {
 		return result;
 	}
 
-	/**
-	 *
-	 */
 	private void setCacheStrategy() {
 		if (derivedUnit == null) {
 			throw new NullPointerException(
@@ -492,13 +489,6 @@ public class DerivedUnitFacade {
 		}
 	}
 
-	/**
-	 * @param feature
-	 * @param createIfNotExists
-	 * @param isImageGallery
-	 * @return
-	 * @throws DerivedUnitFacadeNotSupportedException
-	 */
 	private TextData initializeFieldObjectTextDataWithSupportTest(
 			Feature feature, boolean createIfNotExists, boolean isImageGallery)
 			throws DerivedUnitFacadeNotSupportedException {

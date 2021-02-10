@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup;
 
@@ -117,20 +116,18 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
         return result;
     }
 
-// ************* CONSTRUCTORS *************/
+// ********************* CONSTRUCTORS ******************************/
+
 	/**
 	 * Class constructor: creates a new empty synonym instance.
 	 *
 	 * @see 	#Synonym(TaxonName, Reference)
 	 */
 	//TODO should be private, but still produces Spring init errors
-	public Synonym(){
-		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
-	}
+	public Synonym(){}
 
 	private Synonym(TaxonName taxonName, Reference sec, String secDetail){
 		super(taxonName, sec, secDetail);
-		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<>();
 	}
 
 //********************** GETTER/SETTER ******************************/

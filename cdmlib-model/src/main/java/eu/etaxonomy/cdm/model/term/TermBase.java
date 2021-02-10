@@ -104,7 +104,6 @@ public abstract class TermBase
         }else{
         	this.termType = type;
         }
-        initCacheStrategy();
     }
 
     protected TermBase(TermType type, String term, String label, String labelAbbrev) {
@@ -112,8 +111,9 @@ public abstract class TermBase
         this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
     }
 
-    private void initCacheStrategy() {
-        this.cacheStrategy = new TermDefaultCacheStrategy<>();
+    @Override
+    protected void initDefaultCacheStrategy() {
+        this.cacheStrategy = TermDefaultCacheStrategy.NewInstance(TermBase.class);
     }
 
 //******************** GETTER /SETTER ********************************/
