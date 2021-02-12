@@ -316,14 +316,14 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         Classification classification = classificationDao.findByUuid(classificationUuid);
         List<UuidAndTitleCache<TaxonNode>> result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null, true);
         assertNotNull(result);
-        assertEquals(6, result.size());
+        assertEquals(7, result.size());
 
         //test exclude
         UUID excludeUUID = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
         List<UUID> excludeUUids = new ArrayList<>();
         excludeUUids.add(excludeUUID);
         result = taxonNodeDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(classification,  null, null, false);
-        assertEquals(5, result.size());
+        assertEquals(6, result.size());
 
         //test limit
         int limit = 2;
@@ -343,10 +343,47 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("6d6b43aa-3a77-4be5-91d0-00b702fc5d6e", result.get(0).getUuid().toString());
+    }
+
+    @Test
+    @DataSet ("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    public final void testGetTaxonNodeUuidAndTitleCache(){
+        String pattern = "";
+        List<TaxonNodeDto> result = taxonNodeDao.getUuidAndTitleCache(100, pattern, classificationUuid, true);
+        assertNotNull(result);
+        assertEquals(6, result.size());
+
+        //test limit
+        int limit = 2;
+        result = taxonNodeDao.getUuidAndTitleCache(limit, pattern, classificationUuid, true);
+        assertEquals(2, result.size());
+
+        //test pattern & classification
+        pattern = "*Rothschi*";
+        result = taxonNodeDao.getUuidAndTitleCache(100, pattern, classificationUuid, true);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("0b5846e5-b8d2-4ca9-ac51-099286ea4adc", result.get(0).getUuid().toString());
+
+        //test pattern without classification
+        pattern = "*Rothschi*";
+        result = taxonNodeDao.getUuidAndTitleCache(100, pattern, null, true);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+
+        //test doubtful & pattern
+        pattern = "Aus*";
+        result = taxonNodeDao.getUuidAndTitleCache(100, pattern, classificationUuid, true);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("ebf8ea46-9f24-47be-8fb5-02bd67f90348", result.get(0).getUuid().toString());
 
 
 
     }
+
+
     @Test
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")
     public final void testGetTaxonNodeUuidAndTitleCacheOfacceptedTaxaByClassificationForNameWithoutRank(){

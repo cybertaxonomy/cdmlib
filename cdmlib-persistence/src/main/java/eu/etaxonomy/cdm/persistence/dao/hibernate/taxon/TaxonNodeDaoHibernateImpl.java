@@ -201,36 +201,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid, boolean includeDoubtful) {
 
-        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + " tn.uuid, tn.id, t.titleCache, rank "
-                + ") "
-                + " FROM TaxonNode tn "
-        		+ "   INNER JOIN tn.taxon AS t "
-        		+ "   INNER JOIN tn.classification AS cls "
-                + "   INNER JOIN t.name AS name "
-        		+ "   LEFT OUTER JOIN name.rank AS rank"
-        		+ " WHERE (t.titleCache LIKE :pattern ";
-        pattern = pattern.toLowerCase().replace("*", "%") + "%";
-        String doubtfulPattern = "?" + pattern;
-        if (includeDoubtful){
-            queryString = queryString + " OR t.titleCache LIKE :doubtfulPattern ";
-        }
-        queryString = queryString + ") ";
-
-        if(classificationUuid != null){
-        	queryString += " AND cls.uuid = :classificationUuid ";
-        }
-        Query query =  getSession().createQuery(queryString);
-
-        query.setParameter("pattern", pattern);
-        if (includeDoubtful){
-            query.setParameter("doubtfulPattern", doubtfulPattern);
-        }
-
-        if(classificationUuid != null){
-            query.setParameter("classificationUuid", classificationUuid);
-        }
-
+        Query query = createQueryForUuidAndTitleCache(limit, classificationUuid, pattern, includeDoubtful);
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
@@ -239,11 +210,73 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             result.stream().forEach(o -> logger.trace("uuid: " + o.getTaxonNodeUuid() + " titleCache:" + o.getTaxonTitleCache() + " rank: " + o.getNameRank()));
         }
         List<TaxonNodeDto> list = new ArrayList<>();
+//        int index = limit;
         for(SortableTaxonNodeQueryResult stnqr : result){
-            list.add(new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
+//            if (index > 0){
+                list.add(new TaxonNodeDto(stnqr.getTaxonNodeUuid(),stnqr.getTaxonNodeId(), stnqr.getTaxonTitleCache()));
+//                index --;
+//            }
+
         }
+
         return list;
     }
+
+    private Query createQueryForUuidAndTitleCache(Integer limit, UUID classificationUuid, String pattern, boolean includeDoubtful){
+        String doubtfulPattern = "";
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + " node.uuid, node.id, t.titleCache, rank"
+                + ") "
+                + " FROM TaxonNode AS node "
+                + "   JOIN node.taxon as t " // FIXME why not inner join here?
+                + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN name.rank AS rank "
+                + " WHERE ";
+
+      if (classificationUuid != null){
+          queryString = queryString + " node.classification.uuid like :classificationUuid " ;
+      }
+      if (pattern != null){
+          if (pattern.equals("?")){
+              limit = null;
+          } else{
+              if (!pattern.endsWith("*")){
+                  pattern += "%";
+              }
+              pattern = pattern.replace("*", "%");
+              pattern = pattern.replace("?", "%");
+              if (classificationUuid != null){
+                  queryString = queryString + " AND ";
+              }
+              queryString = queryString + " (t.titleCache LIKE (:pattern) " ;
+              doubtfulPattern = "?" + pattern;
+              if (includeDoubtful){
+                  queryString = queryString + " OR t.titleCache LIKE (:doubtfulPattern))";
+              }else{
+                  queryString = queryString + ")";
+              }
+          }
+
+      }
+
+      Query query =  getSession().createQuery(queryString);
+      if (pattern != null){
+          query.setParameter("pattern", pattern);
+      }
+      if (includeDoubtful){
+          query.setParameter("doubtfulPattern", doubtfulPattern);
+      }
+
+      if(classificationUuid != null){
+          query.setParameter("classificationUuid", classificationUuid);
+      }
+      if (limit != null){
+          query.setMaxResults(limit);
+      }
+      return query;
+    }
+
+
 
     @Override
     public TaxonNodeDto getParentUuidAndTitleCache(TaxonNodeDto child) {
@@ -917,58 +950,18 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification, Integer limit, String pattern, boolean searchForClassifications, boolean includeDoubtful) {
-        int classificationId = classification.getId();
-        String doubtfulPattern = null;
-         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                   + " node.uuid, node.id, t.titleCache, rank"
-                   + ") "
-                   + " FROM TaxonNode AS node "
-                   + "   JOIN node.taxon as t " // FIXME why not inner join here?
-                   + "   INNER JOIN t.name AS name "
-                   + "   LEFT OUTER JOIN name.rank AS rank "
-                   + " WHERE node.classification.id = " + classificationId ;
-         if (pattern != null){
-             if (pattern.equals("?")){
-                 limit = null;
-             } else{
-                 if (!pattern.endsWith("*")){
-                     pattern += "%";
-                 }
-                 pattern = pattern.replace("*", "%");
-                 pattern = pattern.replace("?", "%");
 
-                 queryString = queryString + " AND (t.titleCache LIKE (:pattern) " ;
-                 doubtfulPattern = "?" + pattern;
-                 if (includeDoubtful){
-                     queryString = queryString + " OR t.titleCache LIKE (:doubtfulPattern))";
-                 }else{
-                     queryString = queryString + ")";
-                 }
-             }
-
-         }
-
-         Query query = getSession().createQuery(queryString);
-
-         if (limit != null){
-             query.setMaxResults(limit);
-         }
-
-         if (pattern != null && !pattern.equals("?")){
-             query.setParameter("pattern", pattern);
-             if (includeDoubtful){
-                 query.setParameter("doubtfulPattern", doubtfulPattern);
-             }
-         }
+         Query query = createQueryForUuidAndTitleCache(limit, classification.getUuid(), pattern, includeDoubtful);
          @SuppressWarnings("unchecked")
          List<SortableTaxonNodeQueryResult> result = query.list();
 
+
          if (searchForClassifications){
-             queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+             String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
                      + " node.uuid, node.id, node.classification.titleCache"
                      + ") "
                      + " FROM TaxonNode AS node "
-                     + " WHERE node.classification.id = " + classificationId +
+                     + " WHERE node.classification.id = " + classification.getId() +
                           " AND node.taxon IS NULL";
              if (pattern != null){
                  if (pattern.equals("?")){
