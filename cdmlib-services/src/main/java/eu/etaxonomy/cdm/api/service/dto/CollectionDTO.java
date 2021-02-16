@@ -8,6 +8,9 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
@@ -34,9 +37,14 @@ public class CollectionDTO extends TypedEntityReference<Collection> {
     }
 
     /**
-     * @param collection
+     * @deprecated use factory instead
      */
+    @Deprecated
     public CollectionDTO(Collection collection) {
+        this(collection, new HashSet<>());
+    }
+
+    private CollectionDTO(Collection collection, Set<Collection> collectionsSeen) {
         super(Collection.class, collection.getUuid(), collection.getTitleCache());
         this.code = collection.getCode();
         this.codeStandard = collection.getCodeStandard();
@@ -44,7 +52,10 @@ public class CollectionDTO extends TypedEntityReference<Collection> {
             this.institute = collection.getInstitute().getTitleCache();
         }
         this.townOrLocation = collection.getTownOrLocation();
-        this.setSuperCollection(CollectionDTO.fromCollection(collection.getSuperCollection()));
+        if(collection.getSuperCollection() != null && !collectionsSeen.contains(collection.getSuperCollection())) {
+            collectionsSeen.add(collection.getSuperCollection());
+            this.setSuperCollection(new CollectionDTO(collection.getSuperCollection(), collectionsSeen));
+        }
     }
 
     public String getCode() {
