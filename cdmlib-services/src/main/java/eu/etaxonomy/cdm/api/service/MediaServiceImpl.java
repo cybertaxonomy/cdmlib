@@ -111,6 +111,17 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
+	 @Override
+	 @Transactional(readOnly=false)
+	 public DeleteResult delete(Set<UUID> mediaUuids, MediaDeletionConfigurator config) {
+	     DeleteResult result = new DeleteResult();
+	     for (UUID uuid:mediaUuids){
+	         result.includeResult(delete(uuid, config));
+	     }
+	     return result;
+
+	 }
+
     @Override
     @Transactional(readOnly=false)
     public DeleteResult delete(UUID mediaUuid, MediaDeletionConfigurator config) {
