@@ -30,54 +30,42 @@ public class TermNodeDto implements Serializable{
 
     private static final long serialVersionUID = 7568459208397248126L;
 
-    UUID parentUuid;
-    String treeIndex;
-    List<TermNodeDto> children;
-    Set<FeatureState> onlyApplicableIf = new HashSet<>();
-    Set<FeatureState> inapplicableIf = new HashSet<>();
-    UUID uuid;
-    TermDto term;
-    TermType type;
-    TermTreeDto tree;
-    String path;
+    private UUID parentUuid;
+    private String treeIndex;
+    private List<TermNodeDto> children;
+    private Set<FeatureState> onlyApplicableIf = new HashSet<>();
+    private Set<FeatureState> inapplicableIf = new HashSet<>();
+    private UUID uuid;
+    private TermDto term;
+    private TermType type;
+    private TermTreeDto tree;
+    private String path;
 
     public static TermNodeDto fromNode(TermNode node, TermTreeDto treeDto){
         Assert.notNull(node, "Node should not be null");
         TermDto term = node.getTerm() != null?TermDto.fromTerm(node.getTerm()): null;
-//        TermTreeDto tree = node.getGraph() != null? TermTreeDto.fromTree(HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class)):null;
         TermNodeDto dto = new TermNodeDto(term, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.treeIndex(), node.getPath());
-//        uuid = node.getUuid();
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
         }
-//        TermTree termTree = HibernateProxyHelper.deproxy(node.getGraph(), TermTree.class);
-//        tree = TermTreeDto.fromTree(termTree);
-//        treeIndex = node.treeIndex();
+
         List<TermNodeDto> children = new ArrayList<>();
         for (Object o: node.getChildNodes()){
             if (o instanceof TermNode){
                 TermNode<?> child = (TermNode<?>)o;
-
-                if (child != null){
-                    if(child.getTerm().getTermType().equals(TermType.Character)){
-                        children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
-                    }else{
-                        children.add(TermNodeDto.fromNode(child, treeDto));
-                    }
+                if(child.getTerm().getTermType().equals(TermType.Character)){
+                    children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
+                }else{
+                    children.add(TermNodeDto.fromNode(child, treeDto));
                 }
             }
         }
         dto.setChildren(children);
         dto.setOnlyApplicableIf(node.getOnlyApplicableIf());
         dto.setInapplicableIf(node.getInapplicableIf());
-//        if (node.getTerm() != null){
-//            term = TermDto.fromTerm(node.getTerm());
-//        }
         dto.setTermType(node.getTermType());
-//        path = node.getPath();
         return dto;
     }
-
 
     public TermNodeDto(TermDto termDto, TermNodeDto parent, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
         this.uuid = uuid;
@@ -96,7 +84,6 @@ public class TermNodeDto implements Serializable{
             tree.addTerm(termDto);
         }
         this.path = path;
-
     }
 
     public TermNodeDto(TermDto termDto, UUID parentUuid, int position, TermTreeDto treeDto, UUID uuid, String treeIndex, String path){
@@ -107,9 +94,7 @@ public class TermNodeDto implements Serializable{
         term = termDto;
         type = termDto!= null? termDto.getTermType(): null;
         children = new ArrayList<>();
-//        if (parent != null){
-//            parent.getChildren().add(position, this);
-//        }
+
         tree = treeDto;
         this.path = path;
 
@@ -124,7 +109,6 @@ public class TermNodeDto implements Serializable{
 
         tree = treeDto;
         this.path = path;
-
     }
 
 /*--------Getter and Setter ---------------*/
@@ -214,23 +198,15 @@ public class TermNodeDto implements Serializable{
         return -1;
    }
 
-   /**
-     * @return the path
-     */
     public String getPath() {
         return path;
     }
 
-
-    /**
-     * @param path the path to set
-     */
     public void setPath(String path) {
         this.path = path;
     }
 
-
-public boolean removeChild(TermNodeDto nodeDto, boolean doRecursive){
+    public boolean removeChild(TermNodeDto nodeDto, boolean doRecursive){
        int index = this.getIndex(nodeDto);
        if (index > -1){
            this.getChildren().remove(index);
@@ -253,25 +229,21 @@ public boolean removeChild(TermNodeDto nodeDto, boolean doRecursive){
        return result[0]+result[1]+result[2];
    }
 
-   /**
-    * @param fromTable
-    * @return
-    */
    private static String[] createSqlParts() {
        String sqlSelectString = ""
-               + "select a.uuid, "
-               + "r, "
-               + "a.termType,  "
-               + "a.uri,  "
-               + "root,  "
-               + "a.titleCache, "
-               + "a.allowDuplicates, "
-               + "a.orderRelevant, "
-               + "a.isFlat ";
-       String sqlFromString =   "from TermNode as a ";
+               + " SELECT a.uuid, "
+               + " r, "
+               + " a.termType,  "
+               + " a.uri,  "
+               + " root,  "
+               + " a.titleCache, "
+               + " a.allowDuplicates, "
+               + " a.orderRelevant, "
+               + " a.isFlat ";
+       String sqlFromString = " FROM TermNode as a ";
 
-       String sqlJoinString =  "LEFT JOIN a.tree "
-              + "LEFT JOIN a.representations AS r "
+       String sqlJoinString = " LEFT JOIN a.tree "
+              + " LEFT JOIN a.representations AS r "
                ;
 
        String[] result = new String[3];
@@ -283,20 +255,20 @@ public boolean removeChild(TermNodeDto nodeDto, boolean doRecursive){
 
    private static String[] createSqlPartsWithTerm() {
        String sqlSelectString = ""
-               + "select a.uuid, "
-               + "r, "
-               + "a.term"
-               + "a.termType,  "
-               + "a.uri,  "
-               + "root,  "
-               + "a.titleCache, "
-               + "a.allowDuplicates, "
-               + "a.orderRelevant, "
-               + "a.isFlat ";
-       String sqlFromString =   "from TermNode as a ";
+               + " SELECT a.uuid, "
+               + " r, "
+               + " a.term"
+               + " a.termType,  "
+               + " a.uri,  "
+               + " root,  "
+               + " a.titleCache, "
+               + " a.allowDuplicates, "
+               + " a.orderRelevant, "
+               + " a.isFlat ";
+       String sqlFromString = " FROM TermNode as a ";
 
-       String sqlJoinString =  "LEFT JOIN a.tree "
-              + "LEFT JOIN a.representations AS r "
+       String sqlJoinString = " LEFT JOIN a.tree "
+              + " LEFT JOIN a.representations AS r "
                ;
 
        String[] result = new String[3];
