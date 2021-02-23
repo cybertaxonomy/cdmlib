@@ -369,8 +369,9 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if(parts.contains(InfoPart.condensedDistribution)) {
-            dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, recipe, languages));
+            CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
+                    filteredDistributions, recipe, languages);
+            dto.setCondensedDistribution(condensedDistribution);
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {

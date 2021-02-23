@@ -8,10 +8,13 @@
 */
 package eu.etaxonomy.cdm.strategy.cache;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Formatter class to create Strings from TaggedText Lists.
@@ -20,6 +23,8 @@ import java.util.TreeSet;
  * @since 09.09.2015
  */
 public class TaggedCacheHelper {
+
+    private static final TaggedText WHITESPACE_TAG = TaggedText.NewWhitespaceInstance();
 
     /**
      * Creates a string from tagged text by concatenating all tags with a whitespace.
@@ -50,13 +55,13 @@ public class TaggedCacheHelper {
     /**
      * Creates a string from tagged text by concatenating all tags. If no separator tag is defined
      * tags are separated by simple whitespace.
-     * @param tags
-     * @return
      */
-    public  static String createString(List<TaggedText> tags, HTMLTagRules htmlRules) {
+    public  static String createString(List<TaggedText> tagsOrigin, HTMLTagRules htmlRules) {
         if (htmlRules == null){
-            return createString(tags);
+            return createString(tagsOrigin);
         }
+        List<TaggedText> tags = new ArrayList<>(tagsOrigin);
+
         //add whitespace separators
         int index = 0;
         boolean wasSeparator = true;
@@ -64,7 +69,7 @@ public class TaggedCacheHelper {
 
             if (! tags.get(index).getType().isSeparator()){
                 if (wasSeparator == false){
-                    tags.add(index++, TaggedText.NewWhitespaceInstance());
+                    tags.add(index++, WHITESPACE_TAG);
                 }else{
                     wasSeparator = false;
                 }
@@ -80,18 +85,20 @@ public class TaggedCacheHelper {
         Stack<String> htmlStack = new Stack<>();
         for (int i = 0;  i < tags.size(); i++  ){
             TaggedText tag = tags.get(i);
-            TagEnum thisType = tag.getType();
-            TagEnum lastType = (i == 0? null : tags.get(i - 1).getType());
-            TagEnum nextType = (i + 1 >= tags.size() ? null : tags.get(i + 1).getType());
+            TaggedText lastTag = (i == 0? null : tags.get(i - 1));
+            TaggedText nextTag = (i + 1 >= tags.size() ? null : tags.get(i + 1));
+            TagEnum lastType = (lastTag == null ? null : lastTag.getType());
+            TagEnum nextType = (nextTag == null ? null : nextTag.getType());
 
             boolean isSeparator = tag.getType().isSeparator();
+            boolean isBlankSeparator = isSeparator && StringUtils.isBlank(tag.getText());
 
             //compute list of rules (tags)
             SortedSet<String> separatorRules;
-            if (isSeparator){
-                separatorRules = getCommonRules(htmlRules.getRule(lastType), htmlRules.getRule(nextType));
+            if (isBlankSeparator){
+                separatorRules = getCommonRules(htmlRules.getRule(lastTag), htmlRules.getRule(nextTag));
             }else{
-                separatorRules = htmlRules.getRule(thisType);
+                separatorRules = htmlRules.getRule(tag);
             }
 
             //Close all tags not used anymore and remove all common tags from list of rules
@@ -106,7 +113,7 @@ public class TaggedCacheHelper {
             }
 
             //open all tags not yet existing
-            if (! isSeparator){
+            if (! isBlankSeparator){
                 for (String rule : separatorRules){
                     htmlStack.add(rule);
                     result.append("<" +  rule + ">");
@@ -114,7 +121,7 @@ public class TaggedCacheHelper {
             }
 
             //add whitespace
-            if (lastType != null && ! lastType.isSeparator() && ! isSeparator && nextType != null){
+            if (!isSeparator && lastType != null && !lastType.isSeparator() && nextType != null){
                 result.append(" ");
             }
             result.append(tag.getText());

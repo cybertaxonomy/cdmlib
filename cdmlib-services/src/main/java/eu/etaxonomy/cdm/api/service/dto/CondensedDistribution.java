@@ -9,115 +9,108 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
 
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import javax.swing.text.html.HTML;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
+import eu.etaxonomy.cdm.strategy.cache.TagEnum;
+import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
+ * A class representing a condensed distribution stored as as list of {@link TaggedText}
+ * with TaggedText being extended by an isBold indicator.
+ *
+ * The class offers a method representing a string representation which uses {@link HTML}
+ * tag < b> to indicate bold text.
+ *
  * @author a.kohlbecker
+ * @author a.mueller
  * @since Jun 25, 2015
  */
 public class CondensedDistribution {
 
-    private List<DistributionItem> indigenous = new ArrayList<>();
-    private List<DistributionItem> foreign = new ArrayList<>();
+    private List<TaggedText> taggedText = new ArrayList<>();
 
-    public List<DistributionItem> getForeign() {
-        return foreign;
-    }
-    public void setForeign(List<DistributionItem> foreign) {
-        this.foreign = foreign;
-    }
+    public static class DistributionTaggedText extends TaggedText{
+        private static final long serialVersionUID = 3904027767908153947L;
+        private boolean bold = false;
 
-    public void setIndigenous(List<DistributionItem> indigenous) {
-        this.indigenous = indigenous;
-    }
-    public List<DistributionItem> getIndigenous() {
-        return indigenous;
-    }
-
-    public void addForeignDistributionItem(PresenceAbsenceTerm status, String areaStatusLabel, String sortString) {
-        foreign.add(new DistributionItem(status, areaStatusLabel, sortString));
-    }
-
-    public void addIndigenousDistributionItem(PresenceAbsenceTerm status, String areaStatusLabel, String sortString) {
-        indigenous.add(new DistributionItem(status, areaStatusLabel, sortString));
-    }
-
-
-    public void sortForeign() {
-        Collections.sort(foreign, new CondensedDistributionComparator());
-    }
-
-    public void sortIndigenous() {
-        Collections.sort(indigenous, new CondensedDistributionComparator());
-    }
-
-    @Override
-    public String toString() {
-
-        StringBuilder out = new StringBuilder();
-
-        boolean isFirst = true;
-        for(DistributionItem item : indigenous) {
-            if(!isFirst) {
-                out.append(" ");
-            }
-            out.append(item.areaStatusLabel);
-            isFirst = false;
+        public static DistributionTaggedText NewInstance(TagEnum type, String text){
+            return new DistributionTaggedText(type, text, false);
         }
 
-        if(!isFirst) {
-            out.append(" ");
+        private DistributionTaggedText(TagEnum type, String text, boolean bold) {
+            super(type, text);
+            this.bold = bold;
         }
-        isFirst = true;
-        if(!foreign.isEmpty()) {
-            out.append("[");
-            for(DistributionItem item : foreign) {
-                if(!isFirst) {
-                    out.append(" ");
-                }
-                out.append(item.areaStatusLabel);
-                isFirst = false;
-            }
-            out.append("]");
+        public boolean isBold() {
+            return bold;
         }
-        return out.toString();
-    }
-
-    public class DistributionItem {
-
-        private PresenceAbsenceTerm status;
-        private String areaStatusLabel;
-        private final String sortString;
-
-        public DistributionItem(PresenceAbsenceTerm status, String areaStatusLabel, String sortString) {
-            this.status = status;
-            this.areaStatusLabel = areaStatusLabel;
-            this.sortString = sortString;
+        public void setBold(boolean bold) {
+            this.bold = bold;
         }
-        public PresenceAbsenceTerm getStatus() {
-            return status;
-        }
-        public void setStatus(PresenceAbsenceTerm status) {
-            this.status = status;
-        }
-
-        public String getAreaStatusLabel() {
-            return areaStatusLabel;
-        }
-        public void setAreaStatusLabel(String areaStatusLabel) {
-            this.areaStatusLabel = areaStatusLabel;
-        }
-    }
-
-    class CondensedDistributionComparator implements Comparator<DistributionItem>{
 
         @Override
-        public int compare(DistributionItem o1, DistributionItem o2) {
-            return o1.sortString.compareToIgnoreCase(o2.sortString);
+        public SortedSet<String> htmlTags(){
+            SortedSet<String> result = super.htmlTags();
+            if (bold){
+                result.add("b");
+            }
+            return result;
         }
+    }
+
+    public void addStatusAndAreaTaggedText(String status, String area, boolean bold) {
+        addTaggedText(TagEnum.symbol, status, false);
+        if (CdmUtils.isNotBlank(status) && CdmUtils.isNotBlank(area)){
+            addTaggedText(TagEnum.separator,"",false);
+        }
+        addTaggedText(TagEnum.label, area, bold);
+    }
+
+    public void addSeparatorTaggedText(String sep){
+        addTaggedText(TagEnum.separator, sep, false);
+    }
+    public void addSeparatorTaggedText(String sep, boolean bold) {
+        addTaggedText(TagEnum.separator, sep, bold);
+    }
+
+    /**
+     * @see TagEnum#postSeparator
+     */
+    public void addPostSeparatorTaggedText(String sep){
+        addTaggedText(TagEnum.postSeparator, sep, false);
+    }
+
+    public void addTaggedText(TagEnum type, String text, boolean bold) {
+        if (CdmUtils.isNotBlank(text)|| type.isSeparator() ){
+            DistributionTaggedText taggedText = DistributionTaggedText.NewInstance(type, text);
+            taggedText.bold = bold;
+            this.taggedText.add(taggedText);
+        }
+    }
+
+    /**
+     * @return <code>true</code> if no tagged text was added yet (the inner tagged text list is still empty).
+     */
+    public boolean isEmpty() {
+        return this.taggedText.isEmpty();
+    }
+
+    public String getHtmlText(){
+        return toString();
+    }
+
+//***************** STRING **************************************/
+
+    @Override
+    public String toString(){
+        HTMLTagRules htmlTagRules = new HTMLTagRules();
+        htmlTagRules.setIncludeSingleInstanceHtml(true);
+        return TaggedCacheHelper.createString(this.taggedText, htmlTagRules);
     }
 }

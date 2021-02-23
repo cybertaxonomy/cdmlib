@@ -10,9 +10,12 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -713,5 +716,22 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		this.absenceTerm = isAbsenceTerm;
 	}
 
-
+	private Set<UUID> isAnyIntroduced;
+    public boolean isAnyIntroduced() {
+        if (isAnyIntroduced == null){
+            isAnyIntroduced = new HashSet<>(Arrays.asList(new UUID[]{
+                   uuidCasualPresenceQuestionable, uuidCasualReportedError,
+                   uuidCultivated, uuidCultivatedPresenceQuestionable, uuidCultivatedReportedError,
+                   uuidIntroduced, uuidIntroducedCultiated, uuidIntroducedDoubtfullyIntroduced,
+                   uuidIntroducedFormerlyIntroduced, uuidIntroducedPresenceQuestionable,
+                   uuidIntroducedReportedError, uuidIntroducedUncertainDegreeNaturalisation,
+                   uuidIntroducedAdventitious,
+                   uuidInvasive, uuidInvasivePresenceQuestionable,
+                   uuidNaturalised, uuidNaturalisedPresenceQuestionable, uuidNaturalisedReportedError,
+                   uuidIntroducedUncertainDegreeNaturalisation,
+                   uuidInvasive, uuidInvasivePresenceQuestionable, uuidNonInvasive, uuidNonInvasivePresenceQuestionable
+            }));
+        }
+        return isAnyIntroduced.contains(uuid);
+    }
 }

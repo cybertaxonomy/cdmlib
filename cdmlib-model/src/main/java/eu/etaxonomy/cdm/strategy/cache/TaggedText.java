@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.strategy.cache;
 
 import java.io.Serializable;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -88,6 +90,13 @@ public class TaggedText implements Serializable{
         this.entityReference = entityReference;
     }
 
+    /**
+     * To be overridden by subclasses if needed.
+     */
+    public SortedSet<String> htmlTags() {
+        return new TreeSet<>();
+    }
+
 // **************************** TO STRING ***********************************/
 
 	@Override
@@ -99,4 +108,5 @@ public class TaggedText implements Serializable{
 			return result;
 		}
 	}
+
 }

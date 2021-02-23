@@ -8,16 +8,15 @@
 */
 package eu.etaxonomy.cdm.ext.geo;
 
-import eu.etaxonomy.cdm.ext.geo.EuroPlusMedCondensedDistributionComposer;
-import eu.etaxonomy.cdm.ext.geo.FloraCubaCondensedDistributionComposer;
-import eu.etaxonomy.cdm.ext.geo.ICondensedDistributionComposer;
 import eu.etaxonomy.cdm.model.metadata.IKeyLabel;
 
 /**
  * @author a.kohlbecker
  * @since Jun 24, 2015
  *
+ * @deprecated the usage of this class is deprecated, please use {@link CondensedDistributionConfiguration} instead
  */
+ @Deprecated
 public enum CondensedDistributionRecipe implements IKeyLabel{
 
     /**
@@ -30,21 +29,15 @@ public enum CondensedDistributionRecipe implements IKeyLabel{
      *   <li>{@link http://dev.e-taxonomy.eu/trac/ticket/3907}</li>
      * </ul>
      */
-    EuroPlusMed("EuroPlusMed", "Euro + Med", EuroPlusMedCondensedDistributionComposer.class),
-    FloraCuba("FloraCuba", "Flora Cuba", FloraCubaCondensedDistributionComposer.class);
+    EuroPlusMed("EuroPlusMed", "Euro + Med"),
+    FloraCuba("FloraCuba", "Flora Cuba");
 
-    Class<? extends ICondensedDistributionComposer> implementation;
-    String label;
-    String key;
+    private String label;
+    private String key;
 
-    CondensedDistributionRecipe(String key, String label, Class<? extends ICondensedDistributionComposer> implementation) {
+    private CondensedDistributionRecipe(String key, String label) {
         this.key = key;
         this.label = label;
-        this.implementation = implementation;
-    }
-
-    public ICondensedDistributionComposer newCondensedDistributionComposerInstance() throws InstantiationException, IllegalAccessException {
-        return implementation.newInstance();
     }
 
     @Override
@@ -55,5 +48,13 @@ public enum CondensedDistributionRecipe implements IKeyLabel{
     @Override
     public String getKey() {
         return key;
+    }
+
+    public CondensedDistributionConfiguration toConfiguration(){
+        if (this == FloraCuba){
+            return CondensedDistributionConfiguration.NewCubaInstance();
+        } else {
+            return CondensedDistributionConfiguration.NewDefaultInstance();
+        }
     }
 }
