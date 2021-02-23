@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -128,20 +129,21 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
 	 * All data associated with the former taxon are moved to the newly accepted taxon.
 	 */
-	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource) ;
+	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymType synonymType, Reference citation,  String microReference, SecReferenceHandlingEnum secHandling, boolean setNameInSource) ;
 
 	/**
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
 	 * All data associated with the former taxa are moved to the newly accepted taxon.
 	 */
 	public UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
-			SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource);
+			SynonymType synonymType, UUID citationUuid, String microReference, SecReferenceHandlingEnum secHandling, boolean setNameInSource);
 
 	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymType synonymType,
-	        Reference citation,
-	        String citationMicroReference,
+	        UUID citationUuid,
+	        String microReference,
+	        SecReferenceHandlingEnum secHandling,
 	        boolean setNameInSource) ;
 
     public DeleteResult deleteTaxonNodes(Collection<UUID> nodeUuids, TaxonDeletionConfigurator config);

@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -288,7 +289,7 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional(readOnly = false)
     public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode,
-            SynonymType synonymType, Reference citation, String citationMicroReference, boolean setNameInSource)  {
+            SynonymType synonymType, Reference citation, String microReference, SecReferenceHandlingEnum secHandling, boolean setNameInSource)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -319,8 +320,15 @@ public class TaxonNodeServiceImpl
         //set homotypic group
         TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
         newAcceptedTaxon.setName(newAcceptedTaxonName);
+        Reference newSec = citation;
+        if (citation == null && (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways))){
+            newSec = oldTaxon.getSec();
+        }
         // Move Synonym Relations to new Taxon
-        newAcceptedTaxon.addSynonymName(newSynonymName, citation, citationMicroReference, synonymType);
+        Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
+        if (secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
+            newSyn.setSec(null);
+        }
          // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
         List<Synonym> synonymsInHomotypicalGroup = null;
@@ -449,12 +457,13 @@ public class TaxonNodeServiceImpl
     public UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode( Set<UUID> oldTaxonNodeUuids,
             UUID newAcceptedTaxonNodeUUIDs,
             SynonymType synonymType,
-            Reference citation,
-            String citationMicroReference,
+            UUID citation,
+            String microReference,
+            SecReferenceHandlingEnum secHandling,
             boolean setNameInSource) {
     	UpdateResult result = new UpdateResult();
     	for (UUID nodeUuid: oldTaxonNodeUuids) {
-    		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, citationMicroReference, setNameInSource));
+    		result.includeResult(makeTaxonNodeASynonymOfAnotherTaxonNode(nodeUuid, newAcceptedTaxonNodeUUIDs, synonymType, citation, microReference, secHandling, setNameInSource));
     	}
     	return result;
     }
@@ -464,19 +473,22 @@ public class TaxonNodeServiceImpl
     public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
             UUID newAcceptedTaxonNodeUUID,
             SynonymType synonymType,
-            Reference citation,
-            String citationMicroReference,
+            UUID citationUuid,
+            String microReference,
+            SecReferenceHandlingEnum secHandling,
             boolean setNameInSource) {
 
         TaxonNode oldTaxonNode = dao.load(oldTaxonNodeUuid);
         TaxonNode oldTaxonParentNode = oldTaxonNode.getParent();
         TaxonNode newTaxonNode = dao.load(newAcceptedTaxonNodeUUID);
+        Reference citation = referenceDao.load(citationUuid);
 
         UpdateResult result = makeTaxonNodeASynonymOfAnotherTaxonNode(oldTaxonNode,
                 newTaxonNode,
                 synonymType,
                 citation,
-                citationMicroReference, setNameInSource);
+                microReference,
+                secHandling, setNameInSource);
         result.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));
         result.addUpdatedCdmId(new CdmEntityIdentifier(newTaxonNode.getId(), TaxonNode.class));
         result.setCdmEntity(oldTaxonParentNode);

@@ -333,6 +333,7 @@ public class TaxonServiceImpl
             return result;
         }
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
+        newAcceptedTaxon.setPublish(synonym.isPublish());
         dao.save(newAcceptedTaxon);
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF();
