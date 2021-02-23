@@ -415,9 +415,6 @@ public class CondensedDistributionComposer {
             if (StringUtils.isNotBlank(sepEnd)){
                 result.addSeparatorTaggedText(sepEnd, isBold);
             }
-            if (isBold){
-                result.addSeparatorTaggedText("", true);  //previous separator is otherwise not included in bold html tag by TaggedCacheHelper
-            }
         }
     }
 

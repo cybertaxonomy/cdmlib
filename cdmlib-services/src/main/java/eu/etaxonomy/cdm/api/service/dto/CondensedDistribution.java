@@ -101,8 +101,12 @@ public class CondensedDistribution {
         return this.taggedText.isEmpty();
     }
 
-    public String getHtmlText(){
+    public String getHtmlString(){
         return toString();
+    }
+
+    public List<TaggedText> getTaggedText(){
+        return this.taggedText;
     }
 
 //***************** STRING **************************************/
