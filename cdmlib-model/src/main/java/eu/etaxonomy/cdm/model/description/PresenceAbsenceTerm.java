@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -716,6 +717,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 		this.absenceTerm = isAbsenceTerm;
 	}
 
+	@Transient
 	private Set<UUID> isAnyIntroduced;
     public boolean isAnyIntroduced() {
         if (isAnyIntroduced == null){
