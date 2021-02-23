@@ -78,56 +78,55 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 
 
 	//presence base
-	public static final UUID uuidPresent=UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
-	private static final UUID uuidPD=UUID.fromString("75a60279-a4c2-4f53-bc57-466028a4b3db");
+	public static final UUID uuidPresent = UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
+	private static final UUID uuidPresentDoubfully = UUID.fromString("75a60279-a4c2-4f53-bc57-466028a4b3db");
 
 	//presence
 	public static final UUID uuidNative = UUID.fromString("ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7");
-	private static final UUID uuidND = UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
+	private static final UUID uuidNativeDoubtfullyNative = UUID.fromString("310373bf-7df4-4d02-8cb3-bcc7448805fc");
 	public static final UUID uuidCultivated = UUID.fromString("9eb99fe6-59e2-4445-8e6a-478365bd0fa9");
 	public static final UUID uuidIntroduced = UUID.fromString("643cf9d1-a5f1-4622-9837-82ef961e880b");
-	private static final UUID uuidID = UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
+	private static final UUID uuidIntroducedDoubtfullyIntroduced = UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
 	public static final UUID uuidIntroducedUncertainDegreeNaturalisation = UUID.fromString("da159544-b0dd-4599-a9c9-640826af8c17");
 	public static final UUID uuidIntroducesAdventitious = UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	public static final UUID uuidNaturalised = UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
-	private static final UUID uuidIC = UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
-	private static final UUID uuidE = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
+	private static final UUID uuidIntroducedCultiated = UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
+	private static final UUID uuidEndemic = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 
-	private static final UUID uuidNotE = UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
-	private static final UUID uuidUnkE = UUID.fromString("094aa2e4-8048-4086-aca1-2d671a05a86e");
+	private static final UUID uuidNotEndemic = UUID.fromString("2fda5393-7423-4076-814c-1fa7678d7d33");
+	private static final UUID uuidUnknownEndemism = UUID.fromString("094aa2e4-8048-4086-aca1-2d671a05a86e");
 
 	//	private static final UUID uuidNa=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
-	private static final UUID uuidNI=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
+	//invasive
+	private static final UUID uuidInvasive = UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
+	private static final UUID uuidNonInvasive = UUID.fromString("1b025e8b-901a-42e8-9739-119b410c6f03");
 
-	private static final UUID uuidNN = UUID.fromString("1b025e8b-901a-42e8-9739-119b410c6f03");
-
-	//doubtfully present
+	//presents questionable
 	public static final UUID uuidNativePresenceQuestionable = UUID.fromString("925662c1-bb10-459a-8c53-da5a738ac770");
-	private static final UUID uuidCQ = UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
-	private static final UUID uuidIQ = UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
-	private static final UUID uuidEQ = UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
+	private static final UUID uuidCultivatedPresenceQuestionable = UUID.fromString("4f31bfc8-3058-4d83-aea5-3a1fe9773f9f");
+	private static final UUID uuidIntroducedPresenceQuestionable = UUID.fromString("83eb0aa0-1a45-495a-a3ca-bf6958b74366");
+	private static final UUID uuidEndedmicPresenceQuestionable = UUID.fromString("5f954f08-267a-4928-b073-12328f74c187");
 	//intr. naturalized questionable
-	private static final UUID uuidINQ = UUID.fromString("9e0b413b-5a68-4e5b-91f2-227b4f832466");
+	private static final UUID uuidNaturalisedPresenceQuestionable = UUID.fromString("9e0b413b-5a68-4e5b-91f2-227b4f832466");
 	//natur. invasive questionable
-	private static final UUID uuidNIQ = UUID.fromString("ac429d5f-e8ad-49ae-a41c-e4779b58b96a");
+	private static final UUID uuidInvasivePresenceQuestionable = UUID.fromString("ac429d5f-e8ad-49ae-a41c-e4779b58b96a");
 	//natur. non-invasive questionable
-    private static final UUID uuidNNQ = UUID.fromString("11f56e2f-c16c-4b3d-a870-bb5d3b20e624");
-
+    private static final UUID uuidNonInvasivePresenceQuestionable = UUID.fromString("11f56e2f-c16c-4b3d-a870-bb5d3b20e624");
 
 	//absence
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
 	private static final UUID uuidReportedInError = UUID.fromString("38604788-cf05-4607-b155-86db456f7680");
 
 	public static final UUID uuidNativeError = UUID.fromString("61cee840-801e-41d8-bead-015ad866c2f1");
-	private static final UUID uuidIF = UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
-	private static final UUID uuidCF = UUID.fromString("9d4d3431-177a-4abe-8e4b-1558573169d6");
-	private static final UUID uuidNE = UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
-	private static final UUID uuidNDE = UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06");
-	private static final UUID uuidIE = UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
-	private static final UUID uuidEE = UUID.fromString("679b215d-c231-4ee2-ae12-3ffc3dd528ad");
-	private static final UUID uuidNaE = UUID.fromString("8d918a37-3add-4e1c-a233-c37dbee209aa");
-	private static final UUID uuidIAQ = UUID.fromString("73f75493-1185-4a3e-af1e-9a1f2e8dadb7");
-	private static final UUID uuidIAF = UUID.fromString("9b910b7b-43e3-4260-961c-6063b11cb7dc");
+	private static final UUID uuidIntroducedReportedError = UUID.fromString("aeec2947-2700-4623-8e32-9e3a430569d1");
+	private static final UUID uuidCultivatedReportedError = UUID.fromString("9d4d3431-177a-4abe-8e4b-1558573169d6");
+	private static final UUID uuidNativeFormerlyNative = UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
+	private static final UUID uuidNativeDoubtfullyNativeReportedError = UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06");
+	private static final UUID uuidIntroducedFormerlyIntroduced = UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
+	private static final UUID uuidEndemicReportedError = UUID.fromString("679b215d-c231-4ee2-ae12-3ffc3dd528ad");
+	private static final UUID uuidNaturalisedReportedError = UUID.fromString("8d918a37-3add-4e1c-a233-c37dbee209aa");
+	private static final UUID uuidCasualPresenceQuestionable = UUID.fromString("73f75493-1185-4a3e-af1e-9a1f2e8dadb7");
+	private static final UUID uuidCasualReportedError = UUID.fromString("9b910b7b-43e3-4260-961c-6063b11cb7dc");
 
 
 	protected static Map<UUID, PresenceAbsenceTerm> termMap = null;
@@ -252,7 +251,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #ENDEMIC_REPORTED_IN_ERROR()
      */
     public static final PresenceAbsenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){
-        return getTermByUuid(uuidE);
+        return getTermByUuid(uuidEndemic);
     }
 
     /**
@@ -264,7 +263,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #ENDEMIC_REPORTED_IN_ERROR()
      */
     public static final PresenceAbsenceTerm NOT_ENDEMIC_FOR_THE_RELEVANT_AREA(){
-        return getTermByUuid(uuidNotE);
+        return getTermByUuid(uuidNotEndemic);
     }
 
     /**
@@ -277,7 +276,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #NOT_ENDEMIC_FOR_THE_RELEVANT_AREA()
      */
     public static final PresenceAbsenceTerm ENDEMISM_UNKNOWN(){
-        return getTermByUuid(uuidUnkE);
+        return getTermByUuid(uuidUnknownEndemism);
     }
 
     /**
@@ -288,7 +287,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #NATIVE_PRESENCE_QUESTIONABLE()
      */
     public static final PresenceAbsenceTerm ENDEMIC_DOUBTFULLY_PRESENT(){
-        return getTermByUuid(uuidEQ);
+        return getTermByUuid(uuidEndedmicPresenceQuestionable);
     }
 
     /**
@@ -301,7 +300,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #NATIVE_REPORTED_IN_ERROR()
      */
     public static final PresenceAbsenceTerm ENDEMIC_REPORTED_IN_ERROR(){
-        return getTermByUuid(uuidEE);
+        return getTermByUuid(uuidEndemicReportedError);
     }
 
 
@@ -324,7 +323,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #ABSENT()
      */
 	public static final PresenceAbsenceTerm PRESENT_DOUBTFULLY(){
-		return getTermByUuid(uuidPD);
+		return getTermByUuid(uuidPresentDoubfully);
 	}
 
 	/**
@@ -344,7 +343,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #CULTIVATED_REPORTED_IN_ERROR()
      */
     public static final PresenceAbsenceTerm CULTIVATED_PRESENCE_QUESTIONABLE(){
-        return getTermByUuid(uuidCQ);
+        return getTermByUuid(uuidCultivatedPresenceQuestionable);
     }
 
     /**
@@ -354,7 +353,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #CULTIVATED_REPORTED_IN_ERROR()
      */
     public static final PresenceAbsenceTerm CULTIVATED_REPORTED_IN_ERROR(){
-        return getTermByUuid(uuidCF);
+        return getTermByUuid(uuidCultivatedReportedError);
     }
 
 
@@ -380,7 +379,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #PRESENT_DOUBTFULLY()
      */
     public static final PresenceAbsenceTerm CASUAL_PRESENCE_QUESTIONABLE(){
-        return getTermByUuid(uuidIAQ);
+        return getTermByUuid(uuidCasualPresenceQuestionable);
     }
     /**
      * Casual alien, reported in error
@@ -390,7 +389,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #REPORTED_IN_ERROR()
      */
     public static final PresenceAbsenceTerm CASUAL_REPORTED_IN_ERROR(){
-        return getTermByUuid(uuidIAF);
+        return getTermByUuid(uuidCasualReportedError);
     }
 
 
@@ -409,11 +408,11 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	}
 
 	public static final PresenceAbsenceTerm INTRODUCED_CULTIVATED(){
-		return getTermByUuid(uuidIC);
+		return getTermByUuid(uuidIntroducedCultiated);
 	}
 
 	public static final PresenceAbsenceTerm INTRODUCED_DOUBTFULLY_INTRODUCED(){
-		return getTermByUuid(uuidID);
+		return getTermByUuid(uuidIntroducedDoubtfullyIntroduced);
 	}
 
 
@@ -422,15 +421,15 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
     }
 
 	public static final PresenceAbsenceTerm INTRODUCED_PRESENCE_QUESTIONABLE(){
-		return getTermByUuid(uuidIQ);
+		return getTermByUuid(uuidIntroducedPresenceQuestionable);
 	}
 
     public static final PresenceAbsenceTerm INTRODUCED_FORMERLY_INTRODUCED(){
-        return getTermByUuid(uuidIE);
+        return getTermByUuid(uuidIntroducedFormerlyIntroduced);
     }
 
     public static final PresenceAbsenceTerm INTRODUCED_REPORTED_IN_ERROR(){
-        return getTermByUuid(uuidIF);
+        return getTermByUuid(uuidIntroducedReportedError);
     }
 
 	/**
@@ -463,7 +462,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #ABSENT()
      */
     public static final PresenceAbsenceTerm NATIVE_FORMERLY_NATIVE(){
-        return getTermByUuid(uuidNE);
+        return getTermByUuid(uuidNativeFormerlyNative);
     }
 
     /**
@@ -485,7 +484,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	 * @see #NATIVE_REPORTED_IN_ERROR()
 	 */
 	public static final PresenceAbsenceTerm NATIVE_DOUBTFULLY_NATIVE(){
-		return getTermByUuid(uuidND);
+		return getTermByUuid(uuidNativeDoubtfullyNative);
 	}
 
     /**
@@ -496,7 +495,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #NATIVE_PRESENCE_QUESTIONABLE()
      */
     public static final PresenceAbsenceTerm NATIVE_DOUBTFULLY_NATIVE_REPORTED_IN_ERROR(){
-        return getTermByUuid(uuidNDE);
+        return getTermByUuid(uuidNativeDoubtfullyNativeReportedError);
     }
 
 
@@ -517,11 +516,11 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
     * @see #NATURALISED()
     */
    public static final PresenceAbsenceTerm NATURALISED_PRESENCE_QUESTIONABLE(){
-       return getTermByUuid(uuidINQ);
+       return getTermByUuid(uuidNaturalisedPresenceQuestionable);
    }
 
     public static final PresenceAbsenceTerm NATURALISED_REPORTED_IN_ERROR(){
-        return getTermByUuid(uuidNaE);
+        return getTermByUuid(uuidNaturalisedReportedError);
     }
 
 	/**
@@ -534,7 +533,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	 * @see #NON_INVASIVE_PRESENCE_QUESTIONABLE()
 	 */
 	public static final PresenceAbsenceTerm INVASIVE(){
-		return getTermByUuid(uuidNI);
+		return getTermByUuid(uuidInvasive);
 	}
     /**
      * Invasive, presence questionable.
@@ -544,7 +543,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #NON_INVASIVE_PRESENCE_QUESTIONABLE()
      */
     public static final PresenceAbsenceTerm INVASIVE_PRESENCE_QUESTIONABLE(){
-        return getTermByUuid(uuidNIQ);
+        return getTermByUuid(uuidInvasivePresenceQuestionable);
     }
     /**
      * The taxon is present but not native in the given area (naturalized).
@@ -555,7 +554,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #NON_INVASIVE_PRESENCE_QUESTIONABLE()
      */
     public static final PresenceAbsenceTerm NON_INVASIVE(){
-        return getTermByUuid(uuidNN);
+        return getTermByUuid(uuidNonInvasive);
     }
     /**
      * The taxon is questionable present and not native in the given area (naturalized).
@@ -566,7 +565,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #INVASIVE_PRESENCE_QUESTIONABLE()
      */
     public static final PresenceAbsenceTerm NON_INVASIVE_PRESENCE_QUESTIONABLE(){
-        return getTermByUuid(uuidNNQ);
+        return getTermByUuid(uuidNonInvasivePresenceQuestionable);
     }
 
 
@@ -705,7 +704,6 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
             return 0;
         }
     }
-
 
 	public boolean isAbsenceTerm() {
 		return absenceTerm;
