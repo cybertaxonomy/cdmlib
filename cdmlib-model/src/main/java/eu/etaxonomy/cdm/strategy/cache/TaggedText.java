@@ -16,7 +16,6 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
- *
  * @author a.kohlbecker
  * @author m.doering
  * @since 11.12.2007

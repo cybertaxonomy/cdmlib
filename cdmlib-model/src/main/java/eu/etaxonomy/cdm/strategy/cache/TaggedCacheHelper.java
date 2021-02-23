@@ -27,7 +27,7 @@ public class TaggedCacheHelper {
      * @return the concatenated string
      * @see #createString(List, HTMLTagRules)
      */
-    public static String createString(List<TaggedText> tags) {
+    public static String createString(List<? extends TaggedText> tags) {
         StringBuilder result = new StringBuilder();
 
         boolean isSeparator;
@@ -77,7 +77,7 @@ public class TaggedCacheHelper {
         //create String
         StringBuffer result = new StringBuffer();
 
-        Stack<String> htmlStack = new Stack<String>();
+        Stack<String> htmlStack = new Stack<>();
         for (int i = 0;  i < tags.size(); i++  ){
             TaggedText tag = tags.get(i);
             TagEnum thisType = tag.getType();
@@ -85,9 +85,6 @@ public class TaggedCacheHelper {
             TagEnum nextType = (i + 1 >= tags.size() ? null : tags.get(i + 1).getType());
 
             boolean isSeparator = tag.getType().isSeparator();
-//            boolean lastEqual = tag.getType().equals(lastType);
-//            boolean nextEqual = tag.getType().equals(nextType);
-//            boolean bothEqual = lastEqual && nextEqual;
 
             //compute list of rules (tags)
             SortedSet<String> separatorRules;

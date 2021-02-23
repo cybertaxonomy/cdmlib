@@ -90,7 +90,7 @@ public class DescriptionUtility {
             Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
             boolean subAreaPreference) {
 
-        SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(100); // start with a big map from the beginning!
+        SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
 
         // sort Distributions by the area
         for(Distribution distribution : distributions){
@@ -152,12 +152,13 @@ public class DescriptionUtility {
 
     private static void handleHiddenAndFallbackAreas(Set<MarkerType> hiddenAreaMarkerTypes,
             SetMap<NamedArea, Distribution> filteredDistributions) {
+
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
         for(NamedArea area : filteredDistributions.keySet()) {
             if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
                 boolean showAsFallbackArea = false;
                 // if at least one sub area is not hidden by a marker
-                // this area is a fall-back area for this sub area
+                // the given area is a fall-back area for this sub area
                 for(NamedArea subArea : area.getIncludes()) {
                     if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
                         if(filteredDistributions.containsKey(subArea)) {

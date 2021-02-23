@@ -88,7 +88,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public static final UUID uuidIntroduced = UUID.fromString("643cf9d1-a5f1-4622-9837-82ef961e880b");
 	private static final UUID uuidIntroducedDoubtfullyIntroduced = UUID.fromString("0c54761e-4887-4788-9dfa-7190c88746e3");
 	public static final UUID uuidIntroducedUncertainDegreeNaturalisation = UUID.fromString("da159544-b0dd-4599-a9c9-640826af8c17");
-	public static final UUID uuidIntroducesAdventitious = UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
+	public static final UUID uuidIntroducedAdventitious = UUID.fromString("42946bd6-9c22-45ad-a910-7427e8f60bfd");
 	public static final UUID uuidNaturalised = UUID.fromString("e191e89a-a751-4b0c-b883-7f1de70915c9");
 	private static final UUID uuidIntroducedCultiated = UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
 	private static final UUID uuidEndemic = UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
@@ -369,7 +369,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
      * @see #INTRODUCED_ADVENTITIOUS()
      */
     public static final PresenceAbsenceTerm CASUAL(){
-        return getTermByUuid(uuidIntroducesAdventitious);
+        return getTermByUuid(uuidIntroducedAdventitious);
     }
     /**
      * Casual alien, presence questionable
@@ -404,7 +404,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	 */
 	@Deprecated
 	public static final PresenceAbsenceTerm INTRODUCED_ADVENTITIOUS(){
-		return getTermByUuid(uuidIntroducesAdventitious);
+		return getTermByUuid(uuidIntroducedAdventitious);
 	}
 
 	public static final PresenceAbsenceTerm INTRODUCED_CULTIVATED(){

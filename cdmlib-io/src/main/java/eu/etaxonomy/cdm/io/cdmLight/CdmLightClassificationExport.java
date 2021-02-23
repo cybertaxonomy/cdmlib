@@ -810,23 +810,21 @@ public class CdmLightClassificationExport
             }
         }
          if(state.getConfig().isCreateCondensedDistributionString()){
-             List<Language> langs = new ArrayList<Language>();
+             List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
 
              CondensedDistribution conDis =
              geoService.getCondensedDistribution(distributions, true,
-             null,null,state.getConfig().getCondensedDistributionRecipe(), langs
-             );
+             null,null,state.getConfig().getCondensedDistributionRecipe(), langs);
              CdmLightExportTable tableCondensed =
-             CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
+                     CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
              String[] csvLine = new String[table.getSize()];
              csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
-             getId(state, taxon);
+                     getId(state, taxon);
              csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
-             conDis.toString();
+                     conDis.toString();
              state.getProcessor().put(tableCondensed, taxon, csvLine);
          }
-
     }
 
     private void handleCommonNameFacts(CdmLightExportState state, Taxon taxon,
