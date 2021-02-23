@@ -311,9 +311,6 @@ public class CondensedDistributionComposer {
         protected AreaNode parent = null;
         protected final Set<AreaNode> subAreas = new HashSet<>();
 
-        /**
-         * @param area
-         */
         public AreaNode(NamedArea area) {
             this.area = area;
         }

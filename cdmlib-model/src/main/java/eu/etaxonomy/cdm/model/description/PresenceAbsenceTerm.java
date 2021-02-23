@@ -77,7 +77,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
-	private static final long serialVersionUID = 1036807546935584396L;
+
+    private static final long serialVersionUID = 1036807546935584396L;
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTerm.class);
 
 
