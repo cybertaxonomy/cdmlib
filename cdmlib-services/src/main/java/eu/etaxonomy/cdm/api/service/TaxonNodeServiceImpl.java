@@ -324,12 +324,13 @@ public class TaxonNodeServiceImpl
         if (citation == null && (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways))){
             newSec = oldTaxon.getSec();
         }
-        // Move Synonym Relations to new Taxon
+
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
-        if (secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
+        if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
             newSyn.setSec(null);
         }
-         // Move Synonyms to new Taxon
+
+        // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
         List<Synonym> synonymsInHomotypicalGroup = null;
 
