@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.io.excel.taxa;
 
 import java.net.MalformedURLException;
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.SourceDataHolder;
 import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTransformer;
@@ -725,7 +725,7 @@ public class NormalExplicitImport extends TaxonExcelImportBase {
 	private void handleCommonName(TaxonExcelImportState state,
 			String taxonNameStr, String commonNameStr, Taxon acceptedTaxon) {
 		Language language = getTermService().getLanguageByIso(((NormalExplicitRow)state.getCurrentRow()).getLanguage());
-		if (language == null && CdmUtils.isNotEmpty(((NormalExplicitRow)state.getCurrentRow()).getLanguage())  ){
+		if (language == null && StringUtils.isNotBlank(((NormalExplicitRow)state.getCurrentRow()).getLanguage())  ){
 			String error ="Language is null but shouldn't";
 			logger.error(error);
 			throw new IllegalArgumentException(error);

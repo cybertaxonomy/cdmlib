@@ -399,20 +399,6 @@ public class CdmUtils {
     }
 
     /**
-     * Returns false if string is null, "" or string.trim() is ""
-     * Else true.
-     * @see isBlank(String string)
-     * @see #isNotBlank(String)
-     * @deprecated use {@link #isNotBlank(String)} instead
-     * @param string
-     * @return
-     */
-    @Deprecated
-    static public boolean isNotEmpty(String string){
-        return isNotBlank(string);
-    }
-
-    /**
      * Computes all fields recursively
      * @param clazz
      * @return
