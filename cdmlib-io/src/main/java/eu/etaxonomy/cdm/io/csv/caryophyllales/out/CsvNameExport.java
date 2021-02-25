@@ -432,7 +432,9 @@ public class CsvNameExport extends CsvNameExportBase {
         }
     }
 
-    private void extractDescriptions(HashMap<String, String> nameRecord, Taxon taxon, Feature feature, String columnName, CsvNameExportState state){
+    private void extractDescriptions(HashMap<String, String> nameRecord, Taxon taxon, Feature feature,
+            String columnName, CsvNameExportState state){
+
         StringBuffer descriptionsString = new StringBuffer();
         TextData textElement;
         Set<Distribution> distributions = new HashSet<>();
@@ -448,13 +450,10 @@ public class CsvNameExport extends CsvNameExportBase {
                         if (element instanceof TextData){
                             textElement = CdmBase.deproxy(element, TextData.class);
                             descriptionsString.append(textElement.getText(Language.ENGLISH()));
-
                         }else if (element instanceof Distribution ){
-
                             Distribution distribution = CdmBase.deproxy(element, Distribution.class);
                             distributions.add(distribution);
                         }
-
                     }
                 }
             }
@@ -632,7 +631,7 @@ public class CsvNameExport extends CsvNameExportBase {
             if (synonym.isDoubtful()){
                 if (!synonymName.getFullTitleCache().startsWith("?")){
                     doubtfulTitleCache = "?" + synonymName.getFullTitleCache();
-                    synonymName = (IBotanicalName) synonymName.clone();
+                    synonymName = synonymName.clone();
                     synonymName.setFullTitleCache(doubtfulTitleCache, true);
                 }
             }
