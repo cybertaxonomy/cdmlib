@@ -228,6 +228,7 @@ public class TaxonServiceImpl
         Taxon newTaxon = acceptedTaxon.clone();
         newTaxon.setName(synonymName);
         newTaxon.setSec(synonym.getSec());
+        newTaxon.setPublish(synonym.isPublish());
         for (Synonym syn: synonyms){
             if (!syn.getName().equals(newTaxon.getName())){
                 newTaxon.addSynonym(syn, syn.getType());
@@ -295,6 +296,7 @@ public class TaxonServiceImpl
         Synonym newSynonym = synonym.clone();
         newSynonym.setName(taxonName);
         newSynonym.setSec(acceptedTaxon.getSec());
+        newSynonym.setPublish(acceptedTaxon.isPublish());
         if (sameHomotypicGroup){
             newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         }else{
