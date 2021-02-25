@@ -329,6 +329,7 @@ public class TaxonNodeServiceImpl
         if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
             newSyn.setSec(null);
         }
+        newSyn.setPublish(oldTaxon.isPublish());
 
         // Move Synonyms to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
