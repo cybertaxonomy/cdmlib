@@ -65,33 +65,39 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 @Transactional(readOnly=true)
 public class RegistrationWorkingSetService implements IRegistrationWorkingSetService {
 
-    public static final EntityInitStrategy REGISTRATION_DTO_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
-            "blockedBy",
-            // typeDesignation
-            "typeDesignations.typeStatus",
-            "typeDesignations.typifiedNames.typeDesignations", // important !!
-            "typeDesignations.typeSpecimen",
-            "typeDesignations.typeName.$",
-            "typeDesignations.source.annotations",
-            "typeDesignations.source.links",
-            "typeDesignations.source.markers",
-            "typeDesignations.annotations",   // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
-            "typeDesignations.markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
-            "typeDesignations.registrations", // DerivedUnitConverter.copyPropertiesTo(TARGET n)
+    public static final EntityInitStrategy TYPEDESIGNATION_INIT_STRATEGY = new EntityInitStrategy(
+            "typeStatus",
+            "typifiedNames.typeDesignations", // important !!
+            "typeSpecimen",
+            "typeName.$",
+            "source.annotations",
+            "source.links",
+            "source.markers",
+            "annotations",   // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
+            "markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
+            "registrations" // DerivedUnitConverter.copyPropertiesTo(TARGET n));
+            )
+            .extend("citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
-            // name
-            "name.$",
-            "name.nomenclaturalSource.citation",
-            "name.rank",
-            "name.homotypicalGroup.typifiedNames",
-            "name.status.type",
-            "name.typeDesignations", // important !!"
-            // institution
-            "institution",
-            }
-            ))
-            .extend("typeDesignations.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false)
-            .extend("name.nomenclaturalSource.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+    public static final EntityInitStrategy NAME_INIT_STRATEGY = new EntityInitStrategy(
+                "$",
+                "nomenclaturalSource.citation.inReference.inReference",
+                "rank",
+                "homotypicalGroup.typifiedNames",
+                "status.type",
+                "typeDesignations" // important !!!
+            )
+            .extend("nomenclaturalSource.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+
+    public static final EntityInitStrategy REGISTRATION_DTO_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
+                "blockedBy",
+                // institution
+                "institution",
+                }
+                )
+            )
+            .extend("name", NAME_INIT_STRATEGY, false)
+            .extend("typeDesignations", TYPEDESIGNATION_INIT_STRATEGY, true);
 
     public  EntityInitStrategy DERIVEDUNIT_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String[]{
            "*", // initialize all related entities to allow DerivedUnit conversion, see DerivedUnitConverter.copyPropertiesTo()
