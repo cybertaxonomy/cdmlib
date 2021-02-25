@@ -611,11 +611,6 @@ public class EditGeoServiceUtilities {
 
     /**
      * @param statusColorJson for example: {@code {"n":"#ff0000","p":"#ffff00"}}
-     * @param vocabularyService TODO
-     * @return
-     * @throws IOException
-     * @throws JsonParseException
-     * @throws JsonMappingException
      */
     public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson,
             ITermService termService, IVocabularyService vocabularyService)
@@ -682,12 +677,12 @@ public class EditGeoServiceUtilities {
     }
 
     public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
-            CondensedDistributionRecipe recipe, List<Language> langs) {
+            CondensedDistributionConfiguration config, List<Language> languages) {
 
         CondensedDistributionComposer composer = new CondensedDistributionComposer();
 
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions,  langs, recipe.toConfiguration());
+                filteredDistributions, languages, config);
         return condensedDistribution;
     }
 }

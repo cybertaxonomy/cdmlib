@@ -185,8 +185,7 @@ public interface IEditGeoService {
             Set<UUID> namedAreaUuids)
             throws IOException;
 
-    /**
-    *
+   /**
     * @param parts
     * @param taxonUUID
     * @param subAreaPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
@@ -201,27 +200,22 @@ public interface IEditGeoService {
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages, List<String> propertyPaths, CondensedDistributionRecipe recipe,
+            List<Language> languages, List<String> propertyPaths, CondensedDistributionConfiguration config,
             DistributionOrder distributionOrder);
 
     /**
-    *
     * @param distributions
     * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
-    * @param hideMarkedAreas
-    * @param fallbackAreaMarkerType
-    * @param recipe
+    * @param hiddenAreaMarkerTypes marker types to make areas hidden, this includes fallback-areas which are defined to have visible sub-areas
+    * @param config the {@link CondensedDistributionConfiguration condensed distribution configuration}
     * @param languages
     * @return
     */
-
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
-            CondensedDistributionRecipe recipe,
+            Set<MarkerType> hiddenAreaMarkerTypes,
+            CondensedDistributionConfiguration config,
             List<Language> langs);
-
 
 	public Kml occurrencesToKML(List<SpecimenOrObservationBase> specimensOrObersvations,
 			Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors);

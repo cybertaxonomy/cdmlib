@@ -103,8 +103,8 @@ public class DescriptionUtility {
         }
 
         // -------------------------------------------------------------------
-        // 1) skip distributions having an area with markers matching hideMarkedAreas
-        //    but keep distributions for fallback areas
+        // 1) skip distributions having an area with markers matching hiddenAreaMarkerTypes
+        //    but keep distributions for fallback areas (areas with hidden marker, but with visible sub-areas)
         if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
             handleHiddenAndFallbackAreas(hiddenAreaMarkerTypes, filteredDistributions);
         }
@@ -117,7 +117,7 @@ public class DescriptionUtility {
         }
 
         // -------------------------------------------------------------------
-        // 3) statusOrderPreference
+        // 3) status order preference rule
         if (statusOrderPreference) {
             SetMap<NamedArea, Distribution> tmpMap = new SetMap<>(filteredDistributions.size());
             for(NamedArea key : filteredDistributions.keySet()){

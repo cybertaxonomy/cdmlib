@@ -10,7 +10,9 @@ package eu.etaxonomy.cdm.ext.geo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.UTF8;
@@ -56,12 +58,13 @@ public class CondensedDistributionConfiguration{
     //if true, any non-empty symbol is taken from symbol2, symbol1, idInVoc and abbrevLabel according to the given order
     public boolean showAnyStatusSmbol = false;   //usually does not make sense to mix symbol fields
 
-    public UUID fallbackAreaMarker = MarkerType.uuidFallbackArea;
+    public Set<UUID> hiddenAndfallbackAreaMarkers = new HashSet<>(Arrays.asList(MarkerType.uuidFallbackArea)); //TODO shouldn't we add the hiddenAreaMarker here, too?
 
 //************************** FACTORY ***************************************/
 
     public static CondensedDistributionConfiguration NewDefaultInstance() {
         CondensedDistributionConfiguration result = new CondensedDistributionConfiguration();
+        result.hiddenAndfallbackAreaMarkers.add(MarkerType.uuidFallbackArea);
         return result;
     }
 

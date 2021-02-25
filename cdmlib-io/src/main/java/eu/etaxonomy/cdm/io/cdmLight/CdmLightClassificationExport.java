@@ -780,6 +780,7 @@ public class CdmLightClassificationExport
 
     private void handleDistributionFacts(CdmLightExportState state, Taxon taxon,
             List<DescriptionElementBase> distributionFacts) {
+
         CdmLightExportTable table = CdmLightExportTable.GEOGRAPHIC_AREA_FACT;
         Set<Distribution> distributions = new HashSet<>();
         for (DescriptionElementBase element : distributionFacts) {
@@ -813,9 +814,9 @@ public class CdmLightClassificationExport
              List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
 
-             CondensedDistribution conDis =
-             geoService.getCondensedDistribution(distributions, true,
-             null,null,state.getConfig().getCondensedDistributionRecipe(), langs);
+             CondensedDistribution conDis = geoService.getCondensedDistribution(
+                     //TODO add CondensedDistributionConfiguration to export configuration
+                     distributions, true, null, state.getConfig().getCondensedDistributionRecipe().toConfiguration(), langs);
              CdmLightExportTable tableCondensed =
                      CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
              String[] csvLine = new String[table.getSize()];

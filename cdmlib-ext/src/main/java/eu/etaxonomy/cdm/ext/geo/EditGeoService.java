@@ -67,7 +67,8 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 @Transactional(readOnly = true)
 public class EditGeoService implements IEditGeoService {
 
-    public static final Logger logger = Logger.getLogger(EditGeoService.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(EditGeoService.class);
 
     @Autowired
     private IDescriptionDao dao;
@@ -224,31 +225,30 @@ public class EditGeoService implements IEditGeoService {
 
     		return kml;
     }
-
-    public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
-            boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
-            CondensedDistributionRecipe recipe,
-            List<Language> langs) {
-        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
-        return getCondensedDistribution(distributions, statusOrderPreference,
-                hideMarkedAreas, fallbackAreaMarkerType, recipe, langs);
-    }
+//
+//    public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
+//            boolean statusOrderPreference,
+//            Set<MarkerType> hideMarkedAreas,
+//            MarkerType fallbackAreaMarkerType,
+//            CondensedDistributionConfiguration recipe,
+//            List<Language> langs) {
+//        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
+//        return getCondensedDistribution(distributions, statusOrderPreference,
+//                hideMarkedAreas, fallbackAreaMarkerType, recipe, langs);
+//    }
 
     @Override
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
-            CondensedDistributionRecipe recipe,
+            Set<MarkerType> hiddenAreaMarkerTypes,
+            CondensedDistributionConfiguration config,
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, hideMarkedAreas, false, statusOrderPreference, false);
+                distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false);
         CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
-                recipe,
+                config,
                 langs);
         return condensedDistribution;
     }
@@ -321,7 +321,7 @@ public class EditGeoService implements IEditGeoService {
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages,  List<String> propertyPaths, CondensedDistributionRecipe recipe,
+            List<Language> languages,  List<String> propertyPaths, CondensedDistributionConfiguration config,
             DistributionOrder distributionOrder){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
@@ -364,13 +364,13 @@ public class EditGeoService implements IEditGeoService {
 
         if(parts.contains(InfoPart.tree)) {
             DistributionTree tree = DescriptionUtility.orderDistributions(termDao, omitLevels,
-                    filteredDistributions, hiddenAreaMarkerTypes,distributionOrder);
+                    filteredDistributions, hiddenAreaMarkerTypes, distributionOrder);
             dto.setTree(tree);
         }
 
         if(parts.contains(InfoPart.condensedDistribution)) {
             CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, recipe, languages);
+                    filteredDistributions, config, languages);
             dto.setCondensedDistribution(condensedDistribution);
         }
 

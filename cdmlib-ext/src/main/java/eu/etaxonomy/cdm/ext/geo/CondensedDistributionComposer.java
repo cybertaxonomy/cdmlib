@@ -193,10 +193,22 @@ public class CondensedDistributionComposer {
 
     private NamedArea getNonFallbackParent(NamedArea area, CondensedDistributionConfiguration config) {
         NamedArea parent = area.getPartOf();
-        while(parent != null && parent.hasMarker(config.fallbackAreaMarker, true)){
+        while(parent != null && isHiddenOrFallback(parent, config)){
             parent = parent.getPartOf();
         }
         return parent;
+    }
+
+    private boolean isHiddenOrFallback(NamedArea area, CondensedDistributionConfiguration config) {
+        if (config.hiddenAndfallbackAreaMarkers == null){
+            return false;
+        }
+        for (UUID markerUuid : config.hiddenAndfallbackAreaMarkers){
+            if (area.hasMarker(markerUuid, true)){
+                return true;
+            }
+        }
+        return false;
     }
 
     protected String makeAreaLabel(List<Language> langs, NamedArea area,
