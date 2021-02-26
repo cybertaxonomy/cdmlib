@@ -159,9 +159,56 @@ public class CondensedDistributionComposer {
             }
             mergeIntoHierarchy(areaToStatusMap.keySet(), map, area, config);
         }
+
+        //TODO move this filter further up where native and introduced is still combined,
+        // this makes it less complicated
+        removeFallbackAreasWithChildDistributions(areaNodeMap, introducedAreaNodeMap, config);
+
         @SuppressWarnings("unchecked")
         Map<NamedArea, AreaNode>[] result = new Map[]{areaNodeMap,introducedAreaNodeMap};
         return result;
+    }
+
+    private void removeFallbackAreasWithChildDistributions(Map<NamedArea, AreaNode> areaNodeMap, Map<NamedArea, AreaNode> areaNodeMap2, CondensedDistributionConfiguration config) {
+        Set<NamedArea> toBeDeletedAreas = new HashSet<>();
+        Set<AreaNode> allNodes = new HashSet<>(areaNodeMap.values());
+        allNodes.addAll(areaNodeMap2.values());
+        for (AreaNode areaNode : allNodes){
+            if (hasParentToBeRemoved(areaNode, config)){
+                toBeDeletedAreas.add(areaNode.parent.area);
+            }
+        }
+        for (NamedArea toBeDeletedArea : toBeDeletedAreas){
+            removeFallbackArea(toBeDeletedArea, areaNodeMap);
+            removeFallbackArea(toBeDeletedArea, areaNodeMap2);
+        }
+    }
+
+    private void removeFallbackArea(NamedArea toBeDeletedArea, Map<NamedArea, AreaNode> areaNodeMap) {
+        AreaNode toBeDeletedNode = areaNodeMap.get(toBeDeletedArea);
+        if(toBeDeletedNode == null){
+            return;
+        }
+        AreaNode parent = toBeDeletedNode.getParent();
+        if (parent != null){
+            parent.subAreas.remove(toBeDeletedNode);
+        }
+        for (AreaNode child : toBeDeletedNode.subAreas){
+            if (parent != null){
+                parent.addSubArea(child);
+            }else{
+                child.parent = null;
+            }
+        }
+        areaNodeMap.remove(toBeDeletedNode.area);
+    }
+
+    private boolean hasParentToBeRemoved(AreaNode areaNode, CondensedDistributionConfiguration config) {
+        if (areaNode.parent == null){
+            return false;
+        }
+        boolean parentIsHidden = isHiddenOrFallback(areaNode.parent.area, config);
+        return parentIsHidden;
     }
 
     private boolean isIntroduced(PresenceAbsenceTerm status) {
@@ -193,9 +240,10 @@ public class CondensedDistributionComposer {
 
     private NamedArea getNonFallbackParent(NamedArea area, CondensedDistributionConfiguration config) {
         NamedArea parent = area.getPartOf();
-        while(parent != null && isHiddenOrFallback(parent, config)){
-            parent = parent.getPartOf();
-        }
+        //if done here the fallback test does not work anymore
+//        while(parent != null && isHiddenOrFallback(parent, config)){
+//            parent = parent.getPartOf();
+//        }
         return parent;
     }
 

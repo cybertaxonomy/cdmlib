@@ -158,6 +158,26 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         Assert.assertEquals("● <b>GER(B BW)</b> ?IT [aFR(cJ) nS]", condensedDistribution.toString());
     }
 
+
+    @Test
+    public void testEuroMedCondensedDistributionFallback() {
+//      distributions.add(Distribution.NewInstance(europe, PresenceAbsenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA()));
+
+        Distribution nativeDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE());
+        Distribution introducedDist = Distribution.NewInstance(ileDeFrance, PresenceAbsenceTerm.INTRODUCED());
+
+        distributions.add(nativeDist);
+        distributions.add(Distribution.NewInstance(westEurope, PresenceAbsenceTerm.NATIVE_DOUBTFULLY_NATIVE()));
+
+        Assert.assertEquals("dFR(J)", composer.createCondensedDistribution(distributions, languages, config).getHtmlString());
+
+        distributions.remove(nativeDist);
+        distributions.add(introducedDist);
+        Assert.assertEquals("[iFR(J)]", composer.createCondensedDistribution(distributions, languages, config).getHtmlString());
+
+
+    }
+
     @Test
     public void testEuroMedCondensedDistributionNotEndemicOrOnlyIntroduced() {
 
