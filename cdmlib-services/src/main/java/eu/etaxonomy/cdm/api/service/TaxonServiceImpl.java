@@ -227,6 +227,14 @@ public class TaxonServiceImpl
             acceptedTaxon.removeSynonym(syn);
         }
         Taxon newTaxon = acceptedTaxon.clone();
+        newTaxon.getDescriptions().clear();
+        Set<TaxonDescription> descriptionsToCopy = new HashSet<>();
+        for (TaxonDescription desc: acceptedTaxon.getDescriptions()){
+            descriptionsToCopy.add(desc);
+        }
+        for (TaxonDescription description: descriptionsToCopy){
+            newTaxon.addDescription(description);
+        }
         newTaxon.setName(synonymName);
         newTaxon.setSec(synonym.getSec());
         newTaxon.setPublish(synonym.isPublish());
