@@ -210,11 +210,12 @@ public class TaxonServiceImpl
         UpdateResult result = new UpdateResult();
     	acceptedTaxon.removeSynonym(synonym);
     	TaxonName synonymName = synonym.getName();
-    	boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(acceptedTaxon.getName().getHomotypicalGroup());
+    	TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
+
+    	boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(taxonName.getHomotypicalGroup());
 
         synonymName.removeTaxonBase(synonym);
 
-        TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName(), TaxonName.class);
         //taxonName.removeTaxonBase(acceptedTaxon);
 
         List<Synonym> synonyms = new ArrayList<>();
