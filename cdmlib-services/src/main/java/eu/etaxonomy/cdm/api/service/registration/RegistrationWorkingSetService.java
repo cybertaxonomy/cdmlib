@@ -77,7 +77,7 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "registrations" // DerivedUnitConverter.copyPropertiesTo(TARGET n));
             )
-            .extend("citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+            .extend("source.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
     public static final EntityInitStrategy NAME_INIT_STRATEGY = new EntityInitStrategy(
                 "$",
