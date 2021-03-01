@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,9 +63,7 @@ public class TermNodeDto implements Serializable{
                 }
             }
         }
-        if (node.getGraph() != null && !node.getGraph().isOrderRelevant()){
-            Collections.sort(children, new AlphabeticalNodeTermDtoComparator());
-        }
+
         dto.setChildren(children);
         dto.setOnlyApplicableIf(node.getOnlyApplicableIf());
         dto.setInapplicableIf(node.getInapplicableIf());
