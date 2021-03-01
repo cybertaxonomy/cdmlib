@@ -39,10 +39,6 @@ public class TaxonNameParts {
         this.taxonNameId = taxonNameId;
         this.taxonNameUuid = taxonNameUuid;
         this.rank = rank;
-        if(rank != null) {
-            // see https://dev.e-taxonomy.eu/redmine/issues/9483#note-4
-            HibernateBeanInitializer.initialize(rank.getVocabulary());
-        }
         this.genusOrUninomial = genusOrUninomial;
         this.infraGenericEpithet = infraGenericEpithet;
         this.specificEpithet = specificEpithet;
