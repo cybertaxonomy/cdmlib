@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,12 +54,18 @@ public class TermNodeDto implements Serializable{
         for (Object o: node.getChildNodes()){
             if (o instanceof TermNode){
                 TermNode<?> child = (TermNode<?>)o;
-                if(child.getTerm().getTermType().equals(TermType.Character)){
-                    children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
-                }else{
-                    children.add(TermNodeDto.fromNode(child, treeDto));
+                if (child != null){
+                    if(child.getTerm() != null && child.getTerm().getTermType().equals(TermType.Character)){
+                        children.add(CharacterNodeDto.fromTermNode((TermNode)child, treeDto));
+                    }else{
+                        children.add(TermNodeDto.fromNode(child, treeDto));
+                    }
+
                 }
             }
+        }
+        if (!treeDto.isOrderRelevant()){
+            Collections.sort(children, new AlphabeticalNodeTermDtoComparator());
         }
         dto.setChildren(children);
         dto.setOnlyApplicableIf(node.getOnlyApplicableIf());
@@ -188,8 +195,10 @@ public class TermNodeDto implements Serializable{
     public int getIndex(TermNodeDto nodeDto) {
         int index = 0;
         for (TermNodeDto child: children){
-            if (child != null){
+            if (child != null && child.getUuid() != null && nodeDto.getUuid() != null){
                 if (child.getUuid().equals(nodeDto.getUuid())){
+                    return index;
+                }else if(child != null &&(child.getUuid() == null && nodeDto.getUuid() == null) && child.getTerm().getUuid().equals(nodeDto.getTerm().getUuid())){
                     return index;
                 }
             }
