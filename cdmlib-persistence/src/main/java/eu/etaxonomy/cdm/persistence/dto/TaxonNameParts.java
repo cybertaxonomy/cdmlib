@@ -149,18 +149,10 @@ public class TaxonNameParts {
         this.infraSpecificEpithet = infraSpecificEpithet;
     }
 
-
-    /**
-     *
-     */
     public TaxonNameParts() {
     }
 
 
-    /**
-     * @param tn
-     * @return
-     */
     public String rankSpecificNamePart() {
         if(rank.isGenus() || rank.isHigher(Rank.GENUS())){
             return getGenusOrUninomial();
