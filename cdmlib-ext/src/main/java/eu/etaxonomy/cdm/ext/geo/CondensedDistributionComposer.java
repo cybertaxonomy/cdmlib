@@ -248,10 +248,10 @@ public class CondensedDistributionComposer {
     }
 
     private boolean isHiddenOrFallback(NamedArea area, CondensedDistributionConfiguration config) {
-        if (config.hiddenAndfallbackAreaMarkers == null){
+        if (config.hiddenAndFallbackAreaMarkers == null){
             return false;
         }
-        for (UUID markerUuid : config.hiddenAndfallbackAreaMarkers){
+        for (UUID markerUuid : config.hiddenAndFallbackAreaMarkers){
             if (area.hasMarker(markerUuid, true)){
                 return true;
             }
