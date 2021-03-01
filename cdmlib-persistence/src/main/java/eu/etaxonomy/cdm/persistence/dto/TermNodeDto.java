@@ -64,7 +64,7 @@ public class TermNodeDto implements Serializable{
                 }
             }
         }
-        if (!node.getGraph().isOrderRelevant()){
+        if (node.getGraph() != null && !node.getGraph().isOrderRelevant()){
             Collections.sort(children, new AlphabeticalNodeTermDtoComparator());
         }
         dto.setChildren(children);
