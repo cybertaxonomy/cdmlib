@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 
 public class TaxonNameParts {
 
@@ -123,7 +124,6 @@ public class TaxonNameParts {
         this.infraSpecificEpithet = infraSpecificEpithet;
     }
 
-
     /**
      * @param taxonNameId
      * @param taxonNameUuid
@@ -139,6 +139,9 @@ public class TaxonNameParts {
         this.taxonNameId = taxonNameId;
         this.taxonNameUuid = taxonNameUuid;
         this.rank = rank;
+        if(rank != null) {
+            HibernateBeanInitializer.initialize(rank.getVocabulary());
+        }
         this.genusOrUninomial = genusOrUninomial;
         this.infraGenericEpithet = infraGenericEpithet;
         this.specificEpithet = specificEpithet;

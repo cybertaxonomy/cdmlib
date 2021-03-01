@@ -1043,8 +1043,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
             hql.append("select new eu.etaxonomy.cdm.persistence.dto.TaxonNameParts(n.id, n.uuid, n.rank, n.genusOrUninomial, n.infraGenericEpithet, n.specificEpithet, n.infraSpecificEpithet) ");
         }
         hql.append("from TaxonName n ");
-        // need to initialize the ranks with vocabulary to avoid LIEs in TaxonNameParts.rankSpecificNamePart() see #9483
-        hql.append("inner join n.rank as r ");
         hql.append("where 1 = 1 ");
 
         if(rank != null){
