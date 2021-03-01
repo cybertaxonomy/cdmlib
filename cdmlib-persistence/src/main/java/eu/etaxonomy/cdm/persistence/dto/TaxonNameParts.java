@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 
 public class TaxonNameParts {
 
@@ -101,7 +100,7 @@ public class TaxonNameParts {
 // ******************* METHODS *************************************/
 
     public String rankSpecificNamePart() {
-        if(rank.isGenus() || rank.isHigher(Rank.GENUS())){
+        if(rank.isGenus() || rank.isSupraGeneric()){
             return getGenusOrUninomial();
         }
         if(rank.isInfraGeneric()){
