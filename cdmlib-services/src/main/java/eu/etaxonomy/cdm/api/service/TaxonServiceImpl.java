@@ -3004,6 +3004,7 @@ public class TaxonServiceImpl
         if (synonymType != null
                 && synonymType.equals(SynonymType.HOMOTYPIC_SYNONYM_OF())){
             synonym = Synonym.NewInstance(synonymName, fromTaxon.getSec());
+            synonym.setPublish(fromTaxon.isPublish());
             toTaxon.addHomotypicSynonym(synonym);
         } else{
             synonym = toTaxon.addHeterotypicSynonymName(synonymName);
