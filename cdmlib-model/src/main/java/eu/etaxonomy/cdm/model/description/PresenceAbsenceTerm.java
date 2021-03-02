@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -655,58 +655,32 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
     }
 
     /**
-     * Compares this OrderedTermBase with the specified OrderedTermBase for
-     * order. Returns a -1, 0, or +1 if the orderId of this object is greater
-     * than, equal to, or less than the specified object.
-     * <p>
-     * <b>Note:</b> The compare logic of this method is the <b>inverse logic</b>
-     * of the the one implemented in
-     * {@link java.lang.Comparable#compareTo(java.lang.Object)}
-     *
-     * @param orderedTerm
-     *            the OrderedTermBase to be compared
-     * @param skipVocabularyCheck
-     *            whether to skip checking if both terms to compare are in the
-     *            same vocabulary
-     * @throws NullPointerException
-     *             if the specified object is null
+     * Includes presence/absence compare instead of pure uuid compare
      */
     @Override
-    protected int performCompareTo(PresenceAbsenceTerm presenceAbsenceTerm, boolean skipVocabularyCheck) {
-
-    	PresenceAbsenceTerm presenceAbsenceTermLocal = CdmBase.deproxy(presenceAbsenceTerm);
-        if(! skipVocabularyCheck){
-            if (this.vocabulary == null || presenceAbsenceTermLocal.vocabulary == null){
-                throw new IllegalStateException("An ordered term (" + this.toString() + " or " +
-                		presenceAbsenceTermLocal.toString() + ") of class " + this.getClass() + " or " +
-                		presenceAbsenceTermLocal.getClass() + " does not belong to a vocabulary and therefore "
-                		+ "can not be compared");
-            }
-            if (presenceAbsenceTermLocal.isAbsenceTerm() != this.isAbsenceTerm() ){
-              if (presenceAbsenceTermLocal.isAbsenceTerm()){
-            		return 1;
-            	}else{
-            		return -1;
-            	}
-
+    protected int compareVocabularies(PresenceAbsenceTerm thatTerm) {
+        UUID thisVocUuid = this.vocabulary == null? null:this.vocabulary.getUuid();
+        UUID thatVocUuid = thatTerm.getVocabulary() == null? null:thatTerm.getVocabulary().getUuid();
+        int vocCompare = CdmUtils.nullSafeCompareTo(thisVocUuid, thatVocUuid);
+        if (vocCompare != 0 && thatTerm.isAbsenceTerm() != this.isAbsenceTerm() ){
+            if (thatTerm.isAbsenceTerm()){
+                return 1;
+            }else{
+                return -1;
             }
         }
+        return vocCompare;
+    }
 
-        int orderThat;
-        int orderThis;
-        try {
-            orderThat = presenceAbsenceTermLocal.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
-            orderThis = orderIndex; //OLD: this.getVocabulary().getTerms().indexOf(this);
-        } catch (RuntimeException e) {
-            throw e;
-        }
-        if (orderThis > orderThat){
-            return -1;
-        }else if (orderThis < orderThat){
-            return 1;
-        }else {
-            return 0;
-        }
+    /**
+     * {@inheritDoc}
+     *
+     * For {@link PresenceAbsenceTerm} there is an additional rule that before comparing vocabulary uuid
+     * presence terms are preferred to absence terms.
+     */
+    @Override
+    public int compareTo(PresenceAbsenceTerm presenceAbsenceTerm) {
+        return performCompareTo(presenceAbsenceTerm, true);
     }
 
 	public boolean isAbsenceTerm() {
