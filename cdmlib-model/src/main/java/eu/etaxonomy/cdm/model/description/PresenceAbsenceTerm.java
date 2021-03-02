@@ -81,7 +81,6 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
     private static final long serialVersionUID = 1036807546935584396L;
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTerm.class);
 
-
 	//presence base
 	public static final UUID uuidPresent = UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
 	private static final UUID uuidPresentDoubfully = UUID.fromString("75a60279-a4c2-4f53-bc57-466028a4b3db");
@@ -675,7 +674,7 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
     @Override
     protected int performCompareTo(PresenceAbsenceTerm presenceAbsenceTerm, boolean skipVocabularyCheck) {
 
-    	PresenceAbsenceTerm presenceAbsenceTermLocal = CdmBase.deproxy(presenceAbsenceTerm, PresenceAbsenceTerm.class);
+    	PresenceAbsenceTerm presenceAbsenceTermLocal = CdmBase.deproxy(presenceAbsenceTerm);
         if(! skipVocabularyCheck){
             if (this.vocabulary == null || presenceAbsenceTermLocal.vocabulary == null){
                 throw new IllegalStateException("An ordered term (" + this.toString() + " or " +
