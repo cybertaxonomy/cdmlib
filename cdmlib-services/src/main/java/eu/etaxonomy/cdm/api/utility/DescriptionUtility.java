@@ -99,7 +99,7 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-            filteredDistributions.putItem(area,distribution);
+            filteredDistributions.putItem(area, distribution);
         }
 
         // -------------------------------------------------------------------
