@@ -46,12 +46,13 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
         List<UuidAndTitleCache<Rights>> list = new ArrayList<UuidAndTitleCache<Rights>>();
         Session session = getSession();
 
-        String queryString = "SELECT " +"r.uuid, r.id, r.text, agent.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.agent AS agent ";
+        String queryString = "SELECT " +"r.uuid, r.id, r.text, agent.titleCache, type.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.agent AS agent LEFT OUTER JOIN r.type as type";
 
         if (pattern != null){
             queryString += " WHERE ";
             queryString += " r.text LIKE :pattern";
             queryString += " OR agent.titleCache LIKE :pattern";
+//            queryString += " OR type.titleCache LIKE :pattern";
         }
 
 
@@ -79,14 +80,16 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
         for(Object[] object : result){
             String rightsText = (String) object[2];
 
-            if(rightsText != null){
-                String agentTitle = (String) object[3];
-                rightsText = rightsText + " - " + agentTitle;
-
-                list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
-            }else{
-                logger.error("text of rights is null. UUID: " + object[0]);
+            if(rightsText == null){
+                rightsText = "no text";
             }
+            String agentTitle = (String) object[3];
+
+            String typeLabel = (String) object[4];
+            rightsText = rightsText + " - " + agentTitle + " - " + typeLabel;
+
+            list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
+
         }
 
         return list;
