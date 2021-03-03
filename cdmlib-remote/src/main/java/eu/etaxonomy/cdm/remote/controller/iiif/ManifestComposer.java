@@ -34,8 +34,10 @@ import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -47,6 +49,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 
 /**
  * Factory class for creating iiif manifests.
@@ -426,7 +429,38 @@ public class ManifestComposer {
         if(media.getMediaCreated() != null){
             metadata.add(new MetadataEntry("Created on", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
         }
+
+        if(!media.getSources().isEmpty()) {
+            PropertyValue descriptionValues = new PropertyValue();
+            for(IdentifiableSource source : media.getSources()){
+                descriptionValues.addValue(sourceAsHtml(source));
+            }
+            metadata.add(new MetadataEntry(new PropertyValue("Sources"), descriptionValues));
+        }
         return metadata;
+    }
+
+    private String sourceAsHtml(IdentifiableSource source) {
+
+        StringBuilder html = new StringBuilder();
+        if(source.getCitation() != null) {
+            DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy());
+            html.append(strategy.createShortCitation(source.getCitation(), source.getCitationMicroReference(), false)).append(" ");
+        }
+        if(source.getIdNamespace() != null && source.getIdInSource() != null) {
+            html.append(source.getIdNamespace()).append("/").append(source.getIdInSource()).append(" ");
+        }
+        String linkhtml = null;
+        for(ExternalLink extLink : source.getLinks()) {
+            if(extLink.getUri() != null) {
+                if(linkhtml != null) {
+                    html.append(", ");
+                }
+                linkhtml = htmlLink(extLink.getUri().getJavaUri(), extLink.getUri().toString());
+                html.append(linkhtml);
+            }
+        }
+        return source.toString();
     }
 
     private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata) {
