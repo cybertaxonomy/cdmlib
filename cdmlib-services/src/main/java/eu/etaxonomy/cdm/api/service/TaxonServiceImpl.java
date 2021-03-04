@@ -410,6 +410,7 @@ public class TaxonServiceImpl
                 }else{
                     newSecRef = CdmBase.deproxy(referenceService.load(newSec));
                 }
+                break;
             case WarningSelect:
                 newSecRef = CdmBase.deproxy(referenceService.load(newSec));
 
