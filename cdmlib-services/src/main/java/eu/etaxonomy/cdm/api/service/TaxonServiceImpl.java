@@ -226,8 +226,9 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             acceptedTaxon.removeSynonym(syn);
         }
-        Taxon newTaxon = acceptedTaxon.clone();
-        newTaxon.getDescriptions().clear();
+        Taxon newTaxon = acceptedTaxon.clone(true, true, false, true);
+//        newTaxon.getDescriptions().clear();
+
         Set<TaxonDescription> descriptionsToCopy = new HashSet<>();
         for (TaxonDescription desc: acceptedTaxon.getDescriptions()){
             descriptionsToCopy.add(desc);
@@ -235,6 +236,7 @@ public class TaxonServiceImpl
         for (TaxonDescription description: descriptionsToCopy){
             newTaxon.addDescription(description);
         }
+
         newTaxon.setName(synonymName);
         newTaxon.setSec(synonym.getSec());
         newTaxon.setPublish(synonym.isPublish());
