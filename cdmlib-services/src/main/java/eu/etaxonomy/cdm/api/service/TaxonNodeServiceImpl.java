@@ -324,11 +324,12 @@ public class TaxonNodeServiceImpl
         if (citation == null && (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways))){
             newSec = oldTaxon.getSec();
         }
+        if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
+            newSec = null;
+        }
 
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
-        if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
-            newSyn.setSec(null);
-        }
+
         newSyn.setPublish(oldTaxon.isPublish());
 
         // Move Synonyms to new Taxon
@@ -360,7 +361,7 @@ public class TaxonNodeServiceImpl
                 }
 
             }
-
+            synonym.setSec(newSec);
             newAcceptedTaxon.addSynonym(synonym, srt);
 
 
