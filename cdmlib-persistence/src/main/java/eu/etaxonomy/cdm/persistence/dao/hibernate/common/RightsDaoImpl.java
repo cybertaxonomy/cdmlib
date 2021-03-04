@@ -54,6 +54,8 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
             queryString += " WHERE ";
             queryString += " r.text LIKE :pattern";
             queryString += " OR agent.titleCache LIKE :pattern";
+            queryString += " OR r.abbreviatedText LIKE :pattern";
+//            queryString += " OR r.uri LIKE :pattern";
 //            queryString += " OR type.titleCache LIKE :pattern";
         }
 
@@ -80,29 +82,34 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            if (object[2] == null && object[3] == null && object[4] == null){
+            if (object[2] == null && object[3] == null && object[4] == null &&  object[5] == null &&  object[6] == null){
                 continue;
             }
-            String rightsText = (String) object[2];
-
-            if(rightsText == null){
-                rightsText = "no text";
-            }
-
+            String rightsText = "";
+            String text = (String) object[2];
             String abbrev = (String) object[3];
-
             String uri = object[4]!= null?((URI)object[4]).toString(): null;
-
             String agentTitle = (String) object[5];
-
             String typeLabel = (String) object[6];
-            rightsText = rightsText + " - " + agentTitle + " - " + typeLabel;
+
+            boolean isFirst = true;
+
+            if (StringUtils.isNotBlank(text)){
+                rightsText = text;
+            }
+            if (StringUtils.isNotBlank(agentTitle)){
+                rightsText = rightsText + (StringUtils.isBlank(rightsText)? "":" - ") + agentTitle ;
+            }
+            if (StringUtils.isNotBlank(typeLabel)){
+
+                rightsText = rightsText+ (StringUtils.isBlank(rightsText) ?"":" - ") + typeLabel;
+            }
 
             if (StringUtils.isNotBlank(abbrev)){
-                rightsText = rightsText + " - " + abbrev;
+                rightsText = rightsText + (StringUtils.isBlank(rightsText) ?"":" - ") + abbrev;
             }
             if (StringUtils.isNotBlank(uri)){
-                rightsText = rightsText + " - " + uri;
+                rightsText = rightsText + (StringUtils.isBlank(rightsText) ?"":" - ") + uri;
             }
 
             list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
