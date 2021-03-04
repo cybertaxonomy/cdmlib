@@ -3010,6 +3010,7 @@ public class TaxonServiceImpl
             toTaxon.addHomotypicSynonym(synonym);
         } else{
             synonym = toTaxon.addHeterotypicSynonymName(synonymName);
+            synonym.setPublish(fromTaxon.isPublish());
         }
 
         this.saveOrUpdate(toTaxon);
