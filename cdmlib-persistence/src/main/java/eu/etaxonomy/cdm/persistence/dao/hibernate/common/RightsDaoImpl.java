@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IRightsDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -46,7 +48,7 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
         List<UuidAndTitleCache<Rights>> list = new ArrayList<UuidAndTitleCache<Rights>>();
         Session session = getSession();
 
-        String queryString = "SELECT " +"r.uuid, r.id, r.text, agent.titleCache, type.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.agent AS agent LEFT OUTER JOIN r.type as type";
+        String queryString = "SELECT " +"r.uuid, r.id, r.text, r.abbreviatedText, r.uri,  agent.titleCache, type.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.agent AS agent LEFT OUTER JOIN r.type as type";
 
         if (pattern != null){
             queryString += " WHERE ";
@@ -86,10 +88,22 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
             if(rightsText == null){
                 rightsText = "no text";
             }
-            String agentTitle = (String) object[3];
 
-            String typeLabel = (String) object[4];
+            String abbrev = (String) object[3];
+
+            String uri = object[4]!= null?((URI)object[4]).toString(): null;
+
+            String agentTitle = (String) object[5];
+
+            String typeLabel = (String) object[6];
             rightsText = rightsText + " - " + agentTitle + " - " + typeLabel;
+
+            if (StringUtils.isNotBlank(abbrev)){
+                rightsText = rightsText + " - " + abbrev;
+            }
+            if (StringUtils.isNotBlank(uri)){
+                rightsText = rightsText + " - " + uri;
+            }
 
             list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
 
