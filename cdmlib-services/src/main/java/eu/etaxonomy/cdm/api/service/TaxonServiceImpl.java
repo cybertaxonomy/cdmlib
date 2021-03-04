@@ -332,7 +332,7 @@ public class TaxonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, Reference newSecRef, String microRef, boolean deleteSynonym) {
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, Reference newSecRef, String microRef, SecReferenceHandlingEnum secHandling, boolean deleteSynonym) {
         UpdateResult result = new UpdateResult();
         TaxonName acceptedName = acceptedTaxon.getName();
         TaxonName synonymName = synonym.getName();
@@ -345,6 +345,9 @@ public class TaxonServiceImpl
             result.setAbort();
             return result;
         }
+        if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
+            newSecRef = synonym.getSec();
+        }
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
         newAcceptedTaxon.setPublish(synonym.isPublish());
         dao.save(newAcceptedTaxon);
@@ -353,6 +356,9 @@ public class TaxonServiceImpl
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
 
         for (Synonym heteroSynonym : heteroSynonyms){
+            if (secHandling == null || !secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
+                synonym.setSec(newSecRef);
+            }
             if (synonym.equals(heteroSynonym)){
                 acceptedTaxon.removeSynonym(heteroSynonym, false);
             }else{
@@ -397,7 +403,6 @@ public class TaxonServiceImpl
                 newSecRef = null;
                 break;
             case KeepAlways:
-                newSecRef = synonym.getSec();
                 break;
             case UseNewParentSec:
                 newSecRef = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
@@ -419,7 +424,7 @@ public class TaxonServiceImpl
         }
 
 
-        result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, newSecRef, microReference, deleteSynonym);
+        result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, newSecRef, microReference, secHandling, deleteSynonym);
         Taxon newTaxon = (Taxon)result.getCdmEntity();
 
         TaxonNode newNode = newParentNode.addChildTaxon(newTaxon, null, null);

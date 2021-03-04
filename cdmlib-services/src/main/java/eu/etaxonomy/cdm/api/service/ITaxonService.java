@@ -131,7 +131,7 @@ public interface ITaxonService
      *          in the homotypic group. It is up to the implementing class to
      *          handle this situation via an exception or in another way.
      */
-    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon,Reference newSecRef, String microRef, boolean deleteSynonym) throws HomotypicalGroupChangeException;
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon,Reference newSecRef, String microRef, SecReferenceHandlingEnum secHandling, boolean deleteSynonym) throws HomotypicalGroupChangeException;
 
     /**
      * @param synonymUuid

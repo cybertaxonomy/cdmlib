@@ -361,7 +361,9 @@ public class TaxonNodeServiceImpl
                 }
 
             }
-            synonym.setSec(newSec);
+            if (!secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
+                synonym.setSec(newSec);
+            }
             newAcceptedTaxon.addSynonym(synonym, srt);
 
 

@@ -310,7 +310,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = null;
         UpdateResult result = new UpdateResult();
         try {
-            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, null, null, true);
+            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, null, null, null, true);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Invocation of change method should not throw an exception");
         }
@@ -462,7 +462,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon = null;
         UpdateResult result = new UpdateResult();
         try {
-            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, null, null, true);
+            result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, null, null, null, true);
             service.save(taxon);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Invocation of change method should not throw an exception");
