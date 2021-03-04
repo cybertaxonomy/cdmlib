@@ -78,6 +78,9 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
+            if (object[2] == null && object[3] == null && object[4] == null){
+                continue;
+            }
             String rightsText = (String) object[2];
 
             if(rightsText == null){
