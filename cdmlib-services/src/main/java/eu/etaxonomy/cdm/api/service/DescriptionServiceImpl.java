@@ -262,7 +262,7 @@ public class DescriptionServiceImpl
 
     @Override
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);
+        Long numberOfResults = descriptionElementDao.countMedia(descriptionElement);
 
         List<Media> results = new ArrayList<Media>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)

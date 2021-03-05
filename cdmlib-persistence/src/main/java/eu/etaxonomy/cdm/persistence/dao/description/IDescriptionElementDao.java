@@ -36,5 +36,5 @@ public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionEleme
 	 * @param descriptionElement the description element associated with these media
      * @return a count of media instances
      */
-	public int countMedia(DescriptionElementBase descriptionElement);
+	public long countMedia(DescriptionElementBase descriptionElement);
 }
