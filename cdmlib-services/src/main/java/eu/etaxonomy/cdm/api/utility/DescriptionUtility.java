@@ -119,7 +119,7 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-            boolean filterUndefined = ignoreDistributionStatusUndefined && distribution.getStatus() == null
+            boolean filterUndefined = ignoreDistributionStatusUndefined && distribution.getStatus() != null
                     && distribution.getStatus().equals(PresenceAbsenceTerm.uuidUndefined);
             if (!filterUndefined){
                 filteredDistributions.putItem(area, distribution);

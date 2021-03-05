@@ -245,7 +245,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false);
+                distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false, true);
         CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
                 config,
