@@ -269,7 +269,7 @@ public class DescriptionServiceImpl
             results = descriptionElementDao.getMedia(descriptionElement, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -324,9 +324,9 @@ public class DescriptionServiceImpl
             Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, List<String> propertyPaths){
 
-        List<Distribution> distList = new ArrayList<Distribution>();
+        List<Distribution> distList = new ArrayList<>();
 
-        List<UUID> uuids = new ArrayList<UUID>();
+        List<UUID> uuids = new ArrayList<>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
             if (! taxonDescription.isImageGallery()){    //image galleries should not have descriptions, but better filter fully on DTYPE of description element
                 uuids.add(taxonDescription.getUuid());
@@ -334,7 +334,7 @@ public class DescriptionServiceImpl
         }
 
         List<DescriptionBase> desclist = dao.list(uuids, null, null, null, propertyPaths);
-        for (DescriptionBase desc : desclist) {
+        for (DescriptionBase<?> desc : desclist) {
             if (desc.isInstanceOf(TaxonDescription.class)){
                 Set<DescriptionElementBase> elements = desc.getElements();
                 for (DescriptionElementBase element : elements) {
