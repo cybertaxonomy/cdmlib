@@ -283,6 +283,7 @@ public class DescriptionListController
 
             ModelAndView mv = new ModelAndView();
 
+            boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
             CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
             //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
             //are hidden markers on areas that have non-hidden subareas (#4408)
@@ -300,7 +301,8 @@ public class DescriptionListController
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
                     subAreaPreference, statusOrderPreference, hiddenAreaMarkerTypes, omitLevels,
                     distributionStatusColors, LocaleContext.getLanguages(),
-                    getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder);
+                    getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder,
+                    ignoreDistributionStatusUndefined);
 
             mv.addObject(dto);
 

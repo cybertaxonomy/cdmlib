@@ -37,6 +37,24 @@ public class DescriptionUtility {
     private static final Logger logger = Logger.getLogger(DescriptionUtility.class);
 
     /**
+     * @see #filterDistributions(Collection, Set, boolean, boolean, boolean, boolean)
+     *
+     * @param distributions
+     * @param hiddenAreaMarkerTypes
+     * @param preferAggregated
+     * @param statusOrderPreference
+     * @param subAreaPreference
+     * @return
+     */
+    public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
+            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
+            boolean subAreaPreference) {
+        return filterDistributions(distributions, hiddenAreaMarkerTypes, preferAggregated, statusOrderPreference,
+                subAreaPreference, false);
+    }
+
+
+    /**
      * <b>NOTE: To avoid LayzyLoadingExceptions this method must be used in a transactional context.</b>
      *
      * Filters the given set of {@link Distribution}s for publication purposes
@@ -84,11 +102,13 @@ public class DescriptionUtility {
      *            This rule can be run separately from the other filters.
      * @param subAreaPreference
      *            enables the <b>Sub area preference rule</b> if set to true
+     * @param ignoreDistributionStatusUndefined
+     *            workaround until #9500 is implemented
      * @return the filtered collection of distribution elements.
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
             Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
-            boolean subAreaPreference) {
+            boolean subAreaPreference, boolean ignoreDistributionStatusUndefined) {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
 
@@ -99,7 +119,12 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with NULL area");
                 continue;
             }
-            filteredDistributions.putItem(area, distribution);
+            boolean filterUndefined = ignoreDistributionStatusUndefined && distribution.getStatus() == null
+                    && distribution.getStatus().equals(PresenceAbsenceTerm.uuidUndefined);
+            if (!filterUndefined){
+                filteredDistributions.putItem(area, distribution);
+            }
+
         }
 
         // -------------------------------------------------------------------

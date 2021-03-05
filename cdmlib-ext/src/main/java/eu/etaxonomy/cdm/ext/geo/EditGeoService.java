@@ -322,7 +322,7 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages,  List<String> propertyPaths, CondensedDistributionConfiguration config,
-            DistributionOrder distributionOrder){
+            DistributionOrder distributionOrder, boolean ignoreDistributionStatusUndefined){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
@@ -356,7 +356,7 @@ public class EditGeoService implements IEditGeoService {
 
         // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
-                false, statusOrderPreference, false);
+                false, statusOrderPreference, false, ignoreDistributionStatusUndefined);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);

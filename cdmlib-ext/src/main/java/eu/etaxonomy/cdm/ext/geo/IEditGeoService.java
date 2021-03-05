@@ -194,14 +194,15 @@ public interface IEditGeoService {
     * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
     * @param presenceAbsenceTermColors
     * @param languages
-     * @param propertyPaths
+    * @param propertyPaths
+    * @param ignoreDistributionStatusUndefined workaround until #9500 is implemented to ignore status "undefined"
     * @return
     */
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
             Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths, CondensedDistributionConfiguration config,
-            DistributionOrder distributionOrder);
+            DistributionOrder distributionOrder, boolean ignoreDistributionStatusUndefined);
 
     /**
     * @param distributions
