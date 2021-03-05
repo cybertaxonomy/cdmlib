@@ -802,7 +802,7 @@ public class TaxonNodeServiceImpl
         for (TaxonNode node: nodes){
             if (!monitor.isCanceled()){
                 if (!nodes.contains(node.getParent())){
-                    result.includeResult(moveTaxonNode(node,targetNode, movingType));
+                    result.includeResult(moveTaxonNode(node, targetNode, movingType));
                 }
                 monitor.worked(1);
             }else{
