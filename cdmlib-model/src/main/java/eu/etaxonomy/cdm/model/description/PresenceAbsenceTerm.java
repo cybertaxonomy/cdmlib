@@ -132,6 +132,9 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	private static final UUID uuidCasualPresenceQuestionable = UUID.fromString("73f75493-1185-4a3e-af1e-9a1f2e8dadb7");
 	private static final UUID uuidCasualReportedError = UUID.fromString("9b910b7b-43e3-4260-961c-6063b11cb7dc");
 
+	//undefined
+	public static final UUID uuidUndefined = UUID.fromString("bdb46487-01f8-451d-bf7b-d3e0fd44938e");
+
 
 	protected static Map<UUID, PresenceAbsenceTerm> termMap = null;
 
@@ -592,6 +595,14 @@ public class PresenceAbsenceTerm extends OrderedTermBase<PresenceAbsenceTerm> {
 	public static final PresenceAbsenceTerm REPORTED_IN_ERROR(){
         return getTermByUuid(uuidReportedInError);
     }
+
+	/**
+	 * The status of the taxon in the given area is not defined
+	 * for whatever reason.
+	 */
+	public static final PresenceAbsenceTerm UNDEFINED(){
+	    return getTermByUuid(uuidUndefined);
+	}
 
 
 //******************************** METHODS ****************************/
