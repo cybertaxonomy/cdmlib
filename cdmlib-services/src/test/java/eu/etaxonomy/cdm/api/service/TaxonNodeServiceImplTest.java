@@ -570,8 +570,11 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	nodes.add(abiesAlbaNode);
     	nodes.add(classification.addChildTaxon(pinus, null, null));
     	nodes.add(classification.addParentChild(pinus, pinusPampa, null, null));
+    	this.taxonNodeService.save(nodes);
     	classificationService.saveClassification(classification);
-    	//this.taxonNodeService.save(nodes);
+    	commitAndStartNewTransaction();
+
+    	classification = classificationDao.load(classification.getUuid());
     	TaxonNodeNaturalComparator comparator = new TaxonNodeNaturalComparator();
     	List<TaxonNode> allNodes = new ArrayList<>(classification.getAllNodes());
     	Collections.sort(allNodes, comparator);
@@ -580,9 +583,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
     	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
 
-    	taxonNodeService.moveTaxonNode(balsameaNode, abiesAlbaNode,1);
-    	classification = classificationService.load(classification.getUuid());
+    	taxonNodeService.moveTaxonNode(balsameaNode.getUuid(), abiesAlbaNode.getUuid(),1);
+    	commitAndStartNewTransaction();
 
+    	classification = classificationService.load(classification.getUuid());
     	allNodes = new ArrayList<>(classification.getAllNodes());
         Collections.sort(allNodes, comparator);
 
