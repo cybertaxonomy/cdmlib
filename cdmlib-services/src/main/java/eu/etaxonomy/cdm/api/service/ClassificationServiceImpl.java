@@ -558,6 +558,8 @@ public class ClassificationServiceImpl
     public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator){
 
         UpdateResult result = new UpdateResult();
+        Set<TaxonNode> taxonNodesToSave = new HashSet<>();
+
     	classification = dao.findByUuid(classification.getUuid());
     	Map<String, List<TaxonNode>> map = getSortedGenusList(classification.getAllNodes());
 
@@ -610,7 +612,9 @@ public class ClassificationServiceImpl
     			parentNode = newClassification.addChildTaxon(taxon, 0, null, null);
     			result.addUpdatedObject(parentNode);
     		}
-    		//iterate over the rest of the list
+    		taxonNodesToSave.add(parentNode);
+
+    		//iterate over the remaining list
     		for(TaxonNode tn : listOfTaxonNodes){
     			//if TaxonNode has a parent and this is not the classification then skip it
     			//and add to new classification via the parentNode as children of it
@@ -625,6 +629,8 @@ public class ClassificationServiceImpl
     			//FIXME: citation from node
     			//TODO: addChildNode without citation and references
     			TaxonNode taxonNode = parentNode.addChildNode(clone, clone.getReference(), clone.getMicroReference());
+    			taxonNodesToSave.add(taxonNode);
+
     			result.addUnChangedObject(clone);
     			if(tn.hasChildNodes()){
     				//save hierarchy in new classification
@@ -636,6 +642,7 @@ public class ClassificationServiceImpl
     		}
     	}
     	dao.saveOrUpdate(newClassification);
+    	taxonNodeDao.saveOrUpdateAll(taxonNodesToSave);
     	result.setCdmEntity(newClassification);
     	return result;
     }

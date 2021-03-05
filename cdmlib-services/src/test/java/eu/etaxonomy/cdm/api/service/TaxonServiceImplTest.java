@@ -1850,6 +1850,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	Taxon c1SubSpecies1 = Taxon.NewInstance(null, null);c1SubSpecies1.setUuid(UUID.fromString("96ae2fad-76df-429f-b179-42e00838fea4"));
     	Taxon c1SubSpecies2 = Taxon.NewInstance(null, null);c1SubSpecies2.setUuid(UUID.fromString("5d3f6147-ca72-40e0-be8a-6c835a09a579"));
     	TaxonNode c1childNodeSpecies1 = cl1.addParentChild(c1Genus, c1Species, null, null);
+    	nodeService.saveOrUpdate(c1childNodeSpecies1.getParent());
     	nodeService.saveOrUpdate(c1childNodeSpecies1);
     	TaxonNode c1childNodeSubSpecies1 =cl1.addParentChild(c1Species, c1SubSpecies1, null, null);
     	nodeService.saveOrUpdate(c1childNodeSubSpecies1);
@@ -1861,7 +1862,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	Taxon c2SubSpecies1 = Taxon.NewInstance(null, null);c2SubSpecies1.setUuid(UUID.fromString("61f039c8-01f3-4f5d-8e16-1602139774e7"));
     	Taxon c2SubSpecies2 = Taxon.NewInstance(null, null);c2SubSpecies2.setUuid(UUID.fromString("2ed6b6f8-05f9-459a-a075-2bca57e3013e"));
     	TaxonNode c2childNodeSpecies1 = cl2.addParentChild(c2Genus, c2Species, null, null);
-    	nodeService.saveOrUpdate(c2childNodeSpecies1);
+    	nodeService.saveOrUpdate(c2childNodeSpecies1.getParent());
+        nodeService.saveOrUpdate(c2childNodeSpecies1);
     	TaxonNode c2childNodeSubSpecies1 = cl2.addParentChild(c2Species, c2SubSpecies1, null, null);
     	nodeService.saveOrUpdate(c2childNodeSubSpecies1);
     	TaxonNode c2childNodeSubSpecies2 = cl2.addParentChild(c2Species, c2SubSpecies2, null, null);
@@ -1872,7 +1874,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	Taxon c3SubSpecies1 = Taxon.NewInstance(null, null);c3SubSpecies1.setUuid(UUID.fromString("01c07585-a422-40cd-9339-a74c56901d9f"));
     	Taxon c3SubSpecies2 = Taxon.NewInstance(null, null);c3SubSpecies2.setUuid(UUID.fromString("390c8e23-e05f-4f89-b417-50cf080f4c91"));
     	TaxonNode c3childNodeSpecies1 = cl3.addParentChild(c3Genus, c3Species, null, null);
-    	nodeService.saveOrUpdate(c3childNodeSpecies1);
+    	nodeService.saveOrUpdate(c3childNodeSpecies1.getParent());
+        nodeService.saveOrUpdate(c3childNodeSpecies1);
     	TaxonNode c3childNodeSubSpecies1 = cl3.addParentChild(c3Species, c3SubSpecies1, null, null);
     	nodeService.saveOrUpdate(c3childNodeSubSpecies1);
     	TaxonNode c3childNodeSubSpecies2 = cl3.addParentChild(c3Species, c3SubSpecies2, null, null);
@@ -1890,6 +1893,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	service.saveOrUpdate(c1Species);
        	service.saveOrUpdate(c2Species);
        	service.save(c4Species);
+       	commitAndStartNewTransaction();
 
     	//Tests
        	//default starting at species 1
