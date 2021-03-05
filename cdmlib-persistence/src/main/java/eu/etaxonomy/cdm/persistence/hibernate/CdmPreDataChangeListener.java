@@ -93,7 +93,6 @@ public class CdmPreDataChangeListener
             //moved to CdmPreDataChangeListener
             if (entity instanceof ITreeNode) {
                     ITreeNode<?> node = (ITreeNode<?>)entity;
-                    System.out.println(node);
                     reindex(node);
                 }
         }

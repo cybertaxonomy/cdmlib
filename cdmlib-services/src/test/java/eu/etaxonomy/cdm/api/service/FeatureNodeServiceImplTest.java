@@ -83,7 +83,6 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertEquals("", sep + pref+featureTree.getId()+sep + featureTree.getRoot().getId()+ sep  + newNode.getId() + sep, newNode.treeIndex());
 	}
 
-
 	@Test
 	@DataSet(loadStrategy=RefreshLoadStrategy.class, value="FeatureNodeServiceImplTest-indexing.xml")
 	public final void testIndexCreateNode() {
@@ -100,7 +99,6 @@ public class FeatureNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		newNode = featureNodeService.load(newNode.getUuid());
 		Assert.assertEquals("", oldTreeIndex + newNode.getId() + sep, newNode.treeIndex());
 	}
-
 
 	@Test
     @DataSet(loadStrategy=RefreshLoadStrategy.class ,value="FeatureNodeServiceImplTest-indexing.xml")
