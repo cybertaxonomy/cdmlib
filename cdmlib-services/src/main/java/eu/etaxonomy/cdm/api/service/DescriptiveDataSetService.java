@@ -265,7 +265,7 @@ public class DescriptiveDataSetService
 //            if(taxonDescriptionUuid!=null){
 //                taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
 //            }
-            SpecimenOrObservationBase specimen = occurrenceService.load(wrapper.getSpecimen().getUuid());
+            SpecimenOrObservationBase<?> specimen = occurrenceService.load(wrapper.getSpecimen().getUuid());
             if(taxonDescription==null){
                 Optional<TaxonDescription> associationDescriptionOptional = taxon.getDescriptions().stream()
                         .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
@@ -278,13 +278,12 @@ public class DescriptiveDataSetService
                     taxonDescription = associationDescriptionOptional.get();
                 }
 
-
                 IndividualsAssociation association = IndividualsAssociation.NewInstance(specimen);
                 taxonDescription.addElement(association);
                 taxonService.saveOrUpdate(taxon);
                 result.addUpdatedObject(taxon);
             }
-            DescriptionBase specimenDescription = wrapper.getDescription().getDescription();
+            DescriptionBase<?> specimenDescription = wrapper.getDescription().getDescription();
             if (specimenDescription.isPersited()){
                 specimenDescription = descriptionService.load(specimenDescription.getUuid());
             }else {
