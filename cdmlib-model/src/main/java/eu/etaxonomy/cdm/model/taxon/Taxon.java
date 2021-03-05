@@ -281,7 +281,6 @@ public class Taxon
         ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, description, this);
         descriptions.add(description);
-
     }
 
     /**

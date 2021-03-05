@@ -276,7 +276,7 @@ public class TaxonServiceImpl
         }
 
         //Move descriptions to new taxon
-        List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( newTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
+        List<TaxonDescription> descriptions = new ArrayList<>( newTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
         for(TaxonDescription description : descriptions){
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, acceptedTaxon.getTitleCache(), description.getTitleCache());
