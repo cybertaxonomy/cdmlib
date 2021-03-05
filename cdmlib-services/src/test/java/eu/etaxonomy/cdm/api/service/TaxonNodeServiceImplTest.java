@@ -1242,7 +1242,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSet
-    @Ignore //test for #8857 which is not yet solved, same as #testSaveNewTaxonNode() but with reference as duplicate
+    //test for #8857, same as #testSaveNewTaxonNode() but with reference as duplicate
     public void testSaveNewTaxonNodeReference(){
         Reference sec = referenceService.find(referenceUuid);
         commitAndStartNewTransaction();
