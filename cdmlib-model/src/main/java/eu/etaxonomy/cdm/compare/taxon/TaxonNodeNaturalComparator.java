@@ -32,11 +32,13 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 	    if (node1.equals(node2)) {
 	        return 0;
         }
-	    // if we do not check for null for the treeIndex we always return 1 if one of the nodes have no treeIndex
 	    if (node1.treeIndex() == null){
-	        return 1;
-	    }
-	    if (node2.treeIndex() == null){
+	        if (node2.treeIndex() == null){
+	            return 0;
+	        }else{
+	            return 1;
+	        }
+	    }else if (node2.treeIndex() == null){
             return -1;
         }
 
