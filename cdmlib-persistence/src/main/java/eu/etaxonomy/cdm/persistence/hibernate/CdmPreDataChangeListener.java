@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.util.List;
+
 import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
 import org.hibernate.event.spi.PreUpdateEvent;
@@ -20,6 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
@@ -83,10 +86,51 @@ public class CdmPreDataChangeListener
     }
 
     //from former SaveOrUpdateOrMergeEntityListener
-    public static void insertUpdateMerge(Object entity){
+    public void insertUpdateMerge(Object entity){
         if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
             cacheDeterminationNames(entity);
             generateCaches(entity);
+            //moved to CdmPreDataChangeListener
+            if (entity instanceof ITreeNode) {
+                    ITreeNode<?> node = (ITreeNode<?>)entity;
+                    System.out.println(node);
+                    reindex(node);
+                }
+        }
+    }
+
+    static String sep = ITreeNode.separator;
+    static String pref = ITreeNode.treePrefix;
+
+    private <T extends ITreeNode> void reindex(T node) {
+        String oldChildIndex = node.treeIndex();
+        ITreeNode<?> parent = node.getParent();
+        String parentIndex = (parent == null) ? (sep + pref + node.treeId() + sep)  : parent.treeIndex();  //TODO
+        if (node.getId() > 0){   //TODO
+            String newChildIndex = parentIndex + node.getId() + sep;
+            if (oldChildIndex == null || ! oldChildIndex.equals(newChildIndex)){
+                node.setTreeIndex(newChildIndex);
+
+                //TODO this is a greedy implementation, better use update by replace string
+                //either using and improving the below code or by using native SQL
+                //The current approach may run out of memory for large descendant sets.
+                List<T> childNodes = node.getChildNodes();
+                for (T child : childNodes){
+                    if (child != null && ! child.equals(node)){  //node should not be it's own child, however just in case
+                        reindex(child);
+                    }
+                }
+
+                //          String className = event.getEntityName();
+                //                  String updateQuery = " UPDATE %s tn " +
+                //                          " SET tn.treeIndex = Replace(tn.treeIndex, '%s', '%s') " +
+                //                          " WHERE tn.id <> "+ node.getId()+" ";
+                //                  updateQuery = String.format(updateQuery, className, oldChildIndex, parentIndex);  //dummy
+                //                  System.out.println(updateQuery);
+                //                  EventSource session = event.getSession();
+                //                  Query query = session.createQuery(updateQuery);
+                //                  query.executeUpdate();
+            }
         }
     }
 
