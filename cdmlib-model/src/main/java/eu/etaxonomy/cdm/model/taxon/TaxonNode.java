@@ -118,7 +118,7 @@ public class TaxonNode
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonNode parent;
 
     @XmlElement(name = "treeIndex")
