@@ -229,10 +229,7 @@ public class TaxonServiceImpl
         Taxon newTaxon = acceptedTaxon.clone(true, true, false, true);
 //        newTaxon.getDescriptions().clear();
 
-        Set<TaxonDescription> descriptionsToCopy = new HashSet<>();
-        for (TaxonDescription desc: acceptedTaxon.getDescriptions()){
-            descriptionsToCopy.add(desc);
-        }
+        Set<TaxonDescription> descriptionsToCopy = new HashSet<>(acceptedTaxon.getDescriptions());
         for (TaxonDescription description: descriptionsToCopy){
             newTaxon.addDescription(description);
         }
