@@ -113,11 +113,11 @@ public class ClassificationServiceImpl
         this.dao = dao;
     }
 
-    private Comparator<? super TaxonNode> taxonNodeComparator;
+    private Comparator<TaxonNode> taxonNodeComparator;
 
     @Autowired
-    public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
-        this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
+    public void setTaxonNodeComparator(ITaxonNodeComparator<TaxonNode> taxonNodeComparator){
+        this.taxonNodeComparator = (Comparator<TaxonNode>) taxonNodeComparator;
     }
 
     @Override
@@ -556,6 +556,7 @@ public class ClassificationServiceImpl
 	@Transactional(readOnly = false)
 	@Override
     public UpdateResult createHierarchyInClassification(Classification classification, CreateHierarchyForClassificationConfigurator configurator){
+
         UpdateResult result = new UpdateResult();
     	classification = dao.findByUuid(classification.getUuid());
     	Map<String, List<TaxonNode>> map = getSortedGenusList(classification.getAllNodes());
@@ -588,8 +589,7 @@ public class ClassificationServiceImpl
     					//get all childNodes
     					//save prior Hierarchy and remove them from the list
     					List<TaxonNode> copyAllChildrenToTaxonNode = copyAllChildrenToTaxonNode(tNode, clone, result);
-//    					parentNode = newClassification.addChildNode(clone, 0, classification.getCitation(), classification.getMicroReference());
-      					//FIXME remove classification
+//    					//FIXME remove classification
     					parentNode = newClassification.addChildNode(clone, 0, clone.getReference(), clone.getMicroReference());
     					//remove taxonNode from list because just added to classification
     					result.addUpdatedObject(tNode);
@@ -623,8 +623,7 @@ public class ClassificationServiceImpl
 
     			TaxonNode clone = tn.clone();
     			//FIXME: citation from node
-    			//TODO: addchildNode without citation and references
-//    			TaxonNode taxonNode = parentNode.addChildNode(clone, classification.getCitation(), classification.getMicroReference());
+    			//TODO: addChildNode without citation and references
     			TaxonNode taxonNode = parentNode.addChildNode(clone, clone.getReference(), clone.getMicroReference());
     			result.addUnChangedObject(clone);
     			if(tn.hasChildNodes()){

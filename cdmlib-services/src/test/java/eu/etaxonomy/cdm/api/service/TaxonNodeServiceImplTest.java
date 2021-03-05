@@ -562,7 +562,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         abiesBalsameaName.setSpecificEpithet("balsamea");
         Taxon abiesBalsamea = Taxon.NewInstance(abiesBalsameaName, null);
 
-        List<TaxonNode> nodes = new ArrayList<TaxonNode>();
+        List<TaxonNode> nodes = new ArrayList<>();
     	nodes.add(classification.addChildTaxon(abies, null, null));
     	TaxonNode abiesAlbaNode = classification.addParentChild(abies, abiesAlba, null, null);
     	TaxonNode balsameaNode = classification.addParentChild(abies, abiesBalsamea, null, null);
@@ -586,9 +586,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	allNodes = new ArrayList<>(classification.getAllNodes());
         Collections.sort(allNodes, comparator);
 
-        Assert.assertEquals(allNodes.get(0).getTaxon(), abies );
-        Assert.assertEquals(allNodes.get(1).getTaxon(), abiesBalsamea );
-        Assert.assertEquals(allNodes.get(2).getTaxon(), abiesAlba );
+        Assert.assertEquals(abies, allNodes.get(0).getTaxon());
+        Assert.assertEquals(abiesBalsamea, allNodes.get(1).getTaxon());
+        Assert.assertEquals(abiesAlba, allNodes.get(2).getTaxon());
     }
 
     @Test

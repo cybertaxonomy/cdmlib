@@ -47,10 +47,8 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
             return 1;
         }
 
-
 		String[] splitNode1 = node1.treeIndex().split("#");
 		String[] splitNode2 = node2.treeIndex().split("#");
-
 
 		if (node1.getParent().equals(node2.getParent())){
 			return node1.getSortIndex().compareTo(node2.getSortIndex());
@@ -74,7 +72,6 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 					TaxonNode lastEqualTreeIndexAncestorNode1 = null;
 					TaxonNode lastEqualTreeIndexAncestorNode2 = null;
 					for (TaxonNode next1 :ancestorAndNode){
-
 						if (next1.treeIndex().equals(lastEqualAncestorTreeIndex+"#"+splitNode1[i]+ "#") ){
 						    lastEqualTreeIndexAncestorNode1 = next1;
 						}

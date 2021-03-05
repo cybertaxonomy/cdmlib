@@ -1832,7 +1832,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(value="../../database/ClearDBDataSet.xml")
-    public final void testLlistIncludedTaxa(){
+    public final void testListIncludedTaxa(){
     	Reference citation = null;
     	String microcitation = null;
 

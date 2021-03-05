@@ -40,10 +40,11 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
     private static final Logger logger = Logger.getLogger(ClassificationServiceDeepTest.class);
 
     @SpringBeanByType
-    IClassificationService service;
+    private IClassificationService service;
 
     @SpringBeanByType
-    ITaxonNodeService taxonNodeService;
+    private ITaxonNodeService taxonNodeService;
+
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "childNodes",
             "childNodes.taxon",
@@ -51,7 +52,6 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
             "taxon.sec",
             "taxon.name.*"
             });
-
 
     @Test
     @DataSet

@@ -1016,7 +1016,6 @@ public class TaxonNode
     /**
      * Whether this TaxonNode is an ascendant of (or equal to) the given TaxonNode.
      *
-     *
      * @param possibleChild
      * @return <code>true</code> if <b>this</b> is a ancestor of the given child parameter
      */
