@@ -272,6 +272,7 @@ public class DescriptiveDataSetService
                         .findFirst();
                 if(!associationDescriptionOptional.isPresent()){
                     taxonDescription = TaxonDescription.NewInstance(taxon);
+                    taxonDescription.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
                 }
                 else{
                     taxonDescription = associationDescriptionOptional.get();
