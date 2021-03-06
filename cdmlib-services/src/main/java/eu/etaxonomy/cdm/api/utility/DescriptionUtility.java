@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 
@@ -176,7 +177,8 @@ public class DescriptionUtility {
                 boolean showAsFallbackArea = false;
                 // if at least one sub area is not hidden by a marker
                 // the given area is a fall-back area for this sub area
-                for(NamedArea subArea : area.getIncludes()) {
+                for(DefinedTermBase<NamedArea> included : area.getIncludes()) {
+                    NamedArea subArea = CdmBase.deproxy(included,NamedArea.class);
                     if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
                         if(filteredDistributions.containsKey(subArea)) {
                             areasHiddenByMarker.add(subArea);
