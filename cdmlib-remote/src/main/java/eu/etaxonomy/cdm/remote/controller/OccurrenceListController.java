@@ -61,9 +61,6 @@ public class OccurrenceListController extends AbstractIdentifiableListController
     @Autowired
     private ITermService termService;
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Override
     @Autowired
     public void setService(IOccurrenceService service) {
@@ -183,41 +180,6 @@ public class OccurrenceListController extends AbstractIdentifiableListController
         return pager;
     }
 
-    /**
-    *
-    * @param queryString
-    * @param request
-    * @param response
-    * @return
-    * @throws IOException
-    * @throws ParseException
-    */
-//   @RequestMapping(method = RequestMethod.GET, value={"byGeneticAccessionNumber"})
-//   public Pager<DerivedUnit> dofindByGeneticAccessionNumber(
-//           @RequestParam(value = "query", required = false) String queryString,
-//           @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-//           @RequestParam(value = "pageSize", required = false) Integer pageSize,
-//           HttpServletRequest request,
-//           HttpServletResponse response
-//           )
-//            throws IOException {
-//
-//        logger.info("dofindByIdentifier() " + requestPathAndQuery(request) );
-//
-//        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-//        pagerParams.normalizeAndValidate(response);
-//
-//
-//        if(queryString == null ) {
-//            HttpStatusMessage.create("Query must be given", 400).send(response);
-//            return null;
-//        }
-//
-//       Pager<DerivedUnit> pager = service.findByAccessionNumber(queryString,pageSize, pageNumber, null,this.initializationStrategy);
-//
-//       return pager;
-//   }
-
     @RequestMapping(method = RequestMethod.GET, value = "byGeneticAccessionNumber" )
     public SpecimenOrObservationBaseDTO doGetByGeneticAccessionNumber(
             @RequestParam(value="accessionNumber", required = true) String accessionNumber,
@@ -233,6 +195,4 @@ public class OccurrenceListController extends AbstractIdentifiableListController
        }
        return sobDto;
     }
-
-
 }

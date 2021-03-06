@@ -308,11 +308,10 @@ public class DescriptionListController
                         getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder,
                         ignoreDistributionStatusUndefined);
                 mv.addObject(dto);
+                return mv;
             } catch (Exception e) {
-                //TODO
-                mv.addObject(e.getStackTrace().toString());
+                HttpStatusMessage.create("Exception when retrieving distribution info for " + taxonUuid, 500).send(response);
+                return null;
             }
-
-            return mv;
     }
 }
