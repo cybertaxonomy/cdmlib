@@ -254,9 +254,11 @@ public class DescriptionUtility {
      * @param omitLevels
      * @param distributions
      * @param fallbackAreaMarkerTypes
-     *      Areas not associated to a Distribution in the {@code distributions} list are detected as fall back area
-     *      if they are having a {@link Marker marker} with one of the specified {@link MarkerType}s. Areas identified as such
-     *      are omitted from the hierarchy and the sub areas are moving one level up.
+     *      Areas are fallback areas if they have a {@link Marker} with one of the specified
+     *      {@link MarkerType marker types}.
+     *      Areas identified as such are omitted from the hierarchy and the sub areas are moving one level up.
+     *      This may not be the case if the fallback area has a distribution record itself AND if
+     *      neverUseFallbackAreasAsParents is <code>false</code>.
      *      For more details on fall back areas see <b>Marked area filter</b> of
      *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      * @param distributionOrder
