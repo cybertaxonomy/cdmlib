@@ -154,7 +154,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, false, statusOrderPreference, subAreaPreference);
+                hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true, false);
 
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
                 filteredDistributions,
@@ -226,7 +226,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false, true);
+                distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false, false, true);
         CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
                 config,
@@ -340,10 +340,10 @@ public class EditGeoService implements IEditGeoService {
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
 
-        // For all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
+        // for all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
         // to all distributions, but KEEP fallback area distributions
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
-                !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, ignoreDistributionStatusUndefined);
+                !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false, ignoreDistributionStatusUndefined);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
@@ -363,9 +363,12 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {
+            boolean IGNORE_STATUS_ORDER_PREF_ = false;
+            Set<MarkerType> hiddenAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
             Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(
-                    filteredDistributions, null, !PREFER_AGGREGATED, false, subAreaPreference, ignoreDistributionStatusUndefined);
+                    filteredDistributions, hiddenAreaMarkerType, !PREFER_AGGREGATED,
+                    IGNORE_STATUS_ORDER_PREF_, subAreaPreference, true, ignoreDistributionStatusUndefined);
 
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,

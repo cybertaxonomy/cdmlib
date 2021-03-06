@@ -37,15 +37,6 @@ public class DescriptionUtility {
 
     private static final Logger logger = Logger.getLogger(DescriptionUtility.class);
 
-    /**
-     * @see #filterDistributions(Collection, Set, boolean, boolean, boolean, boolean)
-     */
-    public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
-            boolean subAreaPreference) {
-        return filterDistributions(distributions, hiddenAreaMarkerTypes, preferAggregated, statusOrderPreference,
-                subAreaPreference, true);
-    }
 
     /**
      * <b>NOTE: To avoid LayzyLoadingExceptions this method must be used in a transactional context.</b>
@@ -101,7 +92,7 @@ public class DescriptionUtility {
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
             Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
-            boolean subAreaPreference, boolean ignoreDistributionStatusUndefined) {
+            boolean subAreaPreference, boolean keepFallBackOnlyIfNoSubareaDataExists, boolean ignoreDistributionStatusUndefined) {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
 
@@ -123,8 +114,8 @@ public class DescriptionUtility {
         // -------------------------------------------------------------------
         // 1) skip distributions having an area with markers matching hiddenAreaMarkerTypes
         //    but keep distributions for fallback areas (areas with hidden marker, but with visible sub-areas)
-        if(hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
-            handleHiddenAndFallbackAreas(hiddenAreaMarkerTypes, filteredDistributions);
+        if( hiddenAreaMarkerTypes != null && !hiddenAreaMarkerTypes.isEmpty()) {
+            removeHiddenAndKeepFallbackAreas(hiddenAreaMarkerTypes, filteredDistributions, keepFallBackOnlyIfNoSubareaDataExists);
         }
 
         // -------------------------------------------------------------------
@@ -171,14 +162,32 @@ public class DescriptionUtility {
     /**
      * Remove hidden areas but keep fallback areas.
      */
-    private static void handleHiddenAndFallbackAreas(Set<MarkerType> hiddenAreaMarkerTypes,
-            SetMap<NamedArea, Distribution> filteredDistributions) {
+    private static void removeHiddenAndKeepFallbackAreas(Set<MarkerType> hiddenAreaMarkerTypes,
+            SetMap<NamedArea, Distribution> filteredDistributions, boolean keepFallBackOnlyIfNoSubareaDataExists) {
 
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
         for(NamedArea area : filteredDistributions.keySet()) {
-            if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
-                boolean hasVisibleSubarea = hasVisibleSubareaWithData(area, hiddenAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
-                if (!hasVisibleSubarea) {
+            if(isMarkedHidden(area, hiddenAreaMarkerTypes)) {
+                  // if at least one sub area is not hidden by a marker
+//                // the given area is a fall-back area for this sub area
+//                for(DefinedTermBase<NamedArea> included : area.getIncludes()) {
+//                    NamedArea subArea = CdmBase.deproxy(included,NamedArea.class);
+//                    if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
+//                        if(filteredDistributions.containsKey(subArea)) {
+//                            areasHiddenByMarker.add(subArea);
+//                        }
+//                    }
+//                    // if this sub-area is not marked to be hidden
+//                    // the parent area must be visible if there is no
+//                    // data for the sub-area
+//                    boolean subAreaVisible = filteredDistributions.containsKey(subArea)
+//                            && !areasHiddenByMarker.contains(subArea);
+//                    showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
+//                }
+//                if (!showAsFallbackArea) {
+                SetMap<NamedArea, Distribution>  distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributions : null;
+                boolean isFallBackArea = isRemainingFallBackArea(area, hiddenAreaMarkerTypes, distributionsForSubareaCheck);
+                if (!isFallBackArea) {
                     // this area does not need to be shown as
                     // fall-back for another area so it will be hidden.
                     areasHiddenByMarker.add(area);
@@ -190,25 +199,44 @@ public class DescriptionUtility {
         }
     }
 
-    private static boolean hasVisibleSubareaWithData(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes,
-            SetMap<NamedArea, Distribution> filteredDistributions, Set<NamedArea> areasHiddenByMarker) {
+    //if filteredDistributions == null it can be ignored if data exists or not
+    private static boolean isRemainingFallBackArea(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes,
+            SetMap<NamedArea, Distribution> filteredDistributions) {
 
+        boolean result = false;
         for(DefinedTermBase<NamedArea> included : area.getIncludes()) {
             NamedArea subArea = CdmBase.deproxy(included,NamedArea.class);
-            //if subarea is known as fully hidden go to next subarea
-            if (areasHiddenByMarker.contains(subArea)){
-                continue;
-            }
+            boolean noOrIgnoreData = filteredDistributions == null || !filteredDistributions.containsKey(subArea);
+
             //if subarea is not hidden and data exists return true
-            if (!checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)
-                    && filteredDistributions.containsKey(subArea)) {
-                return true;
+            if (isMarkedHidden(subArea, hiddenAreaMarkerTypes)){
+                boolean subAreaIsFallback = isRemainingFallBackArea(subArea, hiddenAreaMarkerTypes, filteredDistributions);
+                if (subAreaIsFallback && noOrIgnoreData){
+                    return true;
+                }else{
+                    continue;
+                }
+            }else{ //subarea not marked hidden
+                if (noOrIgnoreData){
+                    return true;
+                }else{
+                    continue;
+                }
             }
-            //do the same recursively
-            boolean hasVisibleSubSubarea = hasVisibleSubareaWithData(subArea, hiddenAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
-            if (hasVisibleSubSubarea){
-                return true;
-            }
+//            boolean isNotHidden_AndHasNoData_OrDataCanBeIgnored =
+//                    && noOrIgnoreData && subArea.getIncludes().isEmpty();
+//            if (isNotHidden_AndHasNoData_OrDataCanBeIgnored) {
+//                return true;
+//            }
+//            if (!isMarkedHidden(subArea, hiddenAreaMarkerTypes) ){
+//
+//            }
+//
+//            //do the same recursively
+//            boolean hasVisibleSubSubarea = isRemainingFallBackArea(subArea, hiddenAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
+//            if (hasVisibleSubSubarea){
+//                return true;
+//            }
         }
         return false;
     }
@@ -249,7 +277,7 @@ public class DescriptionUtility {
         return false;
     }
 
-    public static boolean checkAreaMarkedHidden(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
+    public static boolean isMarkedHidden(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
         if(hiddenAreaMarkerTypes != null) {
             for(MarkerType markerType : hiddenAreaMarkerTypes){
                 if(area.hasMarker(markerType, true)){

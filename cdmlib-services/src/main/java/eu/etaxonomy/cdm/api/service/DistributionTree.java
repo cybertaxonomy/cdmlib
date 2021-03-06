@@ -253,7 +253,7 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     }
 
     private boolean isFallback(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
-        return DescriptionUtility.checkAreaMarkedHidden(hiddenAreaMarkerTypes, area);
+        return DescriptionUtility.isMarkedHidden(area, hiddenAreaMarkerTypes);
     }
 
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {
