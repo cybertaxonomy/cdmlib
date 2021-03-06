@@ -200,7 +200,8 @@ public interface IEditGeoService {
     */
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
-            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            boolean neverUseFallbackAreaAsParent, Set<NamedAreaLevel> omitLevels,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths, CondensedDistributionConfiguration config,
             DistributionOrder distributionOrder, boolean ignoreDistributionStatusUndefined);
 

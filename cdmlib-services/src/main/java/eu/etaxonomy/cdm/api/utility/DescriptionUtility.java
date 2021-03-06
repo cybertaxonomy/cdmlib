@@ -250,31 +250,33 @@ public class DescriptionUtility {
 
     /**
      * Orders the given Distribution elements in a hierarchical structure.
-     * This method will not filter out any of the Distribution elements.
-     * @param termDao
+     * This method will not filter out any of the distribution elements.
      * @param omitLevels
-     * @param hiddenAreaMarkerTypes
-     *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
-     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
+     * @param distributions
+     * @param fallbackAreaMarkerTypes
+     *      Areas not associated to a Distribution in the {@code distributions} list are detected as fall back area
+     *      if they are having a {@link Marker marker} with one of the specified {@link MarkerType}s. Areas identified as such
      *      are omitted from the hierarchy and the sub areas are moving one level up.
      *      For more details on fall back areas see <b>Marked area filter</b> of
      *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      * @param distributionOrder
-     * @param distList
-     * @return
+     * @param termDao
+     *      Currently used from performance reasons (preloading of parent areas), may be removed in future
+     * @return the {@link DistributionTree distribution tree}
      */
-    public static DistributionTree orderDistributions(IDefinedTermDao termDao,
-            Set<NamedAreaLevel> omitLevels,
+    public static DistributionTree buildOrderedTree(Set<NamedAreaLevel> omitLevels,
             Collection<Distribution> distributions,
-            Set<MarkerType> hiddenAreaMarkerTypes,
-            DistributionOrder distributionOrder) {
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            boolean neverUseFallbackAreaAsParent,
+            DistributionOrder distributionOrder,
+            IDefinedTermDao termDao) {
 
         DistributionTree tree = new DistributionTree(termDao);
 
         if (logger.isDebugEnabled()){logger.debug("order tree ...");}
         //order by areas
-        tree.orderAsTree(distributions, omitLevels, hiddenAreaMarkerTypes);
-        tree.recursiveSortChildren(distributionOrder); // FIXME respect current locale for sorting
+        tree.orderAsTree(distributions, omitLevels, fallbackAreaMarkerTypes, neverUseFallbackAreaAsParent);
+        tree.recursiveSortChildren(distributionOrder); // TODO respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
     }

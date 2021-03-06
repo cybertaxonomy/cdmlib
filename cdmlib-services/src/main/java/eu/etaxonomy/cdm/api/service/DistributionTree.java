@@ -80,21 +80,27 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     }
 
     /**
-     * @param distList
+     * @param distributions
      * @param omitLevels
-     * @param hiddenAreaMarkerTypes
-     *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
-     *      if they are having a {@link Marker} with one of the specified {@link MarkerType marker types}.
+     * @param fallbackAreaMarkerTypes
+     *      Areas are fallback areas if they have a {@link Marker} with one of the specified
+     *      {@link MarkerType marker types}.
      *      Areas identified as such are omitted from the hierarchy and the sub areas are moving one level up.
+     *      This may not be the case if the fallback area has a distribution record itself AND if
+     *      neverUseFallbackAreasAsParents is <code>false</code>.
      *      For more details on fall back areas see <b>Marked area filter</b> of
      *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
+     * @param neverUseFallbackAreasAsParents
+     *      if <code>true</code> a fallback area never has children even if a record exists for the area
      */
-    public void orderAsTree(Collection<Distribution> distList,
+    public void orderAsTree(Collection<Distribution> distributions,
             Set<NamedAreaLevel> omitLevels,
-            Set<MarkerType> hiddenAreaMarkerTypes){
+            Set<MarkerType> fallbackAreaMarkerTypes,
+            boolean neverUseFallbackAreasAsParents){
 
-        Set<NamedArea> areas = new HashSet<>(distList.size());
-        for (Distribution distribution : distList) {
+        //compute all areas
+        Set<NamedArea> areas = new HashSet<>(distributions.size());
+        for (Distribution distribution : distributions) {
             areas.add(distribution.getArea());
         }
         // preload all areas which are a parent of another one, this is a performance improvement
@@ -105,9 +111,10 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
             omitLevelIds.add(level.getId());
         }
 
-        for (Distribution distribution : distList) {
+        for (Distribution distribution : distributions) {
             // get path through area hierarchy
-            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds, areas, hiddenAreaMarkerTypes);
+            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevelIds,
+                    areas, fallbackAreaMarkerTypes, neverUseFallbackAreasAsParents);
             addDistributionToSubTree(distribution, namedAreaPath, this.getRootElement());
         }
     }
@@ -206,51 +213,47 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
     }
 
     /**
-     * Areas for which no distribution data is available and which are marked as hidden (Marker) are omitted, see #5112
+     * Returns the path through the area hierarchy from the root area to the <code>area</code> given as parameter.<BR><BR>
+     *
+     * Areas for which no distribution data is available and which are marked as hidden are omitted, see #5112
      *
      * @param area
      * @param distributionAreas the areas for which distribution data exists (after filtering by
      *  {@link eu.etaxonomy.cdm.api.utility.DescriptionUtility#filterDistributions()} )
-     * @param hiddenAreaMarkerTypes
-     *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
+     * @param fallbackAreaMarkerTypes
+     *      Areas not associated to a Distribution in the {@code distList} are detected as fallback area
      *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such
      *      are omitted. For more details on fall back areas see <b>Marked area filter</b> of
      *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      * @param omitLevels
-     * @return the path through area hierarchy from the <code>area</code> given as parameter to the root
+     * @return the path through the area hierarchy
      */
-    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds, Set<NamedArea> distributionAreas,
-            Set<MarkerType> hiddenAreaMarkerTypes){
+    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds,
+            Set<NamedArea> distributionAreas, Set<MarkerType> fallbackAreaMarkerTypes,
+            boolean neverUseFallbackAreasAsParents){
 
         List<NamedArea> result = new ArrayList<>();
         if (!matchesLevels(area, omitLevelIds)){
             result.add(area);
         }
-        // logging special case in order to help solving ticket #3891 (ordered distributions provided by portal/description/${uuid}/DistributionTree randomly broken)
 
-        if(area.getPartOf() == null) {
-            StringBuilder hibernateInfo = new StringBuilder();
-            hibernateInfo.append(", area is of type: ").append(area.getClass());
-            if(area instanceof HibernateProxy){
-                hibernateInfo.append(" target object is ").append(HibernateProxyHelper.getClassWithoutInitializingProxy(area));
-            }
-            logger.warn("area.partOf is NULL for " + area.getLabel() + hibernateInfo.toString());
-        }
         while (area.getPartOf() != null) {
             area = area.getPartOf();
             if (!matchesLevels(area, omitLevelIds)){
-                if(!distributionAreas.contains(area) &&
-                    DescriptionUtility.checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
-                    if(logger.isDebugEnabled()) {
-                        logger.debug("positive fallback area detection, skipping " + area );
-                    }
-                } else {
+                if(!isFallback(fallbackAreaMarkerTypes, area) ||
+                        (distributionAreas.contains(area) && !neverUseFallbackAreasAsParents ) ) {
                     result.add(0, area);
+                } else {
+                    if(logger.isDebugEnabled()) {logger.debug("positive fallback area detection, skipping " + area );}
                 }
             }
         }
 
         return result;
+    }
+
+    private boolean isFallback(Set<MarkerType> hiddenAreaMarkerTypes, NamedArea area) {
+        return DescriptionUtility.checkAreaMarkedHidden(hiddenAreaMarkerTypes, area);
     }
 
     private boolean matchesLevels(NamedArea area, Set<Integer> omitLevelIds) {
