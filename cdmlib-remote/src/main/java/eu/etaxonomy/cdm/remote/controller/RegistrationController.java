@@ -41,12 +41,10 @@ import io.swagger.annotations.ApiOperation;
  * @author a.kohlbecker
  * @since 24.03.2009
  */
-
 @Controller
 @Api("registration")
 @RequestMapping(value = {"/registration"})
-public class RegistrationController extends BaseController<Registration, IRegistrationService>
-{
+public class RegistrationController extends BaseController<Registration, IRegistrationService> {
 
     public static final Logger logger = Logger.getLogger(RegistrationController.class);
 
@@ -58,9 +56,6 @@ public class RegistrationController extends BaseController<Registration, IRegist
              }));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IRegistrationService service) {
@@ -144,7 +139,6 @@ public class RegistrationController extends BaseController<Registration, IRegist
         }
     }
 
-
     @ApiImplicitParams({
         @ApiImplicitParam(name = "identifier", value = "The persitent identifier of the Registration", required = true, dataType = "string", paramType = "path"),
     })
@@ -179,6 +173,4 @@ public class RegistrationController extends BaseController<Registration, IRegist
             return null;
         }
     }
-
-
 }

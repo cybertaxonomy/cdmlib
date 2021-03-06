@@ -55,7 +55,6 @@ import io.swagger.annotations.ApiOperation;
  * @author a.kohlbecker
  * @since 24.03.2009
  */
-
 @Controller
 @Api("registration")
 public class RegistrationDTOController

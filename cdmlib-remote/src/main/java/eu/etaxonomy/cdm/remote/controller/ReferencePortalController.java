@@ -8,17 +8,16 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.util.Arrays;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import io.swagger.annotations.Api;
+
 /**
  * @author l.morris
  * @since Jun 13, 2013
- *
  */
 @Controller
 @Api("portal_reference")
@@ -31,5 +30,4 @@ public class ReferencePortalController extends ReferenceController {
                 "authorship.*"
              }));
     }
-
 }
