@@ -51,7 +51,6 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since 03.06.2010
- *
  */
 @Controller
 @Api("classification")
@@ -153,17 +152,6 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
         return rootNodes;
     }
 
-
-    /**
-    *
-    * @param uuid
-    * @param pageIndex
-    * @param pageSize
-    * @param sortMode
-    * @param response
-    * @return
-    * @throws IOException
-    */
    @RequestMapping(
            value = {"childNodesByTaxon/{taxonUuid}"},
            method = RequestMethod.GET)

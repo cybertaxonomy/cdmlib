@@ -6,11 +6,9 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -44,7 +43,6 @@ import io.swagger.annotations.Api;
  * @author a.kohlbecker
  * @since 24.03.2009
  */
-
 @Controller
 @Api("media")
 @RequestMapping(value = {"/media/{uuid}"})
@@ -86,8 +84,8 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
 
                 } else {
                     uri = mediaRepresentation.getParts().get(0).getUri();
-                            CdmImageInfo cdmImageInfo = CdmImageInfo.NewInstanceWithMetaData(uri, MediaServiceImpl.IMAGE_READ_TIMEOUT);
-                            result = cdmImageInfo.getMetaData();
+                    CdmImageInfo cdmImageInfo = CdmImageInfo.NewInstanceWithMetaData(uri, MediaServiceImpl.IMAGE_READ_TIMEOUT);
+                    result = cdmImageInfo.getMetaData();
                 }
             } catch (IOException | HttpException e) {
                 logger.info(e.getMessage());

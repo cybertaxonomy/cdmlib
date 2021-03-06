@@ -165,26 +165,6 @@ public class EditGeoService implements IEditGeoService {
     }
 
     @Override
-    @Deprecated
-    public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
-            boolean subAreaPreference,
-            boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> langs) {
-
-        List<TaxonDescription> taxonDescriptions = new ArrayList<>();
-        taxonDescriptions.add(taxonDescription);
-
-        return getDistributionServiceRequestParameterString(taxonDescriptions,
-                subAreaPreference,
-                statusOrderPreference,
-                hideMarkedAreas,
-                presenceAbsenceTermColors,
-                langs);
-    }
-
-    @Override
     public OccurrenceServiceRequestParameterDto getOccurrenceServiceRequestParameters(
             List<SpecimenOrObservationBase> specimensOrObservations,
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {

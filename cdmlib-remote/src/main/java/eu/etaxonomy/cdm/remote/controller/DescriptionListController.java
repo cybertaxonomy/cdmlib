@@ -202,7 +202,7 @@ public class DescriptionListController
                                 taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
                         List<AggregationMode> modes = Arrays.asList(new AggregationMode[]{mode, mode2});
                         modes.remove(null);
-                        List<UUID> areaUuids = new ArrayList();
+                        List<UUID> areaUuids = new ArrayList<>();
                         areaPager.getRecords().forEach(p ->areaUuids.add(p.getUuid()));
                         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                                 modes, areaUuids, filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
