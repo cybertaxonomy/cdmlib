@@ -310,7 +310,7 @@ public class DescriptionListController
                 mv.addObject(dto);
             } catch (Exception e) {
                 //TODO
-                mv.addObject(e.getMessage());
+                mv.addObject(e.getStackTrace().toString());
             }
 
             return mv;
