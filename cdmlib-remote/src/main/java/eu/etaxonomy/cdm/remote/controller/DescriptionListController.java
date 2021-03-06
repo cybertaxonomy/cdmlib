@@ -286,27 +286,32 @@ public class DescriptionListController
             boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
             boolean fallbackAsParent = true;  //may become a service parameter in future
 
-            CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
-            //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
-            //are hidden markers on areas that have non-hidden subareas (#4408)
-            Set<MarkerType> hiddenAreaMarkerTypes = null;
-            if(hiddenAreaMarkerTypeList != null && !hiddenAreaMarkerTypeList.isEmpty()){
-                hiddenAreaMarkerTypes = hiddenAreaMarkerTypeList.asSet();
-                condensedConfig.hiddenAndFallbackAreaMarkers = hiddenAreaMarkerTypeList.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+            DistributionInfoDTO dto;
+            try {
+                CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
+                //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
+                //are hidden markers on areas that have non-hidden subareas (#4408)
+                Set<MarkerType> hiddenAreaMarkerTypes = null;
+                if(hiddenAreaMarkerTypeList != null && !hiddenAreaMarkerTypeList.isEmpty()){
+                    hiddenAreaMarkerTypes = hiddenAreaMarkerTypeList.asSet();
+                    condensedConfig.hiddenAndFallbackAreaMarkers = hiddenAreaMarkerTypeList.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+                }
+
+                EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
+
+                Map<PresenceAbsenceTerm, Color> distributionStatusColors = EditGeoServiceUtilities.buildStatusColorMap(
+                        statusColorsString, termService, vocabularyService);
+
+                dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
+                        subAreaPreference, statusOrderPreference, hiddenAreaMarkerTypes, fallbackAsParent,
+                        omitLevels, distributionStatusColors, LocaleContext.getLanguages(),
+                        getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder,
+                        ignoreDistributionStatusUndefined);
+                mv.addObject(dto);
+            } catch (Exception e) {
+                //TODO
+                mv.addObject(e.getMessage());
             }
-
-            EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
-
-            Map<PresenceAbsenceTerm, Color> distributionStatusColors = EditGeoServiceUtilities.buildStatusColorMap(
-                    statusColorsString, termService, vocabularyService);
-
-            DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
-                    subAreaPreference, statusOrderPreference, hiddenAreaMarkerTypes, fallbackAsParent,
-                    omitLevels, distributionStatusColors, LocaleContext.getLanguages(),
-                    getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder,
-                    ignoreDistributionStatusUndefined);
-
-            mv.addObject(dto);
 
             return mv;
     }
