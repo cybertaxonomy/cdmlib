@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.format.description.MicroFormatQuantitativeDescriptionBuilder;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -46,7 +45,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -54,7 +52,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -300,67 +297,6 @@ public class DescriptionServiceImpl
     public int countTaxonDescriptionMedia(UUID taxonUuid, boolean limitToGalleries, Set<MarkerType> markerTypes){
         return this.dao.countTaxonDescriptionMedia(taxonUuid, limitToGalleries, markerTypes);
     }
-
-    @Override
-    @Deprecated
-    public DistributionTree getOrderedDistributions(
-            Set<TaxonDescription> taxonDescriptions,
-            boolean subAreaPreference,
-            boolean statusOrderPreference,
-            Set<MarkerType> hiddenAreaMarkerTypes,
-            Set<NamedAreaLevel> omitLevels, List<String> propertyPaths){
-
-        List<Distribution> distList = new ArrayList<>();
-
-        List<UUID> uuids = new ArrayList<>();
-        for (TaxonDescription taxonDescription : taxonDescriptions) {
-            if (! taxonDescription.isImageGallery()){    //image galleries should not have descriptions, but better filter fully on DTYPE of description element
-                uuids.add(taxonDescription.getUuid());
-            }
-        }
-
-        List<DescriptionBase> desclist = dao.list(uuids, null, null, null, propertyPaths);
-        for (DescriptionBase<?> desc : desclist) {
-            if (desc.isInstanceOf(TaxonDescription.class)){
-                Set<DescriptionElementBase> elements = desc.getElements();
-                for (DescriptionElementBase element : elements) {
-                        if (element.isInstanceOf(Distribution.class)) {
-                            Distribution distribution = (Distribution) element;
-                            if(distribution.getArea() != null){
-                                distList.add(distribution);
-                            }
-                        }
-                }
-            }
-        }
-
-        //old
-//        for (TaxonDescription taxonDescription : taxonDescriptions) {
-//            if (logger.isDebugEnabled()){ logger.debug("load taxon description " + taxonDescription.getUuid());}
-//        	//TODO why not loading all description via .list ? This may improve performance
-//            taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid(), propertyPaths);
-//            Set<DescriptionElementBase> elements = taxonDescription.getElements();
-//            for (DescriptionElementBase element : elements) {
-//                    if (element.isInstanceOf(Distribution.class)) {
-//                        Distribution distribution = (Distribution) element;
-//                        if(distribution.getArea() != null){
-//                            distList.add(distribution);
-//                        }
-//                    }
-//            }
-//        }
-
-        if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
-
-        // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, hiddenAreaMarkerTypes,
-                false, statusOrderPreference, false);
-        distList.clear();
-        distList.addAll(filteredDistributions);
-
-        return DescriptionUtility.orderDistributions(definedTermDao, omitLevels, distList, hiddenAreaMarkerTypes, null);
-    }
-
 
     @Override
     public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonName name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {

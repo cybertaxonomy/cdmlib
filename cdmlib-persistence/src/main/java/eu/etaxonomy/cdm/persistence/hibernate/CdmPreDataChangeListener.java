@@ -81,11 +81,12 @@ public class CdmPreDataChangeListener
             }
             insertUpdateMerge(entity);
         } finally {
+            //TODO AM: why do we always return false? How to test if this could be changed. Are there exceptions swallowed this way?
             return false;
         }
     }
 
-    //from former SaveOrUpdateOrMergeEntityListener
+    //from former SaveOrUpdateEntityListener
     public void insertUpdateMerge(Object entity){
         if(entity != null && CdmBase.class.isAssignableFrom(entity.getClass())){
             cacheDeterminationNames(entity);

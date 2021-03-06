@@ -14,6 +14,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -324,6 +325,9 @@ public class EditGeoService implements IEditGeoService {
             List<Language> languages,  List<String> propertyPaths, CondensedDistributionConfiguration config,
             DistributionOrder distributionOrder, boolean ignoreDistributionStatusUndefined){
 
+        final boolean PREFER_AGGREGATED = true;
+        final boolean PREFER_SUBAREA = true;
+
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
         if (propertyPaths == null){
@@ -349,14 +353,16 @@ public class EditGeoService implements IEditGeoService {
             initStrategy.add("markers.markerType");
         }
         if(omitLevels == null) {
-            omitLevels = new HashSet<>(0);
+            @SuppressWarnings("unchecked") Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
+            omitLevels = emptySet;
         }
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
 
-        // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
+        // For all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
+        // to all distributions, but KEEP fallback area distributions
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
-                false, statusOrderPreference, false, ignoreDistributionStatusUndefined);
+                !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, ignoreDistributionStatusUndefined);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
@@ -377,7 +383,7 @@ public class EditGeoService implements IEditGeoService {
         if (parts.contains(InfoPart.mapUriParams)) {
             // only apply the subAreaPreference rule for the maps
             Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(
-                    filteredDistributions, null, false, false, subAreaPreference, ignoreDistributionStatusUndefined);
+                    filteredDistributions, null, !PREFER_AGGREGATED, false, subAreaPreference, ignoreDistributionStatusUndefined);
 
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,

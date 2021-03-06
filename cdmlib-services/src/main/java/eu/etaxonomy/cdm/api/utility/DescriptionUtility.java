@@ -104,7 +104,7 @@ public class DescriptionUtility {
 
         SetMap<NamedArea, Distribution> filteredDistributions = new SetMap<>(distributions.size());
 
-        // sort Distributions by the area
+        // sort Distributions by the area and filter undefinedStatus
         for(Distribution distribution : distributions){
             NamedArea area = distribution.getArea();
             if(area == null) {
