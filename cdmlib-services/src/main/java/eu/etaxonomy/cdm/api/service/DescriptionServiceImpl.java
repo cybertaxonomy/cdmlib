@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -87,7 +86,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @author a.kohlbecker
  *
  * @since 24.06.2008
- *
  */
 @Service
 @Transactional(readOnly = true)
@@ -109,9 +107,6 @@ public class DescriptionServiceImpl
     protected IOccurrenceDao occurrenceDao;
     protected ITaxonNodeDao taxonNodeDao;
     protected IDescriptiveDataSetDao dataSetDao;
-
-    @Autowired
-    private IProgressMonitorService progressMonitorService;
 
     //TODO change to Interface
     private NaturalLanguageGenerator naturalLanguageGenerator;
@@ -171,13 +166,9 @@ public class DescriptionServiceImpl
         this.dataSetDao = dataSetDao;
     }
 
-    /**
-     *
-     */
     public DescriptionServiceImpl() {
         logger.debug("Load DescriptionService Bean");
     }
-
 
     @Override
     @Transactional(readOnly = false)
@@ -187,7 +178,6 @@ public class DescriptionServiceImpl
         }
         return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
     }
-
 
     @Override
     public TermVocabulary<Feature> getDefaultFeatureVocabulary(){
@@ -212,7 +202,7 @@ public class DescriptionServiceImpl
             Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         List<T> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
-        return new DefaultPagerImpl<>(pageNumber, results.size(), pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, Integer.valueOf(results.size()).longValue(), pageSize, results);
     }
 
     @Override
@@ -221,8 +211,6 @@ public class DescriptionServiceImpl
             Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         return pageDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
     }
-
-
 
     @Override
     public <T extends DescriptionElementBase> List<T> listDescriptionElements(DescriptionBase description,
@@ -235,9 +223,7 @@ public class DescriptionServiceImpl
             results = dao.getDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         }
         return results;
-
     }
-
 
     @Override
     @Deprecated

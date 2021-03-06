@@ -85,8 +85,8 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @param omitLevels
      * @param hiddenAreaMarkerTypes
      *      Areas not associated to a Distribution in the {@code distList} are detected as fall back area
-     *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified
-     *      as such are omitted from the hierarchy and the sub areas are moving one level up.
+     *      if they are having a {@link Marker} with one of the specified {@link MarkerType marker types}.
+     *      Areas identified as such are omitted from the hierarchy and the sub areas are moving one level up.
      *      For more details on fall back areas see <b>Marked area filter</b> of
      *      {@link DescriptionUtility#filterDistributions(Collection, Set, boolean, boolean, boolean)}.
      */
@@ -94,14 +94,14 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
             Set<NamedAreaLevel> omitLevels,
             Set<MarkerType> hiddenAreaMarkerTypes){
 
-        Set<NamedArea> areas = new HashSet<NamedArea>(distList.size());
+        Set<NamedArea> areas = new HashSet<>(distList.size());
         for (Distribution distribution : distList) {
             areas.add(distribution.getArea());
         }
         // preload all areas which are a parent of another one, this is a performance improvement
         loadAllParentAreas(areas);
 
-        Set<Integer> omitLevelIds = new HashSet<Integer>(omitLevels.size());
+        Set<Integer> omitLevelIds = new HashSet<>(omitLevels.size());
         for(NamedAreaLevel level : omitLevels) {
             omitLevelIds.add(level.getId());
         }
@@ -132,7 +132,6 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
             childAreas.clear();
             childAreas.addAll(parentAreas);
         }
-
     }
 
     public void recursiveSortChildren(DistributionOrder distributionOrder){
@@ -221,7 +220,9 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @param omitLevels
      * @return the path through area hierarchy from the <code>area</code> given as parameter to the root
      */
-    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds, Set<NamedArea> distributionAreas, Set<MarkerType> hiddenAreaMarkerTypes){
+    private List<NamedArea> getAreaLevelPath(NamedArea area, Set<Integer> omitLevelIds, Set<NamedArea> distributionAreas,
+            Set<MarkerType> hiddenAreaMarkerTypes){
+
         List<NamedArea> result = new ArrayList<>();
         if (!matchesLevels(area, omitLevelIds)){
             result.add(area);

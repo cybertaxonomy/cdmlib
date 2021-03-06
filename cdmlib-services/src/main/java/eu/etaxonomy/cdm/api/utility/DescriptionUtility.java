@@ -38,13 +38,6 @@ public class DescriptionUtility {
 
     /**
      * @see #filterDistributions(Collection, Set, boolean, boolean, boolean, boolean)
-     *
-     * @param distributions
-     * @param hiddenAreaMarkerTypes
-     * @param preferAggregated
-     * @param statusOrderPreference
-     * @param subAreaPreference
-     * @return
      */
     public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
             Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
@@ -52,7 +45,6 @@ public class DescriptionUtility {
         return filterDistributions(distributions, hiddenAreaMarkerTypes, preferAggregated, statusOrderPreference,
                 subAreaPreference, false);
     }
-
 
     /**
      * <b>NOTE: To avoid LayzyLoadingExceptions this method must be used in a transactional context.</b>
