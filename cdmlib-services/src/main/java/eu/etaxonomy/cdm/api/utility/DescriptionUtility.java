@@ -168,30 +168,17 @@ public class DescriptionUtility {
         }
     }
 
+    /**
+     * Remove hidden areas but keep fallback areas.
+     */
     private static void handleHiddenAndFallbackAreas(Set<MarkerType> hiddenAreaMarkerTypes,
             SetMap<NamedArea, Distribution> filteredDistributions) {
 
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
         for(NamedArea area : filteredDistributions.keySet()) {
             if(checkAreaMarkedHidden(hiddenAreaMarkerTypes, area)) {
-                boolean showAsFallbackArea = false;
-                // if at least one sub area is not hidden by a marker
-                // the given area is a fall-back area for this sub area
-                for(DefinedTermBase<NamedArea> included : area.getIncludes()) {
-                    NamedArea subArea = CdmBase.deproxy(included,NamedArea.class);
-                    if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
-                        if(filteredDistributions.containsKey(subArea)) {
-                            areasHiddenByMarker.add(subArea);
-                        }
-                    }
-                    // if this sub-area is not marked to be hidden
-                    // the parent area must be visible if there is no
-                    // data for the sub-area
-                    boolean subAreaVisible = filteredDistributions.containsKey(subArea)
-                            && !areasHiddenByMarker.contains(subArea);
-                    showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
-                }
-                if (!showAsFallbackArea) {
+                boolean hasVisibleSubarea = hasVisibleSubareaWithData(area, hiddenAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
+                if (!hasVisibleSubarea) {
                     // this area does not need to be shown as
                     // fall-back for another area so it will be hidden.
                     areasHiddenByMarker.add(area);
@@ -201,6 +188,29 @@ public class DescriptionUtility {
         for(NamedArea area :areasHiddenByMarker) {
             filteredDistributions.remove(area);
         }
+    }
+
+    private static boolean hasVisibleSubareaWithData(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes,
+            SetMap<NamedArea, Distribution> filteredDistributions, Set<NamedArea> areasHiddenByMarker) {
+
+        for(DefinedTermBase<NamedArea> included : area.getIncludes()) {
+            NamedArea subArea = CdmBase.deproxy(included,NamedArea.class);
+            //if subarea is known as fully hidden go to next subarea
+            if (areasHiddenByMarker.contains(subArea)){
+                continue;
+            }
+            //if subarea is not hidden and data exists return true
+            if (!checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)
+                    && filteredDistributions.containsKey(subArea)) {
+                return true;
+            }
+            //do the same recursively
+            boolean hasVisibleSubSubarea = hasVisibleSubareaWithData(subArea, hiddenAreaMarkerTypes, filteredDistributions, areasHiddenByMarker);
+            if (hasVisibleSubSubarea){
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void handlePreferAggregated(SetMap<NamedArea, Distribution> filteredDistributions) {
