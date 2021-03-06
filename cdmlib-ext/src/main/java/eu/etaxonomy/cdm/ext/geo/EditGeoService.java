@@ -377,7 +377,7 @@ public class EditGeoService implements IEditGeoService {
         if (parts.contains(InfoPart.mapUriParams)) {
             // only apply the subAreaPreference rule for the maps
             Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(
-                    filteredDistributions, null, false, false, subAreaPreference);
+                    filteredDistributions, null, false, false, subAreaPreference, ignoreDistributionStatusUndefined);
 
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,

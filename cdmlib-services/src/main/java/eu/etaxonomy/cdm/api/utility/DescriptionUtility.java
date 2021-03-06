@@ -43,7 +43,7 @@ public class DescriptionUtility {
             Set<MarkerType> hiddenAreaMarkerTypes, boolean preferAggregated, boolean statusOrderPreference,
             boolean subAreaPreference) {
         return filterDistributions(distributions, hiddenAreaMarkerTypes, preferAggregated, statusOrderPreference,
-                subAreaPreference, false);
+                subAreaPreference, true);
     }
 
     /**
@@ -112,7 +112,7 @@ public class DescriptionUtility {
                 continue;
             }
             boolean filterUndefined = ignoreDistributionStatusUndefined && distribution.getStatus() != null
-                    && distribution.getStatus().equals(PresenceAbsenceTerm.uuidUndefined);
+                    && distribution.getStatus().getUuid().equals(PresenceAbsenceTerm.uuidUndefined);
             if (!filterUndefined){
                 filteredDistributions.putItem(area, distribution);
             }
