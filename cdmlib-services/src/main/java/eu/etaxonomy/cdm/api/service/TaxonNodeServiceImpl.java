@@ -321,7 +321,7 @@ public class TaxonNodeServiceImpl
         TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
         newAcceptedTaxon.setName(newAcceptedTaxonName);
         Reference newSec = citation;
-        if (citation == null && (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways))){
+        if (citation == null && (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways) || (secHandling.equals(SecReferenceHandlingEnum.KeepWhenSame) && newAcceptedTaxon.getSec().equals(oldTaxon.getSec())))){
             newSec = oldTaxon.getSec();
         }
         if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
@@ -365,11 +365,6 @@ public class TaxonNodeServiceImpl
                 synonym.setSec(newSec);
             }
             newAcceptedTaxon.addSynonym(synonym, srt);
-
-
-            /*if (synonymsInHomotypicalGroup.contains(synRelation.getSynonym()) && srt.equals(SynonymType.HETEROTYPIC_SYNONYM_OF())){
-            	homotypicalGroupAcceptedTaxon.addTypifiedName(synRelation.getSynonym().getName());
-            }*/
 
         }
 
