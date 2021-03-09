@@ -1227,15 +1227,17 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSet
-    @Ignore //test for #8857 which is not yet solved; see also #testSaveNewTaxonNodeReference()
     public void testSaveNewTaxonNode(){
         //make the sec reference persistent
         Person secAndNameAuthor = (Person)agentService.find(person1uuid);
         Reference sec = ReferenceFactory.newBook();
         sec.setAuthorship(secAndNameAuthor);
-        referenceService.save(sec);
-        commitAndStartNewTransaction();
+        sec = referenceService.save(sec);
+        UUID secUuid = sec.getUuid();
 
+        commitAndStartNewTransaction();
+        sec = referenceService.load(secUuid);
+        secAndNameAuthor = HibernateProxyHelper.deproxy(agentService.load(person1uuid), Person.class);
         TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
         taxonName.setCombinationAuthorship(secAndNameAuthor);
         Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
