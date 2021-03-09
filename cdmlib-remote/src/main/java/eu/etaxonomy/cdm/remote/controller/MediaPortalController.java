@@ -34,12 +34,16 @@ public class MediaPortalController extends MediaController
 
     public static final EntityInitStrategy MEDIA_INIT_STRATEGY = new EntityInitStrategy(Arrays.asList(new String []{
             "$",
+            "identifiers",
             "rights.type",
             "rights.agent",
             "credits.agent",
             "representations.parts",
             "allDescriptions",
-            "sources.citation.authorship"
+            "sources.citation.authorship",
+            "sources.links",
+            "sources.annotations",
+            "sources.markers"
     }));
 
     public MediaPortalController(){
