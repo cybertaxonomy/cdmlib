@@ -320,8 +320,11 @@ public class TaxonNodeServiceImpl
         //set homotypic group
         TaxonName newAcceptedTaxonName = HibernateProxyHelper.deproxy(newAcceptedTaxon.getName(), TaxonName.class);
         newAcceptedTaxon.setName(newAcceptedTaxonName);
+        Reference secNewAccepted = newAcceptedTaxon.getSec();
+        Reference secOldAccepted = oldTaxon.getSec();
+        boolean uuidsEqual = (secNewAccepted != null && secOldAccepted != null && secNewAccepted.equals(secOldAccepted)) || (secNewAccepted == null && secOldAccepted == null);
         Reference newSec = citation;
-        if (citation == null && (secHandling != null && (secHandling.equals(SecReferenceHandlingEnum.KeepAlways) || (secHandling.equals(SecReferenceHandlingEnum.KeepWhenSame) && newAcceptedTaxon.getSec().equals(oldTaxon.getSec()))))){
+        if (citation == null && (secHandling != null && (secHandling.equals(SecReferenceHandlingEnum.KeepAlways) || (secHandling.equals(SecReferenceHandlingEnum.KeepWhenSame) && uuidsEqual)))){
             newSec = oldTaxon.getSec();
         }
         if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.AlwaysDelete)){
@@ -329,7 +332,9 @@ public class TaxonNodeServiceImpl
         }
 
         Synonym newSyn = newAcceptedTaxon.addSynonymName(newSynonymName, newSec, microReference, synonymType);
-
+        if (newSec == null){
+            newSyn.setSec(newSec);
+        }
         newSyn.setPublish(oldTaxon.isPublish());
 
         // Move Synonyms to new Taxon
