@@ -25,6 +25,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -167,7 +168,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		//run
 		Taxon newTaxon = null;
 		try {
-			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, null, null, null, false).getCdmEntity();
+			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, null, null, SecReferenceHandlingEnum.KeepAlways, false).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e1) {
 			Assert.fail("Invocation of change method should not throw an exception");
 		}
