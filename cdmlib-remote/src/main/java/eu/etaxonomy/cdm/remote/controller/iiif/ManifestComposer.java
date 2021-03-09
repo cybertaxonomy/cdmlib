@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.remote.controller.iiif;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
@@ -430,6 +433,16 @@ public class ManifestComposer {
             metadata.add(new MetadataEntry("Created on", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
         }
 
+        if(!media.getIdentifiers().isEmpty()) {
+            PropertyValue identifierValues = new PropertyValue();
+            for(Identifier identifier : media.getIdentifiers()){
+                if(identifier.getIdentifier() != null) {
+                    identifierValues.addValue(identifier.getIdentifier());
+                }
+            }
+            metadata.add(new MetadataEntry(new PropertyValue("Identifiers"), identifierValues));
+        }
+
         if(!media.getSources().isEmpty()) {
             PropertyValue descriptionValues = new PropertyValue();
             for(IdentifiableSource source : media.getSources()){
@@ -443,13 +456,22 @@ public class ManifestComposer {
     private String sourceAsHtml(IdentifiableSource source) {
 
         StringBuilder html = new StringBuilder();
-        if(source.getCitation() != null) {
-            DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy());
-            html.append(strategy.createShortCitation(source.getCitation(), source.getCitationMicroReference(), false)).append(" ");
+        Reference citation = source.getCitation();
+        if(citation != null) {
+            DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)citation.getCacheStrategy());
+            html.append(strategy.createShortCitation(citation, source.getCitationMicroReference(), false)).append(" ");
+            if(citation.getDoi() != null) {
+                try {
+                    html.append(" ").append(htmlLink(new URI("http://doi.org/" + citation.getDoiString()), citation.getDoiString()));
+                } catch (URISyntaxException e) {
+                    // IGNORE, should never happen
+                }
+            }
         }
         if(source.getIdNamespace() != null && source.getIdInSource() != null) {
             html.append(source.getIdNamespace()).append("/").append(source.getIdInSource()).append(" ");
         }
+
         String linkhtml = null;
         for(ExternalLink extLink : source.getLinks()) {
             if(extLink.getUri() != null) {
@@ -460,7 +482,7 @@ public class ManifestComposer {
                 html.append(linkhtml);
             }
         }
-        return source.toString();
+        return html.toString();
     }
 
     private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata) {
