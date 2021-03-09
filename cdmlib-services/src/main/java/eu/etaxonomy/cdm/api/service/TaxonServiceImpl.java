@@ -354,7 +354,7 @@ public class TaxonServiceImpl
 
         for (Synonym heteroSynonym : heteroSynonyms){
             if (secHandling == null || !secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
-                synonym.setSec(newSecRef);
+                heteroSynonym.setSec(newSecRef);
             }
             if (synonym.equals(heteroSynonym)){
                 acceptedTaxon.removeSynonym(heteroSynonym, false);
@@ -2985,7 +2985,7 @@ public class TaxonServiceImpl
         Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
         result = changeRelatedTaxonToSynonym(fromTaxon, toTaxon, oldRelationshipType, synonymType);
 
-        result.addUpdatedObject(fromTaxon);
+//        result.addUpdatedObject(fromTaxon);
         result.addUpdatedObject(toTaxon);
         result.addUpdatedObject(result.getCdmEntity());
 
@@ -3013,6 +3013,7 @@ public class TaxonServiceImpl
         } else{
             synonym = toTaxon.addHeterotypicSynonymName(synonymName);
         }
+        //keep the publish flag
         synonym.setPublish(fromTaxon.isPublish());
         this.saveOrUpdate(toTaxon);
         //TODO: configurator and classification
