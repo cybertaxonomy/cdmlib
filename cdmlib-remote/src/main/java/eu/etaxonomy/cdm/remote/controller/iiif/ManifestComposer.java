@@ -475,8 +475,8 @@ public class ManifestComposer {
             for(Rights right : entity.getRights()){
                 String rightText = "";
                 // TODO get localized texts below
-                // --- LICENSE
-                if(right.getType().equals(RightsType.LICENSE())){
+                // --- LICENSE or NULL
+                if(right.getType() == null || right.getType().equals(RightsType.LICENSE())){
                     String licenseText = "";
                     String licenseAbbrev = "";
                     if(right.getText() != null){
@@ -498,7 +498,7 @@ public class ManifestComposer {
                     rightText = licenseAbbrev + (licenseText.isEmpty() ? "" : " ") + licenseText;
                 }
                 // --- COPYRIGHT
-                if(right.getType().equals(RightsType.COPYRIGHT())){
+                else if(right.getType().equals(RightsType.COPYRIGHT())){
                     // titleCache + agent
                     String copyRightText = "";
                     if(right.getText() != null){
@@ -514,7 +514,7 @@ public class ManifestComposer {
                         copyRightText = "© " + copyRightText;
                     }
                     rightText = copyRightText;
-                }
+                } else
                 if(right.getType().equals(RightsType.ACCESS_RIGHTS())){
                     // titleCache + agent
                     String accessRights = right.getText();
