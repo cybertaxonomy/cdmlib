@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.model.term;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -19,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
@@ -107,8 +110,8 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
     }
 
     /**
-     * Compares this OrderedTermBase with the specified OrderedTermBase for
-     * order. Returns a -1, 0, or +1 if the orderId of this object is greater
+     * Compares this {@link OrderedTermBase ordered term} with the given {@link OrderedTermBase thatTerm} for
+     * order.  Returns a -1, 0, or +1 if the orderId of this object is greater
      * than, equal to, or less than the specified object.
      * <p>
      * <b>Note:</b> The compare logic of this method is the <b>inverse logic</b>
@@ -123,23 +126,28 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
      * @throws NullPointerException
      *             if the specified object is null
      */
-    protected int performCompareTo(T orderedTerm, boolean skipVocabularyCheck) {
+    protected int performCompareTo(T thatTerm , boolean skipVocabularyCheck ) {
 
-    	OrderedTermBase<?> orderedTermLocal = CdmBase.deproxy(orderedTerm, OrderedTermBase.class);
+    	T thatTermLocal = CdmBase.deproxy(thatTerm);
     	if(!skipVocabularyCheck){
-            if (this.vocabulary == null || orderedTermLocal.vocabulary == null){
-                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + orderedTermLocal.toString() + ") of class " + this.getClass() + " or " + orderedTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
+            if (this.vocabulary == null || thatTermLocal.vocabulary == null){
+                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + thatTermLocal.toString() + ") of class " + this.getClass() + " or " + thatTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
             }
-            if (! this.getVocabulary().getUuid().equals(orderedTermLocal.vocabulary.getUuid())){
-               throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared: " + this.getTitleCache() + " and " + orderedTermLocal.getTitleCache());
+            if (! this.getVocabulary().getUuid().equals(thatTermLocal.vocabulary.getUuid())){
+               throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared: " + this.getTitleCache() + " and " + thatTermLocal.getTitleCache());
             }
+        }
+
+    	int vocCompare = compareVocabularies(thatTermLocal);
+        if (vocCompare != 0){
+            return vocCompare;
         }
 
         int orderThat;
         int orderThis;
         try {
-            orderThat = orderedTermLocal.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
-            orderThis = orderIndex; //OLD: this.getVocabulary().getTerms().indexOf(this);
+            orderThat = thatTermLocal.orderIndex;
+            orderThis = orderIndex;
         } catch (RuntimeException e) {
             throw e;
         }
@@ -151,16 +159,23 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<T>>
             if (skipVocabularyCheck){
                 String errorStr = "The term %s (ID: %s) is not attached to any vocabulary. This should not happen. "
                         + "Please add the term to an vocabulary";
-                if (this.getVocabulary() == null){
+                if (this.vocabulary == null){
                     throw new IllegalStateException(String.format(errorStr, this.getLabel(), String.valueOf(this.getId())));
-                }else if (orderedTermLocal.vocabulary == null){
-                    throw new IllegalStateException(String.format(errorStr, orderedTermLocal.getLabel(), String.valueOf(orderedTermLocal.getId())));
+                }else if (thatTermLocal.vocabulary == null){
+                    throw new IllegalStateException(String.format(errorStr, thatTermLocal.getLabel(), String.valueOf(thatTermLocal.getId())));
                 }
-                return this.getVocabulary().getUuid().compareTo(orderedTermLocal.vocabulary.getUuid());
-            }else{
-                return 0;
             }
+            return 0;
         }
+    }
+
+    protected int compareVocabularies(T thatTerm) {
+        //if vocabularies are not equal order by voc.uuid to get a defined behavior
+        //ordering terms from 2 different vocabularies is generally not recommended
+        UUID thisVocUuid = this.vocabulary == null? null:this.vocabulary.getUuid();
+        UUID thatVocUuid = thatTerm.getVocabulary() == null? null:thatTerm.getVocabulary().getUuid();
+        int vocCompare = CdmUtils.nullSafeCompareTo(thisVocUuid, thatVocUuid);
+        return vocCompare;
     }
 
     /**

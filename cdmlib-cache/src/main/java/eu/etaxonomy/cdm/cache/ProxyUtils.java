@@ -39,14 +39,20 @@ import eu.etaxonomy.cdm.model.common.PersistentMultiLanguageText;
 public class ProxyUtils {
 
     public static enum CollectionType {
-        SET,
-        LIST,
-        MAP,
-        BAG;
+        SET("set"),
+        LIST("list"),
+        MAP("map"),
+        BAG("bag");
+
+        public String encodingSaveName;
+
+        private CollectionType(String name){
+            this.encodingSaveName = name;
+        }
 
         @Override
         public String toString() {
-            return this.name().toLowerCase();
+            return this.encodingSaveName;
         }
     }
 

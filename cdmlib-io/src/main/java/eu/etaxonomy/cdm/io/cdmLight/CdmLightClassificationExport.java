@@ -73,6 +73,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -157,10 +158,10 @@ public class CdmLightClassificationExport
                 handleTaxonNode(state, node);
                 node = partitioner.next();
             }
-            // hole den rootKnoten und von dort aus die Helper Objekte
-            // erzeugen...
+            // get rootNode and create helperObjects
             if (state.getRootId() != null) {
                 List<TaxonNodeDto> childrenOfRoot = state.getNodeChildrenMap().get(state.getRootId());
+
                 Comparator<TaxonNodeDto> comp = state.getConfig().getComparator();
                 if (comp == null) {
                     comp = new TaxonNodeDtoByRankAndNameComparator();
@@ -261,6 +262,7 @@ public class CdmLightClassificationExport
                     	}
                     }
                     state.getNodeChildrenMap().put(root.getUuid(), childNodes);
+
                     // add root to node map
 
                 }
@@ -281,7 +283,7 @@ public class CdmLightClassificationExport
 
                 }
             } catch (Exception e) {
-                state.getResult().addException(e, "An unexpected error occurred when handling classification "
+                state.getResult().addException(e, "An unexpected error occurred when handling taxonNode "
                         + taxonNode.getUuid() + ": " + e.getMessage() + e.getStackTrace());
             }
         }
@@ -289,7 +291,7 @@ public class CdmLightClassificationExport
 
     private void handleTaxon(CdmLightExportState state, TaxonNode taxonNode) {
         try {
-            // Taxon taxon = taxonNode.getTaxon();
+
             if (taxonNode == null) {
                 state.getResult().addError("The taxonNode was null.", "handleTaxon");
                 state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
@@ -384,25 +386,26 @@ public class CdmLightClassificationExport
                     handleDescriptions(state, taxon);
                 } catch (Exception e) {
                     state.getResult().addException(e,
-                            "An unexpected problem occurred when trying to export taxon with id " + taxon.getId());
+                            "An unexpected problem occurred when trying to export taxon with id " + taxon.getId() + " " + taxon.getTitleCache());
                     state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
                 }
             }
 
             taxonNode.removeNullValueFromChildren();
-            // for (TaxonNode child: taxonNode.getChildNodes()){
-            // handleTaxon(state, child);
-            // }
+
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling the taxon node of "
-                    + cdmBaseStr(taxonNode.getTaxon()) + ": " + e.getMessage());
+                    + cdmBaseStr(taxonNode.getTaxon()) + ", titleCache:"+ taxonNode.getTaxon().getTitleCache()+": " + e.getMessage());
         }
     }
 
     private void handleDescriptions(CdmLightExportState state, CdmBase cdmBase) {
+        String titleCache = null;
         try {
+
             if (cdmBase instanceof Taxon) {
                 Taxon taxon = HibernateProxyHelper.deproxy(cdmBase, Taxon.class);
+                titleCache = taxon.getTitleCache();
                 Set<TaxonDescription> descriptions = taxon.getDescriptions();
                 List<DescriptionElementBase> simpleFacts = new ArrayList<>();
                 List<DescriptionElementBase> specimenFacts = new ArrayList<>();
@@ -447,6 +450,7 @@ public class CdmLightClassificationExport
                 }
             } else if (cdmBase instanceof TaxonName) {
                 TaxonName name = CdmBase.deproxy(cdmBase, TaxonName.class);
+                titleCache = name.getTitleCache();
                 Set<TaxonNameDescription> descriptions = name.getDescriptions();
                 List<DescriptionElementBase> simpleFacts = new ArrayList<>();
                 for (TaxonNameDescription description : descriptions) {
@@ -462,7 +466,7 @@ public class CdmLightClassificationExport
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling description of"
-                    + cdmBaseStr(cdmBase) + ": " + e.getMessage());
+                    + cdmBaseStr(cdmBase) + (titleCache != null? (" " +titleCache) : "")+": " + e.getMessage());
         }
     }
 
@@ -506,11 +510,16 @@ public class CdmLightClassificationExport
 
     private void handleSimpleFacts(CdmLightExportState state, CdmBase cdmBase,
             List<DescriptionElementBase> simpleFacts) {
+        String titleCache = null;
         try {
             CdmLightExportTable table;
             if (cdmBase instanceof TaxonName) {
+                titleCache = ((TaxonName)cdmBase).getTitleCache();
                 table = CdmLightExportTable.NAME_FACT;
             } else {
+                if (cdmBase instanceof Taxon){
+                    titleCache = ((Taxon)cdmBase).getTitleCache();
+                }
                 table = CdmLightExportTable.SIMPLE_FACT;
             }
             CdmLightExportTable tableMedia = CdmLightExportTable.MEDIA;
@@ -523,14 +532,19 @@ public class CdmLightClassificationExport
             }
         } catch (Exception e) {
             state.getResult().addException(e, "An unexpected error occurred when handling simple facts for "
-                    + cdmBaseStr(cdmBase) + ": " + e.getMessage());
+                    + cdmBaseStr(cdmBase) + (titleCache != null? (" " +titleCache) : "")+ ": " + e.getMessage());
         }
     }
 
     private void handleTaxonInteractionsFacts(CdmLightExportState state, CdmBase cdmBase,
             List<DescriptionElementBase> taxonInteractionsFacts) {
         CdmLightExportTable table = CdmLightExportTable.TAXON_INTERACTION_FACT;
+        String titleCache = null;
+        if (cdmBase instanceof TaxonBase){
+            titleCache = ((TaxonBase)cdmBase).getTitleCache();
+        }
         for (DescriptionElementBase element : taxonInteractionsFacts) {
+
             try {
 
                 String[] csvLine = new String[table.getSize()];
@@ -546,7 +560,7 @@ public class CdmLightClassificationExport
 
             } catch (Exception e) {
                 state.getResult().addException(e, "An unexpected error occurred when handling taxon interaction"
-                        + cdmBaseStr(element) + ": " + e.getMessage());
+                        + cdmBaseStr(element) + (titleCache != null? (" " +titleCache) : "")+ ": " + e.getMessage());
             }
         }
     }
@@ -601,11 +615,7 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
                 if (cdmBase instanceof Taxon) {
                     csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, cdmBase);
-                    // csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] =
-                    // "";
                 } else if (cdmBase instanceof TaxonName) {
-                    // csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] =
-                    // "";
                     csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, cdmBase);
                 }
                 csvLine[table.getIndex(CdmLightExportTable.FACT_CATEGORY)] = textData.getFeature().getLabel();
@@ -622,8 +632,6 @@ public class CdmLightClassificationExport
                 }
                 csvLine[table.getIndex(CdmLightExportTable.MEDIA_URI)] = mediaUris;
                 if (textData.getFeature().equals(Feature.CITATION())) {
-                    // csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] =
-                    // getId(state, cdmBase);
                     state.getProcessor().put(table, textData, csvLine);
                 } else if (!textData.getMultilanguageText().isEmpty()) {
                     for (Language language : textData.getMultilanguageText().keySet()) {
@@ -780,6 +788,7 @@ public class CdmLightClassificationExport
 
     private void handleDistributionFacts(CdmLightExportState state, Taxon taxon,
             List<DescriptionElementBase> distributionFacts) {
+
         CdmLightExportTable table = CdmLightExportTable.GEOGRAPHIC_AREA_FACT;
         Set<Distribution> distributions = new HashSet<>();
         for (DescriptionElementBase element : distributionFacts) {
@@ -810,23 +819,21 @@ public class CdmLightClassificationExport
             }
         }
          if(state.getConfig().isCreateCondensedDistributionString()){
-             List<Language> langs = new ArrayList<Language>();
+             List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
 
-             CondensedDistribution conDis =
-             geoService.getCondensedDistribution(distributions, true,
-             null,null,state.getConfig().getCondensedDistributionRecipe(), langs
-             );
+             CondensedDistribution conDis = geoService.getCondensedDistribution(
+                     //TODO add CondensedDistributionConfiguration to export configuration
+                     distributions, true, null, state.getConfig().getCondensedDistributionRecipe().toConfiguration(), langs);
              CdmLightExportTable tableCondensed =
-             CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
+                     CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
              String[] csvLine = new String[table.getSize()];
              csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
-             getId(state, taxon);
+                     getId(state, taxon);
              csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
-             conDis.toString();
+                     conDis.toString();
              state.getProcessor().put(tableCondensed, taxon, csvLine);
          }
-
     }
 
     private void handleCommonNameFacts(CdmLightExportState state, Taxon taxon,
@@ -851,15 +858,25 @@ public class CdmLightClassificationExport
                         csvLine[table.getIndex(CdmLightExportTable.AREA_LABEL)] = commonName.getArea().getLabel();
                     }
                     state.getProcessor().put(table, commonName, csvLine);
+                } else if (element instanceof TextData){
+                    String[] csvLine = new String[table.getSize()];
+                    TextData commonName = (TextData) element;
+                    csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = getId(state, element);
+                    handleSource(state, element, table);
+                    csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)] = getId(state, taxon);
+                    if (commonName.getMultilanguageText() != null) {
+                        csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)] = createMultilanguageString(commonName.getMultilanguageText());
+                    }
+                    state.getProcessor().put(table, commonName, csvLine);
                 } else {
                     state.getResult()
-                            .addError("The distribution description for the taxon " + taxon.getUuid()
-                                    + " is not of type distribution. Could not be exported. UUID of the description element: "
+                            .addError("The common name description for the taxon " + taxon.getUuid()
+                                    + " is not of type common name. Could not be exported. UUID of the description element: "
                                     + element.getUuid());
                 }
             } catch (Exception e) {
                 state.getResult().addException(e, "An unexpected error occurred when handling single common name "
-                        + cdmBaseStr(element) + ": " + e.getMessage());
+                        + cdmBaseStr(element) + " - "+taxon.getTitleCache()+ ": " + e.getMessage());
             }
         }
     }
@@ -1087,6 +1104,12 @@ public class CdmLightClassificationExport
 
             Reference nomRef = name.getNomenclaturalReference();
 
+            NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
+            if (nomenclaturalSource.getNameUsedInSource() != null){
+                handleName(state, nomenclaturalSource.getNameUsedInSource());
+                csvLine[table.getIndex(CdmLightExportTable.NAME_USED_IN_SOURCE)] = getId(state, nomenclaturalSource.getNameUsedInSource());
+            }
+
             if (nomRef != null) {
                 if (!state.getReferenceStore().contains(nomRef.getUuid())) {
                     handleReference(state, nomRef);
@@ -1198,7 +1221,7 @@ public class CdmLightClassificationExport
                         if (sources != null && !sources.isEmpty()){
                             IdentifiableSource source = sources.iterator().next();
                             if (name.getNomenclaturalReference() != null){
-                                isProtologue = source.getCitation().getUuid().equals(name.getNomenclaturalReference().getUuid());
+                                isProtologue = source.getCitation() != null? source.getCitation().getUuid().equals(name.getNomenclaturalReference().getUuid()): false;
                             }
                         }
                         if (isProtologue){
@@ -1220,10 +1243,6 @@ public class CdmLightClassificationExport
                 }
             }
             TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
-
-//            String typeDesignationString = createTypeDesignationString(manager.toTaggedText(false, true, true), false, name.isSpecies() || name.isInfraSpecific());
-//            String test = manager.print(false, false, false);
-
             csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false);
 
             StringBuilder stringbuilder = new StringBuilder();
@@ -1269,13 +1288,6 @@ public class CdmLightClassificationExport
 
             HomotypicalGroup group = HibernateProxyHelper.deproxy(name.getHomotypicalGroup(), HomotypicalGroup.class);
 
-//            if (!state.containsHomotypicalGroupFromStore(group.getUuid())) {
-//                if (acceptedName){
-//                    handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
-//                }else{
-//                    handleHomotypicalGroup(state, HibernateProxyHelper.deproxy(group, HomotypicalGroup.class));
-//                }
-//            }
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
             typifiedNames.addAll(group.getTypifiedNames());
@@ -1287,7 +1299,7 @@ public class CdmLightClassificationExport
 
         } catch (Exception e) {
             state.getResult().addException(e,
-                    "An unexpected error occurred when handling synonym " + cdmBaseStr(name) + ": " + e.getMessage());
+                    "An unexpected error occurred when handling the name " + cdmBaseStr(name) + ": " + name.getTitleCache() + ": " + e.getMessage());
 
             e.printStackTrace();
         }
@@ -1643,7 +1655,6 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SORT_INDEX)] = String.valueOf(sortIndex);
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_ID)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
-//            typifiedNames.addAll(group.getTypifiedNames());
             group.getTypifiedNames().stream().forEach(name -> typifiedNames.add(HibernateProxyHelper.deproxy(name, TaxonName.class)));
             TaxonName firstname = null;
             for (TaxonName name: typifiedNames){
@@ -1818,7 +1829,6 @@ public class CdmLightClassificationExport
             }
             String specimenTypeString = !list.isEmpty()? createTypeDesignationString(list, true, typifiedNames.get(0).isSpecies() || typifiedNames.get(0).isInfraSpecific()):"";
 
-            // typeDesignations = typeDesignationString.toString();
             if (StringUtils.isNotBlank(specimenTypeString)) {
                 if (!specimenTypeString.endsWith(".")) {
                 	specimenTypeString = specimenTypeString + ".";
@@ -1839,7 +1849,6 @@ public class CdmLightClassificationExport
             }
             state.getProcessor().put(table, String.valueOf(group.getId()), csvLine);
         } catch (Exception e) {
-            e.printStackTrace();
             state.getResult().addException(e, "An unexpected error occurred when handling homotypic group "
                     + cdmBaseStr(group) + ": " + e.getMessage());
         }
@@ -2123,43 +2132,7 @@ public class CdmLightClassificationExport
         return concat;
     }
 
-    /*
-     * TypeDesignation table Specimen_Fk EditName_Fk TypeVerbatimCitation
-     * TypeCategory TypeDesignatedByString TypeDesignatedByRef_Fk
-     */
 
-    // private void handleSpecimenTypeDesignations(CdmLightExportState state,
-    // TaxonName name){
-    // try {
-    // Set<SpecimenTypeDesignation> typeDesignations =
-    // name.getSpecimenTypeDesignations();
-    // CdmLightExportTable table = CdmLightExportTable.TYPE_DESIGNATION;
-    // String nameId = getId(state, name);
-    // String[] csvLine = new String[table.getSize()];
-    // for (SpecimenTypeDesignation specimenType: typeDesignations){
-    // csvLine = new String[table.getSize()];
-    // DerivedUnit specimen = specimenType.getTypeSpecimen();
-    // if (state.getSpecimenFromStore(specimen.getId()) == null){
-    // handleSpecimen(state, specimen);
-    // }
-    // csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_FK)] = getId(state,
-    // specimenType.getTypeSpecimen());
-    // csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = nameId;
-    // csvLine[table.getIndex(CdmLightExportTable.TYPE_VERBATIM_CITATION)] =
-    // specimenType.getTypeSpecimen().generateTitle();
-    // //TODO: add link to existing Vorcabulary
-    // csvLine[table.getIndex(CdmLightExportTable.TYPE_CATEGORY)] = "";
-    // csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_STRING)] =
-    // specimenType.getCitation().getTitleCache();
-    // csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] =
-    // getId(state, specimenType.getCitation());
-    // }
-    // } catch (Exception e) {
-    // state.getResult().addException(e, "An unexpected error occurred when
-    // handling specimen type designations for " +
-    // cdmBaseStr(name) + ": " + e.getMessage());
-    // }
-    // }
 
     private void handleSpecimen(CdmLightExportState state, SpecimenOrObservationBase<?> specimen) {
         try {

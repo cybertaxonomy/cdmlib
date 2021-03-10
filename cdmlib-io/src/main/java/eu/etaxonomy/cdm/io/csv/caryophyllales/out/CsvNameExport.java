@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.name.HomotypicalGroupComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
@@ -432,7 +432,9 @@ public class CsvNameExport extends CsvNameExportBase {
         }
     }
 
-    private void extractDescriptions(HashMap<String, String> nameRecord, Taxon taxon, Feature feature, String columnName, CsvNameExportState state){
+    private void extractDescriptions(HashMap<String, String> nameRecord, Taxon taxon, Feature feature,
+            String columnName, CsvNameExportState state){
+
         StringBuffer descriptionsString = new StringBuffer();
         TextData textElement;
         Set<Distribution> distributions = new HashSet<>();
@@ -448,13 +450,10 @@ public class CsvNameExport extends CsvNameExportBase {
                         if (element instanceof TextData){
                             textElement = CdmBase.deproxy(element, TextData.class);
                             descriptionsString.append(textElement.getText(Language.ENGLISH()));
-
                         }else if (element instanceof Distribution ){
-
                             Distribution distribution = CdmBase.deproxy(element, Distribution.class);
                             distributions.add(distribution);
                         }
-
                     }
                 }
             }
@@ -463,7 +462,9 @@ public class CsvNameExport extends CsvNameExportBase {
             List<Language> langs = new ArrayList<>();
             langs.add(Language.ENGLISH());
 
-            CondensedDistribution conDis = geoService.getCondensedDistribution(distributions, true, null,null,CondensedDistributionRecipe.FloraCuba, langs );
+            //TODO add condensed distribution configuration to export configuration
+            CondensedDistribution conDis = geoService.getCondensedDistribution(
+                    distributions, true, null, CondensedDistributionConfiguration.NewCubaInstance(), langs );
 
             nameRecord.put(columnName, conDis.toString());
 
@@ -630,7 +631,7 @@ public class CsvNameExport extends CsvNameExportBase {
             if (synonym.isDoubtful()){
                 if (!synonymName.getFullTitleCache().startsWith("?")){
                     doubtfulTitleCache = "?" + synonymName.getFullTitleCache();
-                    synonymName = (IBotanicalName) synonymName.clone();
+                    synonymName = synonymName.clone();
                     synonymName.setFullTitleCache(doubtfulTitleCache, true);
                 }
             }

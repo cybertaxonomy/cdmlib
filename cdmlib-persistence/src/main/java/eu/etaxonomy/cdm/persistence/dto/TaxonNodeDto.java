@@ -76,6 +76,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     private String treeIndex = null;
     private Integer sortIndex = null;
+    private boolean taxonIsPublish = true;
 
 
     public TaxonNodeDto(ITaxonTreeNode taxonNode) {
@@ -107,6 +108,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             rankLabel = taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getLabel() : null;
             this.setAbbrevTitleCache(taxon.getTitleCache());
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
+            taxonIsPublish = taxon.isPublish();
         }else{
             if (taxonNode != null && taxonNode.getClassification() != null){
                 setTitleCache(taxonNode.getClassification().getTitleCache());
@@ -182,6 +184,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return status;
     }
 
+
     public boolean isUnplaced() {
         return status == null ? false : status.equals(TaxonNodeStatus.UNPLACED);
     }
@@ -239,6 +242,10 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
                 .filter(t->t.getType().isNameCachePart())
                 .collect(Collectors.toList());
         return TaggedCacheHelper.createString(nameCacheTags, new HTMLTagRules());
+    }
+
+    public boolean isPublish(){
+        return taxonIsPublish;
     }
 
     @Override

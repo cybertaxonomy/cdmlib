@@ -15,11 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-
 /**
  * @author a.kohlbecker
  * @since 06.04.2009
- *
  */
 public class HttpStatusMessage {
 
@@ -37,11 +35,9 @@ public class HttpStatusMessage {
     public final static HttpStatusMessage ACCESS_DENIED = new HttpStatusMessage(HttpServletResponse.SC_FORBIDDEN, "access denied");
     public final static HttpStatusMessage SUBTREE_FILTER_INVALID = new HttpStatusMessage(HttpServletResponse.SC_NOT_FOUND, "invalid uuid for subtree filter");
 
-
     private int statusCode;
 
     private final String message;
-
 
     private HttpStatusMessage(int statusCode, String message) {
         this.statusCode = statusCode;
@@ -50,10 +46,6 @@ public class HttpStatusMessage {
 
     /**
      * create a new HttpStatusMessage
-     *
-     * @param statusMessage
-     * @param statusCode
-     * @return
      */
     public static HttpStatusMessage create(String statusMessage, int statusCode) {
         return new HttpStatusMessage(statusCode, statusMessage);
@@ -77,7 +69,6 @@ public class HttpStatusMessage {
         return StringUtils.leftPad(Integer.toString(statusCode), 3, "0") + message;
     }
 
-
     public void send(HttpServletResponse response) throws IOException{
         send(response, null);
     }
@@ -87,5 +78,4 @@ public class HttpStatusMessage {
         logger.info("HTTP " + getStatusCode() + " : " +  message);
         response.sendError(getStatusCode(), message);
     }
-
 }

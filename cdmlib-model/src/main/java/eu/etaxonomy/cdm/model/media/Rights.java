@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 @Audited
 @Table(name = "RightsInfo")  //to avoid conflicts with reserved database words
 public class Rights extends LanguageStringBase {
+
 	private static final long serialVersionUID = 4920749849951432284L;
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Rights.class);

@@ -8,11 +8,11 @@
 */
 package eu.etaxonomy.cdm.io.media.in;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 /**
  * @author a.mueller
  * @since 30.10.2017
- *
  */
 public class MediaExcelImportConfigurator
         extends ExcelImportConfiguratorBase{

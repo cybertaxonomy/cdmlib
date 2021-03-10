@@ -210,11 +210,12 @@ public class TaxonServiceImpl
         UpdateResult result = new UpdateResult();
     	acceptedTaxon.removeSynonym(synonym);
     	TaxonName synonymName = synonym.getName();
-    	boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(acceptedTaxon.getName().getHomotypicalGroup());
+    	TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
+
+    	boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(taxonName.getHomotypicalGroup());
 
         synonymName.removeTaxonBase(synonym);
 
-        TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName(), TaxonName.class);
         //taxonName.removeTaxonBase(acceptedTaxon);
 
         List<Synonym> synonyms = new ArrayList<>();
@@ -225,9 +226,17 @@ public class TaxonServiceImpl
         for (Synonym syn: synonyms){
             acceptedTaxon.removeSynonym(syn);
         }
-        Taxon newTaxon = acceptedTaxon.clone();
+        Taxon newTaxon = acceptedTaxon.clone(true, true, false, true);
+//        newTaxon.getDescriptions().clear();
+
+        Set<TaxonDescription> descriptionsToCopy = new HashSet<>(acceptedTaxon.getDescriptions());
+        for (TaxonDescription description: descriptionsToCopy){
+            newTaxon.addDescription(description);
+        }
+
         newTaxon.setName(synonymName);
         newTaxon.setSec(synonym.getSec());
+        newTaxon.setPublish(synonym.isPublish());
         for (Synonym syn: synonyms){
             if (!syn.getName().equals(newTaxon.getName())){
                 newTaxon.addSynonym(syn, syn.getType());
@@ -264,7 +273,7 @@ public class TaxonServiceImpl
         }
 
         //Move descriptions to new taxon
-        List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( newTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
+        List<TaxonDescription> descriptions = new ArrayList<>( newTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions())
         for(TaxonDescription description : descriptions){
             String message = "Description copied from former accepted taxon: %s (Old title: %s)";
             message = String.format(message, acceptedTaxon.getTitleCache(), description.getTitleCache());
@@ -295,6 +304,7 @@ public class TaxonServiceImpl
         Synonym newSynonym = synonym.clone();
         newSynonym.setName(taxonName);
         newSynonym.setSec(acceptedTaxon.getSec());
+        newSynonym.setPublish(acceptedTaxon.isPublish());
         if (sameHomotypicGroup){
             newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         }else{
@@ -319,7 +329,7 @@ public class TaxonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, Reference newSecRef, String microRef, boolean deleteSynonym) {
+    public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, Reference newSecRef, String microRef, SecReferenceHandlingEnum secHandling, boolean deleteSynonym) {
         UpdateResult result = new UpdateResult();
         TaxonName acceptedName = acceptedTaxon.getName();
         TaxonName synonymName = synonym.getName();
@@ -332,13 +342,20 @@ public class TaxonServiceImpl
             result.setAbort();
             return result;
         }
+        if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
+            newSecRef = synonym.getSec();
+        }
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
+        newAcceptedTaxon.setPublish(synonym.isPublish());
         dao.save(newAcceptedTaxon);
         result.setCdmEntity(newAcceptedTaxon);
         SynonymType relTypeForGroup = SynonymType.HOMOTYPIC_SYNONYM_OF();
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
 
         for (Synonym heteroSynonym : heteroSynonyms){
+            if (secHandling == null || !secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
+                heteroSynonym.setSec(newSecRef);
+            }
             if (synonym.equals(heteroSynonym)){
                 acceptedTaxon.removeSynonym(heteroSynonym, false);
             }else{
@@ -383,7 +400,6 @@ public class TaxonServiceImpl
                 newSecRef = null;
                 break;
             case KeepAlways:
-                newSecRef = synonym.getSec();
                 break;
             case UseNewParentSec:
                 newSecRef = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
@@ -396,6 +412,7 @@ public class TaxonServiceImpl
                 }else{
                     newSecRef = CdmBase.deproxy(referenceService.load(newSec));
                 }
+                break;
             case WarningSelect:
                 newSecRef = CdmBase.deproxy(referenceService.load(newSec));
 
@@ -404,7 +421,7 @@ public class TaxonServiceImpl
         }
 
 
-        result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, newSecRef, microReference, deleteSynonym);
+        result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, newSecRef, microReference, secHandling, deleteSynonym);
         Taxon newTaxon = (Taxon)result.getCdmEntity();
 
         TaxonNode newNode = newParentNode.addChildTaxon(newTaxon, null, null);
@@ -2968,7 +2985,7 @@ public class TaxonServiceImpl
         Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
         result = changeRelatedTaxonToSynonym(fromTaxon, toTaxon, oldRelationshipType, synonymType);
 
-        result.addUpdatedObject(fromTaxon);
+//        result.addUpdatedObject(fromTaxon);
         result.addUpdatedObject(toTaxon);
         result.addUpdatedObject(result.getCdmEntity());
 
@@ -2996,7 +3013,8 @@ public class TaxonServiceImpl
         } else{
             synonym = toTaxon.addHeterotypicSynonymName(synonymName);
         }
-
+        //keep the publish flag
+        synonym.setPublish(fromTaxon.isPublish());
         this.saveOrUpdate(toTaxon);
         //TODO: configurator and classification
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();

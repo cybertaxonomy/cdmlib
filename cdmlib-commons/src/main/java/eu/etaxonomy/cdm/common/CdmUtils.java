@@ -383,33 +383,16 @@ public class CdmUtils {
     }
 
     /**
-     * Compares 2 strings with defined values for <code>null</code>
-     * @param str1
-     * @param str2
-     * @return
+     * Compares 2 instances of {@link Comparable} with defined values for <code>null</code>
      */
-    public static int nullSafeCompareTo(String str1, String str2) {
-        if (str1 == null){
-            return str2 == null ? 0 : -1;
-        }else if (str2 == null){
+    public static <T extends Comparable<T>> int nullSafeCompareTo(T c1, T c2) {
+        if (c1 == null){
+            return c2 == null ? 0 : -1;
+        }else if (c2 == null){
             return 1;
         }else{
-            return (str1.compareTo(str2));
+            return (c1.compareTo(c2));
         }
-    }
-
-    /**
-     * Returns false if string is null, "" or string.trim() is ""
-     * Else true.
-     * @see isBlank(String string)
-     * @see #isNotBlank(String)
-     * @deprecated use {@link #isNotBlank(String)} instead
-     * @param string
-     * @return
-     */
-    @Deprecated
-    static public boolean isNotEmpty(String string){
-        return isNotBlank(string);
     }
 
     /**

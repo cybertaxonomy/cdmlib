@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DistributionOrder;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
 import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
@@ -200,7 +202,7 @@ public class DescriptionListController
                                 taxonNodeUuids, taxonUuids, null, lowerRank, upperRank);
                         List<AggregationMode> modes = Arrays.asList(new AggregationMode[]{mode, mode2});
                         modes.remove(null);
-                        List<UUID> areaUuids = new ArrayList();
+                        List<UUID> areaUuids = new ArrayList<>();
                         areaPager.getRecords().forEach(p ->areaUuids.add(p.getUuid()));
                         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                                 modes, areaUuids, filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
@@ -269,7 +271,7 @@ public class DescriptionListController
             @RequestParam("part") Set<InfoPart> partSet,
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
-            @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
+            @RequestParam(value = "hiddenAreaMarkerType", required = false) DefinedTermBaseList<MarkerType> hiddenAreaMarkerTypeList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             @RequestParam(value = "statusColors", required = false) String statusColorsString,
             @RequestParam(value = "distributionOrder", required = false, defaultValue="LABEL") DistributionOrder distributionOrder,
@@ -281,23 +283,35 @@ public class DescriptionListController
 
             ModelAndView mv = new ModelAndView();
 
-            Set<MarkerType> hideMarkedAreas = null;
-            if(hideMarkedAreasList != null){
-                hideMarkedAreas = hideMarkedAreasList.asSet();
+            boolean ignoreDistributionStatusUndefined = true;  //workaround until #9500 is fully implemented
+            boolean fallbackAsParent = true;  //may become a service parameter in future
+
+            DistributionInfoDTO dto;
+            try {
+                CondensedDistributionConfiguration condensedConfig = recipe.toConfiguration();
+                //hiddenArea markers include markers for fully hidden areas and fallback areas. The later
+                //are hidden markers on areas that have non-hidden subareas (#4408)
+                Set<MarkerType> hiddenAreaMarkerTypes = null;
+                if(hiddenAreaMarkerTypeList != null && !hiddenAreaMarkerTypeList.isEmpty()){
+                    hiddenAreaMarkerTypes = hiddenAreaMarkerTypeList.asSet();
+                    condensedConfig.hiddenAndFallbackAreaMarkers = hiddenAreaMarkerTypeList.stream().map(mt->mt.getUuid()).collect(Collectors.toSet());
+                }
+
+                EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
+
+                Map<PresenceAbsenceTerm, Color> distributionStatusColors = EditGeoServiceUtilities.buildStatusColorMap(
+                        statusColorsString, termService, vocabularyService);
+
+                dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
+                        subAreaPreference, statusOrderPreference, hiddenAreaMarkerTypes, fallbackAsParent,
+                        omitLevels, distributionStatusColors, LocaleContext.getLanguages(),
+                        getDescriptionInfoInitStrategy(), condensedConfig, distributionOrder,
+                        ignoreDistributionStatusUndefined);
+                mv.addObject(dto);
+                return mv;
+            } catch (Exception e) {
+                HttpStatusMessage.create("Exception when retrieving distribution info for " + taxonUuid, 500).send(response);
+                return null;
             }
-
-            EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
-
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService, vocabularyService);
-
-            DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid,
-                    subAreaPreference, statusOrderPreference, hideMarkedAreas, omitLevels,
-                    presenceAbsenceTermColors, LocaleContext.getLanguages(),
-                    getDescriptionInfoInitStrategy(), recipe, distributionOrder);
-
-            mv.addObject(dto);
-
-            return mv;
     }
-
 }

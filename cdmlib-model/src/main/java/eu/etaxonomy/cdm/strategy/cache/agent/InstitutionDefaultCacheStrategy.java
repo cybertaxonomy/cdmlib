@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -54,8 +55,8 @@ public class InstitutionDefaultCacheStrategy
 			String result = "";
 			result = CdmUtils.concat("", result, institution.getName());
 			//add code if it exists
-			if (CdmUtils.isNotEmpty(institution.getCode())){
-				if (CdmUtils.isNotEmpty(result)){
+			if (StringUtils.isNotBlank(institution.getCode())){
+				if (StringUtils.isNotBlank(result)){
 					result += " (" + institution.getCode() +")";
 				}else{
 					result = institution.getCode();

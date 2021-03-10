@@ -247,7 +247,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         //now even the orphaned synonym is found (#9047)
         results = taxonDao.getTaxaByName(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, "A*", null, subtree, MatchMode.BEGINNING,
                 null, includeUnpublished, null, null, null, null);
-        Assert.assertEquals("There should be 12 Taxa",12, results.size());
+        Assert.assertEquals("There should be 13 Taxa",13, results.size());
 
         //two accepted taxa in classification and 1 misapplied name with accepted name in classification
         results = taxonDao.getTaxaByName(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, "R*", classification, subtree, MatchMode.BEGINNING,

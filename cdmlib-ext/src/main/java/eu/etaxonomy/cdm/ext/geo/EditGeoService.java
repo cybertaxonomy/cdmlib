@@ -14,6 +14,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -67,7 +68,8 @@ import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 @Transactional(readOnly = true)
 public class EditGeoService implements IEditGeoService {
 
-    public static final Logger logger = Logger.getLogger(EditGeoService.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(EditGeoService.class);
 
     @Autowired
     private IDescriptionDao dao;
@@ -152,7 +154,7 @@ public class EditGeoService implements IEditGeoService {
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, false, statusOrderPreference, subAreaPreference);
+                hideMarkedAreas, false, statusOrderPreference, subAreaPreference, true, false);
 
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(
                 filteredDistributions,
@@ -160,26 +162,6 @@ public class EditGeoService implements IEditGeoService {
                 presenceAbsenceTermColors,
                 null, langs);
         return uriParams;
-    }
-
-    @Override
-    @Deprecated
-    public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
-            boolean subAreaPreference,
-            boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> langs) {
-
-        List<TaxonDescription> taxonDescriptions = new ArrayList<>();
-        taxonDescriptions.add(taxonDescription);
-
-        return getDistributionServiceRequestParameterString(taxonDescriptions,
-                subAreaPreference,
-                statusOrderPreference,
-                hideMarkedAreas,
-                presenceAbsenceTermColors,
-                langs);
     }
 
     @Override
@@ -224,31 +206,30 @@ public class EditGeoService implements IEditGeoService {
 
     		return kml;
     }
-
-    public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
-            boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
-            CondensedDistributionRecipe recipe,
-            List<Language> langs) {
-        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
-        return getCondensedDistribution(distributions, statusOrderPreference,
-                hideMarkedAreas, fallbackAreaMarkerType, recipe, langs);
-    }
+//
+//    public CondensedDistribution getCondensedDistribution(List<TaxonDescription> taxonDescriptions,
+//            boolean statusOrderPreference,
+//            Set<MarkerType> hideMarkedAreas,
+//            MarkerType fallbackAreaMarkerType,
+//            CondensedDistributionConfiguration recipe,
+//            List<Language> langs) {
+//        Set<Distribution> distributions = getDistributionsOf(taxonDescriptions);
+//        return getCondensedDistribution(distributions, statusOrderPreference,
+//                hideMarkedAreas, fallbackAreaMarkerType, recipe, langs);
+//    }
 
     @Override
     public CondensedDistribution getCondensedDistribution(Set<Distribution> distributions,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas,
-            MarkerType fallbackAreaMarkerType,
-            CondensedDistributionRecipe recipe,
+            Set<MarkerType> hiddenAreaMarkerTypes,
+            CondensedDistributionConfiguration config,
             List<Language> langs) {
 
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(
-                distributions, hideMarkedAreas, false, statusOrderPreference, false);
+                distributions, hiddenAreaMarkerTypes, false, statusOrderPreference, false, false, true);
         CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
                 filteredDistributions,
-                recipe,
+                config,
                 langs);
         return condensedDistribution;
     }
@@ -320,9 +301,13 @@ public class EditGeoService implements IEditGeoService {
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hiddenAreaMarkerTypes,
-            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
-            List<Language> languages,  List<String> propertyPaths, CondensedDistributionRecipe recipe,
-            DistributionOrder distributionOrder){
+            boolean neverUseFallbackAreaAsParent, Set<NamedAreaLevel> omitLevels,
+            Map<PresenceAbsenceTerm, Color> presenceAbsenceTermColors,
+            List<Language> languages,  List<String> propertyPaths, CondensedDistributionConfiguration config,
+            DistributionOrder distributionOrder, boolean ignoreDistributionStatusUndefined){
+
+        final boolean PREFER_AGGREGATED = true;
+        final boolean PREFER_SUBAREA = true;
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
@@ -349,34 +334,41 @@ public class EditGeoService implements IEditGeoService {
             initStrategy.add("markers.markerType");
         }
         if(omitLevels == null) {
-            omitLevels = new HashSet<>(0);
+            @SuppressWarnings("unchecked") Set<NamedAreaLevel> emptySet = Collections.EMPTY_SET;
+            omitLevels = emptySet;
         }
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, initStrategy);
 
-        // Apply the rules statusOrderPreference and hideMarkedAreas for textual distribution info
+        // for all later applications apply the rules statusOrderPreference, hideHiddenArea and ignoreUndefinedStatus
+        // to all distributions, but KEEP fallback area distributions
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, hiddenAreaMarkerTypes,
-                false, statusOrderPreference, false);
+                !PREFER_AGGREGATED, statusOrderPreference, !PREFER_SUBAREA, false, ignoreDistributionStatusUndefined);
 
         if(parts.contains(InfoPart.elements)) {
             dto.setElements(filteredDistributions);
         }
 
         if(parts.contains(InfoPart.tree)) {
-            DistributionTree tree = DescriptionUtility.orderDistributions(termDao, omitLevels,
-                    filteredDistributions, hiddenAreaMarkerTypes,distributionOrder);
+            DistributionTree tree = DescriptionUtility.buildOrderedTree(omitLevels,
+                    filteredDistributions, hiddenAreaMarkerTypes, neverUseFallbackAreaAsParent,
+                    distributionOrder, termDao);
             dto.setTree(tree);
         }
 
         if(parts.contains(InfoPart.condensedDistribution)) {
-            dto.setCondensedDistribution(EditGeoServiceUtilities.getCondensedDistribution(
-                    filteredDistributions, recipe, languages));
+            CondensedDistribution condensedDistribution = EditGeoServiceUtilities.getCondensedDistribution(
+                    filteredDistributions, config, languages);
+            dto.setCondensedDistribution(condensedDistribution);
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {
+            boolean IGNORE_STATUS_ORDER_PREF_ = false;
+            Set<MarkerType> hiddenAreaMarkerType = null;
             // only apply the subAreaPreference rule for the maps
             Set<Distribution> filteredMapDistributions = DescriptionUtility.filterDistributions(
-                    filteredDistributions, null, false, false, subAreaPreference);
+                    filteredDistributions, hiddenAreaMarkerType, !PREFER_AGGREGATED,
+                    IGNORE_STATUS_ORDER_PREF_, subAreaPreference, true, ignoreDistributionStatusUndefined);
 
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredMapDistributions,
                     areaMapping,

@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
@@ -39,17 +47,17 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
     }
 
     @Override
-    public int countMedia(DescriptionElementBase descriptionElement) {
+    public long countMedia(DescriptionElementBase descriptionElement) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Query query = getSession().createQuery("select count(media) from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
             query.setParameter("descriptionElement", descriptionElement);
 
-            return ((Long)query.uniqueResult()).intValue();
+            return ((Long)query.uniqueResult());
         } else {
             // Horribly inefficient, I know, but hard to do at the moment with envers.
             // FIXME Improve this (by improving envers)
-            List<String> propertyPaths = new ArrayList<String>();
+            List<String> propertyPaths = new ArrayList<>();
             propertyPaths.add("media");
             DescriptionElementBase d = super.load(descriptionElement.getUuid(), propertyPaths);
             return d.getMedia().size();

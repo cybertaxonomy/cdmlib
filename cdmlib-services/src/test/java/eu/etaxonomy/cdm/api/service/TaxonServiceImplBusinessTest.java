@@ -25,6 +25,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -121,7 +122,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 
 		UpdateResult result;
         try {
-            result = service.changeSynonymToAcceptedTaxon(s1, t1, null, null, deleteSynonym);
+            result = service.changeSynonymToAcceptedTaxon(s1, t1, null, null, null,deleteSynonym);
             Assert.assertTrue("Change must fail for synonym and taxon in same homotypical group",result.isAbort());
         } catch (HomotypicalGroupChangeException e1) {
             // TODO Auto-generated catch block
@@ -133,7 +134,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		Assert.assertEquals("Homotypical group of old accepted taxon should still contain exactly 2 names", 2, oldGroup.getTypifiedNames().size());
 		Assert.assertTrue("Old accepted taxon should now have 2 synonyms", t1.getSynonyms().size() == 2);
 		try {
-			taxon = (Taxon)service.changeSynonymToAcceptedTaxon(s2, t1, null, null, deleteSynonym).getCdmEntity();
+			taxon = (Taxon)service.changeSynonymToAcceptedTaxon(s2, t1, null, null, null,deleteSynonym).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e) {
 			Assert.fail("Change must not throw exception for heterotypic synonym change");
 		}
@@ -167,7 +168,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		//run
 		Taxon newTaxon = null;
 		try {
-			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, null, null, false).getCdmEntity();
+			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, null, null, SecReferenceHandlingEnum.KeepAlways, false).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e1) {
 			Assert.fail("Invocation of change method should not throw an exception");
 		}
@@ -197,7 +198,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		Assert.assertTrue("Relationship to s2 must have been concidered in 'for'-loop", iWasHere);
 
 		try {
-			UpdateResult result = service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, null, null, false);
+			UpdateResult result = service.changeSynonymToAcceptedTaxon(homotypicSynonym, t1, null, null, null,false);
 
 			Assert.assertTrue("The method should throw an exception when invoked on taxa in the same homotypical group", !result.getExceptions().isEmpty());
 		} catch (HomotypicalGroupChangeException e) {

@@ -62,6 +62,8 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
     //E+M, maybe general in future
     public static final UUID uuidEpublished = UUID.fromString("212158af-c8cf-4b15-ab22-8d06667ea7e1");
 
+    public static final UUID uuidFallbackArea = UUID.fromString("e2b42891-aa85-4a09-981b-b7d8f5749c54");
+
 
 	protected static Map<UUID, MarkerType> termMap = null;
 

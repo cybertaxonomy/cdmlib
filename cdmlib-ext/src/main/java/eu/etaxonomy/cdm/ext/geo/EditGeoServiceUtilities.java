@@ -611,11 +611,6 @@ public class EditGeoServiceUtilities {
 
     /**
      * @param statusColorJson for example: {@code {"n":"#ff0000","p":"#ffff00"}}
-     * @param vocabularyService TODO
-     * @return
-     * @throws IOException
-     * @throws JsonParseException
-     * @throws JsonMappingException
      */
     public static Map<PresenceAbsenceTerm, Color> buildStatusColorMap(String statusColorJson,
             ITermService termService, IVocabularyService vocabularyService)
@@ -682,19 +677,12 @@ public class EditGeoServiceUtilities {
     }
 
     public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
-            CondensedDistributionRecipe recipe, List<Language> langs) {
+            CondensedDistributionConfiguration config, List<Language> languages) {
 
-        ICondensedDistributionComposer composer;
-        if(recipe == null) {
-            throw new NullPointerException("parameter recipe must not be null");
-        }
-        try {
-            composer = recipe.newCondensedDistributionComposerInstance();
-        } catch (InstantiationException|IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        CondensedDistributionComposer composer = new CondensedDistributionComposer();
+
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions,  langs);
+                filteredDistributions, languages, config);
         return condensedDistribution;
     }
 }

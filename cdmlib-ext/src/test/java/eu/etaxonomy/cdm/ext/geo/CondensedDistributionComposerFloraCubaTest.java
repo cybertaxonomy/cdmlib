@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,7 +31,9 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.mueller
  * @since 07.04.2016
  */
-public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
+public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
+
+    private CondensedDistributionConfiguration config;
 
     private static OrderedTermVocabulary<PresenceAbsenceTerm> statusVoc;
     private static OrderedTermVocabulary<NamedArea> cubaAreasVocabualary;
@@ -107,14 +110,17 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
 //      statusSymbols.put(UUID.fromString("71b72e24-c2b6-44a5-bdab-39f083bf0f06"), "-d");
     }
 
+    @Before
+    public void setUp(){
+        config = CondensedDistributionConfiguration.NewCubaInstance();
+    }
+
 
 // ********************* TESTS ******************************/
 
     @Test
     public void testCreateCondensedDistribution() {
-        FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
-        composer.setAreaPreTag("<b>");
-        composer.setAreaPostTag("</b>");
+        CondensedDistributionComposer composer = new CondensedDistributionComposer();
 
         Set<Distribution> filteredDistributions = new HashSet<>();
         filteredDistributions.add(Distribution.NewInstance(cuba, PresenceAbsenceTerm.NATURALISED()));
@@ -125,10 +131,12 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         filteredDistributions.add(Distribution.NewInstance(bahamas, PresenceAbsenceTerm.NATIVE()));
         filteredDistributions.add(Distribution.NewInstance(oldWorld, PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE()));
 
-        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null, config);
         String condensedString = condensedDistribution.toString();
 
-        Assert.assertEquals("Condensed string for Cuba differs", "n<b>Cu</b>(-d<b>CuW</b>(-c<b>PR*</b>) (c)<b>CuE</b>(n<b>Ho</b>)) " + composer.getInternalAreaSeparator() + "<b>Bah</b> ?<b>VM</b> ", condensedString);
+        Assert.assertEquals("Condensed string for Cuba differs",
+                "n<b>Cu</b>(-d<b>CuW</b>(-c<b>PR*</b>) (c)<b>CuE</b>(n<b>Ho</b>))" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?<b>VM</b>",
+                condensedString);
 
         //TODO work in progress
     }
@@ -136,9 +144,7 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
     @Test
     public void testCreateCondensedDistributionOrderSubAreas() {
 
-        FloraCubaCondensedDistributionComposer composer = new FloraCubaCondensedDistributionComposer();
-        composer.setAreaPreTag("");
-        composer.setAreaPostTag("");
+        CondensedDistributionComposer composer = new CondensedDistributionComposer();
 
         Set<Distribution> filteredDistributions = new HashSet<>();
         filteredDistributions.add(Distribution.NewInstance(cuba, PresenceAbsenceTerm.NATURALISED()));
@@ -158,12 +164,12 @@ public class FloraCubaCondensedDistributionComposerTest extends TermTestBase {
         filteredDistributions.add(Distribution.NewInstance(bahamas, PresenceAbsenceTerm.NATIVE()));
         filteredDistributions.add(Distribution.NewInstance(oldWorld, PresenceAbsenceTerm.NATIVE_PRESENCE_QUESTIONABLE()));
 
-        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null);
-        String condensedString = condensedDistribution.toString();
+        config.areasBold = false;
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null, config);
 
         Assert.assertEquals("Condensed string for Cuba differs",
-                "nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu)) " + composer.getInternalAreaSeparator() + "Bah ?VM ",
-                condensedString);
+                "nCu(-dCuW(PR* Art Hab* May Mat IJ) (c)CuE(nHo -cGu))" + config.outOfScopeAreasSeperator + "Bah ?VM",
+                condensedDistribution.toString());
 
         //TODO work in progress
     }

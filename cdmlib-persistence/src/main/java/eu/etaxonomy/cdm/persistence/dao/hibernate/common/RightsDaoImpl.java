@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IRightsDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -46,12 +48,15 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
         List<UuidAndTitleCache<Rights>> list = new ArrayList<UuidAndTitleCache<Rights>>();
         Session session = getSession();
 
-        String queryString = "SELECT " +"r.uuid, r.id, r.text, agent.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.agent AS agent ";
+        String queryString = "SELECT " +"r.uuid, r.id, r.text, r.abbreviatedText, r.uri,  agent.titleCache, type.titleCache FROM " + type.getSimpleName() + " AS r LEFT OUTER JOIN r.agent AS agent LEFT OUTER JOIN r.type as type";
 
         if (pattern != null){
             queryString += " WHERE ";
             queryString += " r.text LIKE :pattern";
             queryString += " OR agent.titleCache LIKE :pattern";
+            queryString += " OR r.abbreviatedText LIKE :pattern";
+//            queryString += " OR r.uri LIKE :pattern";
+//            queryString += " OR type.titleCache LIKE :pattern";
         }
 
 
@@ -77,16 +82,38 @@ public class RightsDaoImpl extends  LanguageStringBaseDaoImpl<Rights> implements
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            String rightsText = (String) object[2];
-
-            if(rightsText != null){
-                String agentTitle = (String) object[3];
-                rightsText = rightsText + " - " + agentTitle;
-
-                list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
-            }else{
-                logger.error("text of rights is null. UUID: " + object[0]);
+            if (object[2] == null && object[3] == null && object[4] == null &&  object[5] == null &&  object[6] == null){
+                continue;
             }
+            String rightsText = "";
+            String text = (String) object[2];
+            String abbrev = (String) object[3];
+            String uri = object[4]!= null?((URI)object[4]).toString(): null;
+            String agentTitle = (String) object[5];
+            String typeLabel = (String) object[6];
+
+            boolean isFirst = true;
+
+            if (StringUtils.isNotBlank(text)){
+                rightsText = text;
+            }
+            if (StringUtils.isNotBlank(agentTitle)){
+                rightsText = rightsText + (StringUtils.isBlank(rightsText)? "":" - ") + agentTitle ;
+            }
+            if (StringUtils.isNotBlank(typeLabel)){
+
+                rightsText = rightsText+ (StringUtils.isBlank(rightsText) ?"":" - ") + typeLabel;
+            }
+
+            if (StringUtils.isNotBlank(abbrev)){
+                rightsText = rightsText + (StringUtils.isBlank(rightsText) ?"":" - ") + abbrev;
+            }
+            if (StringUtils.isNotBlank(uri)){
+                rightsText = rightsText + (StringUtils.isBlank(rightsText) ?"":" - ") + uri;
+            }
+
+            list.add(new UuidAndTitleCache<Rights>(Rights.class, (UUID) object[0],(Integer)object[1], rightsText));
+
         }
 
         return list;

@@ -32,11 +32,13 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 	    if (node1.equals(node2)) {
 	        return 0;
         }
-	    // if we do not check for null for the treeIndex we always return 1 if one of the nodes have no treeIndex
 	    if (node1.treeIndex() == null){
-	        return 1;
-	    }
-	    if (node2.treeIndex() == null){
+	        if (node2.treeIndex() == null){
+	            return 0;
+	        }else{
+	            return 1;
+	        }
+	    }else if (node2.treeIndex() == null){
             return -1;
         }
 
@@ -47,10 +49,8 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
             return 1;
         }
 
-
 		String[] splitNode1 = node1.treeIndex().split("#");
 		String[] splitNode2 = node2.treeIndex().split("#");
-
 
 		if (node1.getParent().equals(node2.getParent())){
 			return node1.getSortIndex().compareTo(node2.getSortIndex());
@@ -74,7 +74,6 @@ public class TaxonNodeNaturalComparator implements Comparator<TaxonNode> {
 					TaxonNode lastEqualTreeIndexAncestorNode1 = null;
 					TaxonNode lastEqualTreeIndexAncestorNode2 = null;
 					for (TaxonNode next1 :ancestorAndNode){
-
 						if (next1.treeIndex().equals(lastEqualAncestorTreeIndex+"#"+splitNode1[i]+ "#") ){
 						    lastEqualTreeIndexAncestorNode1 = next1;
 						}

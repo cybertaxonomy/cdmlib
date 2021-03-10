@@ -67,18 +67,11 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             "extensions.type",
     });
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IOccurrenceService service) {
         this.service = service;
     }
-
-
 
     @Override
     protected <CDM_BASE extends CdmBase> List<String> complementInitStrategy(Class<CDM_BASE> clazz,
@@ -91,8 +84,6 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         }
         return pathProperties;
     }
-
-
 
     @RequestMapping(value = { "derivedFrom" }, method = RequestMethod.GET)
     public DerivationEvent doGetDerivedFrom(
@@ -121,7 +112,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
         logger.info("doGetFieldUnitDTO()" + requestPathAndQuery(request));
 
-        SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
+        SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
 
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
@@ -137,7 +128,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     public  List<FieldUnitDTO> doListFieldUnitDTO(
             @PathVariable("uuid") List<UUID> uuids,
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            @SuppressWarnings("unused") HttpServletResponse response) {
 
         logger.info("doListFieldUnitDTO()" + requestPathAndQuery(request));
         List<FieldUnitDTO> dtos = new ArrayList<>(uuids.size());
@@ -148,36 +139,6 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         return dtos;
     }
 
-//    @RequestMapping(value = { "specimenTypeDesignations" }, method = RequestMethod.GET)
-//    public  List<SpecimenTypeDesignation> doGetTypeDesignations(
-//            @PathVariable("uuid") UUID uuid,
-//            HttpServletRequest request,
-//            HttpServletResponse response) throws IOException {
-//
-//        logger.info("doGetSpecimenTypeDesignations()" + requestPathAndQuery(request));
-//
-//        DerivedUnit sob = (DerivedUnit) getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
-//
-//        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
-//
-//        FieldUnitDTO fieldUnitDto = null;
-//        if(sob instanceof DerivedUnit){
-//
-//            fieldUnitDto = service.findFieldUnitDTO(new PreservedSpecimenDTO(sob) , new ArrayList<FieldUnitDTO>(), new HashMap<UUID, DerivateDTO>());
-//
-//        }
-//
-//        return fieldUnitDto;
-//    }
-
-    /**
-     *
-     * @param uuid
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     */
     @RequestMapping(value = { "extensions" }, method = RequestMethod.GET)
     public Object doGetExtensions(
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,

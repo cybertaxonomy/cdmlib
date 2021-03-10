@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.remote.controller.iiif;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +35,11 @@ import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -43,10 +47,12 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
+import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 
 /**
  * Factory class for creating iiif manifests.
@@ -426,7 +432,57 @@ public class ManifestComposer {
         if(media.getMediaCreated() != null){
             metadata.add(new MetadataEntry("Created on", media.getMediaCreated().toString())); // TODO is this correct to string conversion?
         }
+
+        if(!media.getIdentifiers().isEmpty()) {
+            PropertyValue identifierValues = new PropertyValue();
+            for(Identifier identifier : media.getIdentifiers()){
+                if(identifier.getIdentifier() != null) {
+                    identifierValues.addValue(identifier.getIdentifier());
+                }
+            }
+            metadata.add(new MetadataEntry(new PropertyValue("Identifiers"), identifierValues));
+        }
+
+        if(!media.getSources().isEmpty()) {
+            PropertyValue descriptionValues = new PropertyValue();
+            for(IdentifiableSource source : media.getSources()){
+                descriptionValues.addValue(sourceAsHtml(source));
+            }
+            metadata.add(new MetadataEntry(new PropertyValue("Sources"), descriptionValues));
+        }
         return metadata;
+    }
+
+    private String sourceAsHtml(IdentifiableSource source) {
+
+        StringBuilder html = new StringBuilder();
+        Reference citation = source.getCitation();
+        if(citation != null) {
+            DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)citation.getCacheStrategy());
+            html.append(strategy.createShortCitation(citation, source.getCitationMicroReference(), false)).append(" ");
+            if(citation.getDoi() != null) {
+                try {
+                    html.append(" ").append(htmlLink(new URI("http://doi.org/" + citation.getDoiString()), citation.getDoiString()));
+                } catch (URISyntaxException e) {
+                    // IGNORE, should never happen
+                }
+            }
+        }
+        if(source.getIdNamespace() != null && source.getIdInSource() != null) {
+            html.append(source.getIdNamespace()).append("/").append(source.getIdInSource()).append(" ");
+        }
+
+        String linkhtml = null;
+        for(ExternalLink extLink : source.getLinks()) {
+            if(extLink.getUri() != null) {
+                if(linkhtml != null) {
+                    html.append(", ");
+                }
+                linkhtml = htmlLink(extLink.getUri().getJavaUri(), extLink.getUri().toString());
+                html.append(linkhtml);
+            }
+        }
+        return html.toString();
     }
 
     private <T extends Resource<T>> T addAttributionAndLicense(IdentifiableEntity<?> entity, T resource, List<MetadataEntry> metadata) {
@@ -441,8 +497,8 @@ public class ManifestComposer {
             for(Rights right : entity.getRights()){
                 String rightText = "";
                 // TODO get localized texts below
-                // --- LICENSE
-                if(right.getType().equals(RightsType.LICENSE())){
+                // --- LICENSE or NULL
+                if(right.getType() == null || right.getType().equals(RightsType.LICENSE())){
                     String licenseText = "";
                     String licenseAbbrev = "";
                     if(right.getText() != null){
@@ -464,7 +520,7 @@ public class ManifestComposer {
                     rightText = licenseAbbrev + (licenseText.isEmpty() ? "" : " ") + licenseText;
                 }
                 // --- COPYRIGHT
-                if(right.getType().equals(RightsType.COPYRIGHT())){
+                else if(right.getType().equals(RightsType.COPYRIGHT())){
                     // titleCache + agent
                     String copyRightText = "";
                     if(right.getText() != null){
@@ -480,7 +536,7 @@ public class ManifestComposer {
                         copyRightText = "© " + copyRightText;
                     }
                     rightText = copyRightText;
-                }
+                } else
                 if(right.getType().equals(RightsType.ACCESS_RIGHTS())){
                     // titleCache + agent
                     String accessRights = right.getText();

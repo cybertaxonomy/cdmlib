@@ -139,6 +139,9 @@ public enum TagEnum {
 	public boolean isNomStatus(){
 		return this == nomStatus;
 	}
+	/**
+	 * @return <code>true</code> if type is separator or postSeparator
+	 */
 	public boolean isSeparator(){
 		return this == separator || this == postSeparator;
 	}

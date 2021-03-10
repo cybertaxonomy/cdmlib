@@ -17,6 +17,7 @@ import java.util.TreeSet;
 public class HTMLTagRules {
 
 	private List<TagRule> rules = new ArrayList<>();
+	private boolean includeSingleInstanceHtml = false;
 
 	private class TagRule{
 		private TagRule(TagEnum type, String htmlTag){
@@ -39,6 +40,17 @@ public class HTMLTagRules {
 		return this;
 	}
 
+	public SortedSet<String> getRule(TaggedText taggedText){
+	    SortedSet<String> result = new TreeSet<>();
+	    if (taggedText != null){
+	        result = getRule(taggedText.getType());
+	        if (this.includeSingleInstanceHtml && !taggedText.htmlTags().isEmpty()){
+	            result.addAll(taggedText.htmlTags());
+	        }
+	    }
+	    return result;
+	}
+
 	public SortedSet<String> getRule(TagEnum type){
 		SortedSet<String> result = new TreeSet<>();
 		for (TagRule rule : rules){
@@ -58,15 +70,24 @@ public class HTMLTagRules {
 		return false;
 	}
 
+    public boolean isIncludeSingleInstanceHtml() {
+        return includeSingleInstanceHtml;
+    }
+
+    public void setIncludeSingleInstanceHtml(boolean includeSingleInstanceHtml) {
+        this.includeSingleInstanceHtml = includeSingleInstanceHtml;
+    }
+
 	@Override
 	public String toString(){
 		String result = "HTMLTagRules[";
 		for (TagRule rule : rules){
 			result += rule.toString() + ";";
 		}
-		result = result.substring(0, result.length() -1) + "]";
+		result = result.substring(0, rules.isEmpty()? result.length(): result.length()-1) + "]";
 		return result;
 	}
+
 
 
 }
