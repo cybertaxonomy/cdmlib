@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
- * @since 02-Jul-2010 13:06:43
+ * @since 02-Jul-2010
  */
 public class CacheUpdaterConfigurator implements Serializable{
 
@@ -41,8 +41,6 @@ public class CacheUpdaterConfigurator implements Serializable{
 
 	/**
 	 * Returns a new configurator with all boolean values set to false
-	 * @param allFalse
-	 * @return
 	 */
 	public static CacheUpdaterConfigurator NewInstance(boolean allTrue){
 		return new CacheUpdaterConfigurator(allTrue);
@@ -111,5 +109,4 @@ public class CacheUpdaterConfigurator implements Serializable{
     public void setMonitor(IProgressMonitor monitor) {
         this.monitor = monitor;
     }
-
 }

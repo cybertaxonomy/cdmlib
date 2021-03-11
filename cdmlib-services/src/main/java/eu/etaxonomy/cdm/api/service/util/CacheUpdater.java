@@ -53,6 +53,12 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 
+/**
+ * Updates caches for given CDM classes.
+ *
+ * @author a.mueller
+ * @since 02-Jul-2010
+ */
 @Component
 public class CacheUpdater implements Serializable {
 
@@ -102,7 +108,6 @@ public class CacheUpdater implements Serializable {
 		return result;
 	}
 
-
 	private UpdateResult handleClassList(List<Class<? extends IdentifiableEntity>> classList, IProgressMonitor monitor) {
 	    UpdateResult result = new UpdateResult();
 	    int ticksForSubTasks = 100/classList.size();
@@ -144,7 +149,6 @@ public class CacheUpdater implements Serializable {
 		}else{
 		   return null;
 		}
-
 	}
 
 	private UpdateResult handleSingleTableClass(Class<? extends IdentifiableEntity> clazz, IProgressMonitor subMonitor) {
@@ -203,7 +207,6 @@ public class CacheUpdater implements Serializable {
 			//Polytomous Key
             else if (PolytomousKey.class.isAssignableFrom(clazz)){
                 result.includeResult(polytomousKeyService.updateCaches((Class) clazz, null, null, subMonitor));
-
             }
 
 			//unknown class
@@ -229,9 +232,4 @@ public class CacheUpdater implements Serializable {
 	private void createClassListFromBoolean() {
 		logger.warn("Create class list from boolean not yet implemented. Can't run cache updater");
 	}
-
-
-
-
-
 }

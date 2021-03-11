@@ -64,7 +64,6 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 				referenceService.updateCaches((Class) clazz, null, null, null);
 			}else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
 				occurrenceService.updateCaches((Class) clazz, null, null, null);
-
 			}
 			//Sequence
 			else if (Sequence.class.isAssignableFrom(clazz)){
@@ -95,5 +94,4 @@ public class CacheUpdaterWithNewCacheStrategy extends CacheUpdater {
 			return false;
 		}
 	}
-
 }

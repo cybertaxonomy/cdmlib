@@ -18,8 +18,6 @@ import java.util.List;
  *
  * NOTE: Indices for objects and pages are 0-based.
  * @author ben
- *
- * @param <T>
  */
 public interface Pager<T> {
     /**

@@ -11,26 +11,15 @@ package eu.etaxonomy.cdm.api.utility;
 /**
  * @author a.kohlbecker
  * @since Jun 23, 2017
- *
  */
 @SuppressWarnings("serial")
 public class DerivedUnitConversionException extends Exception {
 
-    /**
-     * @param message
-     */
     public DerivedUnitConversionException(String message) {
         super(message);
     }
 
-    /**
-     * @param message
-     * @param cause
-     */
     public DerivedUnitConversionException(String message, Throwable cause) {
         super(message, cause);
     }
-
-
-
 }
