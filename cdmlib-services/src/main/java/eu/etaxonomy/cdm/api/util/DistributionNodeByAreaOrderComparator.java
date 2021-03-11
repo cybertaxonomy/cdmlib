@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  *
  * @author a.mueller
  * @since 04.04.2016
- *
  */
 public class DistributionNodeByAreaOrderComparator implements Comparator<TreeNode<Set<Distribution>, NamedArea>>{
 

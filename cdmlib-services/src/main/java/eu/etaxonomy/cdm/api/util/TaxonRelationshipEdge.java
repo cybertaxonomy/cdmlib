@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  * @author a.kohlbecker
  * @since Dec 7, 2012
- *
  */
 public class TaxonRelationshipEdge extends AbstractRelationshipEdge<TaxonRelationshipType> {
 

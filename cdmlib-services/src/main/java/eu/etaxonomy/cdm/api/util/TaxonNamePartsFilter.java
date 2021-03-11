@@ -29,20 +29,11 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNameParts;
  *
  * @author a.kohlbecker
  * @since Jun 12, 2018
- *
  */
 public class TaxonNamePartsFilter extends TaxonNameParts {
 
     private Set<UUID> exludedNamesUuids = new HashSet<>();
 
-    /**
-     * @param taxonNameId
-     * @param rank
-     * @param genusOrUninomial
-     * @param infraGenericEpithet
-     * @param specificEpithet
-     * @param infraSpecificEpithet
-     */
     public TaxonNamePartsFilter(Rank rank, String genusOrUninomial, String infraGenericEpithet,
             String specificEpithet, String infraSpecificEpithet, Set<TaxonName> exludedNames) {
         super(null, null, rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet);
