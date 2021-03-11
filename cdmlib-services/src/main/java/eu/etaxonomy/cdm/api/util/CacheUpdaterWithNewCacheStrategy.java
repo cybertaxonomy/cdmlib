@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.util;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.longrunningService.CacheUpdater;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;

@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.util;
+package eu.etaxonomy.cdm.api.service.longrunningService;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.api.service.ITermNodeService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
-import eu.etaxonomy.cdm.api.util.SortIndexUpdaterWrapper;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.Feature;
