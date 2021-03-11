@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.api.service.util;
+package eu.etaxonomy.cdm.api.util;
 
 import java.util.Set;
 

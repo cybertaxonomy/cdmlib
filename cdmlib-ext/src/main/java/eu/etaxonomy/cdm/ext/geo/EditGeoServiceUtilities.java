@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;

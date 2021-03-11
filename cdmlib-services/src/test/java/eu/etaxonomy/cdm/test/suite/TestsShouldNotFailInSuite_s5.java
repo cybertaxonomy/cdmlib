@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 		{
 		    eu.etaxonomy.cdm.api.service.description.DistributionAggregationTest.class,
 		    eu.etaxonomy.cdm.api.service.UserAndGroupServiceImplTest.class,
-		    eu.etaxonomy.cdm.api.utility.DerivedUnitConverterIntegrationTest.class
+		    eu.etaxonomy.cdm.api.util.DerivedUnitConverterIntegrationTest.class
 		    /*
 		     * all test in DerivedUnitConverterIntegrationTest where failing due to a
 		     *

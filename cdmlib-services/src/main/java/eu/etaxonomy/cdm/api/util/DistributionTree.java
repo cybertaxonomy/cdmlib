@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.utility;
+package eu.etaxonomy.cdm.api.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -217,7 +217,7 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      *
      * @param area
      * @param distributionAreas the areas for which distribution data exists (after filtering by
-     *  {@link eu.etaxonomy.cdm.api.utility.DescriptionUtility#filterDistributions()} )
+     *  {@link eu.etaxonomy.cdm.api.util.DescriptionUtility#filterDistributions()} )
      * @param fallbackAreaMarkerTypes
      *      Areas not associated to a Distribution in the {@code distList} are detected as fallback area
      *      if they are having a {@link Marker} with one of the specified {@link MarkerType}s. Areas identified as such

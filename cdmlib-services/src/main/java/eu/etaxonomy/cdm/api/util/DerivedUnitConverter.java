@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.utility;
+package eu.etaxonomy.cdm.api.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,10 +24,8 @@ import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
- *
  * @author a.kohlbecker
  * @since Jun 23, 2017
- *
  */
 public class DerivedUnitConverter<TARGET extends DerivedUnit> {
 
@@ -160,7 +158,7 @@ public class DerivedUnitConverter<TARGET extends DerivedUnit> {
         source.getRights().forEach(r -> target.addRights(r));
         target.addSources(source.getSources());
         // need to clone the SpecimenTypeDesignation, since the SpecimenTypeDesignations are being deleted by the hibernate delete cascade
-        newSpecimenTypeDesignation = (SpecimenTypeDesignation) specimenTypeDesignation.clone();
+        newSpecimenTypeDesignation = specimenTypeDesignation.clone();
         for(Registration reg : specimenTypeDesignation.getRegistrations()){
             reg.removeTypeDesignation(specimenTypeDesignation);
         }

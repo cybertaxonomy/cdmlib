@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.api.utility;
+package eu.etaxonomy.cdm.api.util;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.utility.DistributionOrder;
+import eu.etaxonomy.cdm.api.util.DistributionOrder;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;

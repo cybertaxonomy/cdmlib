@@ -10,7 +10,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.Set;
 
-import eu.etaxonomy.cdm.api.utility.DistributionTree;
+import eu.etaxonomy.cdm.api.util.DistributionTree;
 import eu.etaxonomy.cdm.model.description.Distribution;
 
 /**
