@@ -167,23 +167,8 @@ public class DescriptionUtility {
         Set<NamedArea> areasHiddenByMarker = new HashSet<>();
         for(NamedArea area : filteredDistributions.keySet()) {
             if(isMarkedHidden(area, hiddenAreaMarkerTypes)) {
-                  // if at least one sub area is not hidden by a marker
-//                // the given area is a fall-back area for this sub area
-//                for(DefinedTermBase<NamedArea> included : area.getIncludes()) {
-//                    NamedArea subArea = CdmBase.deproxy(included,NamedArea.class);
-//                    if (!areasHiddenByMarker.contains(subArea) && checkAreaMarkedHidden(hiddenAreaMarkerTypes, subArea)) {
-//                        if(filteredDistributions.containsKey(subArea)) {
-//                            areasHiddenByMarker.add(subArea);
-//                        }
-//                    }
-//                    // if this sub-area is not marked to be hidden
-//                    // the parent area must be visible if there is no
-//                    // data for the sub-area
-//                    boolean subAreaVisible = filteredDistributions.containsKey(subArea)
-//                            && !areasHiddenByMarker.contains(subArea);
-//                    showAsFallbackArea = !subAreaVisible || showAsFallbackArea;
-//                }
-//                if (!showAsFallbackArea) {
+                // if at least one sub area is not hidden by a marker
+                // the given area is a fall-back area for this sub area
                 SetMap<NamedArea, Distribution>  distributionsForSubareaCheck = keepFallBackOnlyIfNoSubareaDataExists ? filteredDistributions : null;
                 boolean isFallBackArea = isRemainingFallBackArea(area, hiddenAreaMarkerTypes, distributionsForSubareaCheck);
                 if (!isFallBackArea) {
@@ -276,7 +261,7 @@ public class DescriptionUtility {
         return false;
     }
 
-    public static boolean isMarkedHidden(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
+    protected static boolean isMarkedHidden(NamedArea area, Set<MarkerType> hiddenAreaMarkerTypes) {
         if(hiddenAreaMarkerTypes != null) {
             for(MarkerType markerType : hiddenAreaMarkerTypes){
                 if(area.hasMarker(markerType, true)){
