@@ -16,11 +16,11 @@ import eu.etaxonomy.cdm.persistence.permission.Role;
  * @author a.kohlbecker
  * @since Jul 25, 2018
  */
-public class RoleProber implements RoleProbe {
+public class RoleProberImpl implements IRoleProber {
 
     private Role role;
 
-    public RoleProber(Role role){
+    public RoleProberImpl(Role role){
         this.role = role;
     }
 

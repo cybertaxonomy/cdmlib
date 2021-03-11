@@ -133,8 +133,8 @@ public class CdmUserHelper implements UserHelper, Serializable {
     }
 
     @Override
-    public boolean userIs(RoleProbe roleProbe) {
-        return roleProbe.checkForRole(getAuthentication());
+    public boolean userIs(IRoleProber iRoleProbe) {
+        return iRoleProbe.checkForRole(getAuthentication());
     }
 
     @Override

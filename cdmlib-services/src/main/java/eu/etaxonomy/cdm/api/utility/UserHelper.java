@@ -47,7 +47,7 @@ public interface UserHelper {
 
     boolean userIsAdmin();
 
-    boolean userIs(RoleProbe roleProbe);
+    boolean userIs(IRoleProber iRoleProbe);
 
     /**
      * @param username

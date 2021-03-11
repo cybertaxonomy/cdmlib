@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
  * @author a.kohlbecker
  * @since Jul 16, 2018
  */
-public interface RoleProbe {
+public interface IRoleProber {
 
     boolean checkForRole(Authentication authentication);
 
