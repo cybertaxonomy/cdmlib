@@ -11,7 +11,10 @@ package eu.etaxonomy.cdm.api.utility;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,6 +42,9 @@ public class DescriptionUtilityTest extends TermTestBase {
     private boolean statusOrderPreference = false;
     private Set<MarkerType> hideMarkedAreas = null;
     private NamedArea berlin = null;
+
+    private Collector<NamedArea, ?, List<NamedArea>> toList = Collectors.toList();
+    private static final boolean NO_PREFER_AGGREGATED = false;
 
     @Before
     public void setup(){
@@ -116,7 +122,6 @@ public class DescriptionUtilityTest extends TermTestBase {
     @Test
     public void testFilterDistributions_subAreaPreference(){
         subAreaPreference = true;
-        boolean preferAggregated = false;
 
         /*
          * Sub area preference rule: If there is an area with a direct sub area
@@ -139,21 +144,21 @@ public class DescriptionUtilityTest extends TermTestBase {
         distributions.add(distGermany);
         distributions.add(distBerlin);
         filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, true, false);
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // mixed situation
         distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, true, false);
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // all computed
         distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions,
-                hideMarkedAreas, preferAggregated, statusOrderPreference, subAreaPreference, true, false);
+                hideMarkedAreas, NO_PREFER_AGGREGATED, statusOrderPreference, subAreaPreference, true, false);
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
     }
@@ -191,13 +196,10 @@ public class DescriptionUtilityTest extends TermTestBase {
     @Test
     public void testFilterDistributions_fallbackArea_hidden(){
 
-        boolean preferAggregated = false;
-
-        NamedArea jugoslavia = NamedArea.NewInstance("Former Yugoslavia ", "", "Ju");
-        jugoslavia.setIdInVocabulary("Ju");
-        NamedArea serbia = NamedArea.NewInstance("Serbia", "", "Sr");
-        serbia.setIdInVocabulary("Sr");
+        NamedArea jugoslavia = NamedArea.NewInstance("", "Former Yugoslavia", "Ju");
+        NamedArea serbia = NamedArea.NewInstance("", "Serbia", "Sr");
         jugoslavia.addIncludes(serbia);
+
 
         Distribution distJugoslavia = Distribution.NewInstance(jugoslavia, PresenceAbsenceTerm.NATIVE());
         Distribution distSerbia = Distribution.NewInstance(serbia, PresenceAbsenceTerm.NATIVE());
@@ -211,17 +213,112 @@ public class DescriptionUtilityTest extends TermTestBase {
         hideMarkedAreas = new HashSet<>();
         hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
 
+        boolean keepFallBackOnlyIfNoSubareaDataExists = true;
         filteredDistributions = DescriptionUtility.filterDistributions(
                 distributions,
                 hideMarkedAreas,
-                preferAggregated,
+                NO_PREFER_AGGREGATED,
                 statusOrderPreference,
                 subAreaPreference,
-                true, false);
+                keepFallBackOnlyIfNoSubareaDataExists, false);
 
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
+
+        keepFallBackOnlyIfNoSubareaDataExists = false;
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions,
+                hideMarkedAreas,
+                NO_PREFER_AGGREGATED,
+                statusOrderPreference,
+                subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, false);
+
+        Assert.assertEquals(2, filteredDistributions.size());
+        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(serbia));
+        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(jugoslavia));
     }
+
+    @Test
+    public void testFilterDistributions_fallbackArea_recursive(){
+
+        NamedArea jugoslavia = NamedArea.NewInstance("", "Former Yugoslavia", "Ju");
+        NamedArea serbia = NamedArea.NewInstance("", "Serbia", "Sr");
+        jugoslavia.addIncludes(serbia);
+        NamedArea partOfSerbia = NamedArea.NewInstance("", "Part-of-Serbia", "PoS");
+        serbia.addIncludes(partOfSerbia);
+
+        Distribution distJugoslavia = Distribution.NewInstance(jugoslavia, PresenceAbsenceTerm.NATIVE());
+        Distribution distSerbia = Distribution.NewInstance(serbia, PresenceAbsenceTerm.NATIVE());
+        Distribution distPartOfSerbia = Distribution.NewInstance(partOfSerbia, PresenceAbsenceTerm.NATIVE());
+
+        distributions.add(distJugoslavia);
+
+        // using TO_BE_CHECKED to mark Ju as fallback area
+        jugoslavia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+        serbia.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+
+        hideMarkedAreas = new HashSet<>();
+        hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
+
+        boolean keepFallBackOnlyIfNoSubareaDataExists = true;
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, false);
+
+        Assert.assertEquals(1, filteredDistributions.size());
+
+
+        keepFallBackOnlyIfNoSubareaDataExists = false;
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, false);
+
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(jugoslavia, filteredDistributions.iterator().next().getArea());
+
+        keepFallBackOnlyIfNoSubareaDataExists = true;
+        distributions.add(distSerbia);
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, false);
+
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(serbia, filteredDistributions.iterator().next().getArea());
+
+        keepFallBackOnlyIfNoSubareaDataExists = false;
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, false);
+        Assert.assertEquals(2, filteredDistributions.size());
+        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(jugoslavia));
+        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(serbia));
+
+        distributions.add(distPartOfSerbia);
+        keepFallBackOnlyIfNoSubareaDataExists = true;
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, false);
+
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(partOfSerbia, filteredDistributions.iterator().next().getArea());
+
+        keepFallBackOnlyIfNoSubareaDataExists = false;
+        filteredDistributions = DescriptionUtility.filterDistributions(
+                distributions, hideMarkedAreas, NO_PREFER_AGGREGATED,
+                statusOrderPreference, subAreaPreference,
+                keepFallBackOnlyIfNoSubareaDataExists, false);
+        Assert.assertEquals(3, filteredDistributions.size());
+        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(jugoslavia));
+        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(serbia));
+        Assert.assertTrue(filteredDistributions.stream().map(d->d.getArea()).collect(toList).contains(partOfSerbia));
+    }
+
 
     @Test
     public void testFilterDistributions_fallbackArea_shown_1(){
