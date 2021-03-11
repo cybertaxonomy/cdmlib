@@ -15,19 +15,15 @@ import eu.etaxonomy.cdm.persistence.permission.Role;
 /**
  * @author a.kohlbecker
  * @since Jul 25, 2018
- *
  */
 public class RoleProber implements RoleProbe {
 
-    Role role;
+    private Role role;
 
     public RoleProber(Role role){
         this.role = role;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean checkForRole(Authentication authentication) {
         if(authentication != null) {
@@ -37,5 +33,4 @@ public class RoleProber implements RoleProbe {
         }
         return false;
     }
-
 }

@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.api.utility;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,8 +20,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
-import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
-import eu.etaxonomy.cdm.api.utility.DistributionOrder;
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
