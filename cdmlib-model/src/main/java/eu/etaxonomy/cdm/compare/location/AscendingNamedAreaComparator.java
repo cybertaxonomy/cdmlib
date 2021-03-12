@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  * @author freimeier
  * @since 07.02.2018
  */
-public class AlphabeticallyAscendingNamedAreaComparator implements Comparator<NamedArea>{
+public class AscendingNamedAreaComparator implements Comparator<NamedArea>{
 
     @Override
     public int compare(NamedArea o1, NamedArea o2) {
