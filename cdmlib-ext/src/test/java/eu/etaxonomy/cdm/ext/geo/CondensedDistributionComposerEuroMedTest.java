@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionComposer.StatusSymbolUsage;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionComposer.SymbolUsage;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -100,7 +100,8 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
 
         composer = new CondensedDistributionComposer();
         config = CondensedDistributionConfiguration.NewDefaultInstance();
-        config.statusSymbolField = StatusSymbolUsage.Symbol1;
+        config.areaSymbolField = SymbolUsage.AbbrevLabel;
+        config.statusSymbolField = SymbolUsage.Symbol1;
     }
 
     private void setAsFallback(NamedArea area) {
@@ -142,7 +143,7 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         Assert.assertEquals("● <b>GER(B</b> dBW<b>)</b> ?IT [cFR(J) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
 
         bawueDistribution.setStatus(PresenceAbsenceTerm.CASUAL());
-        Assert.assertEquals("● <b>GER(B)</b> ?IT [aGER(BW) cFR(J) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
+        Assert.assertEquals("● <b>GER(B)</b> ?IT [cFR(J) aGER(BW) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
 
     }
 
@@ -201,8 +202,10 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
 
         distributions.add(Distribution.NewInstance(france, PresenceAbsenceTerm.CASUAL()));
 
+        CondensedDistributionConfiguration config = CondensedDistributionConfiguration.NewCubaInstance();
+        config.areaSymbolField = SymbolUsage.AbbrevLabel;
         CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                distributions, languages, CondensedDistributionConfiguration.NewCubaInstance());
+                distributions, languages, config);
 
         Assert.assertEquals("●<b>EU</b>(<b>GER</b>(<b>GER(B) GER(BW)</b>) a<b>FR</b>(c<b>FR(J)</b>) ?<b>IT</b> n<b>S</b>)", condensedDistribution.toString());
     }
