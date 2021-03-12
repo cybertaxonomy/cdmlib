@@ -1721,7 +1721,7 @@ public class CdmLightClassificationExport
                      }
                      if (taxonBase instanceof Synonym){
                          if (StringUtils.isNotBlank(sec)){
-                             sec = " syn. sec. " + sec;
+                             sec = " syn. sec. " + sec + " ";
                          }else {
                              sec = "";
                          }
@@ -1752,7 +1752,7 @@ public class CdmLightClassificationExport
                         }
                         if (tb instanceof Synonym){
                             if (StringUtils.isNotBlank(sec)){
-                                sec = " syn. sec. " + sec;
+                                sec = " syn. sec. " + sec + " ";
                             }else {
                                 sec = "";
                             }
@@ -1769,7 +1769,8 @@ public class CdmLightClassificationExport
                     }
                     if (!isAccepted){
                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + "; ";
-                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + "; ";
+                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec;
+                        typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                     }
                 }
                 typifiedNamesString += synonymSign + doubtful + nameString ;
