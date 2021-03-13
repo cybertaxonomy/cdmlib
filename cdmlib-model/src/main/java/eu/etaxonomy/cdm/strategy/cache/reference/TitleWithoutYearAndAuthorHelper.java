@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -26,7 +27,7 @@ public class TitleWithoutYearAndAuthorHelper {
     private static final Logger logger = Logger.getLogger(TitleWithoutYearAndAuthorHelper.class);
 
     //article
-    private static final String prefixArticleReferenceJounal = "in";
+    private static final String prefixArticleReferenceJounal = UTF8.EN_DASH + " ";
     private static final String prefixSeriesArticle = "ser.";
 
     //book
@@ -44,7 +45,7 @@ public class TitleWithoutYearAndAuthorHelper {
 
 // *************************Main METHODS ***********************************/
 
-    public static String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev){
+    public static String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev, boolean isNomRef){
         ReferenceType type = ref.getType();
         if (! DefaultReferenceCacheStrategy.isNomRef(type)){
             logger.warn("getTitleWithoutYearAndAuthor should not be required"
@@ -52,7 +53,7 @@ public class TitleWithoutYearAndAuthorHelper {
                     " and does not exist. Use Generic getTitleWithoutYearAndAuthorGeneric instead");
             return getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
         }else if (type == ReferenceType.Article){
-            return getTitleWithoutYearAndAuthorArticle(ref, isAbbrev);
+            return getTitleWithoutYearAndAuthorArticle(ref, isAbbrev, isNomRef);
         }else if(type == ReferenceType.Book){
             return getTitleWithoutYearAndAuthorBook(ref, isAbbrev);
         }else if(type == ReferenceType.CdDvd){
@@ -71,12 +72,9 @@ public class TitleWithoutYearAndAuthorHelper {
             //FIXME
             return null;
         }
-
     }
 
-
-
-    private static String getTitleWithoutYearAndAuthorArticle(Reference article, boolean isAbbrev){
+    private static String getTitleWithoutYearAndAuthorArticle(Reference article, boolean isAbbrev, boolean isNomRef){
         if (article == null){
             return null;
         }
@@ -94,10 +92,8 @@ public class TitleWithoutYearAndAuthorHelper {
 
         boolean needsComma = false;
 
-        String nomRefCache = "";
-
         //inJournal
-        nomRefCache = prefixArticleReferenceJounal + blank;
+        String nomRefCache = isNomRef? "in ": prefixArticleReferenceJounal;
 
         //titelAbbrev
         if (isNotBlank(journalTitel)){
@@ -113,7 +109,7 @@ public class TitleWithoutYearAndAuthorHelper {
 
         //delete "."
         while (nomRefCache.endsWith(".")){
-            nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
+            nomRefCache = CdmUtils.removeTrailingDots(nomRefCache);
         }
 
         return nomRefCache.trim();

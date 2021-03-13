@@ -18,6 +18,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -67,12 +68,12 @@ public class DefaultReferenceCacheStrategy
 
     //book
 
-
     //(book?) section
     private String afterSectionAuthor = " - ";
 
     //in reference
-    private String inSeparator = "in ";
+    private String biblioInSeparator = UTF8.EN_DASH + " In: "; //#9529
+    private String biblioArticleInSeparator = UTF8.EN_DASH + " "; //#9529
     private static final String afterInRefAuthor = ", ";
 
     //common
@@ -113,14 +114,15 @@ public class DefaultReferenceCacheStrategy
             result = titleCacheRealInRef(reference, isNotAbbrev);
         }else if(isNomRef(type)){
             //all Non-InRef NomRefs
-            result =  getTitleWithoutYearAndAuthor(reference, isNotAbbrev);
+            result =  getTitleWithoutYearAndAuthor(reference, isNotAbbrev, false);
             result = addPages(result, reference);
             result = addYear(result, reference, false);
             TeamOrPersonBase<?> team = reference.getAuthorship();
 
             if (type == ReferenceType.Article){
-                result = CdmUtils.concat(" ", reference.getTitle(), result);
-                if (team != null &&  isNotBlank(team.getTitleCache())){
+                String artTitle = CdmUtils.addTrailingDotIfNotExists(reference.getTitle());
+                result = CdmUtils.concat(" ", artTitle, result);
+                if (team != null && isNotBlank(team.getTitleCache())){
                     String authorSeparator = isNotBlank(reference.getTitle())? afterAuthor : " ";
                     result = team.getTitleCache() + authorSeparator + result;
                 }
@@ -140,8 +142,7 @@ public class DefaultReferenceCacheStrategy
             result = titleCacheDefaultReference(reference, isNotAbbrev);
         }
         if (reference.getType() == ReferenceType.WebPage && reference.getUri() != null && !result.contains(reference.getUri().toString())){
-            //might become UTF8.EN_DASH in future
-            result = CdmUtils.concat(" - ", result, reference.getUri().toString());
+            result = CdmUtils.concat(" "+UTF8.EN_DASH+" ", result, reference.getUri().toString());
         }
         if(reference.getAccessed() != null){
             //TODO still a bit preliminary, also brackets may change in future
@@ -189,7 +190,7 @@ public class DefaultReferenceCacheStrategy
         }
 
         if (type == ReferenceType.Article){
-            result =  getTitleWithoutYearAndAuthor(reference, isAbbrev);
+            result =  getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
             boolean useFullDatePublished = false;
             result = addYear(result, reference, useFullDatePublished);
             TeamOrPersonBase<?> team = reference.getAuthorship();
@@ -204,7 +205,7 @@ public class DefaultReferenceCacheStrategy
             result = titleCacheRealInRef(reference, isAbbrev);
         }else if (isNomRef(type)){
             //FIXME same as titleCache => try to merge, but note article case
-            result =  getTitleWithoutYearAndAuthor(reference, isAbbrev);
+            result =  getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
             boolean useFullDatePublished = false;
             result = addYear(result, reference, useFullDatePublished);
             TeamOrPersonBase<?> team = reference.getAuthorship();
@@ -383,13 +384,16 @@ public class DefaultReferenceCacheStrategy
         }
 
         //in
-        result = inSeparator +  result;
+        result = biblioInSeparator +  result;
 
         //section title
         String title = CdmUtils.getPreferredNonEmptyString(
                 reference.getTitle(), reference.getAbbrevTitle(), isAbbrev, trim);
+        if (title.matches(".*[.!\\?]")){
+            title = title.substring(0, title.length() - 1);
+        }
         if (title.length() > 0){
-            result = title + blank + result;
+            result = title.trim() + "." + blank + result;
         }
 
         //section author
@@ -499,8 +503,8 @@ public class DefaultReferenceCacheStrategy
         return result;
     }
 
-    private String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev){
-        return TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(ref, isAbbrev);
+    private String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev, boolean isNomRef){
+        return TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(ref, isAbbrev, isNomRef);
     }
     private String getTitleWithoutYearAndAuthorGeneric(Reference ref, boolean isAbbrev){
         return TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
@@ -634,7 +638,7 @@ public class DefaultReferenceCacheStrategy
         if (isRealInRef(ref)){
             return getTokenizedNomenclaturalTitelInRef(ref);
         }else{
-            String result = getTitleWithoutYearAndAuthor(ref, true);
+            String result = getTitleWithoutYearAndAuthor(ref, true, true);
             result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
             result = addYear(result, ref, true);
             return result;
@@ -701,10 +705,10 @@ public class DefaultReferenceCacheStrategy
                 result = getTitleWithoutYearAndAuthorGeneric(inInRef, true);
                 //FIXME: vol. etc., https://dev.e-taxonomy.eu/redmine/issues/2862  (comment taken from super.getTokenizedNomenclaturalTitel())
             }else{
-                result = getTitleWithoutYearAndAuthor(inRef, true);
+                result = getTitleWithoutYearAndAuthor(inRef, true, true);
             }
         }else{
-            result = getTitleWithoutYearAndAuthor(inInRef, true);
+            result = getTitleWithoutYearAndAuthor(inInRef, true, true);
         }
         result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 
