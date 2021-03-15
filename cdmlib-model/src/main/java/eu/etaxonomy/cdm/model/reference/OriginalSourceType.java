@@ -114,8 +114,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	/**
 	 * Nomenclatural reference as used for {@link TaxonName taxon names} and
 	 * type designations.
-	 * E.g. a media may be copy of figure in book. The book itself will then be the primary media source.
-	 *
 	 */
 	@XmlEnumValue("Nomenclatural Reference")
 	NomenclaturalReference(UUID.fromString("67650daf-d4aa-48da-aa41-18d2763383aa"), "Nomenclatural Reference", "NOR", null),

@@ -2245,6 +2245,8 @@ public class TaxonName
         }
     }
 
+// *********************************************
+
     /**
      * Creates a new external link for given uri with default language description if description exists
      * and adds it to the nomenclatural source.

@@ -205,5 +205,4 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
         }
 	    return a == b;
 	}
-
 }

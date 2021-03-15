@@ -187,7 +187,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
      * using it.
      *
      * @param  taxonName	the taxon name used
-     * @param  sec				the reference using the taxon name
+     * @param  sec			the reference using the taxon name
      * @see    #TaxonBase()
      */
     protected TaxonBase(TaxonName taxonName, Reference sec, String secDetail){
@@ -206,42 +206,10 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
 //********* METHODS **************************************/
 
-    /**
-     * Generates and returns the string with the full scientific name (including
-     * authorship) of the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used in <i>this</i>
-     * (abstract) taxon as well as the title of the {@link eu.etaxonomy.cdm.model.reference.Reference reference} using
-     * this taxon name. This string may be stored in the inherited
-     * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
-     * This method overrides the generic and inherited generateTitle() method
-     * from {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity IdentifiableEntity}.
-     *
-     * @return  the string with the full scientific name of the taxon name
-     *			and with the title of the reference involved in <i>this</i> (abstract) taxon
-     * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-     * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-     */
-//	@Override
-//	public String generateTitle() {
-//		String title;
-//		if (name != null && name.getTitleCache() != null){
-//			title = name.getTitleCache() + " sec. ";
-//			if (sec != null){
-//				title += sec.getTitleCache();
-//			}else{
-//				title += "???";
-//			}
-//		}else{
-//			title = this.toString();
-//		}
-//		return title;
-//	}
-
     @Transient
     public List<TaggedText> getTaggedTitle(){
         return getCacheStrategy().getTaggedTitle(this);
     }
-
-
 
     /**
      * Returns the {@link TaxonName taxon name} used in <i>this</i> (abstract) taxon.
@@ -290,7 +258,6 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         this.doubtful = doubtful;
     }
 
-
     /**
      * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not
      * (<code>publish=true</code>) during any publication process to the general public.
@@ -302,7 +269,6 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
     public boolean isPublish() {
         return publish;
     }
-
     @Override
     public void setPublish(boolean publish) {
         this.publish = publish;
@@ -340,7 +306,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         this.secMicroReference = CdmUtils.Nb(secMicroReference);
     }
 
-
+// *********************************************
 
     /**
      * An appended phrase is a phrase that is added to the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name}
