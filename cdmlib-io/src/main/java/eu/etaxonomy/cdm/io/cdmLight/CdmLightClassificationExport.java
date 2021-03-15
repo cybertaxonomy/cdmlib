@@ -1105,7 +1105,7 @@ public class CdmLightClassificationExport
             Reference nomRef = name.getNomenclaturalReference();
 
             NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
-            if (nomenclaturalSource.getNameUsedInSource() != null){
+            if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
                 handleName(state, nomenclaturalSource.getNameUsedInSource());
                 csvLine[table.getIndex(CdmLightExportTable.NAME_USED_IN_SOURCE)] = getId(state, nomenclaturalSource.getNameUsedInSource());
             }
