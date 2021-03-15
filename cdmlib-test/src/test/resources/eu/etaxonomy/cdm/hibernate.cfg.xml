@@ -197,6 +197,7 @@
       <mapping class="eu.etaxonomy.cdm.model.reference.CdmLinkSource"/>
       
       <!-- Taxon Package -->
+      <mapping class="eu.etaxonomy.cdm.model.taxon.SecundumSource"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymType"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>

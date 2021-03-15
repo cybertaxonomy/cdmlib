@@ -124,7 +124,7 @@ public class ClassificationDaoHibernateImpl
 
         String selectWhat = doCount ? "COUNT(distinct tn)" : "DISTINCT tn";
 
-        String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n LEFT JOIN FETCH n.rank LEFT JOIN FETCH t.sec ";
+        String joinFetch = doCount ? "" : " JOIN FETCH tn.taxon t JOIN FETCH t.name n LEFT JOIN FETCH n.rank LEFT JOIN FETCH t.secSource ss LEFT JOIN FETCH ss.citation ";
 
         if(rank == null){
             String hql = "SELECT " + selectWhat +

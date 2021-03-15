@@ -74,7 +74,6 @@ import eu.etaxonomy.cdm.persistence.query.NameSearchOrder;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
-
 /**
  * @author a.mueller
  * @since 24.11.2008
@@ -183,7 +182,7 @@ public class TaxonDaoHibernateImpl
         }
 
         if (sec != null && sec.getId() != 0) {
-            criteria.add(Restrictions.eq("sec", sec ) );
+            criteria.add(Restrictions.eq("secSource.citation", sec ) );
         }
 
         if (queryString != null) {

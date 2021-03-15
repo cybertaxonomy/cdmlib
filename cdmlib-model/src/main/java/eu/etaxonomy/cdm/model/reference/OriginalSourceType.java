@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
@@ -118,8 +119,14 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	@XmlEnumValue("Nomenclatural Reference")
 	NomenclaturalReference(UUID.fromString("67650daf-d4aa-48da-aa41-18d2763383aa"), "Nomenclatural Reference", "NOR", null),
 
+    //7
+    /**
+     * Secundum reference as used for {@link TaxonBase taxon bases}.
+    */
+    @XmlEnumValue("Secundum Reference")
+    SecundumReference(UUID.fromString("83a218c2-b17a-4203-adba-e4042177c998"), "Secundum Reference", "SEC", null),
 
-	//7
+	//8
 	/**
 	 * <code>Other</code> is the type to be used if none of the other types is applicable.
 	 */

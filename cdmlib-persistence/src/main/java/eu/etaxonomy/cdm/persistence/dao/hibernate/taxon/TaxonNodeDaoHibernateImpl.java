@@ -683,7 +683,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
         String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.COUNT);
         if (!overwriteExisting){
-            queryStr += " AND t.sec IS NULL ";
+            queryStr += " AND t.secSource.citation IS NULL ";
         }
         return countResult(queryStr);
     }
@@ -698,7 +698,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
         String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.COUNT);
         if (!overwriteExisting){
-            queryStr += " AND syn.sec IS NULL ";
+            queryStr += " AND syn.secSource.citation IS NULL ";
         }
         return countResult(queryStr);
     }
@@ -722,7 +722,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.ID);
         if (!overwriteExisting){
-            queryStr += " AND t.sec IS NULL ";
+            queryStr += " AND t.secSource.citation IS NULL ";
         }
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
 
@@ -734,7 +734,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.ID);
         if (!overwriteExisting){
-            queryStr += " AND syn.sec IS NULL ";
+            queryStr += " AND syn.secSource.citation IS NULL ";
         }
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
     }
@@ -746,7 +746,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
-            for (TaxonBase taxonBase : taxonList){
+            for (TaxonBase<?> taxonBase : taxonList){
                 if (taxonBase != null){
                     taxonBase = taxonDao.load(taxonBase.getUuid());
                     taxonBase.setSec(newSec);

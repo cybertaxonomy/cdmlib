@@ -323,13 +323,15 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 			"LEFT JOIN nd_e.sources nd_e_s " +
 			//nomenclatural citation
 			"LEFT JOIN n.nomenclaturalSource ns " +
+			//secundum citation
+            "LEFT JOIN t.secSource ss " +
 
 			"WHERE td_e_s.citation IN (:referenceBase_1) " +
 			  " OR td_s IN (:referenceBase_2) " +
 			  " OR nd_e_s.citation IN (:referenceBase_3) " +
 			  " OR nd_s IN (:referenceBase_4) " +
 			  " OR ns.citation IN (:referenceBase_5) " +
-			  " OR t.sec IN (:referenceBase_6)"
+			  " OR ss.citation IN (:referenceBase_6)"
 			);
 
 		if (orderHints != null && orderHints.size() > 0){

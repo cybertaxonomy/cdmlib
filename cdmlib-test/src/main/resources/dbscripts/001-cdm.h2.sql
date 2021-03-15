@@ -3479,6 +3479,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CITATION_ID integer,
         NAMEUSEDINSOURCE_ID integer,
         SOURCEDNAME_ID integer,
+        SOURCEDTAXON_ID integer,
         primary key (ID)
     );
 
@@ -3514,6 +3515,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CDMSOURCE_ID integer,
         CITATION_ID integer,
         NAMEUSEDINSOURCE_ID integer,
+        SOURCEDTAXON_ID integer,
         SOURCEDNAME_ID integer,
         primary key (ID, REV)
     );
@@ -4899,13 +4901,11 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         APPENDEDPHRASE varchar(255),
         DOUBTFUL boolean not null,
         PUBLISH boolean not null,
-        SECMICROREFERENCE varchar(255),
         USENAMECACHE boolean not null,
         TAXONSTATUSUNKNOWN boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        SEC_ID integer,
         ACCEPTEDTAXON_ID integer,
         TYPE_ID integer,
         primary key (ID)
@@ -4943,12 +4943,10 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         APPENDEDPHRASE varchar(255),
         DOUBTFUL boolean,
         PUBLISH boolean,
-        SECMICROREFERENCE varchar(255),
         USENAMECACHE boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        SEC_ID integer,
         TAXONSTATUSUNKNOWN boolean,
         ACCEPTEDTAXON_ID integer,
         TYPE_ID integer,
@@ -9795,6 +9793,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         foreign key (SOURCEDNAME_ID) 
         references PUBLIC.TAXONNAME;
 
+    alter table PUBLIC.ORIGINALSOURCEBASE 
+        add constraint FKnjdmnpc75cwobndpygowwr5et 
+        foreign key (SOURCEDTAXON_ID) 
+        references PUBLIC.TAXONBASE;
+
     alter table PUBLIC.ORIGINALSOURCEBASE_ANNOTATION 
         add constraint FK82rq53k1sbkqxuxuh5eyuels9 
         foreign key (ANNOTATIONS_ID) 
@@ -11079,11 +11082,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FKio1sgegmb448k1270ys6h7fio 
         foreign key (NAME_ID) 
         references PUBLIC.TAXONNAME;
-
-    alter table PUBLIC.TAXONBASE 
-        add constraint FKephkjnyxcav9teoj0psbpaycv 
-        foreign key (SEC_ID) 
-        references PUBLIC.REFERENCE;
 
     alter table PUBLIC.TAXONBASE 
         add constraint FKfb64jyfxe0di03m6okc3l5bso 

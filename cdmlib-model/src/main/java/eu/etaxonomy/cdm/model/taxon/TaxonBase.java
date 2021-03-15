@@ -12,11 +12,11 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -51,10 +51,12 @@ import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
@@ -62,7 +64,6 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
 
 /**
@@ -85,9 +86,8 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonBase", propOrder = {
     "name",
-    "sec",
+    "secSource",
     "doubtful",
-    "secMicroReference",
     "appendedPhrase",
     "useNameCache",
     "publish"
@@ -144,21 +144,15 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
     @NotNull(groups = Level2.class)
     private TaxonName name;
 
-    // The concept reference
-    @XmlElement(name = "Sec")
+    //#9327
+    @XmlElement(name = "SecSource")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    @NotNull(groups = Level2.class)
-    @IndexedEmbedded
-    private Reference sec;
-
-    @XmlElement(name = "secMicroReference")
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedTaxon")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE,CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
-    @NullOrNotEmpty
-    @Column(length=255)
-    private String secMicroReference;
+    @IndexedEmbedded
+    private SecundumSource secSource;
 
     @XmlElement(name = "AppendedPhrase")
     private String appendedPhrase;
@@ -274,36 +268,79 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         this.publish = publish;
     }
 
-    /**
-     * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference reference} of <i>this</i> (abstract) taxon.
-     * This is the reference or the treatment using the {@link TaxonName taxon name}
-     * in <i>this</i> (abstract) taxon.
-     */
-    public Reference getSec() {
-        return sec;
+  //*************** sec source *******************/
+
+    public SecundumSource getSecSource(){
+        return this.secSource;
     }
-    /**
-     * @see  #getSec()
-     */
-    public void setSec(Reference sec) {
-        this.sec = sec;
+
+    protected DescriptionElementSource getSecSource(boolean createIfNotExist){
+        if (this.secSource == null && createIfNotExist){
+            setSecSource(SecundumSource.NewSecundumInstance(this));
+        }
+        return secSource;
+    }
+
+    public void setSecSource(SecundumSource secSource) throws IllegalArgumentException {
+        //check state
+        if (secSource != null && !OriginalSourceType.SecundumReference.equals(secSource.getType())
+                ){
+            throw new IllegalArgumentException("Secundum source must be of type " + OriginalSourceType.SecundumReference.getLabel());
+        }
+        this.secSource = secSource;
+        if (secSource != null && secSource.getSourcedTaxon() != this){
+            secSource.setSourcedTaxon(this);
+        }
+    }
+
+    @Transient
+    public Reference getSec(){
+        return this.secSource == null? null:this.secSource.getCitation();
+    }
+
+    @Transient
+    public void setSec(Reference secReference){
+        if (secReference == null && this.getSecSource()==null){
+            return;
+        }else{
+            getSecSource(true).setCitation(secReference);
+        }
     }
 
     /**
-     * @return the micro reference (detail) for the sec(undum)
-     * reference
-     * @see #getSec()
+     * Returns the details string of the {@link #getSec() sec reference} assigned
+     * to <i>this</i> taxon base. The details describe the exact localisation within
+     * the publication used as sec reference. These are mostly
+     * (implicitly) pages but can also be figures or tables or any other
+     * element of a publication. A sec micro reference (details)
+     * requires the existence of a sec reference.
      */
-    public String getSecMicroReference() {
-        return secMicroReference;
+    @Transient
+    public String getSecMicroReference(){
+        return this.secSource == null? null: this.secSource.getCitationMicroReference();
     }
 
     /**
-     * @see #getSecMicroReference()
-     * @see #getSec()
+     * @see  #getSecMicroReference()
      */
-    public void setSecMicroReference(String secMicroReference) {
-        this.secMicroReference = CdmUtils.Nb(secMicroReference);
+    public void setSecMicroReference(String secMicroReference){
+        secMicroReference = isBlank(secMicroReference)? null : secMicroReference;
+        if (secMicroReference == null && this.getSecSource()==null){
+            return;
+        }else{
+            this.getSecSource(true).setCitationMicroReference(secMicroReference);
+        }
+    }
+
+    /**
+     * Checks if the source is completely empty and if empty removes it from the name.
+     */
+    //TODO maybe this should be moved to a hibernate listener, but the listener solution may
+    //work only for sec single sources as they are the only which are bidirectional
+    protected void checkNullSource() {
+        if (this.secSource != null && this.secSource.checkEmpty(true)){
+            this.secSource = null;
+        }
     }
 
 // *********************************************
