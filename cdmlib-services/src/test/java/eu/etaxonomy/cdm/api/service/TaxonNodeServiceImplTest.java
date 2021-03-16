@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -44,7 +43,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
@@ -1219,42 +1217,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         nodes.add(pinusDto);
         commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
         assertEquals(classificationRootNodeDto.getUuid(), commonParentNodeDto.getUuid());
-    }
-
-    @Test
-    @DataSet
-    public void testSaveNewTaxonNode(){
-        //make the sec reference persistent
-        Person secAndNameAuthor = (Person)agentService.find(person1uuid);
-        Reference sec = ReferenceFactory.newBook();
-        sec.setAuthorship(secAndNameAuthor);
-        sec = referenceService.save(sec);
-        UUID secUuid = sec.getUuid();
-
-        commitAndStartNewTransaction();
-        sec = referenceService.load(secUuid);
-        secAndNameAuthor = HibernateProxyHelper.deproxy(agentService.load(person1uuid), Person.class);
-        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        taxonName.setCombinationAuthorship(secAndNameAuthor);
-        Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
-        node2 = taxonNodeService.find(node2Uuid);
-        TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
-        taxonNodeService.saveNewTaxonNode(newTaxonNode);
-    }
-
-    @Test
-    @DataSet
-    //test for #8857, same as #testSaveNewTaxonNode() but with reference as duplicate
-    public void testSaveNewTaxonNodeReference(){
-        Reference sec = referenceService.find(referenceUuid);
-        commitAndStartNewTransaction();
-
-        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        taxonName.setNomenclaturalReference(sec);
-        Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
-        node2 = taxonNodeService.find(node2Uuid);
-        TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
-        taxonNodeService.saveNewTaxonNode(newTaxonNode);
     }
 
     @Test

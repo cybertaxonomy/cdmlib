@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -86,7 +85,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
-import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -921,72 +919,6 @@ public class TaxonNodeServiceImpl
         if (child != null){
             result.setCdmEntity(child);
         }
-        return result;
-    }
-
-    @Override
-    @Transactional
-    public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode){
-        UpdateResult result = new UpdateResult();
-        UUID parentUuid = newTaxonNode.getParent().getUuid();
-        Taxon taxon = null;
-
-        if (newTaxonNode.getTaxon().isPersited()){
-            taxon = (Taxon)taxonService.load(newTaxonNode.getTaxon().getUuid());
-        }else if (newTaxonNode.getTaxon().getName().isPersited()){
-            TaxonName name = nameService.load(newTaxonNode.getTaxon().getName().getUuid());
-            taxon = newTaxonNode.getTaxon();
-            taxon.setName(name);
-        }else{
-            //taxon and name is not persisted, persist possible related names
-            for (HybridRelationship rel : newTaxonNode.getTaxon().getName().getHybridChildRelations()){
-                if (!rel.getHybridName().isPersited()) {
-                    nameService.save(rel.getHybridName());
-                }
-                if (!rel.getParentName().isPersited()) {
-                    nameService.save(rel.getParentName());
-                }
-            }
-        }
-        if (taxon == null){
-            taxon = newTaxonNode.getTaxon();
-        }
-        taxon.removeTaxonNode(newTaxonNode);
-
-        if (taxon.getSec() != null && taxon.getSec().isPersited()){
-            Reference sec = referenceService.load(taxon.getSec().getUuid());
-            taxon.setSec(sec);
-        }
-        if (!taxon.isPersited()){
-            MergeResult<TaxonBase> mergeResult = taxonService.merge(taxon, true);
-            taxon = (Taxon) mergeResult.getMergedEntity();
-
-        }
-
-        TaxonNode parent = dao.load(parentUuid);
-        TaxonNode child = null;
-        try{
-            child = parent.addChildTaxon(taxon, newTaxonNode.getReference(), newTaxonNode.getMicroReference());
-        }catch(Exception e){
-            result.addException(e);
-            result.setError();
-            return result;
-        }
-
-        //TODO can't we work with clone method here?
-        child.setStatus(newTaxonNode.getStatus());
-        for (TaxonNodeAgentRelation agentRel :newTaxonNode.getAgentRelations()){
-            child.addAgentRelation(agentRel.getType(), agentRel.getAgent());
-        }
-        for (Entry<Language, LanguageString> entry: newTaxonNode.getStatusNote().entrySet()){
-            child.putStatusNote(entry.getKey(), entry.getValue().getText());
-        }
-
-        newTaxonNode = null;
-        MergeResult<TaxonNode> mergeNode = dao.merge(child,true);
-        child = mergeNode.getMergedEntity();
-        result.addUpdatedObject(child.getParent());
-        result.setCdmEntity(child);
         return result;
     }
 

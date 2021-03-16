@@ -264,12 +264,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     public TaxonNodeDto dto(UUID taxonNodeUuid);
 
-//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, Authentication authentication, boolean openChildren);
-//
-//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid, List<String> propertyPaths, boolean openChildren);
-
-    public UpdateResult saveNewTaxonNode(TaxonNode newTaxonNode);
-
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
