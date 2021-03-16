@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.Partial;
+
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -41,6 +43,7 @@ public class GatheringEventDTO implements Serializable{
     private Double distanceToWaterSurface;
     private Double distanceToWaterSurfaceMax;
     private String collector;
+    private Partial date;
 
     /**
      * @param locality
@@ -134,6 +137,9 @@ public class GatheringEventDTO implements Serializable{
         if (gathering.getDistanceToWaterSurfaceText() != null){
             dto.distanceToWaterSurfaceText= gathering.getDistanceToWaterSurfaceText();
         }
+        if(gathering.getTimeperiod() != null) {
+            dto.setDate(gathering.getGatheringDate());
+        }
 
         for (NamedArea area: gathering.getCollectingAreas()){
             String areaString = area.getLabel();
@@ -194,6 +200,13 @@ public class GatheringEventDTO implements Serializable{
     }
     public void setCollector(String collector) {
         this.collector = collector;
+    }
+    public Partial getdate() {
+        return date;
+    }
+
+    public void setDate(Partial date) {
+        this.date = date;
     }
     private String distanceToWaterSurfaceText;
 

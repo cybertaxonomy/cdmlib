@@ -32,7 +32,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
 	private String country;
 	private String collectingString;
-	private Partial date;
+	private Partial date; // TODO remove if obsolete copy of gatheringEvent.timeperiod
 	private String collectionsStatistics;
 
 	private GatheringEventDTO gatheringEvent;
