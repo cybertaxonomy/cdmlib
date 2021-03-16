@@ -758,8 +758,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetSecundumForSubtreeNoOverwrite(){
         UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
-//        UUID taxon1uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
-//        UUID taxon5uuid = UUID.fromString("d0b99fee-a783-4dda-b8a2-8960703cfcc2");
         Reference newSec = referenceService.find(UUID.fromString("1d3fb074-d7ba-47e4-be94-b4cb1a99afa7"));
 
         //assert current state
