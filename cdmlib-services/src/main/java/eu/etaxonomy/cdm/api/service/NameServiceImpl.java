@@ -199,15 +199,25 @@ public class NameServiceImpl
 
              //all type designation relationships are removed as they belong to the name
             deleteTypeDesignation(name, null);
-    //      //type designations
-    //      if (! name.getTypeDesignations().isEmpty()){
-    //          String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
-    //          throw new ReferrencedObjectUndeletableException(message);
-    //      }
+            //if original spellings should be deleted, remove it from the nomenclatural source
+            Set<TaxonName> namesToUpdate = new HashSet<>();
+            for (Object o: result.getRelatedObjects()){
+                if (o instanceof NomenclaturalSource && ((NomenclaturalSource)o).getNameUsedInSource() != null && ((NomenclaturalSource)o).getNameUsedInSource().equals(name)){
+                    NomenclaturalSource nomSource = (NomenclaturalSource)o;
+                    nomSource.setNameUsedInSource(null);
+                    namesToUpdate.add(nomSource.getSourcedName());
+                }
+            }
 
             try{
+                if (!namesToUpdate.isEmpty()){
+                    Map<UUID, TaxonName> updatedNames = dao.saveOrUpdateAll(namesToUpdate);
+                    Set<TaxonName> names = new HashSet<>(updatedNames.values());
+                    result.addUpdatedObjects(names);
+                }
                 dao.delete(name);
                 result.addDeletedObject(name);
+
             }catch(Exception e){
                 result.addException(e);
                 result.setError();
@@ -1013,10 +1023,8 @@ public class NameServiceImpl
                 }
             }
         }
-
         //concepts
-
-        if (! name.getTaxonBases().isEmpty() ){
+        if (!name.getTaxonBases().isEmpty()){
             boolean isDeletableTaxon = true;
             List <TaxonBase> notDeletedTaxonBases = name.getTaxonBases().stream()
                     .filter((taxonBase) -> !taxonBase.getUuid().equals(taxonUuid))
@@ -1072,7 +1080,22 @@ public class NameServiceImpl
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
-        }
+            }
+            //original spelling
+            else if (referencingObject.isInstanceOf(NomenclaturalSource.class) && !((NameDeletionConfigurator)config).isIgnoreIsOriginalSpellingFor()){
+                if (((NomenclaturalSource)referencingObject).getNameUsedInSource() != null && ((NomenclaturalSource)referencingObject).getNameUsedInSource().equals(name)){
+                    String message = "Name can't be deleted as it is used as originalSpelling";
+                    result.addException(new ReferencedObjectUndeletableException(message));
+                    result.addRelatedObject(referencingObject);
+                    result.setAbort();
+                }
+            }
+            if (referencingObject.isInstanceOf(NomenclaturalSource.class)){
+                if (((NomenclaturalSource)referencingObject).getNameUsedInSource() != null && ((NomenclaturalSource)referencingObject).getNameUsedInSource().equals(name)){
+                    result.addRelatedObject(referencingObject);
+                }
+
+            }
         }
 
         //TODO inline references

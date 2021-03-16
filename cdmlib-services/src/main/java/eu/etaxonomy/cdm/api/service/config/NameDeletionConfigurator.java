@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -14,9 +14,9 @@ import eu.etaxonomy.cdm.api.service.INameService;
 
 /**
  * This class is used to configure name deletion.
- * 
+ *
  * @see INameService#delete(eu.etaxonomy.cdm.model.name.TaxonName)
- * 
+ *
  * @author a.mueller
  * @since 19.09.2011
  *
@@ -27,15 +27,17 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 
 
 	private boolean removeAllNameRelationships = false;
-	
+
 	private boolean ignoreIsBasionymFor = false;
-	
+
 	private boolean ignoreIsReplacedSynonymFor = false;
 
 	private boolean ignoreHasBasionym = true;
-	
+
 	private boolean ignoreHasReplacedSynonym = true;
-	
+
+	private boolean ignoreIsOriginalSpellingFor = false;
+
 	private boolean removeAllNameTypeDesignations = true;
 	/**
 	 * If true, all name relationships will be deleted prior to deleting the name.
@@ -73,6 +75,25 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	}
 
 	/**
+     * If true, all basionym relationships in which this name is the basionym/original name will be removed.
+     * Exceptions will not be thrown due to existing basionym relationships.
+     * This value is neglected if {@link #isRemoveAllNameRelationships()} is true.
+     * @see #setIgnoreIsBasionymFor(boolean)
+     * @return the ignoreIsBasionymFor
+     */
+    public boolean isIgnoreIsOriginalSpellingFor() {
+        return ignoreIsOriginalSpellingFor;
+    }
+
+    /**
+     * @see #isIgnoreIsBasionymFor()
+     * @param ignoreIsBasionymFor the ignoreIsBasionymFor to set
+     */
+    public void setIgnoreIsOriginalSpellingFor(boolean ignoreIsOriginalSpellingFor) {
+        this.ignoreIsOriginalSpellingFor = ignoreIsOriginalSpellingFor;
+    }
+
+	/**
 	 * If true, all name relationships in which this name is a replaced synonym will be removed.
 	 * Exceptions will not be thrown due to existing isReplacedSynonym relationships.
 	 * This value is neglected if {@link #isRemoveAllNameRelationships()} is true.
@@ -90,9 +111,9 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public void setIgnoreIsReplacedSynonymFor(boolean ignoreIsReplacedSynonymFor) {
 		this.ignoreIsReplacedSynonymFor = ignoreIsReplacedSynonymFor;
 	}
-	
+
 	/**
-	 * If true, all basionym relationships in which this name has a basionym/original name will 
+	 * If true, all basionym relationships in which this name has a basionym/original name will
 	 * be removed.<BR>
 	 * Exceptions will not be thrown due to existing hasBasionym relationships.<BR>
 	 * This value is neglected if {@link #isRemoveAllNameRelationships()} is true.<BR>
@@ -113,7 +134,7 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	}
 
 	/**
-	 * If true, all replaced synonym relationships in which this name has a 
+	 * If true, all replaced synonym relationships in which this name has a
 	 * replaced synonym will be removed.<BR>
 	 * Exceptions will not be thrown due to existing hasReplacedSynonym relationships.<BR>
 	 * This value is neglected if {@link #isRemoveAllNameRelationships()} is true.<BR>
@@ -136,5 +157,5 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public boolean isRemoveAllNameTypeDesignations() {
 		return removeAllNameTypeDesignations;
 	}
-	
+
 }
