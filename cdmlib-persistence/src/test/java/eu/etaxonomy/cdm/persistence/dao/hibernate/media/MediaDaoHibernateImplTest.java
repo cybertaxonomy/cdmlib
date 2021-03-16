@@ -35,23 +35,23 @@ import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
-public class MediaDaoImplTest extends CdmIntegrationTest {
+public class MediaDaoHibernateImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
-	IMediaDao mediaDao;
+	private IMediaDao mediaDao;
 
 	@SpringBeanByType
-	IDefinedTermDao definedTermDao;
+	private IDefinedTermDao definedTermDao;
 
 	@SpringBeanByType
-	ITaxonDao taxonDao;
+	private ITaxonDao taxonDao;
 
-	UUID europeUuid;
-	UUID africaUuid;
-	UUID sphingidaeUuid;
+	private UUID europeUuid;
+	private UUID africaUuid;
+	private UUID sphingidaeUuid;
 
-	Set<Taxon> taxonomicScope;
-	Set<NamedArea> geoScopes;
+	private Set<Taxon> taxonomicScope;
+	private Set<NamedArea> geoScopes;
 
 	@Before
 	public void setUp() {
@@ -59,7 +59,7 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		africaUuid = UUID.fromString("9444016a-b334-4772-8795-ed4019552087");
 		sphingidaeUuid = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 
-		taxonomicScope = new HashSet<Taxon>();
+		taxonomicScope = new HashSet<>();
 		geoScopes = new HashSet<NamedArea>();
 	}
 
@@ -102,7 +102,7 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 
 	@Test
 	public void testGetMediaKeysWithScope() {
-		List<String> propertyPaths = new ArrayList<String>();
+		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("title");
 		NamedArea europe = (NamedArea)definedTermDao.findByUuid(europeUuid);
 		NamedArea africa = (NamedArea)definedTermDao.findByUuid(africaUuid);

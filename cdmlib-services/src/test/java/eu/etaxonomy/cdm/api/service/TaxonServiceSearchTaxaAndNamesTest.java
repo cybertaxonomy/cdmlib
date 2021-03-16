@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -95,20 +94,14 @@ public class TaxonServiceSearchTaxaAndNamesTest extends CdmTransactionalIntegrat
     @SpringBeanByType
     private ITaxonNodeService nodeService;
 
-
     private NamedArea germany;
-//    private NamedArea france ;
     private NamedArea russia ;
     private NamedArea canada ;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
 
         germany =  Country.GERMANY();
-//        france = Country.FRANCEFRENCHREPUBLIC();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
     }

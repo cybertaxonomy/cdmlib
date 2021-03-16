@@ -125,8 +125,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private static final boolean doCommonNames = true;
     private static final boolean noCommonNames = false;
 
-
-
     @SuppressWarnings("unused")
     private static final String[] TABLE_NAMES = new String[] {
         "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
@@ -377,8 +375,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         TaxonNode subtree = null;
         Set<NamedArea> namedAreas = new HashSet<>();
         namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
-        //namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
-        //namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
 
         Classification classification = classificationDao.findByUuid(classificationUuid);
 
@@ -415,13 +411,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 
-
         // 3. searching for Synonyms
         results = taxonDao.getTaxaByName(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, "Atropo", null, subtree, MatchMode.ANYWHERE, null,
                 includeUnpublished, null, null, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         /*System.err.println(results.get(0).getTitleCache() + " - " +results.get(1).getTitleCache() + " - " +results.get(2).getTitleCache() );
-
 
         System.err.println(((Synonym)results.get(0)).getAcceptedTaxa().contains(taxonRethera)+ " - " +((Synonym)results.get(1)).getAcceptedTaxa().contains(taxonRethera)+ " - "  +((Synonym)results.get(2)).getAcceptedTaxa().contains(taxonRethera)+ " - "  );
         */
@@ -433,7 +427,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find three taxa but found "+results.size(), results.size() == 3);
 
-
         // 5. searching for a Synonyms and Taxa
         results = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,"A", null, subtree, MatchMode.BEGINNING, namedAreas,
                 includeUnpublished, null, null, null, null);
@@ -441,7 +434,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         assertNotNull("getTaxaByName should return a List", results);
         assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
     }
-
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#findByNameTitleCache(Class<? extends TaxonBase>clazz, String queryString, Classification classification, TaxonNode subtree, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths)}
@@ -454,8 +446,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         Set<NamedArea> namedAreas = new HashSet<>();
         namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
-        //namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
-        //namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
 
         Classification classification = classificationDao.findByUuid(classificationUuid);
 

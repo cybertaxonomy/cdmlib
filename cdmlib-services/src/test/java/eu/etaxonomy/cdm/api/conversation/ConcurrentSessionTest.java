@@ -9,11 +9,10 @@
 package eu.etaxonomy.cdm.api.conversation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.Set;
@@ -106,7 +105,6 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
     @Before
     public void setup(){
-
         targetDataSource = dataSource instanceof TransactionAwareDataSourceProxy ?
                 ((TransactionAwareDataSourceProxy)dataSource).getTargetDataSource():
                 dataSource;
@@ -524,12 +522,11 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         conversationHolder1.bind();
         conversationHolder1.startTransaction();
         // get a taxon
-        TaxonBase taxonBase = taxonService.find(taxonUuid1);
+        TaxonBase<?> taxonBase = taxonService.find(taxonUuid1);
         // get a reference
         Reference reference = referenceService.find(referenceUuid2);
         // make sure
-        assertTrue(! taxonBase.getSec().equals(reference));
-        assertNotSame("this reference should not be the taxons sec.", taxonBase.getSec(), reference);
+        assertNotEquals(taxonBase.getSec(), reference);
         // set the reference as the taxons new sec
         taxonBase.setSec(reference);
         // save and commit
@@ -541,7 +538,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         // load the same taxon in a different session, since we did not commit the first transaction,
         // the reference change did not make its way to the database and the references should be distinct
         TaxonBase<?> taxonBaseInSecondTransaction = taxonService.find(taxonUuid1);
-        assertFalse(taxonBase.getSec().equals(taxonBaseInSecondTransaction.getSec()));
+        assertNotEquals(taxonBase.getSec(), taxonBaseInSecondTransaction.getSec());
 
         // commit the first transaction
         conversationHolder1.bind();
@@ -549,15 +546,14 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
         // as the taxonBaseInSecondTransaction still has it's data from before the first transaction was committed
         // we assume that the references are still not equal
-        assertFalse(taxonBase.getSec().equals(taxonBaseInSecondTransaction.getSec()));
+        assertNotEquals(taxonBase.getSec(), taxonBaseInSecondTransaction.getSec());
 
         // we call a refresh on the taxonBaseInSecondTransaction to synchronize its state with the database
         conversationHolder2.bind();
         taxonService.refresh(taxonBaseInSecondTransaction);
 
         // the objects should now be equal
-
-        assertTrue(taxonBase.getSec().equals(taxonBaseInSecondTransaction.getSec()));
+        assertEquals(taxonBase.getSec(), taxonBaseInSecondTransaction.getSec());
     }
 
     /**
@@ -840,8 +836,8 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         conversationHolder1.startTransaction();
 
         // load two taxon base objects
-        TaxonBase taxonBase1 = taxonService.find(taxonUuid1);
-        TaxonBase taxonBase2 = taxonService.find(taxonUuid2);
+        TaxonBase<?> taxonBase1 = taxonService.find(taxonUuid1);
+        TaxonBase<?> taxonBase2 = taxonService.find(taxonUuid2);
 
         // update taxon base object 1
         String titleCache1 = taxonBase1.getTitleCache();
@@ -869,10 +865,10 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         // not support running within DataSourceTransactionManager if told to manage
         // the DataSource itself. It is recommended to use a single HibernateTransactionManager
         // for all transactions on a single DataSource, no matter whether Hibernate or JDBC access'.
-        TaxonBase taxonBase1updated = taxonService.find(taxonUuid1);
+        TaxonBase<?> taxonBase1updated = taxonService.find(taxonUuid1);
         logger.info("Title Cache 1 New  Session: " + taxonBase1updated.getTitleCache());
 
-        TaxonBase taxonBase2updated = taxonService.find(taxonUuid2);
+        TaxonBase<?> taxonBase2updated = taxonService.find(taxonUuid2);
         logger.info("Title Cache 2 New Session: " + taxonBase2updated.getTitleCache());
 
     }

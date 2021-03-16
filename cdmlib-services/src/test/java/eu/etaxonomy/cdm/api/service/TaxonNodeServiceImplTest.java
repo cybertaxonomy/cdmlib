@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -1260,7 +1258,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
         taxonNodeService.saveNewTaxonNode(newTaxonNode);
     }
-
 
     @Test
     @DataSet("ClassificationServiceImplTest.xml")

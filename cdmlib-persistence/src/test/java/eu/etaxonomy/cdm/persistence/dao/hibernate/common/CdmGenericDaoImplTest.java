@@ -200,19 +200,17 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSets({
       @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
-      @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
+      @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
+	)
 	public void testDelete(){
 		Reference ref1 = ReferenceFactory.newBook();
 		Reference ref2 = ReferenceFactory.newBook();
 		Annotation annotation = Annotation.NewInstance("Anno1", null);
 		ref1.addAnnotation(annotation);
-		UUID ref1Uuid = cdmGenericDao.saveOrUpdate(ref1);
-		UUID ref2Uuid = cdmGenericDao.saveOrUpdate(ref2);
+		cdmGenericDao.saveOrUpdate(ref1);
+		cdmGenericDao.saveOrUpdate(ref2);
 		List<Reference> list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
-//        System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
-        for (Reference ref: list){
-//            System.out.println("reference: " + ref.getUuid());
-        }
+
 		try {
 			cdmGenericDao.merge(ref2, ref1, null);
 
@@ -221,10 +219,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 		commitAndStartNewTransaction(null);
 		list = cdmGenericDao.list(Reference.class, 10, 0, null, null);
-//		System.out.println("ref1: " + ref1Uuid + " ref2: " + ref2Uuid);
-//        for (Reference ref: list){
-//            System.out.println("reference: " + ref.getUuid());
-//        }
 		Assert.assertEquals(1, list.size());
 	}
 

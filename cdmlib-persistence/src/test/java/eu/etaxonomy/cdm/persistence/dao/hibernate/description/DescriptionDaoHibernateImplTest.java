@@ -61,13 +61,13 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
-    IDescriptionDao descriptionDao;
+    private IDescriptionDao descriptionDao;
 
     @SpringBeanByType
-    IDefinedTermDao definedTermDao;
+    private IDefinedTermDao definedTermDao;
 
     @SpringBeanByType
-    ITaxonDao taxonDao;
+    private ITaxonDao taxonDao;
 
     private Set<NamedArea> namedAreas;
     private Set<Feature> features;

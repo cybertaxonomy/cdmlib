@@ -86,6 +86,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  */
 public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
+
     private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
 
     @SpringBeanByType
@@ -164,7 +165,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonName name = TaxonName.NewInstance(NomenclaturalCode.ICNAFP, Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null);
         Taxon expectedTaxon = Taxon.NewInstance(name, null);
         expectedTaxon.setDoubtful(true);
-        TaxonBase taxon = service.save(expectedTaxon);
+        service.save(expectedTaxon);
         IdentifiableServiceConfiguratorImpl<TaxonBase> config = new IdentifiableServiceConfiguratorImpl<TaxonBase>();
         config.setTitleSearchString("Abies alba*");
         //doubtful taxa should be found
@@ -297,16 +298,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public final void testChangeSynonymToAcceptedTaxon(){
-    	try {
-			createTestDataSet();
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+    public final void testChangeSynonymToAcceptedTaxon() throws FileNotFoundException{
 
+		createTestDataSet();
 
-        Taxon taxon = null;
         UpdateResult result = new UpdateResult();
         try {
             result = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, null, null, null, true);
@@ -329,10 +324,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingAlwaysDelete(){
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
-        Taxon taxon = null;
+
         UpdateResult result = new UpdateResult();
-
-
         try {
             result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), null, null, SecReferenceHandlingEnum.AlwaysDelete, true);
         } catch (HomotypicalGroupChangeException e) {
@@ -357,7 +350,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingAlwaysKeep(){
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
-        Taxon taxon = null;
         UpdateResult result = new UpdateResult();
         TaxonBase<?> syn = service.find(SYNONYM2_UUID);
         Reference sec = ReferenceFactory.newBook();
@@ -387,7 +379,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingUseNewParentSec(){
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
-        Taxon taxon = null;
         UpdateResult result = new UpdateResult();
         TaxonBase<?> syn = service.find(SYNONYM2_UUID);
         Reference sec = ReferenceFactory.newBook();
@@ -418,7 +409,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingWarningSelect(){
         Taxon genus = getTestTaxon();
         TaxonNode node = genus.getTaxonNodes().iterator().next();
-        Taxon taxon = null;
+
         UpdateResult result = new UpdateResult();
         TaxonBase<?> syn = service.find(SYNONYM2_UUID);
         Reference sec = ReferenceFactory.newBook();
@@ -840,7 +831,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
 
         UUID uuidTaxon1=UUID.fromString("c47fdb72-f32c-452e-8305-4b44f01179d0");
-        UUID uuidTaxon2=UUID.fromString("2d9a642d-5a82-442d-8fec-95efa978e8f8");
         UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
 
         Taxon taxon2 = (Taxon)service.load(uuidTaxon1);
@@ -968,10 +958,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         int nNames = nameService.count(TaxonName.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
 
-        UUID uuidTaxon1=UUID.fromString("c47fdb72-f32c-452e-8305-4b44f01179d0");
-        UUID uuidTaxon2=UUID.fromString("2d9a642d-5a82-442d-8fec-95efa978e8f8");
         UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
-        UUID uuidSynonym2=UUID.fromString("f8d86dc9-5f18-4877-be46-fbb9412465e4");
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
@@ -1021,10 +1008,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         int nNames = nameService.count(TaxonName.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
 
-        UUID uuidTaxon1=UUID.fromString("c47fdb72-f32c-452e-8305-4b44f01179d0");
-        UUID uuidTaxon2=UUID.fromString("2d9a642d-5a82-442d-8fec-95efa978e8f8");
         UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
-        UUID uuidSynonym2=UUID.fromString("f8d86dc9-5f18-4877-be46-fbb9412465e4");
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
@@ -1069,10 +1053,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         int nNames = nameService.count(TaxonName.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
 
-        UUID uuidTaxon1=UUID.fromString("c47fdb72-f32c-452e-8305-4b44f01179d0");
-        UUID uuidTaxon2=UUID.fromString("2d9a642d-5a82-442d-8fec-95efa978e8f8");
         UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
-        UUID uuidSynonym2=UUID.fromString("f8d86dc9-5f18-4877-be46-fbb9412465e4");
         UUID uuidSynonymName2=UUID.fromString("613f3c93-013e-4ffc-aadc-1c98d71c335e");
 
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
@@ -1242,11 +1223,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 //        		"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD"}
         ;
 
-        UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
-        UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
-        UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
         commitAndStartNewTransaction(tableNames);
-        Taxon testTaxon =getTestTaxon();
+
        // service.save(testTaxon);
         commitAndStartNewTransaction(tableNames);
         int nTaxa = service.count(Taxon.class);

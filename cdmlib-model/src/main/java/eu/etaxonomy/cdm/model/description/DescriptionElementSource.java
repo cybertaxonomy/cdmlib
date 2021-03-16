@@ -50,7 +50,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 public class DescriptionElementSource extends OriginalSourceBase<DescriptionElementBase>{
-	private static final long serialVersionUID = -8487673428764273806L;
+
+    private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementSource.class);
 

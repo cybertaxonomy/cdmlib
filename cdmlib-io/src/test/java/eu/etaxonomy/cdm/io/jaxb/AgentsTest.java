@@ -12,11 +12,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 
 import org.joda.time.DateTimeFieldType;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 
@@ -43,6 +43,5 @@ public class AgentsTest {
         InstitutionalMembership institutionalMembership = person.getInstitutionalMemberships().iterator().next();
         assertEquals("institutionalMembership.getInstitute should return Chelsea Physic Garden",institutionalMembership.getInstitute(),dataSet.getAgents().get(1));
         assertEquals("institutionalMembership.getPerson should return Philip Miller",institutionalMembership.getPerson(),dataSet.getAgents().get(0));
-
     }
 }

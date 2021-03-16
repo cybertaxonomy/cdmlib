@@ -371,18 +371,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull(result);
         assertEquals(2, result.size());
 
-
         //test doubtful & pattern
         pattern = "Aus*";
         result = taxonNodeDao.getUuidAndTitleCache(100, pattern, classificationUuid, true);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("ebf8ea46-9f24-47be-8fb5-02bd67f90348", result.get(0).getUuid().toString());
-
-
-
     }
-
 
     @Test
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")

@@ -1,6 +1,11 @@
 /**
- *
- */
+* Copyright (C) 2011 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertTrue;
@@ -48,7 +53,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author s.buers
  */
-@SuppressWarnings({ "rawtypes", "serial" })
 public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
     private static final Logger logger = Logger.getLogger(StatisticsServiceImplTest.class);
@@ -89,7 +93,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	// .........................................................
 
 	// part= null means search all DB
-	private static final IdentifiableEntity PARTS_ALL = null;
+	private static final IdentifiableEntity<?> PARTS_ALL = null;
 
 	// here is the number of items that will be created for the test count:
 	// please only change the numbers
@@ -157,7 +161,10 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	// ........................... constant map ..........................
 
 	private static final Map<String, List<Long>> typeCountMap_CLASSIFICATION = new HashMap<String, List<Long>>() {
-		{
+
+        private static final long serialVersionUID = -2164878582463950664L;
+
+        {
 			put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
 					new ArrayList<>(Arrays.asList((Long) null, null, null)));
 			put(StatisticsTypeEnum.ALL_TAXA.getLabel(), no_of_all_taxa_c);
@@ -551,11 +558,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	}
 
 	// ****************** tests *****************
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.api.service.StatisticsServiceImpl#getCountStatistics(java.util.List)}
-	 * .
-	 */
+
 	@Test
 	public void testGetCountStatistics() {
 
