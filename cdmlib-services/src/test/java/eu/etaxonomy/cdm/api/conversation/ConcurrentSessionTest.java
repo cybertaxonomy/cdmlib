@@ -39,6 +39,7 @@ import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -84,6 +85,9 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
     @SpringBeanByType
     private IDescriptionService descriptionService;
+
+    @SpringBeanByType
+    private ICommonService commonService;
 
     @SpringBeanByType
     private DataSource dataSource;
@@ -538,7 +542,7 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
         // load the same taxon in a different session, since we did not commit the first transaction,
         // the reference change did not make its way to the database and the references should be distinct
         TaxonBase<?> taxonBaseInSecondTransaction = taxonService.find(taxonUuid1);
-        assertNotEquals(taxonBase.getSec(), taxonBaseInSecondTransaction.getSec());
+        assertNotEquals(taxonBase.getSecSource().getCitation(), taxonBaseInSecondTransaction.getSecSource().getCitation());
 
         // commit the first transaction
         conversationHolder1.bind();
@@ -546,14 +550,15 @@ public class ConcurrentSessionTest extends CdmIntegrationTest {
 
         // as the taxonBaseInSecondTransaction still has it's data from before the first transaction was committed
         // we assume that the references are still not equal
-        assertNotEquals(taxonBase.getSec(), taxonBaseInSecondTransaction.getSec());
+        assertNotEquals(taxonBase.getSecSource().getCitation(), taxonBaseInSecondTransaction.getSecSource().getCitation());
 
         // we call a refresh on the taxonBaseInSecondTransaction to synchronize its state with the database
         conversationHolder2.bind();
-        taxonService.refresh(taxonBaseInSecondTransaction);
+        taxonService.refresh(taxonBaseInSecondTransaction); //AM: don't if this is the best way to test if data is persisted. It does not seem to work if only taxon is refreshed and not taxon.getSecSource(), maybe due to refresh cascading issues
+        commonService.refresh(taxonBaseInSecondTransaction.getSecSource());
 
         // the objects should now be equal
-        assertEquals(taxonBase.getSec(), taxonBaseInSecondTransaction.getSec());
+        assertEquals(taxonBase.getSecSource().getCitation(), taxonBaseInSecondTransaction.getSecSource().getCitation());
     }
 
     /**

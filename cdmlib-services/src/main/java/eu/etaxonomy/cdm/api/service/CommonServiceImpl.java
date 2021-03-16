@@ -422,4 +422,10 @@ public class CommonServiceImpl
     public List<UUID> listUuid(Class<? extends CdmBase> clazz) {
         return genericDao.listUuid(clazz);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UUID refresh(CdmBase persistentObject) {
+        return genericDao.refresh(persistentObject);
+    }
 }

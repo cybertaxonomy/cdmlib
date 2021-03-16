@@ -458,16 +458,16 @@ public class StatisticsDaoHibernateImpl
 		// -------------------------------------------------------------------
 		// taxa
 		queryStrings
-				.add("select distinct tn.taxon.sec.uuid as c from TaxonNode tn "
-						+ "where tn.classification=:classification "
-						+ "and tn.taxon.sec is not null ");
+				.add("SELECT DISTINCT tn.taxon.secSource.citation.uuid AS c FROM TaxonNode tn "
+						+ "WHERE tn.classification=:classification "
+						+ "  AND tn.taxon.secSource.citation IS NOT NULL ");
 
 		// synonyms
 		queryStrings
-				.add("SELECT DISTINCT s.sec.uuid AS c FROM TaxonNode tn "
+				.add("SELECT DISTINCT s.secSource.citation.uuid AS c FROM TaxonNode tn "
 						+ "JOIN tn.taxon.synonyms s "
 						+ "WHERE tn.classification=:classification "
-						+ "AND s.sec IS NOT NULL ");
+						+ "AND s.secSource.citation IS NOT NULL ");
 
 		// get relationship citations
 		// ---------------------------------------------------------------
@@ -828,18 +828,18 @@ public class StatisticsDaoHibernateImpl
 		// -------------------------------------------------------------------
 		// taxa
 		queryStrings
-				.add("SELECT COUNT(DISTINCT tn.taxon.sec.id) as c "
+				.add("SELECT COUNT(DISTINCT tn.taxon.secSource.citation.id) as c "
 				        + "from TaxonNode tn "
 						+ "where tn.classification = :classification "
-						+ " and tn.taxon.sec is not null ");
+						+ " and tn.taxon.secSource.citation is not null ");
 
 		// synonyms
 		queryStrings
-				.add("SELECT count(distinct s.sec.id) as c "
-				        + "from TaxonNode tn "
-						+ "join tn.taxon.synonyms s "
-						+ "where tn.classification=:classification "
-						+ " and sr.relatedFrom.sec is not null ");
+				.add("SELECT COUNT(DISTINCT s.secSource.citation.id) AS c "
+				        + "FROM TaxonNode tn "
+						+ "JOIN tn.taxon.synonyms s "
+						+ "WHERE tn.classification=:classification "
+						+ " AND sr.relatedFrom.secSource.citation IS NOT NULL ");
 
 		// get relationship citations
 		// ---------------------------------------------------------------

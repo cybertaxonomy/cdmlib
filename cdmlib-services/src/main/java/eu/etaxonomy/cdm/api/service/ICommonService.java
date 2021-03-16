@@ -383,5 +383,6 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 
     public List<UUID> listUuid(Class<? extends CdmBase> clazz);
 
+    public UUID refresh(CdmBase persistentObject);
 
 }

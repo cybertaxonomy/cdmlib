@@ -182,7 +182,7 @@ public class TaxonDaoHibernateImpl
         }
 
         if (sec != null && sec.getId() != 0) {
-            criteria.add(Restrictions.eq("secSource.citation", sec ) );
+            criteria.createCriteria("secSource").add(Restrictions.eq("citation", sec ) );
         }
 
         if (queryString != null) {

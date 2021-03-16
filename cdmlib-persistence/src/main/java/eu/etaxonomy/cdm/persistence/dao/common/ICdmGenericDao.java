@@ -321,4 +321,5 @@ public interface ICdmGenericDao {
 
     public List<UUID> listUuid(Class<? extends CdmBase> clazz);
 
+    public UUID refresh(CdmBase persistentObject) throws DataAccessException;
 }

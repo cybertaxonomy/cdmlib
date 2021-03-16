@@ -858,7 +858,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         String queryStr = "SELECT " + mode.hql("syn")
                 + " FROM TaxonNode tn "
                 + "   JOIN tn.taxon t "
-                + "   JOIN t.synonyms syn  LEFT JOIN syn.name n ";
+                + "   JOIN t.synonyms syn  "
+                + "   LEFT JOIN syn.name n "
+                + "   LEFT JOIN syn.secSource ss ";
         String whereStr = " tn.treeIndex LIKE '%1$s%%' ";
         if (!includeSharedTaxa){
             whereStr += " AND NOT EXISTS ("
@@ -936,7 +938,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     private String forSubtreeAcceptedQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, boolean excludeHybrids, SelectMode mode) {
         String queryStr = "SELECT " + mode.hql("t")
-                + " FROM TaxonNode tn JOIN tn.taxon t LEFT JOIN t.name n ";
+                + " FROM TaxonNode tn "
+                + "   JOIN tn.taxon t "
+                + "   LEFT JOIN t.name n "
+                + "   LEFT JOIN t.secSource ss ";
         String whereStr = " tn.treeIndex like '%1$s%%' ";
         if (!includeSharedTaxa){
             whereStr += " AND NOT EXISTS ("
