@@ -64,7 +64,7 @@ public class ImportHelper {
 	 */
 	public static boolean  setOriginalSource(@SuppressWarnings("rawtypes") ISourceable sourceable,
 	        Reference sourceReference, String sourceId, String namespace){
-		IOriginalSource<?> originalSource;
+		IOriginalSource originalSource;
 		OriginalSourceType type = OriginalSourceType.Import;
 		if (HibernateProxyHelper.isInstanceOf(sourceable, IdentifiableEntity.class)){
 			originalSource = IdentifiableSource.NewInstance(type, sourceId, namespace, sourceReference, null);

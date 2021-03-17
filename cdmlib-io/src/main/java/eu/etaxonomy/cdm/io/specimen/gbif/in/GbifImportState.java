@@ -49,11 +49,11 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
     private GbifDataHolder dataHolder;
     private DerivedUnit derivedUnitBase;
 
-    private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
+    private List<OriginalSourceBase> associationRefs = new ArrayList<OriginalSourceBase>();
     private boolean associationSourcesSet=false;
-    private List<OriginalSourceBase<?>> descriptionRefs = new ArrayList<OriginalSourceBase<?>>();
+    private List<OriginalSourceBase> descriptionRefs = new ArrayList<OriginalSourceBase>();
     private boolean descriptionSourcesSet=false;
-    private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
+    private List<OriginalSourceBase> derivedUnitSources = new ArrayList<OriginalSourceBase>();
     private boolean derivedUnitSourcesSet=false;
     private boolean descriptionGroupSet = false;
     private TaxonDescription descriptionGroup = null;
@@ -185,13 +185,13 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
 
 
     @Override
-    public List<OriginalSourceBase<?>> getAssociationRefs() {
+    public List<OriginalSourceBase> getAssociationRefs() {
         return associationRefs;
     }
 
 
     @Override
-    public void setAssociationRefs(List<OriginalSourceBase<?>> associationRefs) {
+    public void setAssociationRefs(List<OriginalSourceBase> associationRefs) {
         this.associationRefs = associationRefs;
     }
 
@@ -209,13 +209,13 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
 
 
     @Override
-    public List<OriginalSourceBase<?>> getDescriptionRefs() {
+    public List<OriginalSourceBase> getDescriptionRefs() {
         return descriptionRefs;
     }
 
 
     @Override
-    public void setDescriptionRefs(List<OriginalSourceBase<?>> descriptionRefs) {
+    public void setDescriptionRefs(List<OriginalSourceBase> descriptionRefs) {
         this.descriptionRefs = descriptionRefs;
     }
 
@@ -233,13 +233,13 @@ public class GbifImportState extends SpecimenImportStateBase<GbifImportConfigura
 
 
     @Override
-    public List<OriginalSourceBase<?>> getDerivedUnitSources() {
+    public List<OriginalSourceBase> getDerivedUnitSources() {
         return derivedUnitSources;
     }
 
 
     @Override
-    public void setDerivedUnitSources(List<OriginalSourceBase<?>> derivedUnitSources) {
+    public void setDerivedUnitSources(List<OriginalSourceBase> derivedUnitSources) {
         this.derivedUnitSources = derivedUnitSources;
     }
 

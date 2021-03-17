@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 	})
 @Entity
 @Audited
-public class DescriptionElementSource extends OriginalSourceBase<DescriptionElementBase>{
+public class DescriptionElementSource extends OriginalSourceBase{
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")

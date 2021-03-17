@@ -61,11 +61,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
 
     protected SpecimenDataHolder dataHolder;
 
-    private List<OriginalSourceBase<?>> associationRefs = new ArrayList<>();
+    private List<OriginalSourceBase> associationRefs = new ArrayList<>();
     private boolean associationSourcesSet=false;
-    private List<OriginalSourceBase<?>> descriptionRefs = new ArrayList<>();
+    private List<OriginalSourceBase> descriptionRefs = new ArrayList<>();
     private boolean descriptionSourcesSet=false;
-    private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<>();
+    private List<OriginalSourceBase> derivedUnitSources = new ArrayList<>();
     private boolean derivedUnitSourcesSet=false;
     private boolean descriptionGroupSet = false;
     protected HashMap<String, Institution> institutions = new HashMap<>();
@@ -99,11 +99,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         return super.getConfig();
     }
 
-    public List<OriginalSourceBase<?>> getAssociationRefs() {
+    public List<OriginalSourceBase> getAssociationRefs() {
         return associationRefs;
     }
 
-    public void setAssociationRefs(List<OriginalSourceBase<?>> associationRefs) {
+    public void setAssociationRefs(List<OriginalSourceBase> associationRefs) {
         this.associationRefs = associationRefs;
     }
 
@@ -115,11 +115,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.associationSourcesSet = associationSourcesSet;
     }
 
-    public List<OriginalSourceBase<?>> getDescriptionRefs() {
+    public List<OriginalSourceBase> getDescriptionRefs() {
         return descriptionRefs;
     }
 
-    public void setDescriptionRefs(List<OriginalSourceBase<?>> descriptionRefs) {
+    public void setDescriptionRefs(List<OriginalSourceBase> descriptionRefs) {
         this.descriptionRefs = descriptionRefs;
     }
 
@@ -131,11 +131,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.descriptionSourcesSet = descriptionSourcesSet;
     }
 
-    public List<OriginalSourceBase<?>> getDerivedUnitSources() {
+    public List<OriginalSourceBase> getDerivedUnitSources() {
         return derivedUnitSources;
     }
 
-    public void setDerivedUnitSources(List<OriginalSourceBase<?>> derivedUnitSources) {
+    public void setDerivedUnitSources(List<OriginalSourceBase> derivedUnitSources) {
         this.derivedUnitSources = derivedUnitSources;
     }
 

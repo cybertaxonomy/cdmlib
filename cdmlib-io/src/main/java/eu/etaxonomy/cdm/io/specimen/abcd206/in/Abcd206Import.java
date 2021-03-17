@@ -740,7 +740,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // Reference stuff
             SpecimenUserInteraction sui = config.getSpecimenUserInteraction();
-            Map<String, OriginalSourceBase<?>> sourceMap = new HashMap<>();
+            Map<String, OriginalSourceBase> sourceMap = new HashMap<>();
 
             state.getDataHolder().setDocSources(new ArrayList<>());
 
@@ -1178,7 +1178,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param sour
      * @return
      */
-    private boolean sourceNotLinkedToElement(DerivedUnitFacade derivedUnitFacade, OriginalSourceBase<?> source) {
+    private boolean sourceNotLinkedToElement(DerivedUnitFacade derivedUnitFacade, OriginalSourceBase source) {
         Set<IdentifiableSource> linkedSources = derivedUnitFacade.getSources();
         for (IdentifiableSource is : linkedSources) {
             if (is.getCitation() != null && source.getCitation() != null

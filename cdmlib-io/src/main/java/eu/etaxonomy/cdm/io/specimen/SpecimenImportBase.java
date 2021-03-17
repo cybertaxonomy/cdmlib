@@ -1228,7 +1228,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        //PREPARE REFERENCE QUESTIONS
 
-	        Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
+	        Map<String,OriginalSourceBase> sourceMap = new HashMap<String, OriginalSourceBase>();
 
 	        List<IdentifiableSource> issTmp = new ArrayList<>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
 	        List<DescriptionElementSource> issTmp2 = new ArrayList<>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
@@ -1329,7 +1329,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        return true;
 	    }
 
-	    private <T extends OriginalSourceBase<?>> boolean  sourceNotLinkedToElement(ISourceable<T> sourcable, Reference reference, String microReference) {
+	    private <T extends OriginalSourceBase> boolean  sourceNotLinkedToElement(ISourceable<T> sourcable, Reference reference, String microReference) {
 	        Set<T> linkedSources = sourcable.getSources();
 	        for (T is:linkedSources){
 	            Reference unitReference = is.getCitation();
@@ -1399,8 +1399,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	     * @param sourceMap
 	     * @param osbSet
 	     */
-	    protected void addToSourceMap(Map<String, OriginalSourceBase<?>> sourceMap, Set<OriginalSourceBase> osbSet) {
-	        for( OriginalSourceBase<?> osb:osbSet) {
+	    protected void addToSourceMap(Map<String, OriginalSourceBase> sourceMap, Set<OriginalSourceBase> osbSet) {
+	        for( OriginalSourceBase osb:osbSet) {
 	            if(osb.getCitation()!=null && osb.getCitationMicroReference() !=null  && !osb.getCitationMicroReference().isEmpty()) {
 	                try{
 	                    sourceMap.put(osb.getCitation().getTitleCache()+ "---"+osb.getCitationMicroReference(),osb);

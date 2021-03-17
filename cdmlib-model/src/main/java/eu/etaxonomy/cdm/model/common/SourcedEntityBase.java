@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,7 +46,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @XmlRootElement(name = "SourcedEntityBase")
 @MappedSuperclass
 @Audited
-public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? extends SourcedEntityBase<SOURCE>>>
+public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
         extends AnnotatableEntity
         implements ISourceable<SOURCE>{
 
@@ -62,7 +60,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     //TODO should be Set<SOURCE> but this currently throws exception in DefaultMergeStrategyTest
-    private Set<OriginalSourceBase> sources = new HashSet<>();
+    private Set<SOURCE> sources = new HashSet<>();
 
 // ************ CONSTRUCTOR ********************************************/
 
@@ -83,7 +81,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
 
     @Override
     public Set<SOURCE> getSources() {
-        return (Set<SOURCE>)this.sources;
+        return this.sources;
     }
 
     @Override

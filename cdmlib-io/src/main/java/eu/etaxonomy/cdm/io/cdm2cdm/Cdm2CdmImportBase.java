@@ -765,7 +765,7 @@ public abstract class Cdm2CdmImportBase
             }
             if (getState().getConfig().isAddSources()){
                 Reference sourceRef = getSourceReference(getState());
-                OriginalSourceBase<?> newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
+                OriginalSourceBase newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
                         sourceRef, null);
                 getCommonService().save(newSource);
                 addExistingObject(newSource);
@@ -777,14 +777,14 @@ public abstract class Cdm2CdmImportBase
     /**
      * @param sources
      */
-    private void filterImportSources(Set<OriginalSourceBase<?>> sources) {
-        Set<OriginalSourceBase<?>> toDelete = new HashSet<>();
-        for (OriginalSourceBase<?> osb: sources){
+    private void filterImportSources(Set<OriginalSourceBase> sources) {
+        Set<OriginalSourceBase> toDelete = new HashSet<>();
+        for (OriginalSourceBase osb: sources){
             if (osb.getType() == OriginalSourceType.Import){
                 toDelete.add(osb);
             }
         }
-        for (OriginalSourceBase<?> osb: toDelete){
+        for (OriginalSourceBase osb: toDelete){
             sources.remove(osb);
         }
     }

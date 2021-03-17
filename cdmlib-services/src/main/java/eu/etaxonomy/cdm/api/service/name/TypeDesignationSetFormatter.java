@@ -195,7 +195,7 @@ public class TypeDesignationSetFormatter {
         if (withCitation){
 
             //lectotype source
-            OriginalSourceBase<?> lectoSource = typeDes.getSource();
+            OriginalSourceBase lectoSource = typeDes.getSource();
             if (hasLectoSource(typeDes)){
                 workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
                 addSource(workingsetBuilder, lectoSource);
@@ -221,7 +221,7 @@ public class TypeDesignationSetFormatter {
      * Adds the tags for the given source.
      */
     private static void addSource(TaggedTextBuilder workingsetBuilder,
-            OriginalSourceBase<?> source) {
+            OriginalSourceBase source) {
         Reference ref = source.getCitation();
         if (ref != null){
             DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
