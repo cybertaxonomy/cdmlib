@@ -55,9 +55,4 @@ public class SchemaUpdater_5182_5183 extends SchemaUpdaterBase {
     public ISchemaUpdater getPreviousUpdater() {
         return SchemaUpdater_5181_5182.NewInstance();
     }
-
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_5183_5184.NewInstance();
-	}
 }

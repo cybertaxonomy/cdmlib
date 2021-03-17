@@ -141,13 +141,7 @@ public class SchemaUpdater_58_581 extends SchemaUpdaterBase {
         newColumnName = "importMethod";
         length = 30;
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
-
     }
-
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_581_582.NewInstance();
-	}
 
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {

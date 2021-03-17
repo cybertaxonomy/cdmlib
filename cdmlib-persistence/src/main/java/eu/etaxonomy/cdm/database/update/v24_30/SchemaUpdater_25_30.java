@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
-import eu.etaxonomy.cdm.database.update.v30_40.SchemaUpdater_30_301;
 
 
 /**
@@ -252,11 +251,6 @@ public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 		SequenceTableCreator.NewInstance(stepList, stepName);
 
 		return stepList;
-	}
-
-	@Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_30_301.NewInstance();
 	}
 
 	@Override

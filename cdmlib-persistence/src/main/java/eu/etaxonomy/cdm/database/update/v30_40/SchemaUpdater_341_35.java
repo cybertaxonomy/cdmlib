@@ -183,19 +183,10 @@ public class SchemaUpdater_341_35 extends SchemaUpdaterBase {
 				.setDefaultAuditing(tableName);
 
 		// Continent => None has an id
-
-
-
-	}
-
-	@Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_35_36.NewInstance();
 	}
 
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_34_341.NewInstance();
 	}
-
 }

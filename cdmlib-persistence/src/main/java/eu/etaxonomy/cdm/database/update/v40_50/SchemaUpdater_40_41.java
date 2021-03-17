@@ -384,9 +384,6 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
 	}
 
-    /**
-     * @param stepList
-     */
     private void updatePresenceAbsenceTermSymbols(List<ISchemaUpdaterStep> stepList) {
         String enDash = UTF8.EN_DASH.toString();
 
@@ -422,14 +419,8 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
         updateSinglePATsymbol(stepList, "aeec2947-2700-4623-8e32-9e3a430569d1", "if", enDash);
         //cultivated: reported in error
         updateSinglePATsymbol(stepList, "9d4d3431-177a-4abe-8e4b-1558573169d6", "cf", enDash);
-
     }
 
-    /**
-     * @param uuid the uuid
-     * @param oldSymbol
-     * @param newSybol
-     */
     private void updateSinglePATsymbol(List<ISchemaUpdaterStep> stepList,
             String uuid, String oldSymbol, String newSymbol) {
         String stepName = "Update single symbol for PresenceAbsenceTerm " + uuid;
@@ -438,11 +429,6 @@ public class SchemaUpdater_40_41 extends SchemaUpdaterBase {
                 + " WHERE uuid = '" + uuid + "' AND symbol = '" + oldSymbol + "'" ;
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "DefinedTermBase", -99);
     }
-
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_41_47.NewInstance();
-	}
 
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {

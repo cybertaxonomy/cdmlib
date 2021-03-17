@@ -242,15 +242,8 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	}
 
 	@Override
-	public abstract U getNextUpdater();
-
-	@Override
 	public abstract U getPreviousUpdater();
 
-
-	/**
-	 * @return
-	 */
 	public String getTargetVersion() {
 		return this.targetVersion;
 	}

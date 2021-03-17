@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
-import eu.etaxonomy.cdm.database.update.v40_50.SchemaUpdater_40_41;
 
 /**
  * @author a.mueller
@@ -441,11 +440,6 @@ public class SchemaUpdater_36_40 extends SchemaUpdaterBase {
         newTableName = "AgentBase_contact_phoneNumbers";
         TableNameChanger.NewInstance(stepList, stepName, oldTableName, newTableName, INCLUDE_AUDIT);
     }
-
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_40_41.NewInstance();
-	}
 
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {

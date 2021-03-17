@@ -89,7 +89,7 @@ public class CdmUpdaterTest {
 			Assert.fail("CdmUpdater.getCurrentSchemaUpdater not found:" + e.getMessage());
 			return;
 		}
-		ISchemaUpdater lastUpdater = null;
+		ISchemaUpdater lastUpdater = currentUpdater;
 		ISchemaUpdater tmpUpdater = currentUpdater;
 
 		int i = 0;
@@ -101,15 +101,7 @@ public class CdmUpdaterTest {
 		Assert.assertNotNull("Current Updater must not be null", currentUpdater);
 		Assert.assertEquals("Very first schema updater must be schemaUpdater_24_25. Something seems to be wrong in recursive call of getPreviousSchemaUpdater", SchemaUpdater_24_25.class, lastUpdater.getClass());
 
-		i = 0;
-		while (tmpUpdater.getNextUpdater() != null && i++<1000){
-			tmpUpdater = tmpUpdater.getNextUpdater();
-			lastUpdater = tmpUpdater;
-		}
-		Assert.assertEquals("Current schema updater not found by recursive call firstUpdater.getNextUpdater()", currentUpdater.getClass(), lastUpdater.getClass());
-
 		//test correct schema version string
 		Assert.assertEquals(CdmMetaData.getDbSchemaVersion(), currentUpdater.getTargetVersion());
 	}
-
 }

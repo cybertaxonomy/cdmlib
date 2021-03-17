@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
-import eu.etaxonomy.cdm.database.update.v50_55.SchemaUpdater_50_55;
 
 /**
 /**
@@ -347,15 +346,8 @@ public class SchemaUpdater_47_50 extends SchemaUpdaterBase {
         }
     }
 
-
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_50_55.NewInstance();
-	}
-
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_41_47.NewInstance();
 	}
-
 }
