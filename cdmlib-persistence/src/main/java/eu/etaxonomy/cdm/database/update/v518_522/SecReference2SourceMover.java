@@ -88,8 +88,6 @@ public class SecReference2SourceMover extends SchemaUpdaterStepBase {
             datasource.executeUpdate(caseType.replaceTableNames(sql));
 
             osbId++;
-
-            datasource.executeUpdate(caseType.replaceTableNames(sql));
         }
     }
 }
