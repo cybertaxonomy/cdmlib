@@ -30,10 +30,13 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
     private static final String SEPARATOR_STRING = ", ";
 
-	private String country;
+	private String country; // TODO remove this obsolete copy of gatheringEvent.timeperiod
+	private Partial date; // TODO remove this obsolete copy of gatheringEvent.timeperiod
 	private String collectingString;
-	private Partial date; // TODO remove if obsolete copy of gatheringEvent.timeperiod
 	private String collectionsStatistics;
+	private String fieldNumber;
+	private String fieldNotes;
+
 
 	private GatheringEventDTO gatheringEvent;
 
@@ -90,6 +93,8 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
     private FieldUnitDTO(FieldUnit fieldUnit, Integer maxDepth, EnumSet<SpecimenOrObservationType> typeIncludeFilter ) {
         super(fieldUnit);
 
+        setFieldNotes(fieldUnit.getFieldNotes());
+        setFieldNumber(fieldUnit.getFieldNumber());
         if(typeIncludeFilter == null) {
             typeIncludeFilter = EnumSet.allOf(SpecimenOrObservationType.class);
         }
@@ -216,5 +221,21 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
     }
     public void setGatheringEvent(GatheringEventDTO gatheringEvent) {
         this.gatheringEvent = gatheringEvent;
+    }
+
+    public String getFieldNumber() {
+        return fieldNumber;
+    }
+
+    public void setFieldNumber(String fieldNumber) {
+        this.fieldNumber = fieldNumber;
+    }
+
+    public String getFieldNotes() {
+        return fieldNotes;
+    }
+
+    public void setFieldNotes(String fieldNotes) {
+        this.fieldNotes = fieldNotes;
     }
 }

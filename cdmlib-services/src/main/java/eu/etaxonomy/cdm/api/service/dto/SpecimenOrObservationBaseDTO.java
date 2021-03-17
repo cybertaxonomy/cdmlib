@@ -61,6 +61,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private String collectorsNumber;
     private String barcode;
     private String preservationMethod;
+    private String individualCount;
     private Set<DerivedUnitDTO> derivatives;
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
@@ -82,6 +83,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         addMediaAsDTO(collectedMedia);
         setKindOfUnit(specimenOrObservation.getKindOfUnit());
         setSex(specimenOrObservation.getSex());
+        setIndividualCount(specimenOrObservation.getIndividualCount());
         lifeStage = specimenOrObservation.getLifeStage();
         if (specimenOrObservation instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
@@ -495,6 +497,14 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     public int getId() {
         return id;
+    }
+
+    public String getIndividualCount() {
+        return individualCount;
+    }
+
+    public void setIndividualCount(String individualCount) {
+        this.individualCount = individualCount;
     }
 
 
