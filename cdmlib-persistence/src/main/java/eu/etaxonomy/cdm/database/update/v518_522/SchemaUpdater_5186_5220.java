@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -68,10 +69,106 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         String dtype = "SecundumSource";
         SecReference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
+        //#9315
+        removeOldSingleSourceCitations(stepList);
 
         return stepList;
     }
 
+
+    //#9315 remove
+    private void removeOldSingleSourceCitations(List<ISchemaUpdaterStep> stepList) {
+        //TaxonName.nomenclaturalSource_id
+        String stepName = "Remove TaxonName.nomenclaturalSource_id";
+        String tableName = "TaxonName";
+        String oldColumnName = "nomenclaturalSource_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TaxonName.nomenclaturalMicroReference
+        stepName = "Remove TaxonName.nomenclaturalMicroReference";
+        tableName = "TaxonName";
+        oldColumnName = "nomenclaturalMicroReference";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TaxonName.nomenclaturalReference_id
+        stepName = "Remove TaxonName.nomenclaturalReference_id";
+        tableName = "TaxonName";
+        oldColumnName = "nomenclaturalReference_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TaxonNode.microReferenceForParentChildRelation
+        stepName = "Remove TaxonNode.microReferenceForParentChildRelation";
+        tableName = "TaxonNode";
+        oldColumnName = "microReferenceForParentChildRelation";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TaxonNode.referenceForParentChildRelation_id
+        stepName = "Remove TaxonNode.referenceForParentChildRelation_id";
+        tableName = "TaxonNode";
+        oldColumnName = "referenceForParentChildRelation_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //NomenclaturalStatus.citationMicroReference
+        stepName = "Remove NomenclaturalStatus.citationMicroReference";
+        tableName = "NomenclaturalStatus";
+        oldColumnName = "citationMicroReference";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //NomenclaturalStatus.citation_id
+        stepName = "Remove NomenclaturalStatus.citation_id";
+        tableName = "NomenclaturalStatus";
+        oldColumnName = "citation_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TypeDesignationBase.citationMicroReference
+        stepName = "Remove TypeDesignationBase.citationMicroReference";
+        tableName = "TypeDesignationBase";
+        oldColumnName = "citationMicroReference";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TypeDesignationBase.citation_id
+        stepName = "Remove TypeDesignationBase.citation_id";
+        tableName = "TypeDesignationBase";
+        oldColumnName = "citation_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TaxonRelationship.citationMicroReference
+        stepName = "Remove TaxonRelationship.citationMicroReference";
+        tableName = "TaxonRelationship";
+        oldColumnName = "citationMicroReference";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //TaxonRelationship.citation_id
+        stepName = "Remove TaxonRelationship.citation_id";
+        tableName = "TaxonRelationship";
+        oldColumnName = "citation_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //NameRelationship.citationMicroReference
+        stepName = "Remove NameRelationship.citationMicroReference";
+        tableName = "NameRelationship";
+        oldColumnName = "citationMicroReference";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //NameRelationship.citation_id
+        stepName = "Remove NameRelationship.citation_id";
+        tableName = "NameRelationship";
+        oldColumnName = "citation_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //HybridRelationship.citationMicroReference
+        stepName = "Remove HybridRelationship.citationMicroReference";
+        tableName = "HybridRelationship";
+        oldColumnName = "citationMicroReference";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+        //HybridRelationship.citation_id
+        stepName = "Remove HybridRelationship.citation_id";
+        tableName = "HybridRelationship";
+        oldColumnName = "citation_id";
+        ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+
+    }
 
     @Override
     public ISchemaUpdater getPreviousUpdater() {
