@@ -6,14 +6,13 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.api.service.pager.impl;
 
 import java.util.List;
 
 public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3841817346885809922L;
 
     /**
      * Constructor
@@ -65,12 +64,9 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
 
     @Override
     protected String createLabel(String s1, String s2) {
-        return s1 + DefaultPagerImpl.LABEL_DIVIDER + s2;
+        return s1 + AbstractPagerImpl.LABEL_DIVIDER + s2;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         String result = "DefaultPagerImpl[";
@@ -86,6 +82,4 @@ public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
         result += "]";
         return result;
     }
-
-
 }

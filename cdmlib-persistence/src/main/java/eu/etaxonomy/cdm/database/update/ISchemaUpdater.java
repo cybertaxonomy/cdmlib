@@ -29,6 +29,7 @@ public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 	 * Invokes this CDM schema updater and updates the schema up to the current CDM
 	 * schema version. Throws an exception if this updater's target version does
 	 * not equal the current CDM schema version.
+	 *
 	 * @param datasource the datasource
 	 * @param monitor the progress monitor and event listener
 	 * @param caseType the
@@ -39,8 +40,6 @@ public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 	@Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
 	        CaseType caseType, SchemaUpdateResult result) throws Exception;
-
-
 
 	/**
 	 * Invokes this CDM schema updater and updates the schema up to the given

@@ -12,7 +12,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,6 +34,7 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -1169,10 +1169,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param nametosave
      * @param refMods
      * @param insideNodes
-     * @param blabla
-     * @param j
      */
-    @SuppressWarnings({ "rawtypes" })
     private String getInlineTextForName(List<TaxonName> nametosave, Reference refMods, Node insideNode) {
         if (true){
         	NodeList children = insideNode.getChildNodes();
