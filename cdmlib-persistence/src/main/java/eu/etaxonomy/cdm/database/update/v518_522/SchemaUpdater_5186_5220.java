@@ -48,14 +48,23 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
 
 		String stepName;
 		String tableName;
+		String newColumnName;
+		String referencedTable;
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
+
+		//9507
+        stepName = "Add ratioToStructure column to DefinedTermBase (Character)";
+        tableName = "DefinedTermBase";
+        newColumnName = "ratioToStructure_id";
+        referencedTable = "DefinedTermBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
 		//9327
         stepName = "Add sourcedTaxon column to SecundumSource";
         tableName = "OriginalSourceBase";
-        String newColumnName = "sourcedTaxon_id";
-        String referencedTable = "TaxonBase";
+        newColumnName = "sourcedTaxon_id";
+        referencedTable = "TaxonBase";
         ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
 	    //9327
