@@ -568,7 +568,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     public void testLoad() {
         List<String> propertyPaths = new ArrayList<>();
         propertyPaths.add("name");
-        propertyPaths.add("sec");
+        propertyPaths.add("secSource.citation");
         Taxon taxon = (Taxon)taxonDao.load(uuid, propertyPaths);
         assertNotNull("findByUuid should return a taxon",taxon);
         assertTrue("load should return a taxon with it's name initialized, given that the property was specified in the method",Hibernate.isInitialized(taxon.getName()));

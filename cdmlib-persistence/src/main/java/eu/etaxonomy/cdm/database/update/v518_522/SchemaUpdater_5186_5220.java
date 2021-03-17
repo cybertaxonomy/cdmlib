@@ -17,8 +17,6 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.v512_515.Reference2SourceMover;
 import eu.etaxonomy.cdm.database.update.v515_518.SchemaUpdater_5185_5186;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -52,40 +50,23 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+		//9327
+        stepName = "Add sourcedTaxon column to SecundumSource";
+        tableName = "OriginalSourceBase";
+        String newColumnName = "sourcedTaxon_id";
+        String referencedTable = "TaxonBase";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
 	    //9327
         //move nomenclatural reference to nomenclatural source
         stepName = "move secundum reference to secundum source";
         tableName = "TaxonBase";
         String referenceColumnName = "sec_id";
         String microReferenceColumnName = "secMicroReference";
-        String sourceColumnName = "secSource_id";
+        String sourceColumnName = "sourcedTaxon_id";
         String sourceType = "SEC";
         String dtype = "SecundumSource";
-        Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
-
-//      //9327
-        stepName = "Add sourcedTaxon column to SecundumSource";
-        tableName = "OriginalSourceBase";
-        String newColumnName = "sourcedTaxon_id";
-        String referencedTable = "TaxonBase";
-        //TODO handle NotNull
-        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
-
-        String sql = "UPDATE @@OriginalSourceBase@@ "
-             + " SET sourcedTaxon_id = (SELECT tb.id "
-             + "         FROM @@TaxonBase@@ tb WHERE tb.secSource_id = @@OriginalSourceBase@@.id) "
-             + " WHERE EXISTS ( "
-             + "       SELECT * "
-             + "       FROM @@TaxonBase@@ tb "
-             + "       WHERE tb.secSource_id = @@OriginalSourceBase@@.id)";
-        String sql_aud = "UPDATE @@OriginalSourceBase_AUD@@ "
-                 + " SET sourcedTaxon_id = (SELECT tb.id "
-                 + "         FROM @@TaxonBase_AUD@@ tb WHERE tb.secSource_id = @@OriginalSourceBase_AUD@@.id) "
-                 + " WHERE EXISTS ( "
-                 + "       SELECT * "
-                 + "       FROM @@TaxonBase_AUD@@ tb "
-                 + "       WHERE tb.secSource_id = @@OriginalSourceBase_AUD@@.id)";
-        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
+        SecReference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
 
         return stepList;
