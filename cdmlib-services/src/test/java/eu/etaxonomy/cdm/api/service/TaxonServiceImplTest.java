@@ -1224,8 +1224,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         ;
 
         commitAndStartNewTransaction(tableNames);
-
-       // service.save(testTaxon);
+        getTestTaxon();
         commitAndStartNewTransaction(tableNames);
         int nTaxa = service.count(Taxon.class);
 
