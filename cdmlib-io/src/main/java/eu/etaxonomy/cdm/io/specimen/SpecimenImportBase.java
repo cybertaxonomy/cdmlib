@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.specimen;
 
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -1207,11 +1209,16 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            taxonDescription = state.getDescriptionPerTaxon(taxon.getUuid());
 	        }
 	       if (taxonDescription == null && !descriptions.isEmpty() && state.getConfig().isReuseExistingDescriptiveGroups()){
-	           taxonDescription = descriptions.iterator().next();
+	           for (TaxonDescription desc: descriptions){
+	               if (desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION)){
+	                   taxonDescription = desc;
+	               }
+	           }
 	       }
 
 	       if (taxonDescription == null){
 	            taxonDescription = TaxonDescription.NewInstance(taxon, false);
+	            taxonDescription.setTypes(EnumSet.of(DescriptionType.INDIVIDUALS_ASSOCIATION));
 	            if(sourceNotLinkedToElement(taxonDescription,state.getRef(),null)) {
 	                taxonDescription.addSource(OriginalSourceType.Import, null, null, state.getRef(), null);
 	            }
