@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,8 +21,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
-
-
 /**
  * The original source type is used to define the type of an {@link OriginalSourceBase original source}.<BR>
  * It is used to distinguish e.g. data lineage when importing data from one database to another from e.g. content oriented
@@ -33,7 +30,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @since 15.05.2013
  */
 @XmlEnum
-public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Serializable{
+public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 
 	//0
 	/**
@@ -118,17 +115,13 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 
 	;
 
-
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceType.class);
-
 
 	@SuppressWarnings("unchecked")
     private OriginalSourceType(UUID uuid, String defaultString, String key, OriginalSourceType parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
-
-
 
 // *************************** DELEGATE **************************************/
 

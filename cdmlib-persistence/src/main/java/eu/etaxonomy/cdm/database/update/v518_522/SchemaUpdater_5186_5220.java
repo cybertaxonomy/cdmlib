@@ -82,7 +82,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                 + "    OR id IN (SELECT source_id FROM @@TypeDesignationBase_AUD@@) ";
         SimpleSchemaUpdaterStep.NewExplicitAuditedInstance(stepList, stepName, query, auditQuery, -99);
 
-        //9327
+        //#9327
         //add sourcedElement column
         stepName = "Add sourcedElement_id column to DescriptionElementSource";
         tableName = "OriginalSourceBase";
@@ -90,7 +90,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         referencedTable = "DescriptionElementBase";
         ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
-        //9327
+        //#9327
         //update sourcedElement column
         String sql = " UPDATE @@OriginalSourceBase@@ "
                 + " SET sourcedElement_id = (SELECT MN.descriptionElementBase_id "
@@ -110,7 +110,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                     + "       WHERE MN.sources_id = @@OriginalSourceBase_AUD@@.id)";
          SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
 
-		//9327
+		//#9327
         //add sourcedTaxon column
         stepName = "Add sourcedTaxon column to SecundumSource";
         tableName = "OriginalSourceBase";
@@ -130,6 +130,8 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         SecReference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
         //#9330
+        //remove source type 'NOR'
+        stepName = "Remove source type 'nomenclatural reference'";
         tableName = "OriginalSourceBase";
         String columnName = "sourceType";
         String newValue = "PTS";
