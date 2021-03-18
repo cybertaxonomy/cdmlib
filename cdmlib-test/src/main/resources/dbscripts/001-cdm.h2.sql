@@ -5795,7 +5795,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         ISVERBATIM boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        SOURCE_ID integer,
+        DESIGNATIONSOURCE_ID integer,
         TYPESTATUS_ID integer,
         TYPENAME_ID integer,
         TYPESPECIMEN_ID integer,
@@ -5827,7 +5827,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         NOTDESIGNATED boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        SOURCE_ID integer,
+        DESIGNATIONSOURCE_ID integer,
         TYPESTATUS_ID integer,
         ISVERBATIM boolean,
         CONSERVEDTYPE boolean,
@@ -11893,8 +11893,8 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.USERACCOUNT;
 
     alter table PUBLIC.TYPEDESIGNATIONBASE 
-        add constraint FKi3ordjfuma9u820pch23lcvu7 
-        foreign key (SOURCE_ID) 
+        add constraint FK2oom0tmb2aijdfecsbbso4t1o 
+        foreign key (DESIGNATIONSOURCE_ID) 
         references PUBLIC.ORIGINALSOURCEBASE;
 
     alter table PUBLIC.TYPEDESIGNATIONBASE 

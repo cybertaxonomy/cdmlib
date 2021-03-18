@@ -195,7 +195,7 @@ public class TypeDesignationSetFormatter {
         if (withCitation){
 
             //lectotype source
-            OriginalSourceBase lectoSource = typeDes.getSource();
+            OriginalSourceBase lectoSource = typeDes.getDesignationSource();
             if (hasLectoSource(typeDes)){
                 workingsetBuilder.add(TagEnum.separator, REFERENCE_DESIGNATED_BY);
                 addSource(workingsetBuilder, lectoSource);
@@ -231,9 +231,9 @@ public class TypeDesignationSetFormatter {
     }
 
     private static boolean hasLectoSource(TypeDesignationBase<?> typeDes) {
-        return typeDes.getSource() != null &&
-                    (typeDes.getSource().getCitation() != null
-                      || isNotBlank(typeDes.getSource().getCitationMicroReference())
+        return typeDes.getDesignationSource() != null &&
+                    (typeDes.getDesignationSource().getCitation() != null
+                      || isNotBlank(typeDes.getDesignationSource().getCitationMicroReference())
                      );
     }
 

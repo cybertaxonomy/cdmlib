@@ -149,8 +149,8 @@ public class RegistrationDTO {
         } else if(hasTypifications(reg)){
             if(!reg.getTypeDesignations().isEmpty()){
                 for(TypeDesignationBase<?> td : reg.getTypeDesignations()){
-                    if(td.getSource() != null) {
-                        publishedUnit = td.getSource();
+                    if(td.getDesignationSource() != null) {
+                        publishedUnit = td.getDesignationSource();
                     }
                 }
             }

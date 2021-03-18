@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ColumnValueUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
@@ -138,6 +139,13 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         String where = columnName + "='NOR'";
         ColumnValueUpdater.NewStringInstance(stepList, stepName, tableName,
                 columnName, newValue, where, INCLUDE_AUDIT);
+
+        //#9332
+        stepName = "Rename TypeDesignationBase.soure to designationSource";
+        tableName = "TypeDesignationBase";
+        String oldColumnName = "source_id";
+        newColumnName = "designationSource_id";
+        ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 
         //#9315
         removeOldSingleSourceCitations(stepList);

@@ -55,7 +55,7 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
         for (TaxonName name:typeDesignation.getTypifiedNames()){
             names.add(new EntityReference(name.getUuid(), name.getTitleCache()));
         }
-        this.setSource(SourceDTO.fromDescriptionElementSource(typeDesignation.getSource()));
+        this.setSource(SourceDTO.fromDescriptionElementSource(typeDesignation.getDesignationSource()));
         this.typeSpecimen = TypedEntityReference.fromEntity(typeDesignation.getTypeSpecimen());
         setRegistrations(typeDesignation.getRegistrations().stream().map(reg -> new RegistrationDTO(reg)).collect(Collectors.toList()));
 
