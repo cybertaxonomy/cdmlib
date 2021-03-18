@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -25,8 +25,6 @@ import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.merge.Merge;
-import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}
@@ -60,8 +58,7 @@ public class DescriptionElementSource extends NamedSourceBase{
     @XmlElement(name = "sourcedElement")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToOne(fetch = FetchType.LAZY /*, mappedBy="nomenclaturalSource"*/)
-    @Merge(value=MergeMode.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     private DescriptionElementBase sourcedElement;
 
 //************************* FACTORY ******************************/
