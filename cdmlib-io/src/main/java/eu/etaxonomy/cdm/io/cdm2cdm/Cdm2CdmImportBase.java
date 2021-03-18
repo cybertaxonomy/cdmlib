@@ -384,7 +384,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected TypeDesignationBase handlePersistedTypeDesignationBase(TypeDesignationBase<?> designation) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        TypeDesignationBase result = handlePersisted((SourcedEntityBase)designation);
+        TypeDesignationBase result = handlePersisted((SourcedEntityBase<?>)designation);
         //complete
         result.setCitation(detache(result.getCitation()));
         handleCollection(result, TypeDesignationBase.class, "registrations", Registration.class);
@@ -754,7 +754,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends SourcedEntityBase> T  handlePersisted(SourcedEntityBase sourcedEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends SourcedEntityBase<?>> T  handlePersisted(SourcedEntityBase<?> sourcedEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         int originalId = sourcedEntity.getId();
         T result = handlePersisted((AnnotatableEntity)sourcedEntity);
         //complete
@@ -777,7 +777,7 @@ public abstract class Cdm2CdmImportBase
     /**
      * @param sources
      */
-    private void filterImportSources(Set<OriginalSourceBase> sources) {
+    private void filterImportSources(Set<? extends OriginalSourceBase> sources) {
         Set<OriginalSourceBase> toDelete = new HashSet<>();
         for (OriginalSourceBase osb: sources){
             if (osb.getType() == OriginalSourceType.Import){
@@ -790,7 +790,7 @@ public abstract class Cdm2CdmImportBase
     }
 
     protected <T extends IdentifiableEntity> T  handlePersisted(IdentifiableEntity identifiableEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        T result = handlePersisted((SourcedEntityBase)identifiableEntity);
+        T result = handlePersisted((SourcedEntityBase<?>)identifiableEntity);
         //complete
         handleCollection(result, IdentifiableEntity.class, "credits", Credit.class);
         handleCollection(result, IdentifiableEntity.class, "extensions", Extension.class);

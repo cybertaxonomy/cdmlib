@@ -54,19 +54,16 @@
       
       <!-- Agent Package -->
       <mapping class="eu.etaxonomy.cdm.model.agent.Address"/>
-      <mapping class="eu.etaxonomy.cdm.model.agent.AgentBase"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Contact"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Institution"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.InstitutionalMembership"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Person"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Team"/>
-      <mapping class="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase"/>
       
       <!-- Common Package -->
       <mapping class="eu.etaxonomy.cdm.model.common.Annotation"/>
       <mapping class="eu.etaxonomy.cdm.model.common.AnnotationType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Credit"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.CdmLinkBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
@@ -78,15 +75,12 @@
       <mapping class="eu.etaxonomy.cdm.model.common.LSIDAuthority"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Marker"/>
       <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.RelationshipTermBase"/>
       
       <!-- Description Package -->
       <mapping class="eu.etaxonomy.cdm.model.description.CategoricalData"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Character"/>
       <mapping class="eu.etaxonomy.cdm.model.description.CommonTaxonName"/>
-      <mapping class="eu.etaxonomy.cdm.model.description.DescriptionBase"/>
       <mapping class="eu.etaxonomy.cdm.model.description.DescriptiveDataSet"/>
-      <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementBase"/>
       <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementSource"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Distribution"/>
       <mapping class="eu.etaxonomy.cdm.model.description.Feature"/>
@@ -168,7 +162,6 @@
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TaxonName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TextualTypeDesignation"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationBase"/>
       
       <!-- Occurrence Package -->
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Collection"/>
@@ -181,10 +174,8 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.FieldUnit"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.PreservationMethod"/>
-      <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
-                  
+      
       <!-- Permission Package -->
-      <mapping class="eu.etaxonomy.cdm.model.permission.AuthorityBase"/>
       <mapping class="eu.etaxonomy.cdm.model.permission.CdmAuthority"/>
       <mapping class="eu.etaxonomy.cdm.model.permission.GrantedAuthorityImpl"/>
       <mapping class="eu.etaxonomy.cdm.model.permission.Group"/>
@@ -194,7 +185,6 @@
       <!-- Reference Package -->
       <mapping class="eu.etaxonomy.cdm.model.reference.NamedSource"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>
-      <mapping class="eu.etaxonomy.cdm.model.reference.OriginalSourceBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.CdmLinkSource"/>
       
       <!-- Taxon Package -->
@@ -202,7 +192,6 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymType"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>
-      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonBase"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNode"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
@@ -211,9 +200,7 @@
       
       <!-- Term Package -->
       <mapping class="eu.etaxonomy.cdm.model.term.DefinedTerm"/>
-      <mapping class="eu.etaxonomy.cdm.model.term.DefinedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTerm"/>
-      <mapping class="eu.etaxonomy.cdm.model.term.OrderedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.term.OrderedTermVocabulary"/>
       <mapping class="eu.etaxonomy.cdm.model.term.Representation"/>
       <mapping class="eu.etaxonomy.cdm.model.term.TermRelationshipType"/>
@@ -229,11 +216,6 @@
       
       <!-- View Package -->
       <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
-      
-      <!-- for filling caches -->
-      <!-- since hibernate 4 listeners are not handled via hibernate.cfg.xml anymore -->
-      <!--  http://stackoverflow.com/questions/8616146/eventlisteners-using-hibernate-4-0-with-spring-3-1-0-release
-            https://community.jboss.org/wiki/HibernateCoreMigrationGuide40 -->
 
     </session-factory>
 </hibernate-configuration>

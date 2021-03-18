@@ -60,7 +60,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     //TODO should be Set<SOURCE> but this currently throws exception in DefaultMergeStrategyTest
-    private Set<SOURCE> sources = new HashSet<>();
+    private Set<OriginalSourceBase> sources = new HashSet<>();
 
 // ************ CONSTRUCTOR ********************************************/
 
@@ -79,9 +79,10 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
 
 //********************* GETTER / SETTER *******************************/
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<SOURCE> getSources() {
-        return this.sources;
+        return (Set<SOURCE>)this.sources;
     }
 
     @Override

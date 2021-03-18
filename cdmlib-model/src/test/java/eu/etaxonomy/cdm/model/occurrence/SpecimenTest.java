@@ -357,7 +357,7 @@ public class SpecimenTest {
   	    assertTrue("Rights must not be cloned", specimenClone.getRights().iterator().next().equals(right));
 
 		assertFalse(source.equals(specimenClone.getSources().iterator().next()));
-		assertEquals(source.getId(), ((OriginalSourceBase<?>)specimenClone.getSources().iterator().next()).getId());
+		assertEquals(source.getId(), ((OriginalSourceBase)specimenClone.getSources().iterator().next()).getId());
 		assertNotSame(source, specimenClone.getSources().iterator().next());
 		assertEquals(1, specimenClone.getSources().size());
 	}

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Repository
 public class OriginalSourceDaoImpl
         extends CdmEntityDaoBase<OriginalSourceBase>
-        implements	IOriginalSourceDao {
+        implements IOriginalSourceDao {
 
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceDaoImpl.class);

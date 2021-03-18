@@ -570,11 +570,6 @@ public class TaxonGraphHibernateListenerTest extends CdmTransactionalIntegration
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // DataSet create by createTestDataSet()
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 }

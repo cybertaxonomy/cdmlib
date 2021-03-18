@@ -38,14 +38,12 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
  */
 public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrationTestWithSecurity {
 
-
     @SpringBeanByType
     @Qualifier("CdmRepository")
     protected ICdmRepository repo;
 
     @SpringBeanByType
     private IRegistrationWorkingSetService service;
-
 
     @Test
     @DataSet("RegistrationServiceTest.xml")
@@ -188,11 +186,6 @@ public class RegistrationWorkingSetServiceTest extends CdmTransactionalIntegrati
         assertEquals("expecting only the PUBLISHED Registration, since the user is not authenticated", 1l, pager.getCount().longValue());
     }
 
-
-
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // Reusing RegistrationServiceTest.xml
-    }
-
+    public void createTestDataSet() throws FileNotFoundException {}
 }
