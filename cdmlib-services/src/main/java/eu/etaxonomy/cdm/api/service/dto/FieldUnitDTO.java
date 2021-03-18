@@ -40,6 +40,14 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
 	private GatheringEventDTO gatheringEvent;
 
+    private CollectionDTO collection;
+
+    private String catalogNumber;
+
+    private String barcode;
+
+    private String preservationMethod;
+
 	public static FieldUnitDTO fromEntity(FieldUnit entity){
         return FieldUnitDTO.fromEntity(entity, null);
 	}
@@ -237,5 +245,61 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
     public void setFieldNotes(String fieldNotes) {
         this.fieldNotes = fieldNotes;
+    }
+
+    public void setCollection(CollectionDTO collection) {
+        this.collection = collection;
+    }
+
+    public String getCatalogNumber() {
+        return catalogNumber;
+    }
+
+    public void setCatalogNumber(String catalogNumber) {
+        this.catalogNumber = catalogNumber;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public String getPreservationMethod() {
+        return preservationMethod;
+    }
+
+    public void setPreservationMethod(String preservationMethod) {
+        this.preservationMethod = preservationMethod;
+    }
+
+    /**
+     * @return the collection
+     *
+     * @deprecated TODO remove as it only duplicates the information contained in the collectionDTO
+     */
+    @Deprecated
+    public String getCollectionCode() {
+        if (collection != null){
+            return collection.getCode();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return the collection
+     */
+    public CollectionDTO getCollection() {
+        return collection;
+    }
+
+    /**
+     * @param collection the collection to set
+     */
+    public void setCollectioDTO(CollectionDTO collection) {
+        this.collection = collection;
     }
 }

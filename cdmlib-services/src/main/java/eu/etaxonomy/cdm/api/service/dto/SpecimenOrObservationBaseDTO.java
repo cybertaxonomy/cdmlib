@@ -56,11 +56,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private SpecimenOrObservationType recordBase;
     private TermBase kindOfUnit;
-    private CollectionDTO collection;
-    private String catalogNumber;
     private String collectorsNumber;
-    private String barcode;
-    private String preservationMethod;
     private String individualCount;
     private Set<DerivedUnitDTO> derivatives;
 
@@ -93,40 +89,12 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         }
     }
 
-    public void setCollection(CollectionDTO collection) {
-        this.collection = collection;
-    }
-
-    public String getCatalogNumber() {
-        return catalogNumber;
-    }
-
-    public void setCatalogNumber(String catalogNumber) {
-        this.catalogNumber = catalogNumber;
-    }
-
     public String getCollectorsNumber() {
         return collectorsNumber;
     }
 
     public void setCollectorsNumber(String collectorsNumber) {
         this.collectorsNumber = collectorsNumber;
-    }
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public String getPreservationMethod() {
-        return preservationMethod;
-    }
-
-    public void setPreservationMethod(String preservationMethod) {
-        this.preservationMethod = preservationMethod;
     }
 
     public Set<SpecimenTypeDesignationDTO> getSpecimenTypeDesignations() {
@@ -284,35 +252,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     public void setRecordBase(SpecimenOrObservationType specimenOrObservationType) {
         this.recordBase = specimenOrObservationType;
     }
-
-    /**
-     * @return the collection
-     *
-     * @deprecated TODO remove as it only duplicates the information contained in the collectionDTO
-     */
-    @Deprecated
-    public String getCollectionCode() {
-        if (collection != null){
-            return collection.getCode();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @return the collection
-     */
-    public CollectionDTO getCollection() {
-        return collection;
-    }
-    /**
-     * @param collection the collection to set
-     */
-    public void setCollectioDTO(CollectionDTO collection) {
-        this.collection = collection;
-    }
-
-
 
     public Set<DerivedUnitDTO> getDerivatives() {
         if (this.derivatives == null){
