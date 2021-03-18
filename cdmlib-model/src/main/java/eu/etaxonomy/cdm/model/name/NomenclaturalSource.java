@@ -68,7 +68,7 @@ public class NomenclaturalSource extends NamedSourceBase {
 
     @SuppressWarnings("deprecation")
     public NomenclaturalSource(){
-        setType(OriginalSourceType.NomenclaturalReference);
+        setType(OriginalSourceType.PrimaryTaxonomicSource);
         initListener();
     }
 

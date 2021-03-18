@@ -2174,9 +2174,9 @@ public class TaxonName
     @Override
     public void setNomenclaturalSource(NomenclaturalSource nomenclaturalSource) throws IllegalArgumentException {
         //check state
-        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
+        if (nomenclaturalSource != null && !OriginalSourceType.PrimaryTaxonomicSource.equals(nomenclaturalSource.getType())
                 ){
-            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getLabel());
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.PrimaryTaxonomicSource.getLabel());
         }
         this.nomenclaturalSource = nomenclaturalSource;
         if (nomenclaturalSource != null && nomenclaturalSource.getSourcedName() != this){

@@ -65,7 +65,7 @@ public class SecundumSource extends NamedSourceBase {
 
     @SuppressWarnings("deprecation")
     public SecundumSource(){
-        setType(OriginalSourceType.SecundumReference);
+        setType(OriginalSourceType.PrimaryTaxonomicSource);
         initListener();
     }
 

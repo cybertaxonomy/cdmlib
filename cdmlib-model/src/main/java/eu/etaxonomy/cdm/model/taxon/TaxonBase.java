@@ -282,9 +282,8 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
 
     public void setSecSource(SecundumSource secSource) throws IllegalArgumentException {
         //check state
-        if (secSource != null && !OriginalSourceType.SecundumReference.equals(secSource.getType())
-                ){
-            throw new IllegalArgumentException("Secundum source must be of type " + OriginalSourceType.SecundumReference.getLabel());
+        if (secSource != null && !OriginalSourceType.PrimaryTaxonomicSource.equals(secSource.getType())){
+            throw new IllegalArgumentException("Secundum source must be of type " + OriginalSourceType.PrimaryTaxonomicSource.getLabel());
         }
         this.secSource = secSource;
         if (secSource != null && secSource.getSourcedTaxon() != this){

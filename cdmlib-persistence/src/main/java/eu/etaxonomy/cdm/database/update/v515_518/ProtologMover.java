@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.media.ExternalLinkType;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 
 /**
  * @author a.mueller
@@ -279,14 +278,14 @@ public class ProtologMover  extends SchemaUpdaterStepBase {
         int nextSourceId = this.getMaxId1(datasource, "OriginalSourceBase", true, null, caseType, result);
         String sql = "INSERT INTO @@OriginalSourceBase@@ (DTYPE, id, uuid, sourceType, sourcedName_id, created, createdBy_id ) "
                 + " VALUES ('NomenclaturalSource', %d, '%s', '%s', %d, '%s', NULL)";
-        sql = String.format(sql, nextSourceId, UUID.randomUUID(), OriginalSourceType.NomenclaturalReference.getKey(),
+        sql = String.format(sql, nextSourceId, UUID.randomUUID(), "NOR",
                 nameId, this.getNowString());
         datasource.executeUpdate(caseType.replaceTableNames(sql));
 
         if (rev != null){
             sql = "INSERT INTO @@OriginalSourceBase_AUD@@ (REV, revtype, DTYPE, id, uuid, sourceType, sourcedName_id, created, createdBy_id ) "
                     + " VALUES (%d, 0, 'NomenclaturalSource', %d, '%s', '%s', %d, '%s', NULL)";
-            sql = String.format(sql, rev, nextSourceId, UUID.randomUUID(), OriginalSourceType.NomenclaturalReference.getKey(),
+            sql = String.format(sql, rev, nextSourceId, UUID.randomUUID(), "NOR",
                     nameId, this.getNowString());
             datasource.executeUpdate(caseType.replaceTableNames(sql));
         }

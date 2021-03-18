@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
+import eu.etaxonomy.cdm.database.update.ColumnValueUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -117,16 +118,24 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         referencedTable = "TaxonBase";
         ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
-	    //9327
+	    //#9327
         //move secundum reference to nomenclatural source
         stepName = "move secundum reference to secundum source";
         tableName = "TaxonBase";
         String referenceColumnName = "sec_id";
         String microReferenceColumnName = "secMicroReference";
         String sourceColumnName = "sourcedTaxon_id";
-        String sourceType = "SEC";
+        String sourceType = "PTS";
         String dtype = "SecundumSource";
         SecReference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
+
+        //#9330
+        tableName = "OriginalSourceBase";
+        String columnName = "sourceType";
+        String newValue = "PTS";
+        String where = columnName + "='NOR'";
+        ColumnValueUpdater.NewStringInstance(stepList, stepName, tableName,
+                columnName, newValue, where, INCLUDE_AUDIT);
 
         //#9315
         removeOldSingleSourceCitations(stepList);
