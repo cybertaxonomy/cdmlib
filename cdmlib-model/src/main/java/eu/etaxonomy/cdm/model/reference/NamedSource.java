@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.name.TaxonName;
+
 /**
  * @author a.mueller
  * @since 17.03.2021
@@ -37,6 +39,66 @@ public class NamedSource extends NamedSourceBase {
         NamedSource result = NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
         result.setCitation(citation);
         result.setCitationMicroReference(microCitation);
+        return result;
+    }
+
+    public static NamedSource NewDataImportInstance(String id){
+        NamedSource result = new NamedSource(OriginalSourceType.Import);
+        result.setIdInSource(id);
+        return result;
+    }
+
+    public static NamedSource NewDataImportInstance(String id, String idNamespace){
+        NamedSource result = NewDataImportInstance(id);
+        result.setIdNamespace(idNamespace);
+        return result;
+    }
+
+    public static NamedSource NewDataImportInstance(String id, String idNamespace, Reference ref){
+        NamedSource result = NewDataImportInstance(id, idNamespace);
+        result.setCitation(ref);
+        return result;
+    }
+
+    public static NamedSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation){
+        NamedSource result = NewInstance(type);
+        result.setIdInSource(id);
+        result.setIdNamespace(idNamespace);
+        result.setCitation(citation);
+        return result;
+    }
+
+    public static NamedSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation){
+        NamedSource result = NewInstance(type, id, idNamespace, citation);
+        result.setCitationMicroReference(microCitation);
+        return result;
+    }
+
+    public static NamedSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
+        NamedSource result = NewInstance(type, id, idNamespace, citation, microReference);
+        result.setNameUsedInSource(nameUsedInSource);
+        result.setOriginalNameString(originalNameString);
+        return result;
+    }
+
+    public static NamedSource NewInstance(OriginalSourceType type, String id, String idNamespace,
+        Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString, ICdmTarget target){
+        NamedSource result = NewInstance(type, id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+        result.setCdmSource(target);
+        return result;
+    }
+
+    public static NamedSource NewAggregationInstance(ICdmTarget target){
+        NamedSource result = NewInstance(OriginalSourceType.Aggregation);
+        result.setCdmSource(target);
+        return result;
+    }
+
+
+    public static NamedSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
+        NamedSource result = NewPrimarySourceInstance(citation, microReference);
+        result.setNameUsedInSource(nameUsedInSource);
+        result.setOriginalNameString(originalNameString);
         return result;
     }
 

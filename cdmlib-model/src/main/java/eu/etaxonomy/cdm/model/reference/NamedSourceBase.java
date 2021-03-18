@@ -53,66 +53,6 @@ public abstract class NamedSourceBase extends OriginalSourceBase {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     private TaxonName nameUsedInSource;
 
-//    public static DescriptionElementSource NewDataImportInstance(String id){
-//        DescriptionElementSource result = new DescriptionElementSource(OriginalSourceType.Import);
-//        result.setIdInSource(id);
-//        return result;
-//    }
-//
-//    public static DescriptionElementSource NewDataImportInstance(String id, String idNamespace){
-//        DescriptionElementSource result = NewDataImportInstance(id);
-//        result.setIdNamespace(idNamespace);
-//        return result;
-//    }
-//
-//    public static DescriptionElementSource NewDataImportInstance(String id, String idNamespace, Reference ref){
-//        DescriptionElementSource result = NewDataImportInstance(id, idNamespace);
-//        result.setCitation(ref);
-//        return result;
-//    }
-//
-//    public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation){
-//        DescriptionElementSource result = NewInstance(type);
-//        result.setIdInSource(id);
-//        result.setIdNamespace(idNamespace);
-//        result.setCitation(citation);
-//        return result;
-//    }
-//
-//    public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation){
-//        DescriptionElementSource result = NewInstance(type, id, idNamespace, citation);
-//        result.setCitationMicroReference(microCitation);
-//        return result;
-//    }
-//
-//    public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace, Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
-//        DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference);
-//        result.setNameUsedInSource(nameUsedInSource);
-//        result.setOriginalNameString(originalNameString);
-//        return result;
-//    }
-//
-//    public static DescriptionElementSource NewInstance(OriginalSourceType type, String id, String idNamespace,
-//            Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString, ICdmTarget target){
-//        DescriptionElementSource result = NewInstance(type, id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
-//        result.setCdmSource(target);
-//        return result;
-//    }
-//
-//    public static DescriptionElementSource NewAggregationInstance(ICdmTarget target){
-//        DescriptionElementSource result = NewInstance(OriginalSourceType.Aggregation);
-//        result.setCdmSource(target);
-//        return result;
-//    }
-
-//
-//    public static DescriptionElementSource NewPrimarySourceInstance(Reference citation, String microReference, TaxonName nameUsedInSource, String originalNameString){
-//        DescriptionElementSource result = NewPrimarySourceInstance(citation, microReference);
-//        result.setNameUsedInSource(nameUsedInSource);
-//        result.setOriginalNameString(originalNameString);
-//        return result;
-//    }
-
 //*********************** CONSTRUCTOR ******************************/
 
     //for hibernate use only
