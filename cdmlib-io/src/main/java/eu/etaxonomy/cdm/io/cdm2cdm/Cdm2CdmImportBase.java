@@ -84,10 +84,13 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -563,10 +566,30 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected DescriptionElementSource handlePersistedDescriptionElementSource(DescriptionElementSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        DescriptionElementSource result = handlePersisted((OriginalSourceBase)source);
+    protected <T extends NamedSourceBase> T handlePersisted(NamedSourceBase source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        T result = handlePersisted((OriginalSourceBase)source);
         //complete
         result.setNameUsedInSource(detache(result.getNameUsedInSource()));
+        return result;
+    }
+
+    protected NamedSource handlePersistedNamedSource(NamedSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        NamedSource result = handlePersisted((NamedSourceBase)source);
+        //complete
+        return result;
+    }
+
+    protected SecundumSource handlePersistedSecundumSource(DescriptionElementSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        SecundumSource result = handlePersisted((NamedSourceBase)source);
+        //TODO correct?
+        result.setSourcedTaxon(detache(result.getSourcedTaxon()));
+        return result;
+    }
+
+    protected DescriptionElementSource handlePersistedDescriptionElementSource(DescriptionElementSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        DescriptionElementSource result = handlePersisted((NamedSourceBase)source);
+        //TODO correct?
+        result.setSourcedElement(detache(result.getSourcedElement()));
         return result;
     }
 

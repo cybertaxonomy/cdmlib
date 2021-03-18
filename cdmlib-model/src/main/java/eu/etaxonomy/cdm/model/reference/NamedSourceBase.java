@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  * @since 17.03.2021
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NamedSource", propOrder = {
+@XmlType(name = "NamedSourceBase", propOrder = {
         "nameUsedInSource"
     })
 @XmlRootElement(name = "SourcedEntityBase")

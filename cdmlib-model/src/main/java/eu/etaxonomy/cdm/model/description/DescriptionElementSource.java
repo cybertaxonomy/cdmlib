@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * @since 18.09.2009
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
-	    "nameUsedInSource"
+	    "sourcedElement"
 	})
 @Entity
 @Audited
