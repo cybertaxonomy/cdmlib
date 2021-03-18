@@ -20,8 +20,6 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.util.DerivedUnitConversionException;
-import eu.etaxonomy.cdm.api.util.DerivedUnitConverter;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -41,7 +39,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
     private IOccurrenceService service;
 
     @SpringBeanByType
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     @Test
     public void toMediaSpecimen_issue7114() throws DerivedUnitConversionException {
@@ -58,7 +56,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
         du.setTitleCache("test derived unit", true);
         SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
         std.setTypeSpecimen(du);
-        du = (DerivedUnit) service.save(du); // intermediate save is essential for this test
+        du = service.save(du); // intermediate save is essential for this test
         DerivedUnitConverter<MediaSpecimen> converter = new DerivedUnitConverter<>(std);
         SpecimenTypeDesignation newDu = converter.convertTo(MediaSpecimen.class, SpecimenOrObservationType.StillImage);
         assertEquals(du, converter.oldDerivedUnit());
@@ -86,7 +84,7 @@ public class DerivedUnitConverterIntegrationTest extends CdmTransactionalIntegra
         SpecimenTypeDesignation std = SpecimenTypeDesignation.NewInstance();
         std.setTypeSpecimen(du);
         DerivedUnitConverter<DerivedUnit> duc = new DerivedUnitConverter<>(std);
-        du = (MediaSpecimen) service.save(du); // intermediate save is essential for this test
+        du = service.save(du); // intermediate save is essential for this test
         duc.convertTo(DerivedUnit.class, SpecimenOrObservationType.PreservedSpecimen);
 
         assertEquals(1, service.list(null, null, null, null, null).size());
