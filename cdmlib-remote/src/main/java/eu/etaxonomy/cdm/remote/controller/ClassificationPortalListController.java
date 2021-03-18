@@ -55,7 +55,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     public static final Logger logger = Logger.getLogger(ClassificationPortalListController.class);
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
-            "reference.authorship"
+            "source.citation.authorship"
     });
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{

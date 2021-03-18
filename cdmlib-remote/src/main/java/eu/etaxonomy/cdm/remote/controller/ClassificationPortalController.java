@@ -44,7 +44,7 @@ public class ClassificationPortalController extends ClassificationController {
 
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
-            "reference.authorship",
+            "source.citation.authorship",
             "childNodes"
     });
 

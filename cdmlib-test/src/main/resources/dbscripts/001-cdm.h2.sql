@@ -660,14 +660,12 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         LSID_REVISION varchar(255),
         PROTECTEDTITLECACHE boolean not null,
         TITLECACHE varchar(800),
-        MICROREFERENCE varchar(255),
         TIMEPERIOD_END varchar(255),
         TIMEPERIOD_FREETEXT varchar(255),
         TIMEPERIOD_START varchar(255),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        REFERENCE_ID integer,
         ROOTNODE_ID integer,
         SOURCE_ID integer,
         primary key (ID)
@@ -701,14 +699,12 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         LSID_REVISION varchar(255),
         PROTECTEDTITLECACHE boolean,
         TITLECACHE varchar(800),
-        MICROREFERENCE varchar(255),
         TIMEPERIOD_END varchar(255),
         TIMEPERIOD_FREETEXT varchar(255),
         TIMEPERIOD_START varchar(255),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        REFERENCE_ID integer,
         ROOTNODE_ID integer,
         SOURCE_ID integer,
         primary key (ID, REV)
@@ -7181,11 +7177,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.LANGUAGESTRING;
 
     alter table PUBLIC.CLASSIFICATION 
-        add constraint FKtaablnpi8m5r4ul6e325yc531 
-        foreign key (REFERENCE_ID) 
-        references PUBLIC.REFERENCE;
-
-    alter table PUBLIC.CLASSIFICATION 
         add constraint FKm669u8ptjck3dl7xc55dc3rca 
         foreign key (ROOTNODE_ID) 
         references PUBLIC.TAXONNODE;
@@ -11979,4 +11970,3 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FKlt42h4kqm2ekw8y41980phxbx 
         foreign key (MEMBERS_ID) 
         references PUBLIC.USERACCOUNT;
-
