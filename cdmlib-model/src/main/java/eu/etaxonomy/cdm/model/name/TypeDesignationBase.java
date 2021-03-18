@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
     "typeStatus",
     "notDesignated",
     "typifiedNames",
-    "source",
+    "designationSource",
     "registrations",
 })
 @XmlSeeAlso({
