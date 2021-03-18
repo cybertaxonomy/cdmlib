@@ -1874,20 +1874,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         primary key (REV, DESCRIPTIONELEMENTBASE_ID, MODIFYINGTEXT_ID, MODIFYINGTEXT_MAPKEY_ID)
     );
 
-    create table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE (
-        DESCRIPTIONELEMENTBASE_ID integer not null,
-        SOURCES_ID integer not null,
-        primary key (DESCRIPTIONELEMENTBASE_ID, SOURCES_ID)
-    );
-
-    create table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE_AUD (
-        REV integer not null,
-        DESCRIPTIONELEMENTBASE_ID integer not null,
-        SOURCES_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, DESCRIPTIONELEMENTBASE_ID, SOURCES_ID)
-    );
-
     create table PUBLIC.DESCRIPTIVEDATASET (
         DTYPE varchar(31) not null,
         ID integer not null,
@@ -6139,9 +6125,6 @@ create index PUBLIC.collectionTitleCacheIndex on PUBLIC.COLLECTION (TITLECACHE);
     alter table PUBLIC.DESCRIPTIONELEMENTBASE_MODIFYINGTEXT 
         add constraint UK_ew1xlx48jefqrfux2rb2yyuv1 unique (MODIFYINGTEXT_ID);
 
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE 
-        add constraint UK_gxeyjwti842ambq5flkgbkk94 unique (SOURCES_ID);
-
     alter table PUBLIC.DESCRIPTIVEDATASET 
         add constraint UK_4u34f69h4ujnpci1fiaqfbbbf unique (UUID);
 
@@ -8342,21 +8325,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         foreign key (REV) 
         references PUBLIC.AUDITEVENT;
 
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE 
-        add constraint FK3igd5bk5wlh78vg3j0fkrs75p 
-        foreign key (SOURCES_ID) 
-        references PUBLIC.ORIGINALSOURCEBASE;
-
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE 
-        add constraint FK3wcj6imue2a0flhcfjftallgh 
-        foreign key (DESCRIPTIONELEMENTBASE_ID) 
-        references PUBLIC.DESCRIPTIONELEMENTBASE;
-
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE_AUD 
-        add constraint FKmkq24uy36wm3orr9m70dticot 
-        foreign key (REV) 
-        references PUBLIC.AUDITEVENT;
-
     alter table PUBLIC.DESCRIPTIVEDATASET 
         add constraint FKhoyf1e3647kyx8xtl5gdfnlik 
         foreign key (CREATEDBY_ID) 
@@ -9791,6 +9759,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FK1mg18wyfhlvfodo9vqlvrar4x 
         foreign key (NAMEUSEDINSOURCE_ID) 
         references PUBLIC.TAXONNAME;
+
+    alter table PUBLIC.ORIGINALSOURCEBASE 
+        add constraint FK5jw9wax0119xqu5g15yn43ufe 
+        foreign key (SOURCEDELEMENT_ID) 
+        references PUBLIC.DESCRIPTIONELEMENTBASE;
 
     alter table PUBLIC.ORIGINALSOURCEBASE 
         add constraint FKcfyx4vfln4xi61ebxjc3q37aw 
@@ -12026,3 +11999,4 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FKlt42h4kqm2ekw8y41980phxbx 
         foreign key (MEMBERS_ID) 
         references PUBLIC.USERACCOUNT;
+
