@@ -22,6 +22,6 @@ public enum MergeMode {
 	ADD_CLONE,  //for collections
 	AND,     //only for boolean values
 	OR,	 	//only for boolean values
-	RELATION, //only for collections of relationsshipbase
+	RELATION, //only for collections of relationshipbase
 	MERGE
 }
