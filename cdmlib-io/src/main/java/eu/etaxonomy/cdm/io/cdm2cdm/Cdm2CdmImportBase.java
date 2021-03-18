@@ -589,7 +589,7 @@ public abstract class Cdm2CdmImportBase
     protected DescriptionElementSource handlePersistedDescriptionElementSource(DescriptionElementSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         DescriptionElementSource result = handlePersisted((NamedSourceBase)source);
         //TODO correct?
-        result.setSourcedElement(detache(result.getSourcedElement()));
+        detache(result.getSourcedElement()).addSource(result);
         return result;
     }
 
