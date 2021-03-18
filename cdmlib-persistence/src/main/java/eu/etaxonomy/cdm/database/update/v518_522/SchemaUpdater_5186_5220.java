@@ -184,7 +184,6 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         return stepList;
     }
 
-
     //#9315 remove
     private void removeOldSingleSourceCitations(List<ISchemaUpdaterStep> stepList) {
         //TaxonName.nomenclaturalSource_id
@@ -276,7 +275,6 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         tableName = "HybridRelationship";
         oldColumnName = "citation_id";
         ColumnRemover.NewInstance(stepList, stepName, tableName, oldColumnName, INCLUDE_AUDIT);
-
     }
 
     @Override

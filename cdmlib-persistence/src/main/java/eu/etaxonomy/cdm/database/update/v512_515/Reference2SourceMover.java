@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  */
 public class Reference2SourceMover extends SchemaUpdaterStepBase {
 
-
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Reference2SourceMover.class);
 
