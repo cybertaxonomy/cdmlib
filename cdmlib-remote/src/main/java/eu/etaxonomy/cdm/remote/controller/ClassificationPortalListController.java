@@ -93,7 +93,6 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         this.taxonNodeService = taxonNodeService;
     }
 
-
     @InitBinder
     @Override
     public void initBinder(WebDataBinder binder) {
@@ -158,7 +157,6 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         //FIXME return pager
         List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, classificationUuid, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         return childs;
-
     }
 
     /**
@@ -240,7 +238,6 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         return getPathFromTaxonToRank(classificationUuid, taxonUuid, null, subtreeUuid, request, response);
     }
 
-
     private Rank findRank(UUID rankUuid) {
         Rank rank = null;
         if(rankUuid != null){
@@ -253,6 +250,4 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         }
         return rank;
     }
-
-
 }
