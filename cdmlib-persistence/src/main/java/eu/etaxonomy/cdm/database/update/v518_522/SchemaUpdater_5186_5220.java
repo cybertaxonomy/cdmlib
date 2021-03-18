@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.v512_515.Reference2SourceMover;
 import eu.etaxonomy.cdm.database.update.v515_518.SchemaUpdater_5185_5186;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -177,6 +178,17 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
                 + "       FROM @@TaxonName_NomenclaturalStatus_AUD@@ MN "
                 + "       WHERE MN.status_id = @@NomenclaturalStatus_AUD@@.id)";
          SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
+
+         //9211
+         //move classification reference to classification source
+         stepName = "move classification reference to classification source";
+         tableName = "Classification";
+         referenceColumnName = "reference_id";
+         microReferenceColumnName = "microReference";
+         sourceColumnName = "source_id";
+         sourceType = "PTS";
+         dtype = "NamedSource";
+         Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
         //#9315
         removeOldSingleSourceCitations(stepList);

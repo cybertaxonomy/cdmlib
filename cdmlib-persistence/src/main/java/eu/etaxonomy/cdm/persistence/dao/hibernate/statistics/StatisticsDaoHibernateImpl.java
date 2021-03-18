@@ -438,8 +438,8 @@ public class StatisticsDaoHibernateImpl
 		Set<UUID> ids = new HashSet<>();
 
 		// get classification reference
-		queryStrings.add("select c.reference.uuid from Classification as c "
-				+ "where c.uuid=:classificationId ");
+		queryStrings.add("SELECT c.source.citation.uuid FROM Classification as c "
+				+ "WHERE c.uuid=:classificationId ");
 		// TODO ???
 		// +"join c.souces as s "
 		// +"join s.citation "
@@ -807,7 +807,7 @@ public class StatisticsDaoHibernateImpl
 //		Set<Integer> ids = listDescriptiveIds(true, classification);
 
 		// get classification reference
-		queryStrings.add("SELECT COUNT(c.reference.id) "
+		queryStrings.add("SELECT COUNT(c.source.citation.id) "
 		        + "FROM Classification as c "
 				+ "WHERE c.id=:classificationId ");
 		// TODO ???

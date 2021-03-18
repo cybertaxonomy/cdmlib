@@ -184,7 +184,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
             final String defaultClassificationAbcd = "Default Classification Specimen Import";
             for (Classification classif : cdmRepository.getClassificationService().list(Classification.class, null, null, null, null)){
                 if (classif.getTitleCache()!=null && classif.getTitleCache().equalsIgnoreCase(defaultClassificationAbcd)
-                        && classif.getCitation()!=null && classif.getCitation().equals(getRef())) {
+                        && classif.getReference()!=null && classif.getReference().equals(getRef())) {
                     defaultClassification = classif;
                     break;
                 }

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../database/schema/dataset.xsd">
-  <CLASSIFICATION ID="1" UUID="52b41b07-5500-43ae-82e6-ea2fd328c3d5" PROTECTEDTITLECACHE="false" TITLECACHE="New Classification" NAME_ID="1" REFERENCE_ID="[null]" ROOTNODE_ID="2"/>
+  <CLASSIFICATION ID="1" UUID="52b41b07-5500-43ae-82e6-ea2fd328c3d5" PROTECTEDTITLECACHE="false" TITLECACHE="New Classification" NAME_ID="1" ROOTNODE_ID="2"/>
   <LANGUAGESTRING ID="1" UUID="b45b52e7-52a1-4cdf-82ef-c011ce324d3a" TEXT="New Classification" LANGUAGE_ID="406"/>
   <TAXONNODE ID="1" UUID="0bc9976a-ab5a-4eeb-9d22-20ddbfc8b6b3" SORTINDEX="0"  TREEINDEX="#t1#2#1#"   COUNTCHILDREN="1" CLASSIFICATION_ID="1" PARENT_ID="2" TAXON_ID="4"/>
   <TAXONNODE ID="2" UUID="96bed6ff-09ea-4317-ace4-2e97be6ba09c" SORTINDEX="-1" TREEINDEX="#t1#2#"     COUNTCHILDREN="4" CLASSIFICATION_ID="1" PARENT_ID="[null]" TAXON_ID="[null]"/>
