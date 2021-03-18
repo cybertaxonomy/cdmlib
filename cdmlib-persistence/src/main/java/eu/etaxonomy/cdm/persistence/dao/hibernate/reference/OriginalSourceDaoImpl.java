@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
@@ -114,7 +115,7 @@ public class OriginalSourceDaoImpl
 	}
 
 	@Override
-    public <T extends DescriptionElementSource>  Long countWithNameUsedInSource(Class<T> clazz){
+    public <T extends NamedSourceBase>  Long countWithNameUsedInSource(Class<T> clazz){
         Criteria criteria = getSession().createCriteria(HybridRelationship.class);
 
         clazz = clazz != null? clazz : (Class<T>) DescriptionElementSource.class;
@@ -128,9 +129,9 @@ public class OriginalSourceDaoImpl
 
 
 	@Override
-	public <T extends DescriptionElementSource> List<T> listWithNameUsedInSource(Class<T> clazz,
+	public <T extends NamedSourceBase> List<T> listWithNameUsedInSource(Class<T> clazz,
 	        Integer pageSize, Integer pageNumber,List<OrderHint> orderHints, List<String> propertyPaths){
-	    clazz = clazz != null? clazz : (Class<T>) DescriptionElementSource.class;
+	    clazz = clazz != null? clazz : (Class<T>) NamedSourceBase.class;
 	    Criteria crit = getSession().createCriteria(clazz);
 	    crit.add(Restrictions.isNotNull("nameUsedInSource"));
 

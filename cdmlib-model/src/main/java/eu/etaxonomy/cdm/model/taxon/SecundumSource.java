@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     })
 @Entity
 @Audited
-public class SecundumSource extends DescriptionElementSource {
+public class SecundumSource extends NamedSourceBase {
 
     private static final long serialVersionUID = 7899107010799860914L;
 

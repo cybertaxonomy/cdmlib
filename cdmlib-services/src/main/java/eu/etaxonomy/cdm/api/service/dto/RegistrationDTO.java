@@ -28,13 +28,13 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.ref.EntityReference;
@@ -93,7 +93,7 @@ public class RegistrationDTO {
          if(hasName(reg)){
              name = new EntityReference(reg.getName().getUuid(), reg.getName().getTitleCache());
          }
-        DescriptionElementSource publishedUnit = findPublishedUnit(reg);
+        NamedSourceBase publishedUnit = findPublishedUnit(reg);
         if(publishedUnit != null) {
             citation = publishedUnit.getCitation();
             citationDetail = publishedUnit.getCitationMicroReference();
@@ -142,8 +142,8 @@ public class RegistrationDTO {
         makeNomenclaturalCitationString();
     }
 
-    public static DescriptionElementSource findPublishedUnit(Registration reg) {
-        DescriptionElementSource publishedUnit = null;
+    public static NamedSourceBase findPublishedUnit(Registration reg) {
+        NamedSourceBase publishedUnit = null;
         if(hasName(reg)){
             publishedUnit = reg.getName().getNomenclaturalSource();
         } else if(hasTypifications(reg)){

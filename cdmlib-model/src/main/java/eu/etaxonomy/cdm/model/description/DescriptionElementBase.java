@@ -405,6 +405,7 @@ public abstract class DescriptionElementBase
     public void addSource(DescriptionElementSource source) {
         if (source != null){
             this.sources.add(source);
+            source.setSourcedElement(this);
         }
     }
 

@@ -39,8 +39,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -102,7 +102,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private DescriptionElementSource source;
+    private NamedSource source;
 
     @XmlElementWrapper(name = "TypifiedNames")
     @XmlElement(name = "TypifiedName")
@@ -164,7 +164,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
-        this(DescriptionElementSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
+        this(NamedSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
     }
 
     /**
@@ -181,7 +181,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see                         #isNotDesignated()
      * @see                         TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(DescriptionElementSource source, String originalNameString, boolean notDesignated){
+    protected TypeDesignationBase(NamedSource source, String originalNameString, boolean notDesignated){
         super();
         this.notDesignated = notDesignated;
         this.source = source;
@@ -275,9 +275,9 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @param createIfNotExist
      * @see #getSource()
      */
-    public DescriptionElementSource getSource(boolean createIfNotExist) {
+    public NamedSource getSource(boolean createIfNotExist) {
         if (this.source == null && createIfNotExist){
-            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+            this.source = NamedSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
         }
         return source;
     }
@@ -289,13 +289,13 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}.
      */
     //TODO should we rename this to better distinguish the lectotype source from the general sources?
-    public DescriptionElementSource getSource(){
+    public NamedSource getSource(){
         return source;
     }
     /**
      * @see #getSource()
      */
-    public void setSource(DescriptionElementSource source) {
+    public void setSource(NamedSource source) {
         this.source = source;
     }
 

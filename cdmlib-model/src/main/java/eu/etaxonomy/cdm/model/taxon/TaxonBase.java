@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.ITaxonNameBase;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -274,7 +273,7 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         return this.secSource;
     }
 
-    protected DescriptionElementSource getSecSource(boolean createIfNotExist){
+    protected SecundumSource getSecSource(boolean createIfNotExist){
         if (this.secSource == null && createIfNotExist){
             setSecSource(SecundumSource.NewSecundumInstance(this));
         }

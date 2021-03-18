@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.permission.Operation;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
@@ -844,7 +845,7 @@ public class TaxonNodeServiceImpl
     @Override
     @Transactional
     public UpdateResult createNewTaxonNode(UUID parentNodeUuid, CreateTaxonDTO taxonDto,
-            DescriptionElementSource source, String microref,
+            NamedSource source, String microref,
             TaxonNodeStatus status, Map<Language,LanguageString> statusNote){
 
         UpdateResult result = new UpdateResult();
@@ -891,7 +892,7 @@ public class TaxonNodeServiceImpl
             parent = dao.load(parentNodeUuid);
             if (source != null){
                 if (source.isPersited()){
-                    source = (DescriptionElementSource) sourceDao.load(source.getUuid());
+                    source = (NamedSource) sourceDao.load(source.getUuid());
                 }
                 if (source.getCitation() != null){
                     source.setCitation(referenceService.load(source.getCitation().getUuid()));

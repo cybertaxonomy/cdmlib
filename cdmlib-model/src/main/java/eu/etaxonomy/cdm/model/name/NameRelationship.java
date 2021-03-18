@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.BasionymsMustShareEpithetsAndAuthors;
@@ -157,7 +157,7 @@ public class NameRelationship
      * @see                         TaxonName#addRelationshipFromName(TaxonName, NameRelationshipType, String)
      * @see                         TaxonName#addRelationshipToName(TaxonName, NameRelationshipType, String)
      */
-    protected NameRelationship(TaxonName  toName, TaxonName fromName, NameRelationshipType type, DescriptionElementSource source, String ruleConsidered, NomenclaturalCodeEdition codeEdition) {
+    protected NameRelationship(TaxonName  toName, TaxonName fromName, NameRelationshipType type, NamedSource source, String ruleConsidered, NomenclaturalCodeEdition codeEdition) {
         super(fromName, toName, type, source);
         this.setRuleConsidered(ruleConsidered);
         this.setCodeEdition(codeEdition);

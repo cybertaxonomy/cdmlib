@@ -51,8 +51,8 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
@@ -224,21 +224,21 @@ public class Classification
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        return addChildNode(new TaxonNode(taxon), index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
+        return addChildNode(new TaxonNode(taxon), index, NamedSource.NewPrimarySourceInstance(citation, microCitation));
     }
 
     @Override
-    public TaxonNode addChildTaxon(Taxon taxon, DescriptionElementSource source) {
+    public TaxonNode addChildTaxon(Taxon taxon, NamedSource source) {
         return addChildTaxon(taxon, rootNode.getCountChildren(), source);
     }
 
     @Override
-    public TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source) {
+    public TaxonNode addChildTaxon(Taxon taxon, int index, NamedSource source) {
         return addChildNode(new TaxonNode(taxon), index, source);
     }
 
     @Override
-    public TaxonNode addChildNode(TaxonNode childNode, int index, DescriptionElementSource source) {
+    public TaxonNode addChildNode(TaxonNode childNode, int index, NamedSource source) {
         childNode.setParentTreeNode(this.rootNode, index);
         childNode.setSource(source);
 

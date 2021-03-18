@@ -11,22 +11,22 @@ package eu.etaxonomy.cdm.model.description;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
-import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * This class represents an {@link eu.etaxonomy.cdm.model.reference.IOriginalSource IOriginalSource}
@@ -49,17 +49,24 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 	})
 @Entity
 @Audited
-public class DescriptionElementSource extends OriginalSourceBase{
+public class DescriptionElementSource extends NamedSourceBase{
 
     private static final long serialVersionUID = -8487673428764273806L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementSource.class);
 
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static DescriptionElementSource NewInstance(OriginalSourceType type){
+// ************************* FIELDS ********************************/
+
+    @XmlElement(name = "sourcedElement")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToOne(fetch = FetchType.LAZY /*, mappedBy="nomenclaturalSource"*/)
+    @Merge(value=MergeMode.MERGE)
+    private DescriptionElementBase sourcedElement;
+
+//************************* FACTORY ******************************/
+
+    public static DescriptionElementSource NewInstance(OriginalSourceType type){
 		return new DescriptionElementSource(type);
 	}
 
@@ -129,15 +136,6 @@ public class DescriptionElementSource extends OriginalSourceBase{
 		return result;
 	}
 
-// ************************* FIELDS ********************************/
-
-	@XmlElement(name = "nameUsedInSource")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-	private TaxonName nameUsedInSource;
-
 //*********************** CONSTRUCTOR ******************************/
 
 	//for hibernate use only
@@ -152,28 +150,19 @@ public class DescriptionElementSource extends OriginalSourceBase{
 		super(type);
 	}
 
+//***************** GETTER / SETTER ****************************/
 
-// **************************  GETTER / SETTER ***************************/
-
-	public TaxonName getNameUsedInSource() {
-		return nameUsedInSource;
-	}
-
-	public void setNameUsedInSource(TaxonName nameUsedInSource) {
-		this.nameUsedInSource = nameUsedInSource;
-	}
-
-// **************** EMPTY ************************/
-
-    @Override
-    public boolean checkEmpty(){
-       return this.checkEmpty(false);
+    public DescriptionElementBase getSourcedElement() {
+        return sourcedElement;
     }
 
-    @Override
-    public boolean checkEmpty(boolean excludeType){
-        return super.checkEmpty(excludeType)
-            && this.nameUsedInSource == null;
+    public void setSourcedElement(DescriptionElementBase sourcedElement) {
+        if (this.sourcedElement != sourcedElement){
+            this.sourcedElement = sourcedElement;
+            if (sourcedElement != null){
+                sourcedElement.addSource(this);
+            }
+        }
     }
 
 //*********************************** CLONE *********************************************************/
@@ -184,26 +173,5 @@ public class DescriptionElementSource extends OriginalSourceBase{
 
 		//no changes
 		return result;
-	}
-
-//*********************************** EQUALS *********************************************************/
-
-    @Override
-    public boolean equalsByShallowCompare(OriginalSourceBase other) {
-
-	    if(!super.equalsByShallowCompare(other)) {
-	        return false;
-	    }
-
-	    int a = -1;
-	    int b = -1;
-	    if(this.getNameUsedInSource() != null) {
-	        a = this.getNameUsedInSource().getId();
-	    }
-	    DescriptionElementSource otherDescriptionElementSource = (DescriptionElementSource)other;
-        if(otherDescriptionElementSource.getNameUsedInSource() != null) {
-            b = otherDescriptionElementSource.getNameUsedInSource().getId();
-        }
-	    return a == b;
 	}
 }

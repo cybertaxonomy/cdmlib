@@ -203,6 +203,7 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.permission.User"/>
       
       <!-- Reference Package -->
+      <mapping class="eu.etaxonomy.cdm.model.reference.NamedSource"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.OriginalSourceBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.CdmLinkSource"/>

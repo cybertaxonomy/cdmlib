@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
@@ -2165,7 +2164,7 @@ public class TaxonName
         return this.nomenclaturalSource;
     }
 
-    protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
+    protected NomenclaturalSource getNomenclaturalSource(boolean createIfNotExist){
         if (this.nomenclaturalSource == null && createIfNotExist){
             setNomenclaturalSource(NomenclaturalSource.NewNomenclaturalInstance(this));
         }

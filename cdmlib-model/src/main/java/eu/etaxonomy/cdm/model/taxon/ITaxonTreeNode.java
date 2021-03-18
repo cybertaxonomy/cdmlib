@@ -13,7 +13,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
@@ -107,7 +107,7 @@ public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableE
      * @param microCitation
      * @return
      */
-    TaxonNode addChildTaxon(Taxon taxon, DescriptionElementSource source);
+    TaxonNode addChildTaxon(Taxon taxon, NamedSource source);
 
     /**
      * @param taxon
@@ -115,7 +115,7 @@ public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableE
      * @param source
      * @return
      */
-    TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source);
+    TaxonNode addChildTaxon(Taxon taxon, int index, NamedSource source);
 
     /**
      * @param child
@@ -124,6 +124,6 @@ public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableE
      * @param microReference
      * @return
      */
-    TaxonNode addChildNode(TaxonNode child, int index, DescriptionElementSource source);
+    TaxonNode addChildNode(TaxonNode child, int index, NamedSource source);
 
 }
