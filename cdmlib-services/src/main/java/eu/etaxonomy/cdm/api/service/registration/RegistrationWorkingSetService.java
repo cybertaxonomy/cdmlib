@@ -169,7 +169,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         return new RegistrationDTO(reg);
     }
 
-
     /**
      * @param id the Registration entity id
      * @return

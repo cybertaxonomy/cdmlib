@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 @XmlType(name = "NamedSourceBase", propOrder = {
         "nameUsedInSource"
     })
-@XmlRootElement(name = "SourcedEntityBase")
+@XmlRootElement(name = "NamedSourceBase")
 @MappedSuperclass
 @Audited
 public abstract class NamedSourceBase extends OriginalSourceBase {

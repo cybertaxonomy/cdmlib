@@ -27,18 +27,12 @@ import net.sf.json.JsonConfig;
 /**
  * @author a.kohlbecker
  * @since 09.07.2010
- *
  */
 public class TypeDesignationBaseBeanProcessor extends AbstractCdmBeanProcessor<TypeDesignationBase> implements IMultilanguageTextBeanProcessor {
-
 
     private static final List<String> IGNORE_LIST = Arrays.asList("text");
     private boolean replaceMultilanguageText;
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-	 */
 	@Override
 	public JSONObject processBeanSecondStep(TypeDesignationBase bean, JSONObject json, JsonConfig jsonConfig) {
 		json.element("typeStatus", bean.getTypeStatus(), jsonConfig);
@@ -88,6 +82,4 @@ public class TypeDesignationBaseBeanProcessor extends AbstractCdmBeanProcessor<T
     public List<String> getIgnorePropNames() {
         return getMultilanguageTextIgnoreList();
     }
-
-
 }

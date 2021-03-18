@@ -60,9 +60,9 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
         }
         entity = HibernateProxyHelper.deproxy(entity);
         if(withLabel && IdentifiableEntity.class.isAssignableFrom(entity.getClass())) {
-            return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid(), ((IdentifiableEntity)entity).getTitleCache());
+            return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid(), ((IdentifiableEntity)entity).getTitleCache());
         } else {
-            return new TypedEntityReference<T>((Class<T>)entity.getClass(), entity.getUuid());
+            return new TypedEntityReference<>((Class<T>)entity.getClass(), entity.getUuid());
         }
     }
 
@@ -72,7 +72,7 @@ public class TypedEntityReference<T extends CdmBase> extends EntityReference {
      * @throws ClassCastException
      *  If the {@link #type} is not a super type of <code>subType</code>.
      */
-    public <T extends CdmBase> TypedEntityReference<T> castTo(Class<T> subType){
+    public <S extends CdmBase> TypedEntityReference<S> castTo(Class<S> subType){
         if(!type.isAssignableFrom(subType)) {
             throw new ClassCastException("Cannot cast " + type.getName() + " to " + subType.getName());
         }
