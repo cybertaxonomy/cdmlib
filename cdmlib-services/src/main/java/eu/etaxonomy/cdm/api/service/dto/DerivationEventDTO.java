@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 
 /**
  * @author k.luther
@@ -21,11 +22,18 @@ public class DerivationEventDTO extends EventDTO<DerivationEvent> {
 
     private String institute;
 
+    protected DerivationEventType eventType;
+
     private DerivationEventDTO(DerivationEvent entity) {
         super(entity);
-        this.eventType = entity.getType();
-        this.actor = entity.getActor().getTitleCache();
-        this.institute = entity.getInstitution().getTitleCache();
+        eventType = entity.getType();
+        eventType.getRepresentations(); // force initialization
+        if(entity.getActor() != null) {
+            this.actor = entity.getActor().getTitleCache();
+        }
+        if(entity.getInstitution() != null) {
+            this.institute = entity.getInstitution().getTitleCache();
+        }
     }
 
     public static EventDTO<DerivationEvent> fromEntity(DerivationEvent entity) {
@@ -43,6 +51,14 @@ public class DerivationEventDTO extends EventDTO<DerivationEvent> {
 
     public void setInstitute(String institute) {
         this.institute = institute;
+    }
+
+    public DerivationEventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(DerivationEventType eventType) {
+        this.eventType = eventType;
     }
 
 }
