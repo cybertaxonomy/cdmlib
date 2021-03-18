@@ -1834,7 +1834,7 @@ public class TaxonName
     }
 
     public void setStatus(Set<NomenclaturalStatus> nomStatus) throws SetterAdapterException {
-        new EntityCollectionSetterAdapter<TaxonName, NomenclaturalStatus>(TaxonName.class, NomenclaturalStatus.class, "status", "addStatus", "removeStatus").setCollection(this, status);
+        new EntityCollectionSetterAdapter<TaxonName, NomenclaturalStatus>(TaxonName.class, NomenclaturalStatus.class, "status", "addStatus", "removeStatus").setCollection(this, nomStatus);
     }
 
     /**
