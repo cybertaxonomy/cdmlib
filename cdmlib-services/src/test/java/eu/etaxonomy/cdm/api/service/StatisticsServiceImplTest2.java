@@ -127,7 +127,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 	private List<StatisticsConfigurator> createConfiguratorList(String[] part,
 			List<StatisticsTypeEnum> types) {
 
-		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
+		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<>();
 
 		// 1. get types for configurators:
 		// in our case all the configurators will have the same types
@@ -163,7 +163,6 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					List<Classification> classificationsList = classificationService
 							.listClassifications(null, 0, null, null);
 					for (Classification classification : classificationsList) {
-
 						StatisticsConfigurator newConfigurator = new StatisticsConfigurator();
 						newConfigurator.setType(helperConfigurator.getType());
 						newConfigurator.getFilter().addAll(
@@ -173,7 +172,6 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					}
 				}
 			}
-
 		}
 
 		return configuratorList;
@@ -229,10 +227,8 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 				&& classiCounter < noOfClassifications; /* see below */) {
 
 			// compute no of taxa to be created in this classification
-			if (classiCounter >= noOfClassifications - 1) { // last
-															// classification
-															// gets all left
-															// taxa
+			if (classiCounter >= noOfClassifications - 1) { // last classification
+															// gets all left taxa
 				taxaInClass = remainder;
 			} else { // take half of left taxa for this class:
 				taxaInClass = remainder / 2;
@@ -297,8 +293,8 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					referenceService.save(nameElementRef);
 					referenceService.save(textElementRef);
 					descriptionService.save(nameDescr);
-					System.out.println("Descriptive Src Ref for TaxonName: "+nameElementRef.getId()+" Taxon: "+taxon.getId()+" name: "+taxon.getTitleCache());
-					System.out.println("Descriptive Src Ref for TaxonName: "+textElementRef.getId()+" Taxon: "+taxon.getId()+" name: "+taxon.getTitleCache());
+//					System.out.println("Descriptive Src Ref for TaxonName: "+nameElementRef.getId()+" Taxon: "+taxon.getId()+" name: "+taxon.getTitleCache());
+//					System.out.println("Descriptive Src Ref for TaxonName: "+textElementRef.getId()+" Taxon: "+taxon.getId()+" name: "+taxon.getTitleCache());
 
 					// ###
 					// create descriptions, description sources and their
@@ -475,10 +471,6 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 
 	/**
 	 * create and count a new sec Reference
-	 *
-	 * @param classiCounter
-	 * @param taxonCounter
-	 * @return
 	 */
 	private Reference createSecReference(int classiCounter, int taxonCounter) {
 		Reference sec;
@@ -488,13 +480,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 		return sec;
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

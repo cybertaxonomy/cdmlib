@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -550,13 +549,6 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	// ****************** tests *****************
 
 	@Test
@@ -611,12 +603,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		if (PRINTOUT) {
 			print();
 		}
-
 	}
 
-	/**
-	 *
-	 */
 	private void print() {
 		for (Classification classification : classifications) {
 			System.out.println("Classification:" + classification.toString());
@@ -650,11 +638,6 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// ************************** private methods ****************************+
 
-	/**
-	 * @param no_of_sth
-	 * @param inClassification
-	 * @param increase
-	 */
 	private void increment(List<Long> no_of_sth, int inClassification,
 			int increase) {
 		no_of_sth.set(inClassification, (no_of_sth.get(inClassification))
@@ -694,12 +677,11 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		return mapList;
 	}
 
-	/**
-	 *
-	 */
 	private void createMap_ALL() {
 		typeMap_ALL = new HashMap<String, Long>() {
-			{
+            private static final long serialVersionUID = 8955874371885801943L;
+
+            {
 				put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
 						Long.valueOf(NO_OF_CLASSIFICATIONS));
 				put(StatisticsTypeEnum.ALL_TAXA.getLabel(),
@@ -727,7 +709,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	private List<StatisticsConfigurator> createConfiguratorList(String[] part,
 			List<StatisticsTypeEnum> types) {
 
-		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
+		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<>();
 
 		// 1. get types for configurators:
 		// in our case all the configurators will have the same types
@@ -772,7 +754,6 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					}
 				}
 			}
-
 		}
 
 		return configuratorList;
@@ -825,13 +806,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.test.integration.CdmIntegrationTest#createTestData()
-     */
     @Override
-    public void createTestDataSet() throws FileNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }
