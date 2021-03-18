@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -140,9 +139,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         setBarcode(derivedUnit.getBarcode());
         setCatalogNumber(derivedUnit.getCatalogNumber());
         setCollectorsNumber(derivedUnit.getCollectorsNumber());
-        if (derivedUnit.getDerivedFrom() != null){
-            setDerivationEvent(new DerivationEventDTO(HibernateProxyHelper.deproxy(derivedUnit.getDerivedFrom(), DerivationEvent.class )));
-        }
+        setDerivationEvent(DerivationEventDTO.fromEntity(derivedUnit.getDerivedFrom()));
         if (derivedUnit.getPreservation()!= null){
             setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
         }

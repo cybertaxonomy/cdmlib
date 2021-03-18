@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -62,7 +63,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
-    private DerivationEventDTO derivationEvent;
+    private EventDTO<DerivationEvent> derivationEvent;
 
     // TODO use DTO !!!
     private Set<IdentifiableSource> sources;
@@ -301,11 +302,11 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
 
 
-    public DerivationEventDTO getDerivationEvent() {
+    public EventDTO<DerivationEvent> getDerivationEvent() {
         return derivationEvent;
     }
 
-    public void setDerivationEvent(DerivationEventDTO derivationEvent) {
+    public void setDerivationEvent(EventDTO<DerivationEvent> derivationEvent) {
         this.derivationEvent = derivationEvent;
     }
 

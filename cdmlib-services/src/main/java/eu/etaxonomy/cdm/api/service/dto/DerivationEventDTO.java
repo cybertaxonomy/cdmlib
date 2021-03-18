@@ -8,62 +8,41 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
-import java.io.Serializable;
-
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 
 /**
  * @author k.luther
  * @since 22.06.2018
- *
  */
-public class DerivationEventDTO implements Serializable {
+public class DerivationEventDTO extends EventDTO<DerivationEvent> {
 
     private static final long serialVersionUID = 6338657672281702600L;
 
-    private String derivationEventType;
-    private String derivationEventActor;
-    private String derivationEventInstitute;
+    private String institute;
 
-    /**
-     * @param derivationEventType
-     * @param derivationEventActor
-     * @param derivationEventInstitute
-     */
-    public DerivationEventDTO(String derivationEventType, String derivationEventActor,
-            String derivationEventInstitute) {
-
-        this.derivationEventType = derivationEventType;
-        this.derivationEventActor = derivationEventActor;
-        this.derivationEventInstitute = derivationEventInstitute;
+    private DerivationEventDTO(DerivationEvent entity) {
+        super(entity);
+        this.eventType = entity.getType();
+        this.actor = entity.getActor().getTitleCache();
+        this.institute = entity.getInstitution().getTitleCache();
     }
 
-    /**
-     * @param derivationEvent
-     */
-    public DerivationEventDTO(DerivationEvent derivationEvent) {
-
-        this(derivationEvent.getType()!= null? derivationEvent.getType().getTitleCache() : null, derivationEvent.getActor() != null ? derivationEvent.getActor().getTitleCache() : null, derivationEvent.getInstitution() != null ? derivationEvent.getInstitution().getTitleCache(): null);
-
+    public static EventDTO<DerivationEvent> fromEntity(DerivationEvent entity) {
+        if (entity != null) {
+            entity = HibernateProxyHelper.deproxy(entity, DerivationEvent.class);
+            return new DerivationEventDTO(entity);
+        } else {
+            return null;
+        }
     }
 
-    public String getDerivationEventType() {
-        return derivationEventType;
+    public String getInstitute() {
+        return institute;
     }
-    public void setDerivationEventType(String derivationEventType) {
-        this.derivationEventType = derivationEventType;
-    }
-    public String getDerivationEventActor() {
-        return derivationEventActor;
-    }
-    public void setDerivationEventActor(String derivationEventActor) {
-        this.derivationEventActor = derivationEventActor;
-    }
-    public String getDerivationEventInstitute() {
-        return derivationEventInstitute;
-    }
-    public void setDerivationEventInstitute(String derivationEventInstitute) {
-        this.derivationEventInstitute = derivationEventInstitute;
+
+    public void setInstitute(String institute) {
+        this.institute = institute;
     }
 
 }
