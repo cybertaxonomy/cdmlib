@@ -38,10 +38,10 @@ public class TypeDesignationBaseBeanProcessor extends AbstractCdmBeanProcessor<T
 		json.element("typeStatus", bean.getTypeStatus(), jsonConfig);
 		if(bean.getClass().isAssignableFrom(SpecimenTypeDesignation.class)){
 			json.element("typeSpecimen", ((SpecimenTypeDesignation)bean).getTypeSpecimen(), jsonConfig);
-			json.element("source", ((SpecimenTypeDesignation)bean).getSource(), jsonConfig);
+			json.element("designationSource", ((SpecimenTypeDesignation)bean).getDesignationSource(), jsonConfig);
 		} else if (bean.getClass().isAssignableFrom(NameTypeDesignation.class)){
 			json.element("typeName", ((NameTypeDesignation)bean).getTypeName(), jsonConfig);
-			json.element("source", ((NameTypeDesignation)bean).getSource(), jsonConfig);
+			json.element("designationSource", ((NameTypeDesignation)bean).getDesignationSource(), jsonConfig);
 		}
 
 		if(bean instanceof TextualTypeDesignation){
