@@ -7621,6 +7621,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.DEFINEDTERMBASE;
 
     alter table PUBLIC.DEFINEDTERMBASE 
+        add constraint FKm7uh4exmgcxse6goaa9bah6yw 
+        foreign key (RATIOTOSTRUCTURE_ID) 
+        references PUBLIC.TERMRELATION;
+
+    alter table PUBLIC.DEFINEDTERMBASE 
         add constraint FKrbpx5955tsdt6w1iu4tv10si4 
         foreign key (STRUCTURE_ID) 
         references PUBLIC.TERMRELATION;
