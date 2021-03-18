@@ -295,7 +295,7 @@ public class TaxonName
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
-    @OneToMany(fetch= FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch= FetchType.LAZY, mappedBy = "name", orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(depth=1)
@@ -1807,11 +1807,14 @@ public class TaxonName
     @Override
     public void addStatus(NomenclaturalStatus nomStatus) {
         this.status.add(nomStatus);
+        if (!this.equals(nomStatus.getName())){
+            nomStatus.setName(this);
+        }
     }
     @Override
     public NomenclaturalStatus addStatus(NomenclaturalStatusType statusType, Reference citation, String microCitation) {
         NomenclaturalStatus newStatus = NomenclaturalStatus.NewInstance(statusType, citation, microCitation);
-        this.status.add(newStatus);
+        addStatus(newStatus);
         return newStatus;
     }
 

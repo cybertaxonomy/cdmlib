@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NomenclaturalStatus", propOrder = {
+    "name",
     "ruleConsidered",
     "type"
 })
@@ -57,6 +58,12 @@ public class NomenclaturalStatus
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private NomenclaturalStatusType type;
+
+    @XmlElement(name = "Name")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TaxonName name;
 
 // ************************** FACTORY *********************************/
 
@@ -92,6 +99,19 @@ public class NomenclaturalStatus
     }
 
 // ************************ GETTER / SETTER ************************/
+
+    public TaxonName getName() {
+        return name;
+    }
+    protected void setName(TaxonName name) {
+        if (this.name != null && !this.name.equals(name)){
+            this.name.removeStatus(this);
+        }
+        this.name = name;
+        if (name != null){
+            name.addStatus(this);
+        }
+    }
 
 	/**
 	 * Returns the {@link NomenclaturalStatusType nomenclatural status type} of <i>this</i>

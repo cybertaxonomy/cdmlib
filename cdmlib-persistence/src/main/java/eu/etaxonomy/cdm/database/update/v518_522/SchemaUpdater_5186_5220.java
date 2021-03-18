@@ -65,6 +65,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
 
         //9331
         //set DTYPE for NamedSource-s
+        stepName = "Set DTYPE for NamedSources";
         String query = " UPDATE @@OriginalSourceBase@@ "
                 + " SET DTYPE = 'NamedSource' "
                 + " WHERE id IN (SELECT source_id FROM @@HybridRelationship@@) "
@@ -93,6 +94,7 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
 
         //#9327
         //update sourcedElement column
+        stepName = "UPdate sourcedElement column";
         String sql = " UPDATE @@OriginalSourceBase@@ "
                 + " SET sourcedElement_id = (SELECT MN.descriptionElementBase_id "
                 + "         FROM @@DescriptionElementBase_OriginalSourceBase@@ MN "
@@ -146,6 +148,35 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
         String oldColumnName = "source_id";
         newColumnName = "designationSource_id";
         ColumnNameChanger.NewIntegerInstance(stepList, stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+
+        //#8761
+        //add name column to nomenclatural status
+        stepName = "add name_id column to nomenclatural status";
+        tableName = "NomenclaturalStatus";
+        newColumnName = "name_id";
+        referencedTable = "TaxonName";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
+
+        //#8761
+        //update nomenclatural status' name column
+        stepName = "Update nomenclatural status' name column";
+        sql = " UPDATE @@NomenclaturalStatus@@ "
+                + " SET name_id = (SELECT MN.TaxonName_id "
+                + "         FROM @@TaxonName_NomenclaturalStatus@@ MN "
+                + "         WHERE MN.status_id = @@NomenclaturalStatus@@.id) "
+                + " WHERE EXISTS ( "
+                + "       SELECT * "
+                + "       FROM @@TaxonName_NomenclaturalStatus@@ MN "
+                + "       WHERE MN.status_id = @@NomenclaturalStatus@@.id)";
+         sql_aud = " UPDATE @@NomenclaturalStatus_AUD@@ "
+                + " SET name_id = (SELECT MN.id "
+                + "         FROM @@TaxonName_NomenclaturalStatuse_AUD@@ tn "
+                + "         WHERE MN.status_id = @@NomenclaturalStatus_AUD@@.id) "
+                + " WHERE EXISTS ( "
+                + "       SELECT * "
+                + "       FROM @@TaxonName_NomenclaturalStatus_AUD@@ MN "
+                + "       WHERE MN.status_id = @@NomenclaturalStatus_AUD@@.id)";
+         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, sql_aud, -99);
 
         //#9315
         removeOldSingleSourceCitations(stepList);

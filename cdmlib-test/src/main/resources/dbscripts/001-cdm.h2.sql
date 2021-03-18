@@ -3402,6 +3402,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         SOURCE_ID integer,
+        NAME_ID integer,
         TYPE_ID integer,
         primary key (ID)
     );
@@ -3432,6 +3433,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         SOURCE_ID integer,
+        NAME_ID integer,
         TYPE_ID integer,
         primary key (ID, REV)
     );
@@ -5255,20 +5257,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         primary key (REV, TAXONNAME_ID, MARKERS_ID)
     );
 
-    create table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS (
-        TAXONNAME_ID integer not null,
-        STATUS_ID integer not null,
-        primary key (TAXONNAME_ID, STATUS_ID)
-    );
-
-    create table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS_AUD (
-        REV integer not null,
-        TAXONNAME_ID integer not null,
-        STATUS_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, TAXONNAME_ID, STATUS_ID)
-    );
-
     create table PUBLIC.TAXONNAME_ORIGINALSOURCEBASE (
         TAXONNAME_ID integer not null,
         SOURCES_ID integer not null,
@@ -6539,9 +6527,6 @@ create index PUBLIC.taxonNameBaseNameCacheIndex on PUBLIC.TAXONNAME (NAMECACHE);
 
     alter table PUBLIC.TAXONNAME_MARKER 
         add constraint UK_lnf8165xrf7v05e6jvtx8aiy1 unique (MARKERS_ID);
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS 
-        add constraint UK_41dj0ldnw5vqim9w78ayhw8ht unique (STATUS_ID);
 
     alter table PUBLIC.TAXONNAME_ORIGINALSOURCEBASE 
         add constraint UK_aa3vu8j4kf8wjraw5y8s06vd5 unique (SOURCES_ID);
@@ -9701,6 +9686,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.ORIGINALSOURCEBASE;
 
     alter table PUBLIC.NOMENCLATURALSTATUS 
+        add constraint FKnwnqfs7rtu5s6ktukjwjl5l99 
+        foreign key (NAME_ID) 
+        references PUBLIC.TAXONNAME;
+
+    alter table PUBLIC.NOMENCLATURALSTATUS 
         add constraint FK2nx3xkiso287sgyshq1tig3rm 
         foreign key (TYPE_ID) 
         references PUBLIC.DEFINEDTERMBASE;
@@ -11362,21 +11352,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
 
     alter table PUBLIC.TAXONNAME_MARKER_AUD 
         add constraint FKr5gxo6kqahpthg6dbpjw4c8i1 
-        foreign key (REV) 
-        references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS 
-        add constraint FKe7khix7l1vi9khexvvtngaywn 
-        foreign key (STATUS_ID) 
-        references PUBLIC.NOMENCLATURALSTATUS;
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS 
-        add constraint FKi8q7vsj9hg745ew8t0rvfi69v 
-        foreign key (TAXONNAME_ID) 
-        references PUBLIC.TAXONNAME;
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS_AUD 
-        add constraint FKl417crgictclbsqaqmqbfl00s 
         foreign key (REV) 
         references PUBLIC.AUDITEVENT;
 
