@@ -57,6 +57,9 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+        //#9315
+        removeOldSingleSourceCitations(stepList);
+
 		//9507
         stepName = "Add ratioToStructure column to DefinedTermBase (Character)";
         tableName = "DefinedTermBase";
@@ -190,8 +193,6 @@ public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
          dtype = "NamedSource";
          Reference2SourceMover.NewInstance(stepList, stepName, tableName, referenceColumnName, microReferenceColumnName, sourceColumnName, dtype, sourceType);
 
-        //#9315
-        removeOldSingleSourceCitations(stepList);
 
         return stepList;
     }
