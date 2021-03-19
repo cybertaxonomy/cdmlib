@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.model.term.TermBase;
 @Entity
 @Audited
 public class KeyStatement extends VersionableEntity implements IMultiLanguageTextHolder{
-	private static final long serialVersionUID = 3771323100914695139L;
+
+    private static final long serialVersionUID = 3771323100914695139L;
 	private static final Logger logger = Logger.getLogger(KeyStatement.class);
 
 
@@ -62,13 +63,10 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 
 	//private mediaObjects needs to be discussed (how to implement the role of the media)
 
-
-
 	public static KeyStatement NewInstance(){
 		KeyStatement result = new KeyStatement();
 		return result;
 	}
-
 
 	public static KeyStatement NewInstance(String defaultLanguageLabel){
 		KeyStatement result = new KeyStatement();
