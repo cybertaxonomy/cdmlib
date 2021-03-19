@@ -27,19 +27,17 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class HomotypicGroupDto extends UuidAndTitleCache<HomotypicalGroup> {
 
-    Set<UUID> uuidsOfSecundumReferences = new HashSet<>();
-    Map<UUID, Boolean> publishFlagsForSynonyms = new HashMap<>();
-    Set<UUID> uuidsOfTaxonBases = new HashSet<>();
-    /**
-     * @param uuid
-     * @param id
-     * @param titleCache
-     */
+    private static final long serialVersionUID = 5016285663369538997L;
+
+    private Set<UUID> uuidsOfSecundumReferences = new HashSet<>();
+    private Map<UUID, Boolean> publishFlagsForSynonyms = new HashMap<>();
+    private Set<UUID> uuidsOfTaxonBases = new HashSet<>();
+
     public HomotypicGroupDto(HomotypicalGroup group, UUID nodeUuid) {
         super(group.getUuid(), group.getId(), group.getUserFriendlyDescription());
         for (TaxonName name: group.getTypifiedNames()){
-            TaxonBase tbInHomotypicGroup = null;
-            for (TaxonBase tb:name.getTaxonBases()){
+            TaxonBase<?> tbInHomotypicGroup = null;
+            for (TaxonBase<?> tb:name.getTaxonBases()){
                 if (tb instanceof Taxon){
                     for (TaxonNode node: ((Taxon)tb).getTaxonNodes()){
                         if (node.getUuid().equals(nodeUuid)){
@@ -63,41 +61,25 @@ public class HomotypicGroupDto extends UuidAndTitleCache<HomotypicalGroup> {
             }
         }
     }
-    /**
-     * @return the uuidsOfSecundumReferences
-     */
+
     public Set<UUID> getUuidsOfSecundumReferences() {
         return uuidsOfSecundumReferences;
     }
-    /**
-     * @param uuidsOfSecundumReferences the uuidsOfSecundumReferences to set
-     */
     public void setUuidsOfSecundumReferences(Set<UUID> uuidsOfSecundumReferences) {
         this.uuidsOfSecundumReferences = uuidsOfSecundumReferences;
     }
-    /**
-     * @return the publishFlagsForSynonyms
-     */
+
     public Map<UUID, Boolean> getPublishFlagsForSynonyms() {
         return publishFlagsForSynonyms;
     }
-    /**
-     * @param publishFlagsForSynonyms the publishFlagsForSynonyms to set
-     */
     public void setPublishFlagsForSynonyms(Map<UUID, Boolean> publishFlagsForSynonyms) {
         this.publishFlagsForSynonyms = publishFlagsForSynonyms;
     }
-    /**
-     * @return the uuidsOfTaxonBases
-     */
+
     public Set<UUID> getUuidsOfTaxonBases() {
         return uuidsOfTaxonBases;
     }
-    /**
-     * @param uuidsOfTaxonBases the uuidsOfTaxonBases to set
-     */
     public void setUuidsOfTaxonBases(Set<UUID> uuidsOfTaxonBases) {
         this.uuidsOfTaxonBases = uuidsOfTaxonBases;
     }
-
 }
