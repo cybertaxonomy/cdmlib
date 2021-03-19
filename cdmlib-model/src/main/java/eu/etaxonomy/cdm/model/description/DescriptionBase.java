@@ -383,6 +383,8 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         return DescriptionType.includesType(set, DescriptionType.SECONDARY_DATA);
     }
 
+    public abstract IDescribable<?> describedEntity();
+
 
 //*********************** CLONE ********************************************************/
 

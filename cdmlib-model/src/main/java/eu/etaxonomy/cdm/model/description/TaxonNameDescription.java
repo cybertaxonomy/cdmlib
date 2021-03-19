@@ -112,6 +112,12 @@ public class TaxonNameDescription
         return taxonName;
     }
 
+//*************** METHODS ***********************************************/
+
+    @Override
+    public IDescribable<?> describedEntity(){
+        return this.taxonName;
+    }
 
 //*********************** CLONE ********************************************************/
 

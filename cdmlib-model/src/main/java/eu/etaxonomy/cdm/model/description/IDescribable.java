@@ -26,12 +26,14 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
  * with descriptions attached.
  * However, if this causes problems we may let {@link IDescribable}
  * inherit from {@link IIdentifiableEntity} in future.
+ * => 2021-03-19: changed to {@link IIdentifiableEntity} as methods like
+ * getTitleCache were needed
  *
  * @author a.mueller
  * @since 2013-12-02
  *
  */
-public interface IDescribable<T extends DescriptionBase<?>> extends IAnnotatableEntity {
+public interface IDescribable<T extends DescriptionBase<?>> extends IIdentifiableEntity {
 
 	/**
 	 * Returns the the set of descriptions attached to <code>this</code>

@@ -69,6 +69,11 @@ public class SpecimenDescription
         this.cacheStrategy = SpecimenDescriptionDefaultCacheStrategy.NewInstance();
     }
 
+    @Override
+    public IDescribable<?> describedEntity(){
+        return this.getDescribedSpecimenOrObservation();
+    }
+
 //*********************** CLONE ********************************************************/
 
 	/**
