@@ -114,7 +114,7 @@ public class SingleTermRemover
             sql = String.format(sql, caseType.transformTo(tableName), id);
             datasource.executeUpdate(sql);
             sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
-            sql = String.format(sql, caseType.transformTo(tableName), id);
+            sql = String.format(sql, caseType.transformTo(inverseTableName), id);
             datasource.executeUpdate(sql);
 
             //remove representations
