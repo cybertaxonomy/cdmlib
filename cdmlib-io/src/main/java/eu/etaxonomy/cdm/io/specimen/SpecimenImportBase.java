@@ -1212,6 +1212,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	           for (TaxonDescription desc: descriptions){
 	               if (desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION)){
 	                   taxonDescription = desc;
+	                   break;
 	               }
 	           }
 	       }
