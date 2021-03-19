@@ -1229,7 +1229,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        //PREPARE REFERENCE QUESTIONS
 
-	        Map<String,OriginalSourceBase> sourceMap = new HashMap<String, OriginalSourceBase>();
+	        Map<String,OriginalSourceBase> sourceMap = new HashMap<>();
 
 	        List<IdentifiableSource> issTmp = new ArrayList<>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
 	        List<DescriptionElementSource> issTmp2 = new ArrayList<>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
