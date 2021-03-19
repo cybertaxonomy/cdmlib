@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 //@Indexed
 @Audited
 public class DeterminationEvent extends EventBase {
+
 	private static final long serialVersionUID = 5065341354427569773L;
 
 	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
@@ -104,18 +105,12 @@ public class DeterminationEvent extends EventBase {
 	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Set<Reference> references = new HashSet<>();
 
-	/**
-	 * Factory method
-	 * @return
-	 */
+//******************************* FACTORY ********************************/
+
 	public static DeterminationEvent NewInstance(){
 		return new DeterminationEvent();
 	}
 
-	/**
-	 * Factory method
-	 * @return
-	 */
 	public static DeterminationEvent NewInstance(Taxon taxon, SpecimenOrObservationBase identifiedUnit ){
 		DeterminationEvent result = new DeterminationEvent();
 		result.setTaxon(taxon);
@@ -132,12 +127,13 @@ public class DeterminationEvent extends EventBase {
 		return result;
 	}
 
-	/**
-	 * Constructor
-	 */
+//*********************** CONSTRUCTOR ********************************/
+
 	protected DeterminationEvent() {
 		super();
 	}
+
+//************************* GETTER / SETTER *************************/
 
 	public DefinedTerm getModifier() {
 		return modifier;
@@ -186,7 +182,6 @@ public class DeterminationEvent extends EventBase {
 	public boolean getPreferredFlag() {
 		return preferredFlag;
 	}
-
 	public void setPreferredFlag(boolean preferredFlag) {
 		this.preferredFlag = preferredFlag;
 	}
@@ -194,11 +189,9 @@ public class DeterminationEvent extends EventBase {
 	public Set<Reference> getReferences() {
 		return references;
 	}
-
 	public void setReferences(Set<Reference> references) {
 		this.references = references;
 	}
-
 	public void addReference(Reference reference) {
 		this.references.add(reference);
 	}
