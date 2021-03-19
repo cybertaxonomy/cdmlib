@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,6 +155,13 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
 		return MultilanguageTextHelper.getPreferredLanguageString(label, languages);
 	}
+
+    /**
+     * @see #getPreferredLanguageString(List)
+     */
+    public LanguageString getPreferredLanguageString(Language language) {
+        return MultilanguageTextHelper.getPreferredLanguageString(label, Arrays.asList(language));
+    }
 
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
