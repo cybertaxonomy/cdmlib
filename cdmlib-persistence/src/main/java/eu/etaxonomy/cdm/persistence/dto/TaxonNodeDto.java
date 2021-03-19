@@ -11,10 +11,8 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -103,7 +101,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             classification = (Classification) taxonTreeNode;
         }
 
-
         if (taxon != null){
             setTitleCache(taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache());
             secUuid = taxon.getSec() != null ? taxon.getSec().getUuid() : null;
@@ -113,9 +110,9 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             this.setAbbrevTitleCache(taxon.getTitleCache());
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
             taxonIsPublish = taxon.isPublish();
-            Set<UUID> tempUuids = new HashSet<>();
-            homotypicGroupDto = new HomotypicGroupDto(taxon.getHomotypicGroup(), taxonNode.getUuid());
-
+            if (taxon.getHomotypicGroup() != null && taxonNode != null){
+                homotypicGroupDto = new HomotypicGroupDto(taxon.getHomotypicGroup(), taxonNode.getUuid());
+            }
         }else{
             if (taxonNode != null && taxonNode.getClassification() != null){
                 setTitleCache(taxonNode.getClassification().getTitleCache());

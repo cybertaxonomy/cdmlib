@@ -1299,9 +1299,9 @@ public class TaxonNodeServiceImpl
     public HomotypicGroupDto getHomotypicGroupDto(UUID homotypicGroupUuid, UUID nodeUuid) {
 
         HomotypicalGroup group = homotypicalGroupDao.load(homotypicGroupUuid);
-        HomotypicGroupDto dto = new HomotypicGroupDto(group, nodeUuid);
-
-        return dto;
+        if (group == null){
+            return null;
+        }
+        return new HomotypicGroupDto(group, nodeUuid);
     }
-
 }
