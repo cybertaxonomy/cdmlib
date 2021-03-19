@@ -54,7 +54,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private Classification defaultClassification = null;
     private Reference ref = null;
 
-    private HashMap<UUID, TaxonDescription> descriptionsPerTaxon = new HashMap<>();
+    private HashMap<UUID, TaxonDescription> individualsAssociationDescriptionPerTaxon = new HashMap<>();
     private DerivedUnit derivedUnitBase;
 
     private SpecimenImportReport report;
@@ -204,23 +204,21 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     public Reference getRef() {
         return ref;
     }
-
     public void setRef(Reference ref) {
         this.ref = ref;
     }
 
-    public TaxonDescription getDescriptionPerTaxon(UUID taxonUUID) {
-        return descriptionsPerTaxon.get(taxonUUID);
+    public TaxonDescription getIndividualsAssociationDescriptionPerTaxon(UUID taxonUUID) {
+        return individualsAssociationDescriptionPerTaxon.get(taxonUUID);
     }
 
-    public void setDescriptionGroup(TaxonDescription description) {
-        this.descriptionsPerTaxon.put(description.getTaxon().getUuid(), description);
+    public void setIndividualsAssociationDescriptionPerTaxon(TaxonDescription description) {
+        this.individualsAssociationDescriptionPerTaxon.put(description.getTaxon().getUuid(), description);
     }
 
     public DerivedUnit getDerivedUnitBase() {
         return derivedUnitBase;
     }
-
     public void setDerivedUnitBase(DerivedUnit derivedUnitBase) {
         this.derivedUnitBase = derivedUnitBase;
     }

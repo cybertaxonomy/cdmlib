@@ -1205,8 +1205,8 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	        TaxonDescription taxonDescription = null;
 	        Set<TaxonDescription> descriptions= taxon.getDescriptions();
-	        if (state.getDescriptionPerTaxon(taxon.getUuid()) != null){
-	            taxonDescription = state.getDescriptionPerTaxon(taxon.getUuid());
+	        if (state.getIndividualsAssociationDescriptionPerTaxon(taxon.getUuid()) != null){
+	            taxonDescription = state.getIndividualsAssociationDescriptionPerTaxon(taxon.getUuid());
 	        }
 	       if (taxonDescription == null && !descriptions.isEmpty() && state.getConfig().isReuseExistingDescriptiveGroups()){
 	           for (TaxonDescription desc: descriptions){
@@ -1223,7 +1223,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            if(sourceNotLinkedToElement(taxonDescription,state.getRef(),null)) {
 	                taxonDescription.addSource(OriginalSourceType.Import, null, null, state.getRef(), null);
 	            }
-	            state.setDescriptionGroup(taxonDescription);
+	            state.setIndividualsAssociationDescriptionPerTaxon(taxonDescription);
 	            taxon.addDescription(taxonDescription);
 	        }
 
@@ -1234,7 +1234,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	        List<IdentifiableSource> issTmp = new ArrayList<>();//getCommonService().list(IdentifiableSource.class, null, null, null, null);
 	        List<DescriptionElementSource> issTmp2 = new ArrayList<>();//getCommonService().list(DescriptionElementSource.class, null, null, null, null);
 
-	        Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
+	        Set<OriginalSourceBase> osbSet = new HashSet<>();
 	        if(issTmp2!=null) {
 	            osbSet.addAll(issTmp2);
 	        }
@@ -1250,7 +1250,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
                 taxonDescription.addSource(OriginalSourceType.Import,null, null, state.getRef(), null);
             }
 
-	        state.setDescriptionGroup(taxonDescription);
+	        state.setIndividualsAssociationDescriptionPerTaxon(taxonDescription);
 
 	        IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
 	        Feature feature = makeFeature(state.getDerivedUnitBase());
