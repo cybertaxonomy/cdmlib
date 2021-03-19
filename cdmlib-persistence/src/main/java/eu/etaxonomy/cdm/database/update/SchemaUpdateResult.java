@@ -13,60 +13,34 @@ import eu.etaxonomy.cdm.common.IoResultBase;
 /**
  * @author a.mueller
  * @since 04.06.2017
- *
  */
 public class SchemaUpdateResult extends IoResultBase{
 
     private static final long serialVersionUID = -1154009912578583419L;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setExceptionState() {
         // TODO Auto-generated method stub
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setAborted() {
         // TODO Auto-generated method stub
     }
 
-    /**
-     * @return
-     */
     public boolean isSuccess() {
         return this.getExceptions().isEmpty() && this.getErrors().isEmpty();
     }
 
-    /**
-     * @param e
-     * @param message
-     * @param classificationRootNodeUpdater
-     * @param methodName
-     */
     public void addException(Exception e, String message, SchemaUpdaterStepBase step,
             String methodName) {
         addException(e, message, step.getStepName() + ", " +  step.getClass().getName() + "." + methodName);
     }
 
-    /**
-     * @param message
-     * @param singleTermUpdater
-     * @param string
-     */
     public void addError(String message, SchemaUpdaterStepBase step, String string) {
         addError(message, step.getStepName() + ", " +  step.getClass().getName() +"." + string);
     }
 
-    /**
-     * @param message
-     * @param singleTermUpdater
-     * @param string
-     */
     public void addWarning(String message, SchemaUpdaterStepBase step, String string) {
         addWarning(message, step.getStepName() + ", " +  step.getClass().getName() +"." + string);
     }
@@ -79,5 +53,4 @@ public class SchemaUpdateResult extends IoResultBase{
         superReport.insert(0, strSuccess + "\n");
         return superReport;
     }
-
 }
