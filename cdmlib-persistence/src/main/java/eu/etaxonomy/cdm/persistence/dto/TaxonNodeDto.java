@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.persistence.dto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
      * The UUID of the associated secundum reference
      */
     private UUID secUuid = null;
+
+    private HomotypicGroupDto homotypicGroupDto;
 
     /**
      * The uuid of the associated Taxon entity
@@ -109,6 +113,9 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             this.setAbbrevTitleCache(taxon.getTitleCache());
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
             taxonIsPublish = taxon.isPublish();
+            Set<UUID> tempUuids = new HashSet<>();
+            homotypicGroupDto = new HomotypicGroupDto(taxon.getHomotypicGroup(), taxonNode.getUuid());
+
         }else{
             if (taxonNode != null && taxonNode.getClassification() != null){
                 setTitleCache(taxonNode.getClassification().getTitleCache());
@@ -259,6 +266,14 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     public Map<Language, String> getStatusNote() {
         return Collections.unmodifiableMap(statusNote);
+    }
+
+    public HomotypicGroupDto getHomotypicalGroupDto() {
+        return homotypicGroupDto;
+    }
+
+    public void setHomotypicalGroupDto(HomotypicGroupDto homotypicalGroupDto) {
+        this.homotypicGroupDto = homotypicalGroupDto;
     }
 
 }

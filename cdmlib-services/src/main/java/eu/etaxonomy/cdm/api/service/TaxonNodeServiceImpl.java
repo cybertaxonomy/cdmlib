@@ -79,11 +79,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
+import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
@@ -130,6 +132,9 @@ public class TaxonNodeServiceImpl
 
     @Autowired
     private IClassificationDao classificationDao;
+
+    @Autowired
+    private IHomotypicalGroupDao homotypicalGroupDao;
 
     @Autowired
     IProgressMonitorService progressMonitorService;
@@ -366,7 +371,7 @@ public class TaxonNodeServiceImpl
                 }
 
             }
-            if (secHandling != null && !secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
+            if (secHandling != null && !secHandling.equals(SecReferenceHandlingEnum.KeepAlways) && !secHandling.equals(SecReferenceHandlingEnum.KeepWhenSame)){
                 synonym.setSec(newSec);
             }
             newAcceptedTaxon.addSynonym(synonym, srt);
@@ -1355,6 +1360,15 @@ public class TaxonNodeServiceImpl
                 cloneTaxonRecursive(originalChildNode, childNodeClone, config);
             }
         }
+    }
+
+    @Override
+    public HomotypicGroupDto getHomotypicGroupDto(UUID homotypicGroupUuid, UUID nodeUuid) {
+
+        HomotypicalGroup group = homotypicalGroupDao.load(homotypicGroupUuid);
+        HomotypicGroupDto dto = new HomotypicGroupDto(group, nodeUuid);
+
+        return dto;
     }
 
 }

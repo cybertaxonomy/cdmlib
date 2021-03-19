@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
+import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -287,4 +288,6 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
      * @param config the configurator for the cloning
      */
     public UpdateResult cloneSubtree(SubtreeCloneConfigurator config);
+
+    public HomotypicGroupDto getHomotypicGroupDto(UUID homotypicGroupUuid, UUID nodeUuid);
 }
