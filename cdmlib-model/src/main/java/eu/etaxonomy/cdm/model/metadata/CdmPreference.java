@@ -219,6 +219,11 @@ public final class CdmPreference implements Serializable {
         public String getPredicate() {
             return predicate;
         }
+
+        @Override
+        public String toString() {
+            return "PrefKey[" +subject + ": " + predicate +"]";
+        }
     }
 
 //****************** CONSTRUCTOR **********************/
