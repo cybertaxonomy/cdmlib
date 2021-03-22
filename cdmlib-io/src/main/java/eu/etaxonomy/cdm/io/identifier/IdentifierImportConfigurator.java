@@ -34,11 +34,6 @@ public class IdentifierImportConfigurator
     private boolean updateExisting = true;
 
 
-    /**
-     * @param source
-     * @param cdmDestination
-     * @return
-     */
     public static IdentifierImportConfigurator NewInstance(InputStreamReader file,
             ICdmDataSource cdmDestination) {
         return new IdentifierImportConfigurator(file, cdmDestination);
@@ -52,7 +47,6 @@ public class IdentifierImportConfigurator
     }
 
 // *************************************
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -69,35 +63,22 @@ public class IdentifierImportConfigurator
         this.cdmClass = cdmClass;
     }
 
-
     public UUID getIdentifierTypeUuid() {
         return uuidIdentifierType;
     }
-
     public void setIdentifierTypeUuid(UUID uuidIdentifierType) {
         this.uuidIdentifierType = uuidIdentifierType;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Reference getSourceReference() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /**
-     * @return the ignoreEmptyIdentifier
-     */
     public boolean isIgnoreEmptyIdentifier() {
         return ignoreEmptyIdentifier;
     }
-
-    /**
-     * @param ignoreEmptyIdentifier the ignoreEmptyIdentifier to set
-     */
     public void setIgnoreEmptyIdentifier(boolean ignoreEmptyIdentifier) {
         this.ignoreEmptyIdentifier = ignoreEmptyIdentifier;
     }

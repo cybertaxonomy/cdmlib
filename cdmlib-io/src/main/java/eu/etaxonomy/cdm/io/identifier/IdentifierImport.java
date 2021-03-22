@@ -51,9 +51,6 @@ public class IdentifierImport
     private static final long serialVersionUID = 5797541146159665997L;
     private static Logger logger = Logger.getLogger(IdentifierImport.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doInvoke(IdentifierImportConfigurator config) {
         try {
