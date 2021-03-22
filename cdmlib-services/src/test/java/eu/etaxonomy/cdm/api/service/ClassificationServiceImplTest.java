@@ -68,7 +68,7 @@ public class ClassificationServiceImplTest extends CdmTransactionalIntegrationTe
             "childNodes",
             "childNodes.taxon",
             "childNodes.taxon.name",
-            "taxon.sec",
+            "taxon.secSource.citation",
             "taxon.name.*"
             });
 

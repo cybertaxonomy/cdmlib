@@ -29,7 +29,7 @@ public class TaxonNodeAutoInitializer extends AutoPropertyInitializer<TaxonNode>
     public Optional<String> hibernateFetchJoin(Class<?> clazz, String beanAlias){
 
         String result = "";
-        result += String.format(" LEFT JOIN FETCH %s.taxon taxon LEFT JOIN FETCH taxon.name LEFT JOIN FETCH taxon.sec", beanAlias);
+        result += String.format(" LEFT JOIN FETCH %s.taxon taxon LEFT JOIN FETCH taxon.name LEFT JOIN FETCH taxon.secSource ss LEFT JOIN FETCH ss.citation", beanAlias);
         return Optional.of(result);
     }
 

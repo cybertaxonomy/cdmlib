@@ -104,7 +104,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             "taxonNodes.classification",
             "taxonNodes.parent",
             "taxonNodes.taxon.name",
-            "taxonNodes.taxon.sec",
+            "taxonNodes.taxon.secSource.citation",
             "acceptedTaxon.taxonNodes.classification"
     }));
 

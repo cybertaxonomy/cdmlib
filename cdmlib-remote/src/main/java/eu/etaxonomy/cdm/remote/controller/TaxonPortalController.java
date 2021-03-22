@@ -231,7 +231,7 @@ public class TaxonPortalController extends TaxonController{
             "taxonNodes.parent",
             "taxonNodes.statusNote.*",
             "taxonNodes.taxon.name",
-            "taxonNodes.taxon.sec",
+            "taxonNodes.taxon.secSource.citation",
             "taxonNodes.source.citation.authorship",
             "taxonNodes.source.citation.inReference.authorship",
             "acceptedTaxon.taxonNodes.classification",

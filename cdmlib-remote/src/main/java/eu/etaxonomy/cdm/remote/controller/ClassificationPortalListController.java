@@ -60,7 +60,7 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "taxon.name.rank",
-            "taxon.sec"
+            "taxon.secSource.citation"
     });
 
     private ITaxonService taxonService;

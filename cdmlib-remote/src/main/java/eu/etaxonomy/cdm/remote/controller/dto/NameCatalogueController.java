@@ -222,7 +222,7 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
     /** Hibernate taxon node initialisation strategy */
     private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] {
-            "taxon.sec",
+            "taxon.secSource.citation",
             "taxon.name",
             "classification",
             "classification.source.citation.$",
