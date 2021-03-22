@@ -445,6 +445,17 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return result;
     }
 
+    public Set<Identifier> getIdentifiers_(UUID identifierTypeUuid){
+        Set<Identifier> result = new HashSet<>();
+        for (Identifier<?> identifier : getIdentifiers()){
+            if ( (identifier.getType()== null && identifierTypeUuid == null)
+                || (identifier.getType().getUuid().equals(identifierTypeUuid))){
+                result.add(identifier);
+            }
+        }
+        return result;
+    }
+
     @Override
     public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
     	Identifier<?> result = Identifier.NewInstance(identifier, identifierType);

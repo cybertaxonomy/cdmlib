@@ -154,7 +154,16 @@ public class IdentifierImport
             return null;
         }
 
-        Identifier<?> identifier = Identifier.NewInstance(value, idType);
+        Identifier<?> identifier = null;
+        if (config.isUpdateExisting()){
+            Set<Identifier> existingIdentifiers = entity.getIdentifiers_(idType.getUuid());
+            if (!existingIdentifiers.isEmpty()){
+                identifier = existingIdentifiers.iterator().next();
+            }
+        }
+        if (identifier == null){
+            identifier = Identifier.NewInstance(value, idType);
+        }
         entity.addIdentifier(identifier);
 
         this.commitTransaction(tx);

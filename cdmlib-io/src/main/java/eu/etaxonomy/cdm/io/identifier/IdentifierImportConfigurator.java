@@ -31,6 +31,7 @@ public class IdentifierImportConfigurator
     private UUID uuidIdentifierType;
 
     private boolean ignoreEmptyIdentifier = true;
+    private boolean updateExisting = true;
 
 
     /**
@@ -101,4 +102,10 @@ public class IdentifierImportConfigurator
         this.ignoreEmptyIdentifier = ignoreEmptyIdentifier;
     }
 
+    public boolean isUpdateExisting() {
+        return updateExisting;
+    }
+    public void setUpdateExisting(boolean updateExisting) {
+        this.updateExisting = updateExisting;
+    }
 }
