@@ -45,7 +45,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
      */
     private UUID secUuid = null;
 
-    private HomotypicGroupDto homotypicGroupDto;
+
 
     /**
      * The uuid of the associated Taxon entity
@@ -110,9 +110,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             this.setAbbrevTitleCache(taxon.getTitleCache());
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
             taxonIsPublish = taxon.isPublish();
-            if (taxon.getHomotypicGroup() != null && taxonNode != null){
-                homotypicGroupDto = new HomotypicGroupDto(taxon.getHomotypicGroup(), taxonNode.getUuid());
-            }
         }else{
             if (taxonNode != null && taxonNode.getClassification() != null){
                 setTitleCache(taxonNode.getClassification().getTitleCache());
@@ -265,12 +262,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         return Collections.unmodifiableMap(statusNote);
     }
 
-    public HomotypicGroupDto getHomotypicalGroupDto() {
-        return homotypicGroupDto;
-    }
 
-    public void setHomotypicalGroupDto(HomotypicGroupDto homotypicalGroupDto) {
-        this.homotypicGroupDto = homotypicalGroupDto;
-    }
 
 }
