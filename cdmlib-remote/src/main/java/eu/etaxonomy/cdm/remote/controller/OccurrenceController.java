@@ -82,6 +82,11 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             complemented.add("specimenTypeDesignations.source.citation.*");
             return complemented;
         }
+        if(pathProperties.stream().anyMatch(s -> s.startsWith("sources"))) {
+            List<String> complemented = new ArrayList<>(pathProperties);
+            complemented.add("sources.citation.*");
+            return complemented;
+        }
         return pathProperties;
     }
 
