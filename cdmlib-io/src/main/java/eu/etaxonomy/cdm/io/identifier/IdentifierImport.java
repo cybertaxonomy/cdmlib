@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import au.com.bytecode.opencsv.CSVReader;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.SimpleImport;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -65,6 +66,7 @@ public class IdentifierImport
 
             @SuppressWarnings("rawtypes")
             Set<IdentifiableEntity> entitiesToSave = new HashSet<>();
+            Set<UUID> entityUuidsHandled = new HashSet<>();
 
             UUID identifierTypeUuid = config.getIdentifierTypeUuid();
 
@@ -78,9 +80,9 @@ public class IdentifierImport
 
             int i = 0;
             for (String[] strs : lines){
-                IdentifiableEntity<?> entity = handleSingleLine(config, strs, idType, i);
+                IdentifiableEntity<?> entity = handleSingleLine(config, strs, idType, i, entityUuidsHandled);
                 if (entity != null){
-                    entitiesToSave.add(entity);
+//                    entitiesToSave.add(entity);
                 }
                 i++;
             }
@@ -98,10 +100,11 @@ public class IdentifierImport
      * @param config configurator
      * @param strs text array for given line
      * @param i line counter
+     * @param entityUuidsHandled
      * @return
      */
     private IdentifiableEntity<?> handleSingleLine(IdentifierImportConfigurator config,
-            String[] strs, DefinedTerm idType, int i) {
+            String[] strs, DefinedTerm idType, int i, Set<UUID> entityUuidsHandled) {
 
         //no data
         if (strs.length < 1){
@@ -140,6 +143,18 @@ public class IdentifierImport
             this.commitTransaction(tx);
             return null;
         }
+
+        //titleCache
+        if (strs.length>2){
+            String entityCache = entity.getTitleCache();
+            String titleCache = strs[2];
+            if (!CdmUtils.nullSafeEqual(entityCache, titleCache)){
+                String message = String.format(
+                        "Record in line %d has different titleCache: " + entityCache +" <-> "+ titleCache, i);
+                logger.warn(message);
+            }
+        }
+
         String value = null;
         if (isNotBlank(strs[1])){
             value = strs[1];
@@ -153,18 +168,47 @@ public class IdentifierImport
 
         Identifier<?> identifier = null;
         if (config.isUpdateExisting()){
-            Set<Identifier> existingIdentifiers = entity.getIdentifiers_(idType.getUuid());
-            if (!existingIdentifiers.isEmpty()){
-                identifier = existingIdentifiers.iterator().next();
+            boolean wasAlreadyImported = entityUuidsHandled.contains(uuid);
+            if (wasAlreadyImported){
+                String message = String.format(
+                        "More than 1 instance for uuid '%s' ("+entity.getTitleCache()+") found in line %d. Updating not possible without deleting previous value as 'update existing' was selected. Record in line was neglected.", uuidStr, i);
+                logger.warn(message);
+                this.commitTransaction(tx);
+                return null;
+            }else{
+                Set<Identifier> existingIdentifiers = entity.getIdentifiers_(idType.getUuid());
+                if (existingIdentifiers.size() == 1){
+                    identifier = existingIdentifiers.iterator().next();
+                    if (!CdmUtils.nullSafeEqual(identifier.getIdentifier(), value)){
+                        String message = String.format(
+                                "Existing identifier in line %d differs: " + value, i);
+                        logger.warn(message);
+                        identifier.setIdentifier(value);
+                    }
+                }else if (existingIdentifiers.size() > 1){
+                    String message = String.format(
+                            "Taxon name in line %d has more than a single entry for the given identifier type. I can't update the value but added a new record", i);
+                    logger.warn(message);
+                    addNewIdentifier(idType, entity, value, identifier);
+                }else{
+                    addNewIdentifier(idType, entity, value, identifier);
+                }
             }
+        }else{
+            addNewIdentifier(idType, entity, value, identifier);
         }
-        if (identifier == null){
-            identifier = Identifier.NewInstance(value, idType);
-        }
-        entity.addIdentifier(identifier);
+        entityUuidsHandled.add(uuid);
 
         this.commitTransaction(tx);
         return entity;
+    }
+
+    private void addNewIdentifier(DefinedTerm idType, IdentifiableEntity<?> entity, String value,
+            Identifier<?> identifier) {
+        if (identifier == null){
+            identifier = Identifier.NewInstance(value, idType);
+            entity.addIdentifier(identifier);
+        }
     }
 
     private IdentifiableEntity<?> getEntityFromRepository(IdentifierImportConfigurator config, UUID uuid) {
