@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -69,13 +70,20 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     // TODO use DTO !!!
     private Set<IdentifiableSource> sources;
+
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
     private DefinedTerm sex;
 
     private DefinedTerm lifeStage;
 
+    /**
+     * @deprecated replaced by determinations
+     */
+    @Deprecated
     private List<TypedEntityReference<TaxonName>> determinedNames;
+
+    private List<DeterminationEventDTO>determinations;
 
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
         super(HibernateProxyHelper.getClassWithoutInitializingProxy(specimenOrObservation), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
@@ -86,7 +94,11 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         setSex(specimenOrObservation.getSex());
         setIndividualCount(specimenOrObservation.getIndividualCount());
         lifeStage = specimenOrObservation.getLifeStage();
-        addDeterminedNames(specimenOrObservation.getDeterminations());
+        addDeterminations(specimenOrObservation.getDeterminations());
+        setDeterminations(specimenOrObservation.getDeterminations().stream()
+                .map(det -> DeterminationEventDTO.from(det))
+                .collect(Collectors.toList())
+                );
         if (specimenOrObservation instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
             if (derivedUnit.getSpecimenTypeDesignations() != null){
@@ -452,11 +464,14 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.individualCount = individualCount;
     }
 
+
+    @Deprecated
     public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
         return determinedNames;
     }
 
-    public void addDeterminedNames(Set<DeterminationEvent> determinations) {
+    @Deprecated
+    public void addDeterminations(Set<DeterminationEvent> determinations) {
         if(determinedNames==null){
             determinedNames = new ArrayList<>();
         }
@@ -473,6 +488,14 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 determinedNames.add(TypedEntityReference.fromEntity(event.getTaxonName()));
             }
         }
+    }
+
+    public List<DeterminationEventDTO> getDeterminations() {
+        return determinations;
+    }
+
+    public void setDeterminations(List<DeterminationEventDTO> determinations) {
+        this.determinations = determinations;
     }
 
 
