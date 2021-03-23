@@ -567,8 +567,8 @@ public class OccurrenceServiceImpl
                     return fu1.getDate().compareTo(fu2.getDate());
                 }
                 if(o1 instanceof DerivedUnitDTO && o2 instanceof DerivedUnitDTO) {
-                    DerivedUnitDTO du1 = (DerivedUnitDTO)o1;
-                    DerivedUnitDTO du2 = (DerivedUnitDTO)o2;
+                    SpecimenOrObservationBaseDTO du1 = (SpecimenOrObservationBaseDTO)o1;
+                    SpecimenOrObservationBaseDTO du2 = (SpecimenOrObservationBaseDTO)o2;
                     return StringUtils.compare(du1.getLabel(), du2.getLabel());
                  }
                 if(o1 instanceof FieldUnitDTO && o2 instanceof DerivedUnitDTO) {

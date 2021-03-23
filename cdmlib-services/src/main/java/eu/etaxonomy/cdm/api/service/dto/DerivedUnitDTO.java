@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -57,8 +56,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     private List<TypedEntityReference<Taxon>> associatedTaxa;
     private Map<String, List<String>> types;
-
-    private List<TypedEntityReference<TaxonName>> determinedNames;
 
     private String originalLabelInfo;
     private String exsiccatum;
@@ -146,7 +143,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         setRecordBase(derivedUnit.getRecordBasis());
         setSources(derivedUnit.getSources());
         setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
-        addDeterminedNames(derivedUnit.getDeterminations());
 
         // -------------------------------------------------------------
 
@@ -266,28 +262,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
             associatedTaxa = new ArrayList<>();
         }
         associatedTaxa.add(TypedEntityReference.fromEntity(taxon));
-    }
-
-    public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
-        return determinedNames;
-    }
-    public void addDeterminedNames(Set<DeterminationEvent> determinations){
-        if(determinedNames==null){
-            determinedNames = new ArrayList<>();
-        }
-        TaxonName preferredName = null;
-        for (DeterminationEvent event:determinations){
-            if (event.getPreferredFlag()){
-                preferredName = event.getTaxonName();
-            }
-        }
-        if (preferredName != null){
-            determinedNames.add(TypedEntityReference.fromEntity(preferredName));
-        }else{
-            for (DeterminationEvent event:determinations){
-                determinedNames.add(TypedEntityReference.fromEntity(event.getTaxonName()));
-            }
-        }
     }
 
     public void setPreferredStableUri(URI preferredStableUri) {

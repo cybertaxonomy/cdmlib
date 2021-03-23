@@ -50,7 +50,7 @@ public class SpecimenOrObservationDTOFactory {
         return FieldUnitDTO.fromEntity(entity);
     }
 
-    public static DerivedUnitDTO fromDerivedUnit(DerivedUnit entity){
+    public static SpecimenOrObservationBaseDTO fromDerivedUnit(DerivedUnit entity){
         if(entity == null) {
             return null;
         }

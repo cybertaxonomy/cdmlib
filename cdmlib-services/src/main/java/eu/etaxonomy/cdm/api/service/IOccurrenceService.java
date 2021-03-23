@@ -406,7 +406,7 @@ public interface IOccurrenceService
      * @param derivedUnit
      * @return a DTO with all the assembled information
      */
-    public DerivedUnitDTO assembleDerivedUnitDTO(DerivedUnit derivedUnit);
+    public SpecimenOrObservationBaseDTO assembleDerivedUnitDTO(DerivedUnit derivedUnit);
 
     /**
      * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>

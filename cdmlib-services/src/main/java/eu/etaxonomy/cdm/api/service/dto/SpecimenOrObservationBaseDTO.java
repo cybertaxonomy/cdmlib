@@ -31,8 +31,10 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -73,6 +75,8 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private DefinedTerm lifeStage;
 
+    private List<TypedEntityReference<TaxonName>> determinedNames;
+
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
         super(HibernateProxyHelper.getClassWithoutInitializingProxy(specimenOrObservation), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
         this.id = specimenOrObservation.getId();
@@ -82,6 +86,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         setSex(specimenOrObservation.getSex());
         setIndividualCount(specimenOrObservation.getIndividualCount());
         lifeStage = specimenOrObservation.getLifeStage();
+        addDeterminedNames(specimenOrObservation.getDeterminations());
         if (specimenOrObservation instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
             if (derivedUnit.getSpecimenTypeDesignations() != null){
@@ -445,6 +450,29 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     public void setIndividualCount(String individualCount) {
         this.individualCount = individualCount;
+    }
+
+    public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
+        return determinedNames;
+    }
+
+    public void addDeterminedNames(Set<DeterminationEvent> determinations) {
+        if(determinedNames==null){
+            determinedNames = new ArrayList<>();
+        }
+        TaxonName preferredName = null;
+        for (DeterminationEvent event:determinations){
+            if (event.getPreferredFlag()){
+                preferredName = event.getTaxonName();
+            }
+        }
+        if (preferredName != null){
+            determinedNames.add(TypedEntityReference.fromEntity(preferredName));
+        }else{
+            for (DeterminationEvent event:determinations){
+                determinedNames.add(TypedEntityReference.fromEntity(event.getTaxonName()));
+            }
+        }
     }
 
 
