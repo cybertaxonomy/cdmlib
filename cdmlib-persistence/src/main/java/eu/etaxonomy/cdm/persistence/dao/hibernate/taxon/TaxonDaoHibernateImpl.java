@@ -541,23 +541,10 @@ public class TaxonDaoHibernateImpl
             return query;
     }
 
-    /**
-     * @param hqlQueryString
-     * @param synonymSubselect
-     * @return
-     */
     protected Query getSearchQueryString(String hqlQueryString, String synonymSubselect) {
         return getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
     }
 
-    /**
-     * @param includeUnpublished
-     * @param classification
-     * @param doAreaRestriction
-     * @param subtree
-     * @param namedAreasUuids
-     * @param subTaxon
-     */
     protected void addRestrictions(boolean doAreaRestriction, Classification classification, TaxonNode subtree, boolean includeUnpublished,
             Set<UUID> namedAreasUuids, Query query) {
         if(doAreaRestriction){

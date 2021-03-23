@@ -9,11 +9,9 @@
 */
 package eu.etaxonomy.cdm.persistence.query;
 
-
 /**
  * @author a.babadshanjan
  * @since 03.03.2009
- * @version 1.0
  */
 public enum MatchMode {
 
@@ -73,10 +71,6 @@ public enum MatchMode {
         return queryString;
     }
 
-    /**
-     * @param queryString
-     * @return
-     */
     private String prependWildcard(String queryString) {
         if(!queryString.startsWith(wildcardStr)){
             queryString = wildcardStr + queryString;
@@ -84,10 +78,6 @@ public enum MatchMode {
         return queryString;
     }
 
-    /**
-     * @param queryString
-     * @return
-     */
     private String appendWildcard(String queryString) {
         if(!queryString.endsWith(wildcardStr)){
             queryString += wildcardStr;
