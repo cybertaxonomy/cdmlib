@@ -38,12 +38,8 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/nomenclaturalStatus/{uuid}"})
 public class NomenclaturalStatusController extends AbstractController<TaxonName, INameService> {
 
-
     private static final Logger logger = Logger.getLogger(NomenclaturalStatusController.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Autowired
     public void setService(INameService service) {
