@@ -15,7 +15,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +30,6 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since Oct 11, 2016
- *
  */
 @Controller
 @Api("nomenclaturalStatus")
@@ -53,7 +51,6 @@ public class NomenclaturalStatusController extends AbstractController<TaxonName,
             HttpServletResponse response) throws IOException {
 
         String servletPath = request.getServletPath();
-        String propertyName = FilenameUtils.getBaseName(servletPath);
 
         logger.info("doGet() - " + requestPathAndQuery(request));
 
@@ -63,7 +60,4 @@ public class NomenclaturalStatusController extends AbstractController<TaxonName,
         }
         return nomstatus;
     }
-
-
-
 }
