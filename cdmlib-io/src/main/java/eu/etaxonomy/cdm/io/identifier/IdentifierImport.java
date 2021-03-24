@@ -167,7 +167,31 @@ public class IdentifierImport
         }
 
         Identifier<?> identifier = null;
-        if (config.isUpdateExisting()){
+        //TODO clean redundant code
+        if (config.isWarnAndDoNotOverrideIfExists()){
+            boolean wasAlreadyImported = entityUuidsHandled.contains(uuid);
+            if (wasAlreadyImported){
+                String message = String.format(
+                        "More than 1 instance for uuid '%s' ("+entity.getTitleCache()+") found in line %d. Updating not possible without deleting previous value as 'update existing' was selected. Record in line was neglected.", uuidStr, i);
+                logger.warn(message);
+                this.commitTransaction(tx);
+                return null;
+            }
+            Set<Identifier> existingIdentifiers = entity.getIdentifiers_(idType.getUuid());
+            if (!existingIdentifiers.isEmpty()){
+                identifier = existingIdentifiers.iterator().next();
+                if (!CdmUtils.nullSafeEqual(identifier.getIdentifier(), value)){
+                    String message = String.format(
+                            "Existing identifier in line %d differs: " + value + ". Line not imported", i);
+                    logger.warn(message);
+                    this.commitTransaction(tx);
+                    return null;
+                }
+            }else{
+                addNewIdentifier(idType, entity, value, identifier);
+            }
+
+        }else if (config.isUpdateExisting()){
             boolean wasAlreadyImported = entityUuidsHandled.contains(uuid);
             if (wasAlreadyImported){
                 String message = String.format(
@@ -194,7 +218,7 @@ public class IdentifierImport
                     addNewIdentifier(idType, entity, value, identifier);
                 }
             }
-        }else{
+        } else {
             addNewIdentifier(idType, entity, value, identifier);
         }
         entityUuidsHandled.add(uuid);

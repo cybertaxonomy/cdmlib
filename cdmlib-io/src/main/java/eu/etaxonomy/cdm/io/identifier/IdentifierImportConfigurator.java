@@ -32,6 +32,7 @@ public class IdentifierImportConfigurator
 
     private boolean ignoreEmptyIdentifier = true;
     private boolean updateExisting = true;
+    private boolean warnAndDoNotOverrideIfExists = false;
 
 
     public static IdentifierImportConfigurator NewInstance(InputStreamReader file,
@@ -88,5 +89,12 @@ public class IdentifierImportConfigurator
     }
     public void setUpdateExisting(boolean updateExisting) {
         this.updateExisting = updateExisting;
+    }
+
+    public boolean isWarnAndDoNotOverrideIfExists() {
+        return warnAndDoNotOverrideIfExists;
+    }
+    public void setWarnAndDoNotOverrideIfExists(boolean warnAndDoNotOverrideIfExists) {
+        this.warnAndDoNotOverrideIfExists = warnAndDoNotOverrideIfExists;
     }
 }
