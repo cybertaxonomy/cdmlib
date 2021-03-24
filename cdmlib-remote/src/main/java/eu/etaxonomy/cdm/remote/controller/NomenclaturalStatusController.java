@@ -50,8 +50,6 @@ public class NomenclaturalStatusController extends AbstractController<TaxonName,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        String servletPath = request.getServletPath();
-
         logger.info("doGet() - " + requestPathAndQuery(request));
 
         NomenclaturalStatus nomstatus = service.loadNomenclaturalStatus(uuid, Arrays.asList("$", "source.citation.inReference"));
