@@ -2844,6 +2844,16 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
 
+        //PhytoKeys
+        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in PhytoKeys 137: 68. 2020";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        ref = name.getNomenclaturalReference();
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
+        Assert.assertEquals("PhytoKeys", ref.getInReference().getAbbrevTitle());
+
+//
     }
 
     @Test
