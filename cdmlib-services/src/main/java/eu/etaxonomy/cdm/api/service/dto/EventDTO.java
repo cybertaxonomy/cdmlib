@@ -36,6 +36,9 @@ public class EventDTO<T extends EventBase> extends TypedEntityReference<T>{
     protected EventDTO(T entity) {
         super(entity);
         timePeriod = entity.getTimeperiod();
+        if(entity.getActor() != null) {
+            actor = entity.getActor().getTitleCache();
+        }
     }
 
     public TimePeriod getTimePeriod() {

@@ -32,7 +32,7 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
     private Set<ReferenceDTO> references = null;
 
     public DeterminationEventDTO(DeterminationEvent entity) {
-        super(DeterminationEvent.class, entity.getUuid());
+        super(entity);
     }
 
     public static DeterminationEventDTO from(DeterminationEvent entity) {
