@@ -61,8 +61,8 @@ public class NameController extends AbstractIdentifiableController<TaxonName, IN
             "typifiedNames",
             "typeSpecimen",
             "typeName",
-            "source.citation",
-            "source.citation.authorship.$",
+            "designationSource.citation",
+            "designationSource.citation.authorship.$",
             "registrations", // needed for access control
             "text"
     }));

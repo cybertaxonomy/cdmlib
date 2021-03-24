@@ -57,7 +57,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             "derivedFrom.derivatives",
             "derivedFrom.originals",
             "specimenTypeDesignations.*",
-            "specimenTypeDesignations.source.citation.*",
+            "specimenTypeDesignations.designationSource.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
             "specimenTypeDesignations.typifiedNames",
             "collection.$"
@@ -79,7 +79,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
         if(pathProperties.stream().anyMatch(s -> s.startsWith("specimenTypeDesignations"))) {
             List<String> complemented = new ArrayList<>(pathProperties);
-            complemented.add("specimenTypeDesignations.source.citation.*");
+            complemented.add("specimenTypeDesignations.designationSource.citation.*");
             return complemented;
         }
         if(pathProperties.stream().anyMatch(s -> s.startsWith("sources"))) {
