@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ISeriesPart;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -631,12 +632,12 @@ public class NonViralNameParserImpl
 		}else if (nomRef instanceof Reference){
 			((Reference)nomRef).setDatePublished(datePublished);
 		}else{
-			throw new ClassCastException("nom Ref is not of type Reference but " + (nomRef == null? "(null)" : nomRef.getClass()));
+			throw new ClassCastException("nom Ref is not of type Reference but " + (nomRef.getClass()));
 		}
 		return result;
 	}
 
-	private String makeVolume(IVolumeReference nomRef, String strReference){
+	private String makeVolumeAndSeries(IVolumeReference nomRef, String strReference){
 		//volume
 		String volPart = null;
 		String pVolPhrase = volumeSeparator +  volume + end;
@@ -647,10 +648,25 @@ public class NonViralNameParserImpl
 			volPart = volPart.replaceFirst(pStart + volumeSeparator, "").trim();
 			nomRef.setVolume(volPart);
 		}
+		strReference = parseSeries(strReference, (ISeriesPart)nomRef);
 		return strReference;
 	}
 
-	private String makeEdition(IBook book, String strReference){
+    private String parseSeries(String strReference, ISeriesPart nomRef) {
+        String seriesPart = null;
+        String seriesPhrase = pSeriesPart + end;
+        Matcher seriesPhraseMatcher = getMatcher(seriesPhrase, strReference);
+        if (seriesPhraseMatcher.find()){
+            seriesPart = seriesPhraseMatcher.group(0);
+            strReference = strReference.substring(0, strReference.length() - seriesPart.length());
+            seriesPart = seriesPart.startsWith(",")? seriesPart.substring(1): seriesPart;
+            seriesPart = seriesPart.endsWith(",")? seriesPart.substring(0, seriesPart.length()-1): seriesPart;
+            nomRef.setSeriesPart(seriesPart.trim());
+        }
+        return strReference;
+    }
+
+    private String makeEdition(IBook book, String strReference){
 
 		String editionPart = null;
 		Matcher editionPhraseMatcher = getMatcher(pEditionPart, strReference);
@@ -681,7 +697,7 @@ public class NonViralNameParserImpl
 	private IBook parseBook(String reference){
 		IBook result = ReferenceFactory.newBook();
 		reference = makeEdition(result, reference);
-		reference = makeVolume(result, reference);
+		reference = makeVolumeAndSeries(result, reference);
 		result.setAbbrevTitle(reference);
 		return result;
 	}
@@ -690,7 +706,7 @@ public class NonViralNameParserImpl
 		//if (articlePattern)
 		//(type, author, title, volume, editor, series;
 		Reference result = ReferenceFactory.newArticle();
-		reference = makeVolume(result, reference);
+		reference = makeVolumeAndSeries(result, reference);
 		Reference inJournal = ReferenceFactory.newJournal();
 		inJournal.setAbbrevTitle(reference);
 		result.setInReference(inJournal);

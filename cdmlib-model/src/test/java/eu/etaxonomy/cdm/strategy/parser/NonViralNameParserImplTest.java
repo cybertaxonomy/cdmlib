@@ -1725,9 +1725,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     @Test
     public final void testSeries(){
-        //TODO should work also for the original string:  #9014
-//        String parseStr = "Mazus pumilus (Burm.f.) Steenis in Nova Guinea, n.s., 9: 31. 1958";
-        String parseStr = "Mazus pumilus (Burm.f.) Steenis in Nova Guinea Bla, n.s., 9: 31. 1958";
+        String parseStr = "Mazus pumilus (Burm.f.) Steenis in Nova Guinea, n.s., 9: 31. 1958";
         INonViralName name = parser.parseReferencedName(parseStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         Reference nomRef = name.getNomenclaturalReference();
@@ -1735,9 +1733,8 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals(name.getNomenclaturalMicroReference(), "31");
-        //TODO series should be parsed and handled better
-        assertEquals("Nova Guinea Bla, n.s.,", nomRef.getInJournal().getAbbrevTitle());
-//        assertEquals("n.s.", nomRef.getSeriesPart());
+        assertEquals("Nova Guinea", nomRef.getInJournal().getAbbrevTitle());
+        assertEquals("n.s.", nomRef.getSeriesPart());
     }
 
     @Test
@@ -1751,9 +1748,8 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals(name.getNomenclaturalMicroReference(), "239");
-        //TODO series should be parsed and handled better
-        assertEquals("Тр. Бот. инст. Aкад. наук СССР, сер. 1,", nomRef.getInJournal().getAbbrevTitle());
-//        assertEquals("сер. 1", nomRef.getSeriesPart());
+        assertEquals("Тр. Бот. инст. Aкад. наук СССР", nomRef.getInJournal().getAbbrevTitle());
+        assertEquals("сер. 1", nomRef.getSeriesPart());
     }
 
     @Test
@@ -2037,8 +2033,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("nom.ref. should be parsable", nomRef.isProtectedTitleCache());
         assertEquals(ReferenceType.Article, nomRef.getType());
         //, n.s., is not necessarily part of the title in future
-        assertEquals("Verh. Vereins Natur- Heilk. Presburg, n.s.,", nomRef.getInReference().getAbbrevTitle());
+        assertEquals("Verh. Vereins Natur- Heilk. Presburg", nomRef.getInReference().getAbbrevTitle());
         assertNull(nomRef.getEdition());
+        assertEquals("n.s.", nomRef.getSeriesPart());
         assertEquals("2", nomRef.getVolume());
 
           //Note: space in E+M, no space in IPNI; is it really a book?
@@ -2115,11 +2112,22 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
     }
 
+    @Test
+    public final void testArticlePattern(){
+        Pattern articlePattern = Pattern.compile(NonViralNameParserImplRegExBase.pArticleReference);
+        Matcher matcher = articlePattern.matcher("Acta Bot. Hung. 46 (1-2)");
+        Assert.assertTrue("", matcher.matches());
+        matcher = articlePattern.matcher("Nova Guinea Bla 9");
+        Assert.assertTrue("", matcher.matches());
+        matcher = articlePattern.matcher("Nova Guinea Bla , n.s., 9");
+        Assert.assertTrue("", matcher.matches());
+    }
+
 
     @Test
     public final void testSeriesPart(){
         Pattern seriesPattern = Pattern.compile(NonViralNameParserImplRegExBase.pSeriesPart);
-        Matcher matcher = seriesPattern.matcher("ser. 2");
+        Matcher matcher = seriesPattern.matcher(", ser. 2,");
         Assert.assertTrue("", matcher.matches());
 
         matcher = seriesPattern.matcher("n.s.");
@@ -2143,23 +2151,13 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         matcher = seriesPattern.matcher("nov. Ser.");
         Assert.assertTrue("", matcher.matches());
-
-
-
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#fullTeams(java.lang.String)}.
-     */
     @Test
     public final void testFullTeams() {
         logger.warn("Not yet implemented"); // TODO
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#AuthorshipAndEx(java.lang.String)}.
-     * @throws StringNotParsableException
-     */
     @Test
     public final void testParseAuthorsTaxonNameString() throws StringNotParsableException {
         INonViralName nvn = TaxonNameFactory.NewZoologicalInstance(null);
@@ -2844,7 +2842,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
 
-        //PhytoKeys
+        //PhytoKeys #9550
         nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in PhytoKeys 137: 68. 2020";
         name = parser.parseReferencedName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
@@ -2853,7 +2851,27 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
         Assert.assertEquals("PhytoKeys", ref.getInReference().getAbbrevTitle());
 
-//
+        //Adansonia #9014, #9551
+        nameStr = "Casearia annamensis (Gagnep.) Lescot & Sleumer in Adansonia, n.s., 10: 290. 1970";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        ref = name.getNomenclaturalReference();
+        Assert.assertEquals(ReferenceType.Article, ref.getType());
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
+        Assert.assertEquals("Adansonia", ref.getInReference().getAbbrevTitle());
+
+        //, Bot., sér. 4 #9014, #9551
+        nameStr = "Asteropeia amblyocarpa Tul. in Ann. Sci. Nat., Bot., sér. 4, 8: 81. 1857";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        ref = name.getNomenclaturalReference();
+        Assert.assertEquals(ReferenceType.Article, ref.getType());
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
+        Assert.assertEquals("Ann. Sci. Nat., Bot.", ref.getInReference().getAbbrevTitle());
+        Assert.assertEquals("sér. 4", ref.getSeriesPart());
+
     }
 
     @Test

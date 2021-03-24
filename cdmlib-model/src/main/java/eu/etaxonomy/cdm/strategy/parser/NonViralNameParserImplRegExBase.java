@@ -193,14 +193,17 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static int authorSeparatorMaxPosition = 3;  //author may have a maximum of 2 words
     protected static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + "|\\.?[-\u2013]"+oWs+"|\\.?" + oWs + "&(?!\\s*al\\.)" + oWs + ")";
-    protected static String pSeriesPart = ",?" + fWs + "(([sS][e\u00E9]r|сер)("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|(Pt|Sect)\\.\\s*\\d{1,2}),?";  //Pt. (Part) and Sect. (Section) currently handled as series part, which is part of title, may be handled different later
+    protected static String pSeriesPart = fWs + ",?" + fWs + "(([sS][e\u00E9]r|сер)("+oWs+"|\\."+fWs+")(\\d{1,2}|[A-Z](\\s*\\d{1,2})?)|n(ov)?\\.\\s*[sS](er)?\\.|Jerusalem Ser\\.|(Pt|Sect)\\.\\s*\\d{1,2}),?";  //Pt. (Part) and Sect. (Section) currently handled as series part, which is part of title, may be handled different later
 
     protected static String authorPrefix = "(Da(lla)?|Van|La|De)" + oWs; //should not include words allowed in first part of reference title
     protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|[-\u2013]"+word+")?"; //word with optional apostrophe in between
 
+    protected static String singleJournalTitles = "PhytoKeys"; //for further titles use "|"
     protected static String referenceTitleFirstPart = "(" + firstTitleWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
-    protected static String referenceTitleBase = referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + quotations + "|" + pSeriesPart + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
-    protected static String referenceTitle = "("+referenceTitleBase + "|PhytoKeys)";
+    protected static String referenceTitleBase = "("+ referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + quotations + ")"
+                    + "|" +singleJournalTitles + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
+    protected static String referenceTitleBaseWithSeries = referenceTitleBase + "("+ pSeriesPart + ")?";
+    protected static String referenceTitle = "("+referenceTitleBaseWithSeries +")";
     protected static String referenceTitleWithSepCharacters = "(((" + referenceTitle +"|\\(.+\\))"  + anySepChar + ")*" + referenceTitle + ")"; //,?
     //TODO test performance ??
     protected static String referenceTitleWithSepCharactersAndBrackets = referenceTitleWithSepCharacters + fWs + "(\\(" + referenceTitleWithSepCharacters + "\\)"+fWs+ ")?(" + referenceTitleWithSepCharacters +")?"  ;
@@ -212,7 +215,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String editionSeparator = "(" + oWs + "|," + fWs + ")ed\\.?" + oWs;  //
     public static String pEdition = nr2;
 
-    protected static String pVolPart = volumeSeparator +  volume;
+    protected static String pVolPart = volumeSeparator + volume;
     protected static String pEditionPart = "(" + editionSeparator +  pEdition +"([A-Z]|\\s*bis)?|,\\s*(jubilee|nouv\\.) ed\\.)";
     protected static String pEditionVolPart = pEditionPart + fWs + "," + volumeSeparator + volume;
     protected static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
