@@ -2876,8 +2876,8 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("PhytoKeys", ref.getInReference().getAbbrevTitle());
 
         //PLoS ONE #9550 //remaining issue: ", e82692" #9552
-//        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in  8(12), e82692: 17. 2013";
-        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in  8(12): 17. 2013";
+//        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in PLoS ONE 8(12), e82692: 17. 2013";
+        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in PLoS ONE 8(12): 17. 2013";
         name = parser.parseReferencedName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         ref = name.getNomenclaturalReference();
