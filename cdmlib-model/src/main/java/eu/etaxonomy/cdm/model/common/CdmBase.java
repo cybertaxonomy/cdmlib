@@ -475,7 +475,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @Transient
 	@Override
 	public String getUserFriendlyTypeName(){
-		return getClass().getSimpleName();
+        return String.join(" ",StringUtils.splitByCharacterTypeCamelCase(getClass().getSimpleName()));
 	}
 
 	@Transient
