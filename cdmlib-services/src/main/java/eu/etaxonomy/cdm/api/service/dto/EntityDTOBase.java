@@ -19,38 +19,25 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author a.mueller
  * @since 21.09.2016
- *
  */
 public abstract class EntityDTOBase<T extends CdmBase> implements Serializable{
 
     private static final long serialVersionUID = -4208986597695983584L;
 
     public class CdmEntity extends UuidAndTitleCache<T>{
+
         private static final long serialVersionUID = -4683693381724342023L;
-        //        UUID cdmUuid;
-//        String titleCache;
-        T entity;
+        private T entity;
+
         public CdmEntity(UUID cdmUuid, String titleCache, T entity) {
-//            this.cdmUuid = cdmUuid;
-//            this.titleCache = titleCache;
             super(cdmUuid, titleCache);
-
             this.entity = entity;
-
         }
-        /**
-         * @param entityUuid
-         * @param object
-         * @param label
-         * @param abbrevTitleCache
-         */
+
         public CdmEntity(UUID entityUuid, Object object, String label, String abbrevTitleCache) {
             super(entityUuid, null, label, abbrevTitleCache);
 
         }
-//        public UUID getCdmUuid() {return super.getUuid();}
-//        @Override
-//        public String getTitleCache() {return super.getTitleCache();}
         public T getEntity() {return entity;}
     }
 

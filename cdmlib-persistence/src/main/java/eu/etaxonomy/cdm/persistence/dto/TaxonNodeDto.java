@@ -45,8 +45,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
      */
     private UUID secUuid = null;
 
-
-
     /**
      * The uuid of the associated Taxon entity
      */
@@ -160,10 +158,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         rankOrderIndex =synonym.getNullSafeRank() != null ? synonym.getNullSafeRank().getOrderIndex() : null;
         taxonStatus = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
         classificationUUID = null;
-
-
     }
-
 
     public int getTaxonomicChildrenCount() {
         return taxonomicChildrenCount;
@@ -261,7 +256,4 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     public Map<Language, String> getStatusNote() {
         return Collections.unmodifiableMap(statusNote);
     }
-
-
-
 }
