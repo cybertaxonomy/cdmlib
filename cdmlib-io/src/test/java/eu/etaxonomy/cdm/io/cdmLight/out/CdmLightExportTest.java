@@ -29,6 +29,7 @@ import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -77,6 +78,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         @SpringBeanByType
         private ITaxonNodeService taxonNodeService;
 
+        @SpringBeanByType
+        private ICommonService commonService;
+
         @Before
         public void setUp()  {
 //            DefinedTerm ipniIdentifierTerm = DefinedTerm.NewIdentifierTypeInstance("IPNI Identifier", "IPNI Identifier", "IPNI Identifier");
@@ -109,6 +113,8 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             config.setTarget(TARGET.EXPORT_DATA);
             ExportResult result = defaultExport.invoke(config);
             ExportDataWrapper<?> exportData = result.getExportData();
+            testExceptionsErrorsWarnings(result);
+
             @SuppressWarnings("unchecked")
             Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
 
@@ -174,6 +180,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             config.getTaxonNodeFilter().setIncludeUnpublished(true);
 
             ExportResult result = defaultExport.invoke(config);
+            testExceptionsErrorsWarnings(result);
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
             Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
@@ -262,6 +269,8 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             config.setTarget(TARGET.EXPORT_DATA);
 
             ExportResult result = defaultExport.invoke(config);
+            testExceptionsErrorsWarnings(result);
+
             ExportDataWrapper<?> exportData = result.getExportData();
             @SuppressWarnings("unchecked")
             Map<String, byte[]> data = (Map<String, byte[]>) exportData.getExportData();
@@ -296,10 +305,33 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                 }catch(NullPointerException e){
                     //OK, should be thrown
                 }
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        @Test
+        @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")
+        })
+        public void testFullSampleData(){
+
+            commonService.createFullSampleData();
+            commitAndStartNewTransaction();
+
+
+            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            config.setTarget(TARGET.EXPORT_DATA);
+
+            ExportResult result = defaultExport.invoke(config);
+            testExceptionsErrorsWarnings(result);
+        }
+
+        private void testExceptionsErrorsWarnings(ExportResult result) {
+            Assert.assertTrue(result.getExceptions().size() == 0);
+            Assert.assertTrue(result.getErrors().size() == 0);
+            Assert.assertTrue(result.getWarnings().size() == 0);
         }
 
         public void createFullTestDataSet() {
