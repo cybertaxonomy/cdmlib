@@ -2842,15 +2842,6 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
 
-        //PhytoKeys #9550
-        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in PhytoKeys 137: 68. 2020";
-        name = parser.parseReferencedName(nameStr);
-        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        ref = name.getNomenclaturalReference();
-        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
-        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
-        Assert.assertEquals("PhytoKeys", ref.getInReference().getAbbrevTitle());
-
         //Adansonia #9014, #9551
         nameStr = "Casearia annamensis (Gagnep.) Lescot & Sleumer in Adansonia, n.s., 10: 290. 1970";
         name = parser.parseReferencedName(nameStr);
@@ -2871,7 +2862,28 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
         Assert.assertEquals("Ann. Sci. Nat., Bot.", ref.getInReference().getAbbrevTitle());
         Assert.assertEquals("sér. 4", ref.getSeriesPart());
+    }
 
+    @Test
+    public final void explicitJournalTitles(){
+        //PhytoKeys #9550
+        String nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in PhytoKeys 137: 68. 2020";
+        TaxonName name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference ref = name.getNomenclaturalReference();
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
+        Assert.assertEquals("PhytoKeys", ref.getInReference().getAbbrevTitle());
+
+        //PLoS ONE #9550 //remaining issue: ", e82692" #9552
+//        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in  8(12), e82692: 17. 2013";
+        nameStr = "Pseudopodospermum baeticum (DC.) Zaika & al. in  8(12): 17. 2013";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        ref = name.getNomenclaturalReference();
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
+        Assert.assertEquals("PLoS ONE", ref.getInReference().getAbbrevTitle());
     }
 
     @Test

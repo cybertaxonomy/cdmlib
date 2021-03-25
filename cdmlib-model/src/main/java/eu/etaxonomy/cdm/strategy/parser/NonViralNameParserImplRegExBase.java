@@ -198,7 +198,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String authorPrefix = "(Da(lla)?|Van|La|De)" + oWs; //should not include words allowed in first part of reference title
     protected static String firstTitleWord = "(?!"+authorPrefix+")" + word + "('\\p{javaLowerCase}*|[-\u2013]"+word+")?"; //word with optional apostrophe in between
 
-    protected static String singleJournalTitles = "PhytoKeys"; //for further titles use "|"
+    protected static String singleJournalTitles = "PhytoKeys|PLoS ONE";
     protected static String referenceTitleFirstPart = "(" + firstTitleWord + pTitleWordSeparator + "|" + twoCapitalDotWord + fWs + ")";
     protected static String referenceTitleBase = "("+ referenceTitleFirstPart + "*" + "("+ dotWord + "|" + uppercaseWord + "|" + quotations + ")"
                     + "|" +singleJournalTitles + ")";  //reference title may have words separated by whitespace or dot. The last word may not have a whitespace at the end. There must be at least one word
