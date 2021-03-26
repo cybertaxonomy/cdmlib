@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -111,26 +110,6 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     }
 
 
-    @RequestMapping(value = { "fieldUnitDTO" }, method = RequestMethod.GET)
-    public  FieldUnitDTO doGetFieldUnitDTO(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-
-        logger.info("doGetFieldUnitDTO()" + requestPathAndQuery(request));
-
-        SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
-
-        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
-
-        FieldUnitDTO fieldUnitDto = null;
-        if(sob != null){
-            fieldUnitDto = service.loadFieldUnitDTO(uuid);
-        }
-
-        return fieldUnitDto;
-    }
-
     @RequestMapping(value = { "rootUnitDTOs" }, method = RequestMethod.GET)
     public  Collection<SpecimenOrObservationBaseDTO> doGetRootUnitDTOs(
             @PathVariable("uuid") UUID uuid,
@@ -148,20 +127,6 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         return fieldUnitDtos;
     }
 
-    @RequestMapping(value = { "fieldUnitDTOs" }, method = RequestMethod.GET)
-    public  List<FieldUnitDTO> doListFieldUnitDTO(
-            @PathVariable("uuid") List<UUID> uuids,
-            HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
-
-        logger.info("doListFieldUnitDTO()" + requestPathAndQuery(request));
-        List<FieldUnitDTO> dtos = new ArrayList<>(uuids.size());
-        for(UUID uuid : uuids){
-            dtos.add(service.loadFieldUnitDTO(uuid));
-        }
-
-        return dtos;
-    }
 
     @RequestMapping(value = { "extensions" }, method = RequestMethod.GET)
     public Object doGetExtensions(
