@@ -537,7 +537,7 @@ public class OccurrenceServiceImpl
                         derivativeDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivativeDTO, derivedUnit, alreadyCollectedUnits));
                     }
                     derivativeDTO = (DerivedUnitDTO) alreadyCollectedUnits.get(unit.getUuid());
-                    rootUnitDTOs.addAll(findRootUnitDTO(derivativeDTO, alreadyCollectedUnits));
+                    rootUnitDTOs.addAll(findRootUnitDTOs(derivativeDTO, alreadyCollectedUnits));
                 } else {
                     // only other option is FieldUnit
                     rootUnitDTOs.add(FieldUnitDTO.fromEntity((FieldUnit)unit, 0, null));
@@ -597,7 +597,7 @@ public class OccurrenceServiceImpl
         DerivedUnitDTO dnaSampleDTO;
         if (dnaSample != null){
             dnaSampleDTO = new DNASampleDTO(dnaSample);
-            Collection<SpecimenOrObservationBaseDTO> fieldUnitDTOs = this.findRootUnitDTO(dnaSampleDTO, new HashMap<>());
+            Collection<SpecimenOrObservationBaseDTO> fieldUnitDTOs = this.findRootUnitDTOs(dnaSampleDTO, new HashMap<>());
             // FIXME change return type to Collection<FieldUnitDTO>
             if(fieldUnitDTOs.isEmpty()) {
                 return null;
@@ -734,22 +734,22 @@ public class OccurrenceServiceImpl
      * @return
      *  The collection of all Field Units that are accessible from the derivative from where the search was started.
      */
-    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTO(DerivedUnitDTO derivedUnitDTO,
+    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(DerivedUnitDTO derivedUnitDTO,
             HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
 
         HashMap<UUID, SpecimenOrObservationBaseDTO> rootUnitDTOs = new HashMap<>();
-        _findRootUnitDTO(derivedUnitDTO, rootUnitDTOs, alreadyCollectedSpecimen);
+        _findRootUnitDTOs(derivedUnitDTO, rootUnitDTOs, alreadyCollectedSpecimen);
         return rootUnitDTOs.values();
 
     }
 
     /**
-     * Method for recursive calls, must only be used by {@link #findRootUnitDTO(DerivedUnitDTO, HashMap)}
+     * Method for recursive calls, must only be used by {@link #findRootUnitDTOs(DerivedUnitDTO, HashMap)}
      * <p>
      * It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
      * from which this DerivedUnit was derived until all FieldUnits are found.
      */
-    private void _findRootUnitDTO(DerivedUnitDTO derivedUnitDTO, Map<UUID, SpecimenOrObservationBaseDTO> rootUnitDTOs,
+    private void _findRootUnitDTOs(DerivedUnitDTO derivedUnitDTO, Map<UUID, SpecimenOrObservationBaseDTO> rootUnitDTOs,
                 HashMap<UUID, SpecimenOrObservationBaseDTO> alreadyCollectedSpecimen) {
 
         List<String> propertyPaths = new ArrayList<>();
@@ -787,7 +787,7 @@ public class OccurrenceServiceImpl
                     if (original instanceof FieldUnit){
                         rootUnitDTOs.put(originalDTO.getUuid(), originalDTO);
                     }else{
-                        _findRootUnitDTO((DerivedUnitDTO) originalDTO, rootUnitDTOs, alreadyCollectedSpecimen);
+                        _findRootUnitDTOs((DerivedUnitDTO) originalDTO, rootUnitDTOs, alreadyCollectedSpecimen);
                     }
                 } else {
                     SpecimenOrObservationBaseDTO previouslyFoundRootUnit = rootUnitDTOs.get(original.getUuid());
