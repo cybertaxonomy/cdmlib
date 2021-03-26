@@ -146,7 +146,7 @@ public class TaxonNodeServiceImpl
             List<String> propertyPaths, boolean recursive,  boolean includeUnpublished,
             TaxonNodeSortMode sortMode) {
 
-        taxonNode = getSession().load(TaxonNode.class, taxonNode.getUuid());
+        taxonNode = load(taxonNode.getUuid());
         List<TaxonNode> childNodes;
         if (recursive == true){
             Comparator<TaxonNode> comparator = sortMode == null? null : sortMode.comparator();
