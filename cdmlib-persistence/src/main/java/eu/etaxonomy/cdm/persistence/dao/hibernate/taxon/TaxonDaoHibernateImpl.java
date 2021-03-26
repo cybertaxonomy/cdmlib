@@ -1509,7 +1509,8 @@ public class TaxonDaoHibernateImpl
         String doAreaRestrictionWhere =  " e.area.uuid in (:namedAreasUuids)";
         String doCommonNamesRestrictionWhere = " (com.class = 'CommonTaxonName' and com.name "+matchMode.getMatchOperator()+" :queryString )";
 
-        String doSearchFieldWhere = "%s." + searchField + " " + matchMode.getMatchOperator() + " :queryString";
+        String doSearchFieldWhere = " (%s." + searchField + " " + matchMode.getMatchOperator() + " :queryString OR "
+                + " %s.protectedTitleCache = TRUE AND %s.titleCache " + matchMode.getMatchOperator() + " :queryString) ";
 
         String doRelationshipTypeComparison = " rtype in (:rTypeSet) ";
 
@@ -1524,23 +1525,23 @@ public class TaxonDaoHibernateImpl
                     taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin +
                             " WHERE (1=1) AND " + doAreaRestrictionWhere +
                                 doTreeWhere + doSubtreeWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "n");
+                            "  AND " + String.format(doSearchFieldWhere, "n", "n", "n");
                     synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
                             " WHERE (1=1) AND " + doAreaRestrictionWhere +
                                 doTreeWhere + doSubtreeWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "sn");
+                            "  AND " + String.format(doSearchFieldWhere, "sn", "sn", "sn");
                     commonNameSubselect =  String.format(doAreaRestrictionSubSelect, "t") + doCommonNamesJoin +
                             " WHERE (1=1) AND " +  doAreaRestrictionWhere +
                                  doTreeWhere + doSubtreeWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "n") +
+                            "  AND " + String.format(doSearchFieldWhere, "n", "n", "n") +
                             "  AND " + doCommonNamesRestrictionWhere;
                 } else {//no area restriction
                     taxonSubselect = String.format(doTaxonSubSelect, "t" )+ doTaxonNameJoin +
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "n");
+                            "  AND " + String.format(doSearchFieldWhere, "n", "n", "n");
                     synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) +  //we could also use default synonym handling here as a taxon node filter requires an accepted taxon (#9047)
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "sn");
+                            "  AND " + String.format(doSearchFieldWhere, "sn", "sn", "sn");
                     commonNameSubselect =String.format(doTaxonSubSelect, "t" )+ doCommonNamesJoin +
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " + doCommonNamesRestrictionWhere;
@@ -1549,32 +1550,32 @@ public class TaxonDaoHibernateImpl
                 if(doAreaRestriction){
                     conceptSelect = String.format(doAreaRestrictionConceptRelationSubSelect, "t") + doTaxonNameJoin + doConceptRelationJoin  +
                             " WHERE " + doAreaRestrictionWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "n") +
+                            "  AND " + String.format(doSearchFieldWhere, "n", "n", "n") +
                                  doTreeForConceptRelationsWhere + doSubtreeForConceptRelationsWhere +
                             "  AND " + doRelationshipTypeComparison;
                     taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin +
                             " WHERE " + doAreaRestrictionWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "n") +
+                            "  AND " + String.format(doSearchFieldWhere, "n", "n", "n") +
                                 doTreeWhere + doSubtreeWhere;
                     synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
                             " WHERE " + doAreaRestrictionWhere +
                                 doTreeWhere + doSubtreeWhere +
-                            "  AND " + String.format(doSearchFieldWhere, "sn");
+                            "  AND " + String.format(doSearchFieldWhere, "sn", "sn", "sn");
                     commonNameSubselect= String.format(doAreaRestrictionSubSelect, "t")+ doCommonNamesJoin +
                             " WHERE " + doAreaRestrictionWhere +
                                 doTreeWhere + doSubtreeWhere +
                             "  AND " + doCommonNamesRestrictionWhere;
                 } else {//no area restriction
                     conceptSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doConceptRelationJoin +
-                            " WHERE " + String.format(doSearchFieldWhere, "n") +
+                            " WHERE " + String.format(doSearchFieldWhere, "n", "n", "n") +
                                   doTreeForConceptRelationsWhere + doSubtreeForConceptRelationsWhere +
                             "  AND " + doRelationshipTypeComparison;
                     taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
-                            " WHERE " +  String.format(doSearchFieldWhere, "n") +
+                            " WHERE " +  String.format(doSearchFieldWhere, "n", "n", "n") +
                                  doTreeWhere + doSubtreeWhere;
                     synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) + //we could also use default synonym handling here as a taxon node filter requires an accepted taxon (#9047)
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
-                            "  AND " +  String.format(doSearchFieldWhere, "sn");
+                            "  AND " +  String.format(doSearchFieldWhere, "sn", "sn", "sn");
                     commonNameSubselect= String.format(doTaxonSubSelect, "t")+ doCommonNamesJoin +
                             " WHERE (1=1) " + doTreeWhere + doSubtreeWhere +
                             "  AND " + doCommonNamesRestrictionWhere;
@@ -1584,25 +1585,25 @@ public class TaxonDaoHibernateImpl
             if(doAreaRestriction){
                 conceptSelect = String.format(doAreaRestrictionConceptRelationSubSelect, "t") + doTaxonNameJoin + doConceptRelationJoin +
                         " WHERE " + doAreaRestrictionWhere +
-                        "  AND " + String.format(doSearchFieldWhere, "n")+
+                        "  AND " + String.format(doSearchFieldWhere, "n", "n", "n")+
                         "  AND " + doRelationshipTypeComparison;
                 taxonSubselect = String.format(doAreaRestrictionSubSelect, "t") + doTaxonNameJoin +
                         " WHERE " + doAreaRestrictionWhere +
-                        "  AND " + String.format(doSearchFieldWhere, "n");
+                        "  AND " + String.format(doSearchFieldWhere, "n", "n", "n");
                 synonymSubselect = String.format(doAreaRestrictionSubSelect, "s") + doSynonymNameJoin +
                         " WHERE " + doAreaRestrictionWhere +
-                        "  AND " + String.format(doSearchFieldWhere, "sn");
+                        "  AND " + String.format(doSearchFieldWhere, "sn", "sn", "sn");
                 commonNameSubselect = String.format(doAreaRestrictionSubSelect, "t")+ doCommonNamesJoin +
                         " WHERE " + doAreaRestrictionWhere +
                         "  AND " + doCommonNamesRestrictionWhere;
             } else { //no area restriction
                 conceptSelect = String.format(doTaxonMisappliedNameSubSelect, "t" ) + doTaxonNameJoin + doConceptRelationJoin +
-                        " WHERE " +  String.format(doSearchFieldWhere, "n") +
+                        " WHERE " +  String.format(doSearchFieldWhere, "n", "n", "n") +
                         " AND " + doRelationshipTypeComparison;
                 taxonSubselect = String.format(doTaxonSubSelect, "t" ) + doTaxonNameJoin +
-                        " WHERE " +  String.format(doSearchFieldWhere, "n");
+                        " WHERE " +  String.format(doSearchFieldWhere, "n", "n", "n");
                 synonymSubselect = String.format(doTaxonSubSelect, "s" ).replace("FROM Taxon ", doSynonymSubSelect) +
-                        " WHERE " +  String.format(doSearchFieldWhere, "sn");
+                        " WHERE " +  String.format(doSearchFieldWhere, "sn", "sn", "sn");
                 commonNameSubselect = String.format(doTaxonSubSelect, "t" ) +doCommonNamesJoin +
                         " WHERE "+  doCommonNamesRestrictionWhere;
             }

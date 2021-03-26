@@ -517,6 +517,30 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.publishFlag.xml")
+    public void testGetTaxaByProtectedTitleCacheName(){
+        boolean includeAuthors = false;
+        @SuppressWarnings("rawtypes")
+        List<TaxonBase> taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames,
+                includeAuthors,"Acherontia", null, null, MatchMode.BEGINNING, null, includeUnpublished,
+                null, null, null, null);
+        assertEquals("Both taxa have Acherontia", 2, taxa.size());
+
+        taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames,
+                includeAuthors,"Acherontia la", null, null, MatchMode.BEGINNING, null, includeUnpublished,
+                null, null, null, null);
+        assertEquals("Only Acherontia laspeyres Laspey., 1809 should be found as titleCache protected", 1, taxa.size());
+        assertEquals(15, taxa.iterator().next().getId());
+        assertTrue(taxa.iterator().next().getName().isProtectedTitleCache());
+
+        includeAuthors = true;
+        taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames,
+                includeAuthors,"Acherontia la", null, null, MatchMode.BEGINNING, null, includeUnpublished,
+                null, null, null, null);
+        assertEquals("With authors both taxa should be found ", 2, taxa.size());
+    }
+
+    @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
     public void testGetTaxaByNameProParteSynonym(){
         TaxonNode subtree = null;
