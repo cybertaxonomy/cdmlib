@@ -8,9 +8,13 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
@@ -30,6 +34,21 @@ public class MediaDTO extends TypedEntityReference<Media> {
 
     private Integer size;
 
+
+    public static List<MediaDTO> fromEntity(Media entity) {
+        List<MediaDTO> dtos = new ArrayList<>();
+        entity.getAllTitles(); // initialize all titles!!!
+        for (MediaRepresentation rep :entity.getRepresentations()){
+            for(MediaRepresentationPart p : rep.getParts()){
+                if(p.getUri() != null){
+                    MediaDTO dto = new MediaDTO(entity.getUuid());
+                    dto.setUri(p.getUri().toString());
+                    dtos.add(dto);
+                }
+            }
+        }
+        return dtos;
+    }
 
     /**
      * @param type

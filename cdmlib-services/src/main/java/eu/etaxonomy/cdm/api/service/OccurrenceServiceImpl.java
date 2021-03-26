@@ -50,11 +50,13 @@ import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DNASampleDTO;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
@@ -192,6 +194,22 @@ public class OccurrenceServiceImpl
         }
 
         return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+    }
+
+    @Override
+    public Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber) {
+        long numberOfResults = dao.countMedia(occurence);
+
+        List<Media> results = new ArrayList<>();
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)) {
+            results = dao.getMedia(occurence, pageSize, pageNumber, null);
+        }
+        List<MediaDTO> mediaDTOs = results.stream()
+                .map(m -> MediaDTO.fromEntity(m))
+                .flatMap(dtos -> dtos.stream())
+                .collect(Collectors.toList()
+                );
+        return new DefaultPagerImpl<MediaDTO>(pageNumber, numberOfResults, pageSize, mediaDTOs);
     }
 
     @Override

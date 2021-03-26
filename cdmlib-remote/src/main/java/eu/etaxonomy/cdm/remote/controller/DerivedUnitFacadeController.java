@@ -11,8 +11,10 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,9 +32,9 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import io.swagger.annotations.Api;
@@ -92,7 +94,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
 
         logger.info("doGetDerivedUnitMedia() - " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
-        DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
+        DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response, Arrays.asList(new String []{
                 "derivedUnitMedia", "derivedUnitMedia.title"}));
         if(duf != null){
             mv.addObject(duf.getDerivedUnitMedia());
@@ -106,12 +108,14 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
         HttpServletRequest request,
         HttpServletResponse response) throws IOException {
 
-        logger.info("doGetFieldObjectMedia() - " + readPathParameter(request, null));
-        FieldUnitDTO dto = service.loadFieldUnitDTO(occurrenceUuid);
-        if (dto == null){
-            HttpStatusMessage.UUID_NOT_FOUND.send(response);
-        }
-        return dto.getListOfMedia();
+        logger.info("doGetFieldObjectMediaDTO() - " + readPathParameter(request, null));
+
+        Collection<FieldUnit> fus = service.findFieldUnits(occurrenceUuid, null);
+        List<MediaDTO> mediaDTOs = fus.stream()
+            .map(fu -> service.getMediaDTOs(fu, null, null))
+            .flatMap(p -> p.getRecords().stream())
+            .collect(Collectors.toList());
+        return mediaDTOs;
     }
 
     @RequestMapping(value = {"fieldObjectMedia"}, method = RequestMethod.GET)

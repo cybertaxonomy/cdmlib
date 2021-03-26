@@ -29,8 +29,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -363,18 +361,12 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private void addMediaAsDTO(Set<Media> media) {
         for(Media m : media) {
-            m.getAllTitles(); // initialize all titles!!!
-            for (MediaRepresentation rep :m.getRepresentations()){
-                for(MediaRepresentationPart p : rep.getParts()){
-                    if(p.getUri() != null){
-                        MediaDTO dto = new MediaDTO(m.getUuid());
-                        dto.setUri(p.getUri().toString());
-                        getListOfMedia().add(dto);
-                    }
-                }
-            }
+            List<MediaDTO> dtos = MediaDTO.fromEntity(m);
+            getListOfMedia().addAll(dtos);
         }
     }
+
+
 
     /**
      * @param sob
