@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import static org.junit.Assert.assertEquals;
@@ -68,7 +67,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 29.01.2009
  */
-
 public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
@@ -461,7 +459,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-
 	public void testAttachDnaSampleToExistingDerivedUnit_parentChild(){
 	    UUID fieldUnit1Uuid = UUID.fromString("0f896630-48d6-4352-9c91-278be28ce19c");
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -516,7 +513,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
 	    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	})
-
 	public void testAttachDnaSampleToExistingDerivedUnit_sibling(){
         UUID fieldUnit1Uuid = UUID.fromString("0f896630-48d6-4352-9c91-278be28ce19c");
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -669,7 +665,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	}
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -687,7 +682,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         setComplete();
         endTransaction();
 
-
         try {
             writeDbUnitDataSetFile(new String[] {
                     "SpecimenOrObservationBase",
@@ -696,5 +690,4 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
             e.printStackTrace();
         }
     }
-
 }
