@@ -166,8 +166,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@Ignore
-	public void testImport59Units() {
+	@Ignore  //TODO this test takes very long therefore I keep it on ignore, also it fails as the
+	//derived unit count returns 117 not 118 as assumed; this needs to be fixed and we have to check
+	//why importing 59 units takes so long
+ 	public void testImport59Units() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
@@ -186,7 +188,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
     //    assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
-
 	}
 
 	/**
@@ -392,7 +393,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	/**
      * Tests import of DNA unit which is associated to a specimen being its sibling
      * by having the same field unit
-	 * @throws ParseException
 	 */
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -422,7 +422,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    config.setSignificantIdentifier("B 10 0066577");
 	    List<SpecimenOrObservationBase> records = occurrenceService.findByTitle(config).getRecords();
 	    assertEquals(1, records.size());
-	    SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
+	    SpecimenOrObservationBase<?> derivedUnitSpecimen = records.iterator().next();
 	    assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
 	    DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
 	    assertEquals("Herbarium Berolinense", specimen.getCollection().getCode());
@@ -433,7 +433,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    dnaConfig.setSignificantIdentifier("DB 6");
 	    List<SpecimenOrObservationBase> dnaRecords = occurrenceService.findByTitle(dnaConfig).getRecords();
 	    assertEquals(1, dnaRecords.size());
-	    SpecimenOrObservationBase dnaSpecimen = dnaRecords.iterator().next();
+	    SpecimenOrObservationBase<?> dnaSpecimen = dnaRecords.iterator().next();
 	    assertEquals(DnaSample.class, dnaSpecimen.getClass());
 	    DnaSample dnaSample = (DnaSample) dnaSpecimen;
 	    DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
@@ -559,7 +559,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
         assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
-
 	}
 
 	@Test

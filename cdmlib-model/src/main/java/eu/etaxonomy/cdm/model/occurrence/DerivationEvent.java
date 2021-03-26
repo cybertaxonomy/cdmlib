@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.util.HashSet;
@@ -39,7 +38,6 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 /**
  * @author a.mueller
  * @since 17.05.2010
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DerivationEvent", propOrder = {
@@ -53,7 +51,8 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed
 @Audited
-public class DerivationEvent extends EventBase implements Cloneable{
+public class DerivationEvent extends EventBase {
+
 	private static final long serialVersionUID = 3661673673962819395L;
 	private static final Logger logger = Logger.getLogger(DerivationEvent.class);
 
@@ -145,7 +144,6 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		return originals;
 	}
 
-
 	/**
 	 * Adds a new input specimen or observation for this derviation event.
 	 * @see #getOriginals()
@@ -169,7 +167,6 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	    }
 	}
 
-
 	/**
 	 * The specimen or observations that are the output for this derviation event.
 	 * @return
@@ -177,7 +174,6 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	public Set<DerivedUnit> getDerivatives() {
 		return derivatives;
 	}
-
 
 	/**
 	 * Adds a new output specimen or observation for this derivation event.
@@ -211,7 +207,6 @@ public class DerivationEvent extends EventBase implements Cloneable{
     public Institution getInstitution() {
 		return institution;
 	}
-
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
 	}
@@ -223,7 +218,6 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	public DerivationEventType getType() {
 		return type;
 	}
-
 	public void setType(DerivationEventType type) {
 		this.type = type;
 	}
