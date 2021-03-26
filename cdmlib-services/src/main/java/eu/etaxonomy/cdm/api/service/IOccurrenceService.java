@@ -673,6 +673,22 @@ public interface IOccurrenceService
     SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
 
     /**
+     * Recursively searches all {@link DerivationEvent}s to find all "originals" ({@link SpecimenOrObservationBase})
+     * from which this DerivedUnit was derived until all FieldUnits are found.
+     * <p>
+     * <b>NOTE:</b> The recursive search still is a bit incomplete and may miss originals in the rare case where a
+     * derivative has more than one original. (see https://dev.e-taxonomy.eu/redmine/issues/9253)
+     *
+     * @param derivedUnitDTO
+     *  The DerivedUnitDTO to start the search from.
+     * @param alreadyCollectedSpecimen
+     *  A map to hold all originals that have been sees during the recursive walk.
+     * @return
+     *  The collection of all Field Units that are accessible from the derivative from where the search was started.
+     */
+    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(UUID unitUUID);
+
+    /**
      * Finds the units which are associated to a taxon
      * (<code>associatedTaxonUuid</code>) and returns all related root units
      * with the derivation branches up to the derivatives associated with the

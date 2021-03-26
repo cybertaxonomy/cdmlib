@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -127,6 +129,23 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         }
 
         return fieldUnitDto;
+    }
+
+    @RequestMapping(value = { "rootUnitDTOs" }, method = RequestMethod.GET)
+    public  Collection<SpecimenOrObservationBaseDTO> doGetRootUnitDTOs(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetRootUnitDTOs()" + requestPathAndQuery(request));
+
+        SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, "$");
+        sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
+
+        Collection<SpecimenOrObservationBaseDTO> fieldUnitDtos = service.findRootUnitDTOs(uuid);
+
+
+        return fieldUnitDtos;
     }
 
     @RequestMapping(value = { "fieldUnitDTOs" }, method = RequestMethod.GET)
