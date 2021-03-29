@@ -140,6 +140,7 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
      * Compare 2 names which have the same basionym.
      * The names must not be equal to each other but may be equal
      * to the basionym.
+     *
      * @param basionym the basionym
      * @param name1 first name to compare
      * @param name2 second name to compare
@@ -159,11 +160,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         return 0;
     }
 
-    /**
-     * @param basionym1
-     * @param basionym2
-     * @return
-     */
     private int compareBasionyms(TaxonName basionym1Orig, TaxonName basionym2Orig) {
         //one taxon is first in group
         TaxonName basionym1 = getFirstNameInGroup(basionym1Orig);
@@ -188,13 +184,8 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         //compare by date, nom. illeg., rank and alphabetically
         return super.compare(basionym1, basionym2, true);
-
     }
 
-    /**
-     * @param basionym
-     * @return
-     */
     private TaxonName getFirstNameInGroup(TaxonName basionym) {
         for (NameRelationship nameRel : basionym.getRelationsFromThisName()){
             if (nameRel.getType() != null && nameRel.getType().equals(NameRelationshipType.BASIONYM())){
@@ -206,11 +197,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         return basionym;
     }
 
-    /**
-     * @param basionym1
-     * @return
-     */
-    @SuppressWarnings("rawtypes")
     private Set<TaxonName> getReplacedSynonymClosure(TaxonName name) {
         Set<TaxonName> set = name.getReplacedSynonyms();
         if (set.isEmpty()){
@@ -226,10 +212,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         return result;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     private TaxonName getPreferredInBasionymGroup(TaxonName name) {
         Set<TaxonName> candidates = new HashSet<>();
         //get all final basionyms, except for those being part of a basionym circle
@@ -258,10 +240,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
     }
 
-    /**
-     * @param candidate
-     * @return
-     */
     private boolean hasBasionymCircle(TaxonName name, Set<TaxonName> existing) {
         if (existing == null){
             existing = new HashSet<>();
@@ -282,21 +260,4 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return false;
         }
     }
-
-
-//  /**
-//   * @param homotypicalGroup
-//   * @return
-//   */
-//  private TaxonBase<?> getFirstInHomotypicalGroup(HomotypicalGroup homotypicalGroup, Collection<TaxonBase<?>> existing) {
-//      List<TaxonBase<?>> candidates =  new ArrayList<TaxonBase<?>>();
-//      for (TaxonBase<?> candidate : existing){
-//          if (homotypicalGroup.getTypifiedNames().contains(candidate.getName())){
-//              candidates.add(candidate);
-//          }
-//      }
-//      Collections.sort(candidates, this);
-//      return candidates.isEmpty() ? null : candidates.get(0);
-//  }
-
 }

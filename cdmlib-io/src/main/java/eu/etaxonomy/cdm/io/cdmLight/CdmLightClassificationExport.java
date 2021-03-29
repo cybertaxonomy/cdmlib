@@ -881,10 +881,6 @@ public class CdmLightClassificationExport
         }
     }
 
-    /**
-     * @param sec
-     * @return
-     */
     private String getTitleCache(IIdentifiableEntity identEntity) {
         if (identEntity == null) {
             return "";
@@ -1720,7 +1716,6 @@ public class CdmLightClassificationExport
                              sec = "";
                          }
 
-
                          typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString ;
                          typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec ;
                      }else{
@@ -1728,9 +1723,7 @@ public class CdmLightClassificationExport
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
                              isAccepted = true;
                          }
-
                      }
-
                 }else{
                     //there are names used more than once?
                     for (TaxonBase<?> tb: taxonBases){
@@ -1771,18 +1764,9 @@ public class CdmLightClassificationExport
                 typifiedNamesWithSecString += synonymSign + doubtful + nameString + sec;
 
 
-                if (typifiedNamesString != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = "";
-                }
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
 
-
-                if (typifiedNamesWithSecString != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = "";
-                }
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
 
                 if (typifiedNamesWithoutAccepted != null && firstname != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
