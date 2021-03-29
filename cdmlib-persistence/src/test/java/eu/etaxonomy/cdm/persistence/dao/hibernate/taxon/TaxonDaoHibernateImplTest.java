@@ -520,9 +520,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonDaoHibernateImplTest.publishFlag.xml")
     public void testGetTaxaByProtectedTitleCacheName(){
         boolean includeAuthors = false;
+
+        //MODE BEGINNING
         @SuppressWarnings("rawtypes")
         List<TaxonBase> taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames,
-                includeAuthors,"Acherontia", null, null, MatchMode.BEGINNING, null, includeUnpublished,
+                includeAuthors,"Acheronti", null, null, MatchMode.BEGINNING, null, includeUnpublished,
                 null, null, null, null);
         assertEquals("Both taxa have Acherontia", 2, taxa.size());
 
@@ -538,6 +540,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
                 includeAuthors,"Acherontia la", null, null, MatchMode.BEGINNING, null, includeUnpublished,
                 null, null, null, null);
         assertEquals("With authors both taxa should be found ", 2, taxa.size());
+
+        //MODE EXACT
+        taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames,
+                includeAuthors,"Acheronti", null, null, MatchMode.EXACT, null, includeUnpublished,
+                null, null, null, null);
+        assertEquals("With protected titleCache the  ", 1, taxa.size());
+
+        taxa.iterator().next().getName().setProtectedTitleCache(false);
+        taxa = taxonDao.getTaxaByName(doTaxa, doSynonyms, noMisapplied, noCommonNames,
+                includeAuthors,"Acheronti", null, null, MatchMode.EXACT, null, includeUnpublished,
+                null, null, null, null);
+        assertEquals("No exact match should exist for ", 0, taxa.size());
+
     }
 
     @Test

@@ -412,7 +412,7 @@ public class TaxonDaoHibernateImpl
 
             if(doTaxa){
                 // find Taxa
-                Query subTaxon = getSearchQueryString(hqlQueryString, taxonSubselect);
+                Query subTaxon = getSearchQueryString(hqlQueryString, taxonSubselect, true);
 
                 addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished,
                         namedAreasUuids, subTaxon);
@@ -421,12 +421,12 @@ public class TaxonDaoHibernateImpl
 
             if(doSynonyms){
                 // find synonyms
-                Query subSynonym = getSearchQueryString(hqlQueryString, synonymSubselect);
+                Query subSynonym = getSearchQueryString(hqlQueryString, synonymSubselect, true);
                 addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished, namedAreasUuids,subSynonym);
                 synonymIDs = subSynonym.list();
             }
             if (doConceptRelations ){
-                Query subMisappliedNames = getSearchQueryString(hqlQueryString, conceptSelect);
+                Query subMisappliedNames = getSearchQueryString(hqlQueryString, conceptSelect, true);
                 Set<TaxonRelationshipType> relTypeSet = new HashSet<>();
                 if (doMisappliedNames){
                     relTypeSet.addAll(TaxonRelationshipType.allMisappliedNameTypes());
@@ -441,7 +441,7 @@ public class TaxonDaoHibernateImpl
 
             if(doCommonNames){
                 // find Taxa
-                Query subCommonNames = getSearchQueryString(hqlQueryString, commonNameSubSelect);
+                Query subCommonNames = getSearchQueryString(hqlQueryString, commonNameSubSelect, false);
                 addRestrictions(doAreaRestriction, classification, subtree, includeUnpublished, namedAreasUuids, subCommonNames);
                 taxonIDs.addAll(subCommonNames.list());
             }
@@ -539,8 +539,13 @@ public class TaxonDaoHibernateImpl
             return query;
     }
 
-    protected Query getSearchQueryString(String hqlQueryString, String synonymSubselect) {
-        return getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
+    protected Query getSearchQueryString(String hqlQueryString, String subselect, boolean includeProtectedTitle) {
+        Query result = getSession().createQuery(subselect);
+        result.setParameter("queryString", hqlQueryString);
+        if (includeProtectedTitle){
+            result.setParameter("protectedTitleQueryString", hqlQueryString + "%");
+        }
+        return result;
     }
 
     protected void addRestrictions(boolean doAreaRestriction, Classification classification, TaxonNode subtree, boolean includeUnpublished,
@@ -1508,7 +1513,7 @@ public class TaxonDaoHibernateImpl
         String doCommonNamesRestrictionWhere = " (com.class = 'CommonTaxonName' and com.name "+matchMode.getMatchOperator()+" :queryString )";
 
         String doSearchFieldWhere = " (%s." + searchField + " " + matchMode.getMatchOperator() + " :queryString OR "
-                + " %s.protectedTitleCache = TRUE AND %s.titleCache " + matchMode.getMatchOperator() + " :queryString) ";
+                + " %s.protectedTitleCache = TRUE AND %s.titleCache LIKE :protectedTitleQueryString) ";
 
         String doRelationshipTypeComparison = " rtype in (:rTypeSet) ";
 

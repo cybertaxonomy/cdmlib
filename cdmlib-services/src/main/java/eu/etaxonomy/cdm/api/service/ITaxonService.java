@@ -495,8 +495,9 @@ public interface ITaxonService
     /**
      * Returns a list of IdentifiableEntity instances (in particular, TaxonName and TaxonBase instances)
      * that match the properties specified in the configurator.
-     * @param configurator
-     * @return
+     *
+     * Note: The search result includes a search on titleCache (with {@link MatchMode#BEGINNING} or {@link MatchMode#ANYWHERE} )
+     * for all records with protected titleCache (see #9561). Maybe this should be parameterized in future.
      */
     public Pager<IdentifiableEntity> findTaxaAndNames(IFindTaxaAndNamesConfigurator configurator);
 
