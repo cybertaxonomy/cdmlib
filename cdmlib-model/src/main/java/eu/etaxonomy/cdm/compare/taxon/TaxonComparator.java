@@ -123,32 +123,15 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
     }
 
 	private int computeStatusCompareWeight(TaxonName taxonName) {
-		int result = 0;
-
-		if (taxonName == null || taxonName.isValid()){
-			return 0;
+        //NOTE: this represented an ordered list for different types of invalid designation status.
+        //      but not clear were this order came from, it is partly mentioned
+	    //in #5794, it is unclear if it fits to the longer list mentioned in #9272
+	    //With #9272 and finally #9566 we decided to handle all invalid status with same weight
+		if (taxonName != null && taxonName.isInvalid()){
+			return 1;
+		}else{
+		    return 0;
 		}
-		Set<NomenclaturalStatus> status1 = taxonName.getStatus();
-        for (NomenclaturalStatus nomStatus1 : status1){
-            NomenclaturalStatusType type = nomStatus1.getType();
-            if (type != null && type.isInvalid()){
-                //NOTE: not clear were this order comes from, it is partly mentioned
-                //in #5794, it is unclear if it fits to the longer list mentioned in #9272
-                if(type.equals(NomenclaturalStatusType.PROVISIONAL())){
-                    result += 1;
-                }else if (type.equals(NomenclaturalStatusType.INVALID())){
-            		result += 2;
-            	}else if(type.equals(NomenclaturalStatusType.COMBINATION_INVALID())){
-                    result += 2;
-            	}else if (type.equals(NomenclaturalStatusType.OPUS_UTIQUE_OPPR())){
-                    result += 2;
-                }else if(type.equals(NomenclaturalStatusType.NUDUM())){
-            		result += 3;
-                }
-                result += 1;
-            }
-        }
-		return result;
 	}
 
     protected int compareNomIlleg(TaxonName taxonName1, TaxonName taxonName2) {

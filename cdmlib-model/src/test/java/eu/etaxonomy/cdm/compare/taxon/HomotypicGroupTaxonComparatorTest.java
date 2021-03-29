@@ -19,10 +19,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -429,5 +429,27 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         Assert.assertEquals(botName1, list.get(0).getName());
         Assert.assertEquals(botName3, list.get(1).getName());
         Assert.assertEquals(botName5, list.get(2).getName());
+    }
+
+    @Test
+    public void testCompare_NomenclaturalStanding() {
+
+        //default behavior without nomenclatural standing
+        HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
+        taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
+        list.addAll(taxon1.getSynonyms());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("Bbb should come before Eee in same homotypic group", botName2, list.get(0).getName());
+        Assert.assertEquals("Bbb should come before Eee in same homotypic group", botName5, list.get(1).getName());
+
+        //with nomenclatural standing
+        botName2.addRelationshipToName(botName3, NameRelationshipType.MISSPELLING());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("Invalid designation should come after valid name", botName5, list.get(0).getName());
+        Assert.assertEquals("Invalid designation should come after valid name", botName2, list.get(1).getName());
+
     }
 }
