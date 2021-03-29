@@ -61,6 +61,12 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         this.firstNameInGroup = firstTaxonInGroup == null ? null: firstTaxonInGroup.getName();
     }
 
+    public HomotypicGroupTaxonComparator(TaxonName firstNameInGroup, boolean includeRanks) {
+        super(includeRanks);
+        firstTaxonInGroup = null;
+        this.firstNameInGroup = firstNameInGroup;
+    }
+
     /**
      *
      * @see TaxonComparator#compare(TaxonBase, TaxonBase)
@@ -74,7 +80,16 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         TaxonName name1 = taxonBase1.getName();
         TaxonName name2 = taxonBase2.getName();
+
+        return compareNames(name1, name2, taxonBase1, taxonBase2);
+    }
+
+    public int compareNames(TaxonName name1,  TaxonName name2, TaxonBase<?> taxonBase1, TaxonBase<?> taxonBase2) {
         if (logger.isDebugEnabled()){logger.debug(name1.getTitleCache() +" : "+ name2.getTitleCache());}
+        if (name1 == null && taxonBase1 == null ||
+                name2 == null && taxonBase2 == null){
+            throw new IllegalArgumentException("There should always be either a name or a taxon to be compared");
+        }
 
         int compareStatus = compareStatus(name1, name2);
         if (compareStatus != 0){
@@ -102,9 +117,9 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         //same homotypical group ...
         //one taxon is first in group
-        if (taxonBase1.equals(firstTaxonInGroup)){
+        if (isFirstInGroup(taxonBase1, name1)){
             return -1;
-        }else if (taxonBase2.equals(firstTaxonInGroup)){
+        }else if (taxonBase2 != null && taxonBase2.equals(firstTaxonInGroup)){
             return 1;
         }
 
@@ -135,6 +150,13 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
     }
 
+    private boolean isFirstInGroup(TaxonBase<?> taxonBase, TaxonName name) {
+        if (taxonBase != null){
+            return taxonBase.equals(firstTaxonInGroup);
+        }else{
+            return name.equals(firstNameInGroup);
+        }
+    }
 
     /**
      * Compare 2 names which have the same basionym.
