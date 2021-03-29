@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Identifier;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -1701,6 +1702,12 @@ public class CdmLightClassificationExport
                             break;
                         }
                     }
+                    for (TaxonName relName: name.getRelatedNames(Direction.relatedFrom, NameRelationshipType.MISSPELLING())){
+                        if (typifiedNames.contains(relName)){
+                            isInvalid = true;
+                        }
+                    }
+
                     if (isInvalid){
                         synonymSign = "\u2212 ";
                     }else{
