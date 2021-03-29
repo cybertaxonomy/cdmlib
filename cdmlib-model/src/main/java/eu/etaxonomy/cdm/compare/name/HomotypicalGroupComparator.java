@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 public class HomotypicalGroupComparator implements
 		Comparator<HomotypicalGroup>, Serializable {
+
     private static final long serialVersionUID = -676465815899137107L;
 
     @Override
@@ -44,7 +45,7 @@ public class HomotypicalGroupComparator implements
 		firstTypified1 = taxonBasesOfTypifiedNames.get(0);
 
 		Set<TaxonName> typifiedNames2 = group2.getTypifiedNames();
-		taxonBasesOfTypifiedNames = new ArrayList<TaxonBase>();
+		taxonBasesOfTypifiedNames = new ArrayList<>();
 		for (TaxonName typifiedName:typifiedNames2){
 			if (!typifiedName.getTaxonBases().isEmpty()){
 				taxonBasesOfTypifiedNames.add(typifiedName.getTaxonBases().iterator().next());
@@ -54,5 +55,4 @@ public class HomotypicalGroupComparator implements
 		firstTypified2 = taxonBasesOfTypifiedNames.get(0);
 		return taxComparator.compare(firstTypified1, firstTypified2);
 	}
-
 }

@@ -42,25 +42,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @since 02.03.2016
  */
 public class HomotypicGroupTaxonComparator extends TaxonComparator {
+
     private static final long serialVersionUID = -5088210641256430878L;
 	private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparator.class);
 
     private final TaxonBase<?> firstTaxonInGroup;
     private final TaxonName firstNameInGroup;
-//    private final HomotypicalGroupComparator homotypicGroupComparator;
 
-    /**
-     * @param firstNameInGroup
-     */
     public HomotypicGroupTaxonComparator(@SuppressWarnings("rawtypes") TaxonBase firstTaxonInGroup) {
         super(true);
         this.firstTaxonInGroup = firstTaxonInGroup;
         this.firstNameInGroup = firstTaxonInGroup == null ? null: firstTaxonInGroup.getName();
     }
 
-    /**
-     * @param firstNameInGroup
-     */
     public HomotypicGroupTaxonComparator(@SuppressWarnings("rawtypes") TaxonBase firstTaxonInGroup, boolean includeRanks) {
         super(includeRanks);
         this.firstTaxonInGroup = firstTaxonInGroup;
@@ -81,7 +75,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         TaxonName name1 = taxonBase1.getName();
         TaxonName name2 = taxonBase2.getName();
         if (logger.isDebugEnabled()){logger.debug(name1.getTitleCache() +" : "+ name2.getTitleCache());}
-
 
         int compareStatus = compareStatus(name1, name2);
         if (compareStatus != 0){
