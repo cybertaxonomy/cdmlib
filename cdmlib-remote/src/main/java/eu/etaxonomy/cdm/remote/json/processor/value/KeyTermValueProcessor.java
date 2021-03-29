@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.l10n.KeyTerm_L10n;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.model.term.IEnumTerm;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
@@ -45,6 +46,9 @@ public class KeyTermValueProcessor implements JsonValueProcessor  {
         }
         KeyTerm_L10n<?> keyTerm_L10n = new KeyTerm_L10n<>(term);
         json.element("representation_L10n", keyTerm_L10n.localizedLabel());
+        if(IEnumTerm.class.isAssignableFrom(term.getClass())) {
+            json.element("uuid", ((IEnumTerm)term).getUuid().toString());
+        }
         if(term instanceof TaxonNodeStatus) {
             json.element("symbol", ((TaxonNodeStatus)term).getSymbol());
         }
