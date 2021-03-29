@@ -38,7 +38,7 @@ public enum UTF8 {
 	QUOT_DBL_RIGHT("\u201d"),  //RIGHT DOUBLE QUOTATION MARK Right English quotation mark
     QUOT_DBL_LOW9("\u201e"),  //DOUBLE LOW-9 QUOTATION MARK  Left English quotation mark Low
 	QUOT_DBL_HIGH_REV9("\u201f"),  //DOUBLE HIGH-REVERSED-9 QUOTATION MARK Right English quotation mark -‟-
-	ACUTE_ACCENT("\u00B4"),     //Acute Accent, looks a bit similar to th single quotation mark
+	ACUTE_ACCENT("\u00B4"),     //´ Acute Accent, looks a bit similar to the single quotation mark
 	BLACK_CIRCLE("\u25CF"),       //Black circle, symbol for endemic
 	DEGREE_SIGN("\u00B0"),      //°
 	NARROW_NO_BREAK("\u202F")

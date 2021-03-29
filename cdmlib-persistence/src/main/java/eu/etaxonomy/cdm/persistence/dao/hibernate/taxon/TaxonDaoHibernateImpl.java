@@ -328,8 +328,6 @@ public class TaxonDaoHibernateImpl
      * @param pageNumber
      * @param doCount
      * @return
-     *
-     *
      */
     private Query prepareTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,
             boolean includeUnpublished, String searchField, String queryString, Classification classification, TaxonNode subtree,

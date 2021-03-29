@@ -2853,7 +2853,8 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Adansonia", ref.getInReference().getAbbrevTitle());
 
         //, Bot., sér. 4 #9014, #9551
-        nameStr = "Asteropeia amblyocarpa Tul. in Ann. Sci. Nat., Bot., sér. 4, 8: 81. 1857";
+        String ser = "s"+UTF8.SMALL_E_ACUTE+"r";
+        nameStr = "Asteropeia amblyocarpa Tul. in Ann. Sci. Nat., Bot., "+ser+". 4, 8: 81. 1857";
         name = parser.parseReferencedName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         ref = name.getNomenclaturalReference();
@@ -2861,7 +2862,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
         Assert.assertEquals("Ann. Sci. Nat., Bot.", ref.getInReference().getAbbrevTitle());
-        Assert.assertEquals("sér. 4", ref.getSeriesPart());
+        Assert.assertEquals(ser+". 4", ref.getSeriesPart());
     }
 
     @Test

@@ -842,7 +842,6 @@ public interface ITaxonService
      * @param synonym
      * @param removeNameIfPossible
      * @return deleteResult
-     *
      */
     public DeleteResult deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
@@ -858,10 +857,6 @@ public interface ITaxonService
      */
     public DeleteResult deleteSynonym(UUID synonymUuid, SynonymDeletionConfigurator config);
 
-    /**
-     * @param tnb
-     * @return
-     */
     public Taxon findBestMatchingTaxon(String taxonName);
 
     public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config);
@@ -891,7 +886,6 @@ public interface ITaxonService
             List<String> propertyPaths) throws UnpublishedException;
 
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
-
 
     /**
      * @param clazz the optional {@link TaxonBase} subclass
