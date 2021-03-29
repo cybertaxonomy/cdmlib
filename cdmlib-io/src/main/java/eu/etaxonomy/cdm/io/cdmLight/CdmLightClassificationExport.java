@@ -1626,15 +1626,17 @@ public class CdmLightClassificationExport
 
                         if (nameStatus.getRuleConsidered() != null
                                 && !StringUtils.isBlank(nameStatus.getRuleConsidered())) {
-                            statusString += " " + nameStatus.getRuleConsidered();
+                            statusString += ": " + nameStatus.getRuleConsidered();
                         }
                         if (nameStatus.getCitation() != null) {
-                            statusString += " " + nameStatus.getCitation().getTitleCache();
+                            String shortCitation = ((DefaultReferenceCacheStrategy) nameStatus.getCitation().getCacheStrategy())
+                                    .createShortCitation(nameStatus.getCitation(), null, false);
+                            statusString += " (" + shortCitation + ")";
                         }
-                        if (nameStatus.getCitationMicroReference() != null
-                                && !StringUtils.isBlank(nameStatus.getCitationMicroReference())) {
-                            statusString += " " + nameStatus.getCitationMicroReference();
-                        }
+//                        if (nameStatus.getCitationMicroReference() != null
+//                                && !StringUtils.isBlank(nameStatus.getCitationMicroReference())) {
+//                            statusString += " " + nameStatus.getCitationMicroReference();
+//                        }
                     }
                     statusString += " ";
                 }
