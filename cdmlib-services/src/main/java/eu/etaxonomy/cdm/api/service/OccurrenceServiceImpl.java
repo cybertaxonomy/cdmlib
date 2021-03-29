@@ -893,16 +893,12 @@ public class OccurrenceServiceImpl
 
                     if (originalDTO instanceof FieldUnitDTO){
                         fieldUnitDTO = (FieldUnitDTO)originalDTO;
-                        if(derivedUnitDTO != null){
-                            fieldUnitDTO.addDerivative(derivedUnitDTO);
-                        }
                         break;
                     }else{
                         // So this must be a DerivedUnitDTO
                         if (derivedUnitDTO == null){
                             derivedUnitDTO = (DerivedUnitDTO)originalDTO;
                         } else {
-                            originalDTO.addDerivative(derivedUnitDTO);
                             derivedUnitDTO = (DerivedUnitDTO)originalDTO;
                         }
                     }
