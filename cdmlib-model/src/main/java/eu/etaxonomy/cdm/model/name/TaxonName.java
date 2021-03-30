@@ -3458,17 +3458,23 @@ public class TaxonName
 
         // Compare name cache of taxon names
         if (CdmUtils.isNotBlank(otherNameCache) && CdmUtils.isNotBlank(thisNameCache)) {
-            thisNameCache = normalizeName(thisNameCache);
-            otherNameCache = normalizeName(otherNameCache);
-            result = thisNameCache.compareTo(otherNameCache);
+            String thisNormalized = normalizeName(thisNameCache);
+            String otherNormalized = normalizeName(otherNameCache);
+            result = thisNormalized.compareTo(otherNormalized);
         }
 
         // Compare title cache of taxon names
         if (result == 0){
             if ( (CdmUtils.isNotBlank(otherTitleCache) || CdmUtils.isNotBlank(thisTitleCache))) {
-                thisTitleCache = normalizeName(thisTitleCache);
-                otherTitleCache = normalizeName(otherTitleCache);
-                result = CdmUtils.nullSafeCompareTo(thisTitleCache, otherTitleCache);
+                String thisNormalized = normalizeName(thisTitleCache);
+                String otherNormalized = normalizeName(otherTitleCache);
+                result = CdmUtils.nullSafeCompareTo(thisNormalized, otherNormalized);
+                if (result == 0){
+                    result = CdmUtils.nullSafeCompareTo(thisTitleCache, otherTitleCache);
+                }
+                if (result == 0){
+                    result =  CdmUtils.nullSafeCompareTo(thisNameCache, otherNameCache);
+                }
             }
         }
 

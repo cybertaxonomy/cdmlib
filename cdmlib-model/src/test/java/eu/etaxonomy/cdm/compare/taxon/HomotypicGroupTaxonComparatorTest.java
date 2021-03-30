@@ -9,11 +9,13 @@
 package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections4.comparators.ReverseComparator;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
@@ -451,5 +453,31 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         Assert.assertEquals("Invalid designation should come after valid name", botName5, list.get(0).getName());
         Assert.assertEquals("Invalid designation should come after valid name", botName2, list.get(1).getName());
 
+    }
+
+    @Test
+    public void testCompare_hybrids() {
+
+        String name2 = "Opuntia ×rubiflora Davidson";
+        String name3 = "Opuntia rubiflora Davidson";
+        List<String> strList = Arrays.asList(new String[]{name2, name3});
+        Collections.sort(strList);
+        Assert.assertEquals("Non hybrid name should come first in alphabetical order", name3, strList.get(0));
+
+        botName2 = TaxonNameFactory.PARSED_BOTANICAL(name2);
+        botName3 = TaxonNameFactory.PARSED_BOTANICAL(name3);
+        taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName3, null, null, botName2.getHomotypicalGroup());
+        list.addAll(taxon1.getSynonyms());
+        HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(null);
+        Collections.sort(list, comparator);
+
+        Assert.assertEquals("Hybrid should come after non-hybrid", botName3, list.get(0).getName());
+        Assert.assertEquals("Hybrid should come after non-hybrid", botName2, list.get(1).getName());
+
+        ReverseComparator<TaxonBase<?>> reverseComparator = new ReverseComparator<>(comparator);
+        Collections.sort(list, reverseComparator);
+        Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName2, list.get(0).getName());
+        Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName3, list.get(1).getName());
     }
 }
