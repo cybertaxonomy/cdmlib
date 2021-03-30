@@ -129,6 +129,20 @@ public class TaxonShortSecCacheStrategyTest {
         Assert.assertEquals("abc", taxonBase.getTitleCache());
 	}
 
+    @Test
+    public void testShortSpecific(){
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
+        taxonBase.setCacheStrategy(shortStrategy);
+        String secMicroRef = "p. 553";
+        sec.setDatePublished(TimePeriodParser.parseStringVerbatim("2 Jan 1982"));
+        Person person1 = Person.NewInstance(null, "Miller", "A.", "Alex");
+        Team team = Team.NewInstance(person1);
+        sec.setAuthorship(team);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Miller (1982): " + secMicroRef,  //not sure if we really want the initials here
+                taxonBase.getTitleCache());
+    }
+
 	@Test
     public void testWebPageSec(){
 	    Reference sec = ReferenceFactory.newWebPage();
