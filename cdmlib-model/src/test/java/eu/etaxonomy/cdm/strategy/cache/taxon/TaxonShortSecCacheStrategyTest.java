@@ -117,7 +117,7 @@ public class TaxonShortSecCacheStrategyTest {
         taxonBase.setCacheStrategy(shortStrategy);
         String secMicroRef = "p. 553";
         taxonBase.setSecMicroReference(secMicroRef);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.",  //in future (and in other cache strategy) we (may) have micro reference being part of the result
                 taxonBase.getTitleCache());
     }
 
@@ -139,7 +139,7 @@ public class TaxonShortSecCacheStrategyTest {
         Person person1 = Person.NewInstance(null, "Miller", "A.", "Alex");
         Team team = Team.NewInstance(person1);
         sec.setAuthorship(team);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Miller (1982): " + secMicroRef,  //not sure if we really want the initials here
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Miller (1982)",  //not sure if we really want the initials here, also in future (and in other cache strategy) we (may) have the micro reference being part of the formatted string
                 taxonBase.getTitleCache());
     }
 
