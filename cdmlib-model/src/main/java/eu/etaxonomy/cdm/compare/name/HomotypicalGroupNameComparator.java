@@ -15,24 +15,12 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * This class orders synonyms of a homotypic group,
- * first by
- * <ul>
- *  <li>Basionym groups (the basionym and all names derived from this basionym)
- *      should be kept together in a subgroup</li>
- *  <li>The order of the subgroups is defined by the ordering of their
- *       basionyms (according to the following ordering)</li>
- *  <li>If a name is illegitimate or not does play a role for ordering</li>
- *  <li>Names with publication year should always come first</li>
- *  <li>Names with no publication year are sorted by rank</li>
- *  <li>Names with no publication year and equal rank are sorted alphabetically</li>
- *  <li>If 2 names have a replaced synonym relationship the replaced synonym comes first,
- *      the replacement name comes later as this reflects the order of publication</li>
- *  </ul>
- *
- * Details on ordering are explained at https://dev.e-taxonomy.eu/redmine/issues/3338<BR>
+ * This class orders names of a homotypic group according to the rules defined for
+ * {@link HomotypicGroupTaxonComparator the similar taxon comparator} but not
+ * including information attached to {@link TaxonBase taxa} only.
  *
  * @author k.luther
  * @since 20.03.2017
