@@ -77,6 +77,13 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
             @SuppressWarnings("rawtypes") TaxonBase taxonBase2) {
         int result;
 
+        if (taxonBase1 == null && taxonBase2 == null){
+            return 0;
+        }else if (taxonBase1 == null){
+            return -1;
+        }else if (taxonBase2 == null){
+            return 1;
+        }
         if (taxonBase1.equals(taxonBase2)){
         	return 0;
         }
