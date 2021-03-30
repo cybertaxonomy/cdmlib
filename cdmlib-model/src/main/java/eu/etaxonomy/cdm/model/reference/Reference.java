@@ -835,7 +835,6 @@ public class Reference
 	 * of <i>this</i> reference. If the {@link #getDatePublished() datePublished}
 	 * of this reference contains more date information then (starting) year
 	 * only the year is returned.
-	 * than  attribute.
 	 */
 	@Override
     @Transient

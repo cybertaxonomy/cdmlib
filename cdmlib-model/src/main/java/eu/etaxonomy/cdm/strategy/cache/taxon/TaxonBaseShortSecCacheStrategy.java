@@ -58,15 +58,9 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		return title;
 	}
 
-	/**
-	 * @param taxonBase
-	 * @param title
-	 * @return
-	 */
 	private String getSecundumPart(T taxonBase) {
 		String result = "???";
-		Reference sec = taxonBase.getSec();
-		sec = HibernateProxyHelper.deproxy(sec, Reference.class);
+		Reference sec = HibernateProxyHelper.deproxy(taxonBase.getSec());
 		if (sec != null){
 			if (sec.isProtectedTitleCache()){
 				return sec.getTitleCache();
@@ -120,7 +114,7 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 					result = result.concat(" (" + sec.getYear()+")");
 				}
 			}else{
-				result = taxonBase.getSec().getTitleCache();
+			    result = sec.getTitleCache();
 			}
 		}
 		return result;

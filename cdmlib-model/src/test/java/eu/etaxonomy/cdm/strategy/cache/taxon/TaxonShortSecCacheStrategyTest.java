@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,13 +27,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
  * @since 09.09.2015
+ *
  * NOTE: This test is currently more or less a copy of {@link TaxonBaseDefaultCacheStrategyTest}
  * It does NOT yet test the specifics of the class under test.
- *
  */
 public class TaxonShortSecCacheStrategyTest {
 	@SuppressWarnings("unused")
@@ -46,17 +46,11 @@ public class TaxonShortSecCacheStrategyTest {
 	private Reference sec;
 	private static ITaxonCacheStrategy<?> shortStrategy;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	    shortStrategy = new TaxonBaseShortSecCacheStrategy<>();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -75,18 +69,12 @@ public class TaxonShortSecCacheStrategyTest {
 		sec.setTitle("Sp.Pl.");
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 //******************************* TESTS ********************************************************
 
 	@Test
 	public void testGetTitleCache() {
-		TaxonBase taxonBase = Taxon.NewInstance(name, sec);
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
 		taxonBase.setCacheStrategy(shortStrategy);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxonBase.getTitleCache());
 		String appendedPhrase = "aff. 'schippii'";
@@ -98,7 +86,8 @@ public class TaxonShortSecCacheStrategyTest {
 
    @Test
     public void testGetTitleCacheWithoutName() {
-        TaxonBase taxonBase = Taxon.NewInstance(null, sec);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(null, sec);
         taxonBase.setCacheStrategy(shortStrategy);
         assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxonBase.getTitleCache());
    }
@@ -121,8 +110,10 @@ public class TaxonShortSecCacheStrategyTest {
 	}
 
     @Test
-    public void testMicroReference(){
-        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+    public void testMicroReferenceAndDate(){
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
+        taxonBase.setCacheStrategy(shortStrategy);
         String secMicroRef = "p. 553";
         taxonBase.setSecMicroReference(secMicroRef);
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,

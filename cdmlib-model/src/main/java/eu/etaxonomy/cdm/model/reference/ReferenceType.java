@@ -267,6 +267,4 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
         return this == BookSection;
     }
     //TBC
-
-
 }
