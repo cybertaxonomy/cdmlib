@@ -158,7 +158,6 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-
     private boolean titleExists(Reference ref) {
         return isNotBlank(ref.getAbbrevTitle()) || isNotBlank(ref.getTitle());
     }
