@@ -272,13 +272,6 @@ public class TypeDesignationSetFormatter {
 
         if (td.getTypeName() != null){
             workingsetBuilder.addAll(td.getTypeName().getCacheStrategy().getTaggedTitle(td.getTypeName()));
-//            TypedEntityReference<TaxonName> nameEntity = TypedEntityReference.fromEntity(td.getTypeName(), false);
-//            if (td.getTypeName().isProtectedTitleCache()){
-//                workingsetBuilder.add(TagEnum.name, td.getTypeName().getTitleCache(), nameEntity);
-//            }else{
-//                workingsetBuilder.add(TagEnum.name, td.getTypeName().getNameCache(), nameEntity);
-//                workingsetBuilder.add(TagEnum.authors, td.getTypeName().getAuthorshipCache());
-//            }
         }
 
         String flags = null;
