@@ -188,15 +188,17 @@ public class TypeDesignationSetFormatterTest extends TermTestBase{
         Assert.assertEquals("first entry should be the typified name",
                 new TaggedText(TagEnum.name, "Prionus L.",TypedEntityReference.fromEntity(typifiedName, false)), taggedText.get(0));
         Assert.assertEquals("fourth entry should be the name type nameCache",
-                new TaggedText(TagEnum.name, "Prionus coriatius",TypedEntityReference.fromEntity(ntd.getTypeName(), false)), taggedText.get(3));
+                new TaggedText(TagEnum.name, "Prionus"), taggedText.get(3));  //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
+        Assert.assertEquals("fourth entry should be the name type nameCache",
+                new TaggedText(TagEnum.name, "coriatius"), taggedText.get(4)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("fifth entry should be the name type authorship cache",
-                new TaggedText(TagEnum.authors, "L."), taggedText.get(4));
+                new TaggedText(TagEnum.authors, "L."), taggedText.get(5));
 
         //protected titleCache
         ntd.getTypeName().setTitleCache("Prionus coriatius L.", true);
         taggedText = formatter.toTaggedText(manager);
         Assert.assertEquals("fourth entry should be the name type titleCache",
-                new TaggedText(TagEnum.name, "Prionus coriatius L.",TypedEntityReference.fromEntity(ntd.getTypeName(), false)), taggedText.get(3));
+                new TaggedText(TagEnum.name, "Prionus coriatius L."), taggedText.get(3)); //maybe in future the entityReference should be TypedEntityReference.fromEntity(ntd.getTypeName(), false)
         Assert.assertEquals("there should be 4 tags only", 4, taggedText.size());
     }
 }

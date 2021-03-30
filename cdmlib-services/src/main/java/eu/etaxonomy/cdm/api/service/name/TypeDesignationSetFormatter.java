@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -272,13 +271,14 @@ public class TypeDesignationSetFormatter {
             TypedEntityReference<?> typeDesignationEntity) {
 
         if (td.getTypeName() != null){
-            TypedEntityReference<TaxonName> nameEntity = TypedEntityReference.fromEntity(td.getTypeName(), false);
-            if (td.getTypeName().isProtectedTitleCache()){
-                workingsetBuilder.add(TagEnum.name, td.getTypeName().getTitleCache(), nameEntity);
-            }else{
-                workingsetBuilder.add(TagEnum.name, td.getTypeName().getNameCache(), nameEntity);
-                workingsetBuilder.add(TagEnum.authors, td.getTypeName().getAuthorshipCache());
-            }
+            workingsetBuilder.addAll(td.getTypeName().getCacheStrategy().getTaggedTitle(td.getTypeName()));
+//            TypedEntityReference<TaxonName> nameEntity = TypedEntityReference.fromEntity(td.getTypeName(), false);
+//            if (td.getTypeName().isProtectedTitleCache()){
+//                workingsetBuilder.add(TagEnum.name, td.getTypeName().getTitleCache(), nameEntity);
+//            }else{
+//                workingsetBuilder.add(TagEnum.name, td.getTypeName().getNameCache(), nameEntity);
+//                workingsetBuilder.add(TagEnum.authors, td.getTypeName().getAuthorshipCache());
+//            }
         }
 
         String flags = null;
