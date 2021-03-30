@@ -1109,6 +1109,75 @@ public class Reference
         setInReference((Reference)proceeding);  //user setter to invoke aspect #1815
 	}
 
+//**************************** Type *****************************************/
+
+    public boolean isArticle() {
+        return this.getType().isArticle();
+    }
+    public boolean isBook() {
+        return this.getType().isBook();
+    }
+    public boolean isBookSection() {
+        return this.getType().isBookSection();
+    }
+    public boolean isWebPage() {
+        return this.getType().isWebPage();
+    }
+    public boolean isDatabase() {
+        return this.getType().isDatabase();
+    }
+    public boolean isMap() {
+        return this.getType().isMap();
+    }
+    public boolean isPatent() {
+        return this.getType().isPatent();
+    }
+    public boolean isGeneric() {
+        return this.getType().isGeneric();
+    }
+    public boolean isCdDvd() {
+        return this.getType().isCdDvd();
+    }
+    public boolean isProceedings() {
+        return this.getType().isProceedings();
+    }
+    public boolean isInProceedings() {
+        return this.getType().isInProceedings();
+    }
+    public boolean isJournal() {
+        return this.getType().isJournal();
+    }
+    public boolean isPersonalCommunication() {
+        return this.getType().isPersonalCommunication();
+    }
+    public boolean isThesis() {
+        return this.getType().isThesis();
+    }
+    public boolean isPrintSeries() {
+        return this.getType().isPrintSeries();
+    }
+    /**
+     * @return <code>true</code> if this type is exactly {@link ReferenceType#Section}
+     * @see ReferenceType#isSection()
+     */
+    public boolean isSectionOnly() {
+        return this.getType().isSectionOnly();
+    }
+    /**
+     * Returns <code>true</code> if this reference is part of another reference
+     * (inheriting from {@link ISection}) and therefore may have an in-reference and pages.
+     * @see ReferenceType#isSection()
+     */
+    public boolean isSection() {
+        return this.getType().isSection();
+    }
+    /**
+     * @see ReferenceType#isPrintedUnit()
+     */
+    public boolean isPrintedUnit() {
+        return this.getType().isPrintedUnit();
+    }
+
 //*************************** CACHE STRATEGIES ******************************/
 
     @Override

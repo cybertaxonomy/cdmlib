@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 //import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -205,5 +206,14 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         sec.setAbbrevTitle("MLW");
         taxonBase.setSecMicroReference("table 1");
         Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983: table 1", taxonBase.getTitleCache());
+
+        sec.setType(ReferenceType.Database);
+        taxonBase.setSecMicroReference(null);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983", taxonBase.getTitleCache());
+
+        sec.setType(ReferenceType.Map);
+        taxonBase.setTitleCache(null, false);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983", taxonBase.getTitleCache());
+
     }
 }

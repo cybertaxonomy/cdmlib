@@ -135,7 +135,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     isNotBlank(sec.getAuthorship().getTitleCache()) &&
                     isNotBlank(sec.getYear())){
                 secRef = sec.getCacheStrategy().getCitation(sec, null);  //microRef is handled later
-            }else if (sec.getType().isWebPage() && titleExists(sec)){
+            }else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
+                    && titleExists(sec)){
                 secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
                 String secDate = sec.getYear();
                 if (isBlank(secDate) && sec.getAccessed() != null){

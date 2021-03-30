@@ -269,5 +269,44 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
     public boolean isWebPage() {
         return this == WebPage;
     }
-    //TBC
+    public boolean isDatabase() {
+        return this == Database;
+    }
+    public boolean isMap() {
+        return this == Map;
+    }
+    public boolean isPatent() {
+        return this == Patent;
+    }
+    public boolean isGeneric() {
+        return this == Generic;
+    }
+    public boolean isCdDvd() {
+        return this == CdDvd;
+    }
+    public boolean isProceedings() {
+        return this == Proceedings;
+    }
+    public boolean isInProceedings() {
+        return this == InProceedings;
+    }
+    public boolean isJournal() {
+        return this == Journal;
+    }
+    public boolean isPersonalCommunication() {
+        return this == PersonalCommunication;
+    }
+    public boolean isThesis() {
+        return this == Thesis;
+    }
+    public boolean isPrintSeries() {
+        return this == PrintSeries;
+    }
+    /**
+     * @return <code>true</code> if this type is exactly {@link ReferenceType#Section}
+     * @see ReferenceType#isSection()
+     */
+    public boolean isSectionOnly() {
+        return this == Section;
+    }
 }

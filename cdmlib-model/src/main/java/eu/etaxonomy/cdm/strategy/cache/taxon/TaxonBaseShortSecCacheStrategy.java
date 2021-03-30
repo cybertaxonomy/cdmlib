@@ -113,10 +113,15 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 				if (sec.getYear() != null && result != null){
 					result = result.concat(" (" + sec.getYear()+")");
 				}
-			}else if (sec.getType().isWebPage()){
+			}else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
+                    && titleExists(sec)){
 				result = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
-				if (sec.getYear() != null && result != null){
-                    result = result.concat(" (" + sec.getYear()+")");
+				String secDate = sec.getYear();
+                if (isBlank(secDate) && sec.getAccessed() != null){
+                    secDate = String.valueOf(sec.getAccessed().getYear());
+                }
+				if (isNotBlank(secDate)){
+                    result = result.concat(" (" + secDate+")");
                 }
 			}else{
 			    result = sec.getTitleCache();
@@ -125,9 +130,10 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		return result;
 	}
 
-	/**
-	 * @param name
-	 */
+    private boolean titleExists(Reference ref) {
+        return isNotBlank(ref.getAbbrevTitle()) || isNotBlank(ref.getTitle());
+    }
+
 	private String getNamePart(TaxonBase<?> taxonBase) {
 		TaxonName taxonName = taxonBase.getName();
 		String result = taxonName.getTitleCache();
