@@ -3472,10 +3472,10 @@ public class TaxonName
                 if (result == 0){
                     result = CdmUtils.nullSafeCompareTo(thisTitleCache, otherTitleCache);
                 }
-                if (result == 0){
-                    result =  CdmUtils.nullSafeCompareTo(thisNameCache, otherNameCache);
-                }
             }
+        }
+        if (result == 0){
+            result =  CdmUtils.nullSafeCompareTo(thisNameCache, otherNameCache);
         }
 
         return result;
