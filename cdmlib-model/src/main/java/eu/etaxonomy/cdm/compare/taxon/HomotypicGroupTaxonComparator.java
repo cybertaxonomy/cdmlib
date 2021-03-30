@@ -177,9 +177,9 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }else if (basionym.equals(name2)){
             return 1;
         }else{
-            super.compare(name1, name2, false);
+            return super.compare(name1, name2, false);
         }
-        return 0;
+
     }
 
     private int compareBasionyms(TaxonName basionym1Orig, TaxonName basionym2Orig) {
