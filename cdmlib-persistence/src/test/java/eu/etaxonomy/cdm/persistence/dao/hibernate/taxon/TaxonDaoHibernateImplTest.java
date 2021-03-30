@@ -1291,7 +1291,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         String titleCache = taxonDao.getTitleCache(uuid, false);
         Assert.assertEquals("Acherontia styx Westwood, 1847 sec. cate-sphingidae.org", titleCache);
         titleCache = taxonDao.getTitleCache(uuid, true);
-        Assert.assertEquals("Acherontia styxx Westwood, 1847 sec. cate-sphingidae.org", titleCache);
+        Assert.assertEquals("Acherontia styxx Westwood, 1847 sec. Sphingidae", titleCache);
    }
 
 
