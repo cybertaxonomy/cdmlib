@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -134,6 +135,13 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     isNotBlank(ref.getAuthorship().getTitleCache()) &&
                     isNotBlank(ref.getYear())){
                 secRef = ref.getCacheStrategy().getCitation(ref, null);  //microRef is handled later
+            }else if (ref.getType().isWebPage() && titleExists(ref)){
+                secRef = isNotBlank(ref.getAbbrevTitle())? ref.getAbbrevTitle() : ref.getTitle();
+                String secDate = ref.getYear();
+                if (isBlank(secDate) && ref.getAccessed() != null){
+                    secDate = String.valueOf(ref.getAccessed().getYear());
+                }
+                secRef = CdmUtils.concat(" ", secRef, secDate);
             }else{
                 secRef = ref.getTitleCache();
             }
@@ -149,6 +157,10 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
+
+    private boolean titleExists(Reference ref) {
+        return isNotBlank(ref.getAbbrevTitle()) || isNotBlank(ref.getTitle());
+    }
 
     @Override
     public String getTitleCache(T taxonBase, HTMLTagRules htmlTagRules) {

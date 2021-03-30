@@ -266,5 +266,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
     public boolean isBookSection() {
         return this == BookSection;
     }
+    public boolean isWebPage() {
+        return this == WebPage;
+    }
     //TBC
 }

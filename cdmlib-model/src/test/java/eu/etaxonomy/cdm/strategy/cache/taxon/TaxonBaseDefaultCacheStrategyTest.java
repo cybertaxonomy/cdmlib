@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -176,6 +178,32 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         taxonBase.setTitleCache(null);
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Team, 1798: p. 553",
                 taxonBase.getTitleCache());
+    }
 
+    @Test
+    public void testWebPageSec(){
+        Reference sec = ReferenceFactory.newWebPage();
+        sec.setTitle("My long webpage");
+        sec.setAbbrevTitle("MLW");
+        sec.setUri(URI.create("https://abc.de"));
+        sec.setDatePublished(TimePeriodParser.parseStringVerbatim("2 Jan 1982"));
+        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1982", taxonBase.getTitleCache());
+
+        sec.setDatePublished(null);
+        taxonBase.setTitleCache(null, false);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW", taxonBase.getTitleCache());
+
+        sec.setAccessed(DateTime.parse("1983-06-30"));
+        taxonBase.setTitleCache(null, false);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983", taxonBase.getTitleCache());
+
+        sec.setAbbrevTitle(null);
+        taxonBase.setTitleCache(null, false);
+        Assert.assertEquals("Abies alba (L.) Mill. sec. My long webpage 1983", taxonBase.getTitleCache());
+
+        sec.setAbbrevTitle("MLW");
+        taxonBase.setSecMicroReference("table 1");
+        Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983: table 1", taxonBase.getTitleCache());
     }
 }

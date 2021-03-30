@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -126,5 +127,18 @@ public class TaxonShortSecCacheStrategyTest {
         taxonBase.setTitleCache("abc", true);
         taxonBase.setDoubtful(true);
         Assert.assertEquals("abc", taxonBase.getTitleCache());
+	}
+
+	@Test
+    public void testWebPageSec(){
+	    Reference sec = ReferenceFactory.newWebPage();
+	    sec.setTitle("My long webpage");
+	    sec.setAbbrevTitle("MLW");
+	    sec.setUri(URI.create("https://abc.de"));
+	    sec.setDatePublished(TimePeriodParser.parseStringVerbatim("2 Jan 1982"));
+	    @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
+	    taxonBase.setCacheStrategy(shortStrategy);
+	    Assert.assertEquals("Abies alba (L.) Mill. sec. MLW (1982)", taxonBase.getTitleCache());  //not sure if we keept brackets
 	}
 }

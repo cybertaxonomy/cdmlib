@@ -113,6 +113,11 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 				if (sec.getYear() != null && result != null){
 					result = result.concat(" (" + sec.getYear()+")");
 				}
+			}else if (sec.getType().isWebPage()){
+				result = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
+				if (sec.getYear() != null && result != null){
+                    result = result.concat(" (" + sec.getYear()+")");
+                }
 			}else{
 			    result = sec.getTitleCache();
 			}
