@@ -116,10 +116,10 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     private List<TaggedText> getSecundumTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<>();
 
-        Reference ref = taxonBase.getSec();
-        ref = HibernateProxyHelper.deproxy(ref);
+        Reference sec = taxonBase.getSec();
+        sec = HibernateProxyHelper.deproxy(sec);
         String secRef;
-        if (ref == null){
+        if (sec == null){
             //missing sec
             if (isBlank(taxonBase.getAppendedPhrase())){
                 secRef = "???";
@@ -129,21 +129,21 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
         else{
             //existing sec
-            if (ref.isProtectedTitleCache() == false &&
-                    ref.getCacheStrategy() != null &&
-                    ref.getAuthorship() != null &&
-                    isNotBlank(ref.getAuthorship().getTitleCache()) &&
-                    isNotBlank(ref.getYear())){
-                secRef = ref.getCacheStrategy().getCitation(ref, null);  //microRef is handled later
-            }else if (ref.getType().isWebPage() && titleExists(ref)){
-                secRef = isNotBlank(ref.getAbbrevTitle())? ref.getAbbrevTitle() : ref.getTitle();
-                String secDate = ref.getYear();
-                if (isBlank(secDate) && ref.getAccessed() != null){
-                    secDate = String.valueOf(ref.getAccessed().getYear());
+            if (sec.isProtectedTitleCache() == false &&
+                    sec.getCacheStrategy() != null &&
+                    sec.getAuthorship() != null &&
+                    isNotBlank(sec.getAuthorship().getTitleCache()) &&
+                    isNotBlank(sec.getYear())){
+                secRef = sec.getCacheStrategy().getCitation(sec, null);  //microRef is handled later
+            }else if (sec.getType().isWebPage() && titleExists(sec)){
+                secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
+                String secDate = sec.getYear();
+                if (isBlank(secDate) && sec.getAccessed() != null){
+                    secDate = String.valueOf(sec.getAccessed().getYear());
                 }
                 secRef = CdmUtils.concat(" ", secRef, secDate);
             }else{
-                secRef = ref.getTitleCache();
+                secRef = sec.getTitleCache();
             }
         }
         if (secRef != null){
