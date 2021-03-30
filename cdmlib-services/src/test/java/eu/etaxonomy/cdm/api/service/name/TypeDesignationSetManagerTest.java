@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.api.service.name;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -20,8 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
-import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -53,7 +51,7 @@ import eu.etaxonomy.cdm.test.TermTestBase;
  * @author a.kohlbecker, k.luther
  * @since 03.09.2018
  */
-public class TypeDesignationSetManagerTest  extends TermTestBase{
+public class TypeDesignationSetManagerTest extends TermTestBase{
 
         private NameTypeDesignation ntd;
         private NameTypeDesignation ntd_LT;

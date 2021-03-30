@@ -147,9 +147,10 @@ public class TypeDesignationSetFormatter {
     }
 
 
-    private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetManager manager, TaggedTextBuilder workingsetBuilder,
-            TypeDesignationWorkingSet typeDesignationWorkingSet, int typeStatusCount,
-            TypeDesignationStatusBase<?> typeStatus, int typeSetCount) {
+    private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetManager manager,
+            TaggedTextBuilder workingsetBuilder, TypeDesignationWorkingSet typeDesignationWorkingSet,
+            int typeStatusCount, TypeDesignationStatusBase<?> typeStatus, int typeSetCount) {
+
         //starting separator
         if(typeStatusCount++ > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_SEPARATOR);
@@ -173,17 +174,13 @@ public class TypeDesignationSetFormatter {
             TypeDesignationBase<?> typeDes = manager.findTypeDesignation(typeDesignationDTO.getUuid());
 
             typeDesignationCount = buildTaggedTextForSingleType(typeDes, withCitation,
-                    workingsetBuilder, typeDesignationCount
-//                    , typeDesignationEntityReference
-                    );
+                    workingsetBuilder, typeDesignationCount);
         }
         return typeStatusCount;
     }
 
     protected static int buildTaggedTextForSingleType(TypeDesignationBase<?> typeDes, boolean withCitation,
-            TaggedTextBuilder workingsetBuilder, int typeDesignationCount
-//            , TypedEntityReference<?> typeDesignationEntityReference
-            ) {
+            TaggedTextBuilder workingsetBuilder, int typeDesignationCount) {
 
         if(typeDesignationCount++ > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
