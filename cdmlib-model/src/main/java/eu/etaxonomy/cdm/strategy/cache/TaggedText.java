@@ -97,6 +97,43 @@ public class TaggedText implements Serializable{
         return new TreeSet<>();
     }
 
+// **************************** EQUALS ***********************************/
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        TaggedText other = (TaggedText) obj;
+        if (!CdmUtils.nullSafeEqual(entityReference, other.entityReference)) {
+                return false;
+        }
+        if (!CdmUtils.nullSafeEqual(text, other.text)) {
+            return false;
+        }
+        if (!CdmUtils.nullSafeEqual(type, other.type)) {
+            return false;
+        }
+        return true;
+    }
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((entityReference == null) ? 0 : entityReference.hashCode());
+        result = prime * result + ((text == null) ? 0 : text.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
 // **************************** TO STRING ***********************************/
 
 	@Override

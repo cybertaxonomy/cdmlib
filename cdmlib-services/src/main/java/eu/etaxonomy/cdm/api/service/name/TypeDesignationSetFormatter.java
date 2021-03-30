@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TextualTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
@@ -186,8 +188,7 @@ public class TypeDesignationSetFormatter {
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
         }
 
-        workingsetBuilder.add(TagEnum.typeDesignation, stringify(typeDes), TypedEntityReference.fromEntity(typeDes, false));
-//        workingsetBuilder.add(TagEnum.typeDesignation, typeDesignationEntityReference.getLabel(), typeDesignationEntityReference);
+        buildTaggedTextForTypeDesignationBase(typeDes, workingsetBuilder);
 
         if (withCitation){
 
@@ -253,49 +254,62 @@ public class TypeDesignationSetFormatter {
         return singleSet.getTypeDesignations().size() > 1;
     }
 
-    private static String stringify(TypeDesignationBase<?> td) {
-
+    private static void buildTaggedTextForTypeDesignationBase(TypeDesignationBase<?> td,
+            TaggedTextBuilder workingsetBuilder) {
+        TypedEntityReference<?> typeDesignationEntity = TypedEntityReference.fromEntity(td, false);
         if(td instanceof NameTypeDesignation){
-            return stringify((NameTypeDesignation)td);
+            buildTaggedTextForNameTypeDesignation((NameTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
         } else if (td instanceof TextualTypeDesignation){
-            return stringify((TextualTypeDesignation)td);
+            buildTaggedTextForTextualTypeDesignation((TextualTypeDesignation)td, workingsetBuilder, typeDesignationEntity);
         } else if (td instanceof SpecimenTypeDesignation){
-            return stringify((SpecimenTypeDesignation)td, false);
+            buildTaggedTextForSpecimenTypeDesignation((SpecimenTypeDesignation)td, false, workingsetBuilder, typeDesignationEntity);
         }else{
             throw new RuntimeException("Unknown TypeDesignation type");
         }
     }
 
-    private static String stringify(NameTypeDesignation td) {
+    private static void buildTaggedTextForNameTypeDesignation(NameTypeDesignation td, TaggedTextBuilder workingsetBuilder,
+            TypedEntityReference<?> typeDesignationEntity) {
 
-        StringBuffer sb = new StringBuffer();
-
-        if(td.getTypeName() != null){
-            sb.append(td.getTypeName().getTitleCache());
+        if (td.getTypeName() != null){
+            TypedEntityReference<TaxonName> nameEntity = TypedEntityReference.fromEntity(td.getTypeName(), false);
+            if (td.getTypeName().isProtectedTitleCache()){
+                workingsetBuilder.add(TagEnum.name, td.getTypeName().getTitleCache(), nameEntity);
+            }else{
+                workingsetBuilder.add(TagEnum.name, td.getTypeName().getNameCache(), nameEntity);
+                workingsetBuilder.add(TagEnum.authors, td.getTypeName().getAuthorshipCache());
+            }
         }
+
+        String flags = null;
         if(td.isNotDesignated()){
-            sb.append(" not designated");
+            flags = "not designated";
         }
         if(td.isRejectedType()){
-            sb.append(" rejected");
+            flags = CdmUtils.concat(", ", flags, "rejected");
         }
         if(td.isConservedType()){
-            sb.append(" conserved");
+            flags = CdmUtils.concat(", ", flags, "conserved");
         }
-        return sb.toString().trim();
+        if (flags != null){
+            workingsetBuilder.add(TagEnum.typeDesignation, flags, typeDesignationEntity);
+        }
     }
 
-    private static String stringify(TextualTypeDesignation td) {
+    private static void buildTaggedTextForTextualTypeDesignation(TextualTypeDesignation td,
+            TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntity) {
+
         String result = td.getPreferredText(Language.DEFAULT());
         if (td.isVerbatim()){
             result = "\"" + result + "\"";  //TODO which character to use?
         }
-        return result;
+        workingsetBuilder.add(TagEnum.typeDesignation, result, typeDesignationEntity);
     }
 
-    private static String stringify(SpecimenTypeDesignation td, boolean useTitleCache) {
-        String  result = "";
+    private static void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td, boolean useTitleCache,
+            TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntity) {
 
+        String  result = "";
         if(useTitleCache){
             if(td.getTypeSpecimen() != null){
                 String nameTitleCache = td.getTypeSpecimen().getTitleCache();
@@ -305,6 +319,7 @@ public class TypeDesignationSetFormatter {
 //                }
                 result += nameTitleCache;
             }
+            workingsetBuilder.add(TagEnum.typeDesignation, result, typeDesignationEntity);
         } else {
             if(td.getTypeSpecimen() != null){
                 DerivedUnit du = td.getTypeSpecimen();
@@ -341,13 +356,13 @@ public class TypeDesignationSetFormatter {
                     result += (isMediaSpecimen ? "[icon] " : "") + typeSpecimenTitle.trim();
                 }
             }
+            workingsetBuilder.add(TagEnum.typeDesignation, result, typeDesignationEntity);
         }
 
         if(td.isNotDesignated()){
-            result += " not designated";
+            //this should not happen together with a defined specimen, therefore we may handle it in a separate tag
+            workingsetBuilder.add(TagEnum.typeDesignation, "not designated", typeDesignationEntity);
         }
-
-        return result;
     }
 
     private static boolean isNotBlank(String str){
