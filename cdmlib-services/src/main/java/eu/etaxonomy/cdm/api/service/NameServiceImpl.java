@@ -994,7 +994,7 @@ public class NameServiceImpl
     public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config, UUID taxonUuid){
         DeleteResult result = new DeleteResult();
 
-        NameDeletionConfigurator nameConfig = null;
+         NameDeletionConfigurator nameConfig = null;
         if (config instanceof NameDeletionConfigurator){
             nameConfig = (NameDeletionConfigurator) config;
         }else{
@@ -1084,7 +1084,7 @@ public class NameServiceImpl
             //original spelling
             else if (referencingObject.isInstanceOf(NomenclaturalSource.class) && !((NameDeletionConfigurator)config).isIgnoreIsOriginalSpellingFor()){
                 if (((NomenclaturalSource)referencingObject).getNameUsedInSource() != null && ((NomenclaturalSource)referencingObject).getNameUsedInSource().equals(name)){
-                    String message = "Name can't be deleted as it is used as originalSpelling";
+                    String message = "Name can't be deleted as it is used as original spelling";
                     result.addException(new ReferencedObjectUndeletableException(message));
                     result.addRelatedObject(referencingObject);
                     result.setAbort();
