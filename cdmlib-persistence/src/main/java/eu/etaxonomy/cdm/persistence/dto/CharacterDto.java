@@ -157,7 +157,7 @@ public class CharacterDto extends FeatureDto {
 ////                + "a.propertyModifier ";
                 + "a.structure, "
 //                + "a.structureModifier";
-                + "a.ratioToStructure ";
+                + "ratioToStructure ";
 
         String sqlFromString =   " from "+fromTable+" as a ";
 
@@ -171,6 +171,7 @@ public class CharacterDto extends FeatureDto {
                 + "LEFT JOIN a.recommendedStatisticalMeasures as recommendedStatisticalMeasures "
                 + "LEFT JOIN a.supportedCategoricalEnumerations as supportedCategoricalEnumerations "
                 + "LEFT JOIN a.recommendedMeasurementUnits as recommendedMeasurementUnits "
+                + "LEFT JOIN a.ratioToStructure as ratioToStructure"
                 ;
 
         String[] result = new String[3];
