@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
@@ -42,5 +44,9 @@ public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
             List<OrderHint> orderHints, List<String> propertyPaths);
 
     public <T extends NamedSourceBase> Long countWithNameUsedInSource(Class<T> clazz);
+
+    public <S extends IdentifiableEntity> S findIdentifiableBySourceId(Class<S> clazz, int sourceId);
+
+    public <S extends SingleSourcedEntityBase> S findSingleSourceBySourceId(Class<S> clazz, int sourceId);
 
 }

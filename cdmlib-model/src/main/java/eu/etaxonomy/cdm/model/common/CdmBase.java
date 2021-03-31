@@ -52,6 +52,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.NotNullAwareIdBridge;
@@ -475,7 +476,7 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
     @Transient
 	@Override
 	public String getUserFriendlyTypeName(){
-        return String.join(" ",StringUtils.splitByCharacterTypeCamelCase(getClass().getSimpleName()));
+        return CdmUtils.userFriendlyClassName(getClass());
 	}
 
 	@Transient

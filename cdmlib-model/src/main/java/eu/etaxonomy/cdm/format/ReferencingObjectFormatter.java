@@ -420,7 +420,7 @@ public class ReferencingObjectFormatter {
     }
 
     //from taxeditor DescriptionHelper
-    public static String getCache(DescriptionElementBase element,
+    private static String getCache(DescriptionElementBase element,
             Language defaultLanguage) {
 
         String mainElementLabel= null;

@@ -23,8 +23,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
@@ -46,6 +46,42 @@ public class OriginalSourceDaoImpl
 
 	public OriginalSourceDaoImpl() {
 		super(OriginalSourceBase.class);
+	}
+
+    @Override
+    public <S extends SingleSourcedEntityBase> S findSingleSourceBySourceId(Class<S> clazz, int sourceId){
+        if (clazz == null){
+            clazz = (Class)SingleSourcedEntityBase.class;
+        }
+        Query q = getSession().createQuery(
+                "SELECT c " +
+                "FROM " + clazz.getSimpleName() + " AS c " +
+                "INNER JOIN c.source AS source " +
+                "WHERE source.id= :sourceId "
+            );
+        q.setInteger("sourceId", sourceId);
+
+        @SuppressWarnings("unchecked")
+        S result = (S)q.uniqueResult();
+        return result;
+    }
+
+	@Override
+	public <S extends IdentifiableEntity> S findIdentifiableBySourceId(Class<S> clazz, int sourceId){
+        if (clazz == null){
+            clazz = (Class)IdentifiableEntity.class;
+        }
+	    Query q = getSession().createQuery(
+                "SELECT c " +
+                "FROM " + clazz.getSimpleName() + " AS c " +
+                "INNER JOIN c.sources AS source " +
+                "WHERE source.id= :sourceId "
+            );
+	    q.setInteger("sourceId", sourceId);
+
+	    @SuppressWarnings("unchecked")
+        S result = (S)q.uniqueResult();
+	    return result;
 	}
 
 	@Override
@@ -108,21 +144,20 @@ public class OriginalSourceDaoImpl
 			crit.add(Restrictions.eq("idNamespace", idNamespace));
 		}
 		crit.addOrder(Order.desc("created"));
-		@SuppressWarnings({ "unchecked", "rawtypes" })
+		@SuppressWarnings({ "unchecked"})
         List<OriginalSourceBase> results = crit.list();
 
 		return results;
 	}
 
 	@Override
-    public <T extends NamedSourceBase>  Long countWithNameUsedInSource(Class<T> clazz){
-        Criteria criteria = getSession().createCriteria(HybridRelationship.class);
+    public <T extends NamedSourceBase> Long countWithNameUsedInSource(Class<T> clazz){
 
-        clazz = clazz != null? clazz : (Class<T>) DescriptionElementSource.class;
+        clazz = clazz != null? clazz : (Class<T>)NamedSourceBase.class;
         Criteria crit = getSession().createCriteria(clazz);
         //count
-        criteria.setProjection(Projections.rowCount());
-        long result = (Long)criteria.uniqueResult();
+        crit.setProjection(Projections.rowCount());
+        long result = (Long)crit.uniqueResult();
 
         return result;
 	}
@@ -131,6 +166,7 @@ public class OriginalSourceDaoImpl
 	@Override
 	public <T extends NamedSourceBase> List<T> listWithNameUsedInSource(Class<T> clazz,
 	        Integer pageSize, Integer pageNumber,List<OrderHint> orderHints, List<String> propertyPaths){
+
 	    clazz = clazz != null? clazz : (Class<T>) NamedSourceBase.class;
 	    Criteria crit = getSession().createCriteria(clazz);
 	    crit.add(Restrictions.isNotNull("nameUsedInSource"));

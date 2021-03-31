@@ -46,7 +46,7 @@ public class ReferencingObjectDto extends UuidAndTitleCache<CdmBase> {
     }
 
     public ReferencingObjectDto(CdmBase referencedEntity) {
-        super((Class<CdmBase>)referencedEntity.getClass(), referencedEntity.getUuid(), referencedEntity.getId(), null);
+        super(referencedEntity.getClass(), referencedEntity.getUuid(), referencedEntity.getId(), null);
         this.referencedEntity = referencedEntity;
     }
 
@@ -110,8 +110,6 @@ public class ReferencingObjectDto extends UuidAndTitleCache<CdmBase> {
 
     @Override
     public String toString() {
-        return "RefObjDto[type=" + getType() + ":" + getId() + "]";
+        return "RefObjDto[type=" + (getType()!=null? getType().getSimpleName():"-") + ":" + getId() + "]";
     }
-
-
 }

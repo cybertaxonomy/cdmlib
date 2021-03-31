@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.common;
 
 import java.io.BufferedReader;
@@ -549,5 +548,13 @@ public class CdmUtils {
             return Math.max(str1.length(), str2.length());
         }
         return -1;
+    }
+
+    public static String userFriendlyCamelCase(String camelCase){
+        return String.join(" ", StringUtils.splitByCharacterTypeCamelCase(camelCase));
+    }
+
+    public static String userFriendlyClassName(Class<?> clazz){
+        return userFriendlyCamelCase(clazz.getSimpleName());
     }
 }

@@ -10,22 +10,14 @@ package eu.etaxonomy.cdm.format;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -42,28 +34,18 @@ public class DescriptionElementFormatter {
 
     public static String format(DescriptionElementBase element, Language defaultLanguage){
 
-        String mainElementLabel= null;
-        DescriptionBase<?> descr = element.getInDescription();
-        descr = CdmBase.deproxy(descr);
-
-        if (descr != null){
-            if (descr.isInstanceOf(TaxonDescription.class)){
-                Taxon taxon = CdmBase.deproxy(descr, TaxonDescription.class).getTaxon();
-                if (taxon != null){
-                    mainElementLabel = taxon.getTitleCache();
-                }
-            }else if (descr.isInstanceOf(SpecimenDescription.class)){
-                SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(descr, SpecimenDescription.class).getDescribedSpecimenOrObservation();
-                if (specimen != null){
-                    mainElementLabel = specimen.getTitleCache();
-                }
-            }else if (descr.isInstanceOf(TaxonNameDescription.class)){
-                TaxonName name = CdmBase.deproxy(descr, TaxonNameDescription.class).getTaxonName();
-                if (name != null){
-                    mainElementLabel = name.getTitleCache();
-                }
-            }
-        }
+//        String mainElementLabel= null;
+//        DescriptionBase<?> descr = element.getInDescription();
+//        descr = CdmBase.deproxy(descr);
+//
+//        if (descr != null){
+//            IDescribable<?> target = CdmBase.deproxy(descr.describedEntity());
+//            if (target != null){
+//                mainElementLabel = target.getTitleCache();
+//            }else{
+//                return descr.getTitleCache();
+//            }
+//        }
 
         String cache = null;
         if (element instanceof TextData) {
@@ -83,7 +65,6 @@ public class DescriptionElementFormatter {
         }
         if (element instanceof Distribution) {
             Distribution distribution = (Distribution) element;
-
             NamedArea area = distribution.getArea();
             if(area != null){
                 cache =  area.getLabel();
@@ -97,9 +78,9 @@ public class DescriptionElementFormatter {
             }
         }
         String result = cache == null ? "" : cache;
-        if (isNotBlank(mainElementLabel)){
-            result = CdmUtils.concat(" ", result, "(" + mainElementLabel + ")");
-        }
+//        if (isNotBlank(mainElementLabel)){
+//            result = CdmUtils.concat(" ", result, "(" + mainElementLabel + ")");
+//        }
         return result;
 
     }
