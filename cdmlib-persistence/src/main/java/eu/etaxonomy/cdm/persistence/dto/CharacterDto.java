@@ -157,7 +157,7 @@ public class CharacterDto extends FeatureDto {
 ////                + "a.propertyModifier ";
                 + "a.structure, "
 //                + "a.structureModifier";
-                + "a.ratioTo ";
+                + "a.ratioToStructure ";
 
         String sqlFromString =   " from "+fromTable+" as a ";
 
