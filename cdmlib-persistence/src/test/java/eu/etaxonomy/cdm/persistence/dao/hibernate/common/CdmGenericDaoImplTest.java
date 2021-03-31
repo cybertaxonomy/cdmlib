@@ -158,6 +158,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategyEqual;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -420,6 +421,56 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		debug += "############## END ###################";
 		logger.info(debug);
 	}
+
+
+	//similar to testGetReferencingObjectsCdmBase but with DTO
+	@Test
+    @DataSets({
+         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+         @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")})
+    public void testGetReferencingObjectsDto() {
+
+	    IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setTitleCache("A name", true);
+        Reference ref1 = ReferenceFactory.newArticle();
+        Taxon taxon = Taxon.NewInstance(name, ref1);
+        Person author = Person.NewInstance();
+        author.setTitleCache("Author", true);
+        ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
+        ref1.setAuthorship(author);
+        name.setCombinationAuthorship(author);
+        name.setBasionymAuthorship(author);  //to test deduplication
+
+        name.setNomenclaturalReference(ref1);
+
+        taxonDao.save(taxon);
+//	      UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
+//	      Reference ref1 = referenceService.findByUuid(uuid);
+        commitAndStartNewTransaction(null);
+
+        int i = 1;
+        Set<ReferencingObjectDto> referencedObjects = cdmGenericDao.getReferencingObjectsDto(ref1);
+        String debug = "############## RESULT for ref1 ###################\n";
+        for (ReferencingObjectDto dto: referencedObjects){
+            debug += "Object"+ i++ +": " + dto.getType().getSimpleName() + " - " + dto + "\n";
+        }
+        //was 3 before bidirectionality was removed for supplemental data
+        assertEquals(2, referencedObjects.size());
+        debug += "############## END ###################\n";
+
+//	      UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
+//	      AgentBase author = agentService.findByUuid(uuidAuthor);
+
+        referencedObjects = cdmGenericDao.getReferencingObjectsDto(author);
+        i = 1;
+        debug += "############## RESULT for author ###################\n";
+        for (ReferencingObjectDto dto: referencedObjects){
+            debug += "Object"+ i++ +": " + dto.getType().getSimpleName() + " - " + dto + "\n";
+        }
+        assertEquals("The both taxon names should be dedulicated", 2, referencedObjects.size());
+        debug += "############## END ###################\n";
+        logger.warn(debug);
+    }
 
 	/**
 	 * 2nd test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.

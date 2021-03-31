@@ -18,10 +18,12 @@ import java.util.UUID;
 import org.hibernate.Session;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaDataPropertyName;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -85,6 +87,14 @@ public interface ICommonService /*extends IService<OriginalSourceBase>*/{
 	 */
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
 
+    /**
+     * @see #getReferencingObjects(CdmBase)
+     */
+    public Set<ReferencingObjectDto> getReferencingObjectDtos(CdmBase referencedCdmBase);
+
+
+    public Set<ReferencingObjectDto> initializeReferencingObjectDtos(Set<ReferencingObjectDto> dtos,
+            boolean doReferencingEntity, boolean doTargetEntity, boolean doDescription, Language language);
 
 
 	/**
