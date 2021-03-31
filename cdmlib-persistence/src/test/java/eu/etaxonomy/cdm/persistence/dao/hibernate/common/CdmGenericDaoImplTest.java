@@ -172,7 +172,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @since 27.07.2009
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
-	private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
+
+    private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
 
 	@SpringBeanByType
 	private ICdmGenericDao cdmGenericDao;
@@ -405,7 +406,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 		}
 		//was 3 before bidirectionality was removed for supplemental data
 		assertEquals(2, referencedObjects.size());
-		debug += "############## ENDE ###################";
+		debug += "############## END ###################";
 
 //		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
 //		AgentBase author = agentService.findByUuid(uuidAuthor);
@@ -416,7 +417,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 			debug += "Object2: " + obj.getClass().getSimpleName() + " - " + obj;
 		}
 		assertEquals(2, referencedObjects.size());
-		debug += "############## ENDE ###################";
+		debug += "############## END ###################";
 		logger.info(debug);
 	}
 
@@ -447,7 +448,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest {
 //		for (CdmBase obj: referencingObjects){
 //			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
 //		}
-//		System.out.println("############## ENDE ###################");
+//		System.out.println("############## END ###################");
 		assertEquals("Number of referencing objects must be 2.", 2, referencingObjects.size());
 	}
 

@@ -27,13 +27,12 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger	.getLogger(UuidAndTitleCache.class);
 
-	private Class<T> type;
+	private Class<? extends T> type;
 	final private UUID uuid;
 	private Integer id;
 	private String titleCache;
 	private String abbrevTitleCache;
 	private boolean isProtectedTitleCache = true;
-
 
     private boolean isOrphaned;
 
@@ -43,6 +42,7 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
         this.id = id;
         this.abbrevTitleCache = abbrevTitleCache;
     }
+
     public UuidAndTitleCache(UUID uuid, Integer id, String titleCache) {
         this.uuid = uuid;
         this.setTitleCache(titleCache);
@@ -50,18 +50,19 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
         this.abbrevTitleCache = null;
     }
 
-    public UuidAndTitleCache(Class<T> type, UUID uuid, Integer id, String titleCache, String abbrevTitleCache) {
+    public UuidAndTitleCache(Class<? extends T> type, UUID uuid, Integer id, String titleCache, String abbrevTitleCache) {
         this(uuid, id, titleCache, abbrevTitleCache);
         this.type = type;
         this.isOrphaned = false;
     }
-    public UuidAndTitleCache(Class<T> type, UUID uuid, Integer id, String titleCache) {
+
+    public UuidAndTitleCache(Class<? extends T> type, UUID uuid, Integer id, String titleCache) {
         this(uuid, id, titleCache, null);
         this.type = type;
         this.isOrphaned = false;
     }
 
-	public UuidAndTitleCache(Class<T> type, UUID uuid, Integer id, String titleCache, Boolean isOrphaned, String abbrevTitleCache) {
+	public UuidAndTitleCache(Class<? extends T> type, UUID uuid, Integer id, String titleCache, Boolean isOrphaned, String abbrevTitleCache) {
 		this(type, uuid, id, titleCache, abbrevTitleCache);
 		this.isOrphaned = isOrphaned;
 	}
@@ -89,7 +90,7 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 	    return id;
     }
 
-	public Class<T> getType(){
+	public Class<? extends T> getType(){
 		return type;
 	}
 

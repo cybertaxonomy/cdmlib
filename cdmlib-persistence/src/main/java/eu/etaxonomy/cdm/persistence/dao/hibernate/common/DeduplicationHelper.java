@@ -487,18 +487,6 @@ public class DeduplicationHelper {
 		return true;
 	}
 
-	/**
-	 * @param cdmBase1
-	 * @param cdmBase2
-	 * @param refHolder
-	 * @param cloneSet
-	 * @throws MergeException
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 */
 	private void reallocateCollection(CdmBase cdmBase1, CdmBase cdmBase2,
 			ReferenceHolder refHolder, Set<ICdmBase> cloneSet) throws MergeException, SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		List<CdmBase> list = genericDao.getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, cdmBase2, null);

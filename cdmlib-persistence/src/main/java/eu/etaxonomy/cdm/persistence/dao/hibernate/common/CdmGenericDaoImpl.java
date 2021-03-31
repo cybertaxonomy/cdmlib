@@ -126,8 +126,7 @@ public class CdmGenericDaoImpl
 
 	@Override
     public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase){
-        Session session = super.getSession();
-        Query query = session.createQuery("SELECT count(this) "
+        Query query = getSession().createQuery("SELECT count(this) "
                 + "FROM "+ clazz.getSimpleName() + " this "
                 + "WHERE this." + propertyName +" = :referencedObject")
                 .setEntity("referencedObject", referencedCdmBase);
@@ -219,7 +218,6 @@ public class CdmGenericDaoImpl
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	@Override
@@ -306,11 +304,6 @@ public class CdmGenericDaoImpl
 		}
 	}
 
-	/**
-     * @param referencedCdmBase
-     * @param result
-     * @param refHolder
-     */
     private Long handleReferenceHolderForCount(CdmBase referencedCdmBase,
             Long result, ReferenceHolder refHolder) {
         boolean isCollection = refHolder.isCollection();
@@ -449,10 +442,6 @@ public class CdmGenericDaoImpl
 		return true;
 	}
 
-	/**
-	 * @param propertyType
-	 * @return
-	 */
 	protected static boolean isNoDoType(Type propertyType) {
 		boolean result = false;
 		Class<?>[] classes = new Class[]{
