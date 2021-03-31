@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
@@ -76,6 +77,10 @@ public class TypeDesignationSetFormatter {
 
     public String format(TypeDesignationSetManager manager){
         return TaggedCacheHelper.createString(toTaggedText(manager));
+    }
+
+    public String format(TypeDesignationSetManager manager, HTMLTagRules htmlTagRules){
+        return TaggedCacheHelper.createString(toTaggedText(manager), htmlTagRules);
     }
 
     public List<TaggedText> toTaggedText(TypeDesignationSetManager manager){
@@ -186,9 +191,7 @@ public class TypeDesignationSetFormatter {
         if(typeDesignationCount++ > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_DESIGNATION_SEPARATOR);
         }
-
         buildTaggedTextForTypeDesignationBase(typeDes, workingsetBuilder);
-
         if (withCitation){
 
             //lectotype source
@@ -210,8 +213,11 @@ public class TypeDesignationSetFormatter {
                 workingsetBuilder.add(TagEnum.separator, REFERENCE_PARENTHESIS_RIGHT);
             }
         }
+
         return typeDesignationCount;
     }
+
+
 
 
     /**
@@ -267,6 +273,7 @@ public class TypeDesignationSetFormatter {
         }
     }
 
+
     private static void buildTaggedTextForNameTypeDesignation(NameTypeDesignation td, TaggedTextBuilder workingsetBuilder,
             TypedEntityReference<?> typeDesignationEntity) {
 
@@ -275,6 +282,7 @@ public class TypeDesignationSetFormatter {
         }
 
         String flags = null;
+
         if(td.isNotDesignated()){
             flags = "not designated";
         }

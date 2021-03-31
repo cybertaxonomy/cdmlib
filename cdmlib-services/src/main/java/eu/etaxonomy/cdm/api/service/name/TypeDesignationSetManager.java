@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.ref.EntityReference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 
 /**
@@ -396,6 +397,11 @@ public class TypeDesignationSetManager {
     public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable) {
         return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable).format(this);
     }
+
+    public String print(boolean withCitation, boolean withStartingTypeLabel, boolean withNameIfAvailable, HTMLTagRules htmlRules) {
+        return new TypeDesignationSetFormatter(withCitation, withStartingTypeLabel, withNameIfAvailable).format(this, htmlRules);
+    }
+
 
     class DataIntegrityException extends Exception {
 
