@@ -283,6 +283,10 @@ public class TermNodeServiceImpl
                     CharacterDto characterDto = (CharacterDto) dto.getTerm();
                     character = HibernateProxyHelper.deproxy(node.getTerm(), Character.class);
 
+                    TermNode ratioToStructure = this.load(characterDto.getRatioTo().getUuid());
+
+                    character.setRatioToStructure(ratioToStructure);
+
                     //supportsXXX
                     //TODO add all other supportsXXX (6 are missing)
                     character.setSupportsCategoricalData(characterDto.isSupportsCategoricalData());
