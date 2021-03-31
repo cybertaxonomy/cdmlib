@@ -90,11 +90,11 @@ public class ReferencingObjectFormatter {
             if (originalSource instanceof NomenclaturalSource){
                 TaxonName sourcedName = ((NomenclaturalSource)originalSource).getSourcedName();
                 sourceObjectTitle = sourcedName == null ? "Source orphaned, not attached to a name" :
-                    "Source for " + sourcedName.getTitleCache();
+                    "for " + sourcedName.getTitleCache();
             }else if (originalSource instanceof SecundumSource){
                 TaxonBase<?> sourcedTaxon = ((SecundumSource)originalSource).getSourcedTaxon();
                 sourceObjectTitle = sourcedTaxon == null ? "Source orphaned, not attached to a taxon" :
-                    "Source for " + sourcedTaxon.getTitleCache();
+                    "for " + sourcedTaxon.getTitleCache();
             }else if (originalSource instanceof DescriptionElementSource){
                 sourceObjectTitle = getCache((DescriptionElementSource)originalSource, defaultLanguage);
             }
