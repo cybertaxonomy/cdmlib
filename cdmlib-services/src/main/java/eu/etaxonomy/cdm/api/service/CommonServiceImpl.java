@@ -131,6 +131,7 @@ public class CommonServiceImpl
         for (ReferencingObjectDto dto : dtos){
             //TODO or load()?
             CdmBase entity = this.genericDao.find(dto.getType(), dto.getUuid());
+            entity = CdmBase.deproxy(entity); //TODO necessary here or should we only do this in called methods below
             if (doReferencingEntity){
                 dto.setReferencedEntity(entity);
             }
@@ -161,7 +162,7 @@ public class CommonServiceImpl
         }else{
             targetEntity = entity;
         }
-
+        targetEntity = CdmBase.deproxy(targetEntity);
         UuidAndTitleCache<CdmBase> result = new UuidAndTitleCache<>(targetEntity.getClass(), targetEntity.getUuid(), targetEntity.getId(), null);
         return result;
     }
