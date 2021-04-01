@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -61,6 +62,45 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		Assert.assertNotNull(service);
 	}
 
+    @Test
+    @DataSet
+    public final void testGetReferencingObjectsDto() {
+
+        IBotanicalName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setTitleCache("A name", true);
+        Reference ref1 = ReferenceFactory.newArticle();
+        Taxon taxon = Taxon.NewInstance(name, ref1);
+        taxon.addImportSource("id1", null, ref1, null);
+        Person author = Person.NewInstance();
+        author.setTitleCache("Author", true);
+        ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
+        ref1.setAuthorship(author);
+        name.setBasionymAuthorship(author);
+
+        name.setNomenclaturalReference(ref1);
+
+        taxonService.save(taxon);
+
+        Set<ReferencingObjectDto> referencedObjects = service.getReferencingObjectDtos(ref1);
+        System.out.println("############## RESULT ###################\n");
+        for (ReferencingObjectDto obj: referencedObjects){
+            System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n");
+        }
+        assertEquals(3, referencedObjects.size());  //AM: was expected=3 first, as annotations are not reported I reduced to 2 (this is not related to not having a commit before, I tested it)
+        //should not throw an exception
+        referencedObjects = service.initializeReferencingObjectDtos(referencedObjects, true, true, true, null);
+        System.out.println("############## END ###################\n");
+
+        referencedObjects = service.getReferencingObjectDtos(author);
+        System.out.println("############## RESULT ###################\n");
+        for (ReferencingObjectDto obj: referencedObjects){
+            System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n");
+        }
+        assertEquals(2, referencedObjects.size());
+        referencedObjects = service.initializeReferencingObjectDtos(referencedObjects, true, true, true, null);
+        System.out.println("############## END ###################\n");
+    }
+
 	@Test
 	@DataSet
 	public final void testGetReferencingObjects() {
@@ -80,20 +120,20 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 		taxonService.save(taxon);
 
 		Set<CdmBase> referencedObjects = service.getReferencingObjects(ref1);
-		System.out.println("############## RESULT ###################");
+		System.out.println("############## RESULT ###################\n");
 		for (CdmBase obj: referencedObjects){
-			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n");
 		}
 		assertEquals(2, referencedObjects.size());  //AM: was expected=3 first, as annotations are not reported I reduced to 2 (this is not related to not having a commit before, I tested it)
-		System.out.println("############## ENDE ###################");
+		System.out.println("############## END ###################\n");
 
 		referencedObjects = service.getReferencingObjects(author);
-		System.out.println("############## RESULT ###################");
+		System.out.println("############## RESULT ###################\n");
 		for (CdmBase obj: referencedObjects){
-			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n");
 		}
 		assertEquals(2, referencedObjects.size());
-		System.out.println("############## ENDE ###################");
+		System.out.println("############## END ###################\n");
 	}
 
 	@Test

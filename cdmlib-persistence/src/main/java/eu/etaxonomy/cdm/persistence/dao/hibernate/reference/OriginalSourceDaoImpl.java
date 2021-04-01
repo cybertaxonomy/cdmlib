@@ -55,7 +55,7 @@ public class OriginalSourceDaoImpl
         }
         Query q = getSession().createQuery(
                 "SELECT c " +
-                "FROM " + clazz.getSimpleName() + " AS c " +
+                "FROM " + clazz.getName() + " AS c " +
                 "INNER JOIN c.source AS source " +
                 "WHERE source.id= :sourceId "
             );
@@ -73,7 +73,7 @@ public class OriginalSourceDaoImpl
         }
 	    Query q = getSession().createQuery(
                 "SELECT c " +
-                "FROM " + clazz.getSimpleName() + " AS c " +
+                "FROM " + clazz.getName() + " AS c " +
                 "INNER JOIN c.sources AS source " +
                 "WHERE source.id= :sourceId "
             );
@@ -96,7 +96,7 @@ public class OriginalSourceDaoImpl
 
 		Query q = session.createQuery(
                 "SELECT source.idInSource, c " +
-                "FROM " + clazz.getSimpleName() + " AS c " +
+                "FROM " + clazz.getName() + " AS c " +
                 "INNER JOIN c.sources AS source " +
                 "WHERE source.idInSource IN ( " + idInSourceString + " )" +
                 	" AND source.idNamespace = :idNamespace"
