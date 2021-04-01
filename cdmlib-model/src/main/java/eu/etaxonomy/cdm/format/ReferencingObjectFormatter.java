@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
@@ -57,6 +58,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.permission.Group;
 import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.SecundumSource;
@@ -72,7 +74,13 @@ import eu.etaxonomy.cdm.model.term.Representation;
  */
 public class ReferencingObjectFormatter {
 
+
     public static String format(CdmBase element, Language defaultLanguage) {
+        return format(element, null, defaultLanguage);
+    }
+
+
+    public static String format(CdmBase element, String target, Language defaultLanguage) {
 
         String resultString = null;
         if (element == null){
@@ -97,6 +105,10 @@ public class ReferencingObjectFormatter {
                     "for " + sourcedTaxon.getTitleCache();
             }else if (originalSource instanceof DescriptionElementSource){
                 sourceObjectTitle = getCache((DescriptionElementSource)originalSource, defaultLanguage);
+            }else if (originalSource instanceof IdentifiableSource && isNotBlank(target) ){
+                sourceObjectTitle = "for " + target;
+            }else if (originalSource instanceof NamedSource && isNotBlank(target) ){
+                sourceObjectTitle = "for " + target;
             }
             resultString = CdmUtils.concat("; ", new String[]{originalSource.getIdNamespace(), originalSource.getIdInSource(), sourceObjectTitle});
         }else if (element instanceof LanguageStringBase) {

@@ -144,7 +144,8 @@ public class CommonServiceImpl
                 dto.setOpenInTarget(target);
             }
             if (doDescription){
-                String description = getReferencingObjectDescription(entity, language);
+                String targetString = dto.getOpenInTarget() == null ? null : dto.getOpenInTarget().getTitleCache();
+                String description = getReferencingObjectDescription(entity, targetString, language);
                 dto.setTitleCache(description);
             }
         }
@@ -181,7 +182,8 @@ public class CommonServiceImpl
             targetEntity = entity;
         }
         targetEntity = CdmBase.deproxy(targetEntity);
-        UuidAndTitleCache<CdmBase> result = new UuidAndTitleCache<>(targetEntity.getClass(), targetEntity.getUuid(), targetEntity.getId(), null);
+        String targetLabel = targetEntity instanceof IdentifiableEntity ? ((IdentifiableEntity)targetEntity).getTitleCache() : null;
+        UuidAndTitleCache<CdmBase> result = new UuidAndTitleCache<>(targetEntity.getClass(), targetEntity.getUuid(), targetEntity.getId(), targetLabel);
         return result;
     }
 
@@ -193,8 +195,8 @@ public class CommonServiceImpl
         return db.describedEntity() != null ? (CdmBase)db.describedEntity() : db;
     }
 
-    private String getReferencingObjectDescription(CdmBase entity, Language language) {
-        return ReferencingObjectFormatter.format(entity, language);
+    private String getReferencingObjectDescription(CdmBase entity, String targetString, Language language) {
+        return ReferencingObjectFormatter.format(entity, targetString, language);
     }
 
     @Override
