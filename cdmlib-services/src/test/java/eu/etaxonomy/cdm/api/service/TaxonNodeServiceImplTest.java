@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -1052,6 +1054,16 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals("Pro parte synonym7 should be updated now, as taxon2 is now unpublished"
                 + " and therefore the noShared function is not relevant anymore",
                 publish, taxonService.find(7).isPublish());
+    }
+
+
+    @Test
+    @DataSet("TaxonNodeServiceImplTest.xml")
+    public void testgetTaxonDistributionDTO(){
+        List<UUID> uuidList = Arrays.asList(node1Uuid, node2Uuid, node4Uuid);
+        List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true);
+        Assert.assertEquals("Only 1 node has a child", 1, dtos.size());  //for some reason only the children are selected but not the parent itself, this may change in future
+        dtos.get(0);
     }
 
     @Test

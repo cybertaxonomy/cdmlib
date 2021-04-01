@@ -1126,9 +1126,9 @@ public class TaxonNodeServiceImpl
         List<TaxonNode> nodes = new ArrayList<>();
         if (openChildren){
             List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
-            List<TaxonNode> children = new ArrayList<>();
 
             for (TaxonNode node: parentNodes){
+                List<TaxonNode> children = new ArrayList<>();
                 children.addAll(loadChildNodesOfTaxonNode(node,
                         propertyPaths, true,  true, sortMode));
                 nodes.addAll(children);
