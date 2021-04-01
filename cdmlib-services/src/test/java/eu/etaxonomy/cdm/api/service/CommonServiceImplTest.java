@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  */
 public class CommonServiceImplTest extends CdmIntegrationTest {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImplTest.class);
 
 	@SpringBeanByType
@@ -82,23 +81,24 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
         taxonService.save(taxon);
 
         Set<ReferencingObjectDto> referencedObjects = service.getReferencingObjectDtos(ref1);
-        System.out.println("############## RESULT ###################\n");
+        String debug = "############## RESULT ###################\n";
         for (ReferencingObjectDto obj: referencedObjects){
-            System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n");
+            debug += "Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n";
         }
         assertEquals(3, referencedObjects.size());  //AM: was expected=3 first, as annotations are not reported I reduced to 2 (this is not related to not having a commit before, I tested it)
         //should not throw an exception
         referencedObjects = service.initializeReferencingObjectDtos(referencedObjects, true, true, true, null);
-        System.out.println("############## END ###################\n");
+        debug += "############## END ###################\n";
 
         referencedObjects = service.getReferencingObjectDtos(author);
-        System.out.println("############## RESULT ###################\n");
+        debug += "############## RESULT ###################\n";
         for (ReferencingObjectDto obj: referencedObjects){
-            System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n");
+            debug += "Object: " + obj.getClass().getSimpleName() + " - " + obj + "\n";
         }
         assertEquals(2, referencedObjects.size());
         referencedObjects = service.initializeReferencingObjectDtos(referencedObjects, true, true, true, null);
-        System.out.println("############## END ###################\n");
+        debug += "############## END ###################\n";
+        logger.info(debug);
     }
 
 	@Test
