@@ -66,6 +66,25 @@ public class ReferencingObjectDto extends UuidAndTitleCache<CdmBase> {
         this.openInTarget = openInTarget;
     }
 
+//**************** METHODS ***********************************/
+
+    /**
+     * Returns the best matching "open in" type.
+     */
+    public Class<? extends CdmBase> getBestOpenInTargetType(){
+        Class<? extends CdmBase> result = null;
+        if (this.openInTarget != null){
+            result = this.openInTarget.getType();
+        }
+        if (result == null){
+            result = this.getType();
+        }
+        if (result == null && this.getReferencedEntity() != null){
+            result = this.getReferencedEntity().getClass();
+        }
+        return result;
+    }
+
 // *********************** EQUALS *************************************/
 
     //TODO move partly up to UuidAndTitleCache
