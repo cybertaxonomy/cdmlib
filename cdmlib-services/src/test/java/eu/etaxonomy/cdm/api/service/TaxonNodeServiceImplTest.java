@@ -115,7 +115,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private Taxon t1;
 	private Taxon t2;
 	private Taxon t4;
-//	private Synonym s1;
 	private SynonymType synonymType;
 	private Reference reference;
 	private String referenceDetail;
@@ -140,7 +139,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = taxonNodeService.load(node2Uuid);
 		node4 = taxonNodeService.load(node4Uuid);
 		reference = referenceService.load(referenceUuid);
-//		synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHomotypicSynonymOf), SynonymType.class) ;
 		referenceDetail = "test";
 

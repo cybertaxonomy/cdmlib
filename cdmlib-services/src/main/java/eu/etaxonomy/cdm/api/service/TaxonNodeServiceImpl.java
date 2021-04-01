@@ -1120,7 +1120,9 @@ public class TaxonNodeServiceImpl
     }
 
     @Override
-    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths, Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode){
+    public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
+            Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode){
+
         List<TaxonNode> nodes = new ArrayList<>();
         if (openChildren){
             List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
@@ -1128,22 +1130,14 @@ public class TaxonNodeServiceImpl
 
             for (TaxonNode node: parentNodes){
                 children.addAll(loadChildNodesOfTaxonNode(node,
-                        propertyPaths, true,  true,
-                        sortMode));
-//                children.addAll(listChildrenOf(node, null, null, true, true, propertyPaths));
-//                Collections.sort(children, new TaxonNodeByRankAndNameComparator());
-
+                        propertyPaths, true,  true, sortMode));
                 nodes.addAll(children);
             }
-
-
-
         }
+
         List<TaxonDistributionDTO> result = new ArrayList<>();
         boolean hasPermission = false;
-        //TaxonDescription instance = TaxonDescription.NewInstance();
-        //hasPermission = permissionEvaluator.hasPermission(authentication, instance, Operation.UPDATE);
-        for(TaxonNode node:nodes){
+        for(TaxonNode node: nodes){
             if (authentication != null ) {
                 hasPermission = permissionEvaluator.hasPermission(authentication, node, Operation.UPDATE);
             }else {
@@ -1158,7 +1152,6 @@ public class TaxonNodeServiceImpl
                 }
             }
         }
-//        result.sort(new TaxonDistributionDTOComparator());
         return result;
     }
 
@@ -1183,18 +1176,11 @@ public class TaxonNodeServiceImpl
         return pager;
     }
 
-//    @Override
-//    public List<TaxonDistributionDTO> getTaxonDistributionDTOForSubtree(UUID parentNodeUuid,
-//            List<String> propertyPaths, boolean openChildren) {
-//        return getTaxonDistributionDTOForSubtree(parentNodeUuid, propertyPaths, null, openChildren);
-//    }
-
     @Override
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids,
             List<String> propertyPaths, boolean openChildren) {
         return getTaxonDistributionDTO(nodeUuids, propertyPaths, null, openChildren, null);
     }
-
 
     @Override
     @Transactional(readOnly = false)
