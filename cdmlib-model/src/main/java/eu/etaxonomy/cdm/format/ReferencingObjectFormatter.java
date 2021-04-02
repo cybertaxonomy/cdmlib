@@ -74,11 +74,9 @@ import eu.etaxonomy.cdm.model.term.Representation;
  */
 public class ReferencingObjectFormatter {
 
-
     public static String format(CdmBase element, Language defaultLanguage) {
         return format(element, null, defaultLanguage);
     }
-
 
     public static String format(CdmBase element, String target, Language defaultLanguage) {
 
@@ -310,32 +308,39 @@ public class ReferencingObjectFormatter {
 
     private static String getCache(TaxonNode taxonNode) {
         String result = "";
-        Classification classification = taxonNode.getClassification();
-        if (classification != null){
-            String classificationStr = classification.getName() == null ? "" : classification.getName().getText();
-            result = CdmUtils.concat("" , result, classificationStr);
-            if (isBlank(result)){
-                result = classification.toString();
-            }
-        }
+
         String parentStr;
         TaxonNode parentNode = taxonNode.getParent();
         if (parentNode == null){
-            parentStr = "no parent";
+            parentStr = "Invisible root of ";
         }else{
             Taxon parentTaxon = parentNode.getTaxon();
             if (parentTaxon == null){
-                parentStr = "no parent taxon";
+                parentStr = "Root of ";
             }else{
                 TaxonName parentName = parentTaxon.getName();
                 if (parentName == null){
-                    parentStr = "child of " + parentTaxon.getTitleCache();
+                    parentStr = "Child of " + parentTaxon.getTitleCache();
                 }else{
-                    parentStr = "child of " + parentName.getTitleCache();
+                    parentStr = "Child of " + parentName.getTitleCache();
                 }
+                parentStr += " in ";
             }
         }
-        result = CdmUtils.concat(": ", result, parentStr);
+
+        //classification
+        Classification classification = taxonNode.getClassification();
+        String classificationStr ;
+        if (classification != null){
+            classificationStr = classification.getName() == null ? "classification:"+classification.getId() : classification.getName().getText();
+            if (isBlank(classificationStr)){
+                classificationStr = classification.toString();
+            }
+        }else{
+            classificationStr = "-no classification-"; //should not happen
+        }
+
+        result = CdmUtils.concat("", parentStr, classificationStr);
 
         return result;
     }
