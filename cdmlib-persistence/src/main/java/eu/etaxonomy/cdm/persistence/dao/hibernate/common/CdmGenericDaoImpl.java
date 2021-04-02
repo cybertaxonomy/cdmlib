@@ -111,7 +111,8 @@ public class CdmGenericDaoImpl
 	}
 
 //    @Override
-    private List<ReferencingObjectDto> getCdmBasesByFieldAndClassDto(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
+    private List<ReferencingObjectDto> getCdmBasesByFieldAndClassDto(Class<? extends CdmBase> clazz, String propertyName,
+            CdmBase referencedCdmBase, Integer limit){
 
         Query query = getSession().createQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
                     + "FROM "+ clazz.getSimpleName() + " this "
