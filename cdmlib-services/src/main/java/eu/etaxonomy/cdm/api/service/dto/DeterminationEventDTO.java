@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.api.service.dto;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.ref.TaggedEntityReference;
 
@@ -41,9 +43,9 @@ public class DeterminationEventDTO extends EventDTO<DeterminationEvent> {
         }
         DeterminationEventDTO dto = new DeterminationEventDTO(entity);
         if(entity.getTaxon() != null) {
-            dto.setDetermination(new TaggedEntityReference(entity.getTaxon().getClass(), entity.getTaxon().getUuid(), entity.getTaxon().getTaggedTitle()));
+            dto.setDetermination(new TaggedEntityReference(Taxon.class, entity.getTaxon().getUuid(), entity.getTaxon().getTaggedTitle()));
         } else if(entity.getTaxonName() != null) {
-            dto.setDetermination(new TaggedEntityReference(entity.getTaxonName().getClass(), entity.getTaxonName().getUuid(), entity.getTaxonName().getTaggedName()));
+            dto.setDetermination(new TaggedEntityReference(TaxonName.class, entity.getTaxonName().getUuid(), entity.getTaxonName().getTaggedName()));
         }
         dto.modifier = entity.getModifier();
         dto.isPreferred = entity.getPreferredFlag();
