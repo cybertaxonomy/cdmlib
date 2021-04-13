@@ -581,12 +581,14 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return states;
     }
 
-    public Collection<DerivedUnit> collectDerivedUnits() {
+    public Collection<DerivedUnit> collectDerivedUnits(boolean addFullSubTree) {
         Collection<DerivedUnit> derivedUnits = new ArrayList<>();
         for (DerivationEvent derivationEvent : getDerivationEvents()) {
             for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 derivedUnits.add(derivative);
-                derivedUnits.addAll(derivative.collectDerivedUnits());
+                if(addFullSubTree) {
+                    derivedUnits.addAll(derivative.collectDerivedUnits(false));
+                }
             }
         }
         return derivedUnits;

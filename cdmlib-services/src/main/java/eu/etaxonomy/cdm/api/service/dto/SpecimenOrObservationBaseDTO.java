@@ -389,7 +389,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
         boolean doDescend = maxDepth == null || maxDepth > 0;
         Integer nextLevelMaxDepth = maxDepth != null ? maxDepth - 1 : null;
-        for (DerivedUnit derivedUnit : sob.collectDerivedUnits()) {
+        for (DerivedUnit derivedUnit : sob.collectDerivedUnits(false)) {
             if(!derivedUnit.isPublish()){
                 continue;
             }
