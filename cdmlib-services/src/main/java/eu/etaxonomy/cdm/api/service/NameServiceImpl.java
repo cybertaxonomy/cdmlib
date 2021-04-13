@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -240,7 +241,7 @@ public class NameServiceImpl
     @Transactional(readOnly = false)
     public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
             String accessionNumber, String barcode, String catalogNumber,
-            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus){
+            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus, URI preferredStableUri){
         UpdateResult result = new UpdateResult();
 
         DerivedUnit baseSpecimen = HibernateProxyHelper.deproxy(occurrenceService.load(baseDesignation.getTypeSpecimen().getUuid(), Arrays.asList("collection")), DerivedUnit.class);
@@ -254,6 +255,7 @@ public class NameServiceImpl
         }
         for (SpecimenOrObservationBase original : derivedFrom.getOriginals()) {
             DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
+
         }
         duplicate.setAccessionNumber(accessionNumber);
         duplicate.setBarcode(barcode);
@@ -262,6 +264,7 @@ public class NameServiceImpl
         SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
         typeDesignation.setTypeSpecimen(duplicate);
         typeDesignation.setTypeStatus(typeStatus);
+        typeDesignation.getTypeSpecimen().setPreferredStableUri(preferredStableUri);
 
         TaxonName name = load(nameUuid);
         name.getTypeDesignations().add(typeDesignation);
@@ -1312,5 +1315,7 @@ public class NameServiceImpl
         M bestMatching = matchingList.iterator().next();
         return bestMatching;
     }
+
+
 
 }
