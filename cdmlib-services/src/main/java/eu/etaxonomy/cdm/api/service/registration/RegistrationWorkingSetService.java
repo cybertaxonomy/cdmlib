@@ -70,14 +70,14 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "typifiedNames.typeDesignations", // important !!
             "typeSpecimen",
             "typeName.$",
-            "source.annotations",
-            "source.links",
-            "source.markers",
+            "designationSource.annotations",
+            "designationSource.links",
+            "designationSource.markers",
             "annotations",   // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "registrations" // DerivedUnitConverter.copyPropertiesTo(TARGET n));
             )
-            .extend("source.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+            .extend("designationSource.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
     public static final EntityInitStrategy NAME_INIT_STRATEGY = new EntityInitStrategy(
                 "$",
