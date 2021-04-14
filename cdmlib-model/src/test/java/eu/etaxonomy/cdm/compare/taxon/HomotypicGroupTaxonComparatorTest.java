@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
@@ -458,7 +459,7 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
     @Test
     public void testCompare_hybrids() {
 
-        String name2 = "Opuntia ×rubiflora Davidson";
+        String name2 = "Opuntia "+UTF8.HYBRID+"rubiflora Davidson";
         String name3 = "Opuntia rubiflora Davidson";
         List<String> strList = Arrays.asList(new String[]{name2, name3});
         Collections.sort(strList);
