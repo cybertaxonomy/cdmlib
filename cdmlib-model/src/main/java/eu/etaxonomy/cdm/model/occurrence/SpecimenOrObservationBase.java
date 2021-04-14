@@ -587,7 +587,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
             for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 derivedUnits.add(derivative);
                 if(addFullSubTree) {
-                    derivedUnits.addAll(derivative.collectDerivedUnits(false));
+                    derivedUnits.addAll(derivative.collectDerivedUnits(addFullSubTree));
                 }
             }
         }
