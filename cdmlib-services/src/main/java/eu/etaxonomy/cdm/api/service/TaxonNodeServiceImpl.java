@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1123,14 +1124,20 @@ public class TaxonNodeServiceImpl
     public List<TaxonDistributionDTO> getTaxonDistributionDTO(List<UUID> nodeUuids, List<String> propertyPaths,
             Authentication authentication, boolean openChildren, TaxonNodeSortMode sortMode){
 
+        nodeUuids = nodeUuids.stream().distinct().collect(Collectors.toList());
         List<TaxonNode> nodes = new ArrayList<>();
-        if (openChildren){
-            List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
 
+        List<TaxonNode> parentNodes = load(nodeUuids, propertyPaths);
+        if (sortMode != null){
+            parentNodes.sort(sortMode.comparator());
+        }
+        if (openChildren){
+            //TODO we could remove nodes which are children of other nodes in parentNodes list here as they are duplicates
             for (TaxonNode node: parentNodes){
                 if (node == null){
                     continue;
                 }
+                nodes.add(node);
                 List<TaxonNode> children = new ArrayList<>();
                 children.addAll(loadChildNodesOfTaxonNode(node,
                         propertyPaths, true,  true, sortMode));
@@ -1140,6 +1147,8 @@ public class TaxonNodeServiceImpl
                     }
                 }
             }
+        }else{
+            nodes.addAll(nodes);
         }
 
         List<TaxonDistributionDTO> result = new ArrayList<>();
