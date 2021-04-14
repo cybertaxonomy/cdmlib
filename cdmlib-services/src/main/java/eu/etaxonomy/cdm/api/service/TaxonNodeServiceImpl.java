@@ -1134,7 +1134,11 @@ public class TaxonNodeServiceImpl
                 List<TaxonNode> children = new ArrayList<>();
                 children.addAll(loadChildNodesOfTaxonNode(node,
                         propertyPaths, true,  true, sortMode));
-                nodes.addAll(children);
+                for (TaxonNode child: children){
+                    if (!nodes.contains(child)){
+                        nodes.add(child);
+                    }
+                }
             }
         }
 
