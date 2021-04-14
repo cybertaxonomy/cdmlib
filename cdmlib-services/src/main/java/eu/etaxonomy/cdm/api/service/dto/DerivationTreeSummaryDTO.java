@@ -68,7 +68,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
 
         DerivationTreeSummaryDTO derivateDataDTO = new DerivationTreeSummaryDTO();
 
-        Collection<DerivedUnit> childDerivates = specimenOrObservation.collectDerivedUnits(false);
+        Collection<DerivedUnit> childDerivates = specimenOrObservation.collectDerivedUnits(null);
         for (DerivedUnit childDerivate : childDerivates) {
             // assemble molecular data
             //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...
