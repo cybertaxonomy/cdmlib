@@ -164,10 +164,10 @@ public class TaxonNodeServiceImpl
 
         HHH_9751_Util.removeAllNull(childNodes);
 
-//        if (sortMode != null){
-//            Comparator<TaxonNode> comparator = sortMode.newComparator();
-//        	Collections.sort(childNodes, comparator);
-//        }
+        if (recursive == false && sortMode != null){
+            Comparator<TaxonNode> comparator = sortMode.comparator();
+        	Collections.sort(childNodes, comparator);
+        }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }
