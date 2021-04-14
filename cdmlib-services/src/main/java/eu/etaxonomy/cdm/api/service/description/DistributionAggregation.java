@@ -76,8 +76,6 @@ public class DistributionAggregation
 
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
-//            "description.markers.markerType",
-//            "description.elements.markers.markerType",
             "description.elements.area",
             "description.elements.status",
             "description.elements.sources.citation.authorship",
@@ -619,7 +617,7 @@ public class DistributionAggregation
             }
             if(!contained) {
                 try {
-                    oldSources.add((DescriptionElementSource)newSource.clone());
+                    oldSources.add(newSource.clone());
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     throw new RuntimeException(e);

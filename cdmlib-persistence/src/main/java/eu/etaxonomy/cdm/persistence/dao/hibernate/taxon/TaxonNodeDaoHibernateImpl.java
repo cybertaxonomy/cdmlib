@@ -338,7 +338,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     	        }
     	        if (child.hasChildNodes()){
     	            previousResult = listChildrenOfRecursive(child, previousResult, pageSize, pageIndex,
-    	                    recursive, includeUnpublished, propertyPaths,comparator);
+    	                    recursive, includeUnpublished, propertyPaths, comparator);
     	        }
     	    }
     	    return previousResult;
