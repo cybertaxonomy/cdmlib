@@ -319,9 +319,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private List<TaxonNode> listChildrenOfRecursive(TaxonNode node, List<TaxonNode> previousResult, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator){
 
-        if (!previousResult.contains(node)){
-            previousResult.add(node);
-        }
         if (recursive == true && comparator == null ){
     		Criteria crit = childrenOfCriteria(node, includeUnpublished);
 
