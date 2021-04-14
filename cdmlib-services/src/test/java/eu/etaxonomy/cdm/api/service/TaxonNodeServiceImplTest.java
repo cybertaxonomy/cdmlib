@@ -1059,7 +1059,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
     @Test
     @DataSet("TaxonNodeServiceImplTest.xml")
-    public void testgetTaxonDistributionDTO(){
+    public void testGetTaxonDistributionDTO(){
         List<UUID> uuidList = Arrays.asList(node1Uuid, node2Uuid, node4Uuid);
         List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true);
         Assert.assertEquals("Only 1 node has a child", 1, dtos.size());  //for some reason only the children are selected but not the parent itself, this may change in future
