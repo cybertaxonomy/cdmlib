@@ -1062,8 +1062,13 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     public void testGetTaxonDistributionDTO(){
         List<UUID> uuidList = Arrays.asList(node1Uuid, node2Uuid, node4Uuid);
         List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true);
-        Assert.assertEquals("Only 1 node has a child", 1, dtos.size());  //for some reason only the children are selected but not the parent itself, this may change in future
-        Assert.assertEquals(node4Uuid, dtos.get(0).getTaxonNodeDto().getUuid());
+        Assert.assertEquals("Children should be deduplicated", 3, dtos.size());
+        //note: the following ordering is not given by definition (as the method does not guarantee a certain order)
+        //      but is used as pseudo test here for the correctnes of the algorithm as it is currently expected
+        Assert.assertEquals("First node comes first", node1Uuid, dtos.get(0).getTaxonNodeDto().getUuid());
+        Assert.assertEquals("Child of first node comes second", node4Uuid, dtos.get(1).getTaxonNodeDto().getUuid());
+        Assert.assertEquals("Second node comes third", node2Uuid, dtos.get(2).getTaxonNodeDto().getUuid());
+        //third node is child of firt node and therefore came second already
     }
 
     @Test

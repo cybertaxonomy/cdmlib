@@ -1134,7 +1134,7 @@ public class TaxonNodeServiceImpl
         if (openChildren){
             //TODO we could remove nodes which are children of other nodes in parentNodes list here as they are duplicates
             for (TaxonNode node: parentNodes){
-                if (node == null){
+                if (node == null || nodes.contains(node)){
                     continue;
                 }
                 nodes.add(node);
