@@ -28,7 +28,7 @@
     <!-- also find the implementation of ITaxonNodeComparator (otherwise it is not found by a component scan)  -->
     <bean name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.compare.taxon.TaxonNodeByNameComparator"/>
     <!-- find the implementation of UserHelper which is not covered by a component scan  -->
-    <bean name="cdmUserHelper" class="eu.etaxonomy.cdm.api.utility.CdmUserHelper"/>
+    <bean name="cdmUserHelper" class="eu.etaxonomy.cdm.api.util.CdmUserHelper"/>
 
     <import resource="classpath:/eu/etaxonomy/cdm/services_security_base.xml"/>
     

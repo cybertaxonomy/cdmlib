@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -17,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -34,9 +33,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SubtreeCloneConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeNaturalComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -46,7 +45,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
@@ -65,7 +63,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author n.hoffmann
  * @since Dec 16, 2010
  */
-//@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@SpringBeanByType
@@ -119,7 +116,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private Taxon t1;
 	private Taxon t2;
 	private Taxon t4;
-//	private Synonym s1;
 	private SynonymType synonymType;
 	private Reference reference;
 	private String referenceDetail;
@@ -144,7 +140,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node2 = taxonNodeService.load(node2Uuid);
 		node4 = taxonNodeService.load(node4Uuid);
 		reference = referenceService.load(referenceUuid);
-//		synonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 		synonymType = CdmBase.deproxy(termService.load(SynonymType.uuidHomotypicSynonymOf), SynonymType.class) ;
 		referenceDetail = "test";
 
@@ -760,8 +755,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     @DataSet("TaxonNodeServiceImplTest.testSetSecundumForSubtree.xml")
     public void testSetSecundumForSubtreeNoOverwrite(){
         UUID subTreeUuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
-//        UUID taxon1uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
-//        UUID taxon5uuid = UUID.fromString("d0b99fee-a783-4dda-b8a2-8960703cfcc2");
         Reference newSec = referenceService.find(UUID.fromString("1d3fb074-d7ba-47e4-be94-b4cb1a99afa7"));
 
         //assert current state
@@ -1062,6 +1055,21 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
                 publish, taxonService.find(7).isPublish());
     }
 
+
+    @Test
+    @DataSet("TaxonNodeServiceImplTest.xml")
+    public void testGetTaxonDistributionDTO(){
+        List<UUID> uuidList = Arrays.asList(node1Uuid, node2Uuid, node4Uuid);
+        List<TaxonDistributionDTO> dtos = this.taxonNodeService.getTaxonDistributionDTO(uuidList, null, true);
+        Assert.assertEquals("Children should be deduplicated", 3, dtos.size());
+        //note: the following ordering is not given by definition (as the method does not guarantee a certain order)
+        //      but is used as pseudo test here for the correctnes of the algorithm as it is currently expected
+        Assert.assertEquals("First node comes first", node1Uuid, dtos.get(0).getTaxonNodeDto().getUuid());
+        Assert.assertEquals("Child of first node comes second", node4Uuid, dtos.get(1).getTaxonNodeDto().getUuid());
+        Assert.assertEquals("Second node comes third", node2Uuid, dtos.get(2).getTaxonNodeDto().getUuid());
+        //third node is child of firt node and therefore came second already
+    }
+
     @Test
     @DataSet("TaxonNodeServiceImplTest-testFindCommonParentNode.xml")
     public void testFindCommonParentNode(){
@@ -1224,43 +1232,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         commonParentNodeDto = taxonNodeService.findCommonParentDto(nodes);
         assertEquals(classificationRootNodeDto.getUuid(), commonParentNodeDto.getUuid());
     }
-
-    @Test
-    @DataSet
-    public void testSaveNewTaxonNode(){
-        //make the sec reference persistent
-        Person secAndNameAuthor = (Person)agentService.find(person1uuid);
-        Reference sec = ReferenceFactory.newBook();
-        sec.setAuthorship(secAndNameAuthor);
-        sec = referenceService.save(sec);
-        UUID secUuid = sec.getUuid();
-
-        commitAndStartNewTransaction();
-        sec = referenceService.load(secUuid);
-        secAndNameAuthor = HibernateProxyHelper.deproxy(agentService.load(person1uuid), Person.class);
-        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        taxonName.setCombinationAuthorship(secAndNameAuthor);
-        Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
-        node2 = taxonNodeService.find(node2Uuid);
-        TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
-        taxonNodeService.saveNewTaxonNode(newTaxonNode);
-    }
-
-    @Test
-    @DataSet
-    //test for #8857, same as #testSaveNewTaxonNode() but with reference as duplicate
-    public void testSaveNewTaxonNodeReference(){
-        Reference sec = referenceService.find(referenceUuid);
-        commitAndStartNewTransaction();
-
-        TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-        taxonName.setNomenclaturalReference(sec);
-        Taxon newTaxon = Taxon.NewInstance(taxonName, sec);
-        node2 = taxonNodeService.find(node2Uuid);
-        TaxonNode newTaxonNode = node2.addChildTaxon(newTaxon, null, null);
-        taxonNodeService.saveNewTaxonNode(newTaxonNode);
-    }
-
 
     @Test
     @DataSet("ClassificationServiceImplTest.xml")

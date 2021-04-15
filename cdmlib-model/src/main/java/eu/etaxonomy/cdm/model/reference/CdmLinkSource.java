@@ -51,7 +51,7 @@ public class CdmLinkSource extends CdmLinkBase {
 //    @XmlIDREF
 //    @XmlSchemaType(name = "IDREF")
 //    @OneToOne(fetch = FetchType.LAZY, mappedBy="cdmSource")
-//    private OriginalSourceBase<?> source;
+//    private OriginalSourceBase source;
 
 // **************** Targets ************************/
 
@@ -114,7 +114,7 @@ public class CdmLinkSource extends CdmLinkBase {
         return result;
     }
 
-//    public CdmLinkSource clone(OriginalSourceBase<?> source) {
+//    public CdmLinkSource clone(OriginalSourceBase source) {
 //        CdmLinkSource result;
 //        try {
 //            result = (CdmLinkSource)super.clone();

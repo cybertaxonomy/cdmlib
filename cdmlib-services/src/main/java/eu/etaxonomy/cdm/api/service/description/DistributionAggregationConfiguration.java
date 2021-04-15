@@ -64,8 +64,6 @@ public class DistributionAggregationConfiguration
         return result;
     }
 
-
-
 // ************************ CONSTRUCTOR *****************************/
 
     private DistributionAggregationConfiguration(List<AggregationMode> aggregationModes, List<UUID> superAreas,

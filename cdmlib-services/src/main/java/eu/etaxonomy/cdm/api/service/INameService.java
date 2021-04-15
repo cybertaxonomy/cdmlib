@@ -27,7 +27,8 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
-import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -83,7 +84,7 @@ public interface INameService
 	 */
     public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
             String accessionNumber, String barcode, String catalogNumber,
-            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus);
+            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus, URI preferredStableUri);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from

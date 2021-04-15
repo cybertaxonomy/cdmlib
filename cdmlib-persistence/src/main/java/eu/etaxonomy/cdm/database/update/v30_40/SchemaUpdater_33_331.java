@@ -98,11 +98,6 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 	}
 
 	@Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_331_34.NewInstance();
-	}
-
-	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_31_33.NewInstance();
 	}

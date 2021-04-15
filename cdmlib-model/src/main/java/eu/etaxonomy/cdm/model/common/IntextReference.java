@@ -91,7 +91,7 @@ public class IntextReference extends CdmLinkBase {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private OriginalSourceBase<?> source;
+    private OriginalSourceBase source;
 
     @XmlElement(name = "Media")
     @XmlIDREF
@@ -264,7 +264,7 @@ public class IntextReference extends CdmLinkBase {
         }else if (target instanceof Reference){
             this.reference = (Reference)target;
         }else if (target instanceof OriginalSourceBase){
-            this.source = (OriginalSourceBase<?>)target;
+            this.source = (OriginalSourceBase)target;
         }else if (target instanceof Media){
             this.media = (Media)target;
         }else if (target instanceof PolytomousKey){

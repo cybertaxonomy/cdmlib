@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
  *
  * @author a.kohlbecker
  * @since Dec 10, 2012
- *
  */
 public class PagerUtils {
 
@@ -105,5 +104,4 @@ public class PagerUtils {
             return fullList.subList(fullList.size(), fullList.size()); //empty list
         }
     }
-
 }

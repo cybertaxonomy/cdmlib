@@ -9,20 +9,23 @@
 package eu.etaxonomy.cdm.compare.taxon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections4.comparators.ReverseComparator;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -429,5 +432,53 @@ public class HomotypicGroupTaxonComparatorTest extends EntityTestBase {
         Assert.assertEquals(botName1, list.get(0).getName());
         Assert.assertEquals(botName3, list.get(1).getName());
         Assert.assertEquals(botName5, list.get(2).getName());
+    }
+
+    @Test
+    public void testCompare_NomenclaturalStanding() {
+
+        //default behavior without nomenclatural standing
+        HomotypicalGroup homotypicalGroup = botName2.getHomotypicalGroup();
+        taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName5, null, null, homotypicalGroup);
+        list.addAll(taxon1.getSynonyms());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("Bbb should come before Eee in same homotypic group", botName2, list.get(0).getName());
+        Assert.assertEquals("Bbb should come before Eee in same homotypic group", botName5, list.get(1).getName());
+
+        //with nomenclatural standing
+        botName2.addRelationshipToName(botName3, NameRelationshipType.MISSPELLING());
+        Collections.sort(list, new HomotypicGroupTaxonComparator(null));
+
+        Assert.assertEquals("Invalid designation should come after valid name", botName5, list.get(0).getName());
+        Assert.assertEquals("Invalid designation should come after valid name", botName2, list.get(1).getName());
+
+    }
+
+    @Test
+    public void testCompare_hybrids() {
+
+        String name2 = "Opuntia "+UTF8.HYBRID+"rubiflora Davidson";
+        String name3 = "Opuntia rubiflora Davidson";
+        List<String> strList = Arrays.asList(new String[]{name2, name3});
+        Collections.sort(strList);
+        Assert.assertEquals("Non hybrid name should come first in alphabetical order", name3, strList.get(0));
+
+        botName2 = TaxonNameFactory.PARSED_BOTANICAL(name2);
+        botName3 = TaxonNameFactory.PARSED_BOTANICAL(name3);
+        taxon1.addHeterotypicSynonymName(botName2);
+        taxon1.addHeterotypicSynonymName(botName3, null, null, botName2.getHomotypicalGroup());
+        list.addAll(taxon1.getSynonyms());
+        HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(null);
+        Collections.sort(list, comparator);
+
+        Assert.assertEquals("Hybrid should come after non-hybrid", botName3, list.get(0).getName());
+        Assert.assertEquals("Hybrid should come after non-hybrid", botName2, list.get(1).getName());
+
+        ReverseComparator<TaxonBase<?>> reverseComparator = new ReverseComparator<>(comparator);
+        Collections.sort(list, reverseComparator);
+        Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName2, list.get(0).getName());
+        Assert.assertEquals("Hybrid should come before non-hybrid in reverse order", botName3, list.get(1).getName());
     }
 }

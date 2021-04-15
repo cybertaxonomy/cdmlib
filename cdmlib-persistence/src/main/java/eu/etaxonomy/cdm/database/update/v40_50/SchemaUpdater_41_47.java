@@ -473,11 +473,6 @@ public class SchemaUpdater_41_47 extends SchemaUpdaterBase {
         SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonNameBase", -99);
     }
 
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_47_50.NewInstance() ;
-	}
-
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_40_41.NewInstance();

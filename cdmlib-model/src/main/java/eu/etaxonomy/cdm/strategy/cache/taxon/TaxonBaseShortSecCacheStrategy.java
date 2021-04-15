@@ -58,15 +58,9 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 		return title;
 	}
 
-	/**
-	 * @param taxonBase
-	 * @param title
-	 * @return
-	 */
 	private String getSecundumPart(T taxonBase) {
 		String result = "???";
-		Reference sec = taxonBase.getSec();
-		sec = HibernateProxyHelper.deproxy(sec, Reference.class);
+		Reference sec = HibernateProxyHelper.deproxy(taxonBase.getSec());
 		if (sec != null){
 			if (sec.isProtectedTitleCache()){
 				return sec.getTitleCache();
@@ -119,16 +113,27 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 				if (sec.getYear() != null && result != null){
 					result = result.concat(" (" + sec.getYear()+")");
 				}
+			}else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
+                    && titleExists(sec)){
+				result = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
+				String secDate = sec.getYear();
+                if (isBlank(secDate) && sec.getAccessed() != null){
+                    secDate = String.valueOf(sec.getAccessed().getYear());
+                }
+				if (isNotBlank(secDate)){
+                    result = result.concat(" (" + secDate+")");
+                }
 			}else{
-				result = taxonBase.getSec().getTitleCache();
+			    result = sec.getTitleCache();
 			}
 		}
 		return result;
 	}
 
-	/**
-	 * @param name
-	 */
+    private boolean titleExists(Reference ref) {
+        return isNotBlank(ref.getAbbrevTitle()) || isNotBlank(ref.getTitle());
+    }
+
 	private String getNamePart(TaxonBase<?> taxonBase) {
 		TaxonName taxonName = taxonBase.getName();
 		String result = taxonName.getTitleCache();

@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
-import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
@@ -110,6 +110,7 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -3063,16 +3064,15 @@ public class TaxonServiceImpl
     }
 
     private DeleteResult isDeletableForSynonym(Set<CdmBase> references, SynonymDeletionConfigurator config){
-        String message;
+
         DeleteResult result = new DeleteResult();
         for (CdmBase ref: references){
-            if (!(ref instanceof Taxon || ref instanceof TaxonName )){
-                message = "The Synonym can't be deleted as long as it is referenced by " + ref.getClass().getSimpleName() + " with id "+ ref.getId();
+            if (!(ref instanceof Taxon || ref instanceof TaxonName || ref instanceof SecundumSource)){
+                String message = "The Synonym can't be deleted as long as it is referenced by " + ref.getClass().getSimpleName() + " with id "+ ref.getId();
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(ref);
                 result.setAbort();
             }
-
         }
 
         return result;
@@ -3082,7 +3082,7 @@ public class TaxonServiceImpl
         String message = null;
         DeleteResult result = new DeleteResult();
         for (CdmBase ref: references){
-            if (!(ref instanceof TaxonName)){
+            if (!(ref instanceof TaxonName || ref instanceof SecundumSource)){
             	message = null;
                 if (!config.isDeleteSynonymRelations() && (ref instanceof Synonym)){
                     message = "The taxon can't be deleted as long as it has synonyms.";
@@ -3092,7 +3092,6 @@ public class TaxonServiceImpl
                 }
 
                 if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
-
                     message = "The taxon can't be deleted as long as it belongs to a taxon node.";
                 }
                 if (ref instanceof TaxonNode && config.getClassificationUuid() != null && !config.isDeleteInAllClassifications() && !((TaxonNode)ref).getClassification().getUuid().equals(config.getClassificationUuid())){

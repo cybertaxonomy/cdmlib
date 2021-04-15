@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.TaxonGraphHibernateListener;
  * <code>TaxonGraphBeforeTransactionCompleteProcess</code> is instantiated and
  * used in the {@link TaxonGraphHibernateListener}.
  *
- * 
+ *
  * @author a.kohlbecker
  * @since Sep 26, 2018
  */
@@ -117,9 +117,9 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
             hql = "COUNT(tr.id)";
         } else {
             hql += "SELECT new eu.etaxonomy.cdm.persistence.dto.TaxonGraphEdgeDTO("
-                    + "fromT.uuid, fromN.titleCache, fromN_R.idInVocabulary, fromN_R.orderIndex, "
-                    + "toT.uuid, toN.titleCache, toN_R.idInVocabulary, toN_R.orderIndex, "
-                    + "c.uuid, c.titleCache"
+                    + " fromT.uuid, fromN.titleCache, fromN_R.idInVocabulary, fromN_R.orderIndex, "
+                    + " toT.uuid, toN.titleCache, toN_R.idInVocabulary, toN_R.orderIndex, "
+                    + " c.uuid, c.titleCache"
                     + ")";
         }
         hql += " FROM TaxonRelationship as tr "
@@ -162,7 +162,6 @@ public class TaxonGraphDaoHibernateImpl extends AbstractHibernateTaxonGraphProce
         }
         return query;
     }
-
 
     @Override
     public List<TaxonGraphEdgeDTO> edges(TaxonName fromName, TaxonName toName, boolean includeUnpublished) throws TaxonGraphException{

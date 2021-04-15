@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.io.FileNotFoundException;
@@ -35,10 +34,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
-	IPreferenceDao dao;
+	private IPreferenceDao dao;
 
 	@SpringBeanByType
-	IClassificationDao classificationDao;
+	private IClassificationDao classificationDao;
 
 /************ TESTS ********************************/
 
@@ -62,7 +61,6 @@ public class PreferenceDaoTest  extends CdmTransactionalIntegrationTest {
         pref = dao.get(key);
         Assert.assertNull("CdmPreference for given key must not exist", pref);
     }
-
 
     @Test
     @DataSet

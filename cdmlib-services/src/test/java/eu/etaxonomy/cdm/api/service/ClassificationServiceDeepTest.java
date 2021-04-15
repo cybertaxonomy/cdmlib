@@ -49,9 +49,9 @@ public class ClassificationServiceDeepTest extends CdmTransactionalIntegrationTe
             "childNodes",
             "childNodes.taxon",
             "childNodes.taxon.name",
-            "taxon.sec",
+            "taxon.secSource.citation",
             "taxon.name.*"
-            });
+    });
 
     @Test
     @DataSet

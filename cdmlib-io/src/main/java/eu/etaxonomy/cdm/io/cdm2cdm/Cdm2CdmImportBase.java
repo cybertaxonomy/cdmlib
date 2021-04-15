@@ -84,10 +84,13 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.permission.User;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -563,10 +566,30 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected DescriptionElementSource handlePersistedDescriptionElementSource(DescriptionElementSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
-        DescriptionElementSource result = handlePersisted((OriginalSourceBase)source);
+    protected <T extends NamedSourceBase> T handlePersisted(NamedSourceBase source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        T result = handlePersisted((OriginalSourceBase)source);
         //complete
         result.setNameUsedInSource(detache(result.getNameUsedInSource()));
+        return result;
+    }
+
+    protected NamedSource handlePersistedNamedSource(NamedSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        NamedSource result = handlePersisted((NamedSourceBase)source);
+        //complete
+        return result;
+    }
+
+    protected SecundumSource handlePersistedSecundumSource(DescriptionElementSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        SecundumSource result = handlePersisted((NamedSourceBase)source);
+        //TODO correct?
+        result.setSourcedTaxon(detache(result.getSourcedTaxon()));
+        return result;
+    }
+
+    protected DescriptionElementSource handlePersistedDescriptionElementSource(DescriptionElementSource source) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+        DescriptionElementSource result = handlePersisted((NamedSourceBase)source);
+        //TODO correct?
+        detache(result.getSourcedElement()).addSource(result);
         return result;
     }
 
@@ -754,7 +777,7 @@ public abstract class Cdm2CdmImportBase
         return result;
     }
 
-    protected <T extends SourcedEntityBase> T  handlePersisted(SourcedEntityBase sourcedEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
+    protected <T extends SourcedEntityBase<?>> T  handlePersisted(SourcedEntityBase sourcedEntity) throws IllegalAccessException, InvocationTargetException, NoSuchFieldException, SecurityException, IllegalArgumentException, NoSuchMethodException {
         int originalId = sourcedEntity.getId();
         T result = handlePersisted((AnnotatableEntity)sourcedEntity);
         //complete
@@ -765,7 +788,7 @@ public abstract class Cdm2CdmImportBase
             }
             if (getState().getConfig().isAddSources()){
                 Reference sourceRef = getSourceReference(getState());
-                OriginalSourceBase<?> newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
+                OriginalSourceBase newSource = result.addImportSource(String.valueOf(originalId), sourcedEntity.getClass().getSimpleName(),
                         sourceRef, null);
                 getCommonService().save(newSource);
                 addExistingObject(newSource);
@@ -777,14 +800,14 @@ public abstract class Cdm2CdmImportBase
     /**
      * @param sources
      */
-    private void filterImportSources(Set<OriginalSourceBase<?>> sources) {
-        Set<OriginalSourceBase<?>> toDelete = new HashSet<>();
-        for (OriginalSourceBase<?> osb: sources){
+    private void filterImportSources(Set<? extends OriginalSourceBase> sources) {
+        Set<OriginalSourceBase> toDelete = new HashSet<>();
+        for (OriginalSourceBase osb: sources){
             if (osb.getType() == OriginalSourceType.Import){
                 toDelete.add(osb);
             }
         }
-        for (OriginalSourceBase<?> osb: toDelete){
+        for (OriginalSourceBase osb: toDelete){
             sources.remove(osb);
         }
     }

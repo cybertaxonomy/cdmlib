@@ -155,7 +155,7 @@ public abstract class DescriptionElementBase
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourcedElement", orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     private Set<DescriptionElementSource> sources = new HashSet<>();
@@ -405,6 +405,7 @@ public abstract class DescriptionElementBase
     public void addSource(DescriptionElementSource source) {
         if (source != null){
             this.sources.add(source);
+            source.setSourcedElement(this);
         }
     }
 

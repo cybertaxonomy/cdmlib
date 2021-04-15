@@ -19,6 +19,7 @@ import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
+import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -61,6 +62,9 @@ public interface ICdmGenericDao {
 	public List<CdmBase> getCdmBasesWithItemInCollection(Class<?> itemClass,
 	        Class<?> clazz, String propertyName, CdmBase item, Integer limit);
 
+	public List<ReferencingObjectDto> getCdmBasesWithItemInCollectionDto(Class<?> itemClass,
+            Class<? extends CdmBase> clazz, String propertyName, CdmBase item, Integer limit);
+
 	/**
 	 * Returns all classes that are persisted via the persisting framework.
 	 * E.g. in hibernate these are all classes registered in the session factory
@@ -81,6 +85,8 @@ public interface ICdmGenericDao {
 	 * @return
 	 */
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
+
+	public Set<ReferencingObjectDto> getReferencingObjectsDto(CdmBase referencedCdmBase);
 
 	/**
 	 * Merges cdmBase2 into cdmBase1 and rearranges all reference to cdmBase2 by letting them point to
@@ -321,4 +327,5 @@ public interface ICdmGenericDao {
 
     public List<UUID> listUuid(Class<? extends CdmBase> clazz);
 
+    public UUID refresh(CdmBase persistentObject) throws DataAccessException;
 }

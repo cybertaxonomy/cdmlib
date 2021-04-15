@@ -64,13 +64,14 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -266,9 +267,10 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         IBook proxy = getUninitializedDetachedProxy(Reference.class,(Reference)sec);
         assert !Hibernate.isInitialized(proxy);
-        Field secField = TaxonBase.class.getDeclaredField("sec");
+        SecundumSource source = taxon.getSecSource();
+        Field secField = OriginalSourceBase.class.getDeclaredField("citation");
         secField.setAccessible(true);
-        secField.set(taxon, proxy);
+        secField.set(source, proxy);
 
         TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
         assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.publishedInCitation should be null",taxonConcept.getPublishedInCitation());

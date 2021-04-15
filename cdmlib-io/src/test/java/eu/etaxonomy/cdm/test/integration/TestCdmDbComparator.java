@@ -183,7 +183,6 @@ public class TestCdmDbComparator {
 //			"TaxonName_Extension",
 //			"TaxonName_HybridRelationship",
 //			"TaxonName_Marker",
-//			"TaxonName_NomenclaturalStatus",
 //			"TaxonName_OriginalSource",
 //			"TaxonName_Rights",
 //			"TaxonName_TypeDesignationBase",

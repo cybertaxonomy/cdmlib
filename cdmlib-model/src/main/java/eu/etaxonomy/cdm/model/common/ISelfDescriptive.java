@@ -19,14 +19,14 @@ public interface ISelfDescriptive {
 	 * the class of the object.
 	 *
 	 */
-	String getUserFriendlyTypeName();
+	public String getUserFriendlyTypeName();
 
 
 	/**
 	 * A user-friendly description of the object itself. Default:
 	 * {@link Object#toString()}.
 	 */
-	String getUserFriendlyDescription();
+	public String getUserFriendlyDescription();
 
 
 	/**
@@ -35,6 +35,6 @@ public interface ISelfDescriptive {
 	 *
 	 * @param fieldName
 	 */
-	String getUserFriendlyFieldName(String field);
+	public String getUserFriendlyFieldName(String field);
 
 }

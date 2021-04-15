@@ -27,11 +27,12 @@ import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurato
 import eu.etaxonomy.cdm.api.service.config.SpecimenDeleteConfigurator;
 import eu.etaxonomy.cdm.api.service.dto.DerivedUnitDTO;
 import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.MediaDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
-import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -406,7 +407,7 @@ public interface IOccurrenceService
      * @param derivedUnit
      * @return a DTO with all the assembled information
      */
-    public DerivedUnitDTO assembleDerivedUnitDTO(DerivedUnit derivedUnit);
+    public SpecimenOrObservationBaseDTO assembleDerivedUnitDTO(DerivedUnit derivedUnit);
 
     /**
      * Deletes the specified specimen according to the setting in the {@link SpecimenDeleteConfigurator}.<br>
@@ -673,6 +674,22 @@ public interface IOccurrenceService
     SpecimenOrObservationBaseDTO findByGeneticAccessionNumber(String dnaAccessionNumber, List<OrderHint> orderHints);
 
     /**
+     * Recursively searches all {@link DerivationEvent}s to find all "originals" ({@link SpecimenOrObservationBase})
+     * from which this DerivedUnit was derived until all FieldUnits are found.
+     * <p>
+     * <b>NOTE:</b> The recursive search still is a bit incomplete and may miss originals in the rare case where a
+     * derivative has more than one original. (see https://dev.e-taxonomy.eu/redmine/issues/9253)
+     *
+     * @param derivedUnitDTO
+     *  The DerivedUnitDTO to start the search from.
+     * @param alreadyCollectedSpecimen
+     *  A map to hold all originals that have been sees during the recursive walk.
+     * @return
+     *  The collection of all Field Units that are accessible from the derivative from where the search was started.
+     */
+    public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(UUID unitUUID);
+
+    /**
      * Finds the units which are associated to a taxon
      * (<code>associatedTaxonUuid</code>) and returns all related root units
      * with the derivation branches up to the derivatives associated with the
@@ -772,5 +789,7 @@ public interface IOccurrenceService
      * @return
      */
     FieldUnitDTO loadFieldUnitDTO(UUID derivedUnitUuid);
+
+    Pager<MediaDTO> getMediaDTOs(SpecimenOrObservationBase<?> occurence, Integer pageSize, Integer pageNumber);
 
 }

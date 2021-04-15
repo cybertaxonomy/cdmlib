@@ -252,6 +252,12 @@ public class TaxonDescription
         return textData;
     }
 
+    @Override
+    public IDescribable<?> describedEntity(){
+        return this.taxon;
+    }
+
+
 //*********************** CLONE ********************************************************/
 
     /**

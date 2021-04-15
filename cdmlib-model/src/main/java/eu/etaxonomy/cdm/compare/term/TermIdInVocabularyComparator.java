@@ -16,13 +16,9 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 /**
  * @author k.luther
  * @since 08.06.2016
- *
  */
 public class TermIdInVocabularyComparator<T extends DefinedTermBase<?>> implements Comparator<T> {
 
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     @Override
     public int compare(T term1, T term2) {
         String label1;
@@ -44,7 +40,4 @@ public class TermIdInVocabularyComparator<T extends DefinedTermBase<?>> implemen
 
         return  label1.compareTo(label2);
     }
-
-
-
 }

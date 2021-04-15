@@ -168,7 +168,7 @@ public abstract class CsvDemoBase
 
 	protected String getSources(ISourceable<?> sourceable, CsvTaxExportConfiguratorRedlist config) {
 		String result = "";
-		for (IOriginalSource<?> source: sourceable.getSources()){
+		for (IOriginalSource source: sourceable.getSources()){
 			if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
 				if (source.getCitation() != null){
 					String ref = source.getCitation().getTitleCache();

@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 
 /**
@@ -43,18 +43,14 @@ public class DbOriginalNameMapper extends DbSingleAttributeExportMapperBase<DbEx
 		this.isCache = isCache;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
-		Object result = null;
 		if (cdmBase.isInstanceOf(OriginalSourceBase.class)){
-			OriginalSourceBase<?> source = CdmBase.deproxy(cdmBase, OriginalSourceBase.class);
+			OriginalSourceBase source = CdmBase.deproxy(cdmBase, OriginalSourceBase.class);
 			String nameString = source.getOriginalNameString();
 			TaxonName name = null;
-			if (source.isInstanceOf(DescriptionElementSource.class)){
-				DescriptionElementSource descSource = CdmBase.deproxy(source, DescriptionElementSource.class);
+			if (source.isInstanceOf(NamedSourceBase.class)){
+			    NamedSourceBase descSource = CdmBase.deproxy(source, NamedSourceBase.class);
 				name = descSource.getNameUsedInSource();
 			}
 

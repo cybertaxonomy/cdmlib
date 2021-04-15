@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -39,15 +38,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
-    IRegistrationDao registrationDao;
+    private IRegistrationDao registrationDao;
 
     @SpringBeanByType
-    IReferenceDao referenceDao;
-
-    @Before
-    public void setUp() {
-
-    }
+    private IReferenceDao referenceDao;
 
     @Test
     public void testListByReference() {
@@ -121,7 +115,6 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
         assertEquals("In total there should be 3 registrations", 3, registrationList.size());
 
-
         //... registration without name and type designation
         Registration emptyRegistration = Registration.NewInstance();
         registrationDao.save(emptyRegistration);
@@ -131,7 +124,6 @@ public class RegistrationDaoHibernateImplTest  extends CdmTransactionalIntegrati
         assertEquals(2, count);
         registrationList = registrationDao.list( fullNullReferenceOptional, null, null, null,null);
         assertEquals("In total there should be 4 registrations", 4, registrationList.size());
-
 
         //test name and type designation with same ref
         TaxonName additionalName = TaxonNameFactory.NewBotanicalInstance(null);

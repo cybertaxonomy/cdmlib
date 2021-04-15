@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
-
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,7 +46,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @XmlRootElement(name = "SourcedEntityBase")
 @MappedSuperclass
 @Audited
-public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? extends SourcedEntityBase<SOURCE>>>
+public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase>
         extends AnnotatableEntity
         implements ISourceable<SOURCE>{
 
@@ -81,6 +79,7 @@ public abstract class SourcedEntityBase<SOURCE extends OriginalSourceBase<? exte
 
 //********************* GETTER / SETTER *******************************/
 
+    @SuppressWarnings("unchecked")
     @Override
     public Set<SOURCE> getSources() {
         return (Set<SOURCE>)this.sources;

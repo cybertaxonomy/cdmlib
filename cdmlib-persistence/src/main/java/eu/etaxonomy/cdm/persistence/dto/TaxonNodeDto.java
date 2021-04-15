@@ -99,7 +99,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             classification = (Classification) taxonTreeNode;
         }
 
-
         if (taxon != null){
             setTitleCache(taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache());
             secUuid = taxon.getSec() != null ? taxon.getSec().getUuid() : null;
@@ -159,10 +158,7 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         rankOrderIndex =synonym.getNullSafeRank() != null ? synonym.getNullSafeRank().getOrderIndex() : null;
         taxonStatus = isHomotypic ? TaxonStatus.SynonymObjective : TaxonStatus.Synonym;
         classificationUUID = null;
-
-
     }
-
 
     public int getTaxonomicChildrenCount() {
         return taxonomicChildrenCount;
@@ -260,5 +256,4 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     public Map<Language, String> getStatusNote() {
         return Collections.unmodifiableMap(statusNote);
     }
-
 }

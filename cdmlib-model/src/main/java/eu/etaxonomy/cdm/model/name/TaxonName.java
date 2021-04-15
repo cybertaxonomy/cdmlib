@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.media.ExternalLink;
@@ -296,7 +295,7 @@ public class TaxonName
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
-    @OneToMany(fetch= FetchType.LAZY, orphanRemoval=true)
+    @OneToMany(fetch= FetchType.LAZY, mappedBy = "name", orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
     @NotNull
     @IndexedEmbedded(depth=1)
@@ -1808,11 +1807,14 @@ public class TaxonName
     @Override
     public void addStatus(NomenclaturalStatus nomStatus) {
         this.status.add(nomStatus);
+        if (!this.equals(nomStatus.getName())){
+            nomStatus.setName(this);
+        }
     }
     @Override
     public NomenclaturalStatus addStatus(NomenclaturalStatusType statusType, Reference citation, String microCitation) {
         NomenclaturalStatus newStatus = NomenclaturalStatus.NewInstance(statusType, citation, microCitation);
-        this.status.add(newStatus);
+        addStatus(newStatus);
         return newStatus;
     }
 
@@ -1832,7 +1834,7 @@ public class TaxonName
     }
 
     public void setStatus(Set<NomenclaturalStatus> nomStatus) throws SetterAdapterException {
-        new EntityCollectionSetterAdapter<TaxonName, NomenclaturalStatus>(TaxonName.class, NomenclaturalStatus.class, "status", "addStatus", "removeStatus").setCollection(this, status);
+        new EntityCollectionSetterAdapter<TaxonName, NomenclaturalStatus>(TaxonName.class, NomenclaturalStatus.class, "status", "addStatus", "removeStatus").setCollection(this, nomStatus);
     }
 
     /**
@@ -2165,7 +2167,7 @@ public class TaxonName
         return this.nomenclaturalSource;
     }
 
-    protected DescriptionElementSource getNomenclaturalSource(boolean createIfNotExist){
+    protected NomenclaturalSource getNomenclaturalSource(boolean createIfNotExist){
         if (this.nomenclaturalSource == null && createIfNotExist){
             setNomenclaturalSource(NomenclaturalSource.NewNomenclaturalInstance(this));
         }
@@ -2175,9 +2177,9 @@ public class TaxonName
     @Override
     public void setNomenclaturalSource(NomenclaturalSource nomenclaturalSource) throws IllegalArgumentException {
         //check state
-        if (nomenclaturalSource != null && !OriginalSourceType.NomenclaturalReference.equals(nomenclaturalSource.getType())
+        if (nomenclaturalSource != null && !OriginalSourceType.PrimaryTaxonomicSource.equals(nomenclaturalSource.getType())
                 ){
-            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.NomenclaturalReference.getLabel());
+            throw new IllegalArgumentException("Nomenclatural source must be of type " + OriginalSourceType.PrimaryTaxonomicSource.getLabel());
         }
         this.nomenclaturalSource = nomenclaturalSource;
         if (nomenclaturalSource != null && nomenclaturalSource.getSourcedName() != this){
@@ -2244,6 +2246,8 @@ public class TaxonName
             this.nomenclaturalSource = null;
         }
     }
+
+// *********************************************
 
     /**
      * Creates a new external link for given uri with default language description if description exists
@@ -3454,18 +3458,24 @@ public class TaxonName
 
         // Compare name cache of taxon names
         if (CdmUtils.isNotBlank(otherNameCache) && CdmUtils.isNotBlank(thisNameCache)) {
-            thisNameCache = normalizeName(thisNameCache);
-            otherNameCache = normalizeName(otherNameCache);
-            result = thisNameCache.compareTo(otherNameCache);
+            String thisNormalized = normalizeName(thisNameCache);
+            String otherNormalized = normalizeName(otherNameCache);
+            result = thisNormalized.compareTo(otherNormalized);
         }
 
         // Compare title cache of taxon names
         if (result == 0){
             if ( (CdmUtils.isNotBlank(otherTitleCache) || CdmUtils.isNotBlank(thisTitleCache))) {
-                thisTitleCache = normalizeName(thisTitleCache);
-                otherTitleCache = normalizeName(otherTitleCache);
-                result = CdmUtils.nullSafeCompareTo(thisTitleCache, otherTitleCache);
+                String thisNormalized = normalizeName(thisTitleCache);
+                String otherNormalized = normalizeName(otherTitleCache);
+                result = CdmUtils.nullSafeCompareTo(thisNormalized, otherNormalized);
+                if (result == 0){
+                    result = CdmUtils.nullSafeCompareTo(thisTitleCache, otherTitleCache);
+                }
             }
+        }
+        if (result == 0){
+            result =  CdmUtils.nullSafeCompareTo(thisNameCache, otherNameCache);
         }
 
         return result;

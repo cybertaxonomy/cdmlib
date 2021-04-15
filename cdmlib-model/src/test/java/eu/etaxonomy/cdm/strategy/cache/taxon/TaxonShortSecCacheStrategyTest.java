@@ -12,12 +12,12 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
@@ -28,13 +28,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
  * @since 09.09.2015
+ *
  * NOTE: This test is currently more or less a copy of {@link TaxonBaseDefaultCacheStrategyTest}
  * It does NOT yet test the specifics of the class under test.
- *
  */
 public class TaxonShortSecCacheStrategyTest {
 	@SuppressWarnings("unused")
@@ -46,17 +47,11 @@ public class TaxonShortSecCacheStrategyTest {
 	private Reference sec;
 	private static ITaxonCacheStrategy<?> shortStrategy;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	    shortStrategy = new TaxonBaseShortSecCacheStrategy<>();
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
@@ -75,18 +70,12 @@ public class TaxonShortSecCacheStrategyTest {
 		sec.setTitle("Sp.Pl.");
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
 //******************************* TESTS ********************************************************
 
 	@Test
 	public void testGetTitleCache() {
-		TaxonBase taxonBase = Taxon.NewInstance(name, sec);
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
 		taxonBase.setCacheStrategy(shortStrategy);
 		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxonBase.getTitleCache());
 		String appendedPhrase = "aff. 'schippii'";
@@ -98,7 +87,8 @@ public class TaxonShortSecCacheStrategyTest {
 
    @Test
     public void testGetTitleCacheWithoutName() {
-        TaxonBase taxonBase = Taxon.NewInstance(null, sec);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(null, sec);
         taxonBase.setCacheStrategy(shortStrategy);
         assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxonBase.getTitleCache());
    }
@@ -121,11 +111,13 @@ public class TaxonShortSecCacheStrategyTest {
 	}
 
     @Test
-    public void testMicroReference(){
-        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+    public void testMicroReferenceAndDate(){
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
+        taxonBase.setCacheStrategy(shortStrategy);
         String secMicroRef = "p. 553";
         taxonBase.setSecMicroReference(secMicroRef);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: " + secMicroRef,
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.",  //in future (and in other cache strategy) we (may) have micro reference being part of the result
                 taxonBase.getTitleCache());
     }
 
@@ -135,5 +127,32 @@ public class TaxonShortSecCacheStrategyTest {
         taxonBase.setTitleCache("abc", true);
         taxonBase.setDoubtful(true);
         Assert.assertEquals("abc", taxonBase.getTitleCache());
+	}
+
+    @Test
+    public void testShortSpecific(){
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
+        taxonBase.setCacheStrategy(shortStrategy);
+        String secMicroRef = "p. 553";
+        sec.setDatePublished(TimePeriodParser.parseStringVerbatim("2 Jan 1982"));
+        Person person1 = Person.NewInstance(null, "Miller", "A.", "Alex");
+        Team team = Team.NewInstance(person1);
+        sec.setAuthorship(team);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Miller (1982)",  //not sure if we really want the initials here, also in future (and in other cache strategy) we (may) have the micro reference being part of the formatted string
+                taxonBase.getTitleCache());
+    }
+
+	@Test
+    public void testWebPageSec(){
+	    Reference sec = ReferenceFactory.newWebPage();
+	    sec.setTitle("My long webpage");
+	    sec.setAbbrevTitle("MLW");
+	    sec.setUri(URI.create("https://abc.de"));
+	    sec.setDatePublished(TimePeriodParser.parseStringVerbatim("2 Jan 1982"));
+	    @SuppressWarnings({ "rawtypes", "unchecked" })
+        TaxonBase<ITaxonCacheStrategy<?>> taxonBase = (TaxonBase)Taxon.NewInstance(name, sec);
+	    taxonBase.setCacheStrategy(shortStrategy);
+	    Assert.assertEquals("Abies alba (L.) Mill. sec. MLW (1982)", taxonBase.getTitleCache());  //not sure if we keept brackets
 	}
 }

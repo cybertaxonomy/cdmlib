@@ -52,13 +52,13 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 
     @SpringBeanByType
-    ITaxonNameDao taxonNameDao;
+    private ITaxonNameDao taxonNameDao;
 
     @SpringBeanByType
-    ITaxonDao taxonDao;
+    private ITaxonDao taxonDao;
 
     @SpringBeanByType
-    IHomotypicalGroupDao homotypicalGroupDao;
+    private IHomotypicalGroupDao homotypicalGroupDao;
 
     private UUID cryptocoryneGriffithiiUuid;
     private UUID acherontiaUuid;

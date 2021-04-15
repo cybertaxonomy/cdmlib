@@ -581,12 +581,17 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return states;
     }
 
-    public Collection<DerivedUnit> collectDerivedUnits() {
+    public Collection<DerivedUnit> collectDerivedUnits(Integer maxDepth) {
+        if(maxDepth == null) {
+            maxDepth = Integer.MAX_VALUE;
+        }
         Collection<DerivedUnit> derivedUnits = new ArrayList<>();
         for (DerivationEvent derivationEvent : getDerivationEvents()) {
             for (DerivedUnit derivative : derivationEvent.getDerivatives()) {
                 derivedUnits.add(derivative);
-                derivedUnits.addAll(derivative.collectDerivedUnits());
+                if(maxDepth > 0) {
+                    derivedUnits.addAll(derivative.collectDerivedUnits(maxDepth - 1));
+                }
             }
         }
         return derivedUnits;

@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v40_50.SchemaUpdater_47_50;
-import eu.etaxonomy.cdm.database.update.v505_508.SchemaUpdater_55_58;
 import eu.etaxonomy.cdm.model.term.TermType;
 
 /**
@@ -435,14 +434,8 @@ public class SchemaUpdater_50_55 extends SchemaUpdaterBase {
                 label, label, null, uuidLanguage);
     }
 
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_55_58.NewInstance();
-	}
-
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_47_50.NewInstance();
 	}
-
 }

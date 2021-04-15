@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import io.swagger.annotations.Api;
@@ -42,21 +43,18 @@ import io.swagger.annotations.Api;
 @RequestMapping(value = {"/portal/classification/{uuid}"})
 public class ClassificationPortalController extends ClassificationController {
 
+    public static final Logger logger = Logger.getLogger(ClassificationPortalController.class);
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
-            "reference.authorship",
+            "source.citation.authorship",
             "childNodes"
     });
-
-    public static final Logger logger = Logger.getLogger(ClassificationPortalController.class);
 
     @Override
     @Autowired
     public void setService(IClassificationService service) {
         this.service = service;
     }
-
-
 
     @InitBinder
     @Override
@@ -65,15 +63,8 @@ public class ClassificationPortalController extends ClassificationController {
         binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
     }
 
-    /**
-     *
-     */
     public ClassificationPortalController() {
         super();
         setInitializationStrategy(CLASSIFICATION_INIT_STRATEGY);
     }
-
-
-
-
 }

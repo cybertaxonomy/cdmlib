@@ -44,7 +44,7 @@ public class TaxonNodePrintAppController extends AbstractController<TaxonNode, I
 
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
-            "taxon.sec",
+            "taxon.secSource.citation",
             "taxon.name"
     });
 

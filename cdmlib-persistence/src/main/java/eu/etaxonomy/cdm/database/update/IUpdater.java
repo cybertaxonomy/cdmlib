@@ -12,26 +12,19 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
- * Common interface for {@link ISchemaUpdater} and {@link ITermUpdater}
+ * Interface for {@link ISchemaUpdater}.
+ * Originally also for and ITermUpdater which does not exist anymore.
  *
  * @author a.mueller
  * @since 16.11.2010
  */
 public interface IUpdater<U extends IUpdater<U>> {
 
-
 	/**
 	 * Returns the previous CDM term/schema updater
 	 * @return
 	 */
 	public U getPreviousUpdater();
-
-	/**
-	 * Returns the next CDM term/schema updater
-	 * @return
-	 */
-	public U getNextUpdater();
-
 
 	/**
 	 * Returns the number of steps to run to update the datasource

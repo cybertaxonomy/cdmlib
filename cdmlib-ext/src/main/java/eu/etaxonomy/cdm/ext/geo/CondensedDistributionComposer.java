@@ -23,13 +23,16 @@ import java.util.UUID;
 import org.codehaus.plexus.util.StringUtils;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.TripleResult;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.compare.common.OrderType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.Representation;
 
 /**
@@ -54,24 +57,25 @@ public class CondensedDistributionComposer {
     }
 
 
-    public enum StatusSymbolUsage{
+    public enum SymbolUsage{
         Map,
         Symbol1,
         Symbol2,
         IdInVoc,
-        AbbrelLabel;
+        AbbrevLabel;
 
-        public String getSymbol(PresenceAbsenceTerm status) {
+        public String getSymbol(OrderedTermBase<?> term, List<Language> langs) {
             if (this == Map){
-                return statusSymbols.get(status.getUuid());
+                //TODO not valid for areas yet
+                return statusSymbols.get(term.getUuid());
             }else if (this == Symbol1){
-                return status.getSymbol();
+                return term.getSymbol();
             }else if (this == Symbol2){
-                return status.getSymbol2();
+                return term.getSymbol2();
             }else if (this == IdInVoc){
-                return status.getIdInVocabulary();
-            }else if (this == AbbrelLabel){
-                Representation r = status.getPreferredRepresentation((Language)null);
+                return term.getIdInVocabulary();
+            }else if (this == AbbrevLabel){
+                Representation r = term.getPreferredRepresentation(langs);
                 if (r != null){
                     String abbrevLabel = r.getAbbreviatedLabel();
                     if (abbrevLabel != null){
@@ -95,7 +99,7 @@ public class CondensedDistributionComposer {
         List<AreaNode> introducedTopLevelNodes = step1_3.getSecondResult();
 
         //4. replace the area by the abbreviated representation and add symbols
-        AreaNodeComparator areaNodeComparator = new AreaNodeComparator();
+        AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);
         Collections.sort(topLevelNodes, areaNodeComparator);
 
         final boolean NOT_BOLED = false;
@@ -108,7 +112,7 @@ public class CondensedDistributionComposer {
 
             //handle areaOfScope  (endemic area)
             PresenceAbsenceTerm areaOfScopeStatus = areaToStatusMap.get(areaOfScopeNode.area);
-            DoubleResult<String, Boolean> areaOfScopeStatusSymbol = statusSymbol(areaOfScopeStatus, config, NOT_HANDLED_BY_PARENT);
+            DoubleResult<String, Boolean> areaOfScopeStatusSymbol = statusSymbol(areaOfScopeStatus, config, languages, NOT_HANDLED_BY_PARENT);
             String areaOfScopeLabel = config.showAreaOfScopeLabel? makeAreaLabel(languages, areaOfScopeNode.area, config, null):"";
             result.addStatusAndAreaTaggedText(areaOfScopeStatusSymbol.getFirstResult(),
                     areaOfScopeLabel, areaOfScopeStatusSymbol.getSecondResult() || config.areasBold);
@@ -262,7 +266,7 @@ public class CondensedDistributionComposer {
     protected String makeAreaLabel(List<Language> langs, NamedArea area,
             CondensedDistributionConfiguration config, String parentAreaLabel) {
         //TODO config with symbols, not only idInVocabulary
-        String label = area.getIdInVocabulary() != null ? area.getIdInVocabulary() :area.getPreferredRepresentation(langs).getAbbreviatedLabel();
+        String label = config.areaSymbolField.getSymbol(area, langs);
         if (config.shortenSubAreaLabelsIfPossible && parentAreaLabel != null && !parentAreaLabel.isEmpty()){
             //TODO make brackets not hardcoded, but also allow [],- etc., but how?
             if (label.startsWith(parentAreaLabel+"(") && label.endsWith(")") ){
@@ -274,19 +278,19 @@ public class CondensedDistributionComposer {
     }
 
     protected TripleResult<String, Boolean, Boolean> statusSymbolForArea(AreaNode areaNode, Map<NamedArea, PresenceAbsenceTerm> areaToStatusMap,
-            CondensedDistributionConfiguration config, boolean onlyIntroduced) {
+            CondensedDistributionConfiguration config, List<Language> languages,boolean onlyIntroduced) {
 
         if (!config.showStatusOnParentAreaIfAllSame ){
-            return statusSymbol(areaToStatusMap.get(areaNode.area), config, false);
+            return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
         }else{
             Set<PresenceAbsenceTerm> statusList = getStatusRecursive(areaNode, areaToStatusMap, new HashSet<>(), onlyIntroduced);
             if (statusList.isEmpty()){
-                return statusSymbol(areaToStatusMap.get(areaNode.area), config, false);
+                return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
             }else if (statusList.size() == 1){
-                return statusSymbol(statusList.iterator().next(), config, true);
+                return statusSymbol(statusList.iterator().next(), config, languages, true);
             }else{
                 //subarea status is handled at subarea level, usually parent area status is empty as the parent area will not have a status
-                return statusSymbol(areaToStatusMap.get(areaNode.area), config, false);
+                return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
             }
         }
     }
@@ -315,24 +319,24 @@ public class CondensedDistributionComposer {
      *     to the output here
      */
     protected TripleResult<String, Boolean, Boolean> statusSymbol(PresenceAbsenceTerm status,
-            CondensedDistributionConfiguration config, boolean statusHandledByParent) {
+            CondensedDistributionConfiguration config, List<Language> languages, boolean statusHandledByParent) {
 
-        List<StatusSymbolUsage> symbolPreferences = Arrays.asList(config.statusSymbolField);
+        List<SymbolUsage> symbolPreferences = Arrays.asList(config.statusSymbolField);
         if(status == null) {
             return new TripleResult<>("", false, statusHandledByParent);
         }
 
         //usually the symbols should all come from the same field, but in case they don't ...
         if (config.showAnyStatusSmbol){
-            for (StatusSymbolUsage usage : StatusSymbolUsage.values()){
+            for (SymbolUsage usage : SymbolUsage.values()){
                 if (!symbolPreferences.contains(usage)){
                     symbolPreferences.add(usage);
                 }
             }
         }
 
-        for (StatusSymbolUsage usage: symbolPreferences){
-            String symbol = usage.getSymbol(status);
+        for (SymbolUsage usage: symbolPreferences){
+            String symbol = usage.getSymbol(status, languages);
             if (symbol != null){
                 return new TripleResult<>(symbol, isBoldStatus(status, config), statusHandledByParent);
             }
@@ -402,7 +406,13 @@ public class CondensedDistributionComposer {
         }
     }
 
-    protected class AreaNodeComparator implements Comparator<AreaNode>{
+    private class AreaNodeComparator implements Comparator<AreaNode>{
+        CondensedDistributionConfiguration config;
+        List<Language> languages;
+        private AreaNodeComparator(CondensedDistributionConfiguration config, List<Language> languages){
+            this.config = config;
+            this.languages = languages;
+        }
 
         @Override
         public int compare(AreaNode areaNode1, AreaNode areaNode2) {
@@ -416,8 +426,14 @@ public class CondensedDistributionComposer {
             }else if (area2 == null){
                 return 1;
             }else{
-                //- due to wrong ordering behavior in DefinedTerms
-                return - area1.compareTo(area2);
+                if (config.orderType == OrderType.NATURAL) {
+                    //- due to wrong ordering behavior in DefinedTerms
+                    return - area1.compareTo(area2);
+                }else{
+                    String str1 = config.areaSymbolField.getSymbol(area1, languages);
+                    String str2 = config.areaSymbolField.getSymbol(area2, languages);
+                    return CdmUtils.nullSafeCompareTo(str1, str2);
+                }
             }
         }
     }
@@ -513,7 +529,7 @@ public class CondensedDistributionComposer {
 
         TripleResult<String, Boolean, Boolean> statusSymbol = statusHandledByParent?
                 new TripleResult<>("", parentIsBold, statusHandledByParent):
-                statusSymbolForArea(areaNode, areaToStatusMap, config, isIntroduced);
+                statusSymbolForArea(areaNode, areaToStatusMap, config, languages, isIntroduced);
 
         String areaLabel = makeAreaLabel(languages, area, config, parentAreaLabel);
         result.addStatusAndAreaTaggedText(statusSymbol.getFirstResult(), areaLabel, statusSymbol.getSecondResult() || config.areasBold);

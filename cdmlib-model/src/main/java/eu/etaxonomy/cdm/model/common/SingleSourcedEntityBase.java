@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
-
 
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
@@ -28,7 +26,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -57,7 +55,7 @@ public abstract class SingleSourcedEntityBase
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private DescriptionElementSource source;
+    private NamedSource source;
 
 // ************ CONSTRUCTOR ********************************************/
 
@@ -76,7 +74,7 @@ public abstract class SingleSourcedEntityBase
         }
     }
 
-	protected SingleSourcedEntityBase(DescriptionElementSource source) {
+	protected SingleSourcedEntityBase(NamedSource source) {
 		this.source = source;
 	}
 
@@ -100,10 +98,10 @@ public abstract class SingleSourcedEntityBase
         checkNullSource();
     }
 
-    public DescriptionElementSource getSource() {
+    public NamedSource getSource() {
         return source;
     }
-    public void setSource(DescriptionElementSource source) {
+    public void setSource(NamedSource source) {
         this.source = source;
     }
 
@@ -113,9 +111,9 @@ public abstract class SingleSourcedEntityBase
         }
     }
 
-    private DescriptionElementSource getSource(boolean createIfNotExist){
+    private NamedSource getSource(boolean createIfNotExist){
         if (this.source == null && createIfNotExist){
-            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+            this.source = NamedSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
         }
         return source;
     }

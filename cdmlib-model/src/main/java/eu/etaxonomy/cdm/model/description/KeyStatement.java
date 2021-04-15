@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,8 @@ import eu.etaxonomy.cdm.model.term.TermBase;
 @Entity
 @Audited
 public class KeyStatement extends VersionableEntity implements IMultiLanguageTextHolder{
-	private static final long serialVersionUID = 3771323100914695139L;
+
+    private static final long serialVersionUID = 3771323100914695139L;
 	private static final Logger logger = Logger.getLogger(KeyStatement.class);
 
 
@@ -61,13 +63,10 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 
 	//private mediaObjects needs to be discussed (how to implement the role of the media)
 
-
-
 	public static KeyStatement NewInstance(){
 		KeyStatement result = new KeyStatement();
 		return result;
 	}
-
 
 	public static KeyStatement NewInstance(String defaultLanguageLabel){
 		KeyStatement result = new KeyStatement();
@@ -154,6 +153,13 @@ public class KeyStatement extends VersionableEntity implements IMultiLanguageTex
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
 		return MultilanguageTextHelper.getPreferredLanguageString(label, languages);
 	}
+
+    /**
+     * @see #getPreferredLanguageString(List)
+     */
+    public LanguageString getPreferredLanguageString(Language language) {
+        return MultilanguageTextHelper.getPreferredLanguageString(label, Arrays.asList(language));
+    }
 
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string

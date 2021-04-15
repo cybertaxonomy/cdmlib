@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -28,10 +29,11 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -56,24 +58,30 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private SpecimenOrObservationType recordBase;
     private TermBase kindOfUnit;
-    private CollectionDTO collection;
-    private String catalogNumber;
     private String collectorsNumber;
-    private String barcode;
-    private String preservationMethod;
+    private String individualCount;
     private Set<DerivedUnitDTO> derivatives;
 
     private Set<SpecimenTypeDesignationDTO> specimenTypeDesignations;
 
-    private DerivationEventDTO derivationEvent;
+    private EventDTO<DerivationEvent> derivationEvent;
 
     // TODO use DTO !!!
     private Set<IdentifiableSource> sources;
+
     private List<MediaDTO> listOfMedia = new ArrayList<>();
 
     private DefinedTerm sex;
 
     private DefinedTerm lifeStage;
+
+    /**
+     * @deprecated replaced by determinations
+     */
+    @Deprecated
+    private List<TypedEntityReference<TaxonName>> determinedNames;
+
+    private List<DeterminationEventDTO>determinations;
 
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
         super(HibernateProxyHelper.getClassWithoutInitializingProxy(specimenOrObservation), specimenOrObservation.getUuid(), specimenOrObservation.getTitleCache());
@@ -82,7 +90,13 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         addMediaAsDTO(collectedMedia);
         setKindOfUnit(specimenOrObservation.getKindOfUnit());
         setSex(specimenOrObservation.getSex());
+        setIndividualCount(specimenOrObservation.getIndividualCount());
         lifeStage = specimenOrObservation.getLifeStage();
+        addDeterminations(specimenOrObservation.getDeterminations());
+        setDeterminations(specimenOrObservation.getDeterminations().stream()
+                .map(det -> DeterminationEventDTO.from(det))
+                .collect(Collectors.toList())
+                );
         if (specimenOrObservation instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimenOrObservation;
             if (derivedUnit.getSpecimenTypeDesignations() != null){
@@ -91,40 +105,12 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         }
     }
 
-    public void setCollection(CollectionDTO collection) {
-        this.collection = collection;
-    }
-
-    public String getCatalogNumber() {
-        return catalogNumber;
-    }
-
-    public void setCatalogNumber(String catalogNumber) {
-        this.catalogNumber = catalogNumber;
-    }
-
     public String getCollectorsNumber() {
         return collectorsNumber;
     }
 
     public void setCollectorsNumber(String collectorsNumber) {
         this.collectorsNumber = collectorsNumber;
-    }
-
-    public String getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(String barcode) {
-        this.barcode = barcode;
-    }
-
-    public String getPreservationMethod() {
-        return preservationMethod;
-    }
-
-    public void setPreservationMethod(String preservationMethod) {
-        this.preservationMethod = preservationMethod;
     }
 
     public Set<SpecimenTypeDesignationDTO> getSpecimenTypeDesignations() {
@@ -283,35 +269,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.recordBase = specimenOrObservationType;
     }
 
-    /**
-     * @return the collection
-     *
-     * @deprecated TODO remove as it only duplicates the information contained in the collectionDTO
-     */
-    @Deprecated
-    public String getCollectionCode() {
-        if (collection != null){
-            return collection.getCode();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @return the collection
-     */
-    public CollectionDTO getCollection() {
-        return collection;
-    }
-    /**
-     * @param collection the collection to set
-     */
-    public void setCollectioDTO(CollectionDTO collection) {
-        this.collection = collection;
-    }
-
-
-
     public Set<DerivedUnitDTO> getDerivatives() {
         if (this.derivatives == null){
             this.derivatives = new HashSet<>();
@@ -360,11 +317,11 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
 
 
-    public DerivationEventDTO getDerivationEvent() {
+    public EventDTO<DerivationEvent> getDerivationEvent() {
         return derivationEvent;
     }
 
-    public void setDerivationEvent(DerivationEventDTO derivationEvent) {
+    public void setDerivationEvent(EventDTO<DerivationEvent> derivationEvent) {
         this.derivationEvent = derivationEvent;
     }
 
@@ -404,18 +361,12 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private void addMediaAsDTO(Set<Media> media) {
         for(Media m : media) {
-            m.getAllTitles(); // initialize all titles!!!
-            for (MediaRepresentation rep :m.getRepresentations()){
-                for(MediaRepresentationPart p : rep.getParts()){
-                    if(p.getUri() != null){
-                        MediaDTO dto = new MediaDTO(m.getUuid());
-                        dto.setUri(p.getUri().toString());
-                        getListOfMedia().add(dto);
-                    }
-                }
-            }
+            List<MediaDTO> dtos = MediaDTO.fromEntity(m);
+            getListOfMedia().addAll(dtos);
         }
     }
+
+
 
     /**
      * @param sob
@@ -438,7 +389,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
         boolean doDescend = maxDepth == null || maxDepth > 0;
         Integer nextLevelMaxDepth = maxDepth != null ? maxDepth - 1 : null;
-        for (DerivedUnit derivedUnit : sob.collectDerivedUnits()) {
+        for (DerivedUnit derivedUnit : sob.collectDerivedUnits(maxDepth)) {
             if(!derivedUnit.isPublish()){
                 continue;
             }
@@ -495,6 +446,48 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     public int getId() {
         return id;
+    }
+
+    public String getIndividualCount() {
+        return individualCount;
+    }
+
+    public void setIndividualCount(String individualCount) {
+        this.individualCount = individualCount;
+    }
+
+
+    @Deprecated
+    public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
+        return determinedNames;
+    }
+
+    @Deprecated
+    public void addDeterminations(Set<DeterminationEvent> determinations) {
+        if(determinedNames==null){
+            determinedNames = new ArrayList<>();
+        }
+        TaxonName preferredName = null;
+        for (DeterminationEvent event:determinations){
+            if (event.getPreferredFlag()){
+                preferredName = event.getTaxonName();
+            }
+        }
+        if (preferredName != null){
+            determinedNames.add(TypedEntityReference.fromEntity(preferredName));
+        }else{
+            for (DeterminationEvent event:determinations){
+                determinedNames.add(TypedEntityReference.fromEntity(event.getTaxonName()));
+            }
+        }
+    }
+
+    public List<DeterminationEventDTO> getDeterminations() {
+        return determinations;
+    }
+
+    public void setDeterminations(List<DeterminationEventDTO> determinations) {
+        this.determinations = determinations;
     }
 
 

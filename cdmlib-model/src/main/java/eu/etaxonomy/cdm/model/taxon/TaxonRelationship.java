@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonRelationship")
 public class TaxonRelationship
         extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
+
     private static final long serialVersionUID = 1378437971941534653L;
     static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
 

@@ -86,8 +86,7 @@ import eu.etaxonomy.cdm.model.term.TermType;
 @Configurable
 //@Table(name="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnList = "titleCache") })
 public class Sequence
-               extends AnnotatableEntity
-               implements Cloneable{
+               extends AnnotatableEntity {
 
 	private static final long serialVersionUID = 8298983152731241775L;
 	private static final Logger logger = Logger.getLogger(Sequence.class);
@@ -584,8 +583,8 @@ public class Sequence
     		Sequence result = (Sequence)super.clone();
 
     		//sequences
-    		result.consensusSequence = (SequenceString)this.consensusSequence.clone();
-    		result.barcodeSequencePart = (SequenceString)this.barcodeSequencePart.clone();
+    		result.consensusSequence = this.consensusSequence.clone();
+    		result.barcodeSequencePart = this.barcodeSequencePart.clone();
 
     		//single sequences
     		result.singleReadAlignments = new HashSet<SingleReadAlignment>();

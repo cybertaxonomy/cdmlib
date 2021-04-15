@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.NamedSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -44,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     })
 @Entity
 @Audited
-public class NomenclaturalSource extends DescriptionElementSource {
+public class NomenclaturalSource extends NamedSourceBase {
 
     private static final long serialVersionUID = -8891160753285054431L;
 
@@ -67,7 +68,7 @@ public class NomenclaturalSource extends DescriptionElementSource {
 
     @SuppressWarnings("deprecation")
     public NomenclaturalSource(){
-        setType(OriginalSourceType.NomenclaturalReference);
+        setType(OriginalSourceType.PrimaryTaxonomicSource);
         initListener();
     }
 

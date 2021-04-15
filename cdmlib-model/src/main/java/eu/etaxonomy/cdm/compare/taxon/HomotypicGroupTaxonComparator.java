@@ -42,29 +42,29 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @since 02.03.2016
  */
 public class HomotypicGroupTaxonComparator extends TaxonComparator {
+
     private static final long serialVersionUID = -5088210641256430878L;
 	private static final Logger logger = Logger.getLogger(HomotypicGroupTaxonComparator.class);
 
     private final TaxonBase<?> firstTaxonInGroup;
     private final TaxonName firstNameInGroup;
-//    private final HomotypicalGroupComparator homotypicGroupComparator;
 
-    /**
-     * @param firstNameInGroup
-     */
     public HomotypicGroupTaxonComparator(@SuppressWarnings("rawtypes") TaxonBase firstTaxonInGroup) {
         super(true);
         this.firstTaxonInGroup = firstTaxonInGroup;
         this.firstNameInGroup = firstTaxonInGroup == null ? null: firstTaxonInGroup.getName();
     }
 
-    /**
-     * @param firstNameInGroup
-     */
     public HomotypicGroupTaxonComparator(@SuppressWarnings("rawtypes") TaxonBase firstTaxonInGroup, boolean includeRanks) {
         super(includeRanks);
         this.firstTaxonInGroup = firstTaxonInGroup;
         this.firstNameInGroup = firstTaxonInGroup == null ? null: firstTaxonInGroup.getName();
+    }
+
+    public HomotypicGroupTaxonComparator(TaxonName firstNameInGroup, boolean includeRanks) {
+        super(includeRanks);
+        firstTaxonInGroup = null;
+        this.firstNameInGroup = firstNameInGroup;
     }
 
     /**
@@ -80,8 +80,16 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         TaxonName name1 = taxonBase1.getName();
         TaxonName name2 = taxonBase2.getName();
-        if (logger.isDebugEnabled()){logger.debug(name1.getTitleCache() +" : "+ name2.getTitleCache());}
 
+        return compareNames(name1, name2, taxonBase1, taxonBase2);
+    }
+
+    public int compareNames(TaxonName name1,  TaxonName name2, TaxonBase<?> taxonBase1, TaxonBase<?> taxonBase2) {
+        if (logger.isDebugEnabled()){logger.debug(name1.getTitleCache() +" : "+ name2.getTitleCache());}
+        if (name1 == null && taxonBase1 == null ||
+                name2 == null && taxonBase2 == null){
+            throw new IllegalArgumentException("There should always be either a name or a taxon to be compared");
+        }
 
         int compareStatus = compareStatus(name1, name2);
         if (compareStatus != 0){
@@ -109,9 +117,9 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         //same homotypical group ...
         //one taxon is first in group
-        if (taxonBase1.equals(firstTaxonInGroup)){
+        if (isFirstInGroup(taxonBase1, name1)){
             return -1;
-        }else if (taxonBase2.equals(firstTaxonInGroup)){
+        }else if (taxonBase2 != null && taxonBase2.equals(firstTaxonInGroup)){
             return 1;
         }
 
@@ -142,11 +150,19 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
     }
 
+    private boolean isFirstInGroup(TaxonBase<?> taxonBase, TaxonName name) {
+        if (taxonBase != null){
+            return taxonBase.equals(firstTaxonInGroup);
+        }else{
+            return name.equals(firstNameInGroup);
+        }
+    }
 
     /**
      * Compare 2 names which have the same basionym.
      * The names must not be equal to each other but may be equal
      * to the basionym.
+     *
      * @param basionym the basionym
      * @param name1 first name to compare
      * @param name2 second name to compare
@@ -161,16 +177,11 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }else if (basionym.equals(name2)){
             return 1;
         }else{
-            super.compare(name1, name2, false);
+            return super.compare(name1, name2, false);
         }
-        return 0;
+
     }
 
-    /**
-     * @param basionym1
-     * @param basionym2
-     * @return
-     */
     private int compareBasionyms(TaxonName basionym1Orig, TaxonName basionym2Orig) {
         //one taxon is first in group
         TaxonName basionym1 = getFirstNameInGroup(basionym1Orig);
@@ -195,13 +206,8 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
 
         //compare by date, nom. illeg., rank and alphabetically
         return super.compare(basionym1, basionym2, true);
-
     }
 
-    /**
-     * @param basionym
-     * @return
-     */
     private TaxonName getFirstNameInGroup(TaxonName basionym) {
         for (NameRelationship nameRel : basionym.getRelationsFromThisName()){
             if (nameRel.getType() != null && nameRel.getType().equals(NameRelationshipType.BASIONYM())){
@@ -213,11 +219,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         return basionym;
     }
 
-    /**
-     * @param basionym1
-     * @return
-     */
-    @SuppressWarnings("rawtypes")
     private Set<TaxonName> getReplacedSynonymClosure(TaxonName name) {
         Set<TaxonName> set = name.getReplacedSynonyms();
         if (set.isEmpty()){
@@ -233,10 +234,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         return result;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     private TaxonName getPreferredInBasionymGroup(TaxonName name) {
         Set<TaxonName> candidates = new HashSet<>();
         //get all final basionyms, except for those being part of a basionym circle
@@ -265,10 +262,6 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
         }
     }
 
-    /**
-     * @param candidate
-     * @return
-     */
     private boolean hasBasionymCircle(TaxonName name, Set<TaxonName> existing) {
         if (existing == null){
             existing = new HashSet<>();
@@ -289,21 +282,4 @@ public class HomotypicGroupTaxonComparator extends TaxonComparator {
             return false;
         }
     }
-
-
-//  /**
-//   * @param homotypicalGroup
-//   * @return
-//   */
-//  private TaxonBase<?> getFirstInHomotypicalGroup(HomotypicalGroup homotypicalGroup, Collection<TaxonBase<?>> existing) {
-//      List<TaxonBase<?>> candidates =  new ArrayList<TaxonBase<?>>();
-//      for (TaxonBase<?> candidate : existing){
-//          if (homotypicalGroup.getTypifiedNames().contains(candidate.getName())){
-//              candidates.add(candidate);
-//          }
-//      }
-//      Collections.sort(candidates, this);
-//      return candidates.isEmpty() ? null : candidates.get(0);
-//  }
-
 }

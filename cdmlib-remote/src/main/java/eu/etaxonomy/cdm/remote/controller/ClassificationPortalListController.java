@@ -55,12 +55,12 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     public static final Logger logger = Logger.getLogger(ClassificationPortalListController.class);
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
-            "reference.authorship"
+            "source.citation.authorship"
     });
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "taxon.name.rank",
-            "taxon.sec"
+            "taxon.secSource.citation"
     });
 
     private ITaxonService taxonService;
@@ -92,7 +92,6 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
     public void setTaxonNodeService(ITaxonNodeService taxonNodeService) {
         this.taxonNodeService = taxonNodeService;
     }
-
 
     @InitBinder
     @Override
@@ -158,7 +157,6 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         //FIXME return pager
         List<TaxonNode> childs = service.listSiblingsOfTaxon(taxonUuid, classificationUuid, includeUnpublished, null, null, NODE_INIT_STRATEGY);
         return childs;
-
     }
 
     /**
@@ -240,7 +238,6 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         return getPathFromTaxonToRank(classificationUuid, taxonUuid, null, subtreeUuid, request, response);
     }
 
-
     private Rank findRank(UUID rankUuid) {
         Rank rank = null;
         if(rankUuid != null){
@@ -253,6 +250,4 @@ public class ClassificationPortalListController extends AbstractIdentifiableList
         }
         return rank;
     }
-
-
 }

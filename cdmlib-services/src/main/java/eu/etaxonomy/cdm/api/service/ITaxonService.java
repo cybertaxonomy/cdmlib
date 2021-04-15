@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.LuceneParseException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
-import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.exception.UnpublishedException;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -495,8 +495,9 @@ public interface ITaxonService
     /**
      * Returns a list of IdentifiableEntity instances (in particular, TaxonName and TaxonBase instances)
      * that match the properties specified in the configurator.
-     * @param configurator
-     * @return
+     *
+     * Note: The search result includes a search on titleCache (with {@link MatchMode#BEGINNING} or {@link MatchMode#ANYWHERE} )
+     * for all records with protected titleCache (see #9561). Maybe this should be parameterized in future.
      */
     public Pager<IdentifiableEntity> findTaxaAndNames(IFindTaxaAndNamesConfigurator configurator);
 
@@ -842,7 +843,6 @@ public interface ITaxonService
      * @param synonym
      * @param removeNameIfPossible
      * @return deleteResult
-     *
      */
     public DeleteResult deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
@@ -858,10 +858,6 @@ public interface ITaxonService
      */
     public DeleteResult deleteSynonym(UUID synonymUuid, SynonymDeletionConfigurator config);
 
-    /**
-     * @param tnb
-     * @return
-     */
     public Taxon findBestMatchingTaxon(String taxonName);
 
     public Taxon findBestMatchingTaxon(MatchingTaxonConfigurator config);
@@ -891,7 +887,6 @@ public interface ITaxonService
             List<String> propertyPaths) throws UnpublishedException;
 
     public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
-
 
     /**
      * @param clazz the optional {@link TaxonBase} subclass

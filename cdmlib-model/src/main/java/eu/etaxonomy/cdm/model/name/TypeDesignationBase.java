@@ -39,8 +39,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.SourcedEntityBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.validation.Level2;
@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTypeDesignation;
     "typeStatus",
     "notDesignated",
     "typifiedNames",
-    "source",
+    "designationSource",
     "registrations",
 })
 @XmlSeeAlso({
@@ -102,7 +102,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private DescriptionElementSource source;
+    private NamedSource designationSource;
 
     @XmlElementWrapper(name = "TypifiedNames")
     @XmlElement(name = "TypifiedName")
@@ -164,7 +164,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see							TaxonName#getTypeDesignations()
      */
     protected TypeDesignationBase(Reference citation, String citationMicroReference, String originalNameString, boolean notDesignated){
-        this(DescriptionElementSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
+        this(NamedSource.NewPrimarySourceInstance(citation, citationMicroReference), originalNameString, notDesignated);
     }
 
     /**
@@ -181,10 +181,10 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * @see                         #isNotDesignated()
      * @see                         TaxonName#getTypeDesignations()
      */
-    protected TypeDesignationBase(DescriptionElementSource source, String originalNameString, boolean notDesignated){
+    protected TypeDesignationBase(NamedSource designationSource, String originalNameString, boolean notDesignated){
         super();
         this.notDesignated = notDesignated;
-        this.source = source;
+        this.designationSource = designationSource;
     }
 
 // **************** METHODS *************************************/
@@ -233,26 +233,26 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
 
     @Transient
     public String getCitationMicroReference() {
-        return source == null ? null : this.source.getCitationMicroReference();
+        return designationSource == null ? null : this.designationSource.getCitationMicroReference();
     }
 
     public void setCitationMicroReference(String microReference) {
-        this.getSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
+        this.getDesignationSource(true).setCitationMicroReference(StringUtils.isBlank(microReference)? null : microReference);
         checkNullSource();
     }
     /**
      * Convenience method to retrieve the reference of the type designations
      * designation/lectotype source.
      *
-     * @see #getSource()
+     * @see #getDesignationSource()
      */
     @Transient
     public Reference getCitation(){
-        return source == null ? null : this.source.getCitation();
+        return designationSource == null ? null : this.designationSource.getCitation();
     }
     /**
      * Convenience method to set reference for the designation's
-     * {@link #getSource() designation/lectotype source}.
+     * {@link #getDesignationSource() designation/lectotype source}.
      * The source is created if reference is not <code>null</code>
      * and the source does not yet exist.
      * <BR>
@@ -260,26 +260,26 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * the {@link #getTypeStatus() status} is lectotype (or similar) which can be
      * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}
      *
-     * @see #getSource()
+     * @see #getDesignationSource()
      */
     public void setCitation(Reference citation) {
-        this.getSource(true).setCitation(citation);
+        this.getDesignationSource(true).setCitation(citation);
         checkNullSource();
     }
 
     /**
-     * Returns the {@link #getSource() source}. If a source does not exist
+     * Returns the {@link #getDesignationSource() designation source}. If a source does not exist
      * yet a new and empty one is created. A source should only be created for
-     * lectotype like type designations (see {@link #getSource()}.
+     * lectotype like type designations (see {@link #getDesignationSource()}.
      *
      * @param createIfNotExist
-     * @see #getSource()
+     * @see #getDesignationSource()
      */
-    public DescriptionElementSource getSource(boolean createIfNotExist) {
-        if (this.source == null && createIfNotExist){
-            this.source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+    public NamedSource getDesignationSource(boolean createIfNotExist) {
+        if (this.designationSource == null && createIfNotExist){
+            this.designationSource = NamedSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
         }
-        return source;
+        return designationSource;
     }
 
     /**
@@ -288,20 +288,19 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase<T>
      * the {@link #getTypeStatus() status} is lectotype (or similar) which can be
      * retrieved by using method {@link TypeDesignationStatusBase#hasDesignationSource()}.
      */
-    //TODO should we rename this to better distinguish the lectotype source from the general sources?
-    public DescriptionElementSource getSource(){
-        return source;
+    public NamedSource getDesignationSource(){
+        return designationSource;
     }
     /**
-     * @see #getSource()
+     * @see #getDesignationSource()
      */
-    public void setSource(DescriptionElementSource source) {
-        this.source = source;
+    public void setDesignationSource(NamedSource designationSource) {
+        this.designationSource = designationSource;
     }
 
     private void checkNullSource() {
-        if (this.source != null && this.source.checkEmpty(true)){
-            this.source = null;
+        if (this.designationSource != null && this.designationSource.checkEmpty(true)){
+            this.designationSource = null;
         }
     }
 

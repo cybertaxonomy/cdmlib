@@ -152,7 +152,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
      * @param docSources
      * @return
      */
-    public List<OriginalSourceBase<?>> askForSource(Map<String, OriginalSourceBase<?>> refMap, String currentElement, String blabla,
+    public List<OriginalSourceBase> askForSource(Map<String, OriginalSourceBase> refMap, String currentElement, String blabla,
             IReferenceService iReferenceService, List<String> docSources) {
 
 //        System.out.println(refMap);
@@ -227,7 +227,7 @@ public class SpecimenUserInteraction implements ItemListener, Serializable {
             }
         }
 
-        List<OriginalSourceBase<?>> dess = new ArrayList<>();
+        List<OriginalSourceBase> dess = new ArrayList<>();
         for (String src:sources){
             if (refMap.get(src) !=null) {
                 dess.add(refMap.get(src));

@@ -660,14 +660,12 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         LSID_REVISION varchar(255),
         PROTECTEDTITLECACHE boolean not null,
         TITLECACHE varchar(800),
-        MICROREFERENCE varchar(255),
         TIMEPERIOD_END varchar(255),
         TIMEPERIOD_FREETEXT varchar(255),
         TIMEPERIOD_START varchar(255),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        REFERENCE_ID integer,
         ROOTNODE_ID integer,
         SOURCE_ID integer,
         primary key (ID)
@@ -701,14 +699,12 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         LSID_REVISION varchar(255),
         PROTECTEDTITLECACHE boolean,
         TITLECACHE varchar(800),
-        MICROREFERENCE varchar(255),
         TIMEPERIOD_END varchar(255),
         TIMEPERIOD_FREETEXT varchar(255),
         TIMEPERIOD_START varchar(255),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        REFERENCE_ID integer,
         ROOTNODE_ID integer,
         SOURCE_ID integer,
         primary key (ID, REV)
@@ -1122,9 +1118,9 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         VALIDPERIOD_FREETEXT varchar(255),
         VALIDPERIOD_START varchar(255),
         ISO3166_A2 varchar(2),
+        NOMENCLATURALSTANDING varchar(255),
+        NOMENCLATURALSTANDINGINVERSE varchar(255),
         RANKCLASS varchar(255),
-		NOMENCLATURALSTANDING varchar(10),
-		NOMENCLATURALSTANDINGINVERSE varchar(10),
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         KINDOF_ID integer,
@@ -1132,6 +1128,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         VOCABULARY_ID integer,
         PROPERTY_ID integer,
         PROPERTYMODIFIER_ID integer,
+        RATIOTOSTRUCTURE_ID integer,
         STRUCTURE_ID integer,
         STRUCTUREMODIFIER_ID integer,
         LEVEL_ID integer,
@@ -1189,20 +1186,20 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         SUPPORTEDDATATYPES varchar(255),
         PROPERTY_ID integer,
         PROPERTYMODIFIER_ID integer,
+        RATIOTOSTRUCTURE_ID integer,
         STRUCTURE_ID integer,
         STRUCTUREMODIFIER_ID integer,
         ISO639_1 varchar(2),
         ISTECHNICAL boolean,
         ORDERINDEX integer,
         RANKCLASS varchar(255),
+        NOMENCLATURALSTANDING varchar(255),
         POINTAPPROXIMATION_ERRORRADIUS integer,
         POINTAPPROXIMATION_LATITUDE double,
         POINTAPPROXIMATION_LONGITUDE double,
         VALIDPERIOD_END varchar(255),
         VALIDPERIOD_FREETEXT varchar(255),
         VALIDPERIOD_START varchar(255),
-		NOMENCLATURALSTANDING varchar(10),
-		NOMENCLATURALSTANDINGINVERSE varchar(10),
         LEVEL_ID integer,
         POINTAPPROXIMATION_REFERENCESYSTEM_ID integer,
         SHAPE_ID integer,
@@ -1213,6 +1210,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         INVERSESYMBOL varchar(30),
         SYMMETRICAL boolean,
         TRANSITIVE boolean,
+        NOMENCLATURALSTANDINGINVERSE varchar(255),
         primary key (ID, REV)
     );
 
@@ -1870,20 +1868,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         MODIFYINGTEXT_MAPKEY_ID integer not null,
         REVTYPE tinyint,
         primary key (REV, DESCRIPTIONELEMENTBASE_ID, MODIFYINGTEXT_ID, MODIFYINGTEXT_MAPKEY_ID)
-    );
-
-    create table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE (
-        DESCRIPTIONELEMENTBASE_ID integer not null,
-        SOURCES_ID integer not null,
-        primary key (DESCRIPTIONELEMENTBASE_ID, SOURCES_ID)
-    );
-
-    create table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE_AUD (
-        REV integer not null,
-        DESCRIPTIONELEMENTBASE_ID integer not null,
-        SOURCES_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, DESCRIPTIONELEMENTBASE_ID, SOURCES_ID)
     );
 
     create table PUBLIC.DESCRIPTIVEDATASET (
@@ -3414,6 +3398,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         SOURCE_ID integer,
+        NAME_ID integer,
         TYPE_ID integer,
         primary key (ID)
     );
@@ -3444,6 +3429,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         SOURCE_ID integer,
+        NAME_ID integer,
         TYPE_ID integer,
         primary key (ID, REV)
     );
@@ -3478,7 +3464,9 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CDMSOURCE_ID integer,
         CITATION_ID integer,
         NAMEUSEDINSOURCE_ID integer,
+        SOURCEDELEMENT_ID integer,
         SOURCEDNAME_ID integer,
+        SOURCEDTAXON_ID integer,
         primary key (ID)
     );
 
@@ -3514,6 +3502,8 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         CDMSOURCE_ID integer,
         CITATION_ID integer,
         NAMEUSEDINSOURCE_ID integer,
+        SOURCEDTAXON_ID integer,
+        SOURCEDELEMENT_ID integer,
         SOURCEDNAME_ID integer,
         primary key (ID, REV)
     );
@@ -4899,13 +4889,11 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         APPENDEDPHRASE varchar(255),
         DOUBTFUL boolean not null,
         PUBLISH boolean not null,
-        SECMICROREFERENCE varchar(255),
         USENAMECACHE boolean not null,
         TAXONSTATUSUNKNOWN boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        SEC_ID integer,
         ACCEPTEDTAXON_ID integer,
         TYPE_ID integer,
         primary key (ID)
@@ -4943,12 +4931,10 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         APPENDEDPHRASE varchar(255),
         DOUBTFUL boolean,
         PUBLISH boolean,
-        SECMICROREFERENCE varchar(255),
         USENAMECACHE boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
         NAME_ID integer,
-        SEC_ID integer,
         TAXONSTATUSUNKNOWN boolean,
         ACCEPTEDTAXON_ID integer,
         TYPE_ID integer,
@@ -5265,20 +5251,6 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         MARKERS_ID integer not null,
         REVTYPE tinyint,
         primary key (REV, TAXONNAME_ID, MARKERS_ID)
-    );
-
-    create table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS (
-        TAXONNAME_ID integer not null,
-        STATUS_ID integer not null,
-        primary key (TAXONNAME_ID, STATUS_ID)
-    );
-
-    create table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS_AUD (
-        REV integer not null,
-        TAXONNAME_ID integer not null,
-        STATUS_ID integer not null,
-        REVTYPE tinyint,
-        primary key (REV, TAXONNAME_ID, STATUS_ID)
     );
 
     create table PUBLIC.TAXONNAME_ORIGINALSOURCEBASE (
@@ -5793,7 +5765,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         ISVERBATIM boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        SOURCE_ID integer,
+        DESIGNATIONSOURCE_ID integer,
         TYPESTATUS_ID integer,
         TYPENAME_ID integer,
         TYPESPECIMEN_ID integer,
@@ -5825,7 +5797,7 @@ CREATE SEQUENCE PUBLIC.SYSTEM_SEQUENCE_10A55F0A_EE57_42DB_8046_6240A60AD0EC STAR
         NOTDESIGNATED boolean,
         CREATEDBY_ID integer,
         UPDATEDBY_ID integer,
-        SOURCE_ID integer,
+        DESIGNATIONSOURCE_ID integer,
         TYPESTATUS_ID integer,
         ISVERBATIM boolean,
         CONSERVEDTYPE boolean,
@@ -6136,9 +6108,6 @@ create index PUBLIC.collectionTitleCacheIndex on PUBLIC.COLLECTION (TITLECACHE);
 
     alter table PUBLIC.DESCRIPTIONELEMENTBASE_MODIFYINGTEXT 
         add constraint UK_ew1xlx48jefqrfux2rb2yyuv1 unique (MODIFYINGTEXT_ID);
-
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE 
-        add constraint UK_gxeyjwti842ambq5flkgbkk94 unique (SOURCES_ID);
 
     alter table PUBLIC.DESCRIPTIVEDATASET 
         add constraint UK_4u34f69h4ujnpci1fiaqfbbbf unique (UUID);
@@ -6554,9 +6523,6 @@ create index PUBLIC.taxonNameBaseNameCacheIndex on PUBLIC.TAXONNAME (NAMECACHE);
 
     alter table PUBLIC.TAXONNAME_MARKER 
         add constraint UK_lnf8165xrf7v05e6jvtx8aiy1 unique (MARKERS_ID);
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS 
-        add constraint UK_41dj0ldnw5vqim9w78ayhw8ht unique (STATUS_ID);
 
     alter table PUBLIC.TAXONNAME_ORIGINALSOURCEBASE 
         add constraint UK_aa3vu8j4kf8wjraw5y8s06vd5 unique (SOURCES_ID);
@@ -7211,11 +7177,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.LANGUAGESTRING;
 
     alter table PUBLIC.CLASSIFICATION 
-        add constraint FKtaablnpi8m5r4ul6e325yc531 
-        foreign key (REFERENCE_ID) 
-        references PUBLIC.REFERENCE;
-
-    alter table PUBLIC.CLASSIFICATION 
         add constraint FKm669u8ptjck3dl7xc55dc3rca 
         foreign key (ROOTNODE_ID) 
         references PUBLIC.TAXONNODE;
@@ -7634,6 +7595,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         add constraint FKiyoarp5tjpct53oq6xoxi58j4 
         foreign key (PROPERTYMODIFIER_ID) 
         references PUBLIC.DEFINEDTERMBASE;
+
+    alter table PUBLIC.DEFINEDTERMBASE 
+        add constraint FKm7uh4exmgcxse6goaa9bah6yw 
+        foreign key (RATIOTOSTRUCTURE_ID) 
+        references PUBLIC.TERMRELATION;
 
     alter table PUBLIC.DEFINEDTERMBASE 
         add constraint FKrbpx5955tsdt6w1iu4tv10si4 
@@ -8337,21 +8303,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
 
     alter table PUBLIC.DESCRIPTIONELEMENTBASE_MODIFYINGTEXT_AUD 
         add constraint FKrc54nmhglcfrncik23cvtxvmu 
-        foreign key (REV) 
-        references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE 
-        add constraint FK3igd5bk5wlh78vg3j0fkrs75p 
-        foreign key (SOURCES_ID) 
-        references PUBLIC.ORIGINALSOURCEBASE;
-
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE 
-        add constraint FK3wcj6imue2a0flhcfjftallgh 
-        foreign key (DESCRIPTIONELEMENTBASE_ID) 
-        references PUBLIC.DESCRIPTIONELEMENTBASE;
-
-    alter table PUBLIC.DESCRIPTIONELEMENTBASE_ORIGINALSOURCEBASE_AUD 
-        add constraint FKmkq24uy36wm3orr9m70dticot 
         foreign key (REV) 
         references PUBLIC.AUDITEVENT;
 
@@ -9726,6 +9677,11 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.ORIGINALSOURCEBASE;
 
     alter table PUBLIC.NOMENCLATURALSTATUS 
+        add constraint FKnwnqfs7rtu5s6ktukjwjl5l99 
+        foreign key (NAME_ID) 
+        references PUBLIC.TAXONNAME;
+
+    alter table PUBLIC.NOMENCLATURALSTATUS 
         add constraint FK2nx3xkiso287sgyshq1tig3rm 
         foreign key (TYPE_ID) 
         references PUBLIC.DEFINEDTERMBASE;
@@ -9791,9 +9747,19 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.TAXONNAME;
 
     alter table PUBLIC.ORIGINALSOURCEBASE 
+        add constraint FK5jw9wax0119xqu5g15yn43ufe 
+        foreign key (SOURCEDELEMENT_ID) 
+        references PUBLIC.DESCRIPTIONELEMENTBASE;
+
+    alter table PUBLIC.ORIGINALSOURCEBASE 
         add constraint FKcfyx4vfln4xi61ebxjc3q37aw 
         foreign key (SOURCEDNAME_ID) 
         references PUBLIC.TAXONNAME;
+
+    alter table PUBLIC.ORIGINALSOURCEBASE 
+        add constraint FKnjdmnpc75cwobndpygowwr5et 
+        foreign key (SOURCEDTAXON_ID) 
+        references PUBLIC.TAXONBASE;
 
     alter table PUBLIC.ORIGINALSOURCEBASE_ANNOTATION 
         add constraint FK82rq53k1sbkqxuxuh5eyuels9 
@@ -11081,11 +11047,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.TAXONNAME;
 
     alter table PUBLIC.TAXONBASE 
-        add constraint FKephkjnyxcav9teoj0psbpaycv 
-        foreign key (SEC_ID) 
-        references PUBLIC.REFERENCE;
-
-    alter table PUBLIC.TAXONBASE 
         add constraint FKfb64jyfxe0di03m6okc3l5bso 
         foreign key (ACCEPTEDTAXON_ID) 
         references PUBLIC.TAXONBASE;
@@ -11382,21 +11343,6 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
 
     alter table PUBLIC.TAXONNAME_MARKER_AUD 
         add constraint FKr5gxo6kqahpthg6dbpjw4c8i1 
-        foreign key (REV) 
-        references PUBLIC.AUDITEVENT;
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS 
-        add constraint FKe7khix7l1vi9khexvvtngaywn 
-        foreign key (STATUS_ID) 
-        references PUBLIC.NOMENCLATURALSTATUS;
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS 
-        add constraint FKi8q7vsj9hg745ew8t0rvfi69v 
-        foreign key (TAXONNAME_ID) 
-        references PUBLIC.TAXONNAME;
-
-    alter table PUBLIC.TAXONNAME_NOMENCLATURALSTATUS_AUD 
-        add constraint FKl417crgictclbsqaqmqbfl00s 
         foreign key (REV) 
         references PUBLIC.AUDITEVENT;
 
@@ -11891,8 +11837,8 @@ create index PUBLIC.termNodeTreeIndex on PUBLIC.TERMRELATION (TREEINDEX);
         references PUBLIC.USERACCOUNT;
 
     alter table PUBLIC.TYPEDESIGNATIONBASE 
-        add constraint FKi3ordjfuma9u820pch23lcvu7 
-        foreign key (SOURCE_ID) 
+        add constraint FK2oom0tmb2aijdfecsbbso4t1o 
+        foreign key (DESIGNATIONSOURCE_ID) 
         references PUBLIC.ORIGINALSOURCEBASE;
 
     alter table PUBLIC.TYPEDESIGNATIONBASE 

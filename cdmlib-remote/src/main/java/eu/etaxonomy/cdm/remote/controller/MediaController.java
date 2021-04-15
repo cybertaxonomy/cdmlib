@@ -61,6 +61,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
             "representations.parts"
     });
 
+
     @RequestMapping(value = {"metadata"}, method = RequestMethod.GET)
     public Map<String, String> doGetMediaMetaData(
             @PathVariable("uuid") UUID uuid,

@@ -47,17 +47,18 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 25.05.2009
  */
 public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationDaoHibernateImplTest.class);
 
 	@SpringBeanByType
-	ITypeDesignationDao typeDesignationDao;
+	private ITypeDesignationDao typeDesignationDao;
 
 	@SpringBeanByType
-	ITaxonNameDao nameDao;
+	private ITaxonNameDao nameDao;
 
 	@SpringBeanByType
-	IOccurrenceDao occurrenceDao;
+	private IOccurrenceDao occurrenceDao;
 
 	@Test
 	public void testInit() {

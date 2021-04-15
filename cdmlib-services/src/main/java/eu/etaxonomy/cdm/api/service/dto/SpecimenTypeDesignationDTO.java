@@ -32,7 +32,7 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
     private TypedEntityReference<DerivedUnit> typeSpecimen;
     private String typeStatus;
     private String typeStatus_L10n;
-    private SourceDTO source;
+    private SourceDTO designationSource;
     private List<RegistrationDTO> registrations;
 
     /**
@@ -55,7 +55,7 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
         for (TaxonName name:typeDesignation.getTypifiedNames()){
             names.add(new EntityReference(name.getUuid(), name.getTitleCache()));
         }
-        this.setSource(SourceDTO.fromDescriptionElementSource(typeDesignation.getSource()));
+        this.setDesignationSource(SourceDTO.fromDescriptionElementSource(typeDesignation.getDesignationSource()));
         this.typeSpecimen = TypedEntityReference.fromEntity(typeDesignation.getTypeSpecimen());
         setRegistrations(typeDesignation.getRegistrations().stream().map(reg -> new RegistrationDTO(reg)).collect(Collectors.toList()));
 
@@ -102,12 +102,12 @@ public class SpecimenTypeDesignationDTO extends TypedEntityReference<SpecimenTyp
         return typeStatus_L10n;
     }
 
-    public SourceDTO getSource() {
-        return source;
+    public SourceDTO getDesignationSource() {
+        return designationSource;
     }
 
-    public void setSource(SourceDTO source) {
-        this.source = source;
+    public void setDesignationSource(SourceDTO source) {
+        this.designationSource = source;
     }
 
     public List<RegistrationDTO> getRegistrations() {

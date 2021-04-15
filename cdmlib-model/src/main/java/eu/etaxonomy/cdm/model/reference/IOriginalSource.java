@@ -31,7 +31,7 @@ package eu.etaxonomy.cdm.model.reference;
  * @author a.mueller
  * @since 18.09.2009
  */
-public interface IOriginalSource<T extends ISourceable> {
+public interface IOriginalSource {
 
 	/*************** GETTER /SETTER ************************************/
 

@@ -73,6 +73,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
@@ -109,6 +110,24 @@ public class CdmGenericDaoImpl
 		super(CdmBase.class);
 	}
 
+//    @Override
+    private List<ReferencingObjectDto> getCdmBasesByFieldAndClassDto(Class<? extends CdmBase> clazz, String propertyName,
+            CdmBase referencedCdmBase, Integer limit){
+
+        Query query = getSession().createQuery("SELECT new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(this.uuid, this.id) "
+                    + "FROM "+ clazz.getSimpleName() + " this "
+                    + "WHERE this." + propertyName +" = :referencedObject")
+                .setEntity("referencedObject", referencedCdmBase);
+
+        if (limit != null){
+            query.setMaxResults(limit);
+        }
+        @SuppressWarnings("unchecked")
+        List<ReferencingObjectDto> result = query.list();
+        result.forEach(dto->dto.setType((Class<CdmBase>)clazz));
+        return result;
+    }
+
 	@Override
     public List<CdmBase> getCdmBasesByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase, Integer limit){
         Session session = super.getSession();
@@ -126,8 +145,7 @@ public class CdmGenericDaoImpl
 
 	@Override
     public long getCountByFieldAndClass(Class<? extends CdmBase> clazz, String propertyName, CdmBase referencedCdmBase){
-        Session session = super.getSession();
-        Query query = session.createQuery("SELECT count(this) "
+        Query query = getSession().createQuery("SELECT count(this) "
                 + "FROM "+ clazz.getSimpleName() + " this "
                 + "WHERE this." + propertyName +" = :referencedObject")
                 .setEntity("referencedObject", referencedCdmBase);
@@ -136,16 +154,28 @@ public class CdmGenericDaoImpl
         return result;
     }
 
+    @Override
+    public List<ReferencingObjectDto> getCdmBasesWithItemInCollectionDto(Class<?> itemClass,
+            Class<? extends CdmBase> clazz, String propertyName, CdmBase item, Integer limit){
+
+        String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName,
+                "new eu.etaxonomy.cdm.persistence.dto.ReferencingObjectDto(other.uuid, other.id)");
+        Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
+        if (limit != null){
+            query.setMaxResults(limit);
+        }
+        @SuppressWarnings("unchecked")
+        List<ReferencingObjectDto> result = query.list();
+        result.forEach(dto->dto.setType((Class)clazz));
+        return result;
+    }
+
 	@Override
 	public List<CdmBase> getCdmBasesWithItemInCollection(Class<?> itemClass,
 	        Class<?> clazz, String propertyName, CdmBase item, Integer limit){
 
-	    Session session = super.getSession();
-		String thisClassStr = itemClass.getSimpleName();
-		String otherClassStr = clazz.getSimpleName();
-		String queryStr = " SELECT other FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
-			" WHERE this = :referencedObject AND this member of other." + propertyName ;
-		Query query = session.createQuery(queryStr).setEntity("referencedObject", item);
+		String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "other");
+		Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
 		if (limit != null){
 		    query.setMaxResults(limit);
 		}
@@ -154,16 +184,21 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	@Override
-    public long getCountWithItemInCollection(Class<?> itemClass, Class<?> clazz, String propertyName,
-            CdmBase item){
-        Session session = super.getSession();
+    private String withItemInCollectionHql(Class<?> itemClass, Class<?> clazz, String propertyName, String select) {
         String thisClassStr = itemClass.getSimpleName();
         String otherClassStr = clazz.getSimpleName();
-        String queryStr = " SELECT count(this) FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
-            " WHERE this = :referencedObject AND this member of other."+propertyName ;
+        String result =  "SELECT "+select+" FROM "+ thisClassStr + " this, " + otherClassStr + " other " +
+                " WHERE this = :referencedObject AND this member of other." + propertyName ;
+        return result;
+    }
 
-        Query query = session.createQuery(queryStr).setEntity("referencedObject", item);
+    @Override
+    public long getCountWithItemInCollection(Class<?> itemClass, Class<?> clazz, String propertyName,
+            CdmBase item){
+
+        String queryStr = withItemInCollectionHql(itemClass, clazz, propertyName, "count(this)");
+
+        Query query = getSession().createQuery(queryStr).setEntity("referencedObject", item);
         long result =(Long)query.uniqueResult();
         return result;
     }
@@ -194,6 +229,28 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
+    @Override
+    public Set<ReferencingObjectDto> getReferencingObjectsDto(CdmBase referencedCdmBase){
+        Set<ReferencingObjectDto> result = new HashSet<>();
+        if (referencedCdmBase == null) {
+            return null;
+        }
+        try {
+
+            referencedCdmBase = HibernateProxyHelper.deproxy(referencedCdmBase);
+            Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
+
+            Set<ReferenceHolder> holderSet = getOrMakeHolderSet(referencedClass);
+            for (ReferenceHolder refHolder: holderSet){
+                handleReferenceHolderDto(referencedCdmBase, result, refHolder, false);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 	@Override
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
 		Set<CdmBase> result = new HashSet<>();
@@ -219,7 +276,6 @@ public class CdmGenericDaoImpl
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	@Override
@@ -279,14 +335,27 @@ public class CdmGenericDaoImpl
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-
 	}
 
-	/**
-	 * @param referencedCdmBase
-	 * @param result
-	 * @param refHolder
-	 */
+    private void handleReferenceHolderDto(CdmBase referencedCdmBase,
+            Set<ReferencingObjectDto> result, ReferenceHolder refHolder, boolean limited) {
+
+        boolean isCollection = refHolder.isCollection();
+        if (isCollection){
+            if (limited){
+                result.addAll(getCdmBasesWithItemInCollectionDto(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, referencedCdmBase, 100));
+            }else{
+                result.addAll(getCdmBasesWithItemInCollectionDto(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, referencedCdmBase, null));
+            }
+        }else{
+            if (limited){
+                result.addAll(getCdmBasesByFieldAndClassDto(refHolder.otherClass, refHolder.propertyName, referencedCdmBase, 100));
+            }else{
+                result.addAll(getCdmBasesByFieldAndClassDto(refHolder.otherClass, refHolder.propertyName, referencedCdmBase, null));
+            }
+        }
+    }
+
 	private void handleReferenceHolder(CdmBase referencedCdmBase,
 			Set<CdmBase> result, ReferenceHolder refHolder, boolean limited) {
 
@@ -306,11 +375,6 @@ public class CdmGenericDaoImpl
 		}
 	}
 
-	/**
-     * @param referencedCdmBase
-     * @param result
-     * @param refHolder
-     */
     private Long handleReferenceHolderForCount(CdmBase referencedCdmBase,
             Long result, ReferenceHolder refHolder) {
         boolean isCollection = refHolder.isCollection();
@@ -449,10 +513,6 @@ public class CdmGenericDaoImpl
 		return true;
 	}
 
-	/**
-	 * @param propertyType
-	 * @return
-	 */
 	protected static boolean isNoDoType(Type propertyType) {
 		boolean result = false;
 		Class<?>[] classes = new Class[]{

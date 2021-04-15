@@ -33,9 +33,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -59,11 +57,17 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private List<TypedEntityReference<Taxon>> associatedTaxa;
     private Map<String, List<String>> types;
 
-    private List<TypedEntityReference<TaxonName>> determinedNames;
-
     private String originalLabelInfo;
     private String exsiccatum;
     private String mostSignificantIdentifier;
+
+    private CollectionDTO collection;
+
+    private String catalogNumber;
+
+    private String barcode;
+
+    private String preservationMethod;
 
     /**
      * Constructs a new DerivedUnitDTO. All derivatives of the passed <code>DerivedUnit entity</code> will be collected and
@@ -132,16 +136,13 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         setBarcode(derivedUnit.getBarcode());
         setCatalogNumber(derivedUnit.getCatalogNumber());
         setCollectorsNumber(derivedUnit.getCollectorsNumber());
-        if (derivedUnit.getDerivedFrom() != null){
-            setDerivationEvent(new DerivationEventDTO(HibernateProxyHelper.deproxy(derivedUnit.getDerivedFrom(), DerivationEvent.class )));
-        }
+        setDerivationEvent(DerivationEventDTO.fromEntity(derivedUnit.getDerivedFrom()));
         if (derivedUnit.getPreservation()!= null){
             setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());
         }
         setRecordBase(derivedUnit.getRecordBasis());
         setSources(derivedUnit.getSources());
         setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
-        addDeterminedNames(derivedUnit.getDeterminations());
 
         // -------------------------------------------------------------
 
@@ -263,28 +264,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         associatedTaxa.add(TypedEntityReference.fromEntity(taxon));
     }
 
-    public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
-        return determinedNames;
-    }
-    public void addDeterminedNames(Set<DeterminationEvent> determinations){
-        if(determinedNames==null){
-            determinedNames = new ArrayList<>();
-        }
-        TaxonName preferredName = null;
-        for (DeterminationEvent event:determinations){
-            if (event.getPreferredFlag()){
-                preferredName = event.getTaxonName();
-            }
-        }
-        if (preferredName != null){
-            determinedNames.add(TypedEntityReference.fromEntity(preferredName));
-        }else{
-            for (DeterminationEvent event:determinations){
-                determinedNames.add(TypedEntityReference.fromEntity(event.getTaxonName()));
-            }
-        }
-    }
-
     public void setPreferredStableUri(URI preferredStableUri) {
         this.preferredStableUri = preferredStableUri;
     }
@@ -322,6 +301,62 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     }
     public void setExsiccatum(String exsiccatum) {
         this.exsiccatum = exsiccatum;
+    }
+
+    public void setCollection(CollectionDTO collection) {
+        this.collection = collection;
+    }
+
+    public String getCatalogNumber() {
+        return catalogNumber;
+    }
+
+    public void setCatalogNumber(String catalogNumber) {
+        this.catalogNumber = catalogNumber;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public String getPreservationMethod() {
+        return preservationMethod;
+    }
+
+    public void setPreservationMethod(String preservationMethod) {
+        this.preservationMethod = preservationMethod;
+    }
+
+    /**
+     * @return the collection
+     *
+     * @deprecated TODO remove as it only duplicates the information contained in the collectionDTO
+     */
+    @Deprecated
+    public String getCollectionCode() {
+        if (collection != null){
+            return collection.getCode();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @return the collection
+     */
+    public CollectionDTO getCollection() {
+        return collection;
+    }
+
+    /**
+     * @param collection the collection to set
+     */
+    public void setCollectioDTO(CollectionDTO collection) {
+        this.collection = collection;
     }
 
 }

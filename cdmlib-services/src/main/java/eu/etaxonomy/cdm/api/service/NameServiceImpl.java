@@ -51,7 +51,8 @@ import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
-import eu.etaxonomy.cdm.api.utility.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.api.util.TaxonNamePartsFilter;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
@@ -199,15 +200,25 @@ public class NameServiceImpl
 
              //all type designation relationships are removed as they belong to the name
             deleteTypeDesignation(name, null);
-    //      //type designations
-    //      if (! name.getTypeDesignations().isEmpty()){
-    //          String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
-    //          throw new ReferrencedObjectUndeletableException(message);
-    //      }
+            //if original spellings should be deleted, remove it from the nomenclatural source
+            Set<TaxonName> namesToUpdate = new HashSet<>();
+            for (Object o: result.getRelatedObjects()){
+                if (o instanceof NomenclaturalSource && ((NomenclaturalSource)o).getNameUsedInSource() != null && ((NomenclaturalSource)o).getNameUsedInSource().equals(name)){
+                    NomenclaturalSource nomSource = (NomenclaturalSource)o;
+                    nomSource.setNameUsedInSource(null);
+                    namesToUpdate.add(nomSource.getSourcedName());
+                }
+            }
 
             try{
+                if (!namesToUpdate.isEmpty()){
+                    Map<UUID, TaxonName> updatedNames = dao.saveOrUpdateAll(namesToUpdate);
+                    Set<TaxonName> names = new HashSet<>(updatedNames.values());
+                    result.addUpdatedObjects(names);
+                }
                 dao.delete(name);
                 result.addDeletedObject(name);
+
             }catch(Exception e){
                 result.addException(e);
                 result.setError();
@@ -230,7 +241,7 @@ public class NameServiceImpl
     @Transactional(readOnly = false)
     public UpdateResult cloneTypeDesignation(UUID nameUuid, SpecimenTypeDesignation baseDesignation,
             String accessionNumber, String barcode, String catalogNumber,
-            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus){
+            UUID collectionUuid, SpecimenTypeDesignationStatus typeStatus, URI preferredStableUri){
         UpdateResult result = new UpdateResult();
 
         DerivedUnit baseSpecimen = HibernateProxyHelper.deproxy(occurrenceService.load(baseDesignation.getTypeSpecimen().getUuid(), Arrays.asList("collection")), DerivedUnit.class);
@@ -244,6 +255,7 @@ public class NameServiceImpl
         }
         for (SpecimenOrObservationBase original : derivedFrom.getOriginals()) {
             DerivationEvent.NewSimpleInstance(original, duplicate, derivedFrom.getType());
+
         }
         duplicate.setAccessionNumber(accessionNumber);
         duplicate.setBarcode(barcode);
@@ -252,6 +264,7 @@ public class NameServiceImpl
         SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
         typeDesignation.setTypeSpecimen(duplicate);
         typeDesignation.setTypeStatus(typeStatus);
+        typeDesignation.getTypeSpecimen().setPreferredStableUri(preferredStableUri);
 
         TaxonName name = load(nameUuid);
         name.getTypeDesignations().add(typeDesignation);
@@ -984,7 +997,7 @@ public class NameServiceImpl
     public DeleteResult isDeletable(TaxonName name, DeleteConfiguratorBase config, UUID taxonUuid){
         DeleteResult result = new DeleteResult();
 
-        NameDeletionConfigurator nameConfig = null;
+         NameDeletionConfigurator nameConfig = null;
         if (config instanceof NameDeletionConfigurator){
             nameConfig = (NameDeletionConfigurator) config;
         }else{
@@ -1013,10 +1026,8 @@ public class NameServiceImpl
                 }
             }
         }
-
         //concepts
-
-        if (! name.getTaxonBases().isEmpty() ){
+        if (!name.getTaxonBases().isEmpty()){
             boolean isDeletableTaxon = true;
             List <TaxonBase> notDeletedTaxonBases = name.getTaxonBases().stream()
                     .filter((taxonBase) -> !taxonBase.getUuid().equals(taxonUuid))
@@ -1072,7 +1083,22 @@ public class NameServiceImpl
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(referencingObject);
                 result.setAbort();
-        }
+            }
+            //original spelling
+            else if (referencingObject.isInstanceOf(NomenclaturalSource.class) && !((NameDeletionConfigurator)config).isIgnoreIsOriginalSpellingFor()){
+                if (((NomenclaturalSource)referencingObject).getNameUsedInSource() != null && ((NomenclaturalSource)referencingObject).getNameUsedInSource().equals(name)){
+                    String message = "Name can't be deleted as it is used as original spelling";
+                    result.addException(new ReferencedObjectUndeletableException(message));
+                    result.addRelatedObject(referencingObject);
+                    result.setAbort();
+                }
+            }
+            if (referencingObject.isInstanceOf(NomenclaturalSource.class)){
+                if (((NomenclaturalSource)referencingObject).getNameUsedInSource() != null && ((NomenclaturalSource)referencingObject).getNameUsedInSource().equals(name)){
+                    result.addRelatedObject(referencingObject);
+                }
+
+            }
         }
 
         //TODO inline references
@@ -1289,5 +1315,7 @@ public class NameServiceImpl
         M bestMatching = matchingList.iterator().next();
         return bestMatching;
     }
+
+
 
 }

@@ -50,7 +50,7 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
     }
 
     @SpringBeanByType
-    protected ITaxonGraphDao taxonGraphDao;
+    private ITaxonGraphDao taxonGraphDao;
 
     @SpringBeanByType
     private IReferenceDao referenceDao;
@@ -98,11 +98,11 @@ public class TaxonGraphTest extends CdmTransactionalIntegrationTest {
         return processor;
     }
 
-   protected void setUuidPref() {
-       PrefKey key = TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID;
-       prefDao.set(new CdmPreference(key.getSubject(), key.getPredicate(), TaxonGraphTest.uuid_secRef.toString()));
-       commitAndStartNewTransaction();
-   }
+    protected void setUuidPref() {
+        PrefKey key = TaxonGraphDaoHibernateImpl.CDM_PREF_KEY_SEC_REF_UUID;
+        prefDao.set(new CdmPreference(key.getSubject(), key.getPredicate(), TaxonGraphTest.uuid_secRef.toString()));
+        commitAndStartNewTransaction();
+    }
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)

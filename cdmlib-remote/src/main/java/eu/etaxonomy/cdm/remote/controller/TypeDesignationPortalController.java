@@ -36,8 +36,8 @@ public class TypeDesignationPortalController extends TypeDesignationController {
             "typeSpecimen.media",
             "registrations.institution",
             "text",
-            "source.citation.authorship.$", // the lectotype source
-            "source.links.description", // the lectotype source
+            "designationSource.citation.authorship.$",
+            "designationSource.links.description",
             "sources.links.description", // other sources
             "sources.citation.authorship.$" // other sources
     });

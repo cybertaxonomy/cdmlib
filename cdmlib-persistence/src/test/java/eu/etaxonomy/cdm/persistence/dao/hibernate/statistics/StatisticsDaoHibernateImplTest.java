@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
 import static org.junit.Assert.assertTrue;
@@ -61,8 +69,6 @@ public class StatisticsDaoHibernateImplTest
 
 	private List<Classification> classifications;
 
-
-
 	// choose a number
 	private static final int NO_OF_ACCEPTED_TAXA = 10;
 
@@ -77,12 +83,12 @@ public class StatisticsDaoHibernateImplTest
 	private static final int NO_OF_SHARED_TAXA = 4;
 
 	// must be NO_OF_ACCEPTED_TAXA + NO_OF_SYNONYMS
-	private static final int NO_OF_ALLTAXA = NO_OF_ACCEPTED_TAXA
-			+ NO_OF_SYNONYMS;
+	private static final int NO_OF_ALLTAXA =
+	        NO_OF_ACCEPTED_TAXA + NO_OF_SYNONYMS;
 
 	// must be NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS
-	private static final int NO_OF_TAXON_NAMES = NO_OF_ACCEPTED_TAXA
-			+ NO_OF_SYNONYMS;
+	private static final int NO_OF_TAXON_NAMES =
+	        NO_OF_ACCEPTED_TAXA + NO_OF_SYNONYMS;
 
 	// this represents an approx. no of the amount that will actually generated!
 	private static final int NO_OF_DESCRIPTIVE_SOURCE_REFERENCES = 16;
@@ -90,8 +96,8 @@ public class StatisticsDaoHibernateImplTest
 	// private static final int NO_OF_ALL_REFERENCES = NO_OF_ACCEPTED_TAXA + 0;
 
 	// must not be more than NO_OF_ACCEPTED_TAXA+NO_OF_SYNONYMS
-	private static final int NO_OF_NOMENCLATURAL_REFERENCES = NO_OF_ACCEPTED_TAXA
-			+ NO_OF_SYNONYMS - 4;
+	private static final int NO_OF_NOMENCLATURAL_REFERENCES =
+	        NO_OF_ACCEPTED_TAXA + NO_OF_SYNONYMS - 4;
 
 	// --------------------variables for all ------------------
 
@@ -100,25 +106,22 @@ public class StatisticsDaoHibernateImplTest
 
 	// ............................................
 
-	// log the type enum to an int constant:
-	private Map<String, Long> typeMap_ALL;
-
 	// ------------------ variables for CLASSIFICATIONS -----------------------
 
 	// int[] anArray = new int[NO_OF_CLASSIFICATIONS];
 	private static List<Long> no_of_all_taxa_c = new ArrayList<Long>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_accepted_taxa_c = new ArrayList<Long>(
+	private static List<Long> no_of_accepted_taxa_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_synonyms_c = new ArrayList<Long>(
+	private static List<Long> no_of_synonyms_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_taxon_names_c = new ArrayList<Long>(
+	private static List<Long> no_of_taxon_names_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_descriptive_source_references_c = new ArrayList<Long>(
+	private static List<Long> no_of_descriptive_source_references_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_all_references_c = new ArrayList<Long>(
+	private static List<Long> no_of_all_references_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
-	private static List<Long> no_of_nomenclatural_references_c = new ArrayList<Long>(
+	private static List<Long> no_of_nomenclatural_references_c = new ArrayList<>(
 			Collections.nCopies(NO_OF_CLASSIFICATIONS, new Long(0)));
 	// we do not count classifications in classifications
 
@@ -140,6 +143,7 @@ public class StatisticsDaoHibernateImplTest
 	};
 
 	// ****************** services: ************************
+
 	@SpringBeanByType
 	private IStatisticsDao service;
 	@SpringBeanByType
@@ -162,7 +166,6 @@ public class StatisticsDaoHibernateImplTest
 		nodeUuid = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
 
 		AuditEventContextHolder.clearContext();
-
 	}
 
 	@After
@@ -198,8 +201,7 @@ public class StatisticsDaoHibernateImplTest
 		classifications = new ArrayList<Classification>();
 
 		for (int i = 1; i <= NO_OF_CLASSIFICATIONS; i++) {
-			Classification classification = Classification
-					.NewInstance("European Abies" + i);
+			Classification classification = Classification.NewInstance("European Abies" + i);
 			classifications.add(classification);
 			classificationDao.save(classification);
 		}
@@ -227,10 +229,8 @@ public class StatisticsDaoHibernateImplTest
 				&& classiCounter < NO_OF_CLASSIFICATIONS; /* see below */) {
 
 			// compute no of taxa to be created in this classification
-			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last
-																// classification
-																// gets all left
-																// taxa
+			if (classiCounter >= NO_OF_CLASSIFICATIONS - 1) { // last classification
+																// gets all left taxa
 				taxaInClass = remainder;
 			} else { // take half of left taxa for this class:
 				taxaInClass = remainder / 2;
@@ -463,17 +463,10 @@ public class StatisticsDaoHibernateImplTest
 		merge(no_of_accepted_taxa_c, no_of_synonyms_c, no_of_all_taxa_c);
 		merge(no_of_all_references_c, no_of_nomenclatural_references_c,
 				no_of_all_references_c);
-
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
 	 * create and count a new sec Reference
-	 *
-	 * @param classiCounter
-	 * @param taxonCounter
-	 * @return
 	 */
 	private Reference createSecReference(int classiCounter, int taxonCounter) {
 		Reference sec;
@@ -505,7 +498,6 @@ public class StatisticsDaoHibernateImplTest
 		for (int i = 0; i < NO_OF_CLASSIFICATIONS; i++) {
 			Long sum = no_of_sth1.get(i) + no_of_sth2.get(i);
 			no_of_sum.set(i, sum);
-
 		}
 	}
 
@@ -534,9 +526,6 @@ public class StatisticsDaoHibernateImplTest
 		return root;
 	}
 
-	/**
-	 *
-	 */
 	private void print() {
 		for (Classification classification : classifications) {
 			System.out.println("Classification:" + classification.toString());

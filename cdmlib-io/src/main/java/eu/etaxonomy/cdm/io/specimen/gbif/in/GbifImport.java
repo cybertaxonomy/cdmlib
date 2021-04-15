@@ -474,7 +474,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
 
             //Reference stuff
            // SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
-            Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
+            Map<String,OriginalSourceBase> sourceMap = new HashMap<String, OriginalSourceBase>();
 
             state.getDataHolder().docSources = new ArrayList<String>();
             for (String[] fullReference : state.getDataHolder().referenceList) {
@@ -525,7 +525,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
             addToSourceMap(sourceMap, osbSet);
 
             if( state.getConfig().isInteractWithUser()){
-                List<OriginalSourceBase<?>>sources=null;
+                List<OriginalSourceBase>sources=null;
                 if(!state.isDerivedUnitSourcesSet()){
                     sources= sui.askForSource(sourceMap, "the unit itself","",getReferenceService(), state.getDataHolder().docSources);
                     state.setDerivedUnitSources(sources);
@@ -536,7 +536,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
                 }
     //          System.out.println("nb sources: "+sources.size());
     //          System.out.println("derivedunitfacade : "+derivedUnitFacade.getTitleCache());
-                for (OriginalSourceBase<?> sour:sources){
+                for (OriginalSourceBase sour:sources){
                     if(sour.isInstanceOf(IdentifiableSource.class)){
                         if(sourceNotLinkedToElement(derivedUnitFacade,sour)) {
     //                      System.out.println("add source to derivedunitfacade1 "+derivedUnitFacade.getTitleCache());
@@ -550,7 +550,7 @@ public class GbifImport extends SpecimenImportBase<GbifImportConfigurator, Speci
                     }
                 }
             }else{
-                for (OriginalSourceBase<?> sr : sourceMap.values()){
+                for (OriginalSourceBase sr : sourceMap.values()){
                     if(sr.isInstanceOf(IdentifiableSource.class)){
                         if(sourceNotLinkedToElement(derivedUnitFacade,sr)) {
     //                      System.out.println("add source to derivedunitfacade3 "+derivedUnitFacade.getTitleCache());

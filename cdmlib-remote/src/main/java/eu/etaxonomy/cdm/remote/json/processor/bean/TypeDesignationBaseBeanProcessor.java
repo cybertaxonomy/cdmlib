@@ -27,27 +27,21 @@ import net.sf.json.JsonConfig;
 /**
  * @author a.kohlbecker
  * @since 09.07.2010
- *
  */
 public class TypeDesignationBaseBeanProcessor extends AbstractCdmBeanProcessor<TypeDesignationBase> implements IMultilanguageTextBeanProcessor {
-
 
     private static final List<String> IGNORE_LIST = Arrays.asList("text");
     private boolean replaceMultilanguageText;
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractCdmBeanProcessor#processBeanSecondStep(eu.etaxonomy.cdm.model.common.CdmBase, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-	 */
 	@Override
 	public JSONObject processBeanSecondStep(TypeDesignationBase bean, JSONObject json, JsonConfig jsonConfig) {
 		json.element("typeStatus", bean.getTypeStatus(), jsonConfig);
 		if(bean.getClass().isAssignableFrom(SpecimenTypeDesignation.class)){
 			json.element("typeSpecimen", ((SpecimenTypeDesignation)bean).getTypeSpecimen(), jsonConfig);
-			json.element("source", ((SpecimenTypeDesignation)bean).getSource(), jsonConfig);
+			json.element("designationSource", ((SpecimenTypeDesignation)bean).getDesignationSource(), jsonConfig);
 		} else if (bean.getClass().isAssignableFrom(NameTypeDesignation.class)){
 			json.element("typeName", ((NameTypeDesignation)bean).getTypeName(), jsonConfig);
-			json.element("source", ((NameTypeDesignation)bean).getSource(), jsonConfig);
+			json.element("designationSource", ((NameTypeDesignation)bean).getDesignationSource(), jsonConfig);
 		}
 
 		if(bean instanceof TextualTypeDesignation){
@@ -88,6 +82,4 @@ public class TypeDesignationBaseBeanProcessor extends AbstractCdmBeanProcessor<T
     public List<String> getIgnorePropNames() {
         return getMultilanguageTextIgnoreList();
     }
-
-
 }

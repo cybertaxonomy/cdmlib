@@ -670,11 +670,12 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(phyloTree);
 	}
 
-
 	private void createTaxon(List<CdmBase> cdmBases) {
 		Reference sec = getReference();
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
+		taxon.getSecSource().addLink(ExternalLink.NewInstance(ExternalLinkType.WebSite, URI.create("https://www.abc.de"),
+		        "link description", Language.GERMAN(), 44));
 		handleIdentifiableEntity(taxon);
 
 		TaxonName synName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
@@ -683,13 +684,11 @@ public class FullCoverageDataGenerator {
 		taxon.setDoubtful(true);
 		handleIdentifiableEntity(syn);
 
-
 		Taxon concept = Taxon.NewInstance(name, getReference());
 		TaxonRelationship taxRel = taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(),
 				sec, "444");
 		taxon.setTaxonStatusUnknown(true);
 		handleAnnotatableEntity(taxRel);
-
 
 		//Classification
 		Classification classification = Classification.NewInstance("My classification", sec);

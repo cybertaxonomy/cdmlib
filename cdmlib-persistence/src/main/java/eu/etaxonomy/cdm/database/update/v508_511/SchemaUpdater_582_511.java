@@ -101,13 +101,7 @@ public class SchemaUpdater_582_511 extends SchemaUpdaterBase {
         tableName = "FeatureTree";
         stepName = "Drop table " + tableName;
         TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT, true);
-
     }
-
-    @Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_511_5111.NewInstance();
-	}
 
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {

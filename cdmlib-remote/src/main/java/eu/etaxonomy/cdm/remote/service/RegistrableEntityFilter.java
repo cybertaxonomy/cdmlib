@@ -15,7 +15,7 @@ import java.util.Set;
 import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.utility.UserHelper;
+import eu.etaxonomy.cdm.api.util.UserHelper;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Registration;
 import eu.etaxonomy.cdm.model.name.RegistrationStatus;

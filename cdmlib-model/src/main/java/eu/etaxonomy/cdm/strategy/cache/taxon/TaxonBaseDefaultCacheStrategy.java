@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -115,10 +116,10 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
     private List<TaggedText> getSecundumTags(T taxonBase) {
         List<TaggedText> tags = new ArrayList<>();
 
-        Reference ref = taxonBase.getSec();
-        ref = HibernateProxyHelper.deproxy(ref);
+        Reference sec = taxonBase.getSec();
+        sec = HibernateProxyHelper.deproxy(sec);
         String secRef;
-        if (ref == null){
+        if (sec == null){
             //missing sec
             if (isBlank(taxonBase.getAppendedPhrase())){
                 secRef = "???";
@@ -128,14 +129,22 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
         else{
             //existing sec
-            if (ref.isProtectedTitleCache() == false &&
-                    ref.getCacheStrategy() != null &&
-                    ref.getAuthorship() != null &&
-                    isNotBlank(ref.getAuthorship().getTitleCache()) &&
-                    isNotBlank(ref.getYear())){
-                secRef = ref.getCacheStrategy().getCitation(ref, null);  //microRef is handled later
+            if (sec.isProtectedTitleCache() == false &&
+                    sec.getCacheStrategy() != null &&
+                    sec.getAuthorship() != null &&
+                    isNotBlank(sec.getAuthorship().getTitleCache()) &&
+                    isNotBlank(sec.getYear())){
+                secRef = sec.getCacheStrategy().getCitation(sec, null);  //microRef is handled later
+            }else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
+                    && titleExists(sec)){  //maybe we should also test protected caches (but which one, the abbrev cache or the titleCache?
+                secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
+                String secDate = sec.getYear();
+                if (isBlank(secDate) && sec.getAccessed() != null){
+                    secDate = String.valueOf(sec.getAccessed().getYear());
+                }
+                secRef = CdmUtils.concat(" ", secRef, secDate);
             }else{
-                secRef = ref.getTitleCache();
+                secRef = sec.getTitleCache();
             }
         }
         if (secRef != null){
@@ -149,6 +158,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
+    private boolean titleExists(Reference ref) {
+        return isNotBlank(ref.getAbbrevTitle()) || isNotBlank(ref.getTitle());
+    }
 
     @Override
     public String getTitleCache(T taxonBase, HTMLTagRules htmlTagRules) {

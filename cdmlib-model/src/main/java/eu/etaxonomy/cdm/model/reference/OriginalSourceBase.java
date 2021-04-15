@@ -72,9 +72,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(name="OriginalSourceBase")
-public abstract class OriginalSourceBase<T extends ISourceable>
+public abstract class OriginalSourceBase
         extends AnnotatableEntity
-        implements IOriginalSource<T>, IIntextReferenceTarget {
+        implements IOriginalSource, IIntextReferenceTarget {
 
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
@@ -253,10 +253,10 @@ public abstract class OriginalSourceBase<T extends ISourceable>
 //********************** CLONE ************************************************/
 
 	@Override
-	public OriginalSourceBase<T> clone() throws CloneNotSupportedException{
+	public OriginalSourceBase clone() throws CloneNotSupportedException{
 
 	    @SuppressWarnings("unchecked")
-        OriginalSourceBase<T> result = (OriginalSourceBase<T>)super.clone();
+        OriginalSourceBase result = (OriginalSourceBase)super.clone();
 
 		Set<ExternalLink> links = new HashSet<>();
 		result.setLinks(links);
@@ -320,7 +320,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
      * Uses a content based compare strategy which avoids bean initialization. This is achieved by
      * comparing the cdm entity ids.
      */
-    public boolean equalsByShallowCompare(OriginalSourceBase<T> other) {
+    public boolean equalsByShallowCompare(OriginalSourceBase other) {
 
         int thisCitationId = -1;
         int otherCitationId = -1;
@@ -338,7 +338,7 @@ public abstract class OriginalSourceBase<T extends ISourceable>
             return false;
         }
 
-        OriginalSourceBase<T> theOther = other;
+        OriginalSourceBase theOther = other;
         if(!StringUtils.equals(this.getIdInSource(), theOther.getIdInSource())
                 || !CdmUtils.nullSafeEqual(this.getIdNamespace(), theOther.getIdNamespace())
                 || !CdmUtils.nullSafeEqual(this.getType(), theOther.getType())

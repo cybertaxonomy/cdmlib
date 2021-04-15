@@ -319,9 +319,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private List<TaxonNode> listChildrenOfRecursive(TaxonNode node, List<TaxonNode> previousResult, Integer pageSize, Integer pageIndex,
             boolean recursive, boolean includeUnpublished, List<String> propertyPaths, Comparator<TaxonNode> comparator){
 
-        if (!previousResult.contains(node)){
-            previousResult.add(node);
-        }
         if (recursive == true && comparator == null ){
     		Criteria crit = childrenOfCriteria(node, includeUnpublished);
 
@@ -341,7 +338,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     	        }
     	        if (child.hasChildNodes()){
     	            previousResult = listChildrenOfRecursive(child, previousResult, pageSize, pageIndex,
-    	                    recursive, includeUnpublished, propertyPaths,comparator);
+    	                    recursive, includeUnpublished, propertyPaths, comparator);
     	        }
     	    }
     	    return previousResult;
@@ -683,7 +680,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
         String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.COUNT);
         if (!overwriteExisting){
-            queryStr += " AND t.sec IS NULL ";
+            queryStr += " AND t.secSource.citation IS NULL ";
         }
         return countResult(queryStr);
     }
@@ -698,7 +695,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
         String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.COUNT);
         if (!overwriteExisting){
-            queryStr += " AND syn.sec IS NULL ";
+            queryStr += " AND syn.secSource.citation IS NULL ";
         }
         return countResult(queryStr);
     }
@@ -722,7 +719,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.ID);
         if (!overwriteExisting){
-            queryStr += " AND t.sec IS NULL ";
+            queryStr += " AND t.secSource.citation IS NULL ";
         }
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
 
@@ -734,7 +731,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.ID);
         if (!overwriteExisting){
-            queryStr += " AND syn.sec IS NULL ";
+            queryStr += " AND syn.secSource.citation IS NULL ";
         }
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
     }
@@ -746,7 +743,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
-            for (TaxonBase taxonBase : taxonList){
+            for (TaxonBase<?> taxonBase : taxonList){
                 if (taxonBase != null){
                     taxonBase = taxonDao.load(taxonBase.getUuid());
                     taxonBase.setSec(newSec);
@@ -858,7 +855,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         String queryStr = "SELECT " + mode.hql("syn")
                 + " FROM TaxonNode tn "
                 + "   JOIN tn.taxon t "
-                + "   JOIN t.synonyms syn  LEFT JOIN syn.name n ";
+                + "   JOIN t.synonyms syn  "
+                + "   LEFT JOIN syn.name n "
+                + "   LEFT JOIN syn.secSource ss ";
         String whereStr = " tn.treeIndex LIKE '%1$s%%' ";
         if (!includeSharedTaxa){
             whereStr += " AND NOT EXISTS ("
@@ -936,7 +935,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     private String forSubtreeAcceptedQueryStr(boolean includeSharedTaxa, TreeIndex subTreeIndex, boolean excludeHybrids, SelectMode mode) {
         String queryStr = "SELECT " + mode.hql("t")
-                + " FROM TaxonNode tn JOIN tn.taxon t LEFT JOIN t.name n ";
+                + " FROM TaxonNode tn "
+                + "   JOIN tn.taxon t "
+                + "   LEFT JOIN t.name n "
+                + "   LEFT JOIN t.secSource ss ";
         String whereStr = " tn.treeIndex like '%1$s%%' ";
         if (!includeSharedTaxa){
             whereStr += " AND NOT EXISTS ("

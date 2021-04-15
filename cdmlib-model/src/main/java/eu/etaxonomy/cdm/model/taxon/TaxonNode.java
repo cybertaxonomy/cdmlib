@@ -62,9 +62,9 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.SingleSourcedEntityBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level3;
@@ -485,17 +485,17 @@ public class TaxonNode
     }
 
    @Override
-   public TaxonNode addChildTaxon(Taxon taxon, DescriptionElementSource source) {
+   public TaxonNode addChildTaxon(Taxon taxon, NamedSource source) {
        return addChildTaxon(taxon, this.childNodes.size(), source);
    }
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        return addChildTaxon(taxon, index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
+        return addChildTaxon(taxon, index, NamedSource.NewPrimarySourceInstance(citation, microCitation));
     }
 
     @Override
-    public TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source) {
+    public TaxonNode addChildTaxon(Taxon taxon, int index, NamedSource source) {
         Classification classification = CdmBase.deproxy(this.getClassification());
         taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
         if (classification.isTaxonInTree(taxon)){
@@ -533,7 +533,7 @@ public class TaxonNode
      */
     @Override
     public TaxonNode addChildNode(TaxonNode child, int index, Reference reference, String microReference){
-        return addChildNode(child, index, DescriptionElementSource.NewPrimarySourceInstance(reference, microReference));
+        return addChildNode(child, index, NamedSource.NewPrimarySourceInstance(reference, microReference));
     }
 
 
@@ -553,7 +553,7 @@ public class TaxonNode
      * @see             #deleteChildNode(int)
      */
     @Override
-    public TaxonNode addChildNode(TaxonNode child, int index, DescriptionElementSource source){
+    public TaxonNode addChildNode(TaxonNode child, int index, NamedSource source){
         if (index < 0 || index > childNodes.size() + 1){
             throw new IndexOutOfBoundsException("Wrong index: " + index);
         }

@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -122,7 +122,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
      * @param type
      * @param source
      */
-    protected RelationshipBase(FROM from, TO to, TYPE type, DescriptionElementSource source) {
+    protected RelationshipBase(FROM from, TO to, TYPE type, NamedSource source) {
         super(source);
         setRelatedFrom(from);
         setRelatedTo(to);

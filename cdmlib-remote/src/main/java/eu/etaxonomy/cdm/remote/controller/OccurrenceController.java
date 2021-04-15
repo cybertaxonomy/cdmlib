@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.api.service.dto.FieldUnitDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationBaseDTO;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -57,7 +58,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
             "derivedFrom.derivatives",
             "derivedFrom.originals",
             "specimenTypeDesignations.*",
-            "specimenTypeDesignations.source.citation.*",
+            "specimenTypeDesignations.designationSource.citation.*",
             "specimenTypeDesignations.homotypicalGroup.*",
             "specimenTypeDesignations.typifiedNames",
             "collection.$"
@@ -79,7 +80,12 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
 
         if(pathProperties.stream().anyMatch(s -> s.startsWith("specimenTypeDesignations"))) {
             List<String> complemented = new ArrayList<>(pathProperties);
-            complemented.add("specimenTypeDesignations.source.citation.*");
+            complemented.add("specimenTypeDesignations.designationSource.citation.*");
+            return complemented;
+        }
+        if(pathProperties.stream().anyMatch(s -> s.startsWith("sources"))) {
+            List<String> complemented = new ArrayList<>(pathProperties);
+            complemented.add("sources.citation.*");
             return complemented;
         }
         return pathProperties;
@@ -104,40 +110,23 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     }
 
 
-    @RequestMapping(value = { "fieldUnitDTO" }, method = RequestMethod.GET)
-    public  FieldUnitDTO doGetFieldUnitDTO(
+    @RequestMapping(value = { "rootUnitDTOs" }, method = RequestMethod.GET)
+    public  Collection<SpecimenOrObservationBaseDTO> doGetRootUnitDTOs(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetFieldUnitDTO()" + requestPathAndQuery(request));
+        logger.info("doGetRootUnitDTOs()" + requestPathAndQuery(request));
 
-        SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, DERIVED_UNIT_INIT_STRATEGY);
-
+        SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, "$");
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
-        FieldUnitDTO fieldUnitDto = null;
-        if(sob != null){
-            fieldUnitDto = service.loadFieldUnitDTO(uuid);
-        }
+        Collection<SpecimenOrObservationBaseDTO> fieldUnitDtos = service.findRootUnitDTOs(uuid);
 
-        return fieldUnitDto;
+
+        return fieldUnitDtos;
     }
 
-    @RequestMapping(value = { "fieldUnitDTOs" }, method = RequestMethod.GET)
-    public  List<FieldUnitDTO> doListFieldUnitDTO(
-            @PathVariable("uuid") List<UUID> uuids,
-            HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
-
-        logger.info("doListFieldUnitDTO()" + requestPathAndQuery(request));
-        List<FieldUnitDTO> dtos = new ArrayList<>(uuids.size());
-        for(UUID uuid : uuids){
-            dtos.add(service.loadFieldUnitDTO(uuid));
-        }
-
-        return dtos;
-    }
 
     @RequestMapping(value = { "extensions" }, method = RequestMethod.GET)
     public Object doGetExtensions(

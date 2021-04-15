@@ -29,8 +29,8 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.compare.name.HomotypicalGroupNameComparator;
 import eu.etaxonomy.cdm.compare.name.TypeComparator;
+import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -97,6 +97,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
+import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
@@ -306,11 +307,11 @@ public class CdmLightClassificationExport
 
                 try {
                     TaxonName name = taxon.getName();
-                    handleName(state, name, true);
+                    handleName(state, name, taxon, true);
                     HomotypicalGroup homotypicGroup = taxon.getHomotypicGroup();
                     int index = 0;
                     int homotypicGroupIndex = 0;
-                    handleHomotypicalGroup(state, homotypicGroup, homotypicGroupIndex);
+                    handleHomotypicalGroup(state, homotypicGroup, taxon, homotypicGroupIndex);
                     homotypicGroupIndex++;
                     for (Synonym syn : taxon.getSynonymsInGroup(homotypicGroup)) {
                         handleSynonym(state, syn, index);
@@ -318,7 +319,7 @@ public class CdmLightClassificationExport
                     }
                     List<HomotypicalGroup> heterotypicHomotypicGroups = taxon.getHeterotypicSynonymyGroups();
                     for (HomotypicalGroup group: heterotypicHomotypicGroups){
-                        handleHomotypicalGroup(state, group, homotypicGroupIndex);
+                        handleHomotypicalGroup(state, group, taxon, homotypicGroupIndex);
                         for (Synonym syn : taxon.getSynonymsInGroup(group)) {
                             handleSynonym(state, syn, index);
                             index++;
@@ -881,10 +882,6 @@ public class CdmLightClassificationExport
         }
     }
 
-    /**
-     * @param sec
-     * @return
-     */
     private String getTitleCache(IIdentifiableEntity identEntity) {
         if (identEntity == null) {
             return "";
@@ -907,7 +904,7 @@ public class CdmLightClassificationExport
                 return;
             }
             TaxonName name = synonym.getName();
-            handleName(state, name);
+            handleName(state, name, synonym.getAcceptedTaxon());
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
@@ -946,7 +943,7 @@ public class CdmLightClassificationExport
                 return;
             }
             TaxonName name = ppSyonym.getName();
-            handleName(state, name);
+            handleName(state, name, accepted);
 
             CdmLightExportTable table = CdmLightExportTable.SYNONYM;
             String[] csvLine = new String[table.getSize()];
@@ -1003,11 +1000,11 @@ public class CdmLightClassificationExport
 
     }
 
-    private void handleName(CdmLightExportState state, TaxonName name){
-        handleName(state, name, false);
+    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon){
+        handleName(state, name, acceptedTaxon, false);
     }
 
-    private void handleName(CdmLightExportState state, TaxonName name, boolean acceptedName) {
+    private void handleName(CdmLightExportState state, TaxonName name, Taxon acceptedTaxon, boolean acceptedName) {
         if (name == null || state.getNameStore().containsKey(name.getId())) {
             return;
         }
@@ -1105,8 +1102,8 @@ public class CdmLightClassificationExport
             Reference nomRef = name.getNomenclaturalReference();
 
             NomenclaturalSource nomenclaturalSource = name.getNomenclaturalSource();
-            if (nomenclaturalSource.getNameUsedInSource() != null){
-                handleName(state, nomenclaturalSource.getNameUsedInSource());
+            if (nomenclaturalSource != null &&nomenclaturalSource.getNameUsedInSource() != null){
+                handleName(state, nomenclaturalSource.getNameUsedInSource(), null);
                 csvLine[table.getIndex(CdmLightExportTable.NAME_USED_IN_SOURCE)] = getId(state, nomenclaturalSource.getNameUsedInSource());
             }
 
@@ -1243,7 +1240,10 @@ public class CdmLightClassificationExport
                 }
             }
             TypeDesignationSetManager manager = new TypeDesignationSetManager(specimenTypeDesignations, name);
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false);
+            HTMLTagRules rules = new HTMLTagRules();
+            rules.addRule(TagEnum.name, "i");
+            String test = manager.print(false, false, false, rules);;
+            csvLine[table.getIndex(CdmLightExportTable.TYPE_SPECIMEN)] = manager.print(false, false, false, rules);
 
             StringBuilder stringbuilder = new StringBuilder();
             int i = 1;
@@ -1290,8 +1290,23 @@ public class CdmLightClassificationExport
 
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_FK)] = getId(state, group);
             List<TaxonName> typifiedNames = new ArrayList<>();
-            typifiedNames.addAll(group.getTypifiedNames());
-            Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(null, true));
+            if (acceptedTaxon != null){
+                HomotypicGroupTaxonComparator comparator = new HomotypicGroupTaxonComparator(acceptedTaxon);
+                List<Synonym> synonymsInGroup = null;
+                if (group.equals(acceptedTaxon.getHomotypicGroup())){
+                    synonymsInGroup = acceptedTaxon.getHomotypicSynonymsByHomotypicGroup(comparator);
+                    typifiedNames.add(name);
+                }else{
+                    synonymsInGroup = acceptedTaxon.getSynonymsInGroup(group, comparator);
+                }
+
+                synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(HibernateProxyHelper.deproxy(synonym.getName(), TaxonName.class)));
+
+            }else{
+                typifiedNames.addAll(group.getTypifiedNames());
+            }
+
+
             Integer seqNumber = typifiedNames.indexOf(name);
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_SEQ)] = String.valueOf(seqNumber);
             state.getProcessor().put(table, name, csvLine);
@@ -1330,7 +1345,7 @@ public class CdmLightClassificationExport
             TaxonName name2 = rel.getToName();
             name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
             if (!state.getNameStore().containsKey(name2.getId())) {
-                handleName(state, name2);
+                handleName(state, name2, null);
             }
 
             csvLine[table.getIndex(CdmLightExportTable.NAME_REL_TYPE)] = type.getLabel();
@@ -1348,7 +1363,7 @@ public class CdmLightClassificationExport
             TaxonName name2 = rel.getFromName();
             name2 = HibernateProxyHelper.deproxy(name2, TaxonName.class);
             if (!state.getNameStore().containsKey(name2.getId())) {
-                handleName(state, name2);
+                handleName(state, name2, null);
             }
 
 
@@ -1626,15 +1641,17 @@ public class CdmLightClassificationExport
 
                         if (nameStatus.getRuleConsidered() != null
                                 && !StringUtils.isBlank(nameStatus.getRuleConsidered())) {
-                            statusString += " " + nameStatus.getRuleConsidered();
+                            statusString += ": " + nameStatus.getRuleConsidered();
                         }
                         if (nameStatus.getCitation() != null) {
-                            statusString += " " + nameStatus.getCitation().getTitleCache();
+                            String shortCitation = ((DefaultReferenceCacheStrategy) nameStatus.getCitation().getCacheStrategy())
+                                    .createShortCitation(nameStatus.getCitation(), null, false);
+                            statusString += " (" + shortCitation + ")";
                         }
-                        if (nameStatus.getCitationMicroReference() != null
-                                && !StringUtils.isBlank(nameStatus.getCitationMicroReference())) {
-                            statusString += " " + nameStatus.getCitationMicroReference();
-                        }
+//                        if (nameStatus.getCitationMicroReference() != null
+//                                && !StringUtils.isBlank(nameStatus.getCitationMicroReference())) {
+//                            statusString += " " + nameStatus.getCitationMicroReference();
+//                        }
                     }
                     statusString += " ";
                 }
@@ -1647,15 +1664,24 @@ public class CdmLightClassificationExport
         }
     }
 
-    private void handleHomotypicalGroup(CdmLightExportState state, HomotypicalGroup group, int sortIndex) {
+    private void handleHomotypicalGroup(CdmLightExportState state, HomotypicalGroup group, Taxon acceptedTaxon, int sortIndex) {
         try {
             state.addHomotypicalGroupToStore(group);
             CdmLightExportTable table = CdmLightExportTable.HOMOTYPIC_GROUP;
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.SORT_INDEX)] = String.valueOf(sortIndex);
             csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_ID)] = getId(state, group);
+
             List<TaxonName> typifiedNames = new ArrayList<>();
-            group.getTypifiedNames().stream().forEach(name -> typifiedNames.add(HibernateProxyHelper.deproxy(name, TaxonName.class)));
+            if (acceptedTaxon != null){
+                List<Synonym> synonymsInGroup = acceptedTaxon.getSynonymsInGroup(group);
+                if (group.equals(acceptedTaxon.getHomotypicGroup())){
+                    typifiedNames.add(acceptedTaxon.getName());
+                }
+                synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(HibernateProxyHelper.deproxy(synonym.getName(), TaxonName.class)));
+            }
+
+//            group.getTypifiedNames().stream().forEach(name -> typifiedNames.add(HibernateProxyHelper.deproxy(name, TaxonName.class)));
             TaxonName firstname = null;
             for (TaxonName name: typifiedNames){
                 Iterator<Taxon> taxa = name.getTaxa().iterator();
@@ -1668,7 +1694,7 @@ public class CdmLightClassificationExport
                 }
             }
 
-            Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(firstname, true));
+//            Collections.sort(typifiedNames, new HomotypicalGroupNameComparator(firstname, true));
             String typifiedNamesString = "";
             String typifiedNamesWithSecString = "";
             String typifiedNamesWithoutAccepted = "";
@@ -1691,15 +1717,7 @@ public class CdmLightClassificationExport
 
                 String synonymSign = "";
                 if (index > 0){
-                    boolean isInvalid = false;
-
-                    for (NomenclaturalStatus status: name.getStatus()){
-                        if (status != null && status.getType() != null && status.getType().isInvalid()){
-                            isInvalid = true;
-                            break;
-                        }
-                    }
-                    if (isInvalid){
+                    if (name.isInvalid()){
                         synonymSign = "\u2212 ";
                     }else{
                         synonymSign = "\u2261 ";
@@ -1721,11 +1739,10 @@ public class CdmLightClassificationExport
                      }
                      if (taxonBase instanceof Synonym){
                          if (StringUtils.isNotBlank(sec)){
-                             sec = " syn. sec. " + sec;
+                             sec = " syn. sec. " + sec + " ";
                          }else {
                              sec = "";
                          }
-
 
                          typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString ;
                          typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec ;
@@ -1734,9 +1751,7 @@ public class CdmLightClassificationExport
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
                              isAccepted = true;
                          }
-
                      }
-
                 }else{
                     //there are names used more than once?
                     for (TaxonBase<?> tb: taxonBases){
@@ -1752,7 +1767,7 @@ public class CdmLightClassificationExport
                         }
                         if (tb instanceof Synonym){
                             if (StringUtils.isNotBlank(sec)){
-                                sec = " syn. sec. " + sec;
+                                sec = " syn. sec. " + sec + " ";
                             }else {
                                 sec = "";
                             }
@@ -1769,25 +1784,17 @@ public class CdmLightClassificationExport
                     }
                     if (!isAccepted){
                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + "; ";
-                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + "; ";
+                        typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec;
+                        typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                     }
                 }
                 typifiedNamesString += synonymSign + doubtful + nameString ;
                 typifiedNamesWithSecString += synonymSign + doubtful + nameString + sec;
 
 
-                if (typifiedNamesString != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = "";
-                }
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
 
-
-                if (typifiedNamesWithSecString != null) {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
-                } else {
-                    csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = "";
-                }
+                csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITH_SEC_STRING)] = typifiedNamesWithSecString.trim();
 
                 if (typifiedNamesWithoutAccepted != null && firstname != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_WITHOUT_ACCEPTED)] = typifiedNamesWithoutAccepted.trim();
@@ -1811,7 +1818,7 @@ public class CdmLightClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
-                list.addAll(new TypeDesignationSetFormatter(true, false, false).toTaggedText(manager));
+                list.addAll(new TypeDesignationSetFormatter(false, false, false).toTaggedText(manager));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
@@ -1863,7 +1870,12 @@ public class CdmLightClassificationExport
                 // do nothing
             } else if (text.getType().equals(TagEnum.reference)) {
                 homotypicalGroupTypeDesignationString.append(text.getText());
-            } else if (text.getType().equals(TagEnum.typeDesignation) ) {
+            }else if (text.getType().equals(TagEnum.name)){
+                if (!isSpecimenTypeDesignation){
+                    homotypicalGroupTypeDesignationString
+                    .append("<i>"+text.getText()+"</i> ");
+                }
+            }else if (text.getType().equals(TagEnum.typeDesignation) ) {
                 if(isSpecimenTypeDesignation){
                     homotypicalGroupTypeDesignationString
                         .append(text.getText().replace(").", "").replace("(", "").replace(")", ""));

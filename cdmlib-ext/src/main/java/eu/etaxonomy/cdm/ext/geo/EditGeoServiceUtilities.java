@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
-import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.api.util.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
+import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * Class implementing the business logic for creating the map service string for
@@ -66,6 +67,11 @@ public class EditGeoServiceUtilities {
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
     private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
+
+    private static final String SUBENTRY_DELIMITER = ",";
+    private static final String ID_FROM_VALUES_SEPARATOR = ":";
+    private static final String VALUE_LIST_ENTRY_SEPARATOR = "|";
+    private static final String VALUE_SUPER_LIST_ENTRY_SEPARATOR = "||";
 
     private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = new HashMap<>();
     static {
@@ -100,26 +106,45 @@ public class EditGeoServiceUtilities {
         return defaultPresenceAbsenceTermBaseColors;
     }
 
-    private static final String SUBENTRY_DELIMITER = ",";
-    private static final String ENTRY_DELIMITER = ";";
-    static final String ID_FROM_VALUES_SEPARATOR = ":";
-    static final String VALUE_LIST_ENTRY_SEPARATOR = "|";
-    static final String VALUE_SUPER_LIST_ENTRY_SEPARATOR = "||";
+
+    /**
+     * @param filteredDistributions
+     *            A set of distributions a condensed distribution string should
+     *            be created for.
+     *            The set should guarantee that for each area not more than
+     *            1 status exists, otherwise the behavior is not deterministic.
+     *            For filtering see {@link DescriptionUtility#filterDistributions(
+     *            Collection, Set, boolean, boolean, boolean, boolean, boolean)}
+     * @param config
+     *            The configuration for the condensed distribution string creation.
+     * @param languages
+     *            A list of preferred languages in case the status or area symbols are
+     *            to be taken from the language abbreviations (not really in use)
+     *            TODO could be moved to configuration or fully removed
+     * @return
+     *            A CondensedDistribution object that contains a string representation
+     *            and a {@link TaggedText} representation of the condensed distribution string.
+     */
+    public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
+            CondensedDistributionConfiguration config, List<Language> languages) {
+
+        CondensedDistributionComposer composer = new CondensedDistributionComposer();
+
+        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
+                filteredDistributions, languages, config);
+        return condensedDistribution;
+    }
 
     /**
      * Returns the parameter String for the EDIT geo webservice to create a
      * distribution map.
      *
-     * @param distributions
-     *            A set of distributions that should be shown on the map
-     *            The {@link DescriptionUtility} class provides a method for
-     *            filtering a set of Distributions :
-     *
-     *            {@code
-     *            Collection<Distribution> filteredDistributions =
-     *            DescriptionUtility.filterDistributions(distributions,
-     *            subAreaPreference, statusOrderPreference, hideMarkedAreas);
-     *            }
+     * @param filteredDistributions
+     *            A set of distributions that should be shown on the map.
+     *            The set should guarantee that for each area not more than
+     *            1 status exists, otherwise the behavior is not deterministic.
+     *            For filtering see {@link DescriptionUtility#filterDistributions(
+     *            Collection, Set, boolean, boolean, boolean, boolean, boolean)}
      * @param mapping
      *            Data regarding the mapping of NamedAreas to shape file
      *            attribute tables
@@ -676,13 +701,4 @@ public class EditGeoServiceUtilities {
         return EditGeoServiceUtilities.presenceAbsenceTermVocabularyUuids;
     }
 
-    public static CondensedDistribution getCondensedDistribution(Collection<Distribution> filteredDistributions,
-            CondensedDistributionConfiguration config, List<Language> languages) {
-
-        CondensedDistributionComposer composer = new CondensedDistributionComposer();
-
-        CondensedDistribution condensedDistribution = composer.createCondensedDistribution(
-                filteredDistributions, languages, config);
-        return condensedDistribution;
-    }
 }

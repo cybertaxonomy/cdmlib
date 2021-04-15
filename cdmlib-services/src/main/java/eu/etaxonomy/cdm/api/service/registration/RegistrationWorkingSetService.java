@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.api.service.dto.RegistrationWorkingSet;
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.api.utility.UserHelper;
+import eu.etaxonomy.cdm.api.util.UserHelper;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.format.reference.ReferenceEllypsisFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -70,14 +70,14 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
             "typifiedNames.typeDesignations", // important !!
             "typeSpecimen",
             "typeName.$",
-            "source.annotations",
-            "source.links",
-            "source.markers",
+            "designationSource.annotations",
+            "designationSource.links",
+            "designationSource.markers",
             "annotations",   // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "markers",       // needed for AnnotatableEntity.clone() in DerivedUnitConverter.copyPropertiesTo
             "registrations" // DerivedUnitConverter.copyPropertiesTo(TARGET n));
             )
-            .extend("source.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
+            .extend("designationSource.citation", ReferenceEllypsisFormatter.INIT_STRATEGY, false);
 
     public static final EntityInitStrategy NAME_INIT_STRATEGY = new EntityInitStrategy(
                 "$",
@@ -168,7 +168,6 @@ public class RegistrationWorkingSetService implements IRegistrationWorkingSetSer
         inititializeSpecimen(reg);
         return new RegistrationDTO(reg);
     }
-
 
     /**
      * @param id the Registration entity id

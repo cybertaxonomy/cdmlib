@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
-
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -38,6 +36,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NomenclaturalStatus", propOrder = {
+    "name",
     "ruleConsidered",
     "type"
 })
@@ -60,9 +59,15 @@ public class NomenclaturalStatus
     @ManyToOne(fetch = FetchType.LAZY)
 	private NomenclaturalStatusType type;
 
+    @XmlElement(name = "Name")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TaxonName name;
+
 // ************************** FACTORY *********************************/
 
-	/**
+    /**
 	 * Creates a new nomenclatural status instance with a given
 	 * {@link NomenclaturalStatusType nomenclatural status type}.
 	 *
@@ -95,6 +100,19 @@ public class NomenclaturalStatus
 
 // ************************ GETTER / SETTER ************************/
 
+    public TaxonName getName() {
+        return name;
+    }
+    protected void setName(TaxonName name) {
+        if (this.name != null && !this.name.equals(name)){
+            this.name.removeStatus(this);
+        }
+        this.name = name;
+        if (name != null){
+            name.addStatus(this);
+        }
+    }
+
 	/**
 	 * Returns the {@link NomenclaturalStatusType nomenclatural status type} of <i>this</i>
 	 * nomenclatural status.
@@ -102,7 +120,6 @@ public class NomenclaturalStatus
 	public NomenclaturalStatusType getType(){
 		return this.type;
 	}
-
 	/**
 	 * @see  #getType()
 	 */
@@ -129,6 +146,7 @@ public class NomenclaturalStatus
     public void setRuleConsidered(String ruleConsidered){
         this.ruleConsidered().setText(ruleConsidered);
     }
+
     /**
      * The {@link NomenclaturalCodeEdition code edition} for the {@link #getRuleConsidered() rule considered}.
      */
@@ -140,6 +158,7 @@ public class NomenclaturalStatus
     public void setCodeEdition(NomenclaturalCodeEdition codeEdition) {
         ruleConsidered().setCodeEdition(codeEdition);
     }
+
     private RuleConsidered ruleConsidered(){
         if(this.ruleConsidered==null){
             ruleConsidered = new RuleConsidered();

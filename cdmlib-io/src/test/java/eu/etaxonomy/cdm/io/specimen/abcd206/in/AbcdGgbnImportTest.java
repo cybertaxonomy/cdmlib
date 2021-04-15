@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import static org.junit.Assert.assertEquals;
@@ -68,7 +67,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 29.01.2009
  */
-
 public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
@@ -168,8 +166,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@Ignore
-	public void testImport59Units() {
+	@Ignore  //TODO this test takes very long therefore I keep it on ignore, also it fails as the
+	//derived unit count returns 117 not 118 as assumed; this needs to be fixed and we have to check
+	//why importing 59 units takes so long
+ 	public void testImport59Units() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_59taxa.xml";
         URL url = this.getClass().getResource(inputFile);
         assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
@@ -188,7 +188,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
     //    assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of derived units is incorrect", 118, occurrenceService.count(DerivedUnit.class));
         assertEquals("Number of dna samples is incorrect", 59, occurrenceService.count(DnaSample.class));
-
 	}
 
 	/**
@@ -394,11 +393,10 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	/**
      * Tests import of DNA unit which is associated to a specimen being its sibling
      * by having the same field unit
-	 * @throws ParseException
 	 */
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@Ignore
+//	@Ignore
 	public void testImportAssociatedSpecimenSamePopulation() throws ParseException {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
@@ -424,7 +422,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    config.setSignificantIdentifier("B 10 0066577");
 	    List<SpecimenOrObservationBase> records = occurrenceService.findByTitle(config).getRecords();
 	    assertEquals(1, records.size());
-	    SpecimenOrObservationBase derivedUnitSpecimen = records.iterator().next();
+	    SpecimenOrObservationBase<?> derivedUnitSpecimen = records.iterator().next();
 	    assertEquals(DerivedUnit.class, derivedUnitSpecimen.getClass());
 	    DerivedUnit specimen = (DerivedUnit) derivedUnitSpecimen;
 	    assertEquals("Herbarium Berolinense", specimen.getCollection().getCode());
@@ -435,7 +433,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    dnaConfig.setSignificantIdentifier("DB 6");
 	    List<SpecimenOrObservationBase> dnaRecords = occurrenceService.findByTitle(dnaConfig).getRecords();
 	    assertEquals(1, dnaRecords.size());
-	    SpecimenOrObservationBase dnaSpecimen = dnaRecords.iterator().next();
+	    SpecimenOrObservationBase<?> dnaSpecimen = dnaRecords.iterator().next();
 	    assertEquals(DnaSample.class, dnaSpecimen.getClass());
 	    DnaSample dnaSample = (DnaSample) dnaSpecimen;
 	    DerivationEvent derivedFrom = dnaSample.getDerivedFrom();
@@ -461,7 +459,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
         @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     })
-
 	public void testAttachDnaSampleToExistingDerivedUnit_parentChild(){
 	    UUID fieldUnit1Uuid = UUID.fromString("0f896630-48d6-4352-9c91-278be28ce19c");
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -516,7 +513,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml"),
 	    @DataSet( value="AbcdGgbnImportTest.testAttachDnaSampleToDerivedUnit.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 	})
-
 	public void testAttachDnaSampleToExistingDerivedUnit_sibling(){
         UUID fieldUnit1Uuid = UUID.fromString("0f896630-48d6-4352-9c91-278be28ce19c");
 	    UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -563,7 +559,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         FieldUnit dnaSampleFieldUnit = fieldUnits.iterator().next();
         assertEquals(specimenFieldUnit, dnaSampleFieldUnit);
         assertEquals("fieldUnit1", dnaSampleFieldUnit.getTitleCache());
-
 	}
 
 	@Test
@@ -669,7 +664,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 
 	}
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {
         UUID derivedUnit1Uuid = UUID.fromString("eb40cb0f-efb2-4985-819e-a9168f6d61fe");
@@ -687,7 +681,6 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         setComplete();
         endTransaction();
 
-
         try {
             writeDbUnitDataSetFile(new String[] {
                     "SpecimenOrObservationBase",
@@ -696,5 +689,4 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
             e.printStackTrace();
         }
     }
-
 }

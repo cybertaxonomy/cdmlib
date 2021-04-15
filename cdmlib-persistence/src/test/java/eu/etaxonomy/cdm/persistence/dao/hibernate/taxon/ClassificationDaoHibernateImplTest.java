@@ -414,8 +414,6 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 
 	    classificationDao.saveOrUpdate(fullHierarchieClassification);
 
-
-
 	    // 2. end the transaction so that all data is actually written to the db
 	    setComplete();
 	    endTransaction();
@@ -436,5 +434,4 @@ public class ClassificationDaoHibernateImplTest extends CdmTransactionalIntegrat
 	        },
 	        fileNameAppendix, true );
   }
-
 }

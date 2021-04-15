@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 @XmlRootElement(name = "SequenceString")
 @Embeddable
 public class SequenceString implements Cloneable, Serializable{
+
 	private static final long serialVersionUID = 45735207807329055L;
 	private static final Logger logger = Logger.getLogger(SequenceString.class);
 
@@ -54,7 +55,6 @@ public class SequenceString implements Cloneable, Serializable{
 
 	@XmlElement(name = "Length")
 	private Integer length;
-
 
 // ******************** FACTORY METHOD ******************/
 
@@ -84,6 +84,7 @@ public class SequenceString implements Cloneable, Serializable{
 
 	/**
 	 * Sets the sequence. Also {@link #getLength() length information} will be set automatically.
+     *
 	 * @see #getString()
 	 * @param sequence    sequence
 	 */
@@ -91,7 +92,6 @@ public class SequenceString implements Cloneable, Serializable{
 		this.string = sequence;
 		this.length = (sequence == null ? 0 : sequence.length());
 	}
-
 
 	/**
 	 * The length of the sequence. Will be calculated if the {@link #getString() sequence}  is set.
@@ -104,15 +104,15 @@ public class SequenceString implements Cloneable, Serializable{
 	/**
 	 * Sets the {@link #getLength() length}, if the {@link #getString() sequence} is not set.
 	 * If {@link #getString() sequence}  is available, length has no effect.
+	 *
 	 * @see #getLength()
-	 * @param length    length
+	 * @param length  the length
 	 */
 	public void setLength(Integer length){
 		if (CdmUtils.isBlank(string)){
 			this.length = length;
 		}
 	}
-
 
     /**
      * <code>true</code>, if none of the attributes (string, length) is set.
@@ -127,7 +127,6 @@ public class SequenceString implements Cloneable, Serializable{
         }
     }
 
-
 	// ********************* CLONE ********************/
 
 	/**
@@ -135,14 +134,13 @@ public class SequenceString implements Cloneable, Serializable{
 	 * a new instance that differs only slightly from <i>this</i> sequencing by
 	 * modifying only some of the attributes.<BR><BR>
 	 *
-	 *
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone()  {
+	public SequenceString clone()  {
 		try{
-		SequenceString result = (SequenceString)super.clone();
+		    SequenceString result = (SequenceString)super.clone();
 
 		//don't change sequence, length
 

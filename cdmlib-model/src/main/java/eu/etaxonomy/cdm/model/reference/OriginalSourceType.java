@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,11 +18,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
-
-
 
 /**
  * The original source type is used to define the type of an {@link OriginalSourceBase original source}.<BR>
@@ -34,7 +30,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
  * @since 15.05.2013
  */
 @XmlEnum
-public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Serializable{
+public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 
 	//0
 	/**
@@ -110,17 +106,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	@XmlEnumValue("Primary Media Source")
 	PrimaryMediaSource(UUID.fromString("72be3615-a6da-4728-948a-b3c5797fa4bc"), "Primary Media Source", "PMS", null),
 
-	//6
-	/**
-	 * Nomenclatural reference as used for {@link TaxonName taxon names} and
-	 * type designations.
-	 * E.g. a media may be copy of figure in book. The book itself will then be the primary media source.
-	 *
-	 */
-	@XmlEnumValue("Nomenclatural Reference")
-	NomenclaturalReference(UUID.fromString("67650daf-d4aa-48da-aa41-18d2763383aa"), "Nomenclatural Reference", "NOR", null),
-
-
 	//7
 	/**
 	 * <code>Other</code> is the type to be used if none of the other types is applicable.
@@ -130,17 +115,13 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 
 	;
 
-
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceType.class);
-
 
 	@SuppressWarnings("unchecked")
     private OriginalSourceType(UUID uuid, String defaultString, String key, OriginalSourceType parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
-
-
 
 // *************************** DELEGATE **************************************/
 

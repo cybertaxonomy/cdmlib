@@ -171,12 +171,6 @@ public class SchemaUpdater_35_36 extends SchemaUpdaterBase {
 		return stepList;
 	}
 
-
-	@Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_36_40.NewInstance();
-	}
-
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_341_35.NewInstance();

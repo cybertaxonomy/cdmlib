@@ -15,7 +15,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,19 +30,14 @@ import io.swagger.annotations.Api;
 /**
  * @author a.kohlbecker
  * @since Oct 11, 2016
- *
  */
 @Controller
 @Api("nomenclaturalStatus")
 @RequestMapping(value = {"/nomenclaturalStatus/{uuid}"})
 public class NomenclaturalStatusController extends AbstractController<TaxonName, INameService> {
 
-
     private static final Logger logger = Logger.getLogger(NomenclaturalStatusController.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Autowired
     public void setService(INameService service) {
@@ -56,9 +50,6 @@ public class NomenclaturalStatusController extends AbstractController<TaxonName,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        String servletPath = request.getServletPath();
-        String propertyName = FilenameUtils.getBaseName(servletPath);
-
         logger.info("doGet() - " + requestPathAndQuery(request));
 
         NomenclaturalStatus nomstatus = service.loadNomenclaturalStatus(uuid, Arrays.asList("$", "source.citation.inReference"));
@@ -67,7 +58,4 @@ public class NomenclaturalStatusController extends AbstractController<TaxonName,
         }
         return nomstatus;
     }
-
-
-
 }

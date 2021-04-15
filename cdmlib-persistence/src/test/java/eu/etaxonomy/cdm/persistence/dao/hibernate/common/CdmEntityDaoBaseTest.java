@@ -291,7 +291,7 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTestWithSec
     @Test
     @DataSet("CdmEntityDaoBaseTest.xml")
     public void testListByIds() {
-        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        List<OrderHint> orderHints = new ArrayList<>();
         orderHints.add(new RandomOrder());
         Integer[] ids = new Integer[]{1, 2};
         List<TaxonBase> list = cdmEntityDaoBase.loadList(Arrays.asList(ids), orderHints, null);

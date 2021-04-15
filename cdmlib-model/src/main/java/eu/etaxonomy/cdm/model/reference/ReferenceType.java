@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +36,7 @@ import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 //TODO hierarchies, see https://dev.e-taxonomy.eu/redmine/issues/3619
 @XmlEnum
-public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
-
+public enum ReferenceType implements IEnumTerm<ReferenceType> {
 
 	/**
 	 * A reference of type section is a part-of another reference. Section is a generalized type for all
@@ -149,8 +147,6 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 		return (this == Book || this == Proceedings);
 	}
 
-
-
 	/**
 	 * Returns true if references of this type are parts of other references (inheriting from
 	 * {@link ISection}) and therefore may have an in-reference and pages.
@@ -254,9 +250,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	public static ReferenceType getByKey(String key){return delegateVoc.getByKey(key);}
     public static ReferenceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
-    /**
-     * @return
-     */
+
     public boolean isArticle() {
         return this == Article;
     }
@@ -266,7 +260,47 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
     public boolean isBookSection() {
         return this == BookSection;
     }
-    //TBC
-
-
+    public boolean isWebPage() {
+        return this == WebPage;
+    }
+    public boolean isDatabase() {
+        return this == Database;
+    }
+    public boolean isMap() {
+        return this == Map;
+    }
+    public boolean isPatent() {
+        return this == Patent;
+    }
+    public boolean isGeneric() {
+        return this == Generic;
+    }
+    public boolean isCdDvd() {
+        return this == CdDvd;
+    }
+    public boolean isProceedings() {
+        return this == Proceedings;
+    }
+    public boolean isInProceedings() {
+        return this == InProceedings;
+    }
+    public boolean isJournal() {
+        return this == Journal;
+    }
+    public boolean isPersonalCommunication() {
+        return this == PersonalCommunication;
+    }
+    public boolean isThesis() {
+        return this == Thesis;
+    }
+    public boolean isPrintSeries() {
+        return this == PrintSeries;
+    }
+    /**
+     * @return <code>true</code> if this type is exactly {@link ReferenceType#Section}
+     * @see ReferenceType#isSection()
+     */
+    public boolean isSectionOnly() {
+        return this == Section;
+    }
 }

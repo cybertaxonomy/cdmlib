@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.model.reference;
  * In this case it is generally possible to distinguish authors, editors and
  * publishers.
  */
-public interface IPrintedUnitBase extends IAuthoredPublicationBase, ISection, IVolumeReference {
+public interface IPrintedUnitBase extends IAuthoredPublicationBase, ISection, IVolumeReference, ISeriesPart {
 
 	/**
 	 * Returns the print series of this printed unit
@@ -41,16 +41,5 @@ public interface IPrintedUnitBase extends IAuthoredPublicationBase, ISection, IV
 	 * @param editor
 	 */
 	public void setEditor(String editor);
-
-	/**
-	 * Returns the series part for this printed unit
-	 */
-	public String getSeriesPart();
-
-	/**
-	 * Sets the series part for this printed unit
-	 * @param seriesPart
-	 */
-	public void setSeriesPart(String seriesPart);
 
 }

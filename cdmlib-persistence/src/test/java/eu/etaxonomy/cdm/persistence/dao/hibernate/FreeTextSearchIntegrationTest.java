@@ -42,10 +42,10 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
 	private static Log log = LogFactory.getLog(FreeTextSearchIntegrationTest.class);
 
 	@SpringBeanByType
-	ITaxonDao taxonDao;
+	private ITaxonDao taxonDao;
 
 	@SpringBeanByType
-	IDescriptionElementDao descriptionElementDao;
+	private IDescriptionElementDao descriptionElementDao;
 
 //	@SpringBeanByType
 //	TaxonAlternativeSpellingSuggestionParser alternativeSpellingSuggestionParser;
@@ -80,18 +80,18 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
 		assertNotNull("searchTextData should return a List",results);
 		assertEquals("there should be 4 TextData entities in the list",4,results.size());
 
-		assertTrue("DescriptionElementBase.feature should be initialized",Hibernate.isInitialized(results.get(0).getFeature()));
-		assertTrue("DescriptionElementBase.inDescription should be initialized",Hibernate.isInitialized(results.get(0).getInDescription()));
-		assertTrue("inDescription should be an instance of TaxonDescription",results.get(0).getInDescription() instanceof TaxonDescription);
+		assertTrue("DescriptionElementBase.feature should be initialized", Hibernate.isInitialized(results.get(0).getFeature()));
+		assertTrue("DescriptionElementBase.inDescription should be initialized", Hibernate.isInitialized(results.get(0).getInDescription()));
+		assertTrue("inDescription should be an instance of TaxonDescription", results.get(0).getInDescription() instanceof TaxonDescription);
 		TaxonDescription taxonDescription = (TaxonDescription)results.get(0).getInDescription();
-		assertTrue("TaxonDescription.taxon should be initialized",Hibernate.isInitialized(taxonDescription.getTaxon()));
-		assertEquals("The results should be sorted alphabetically","Aglaodorum Schott sec. cate-araceae.org",taxonDescription.getTaxon().getTitleCache());
+		assertTrue("TaxonDescription.taxon should be initialized", Hibernate.isInitialized(taxonDescription.getTaxon()));
+		assertEquals("The results should be sorted alphabetically", "Aglaodorum Schott sec. cate-araceae.org", taxonDescription.getTaxon().getTitleCache());
 	}
 
     @Test
     public void testCountTextData() {
     	long matches = descriptionElementDao.count(TextData.class,"Lorem");
-    	assertEquals("countTextData should return 4",4,matches);
+    	assertEquals("countTextData should return 4", 4, matches);
     }
 
     @Test
@@ -102,14 +102,14 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
     	propertyPaths.add("name");
 
     	List<TaxonBase> results = taxonDao.search(null,"Arum", null, null, orderHints, propertyPaths);
-		assertEquals("searchTaxa should return 463 results",46,results.size());
-		assertTrue("TaxonBase.name should be initialized",Hibernate.isInitialized(results.get(0).getName()));
+		assertEquals("searchTaxa should return 463 results", 46, results.size());
+		assertTrue("TaxonBase.name should be initialized", Hibernate.isInitialized(results.get(0).getName()));
     }
 
     @Test
     public void testSearchCount() {
 		long numberOfResults = taxonDao.count(null,"Arum");
-		assertEquals("countTaxa should return 46",46,numberOfResults);
+		assertEquals("countTaxa should return 46", 46, numberOfResults);
     }
 
     @Test
@@ -122,11 +122,11 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
 		List<TaxonBase> page2 = taxonDao.search(null,"Arum", 30, 1,orderHints,propertyPaths);
 
 		assertEquals("page 1 should contain 30 taxa",30,page1.size());
-		assertEquals("page 1 should be sorted alphabetically","Arum L.",page1.get(0).getName().getTitleCache());
-		assertEquals("page 1 should be sorted alphabetically","Arum lucanum Cavara & Grande",page1.get(29).getName().getTitleCache());
-		assertEquals("page 2 should contain 16 taxa",16,page2.size());
-		assertEquals("page 2 should be sorted alphabetically","Arum maculatum L.",page2.get(0).getName().getTitleCache());
-		assertEquals("page 2 should be sorted alphabetically","Arum x sooi Terpó",page2.get(15).getName().getTitleCache());
+		assertEquals("page 1 should be sorted alphabetically", "Arum L.",page1.get(0).getName().getTitleCache());
+		assertEquals("page 1 should be sorted alphabetically", "Arum lucanum Cavara & Grande",page1.get(29).getName().getTitleCache());
+		assertEquals("page 2 should contain 16 taxa", 16, page2.size());
+		assertEquals("page 2 should be sorted alphabetically", "Arum maculatum L.", page2.get(0).getName().getTitleCache());
+		assertEquals("page 2 should be sorted alphabetically", "Arum x sooi Terpó", page2.get(15).getName().getTitleCache());
     }
 
     @Test
@@ -137,7 +137,7 @@ public class FreeTextSearchIntegrationTest extends CdmTransactionalIntegrationTe
     	propertyPaths.add("name");
 
 		List<TaxonBase> results = taxonDao.search(null,"\"Arum italicum\"", null, null,orderHints,propertyPaths);
-		assertEquals("searchTaxa should return 5 taxa",5,results.size());
+		assertEquals("searchTaxa should return 5 taxa", 5,results.size());
     }
 
     @Test

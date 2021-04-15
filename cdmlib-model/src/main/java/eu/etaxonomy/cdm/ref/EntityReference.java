@@ -23,6 +23,10 @@ public class EntityReference implements Serializable, Comparable<EntityReference
     protected UUID uuid;
     protected String label;
 
+    public EntityReference() {
+
+    }
+
     public EntityReference(UUID uuid, String label) {
         this.uuid = uuid;
         this.label = label;

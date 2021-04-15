@@ -852,7 +852,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 					if (isLocality) {
 						facade.setLocality(text, getDefaultLanguage(state));
 					} else {
-						text = CdmUtils.removeTrailingDot(text);
+						text = CdmUtils.removeTrailingDots(text);
 						NamedArea area = makeArea(state, text, areaLevel);
 						facade.addCollectingArea(area);
 					}

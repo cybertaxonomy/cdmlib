@@ -40,7 +40,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      * The transaction manager to use
      */
     @SpringBeanByType
-    PlatformTransactionManager transactionManager;
+    private PlatformTransactionManager transactionManager;
 
     /**
      * Should we roll back by default?
@@ -62,12 +62,12 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      * DefaultTransactionDefinition. Subclasses can change this to cause
      * different behavior.
      */
-    protected TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+    private TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
 
     /**
      * TransactionStatus for this test. Typical subclasses won't need to use it.
      */
-    protected TransactionStatus	transactionStatus;
+    private TransactionStatus	transactionStatus;
 
     /**
      * Get the <em>default rollback</em> flag for this test.

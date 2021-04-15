@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
  *
  * @author a.mueller
  * @since 2013-07-08
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Primer", propOrder = {
@@ -50,6 +49,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTerm;
 @Audited
 //TODO which base class  (..., identifiable, definedTerm, ...)
 public class Primer extends AnnotatableEntity {
+
 	private static final long serialVersionUID = 6179007910988646989L;
 	private static final Logger logger = Logger.getLogger(Primer.class);
 
@@ -79,9 +79,7 @@ public class Primer extends AnnotatableEntity {
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private Reference publishedIn;
 
-
-
-	// ******************** FACTORY METHOD ******************/
+// ******************** FACTORY METHOD ******************/
 
 	public static Primer NewInstance(String label){
 		Primer result = new Primer();
@@ -89,14 +87,13 @@ public class Primer extends AnnotatableEntity {
 		return result;
 	}
 
-	// ********************* CONSTRUCTOR ********************/
+// ********************* CONSTRUCTOR ********************/
 
 	//made protected to fix a java.lang.InstantiationException which occurred while loading an Amplification
 	//and its primer. see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
 	protected Primer(){}
 
 // ********************* GETTER / SETTER ********************/
-
 
 	/**
 	 * The name of this primer, usually given by the producers.
@@ -105,7 +102,6 @@ public class Primer extends AnnotatableEntity {
 	public String getLabel() {
 		return label;
 	}
-
 	/**
 	 * @see #getLabel()
 	 */
@@ -120,7 +116,6 @@ public class Primer extends AnnotatableEntity {
 	public SequenceString getSequence() {
 		return sequence;
 	}
-
 	/**
 	 * @see Primer#getSequence()
 	 */
@@ -131,14 +126,12 @@ public class Primer extends AnnotatableEntity {
 		this.sequence = sequence;
 	}
 
-
 	/**
 	 * #4470
 	 */
 	public DefinedTerm getDnaMarker() {
 		return dnaMarker;
 	}
-
 	public void setDnaMarker(DefinedTerm dnaMarker) {
 		this.dnaMarker = dnaMarker;
 	}
@@ -153,7 +146,6 @@ public class Primer extends AnnotatableEntity {
 	public Reference getPublishedIn() {
 		return publishedIn;
 	}
-
 	/**
 	 * @see #getPublishedIn()
 	 */
@@ -161,7 +153,8 @@ public class Primer extends AnnotatableEntity {
 		this.publishedIn = publishedIn;
 	}
 
-	// ********************* CLONE ********************/
+// ********************* CLONE ********************/
+
 	/**
 	 * Clones <i>this</i> primer. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> primer by

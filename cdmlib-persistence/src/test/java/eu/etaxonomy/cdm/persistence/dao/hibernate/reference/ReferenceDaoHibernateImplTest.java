@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
-	IReferenceDao referenceDao;
+	private IReferenceDao referenceDao;
 
 	private UUID firstBookUuid;
 	private UUID firstJournalUuid;
@@ -51,10 +51,6 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	    proceedingsUuid = UUID.fromString("596b1327-be50-4b0a-9aa2-3ecd610215f2");
 	    bookSectionUuid = UUID.fromString("596b1327-be51-4b0a-9aa2-3ecd610215f1");
 	    nomenclaturalReferenceBookUuid = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f3");
-	}
-
-	@Test
-	public void testDummy() {
 	}
 
 	@Test

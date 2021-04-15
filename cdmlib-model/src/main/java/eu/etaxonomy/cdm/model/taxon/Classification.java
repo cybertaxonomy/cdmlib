@@ -21,7 +21,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -46,13 +45,13 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
@@ -66,8 +65,6 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ClassificationDefaultCacheStrategy;
     "name",
     "description",
     "rootNode",
-    "reference",
-    "microReference",
     "source",
     "timeperiod",
     "geoScopes"
@@ -96,16 +93,6 @@ public class Classification
     @OneToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonNode rootNode;
-
-    @XmlElement(name = "reference")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private Reference reference;
-
-    @XmlElement(name = "microReference")
-    private String microReference;
 
 	@XmlElement(name = "TimePeriod")
     private TimePeriod timeperiod = TimePeriod.NewInstance();
@@ -136,16 +123,7 @@ public class Classification
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE})
-    private IdentifiableSource source;
-
-
-//	/**
-//	 * If this classification is an alternative classification for a subclassification in
-//	 * an other classification(parent view),
-//	 * the alternativeViewRoot is the connection node from this classification to the parent classification.
-//	 * It replaces another node in the parent view.
-//	 */
-//	private AlternativeViewRoot alternativeViewRoot;
+    private NamedSource source;
 
 // ********************** FACTORY METHODS *********************************************/
 
@@ -224,21 +202,21 @@ public class Classification
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
-        return addChildNode(new TaxonNode(taxon), index, DescriptionElementSource.NewPrimarySourceInstance(citation, microCitation));
+        return addChildNode(new TaxonNode(taxon), index, NamedSource.NewPrimarySourceInstance(citation, microCitation));
     }
 
     @Override
-    public TaxonNode addChildTaxon(Taxon taxon, DescriptionElementSource source) {
+    public TaxonNode addChildTaxon(Taxon taxon, NamedSource source) {
         return addChildTaxon(taxon, rootNode.getCountChildren(), source);
     }
 
     @Override
-    public TaxonNode addChildTaxon(Taxon taxon, int index, DescriptionElementSource source) {
+    public TaxonNode addChildTaxon(Taxon taxon, int index, NamedSource source) {
         return addChildNode(new TaxonNode(taxon), index, source);
     }
 
     @Override
-    public TaxonNode addChildNode(TaxonNode childNode, int index, DescriptionElementSource source) {
+    public TaxonNode addChildNode(TaxonNode childNode, int index, NamedSource source) {
         childNode.setParentTreeNode(this.rootNode, index);
         childNode.setSource(source);
 
@@ -496,9 +474,44 @@ public class Classification
         }
     }
 
+    @Override
     @Transient
-    public Reference getCitation() {
-        return reference;
+    public String getMicroReference() {
+        return source == null ? null : this.source.getCitationMicroReference();
+    }
+    public void setMicroReference(String microReference) {
+        this.getSource(true).setCitationMicroReference(isBlank(microReference)? null : microReference);
+        checkNullSource();
+    }
+
+    @Override
+    @Transient
+    public Reference getReference() {
+        return (this.source == null) ? null : source.getCitation();
+    }
+    public void setReference(Reference reference) {
+        getSource(true).setCitation(reference);
+        checkNullSource();
+    }
+
+    public NamedSource getSource() {
+        return source;
+    }
+    public void setSource(NamedSource source) {
+        this.source = source;
+    }
+
+    private void checkNullSource() {
+        if (this.source != null && this.source.checkEmpty(true)){
+            this.source = null;
+        }
+    }
+
+    private NamedSource getSource(boolean createIfNotExist){
+        if (this.source == null && createIfNotExist){
+            this.source = NamedSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+        }
+        return source;
     }
 
     public LanguageString getName() {
@@ -531,22 +544,6 @@ public class Classification
     @Transient
     public List<TaxonNode> getChildNodes() {
         return rootNode.getChildNodes();
-    }
-
-    @Override
-    public Reference getReference() {
-        return reference;
-    }
-    public void setReference(Reference reference) {
-        this.reference = reference;
-    }
-
-    @Override
-    public String getMicroReference() {
-        return microReference;
-    }
-    public void setMicroReference(String microReference) {
-        this.microReference = microReference;
     }
 
     /**
@@ -687,6 +684,10 @@ public class Classification
                 rootNodeClone.setClassification(result);
                 result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference());
                 rootNodeClone.setSynonymToBeUsed(rootNode.getSynonymToBeUsed());
+            }
+
+            if (this.source != null){
+                result.source = source.clone();
             }
 
             //geo-scopes

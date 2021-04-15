@@ -2409,7 +2409,7 @@ public abstract class MarkupImportBase  {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
 				if (StringUtils.isNotBlank(text)) {
-					String label = CdmUtils.removeTrailingDot(normalize(text));
+					String label = CdmUtils.removeTrailingDots(normalize(text));
 					TaxonDescription description = getExtractedMarkupMarkedDescription(state, taxon, sourceReference);
 					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
 

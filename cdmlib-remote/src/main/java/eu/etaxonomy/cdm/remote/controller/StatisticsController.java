@@ -1,8 +1,13 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import io.swagger.annotations.Api;
 
 /**
  * this controller provides a method to count different entities in the entire
@@ -36,15 +42,13 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  *
  * @author s.buers
  * @since 07.11.2012
- *
  */
 @Controller
 @Api("statistics")
 @RequestMapping(value = { "/statistics" })
 public class StatisticsController {
 
-    private static final Logger logger = Logger
-            .getLogger(StatisticsController.class);
+    private static final Logger logger = Logger.getLogger(StatisticsController.class);
 
     @Autowired
     private IClassificationService classificationService;
@@ -63,12 +67,6 @@ public class StatisticsController {
      *        part=ALL&part=CLASSIFICATION&type=DESCRIPTIVE_SOURCE_REFERENCES&type=ALL_TAXA&type=ACCEPTED_TAXA&type=SYNONYMS&type=TAXON_NAMES&type=ALL_REFERENCES&type=NOMENCLATURAL_REFERENCES
      * </pre>
      *
-     * @param part
-     * @param type
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView doStatistics(
@@ -76,8 +74,7 @@ public class StatisticsController {
             @RequestParam(value = "type", required = false) String[] type,
             @RequestParam(value = "classificationName", required = false) String[] classificationName,
             @RequestParam(value = "classificationUuid", required = false) String[] classificationUuid,
-            HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            HttpServletRequest request, HttpServletResponse response){
 
         ModelAndView mv = new ModelAndView();
 
@@ -95,7 +92,7 @@ public class StatisticsController {
             String[] type, String[] classificationName,
             String[] classificationUuid) {
 
-        ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
+        ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<>();
 
         // 1. get types for configurators:
         // in our case all the configurators will have the same types
@@ -118,14 +115,13 @@ public class StatisticsController {
 
         // gather classifications from names and uuids:
 
-        Set<Classification> classificationFilters = new HashSet<Classification>();
+        Set<Classification> classificationFilters = new HashSet<>();
 
         if (classificationName != null) {
             for (String string : classificationName) {
                     List <Classification> classifications = classificationService
                             .listByTitleWithRestrictions(Classification.class, string,
-                                    MatchMode.EXACT, null, null, null, null,
-                                    null);
+                                    MatchMode.EXACT, null, null, null, null, null);
                     classificationFilters.addAll(classifications);
 
             }
@@ -133,8 +129,7 @@ public class StatisticsController {
         if (classificationUuid != null && classificationUuid.length > 0) {
             for (String string : classificationUuid) {
                 if (classificationService.exists(UUID.fromString(string))) {
-                    classificationFilters.add(classificationService.find(UUID
-                            .fromString(string)));
+                    classificationFilters.add(classificationService.find(UUID.fromString(string)));
                 }
             }
         }
@@ -152,12 +147,10 @@ public class StatisticsController {
                 // System.out.println(StatisticsPartEnum.ALL.toString());
                 if (string.equals(StatisticsPartEnum.ALL.toString())) {
                     configuratorList.add(helperConfigurator);
-                } else if (string.equals(StatisticsPartEnum.CLASSIFICATION
-                        .toString())) {
+                } else if (string.equals(StatisticsPartEnum.CLASSIFICATION.toString())) {
                     List<Classification> classificationsList = classificationService
                             .listClassifications(null, 0, null, null);
                     classificationFilters.addAll(classificationsList);
-
                 }
             }
         }
@@ -172,5 +165,4 @@ public class StatisticsController {
 
         return configuratorList;
     }
-
 }

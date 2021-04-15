@@ -740,7 +740,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
             // Reference stuff
             SpecimenUserInteraction sui = config.getSpecimenUserInteraction();
-            Map<String, OriginalSourceBase<?>> sourceMap = new HashMap<>();
+            Map<String, OriginalSourceBase> sourceMap = new HashMap<>();
 
             state.getDataHolder().setDocSources(new ArrayList<>());
 
@@ -781,7 +781,22 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 importAssociatedUnits(state, item, derivedUnitFacade);
             }
             if (state.getConfig().getDnaSoure() != null ) {
-                importAssociatedDna(state, item, derivedUnitFacade);
+                boolean uriCorrect = true;
+                try{
+                    state.getConfig().getDnaSoure().toString();
+                }catch(Exception e){
+                    uriCorrect = false;
+                }
+                if (uriCorrect){
+                    try{
+                        importAssociatedDna(state, item, derivedUnitFacade);
+                    }catch(Exception e){
+                        String message = "Error when importing Dna! " + itemObject.toString();
+                        state.getReport().addException(message, e);
+                        state.setUnsuccessfull();
+                    }
+                }
+
             }
             // siblings/ other children
             if (derivedUnitFacade.getType() != null
@@ -795,9 +810,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         } catch (Exception e) {
             String message = "Error when reading record! " + itemObject.toString();
-            logger.warn(message);
             state.getReport().addException(message, e);
-            e.printStackTrace();
             state.setUnsuccessfull();
         }
 
@@ -1178,7 +1191,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param sour
      * @return
      */
-    private boolean sourceNotLinkedToElement(DerivedUnitFacade derivedUnitFacade, OriginalSourceBase<?> source) {
+    private boolean sourceNotLinkedToElement(DerivedUnitFacade derivedUnitFacade, OriginalSourceBase source) {
         Set<IdentifiableSource> linkedSources = derivedUnitFacade.getSources();
         for (IdentifiableSource is : linkedSources) {
             if (is.getCitation() != null && source.getCitation() != null

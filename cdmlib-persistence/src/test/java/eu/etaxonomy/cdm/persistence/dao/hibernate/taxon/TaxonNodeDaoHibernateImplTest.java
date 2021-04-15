@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -178,6 +180,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, null);
         assertNotNull(children);
         assertEquals(3, children.size());
+        //with comparator
+        Comparator<TaxonNode> comparator = TaxonNodeSortMode.RankAndAlphabeticalOrder.comparator();
+        children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, comparator);
+        assertEquals("Size should be same as without comparator", 3, children.size());
+        //not recursive
+        children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, null);
+        assertEquals("Size should be same as recursive", 3, children.size());
 
         includeUnpublished = false;
         children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, true, includeUnpublished, null, null);
@@ -371,18 +380,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull(result);
         assertEquals(2, result.size());
 
-
         //test doubtful & pattern
         pattern = "Aus*";
         result = taxonNodeDao.getUuidAndTitleCache(100, pattern, classificationUuid, true);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("ebf8ea46-9f24-47be-8fb5-02bd67f90348", result.get(0).getUuid().toString());
-
-
-
     }
-
 
     @Test
     @DataSet ("TaxonNodeDaoHibernateImplTest.findWithoutRank.xml")

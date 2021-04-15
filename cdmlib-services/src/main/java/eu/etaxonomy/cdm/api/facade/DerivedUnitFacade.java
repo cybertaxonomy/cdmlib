@@ -24,9 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
-import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.occurrences.DistanceStringFormatter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -983,7 +982,7 @@ public class DerivedUnitFacade {
 				String text = ev.getAbsoluteElevationText();
 				Integer min = getAbsoluteElevation();
 				Integer max = getAbsoluteElevationMaximum();
-				return distanceString(min, max, text, METER);
+				return DistanceStringFormatter.distanceString(min, max, text, METER);
 			}
 		}
 	}
@@ -1094,7 +1093,7 @@ public class DerivedUnitFacade {
 			String text = ev.getDistanceToGroundText();
 			Double min = getDistanceToGround();
 			Double max = getDistanceToGroundMax();
-			return distanceString(min, max, text, METER);
+			return DistanceStringFormatter.distanceString(min, max, text, METER);
 		}
 	}
 
@@ -1170,7 +1169,7 @@ public class DerivedUnitFacade {
 			String text = ev.getDistanceToWaterSurfaceText();
 			Double min = getDistanceToWaterSurface();
 			Double max = getDistanceToWaterSurfaceMax();
-			return distanceString(min, max, text, METER);
+			return DistanceStringFormatter.distanceString(min, max, text, METER);
 		}
 	}
 
@@ -2589,27 +2588,7 @@ public class DerivedUnitFacade {
 	}
 
 
-	/**
-	 * Computes the correct distance string for given values for min, max and text.
-	 * If text is not blank, text is returned, otherwise "min - max" or a single value is returned.
-	 * @param min min value as number
-	 * @param max max value as number
-	 * @param text text representation of distance
-	 * @return the formatted distance string
-	 */
-	public static String distanceString(Number min, Number max, String text, String unit) {
-		if (StringUtils.isNotBlank(text)){
-			return text;
-		}else{
-			String minStr = min == null? null : String.valueOf(min);
-			String maxStr = max == null? null : String.valueOf(max);
-			String result = CdmUtils.concat(UTF8.EN_DASH_SPATIUM.toString(), minStr, maxStr);
-			if (StringUtils.isNotBlank(result) && StringUtils.isNotBlank(unit)){
-				result = result + " " + unit;
-			}
-			return result;
-		}
-	}
+
 
 	/**
 	 * First checks the inner field unit for the publish flag. If set to <code>true</code>

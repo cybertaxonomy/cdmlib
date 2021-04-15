@@ -106,7 +106,7 @@ public class RegistrationDaoHibernateImpl
         }else if (reference.isPresent()){
            from += "   LEFT JOIN n.nomenclaturalSource nomSource "
                    + " LEFT JOIN nomSource.citation nomRef "
-                   + " LEFT JOIN desig.source desigSource "
+                   + " LEFT JOIN desig.designationSource desigSource "
                    + " LEFT JOIN desigSource.citation desigRef ";
            where += " AND ("
                    + "     nomRef =:ref "
@@ -117,7 +117,7 @@ public class RegistrationDaoHibernateImpl
            refTypeParameter = ReferenceType.Section;
         }else{  //ref is null
             from += "   LEFT JOIN n.nomenclaturalSource nomSource "
-                    + " LEFT JOIN desig.source desigSource ";
+                    + " LEFT JOIN desig.designationSource desigSource ";
             where += " AND ((r.name IS NULL AND size(r.typeDesignations) = 0 ) "
                    + "     OR (n IS NOT NULL AND (nomSource.citation IS NULL)) "
                    + "     OR (size(r.typeDesignations) > 0 AND (desigSource.citation IS NULL))"
@@ -275,7 +275,7 @@ public class RegistrationDaoHibernateImpl
                 + (doNameFilter ?  " LEFT JOIN desig.typifiedNames typifiedNames ":"")
                 + (doTypeStatusFilter ? " LEFT JOIN desig.typeStatus typeStatus":"")  // without this join hibernate would make a cross join here
                 + (doReferenceFilter
-                        ?   " LEFT JOIN desig.source typeDesignationSource "
+                        ?   " LEFT JOIN desig.designationSource typeDesignationSource "
                           + " LEFT JOIN typeDesignationSource.citation typeDesignationCitation "
                           + " LEFT JOIN n.nomenclaturalSource nomSource "
                           + " LEFT JOIN nomSource.citation nomRef "

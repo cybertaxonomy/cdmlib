@@ -23,20 +23,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
  * <li> "MagazineArticle"
  * </ul>
  */
-public interface IArticle extends ISection, IVolumeReference{
-
-	/**
-	 * Returns the series information for this article
-	 */
-	public String getSeriesPart();
-
-	/**
-	 * Sets the series information for this article
-	 * @param series
-	 */
-	public void setSeriesPart(String series);
-
-
+public interface IArticle extends ISection, IVolumeReference, ISeriesPart{
 
 	/**
 	 * Returns this articles journal.

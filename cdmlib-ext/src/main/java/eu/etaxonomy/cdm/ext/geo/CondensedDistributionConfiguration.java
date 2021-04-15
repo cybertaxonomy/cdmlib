@@ -16,7 +16,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionComposer.StatusSymbolUsage;
+import eu.etaxonomy.cdm.compare.common.OrderType;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionComposer.SymbolUsage;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 
@@ -53,7 +54,11 @@ public class CondensedDistributionConfiguration{
 
     public List<UUID> statusForBoldAreas = Arrays.asList(new UUID[]{PresenceAbsenceTerm.uuidNative});  //empty for Cuba as for Cuba all areas are bold
 
-    public StatusSymbolUsage statusSymbolField = StatusSymbolUsage.Symbol2;   //currently Symbol1, but may change in future
+    public SymbolUsage areaSymbolField = SymbolUsage.IdInVoc;   //currently IdInVoc for both, but may change in future
+
+    public SymbolUsage statusSymbolField = SymbolUsage.Symbol2;   //currently Symbol1 for Cuba, but may change in future
+
+    public OrderType orderType = OrderType.ALPHABETIC;
 
     //if true, any non-empty symbol is taken from symbol2, symbol1, idInVoc and abbrevLabel according to the given order
     public boolean showAnyStatusSmbol = false;   //usually does not make sense to mix symbol fields
@@ -78,7 +83,8 @@ public class CondensedDistributionConfiguration{
         result.areaOfScopeSubAreaBracketStart.set(0, "(");
         result.areaOfScopeSubAreaBracketEnd.set(0, ")");
         result.statusForBoldAreas = new ArrayList<>();
-        result.statusSymbolField = StatusSymbolUsage.Symbol1;
+        result.statusSymbolField = SymbolUsage.Symbol1;
+        result.orderType = OrderType.NATURAL;
         return result;
     }
 }

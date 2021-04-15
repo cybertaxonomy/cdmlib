@@ -8,9 +8,14 @@
 */
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 
 /**
@@ -30,6 +35,26 @@ public class MediaDTO extends TypedEntityReference<Media> {
 
     private Integer size;
 
+    /**
+     * Creates a list of DTOs from the Media entity.
+     * For each MediaRepresentationPart a single MediaDTO is being created.
+     * TODO this needs to be changed so that it is possible to filter the representations by preferences,
+     * see {@link MediaUtils#findBestMatchingRepresentation(Media, Class, Integer, Integer, Integer, String[], eu.etaxonomy.cdm.model.media.MediaUtils.MissingValueStrategy)}
+     */
+    public static List<MediaDTO> fromEntity(Media entity) {
+        List<MediaDTO> dtos = new ArrayList<>();
+        entity.getAllTitles(); // initialize all titles!!!
+        for (MediaRepresentation rep :entity.getRepresentations()){
+            for(MediaRepresentationPart p : rep.getParts()){
+                if(p.getUri() != null){
+                    MediaDTO dto = new MediaDTO(entity.getUuid());
+                    dto.setUri(p.getUri().toString());
+                    dtos.add(dto);
+                }
+            }
+        }
+        return dtos;
+    }
 
     /**
      * @param type

@@ -39,7 +39,8 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  *
  */
 public class CdmBaseTest extends EntityTestBase{
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBaseTest.class);
 
 	static CdmBase cdmBase;

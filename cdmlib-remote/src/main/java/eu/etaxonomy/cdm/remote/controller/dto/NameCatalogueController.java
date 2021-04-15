@@ -222,17 +222,17 @@ public class NameCatalogueController extends AbstractController<TaxonName, IName
 
     /** Hibernate taxon node initialisation strategy */
     private static final List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] {
-            "taxon.sec",
+            "taxon.secSource.citation",
             "taxon.name",
             "classification",
-            "classification.reference.$",
-            "classification.reference.authorship.$" });
+            "classification.source.citation.$",
+            "classification.source.citation.authorship.$" });
 
     /** Hibernate classification vocabulary initialisation strategy */
     private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "classification",
-            "classification.reference.$",
-            "classification.reference.authorship.$" });
+            "classification.source.citation.$",
+            "classification.source.citation.authorship.$" });
 
     /** Hibernate classification vocabulary initialisation strategy */
     private static final List<String> COMMON_INIT_STRATEGY = Arrays.asList(new String[] {});

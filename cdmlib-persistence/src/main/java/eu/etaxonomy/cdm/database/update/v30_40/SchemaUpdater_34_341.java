@@ -275,16 +275,8 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, tableName, 99);
 	}
 
-
-
-	@Override
-	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_341_35.NewInstance();
-	}
-
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_331_34.NewInstance();
 	}
-
 }

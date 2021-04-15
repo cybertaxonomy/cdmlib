@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 import static org.junit.Assert.assertEquals;
@@ -96,8 +95,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	@SpringBeanByType
 	private IClassificationService classificationService;
 
-
-
 	private IImportConfigurator configurator;
 	private IImportConfigurator configurator2;
 
@@ -142,7 +139,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
     @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-    @Ignore
 	public void testDoInvoke() {
         boolean result = defaultImport.invoke(configurator).isSuccess();
         assertTrue("Return value for import.invoke should be true", result);
@@ -163,7 +159,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@Ignore
 	public void testDoInvoke2() {
 		boolean result = defaultImport.invoke(configurator2).isSuccess();
 		assertTrue("Return value for import.invoke should be true", result);
@@ -194,7 +189,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
     @DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@Ignore
     public void testImportSubspecies() {
         String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/camapanula_abietina_subspecies.xml";
         URL url = this.getClass().getResource(inputFile);
@@ -223,7 +217,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-	@Ignore
 	public void testImportVariety() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_variety.xml";
 	    URL url = this.getClass().getResource(inputFile);

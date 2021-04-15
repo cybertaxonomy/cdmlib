@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBase> implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -996721690408449555L;
 
     private static final String GETTER_PREFIX = "get";
 
@@ -52,10 +52,7 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
     private String propertyName;
     private String addMethodName;
 
-
     private String removMethodName;
-
-
 
     public EntityCollectionSetterAdapter(Class<CDM> beanClass, Class<T> propertyItemType, String propertyName){
         this(beanClass,
@@ -115,12 +112,8 @@ public class EntityCollectionSetterAdapter<CDM extends CdmBase, T extends CdmBas
 
     public static class SetterAdapterException extends Exception {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 6011462992846535903L;
 
-        /**
-         * @param message
-         * @param cause
-         */
         public SetterAdapterException(String message, Throwable cause) {
             super(message, cause);
         }

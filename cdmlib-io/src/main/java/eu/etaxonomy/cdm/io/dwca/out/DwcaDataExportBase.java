@@ -64,7 +64,7 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
 
     protected String getSources(ISourceable<?> sourceable, DwcaTaxExportConfigurator config) {
         String result = "";
-        for (IOriginalSource<?> source: sourceable.getSources()){
+        for (IOriginalSource source: sourceable.getSources()){
             if (StringUtils.isBlank(source.getIdInSource())){//idInSource indicates that this source is only data provenance, may be changed in future
                 if (source.getCitation() != null){
                     String ref = source.getCitation().getTitleCache();
@@ -77,7 +77,7 @@ public abstract class DwcaDataExportBase extends DwcaExportBase{
 
     protected String getSources3(ISourceable<?> sourceable, DwcaTaxExportConfigurator config) {
         String result = "";
-        for (IOriginalSource<?> source: sourceable.getSources()){
+        for (IOriginalSource source: sourceable.getSources()){
                 if (source.getCitation() != null){
                     String ref = source.getCitation().getTitleCache();
                     result = CdmUtils.concat(config.getSetSeparator(), result, ref);

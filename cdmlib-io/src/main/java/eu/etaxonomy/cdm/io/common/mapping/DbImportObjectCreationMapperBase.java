@@ -80,9 +80,9 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 			if (StringUtils.isBlank(dbIdAttribute)){
 				return;
 			}
-			IOriginalSource<?> source;
+			IOriginalSource source;
 			@SuppressWarnings("unchecked")
-            ISourceable<IOriginalSource<?>> sourceable = (ISourceable<IOriginalSource<?>>)cdmBase;
+            ISourceable<IOriginalSource> sourceable = (ISourceable<IOriginalSource>)cdmBase;
 			Object id = rs.getObject(dbIdAttribute);
 			String strId = String.valueOf(id);
 			String idNamespace = this.objectToCreateNamespace;

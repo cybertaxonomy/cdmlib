@@ -95,16 +95,9 @@ public interface ITaxonDao
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
      * where the taxonBase.name.nameCache property matches the String queryString.
      *
-     * @param doTaxa
-     * @param doSynonyms
-     * @param queryString
-     * @param classification TODO
-     * @param subtree
-     * @param matchMode
-     * @param namedAreas TODO
-     * @param pageSize
-     * @param pageNumber
-     * @param propertyPaths TODO
+     * Note: The search result includes a search on titleCache (with {@link MatchMode#BEGINNING} or {@link MatchMode#ANYWHERE} )
+     * for all records with protected titleCache (see #9561). Maybe this should be parameterized in future.
+     *
      * @return list of found taxa
      */
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, boolean doCommonNames,

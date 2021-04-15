@@ -54,18 +54,18 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     private Classification defaultClassification = null;
     private Reference ref = null;
 
-    private HashMap<UUID, TaxonDescription> descriptionsPerTaxon = new HashMap<>();
+    private HashMap<UUID, TaxonDescription> individualsAssociationDescriptionPerTaxon = new HashMap<>();
     private DerivedUnit derivedUnitBase;
 
     private SpecimenImportReport report;
 
     protected SpecimenDataHolder dataHolder;
 
-    private List<OriginalSourceBase<?>> associationRefs = new ArrayList<>();
+    private List<OriginalSourceBase> associationRefs = new ArrayList<>();
     private boolean associationSourcesSet=false;
-    private List<OriginalSourceBase<?>> descriptionRefs = new ArrayList<>();
+    private List<OriginalSourceBase> descriptionRefs = new ArrayList<>();
     private boolean descriptionSourcesSet=false;
-    private List<OriginalSourceBase<?>> derivedUnitSources = new ArrayList<>();
+    private List<OriginalSourceBase> derivedUnitSources = new ArrayList<>();
     private boolean derivedUnitSourcesSet=false;
     private boolean descriptionGroupSet = false;
     protected HashMap<String, Institution> institutions = new HashMap<>();
@@ -99,11 +99,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         return super.getConfig();
     }
 
-    public List<OriginalSourceBase<?>> getAssociationRefs() {
+    public List<OriginalSourceBase> getAssociationRefs() {
         return associationRefs;
     }
 
-    public void setAssociationRefs(List<OriginalSourceBase<?>> associationRefs) {
+    public void setAssociationRefs(List<OriginalSourceBase> associationRefs) {
         this.associationRefs = associationRefs;
     }
 
@@ -115,11 +115,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.associationSourcesSet = associationSourcesSet;
     }
 
-    public List<OriginalSourceBase<?>> getDescriptionRefs() {
+    public List<OriginalSourceBase> getDescriptionRefs() {
         return descriptionRefs;
     }
 
-    public void setDescriptionRefs(List<OriginalSourceBase<?>> descriptionRefs) {
+    public void setDescriptionRefs(List<OriginalSourceBase> descriptionRefs) {
         this.descriptionRefs = descriptionRefs;
     }
 
@@ -131,11 +131,11 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
         this.descriptionSourcesSet = descriptionSourcesSet;
     }
 
-    public List<OriginalSourceBase<?>> getDerivedUnitSources() {
+    public List<OriginalSourceBase> getDerivedUnitSources() {
         return derivedUnitSources;
     }
 
-    public void setDerivedUnitSources(List<OriginalSourceBase<?>> derivedUnitSources) {
+    public void setDerivedUnitSources(List<OriginalSourceBase> derivedUnitSources) {
         this.derivedUnitSources = derivedUnitSources;
     }
 
@@ -184,7 +184,7 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
             final String defaultClassificationAbcd = "Default Classification Specimen Import";
             for (Classification classif : cdmRepository.getClassificationService().list(Classification.class, null, null, null, null)){
                 if (classif.getTitleCache()!=null && classif.getTitleCache().equalsIgnoreCase(defaultClassificationAbcd)
-                        && classif.getCitation()!=null && classif.getCitation().equals(getRef())) {
+                        && classif.getReference()!=null && classif.getReference().equals(getRef())) {
                     defaultClassification = classif;
                     break;
                 }
@@ -204,23 +204,21 @@ public class SpecimenImportStateBase<CONFIG extends SpecimenImportConfiguratorBa
     public Reference getRef() {
         return ref;
     }
-
     public void setRef(Reference ref) {
         this.ref = ref;
     }
 
-    public TaxonDescription getDescriptionPerTaxon(UUID taxonUUID) {
-        return descriptionsPerTaxon.get(taxonUUID);
+    public TaxonDescription getIndividualsAssociationDescriptionPerTaxon(UUID taxonUUID) {
+        return individualsAssociationDescriptionPerTaxon.get(taxonUUID);
     }
 
-    public void setDescriptionGroup(TaxonDescription description) {
-        this.descriptionsPerTaxon.put(description.getTaxon().getUuid(), description);
+    public void setIndividualsAssociationDescriptionPerTaxon(TaxonDescription description) {
+        this.individualsAssociationDescriptionPerTaxon.put(description.getTaxon().getUuid(), description);
     }
 
     public DerivedUnit getDerivedUnitBase() {
         return derivedUnitBase;
     }
-
     public void setDerivedUnitBase(DerivedUnit derivedUnitBase) {
         this.derivedUnitBase = derivedUnitBase;
     }

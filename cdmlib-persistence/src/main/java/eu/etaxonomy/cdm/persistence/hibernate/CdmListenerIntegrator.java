@@ -45,9 +45,10 @@ public class CdmListenerIntegrator implements Integrator {
 
         // prepend to register before or append to register after
         // this example will register a persist event listener
-        eventRegistry.prependListeners(EventType.SAVE, new CacheStrategyGenerator(), new SaveEntityListener());
+        //SaveEntityListener does not exist anymore
+        eventRegistry.prependListeners(EventType.SAVE, new CacheStrategyGenerator() /*, new SaveEntityListener()*/);
         eventRegistry.prependListeners(EventType.UPDATE, new CacheStrategyGenerator(), new UpdateEntityListener());
-        eventRegistry.prependListeners(EventType.SAVE_UPDATE, new CacheStrategyGenerator(), new SaveOrUpdateEntityListener());
+        eventRegistry.prependListeners(EventType.SAVE_UPDATE, new CacheStrategyGenerator() /*, new SaveOrUpdateEntityListener()*/);
         eventRegistry.appendListeners(EventType.MERGE, new PostMergeEntityListener());
 //      eventRegistry.appendListeners(EventType.DELETE, new CdmDeleteListener());
         eventRegistry.appendListeners(EventType.POST_LOAD, new CdmPostDataChangeObservableListener());
