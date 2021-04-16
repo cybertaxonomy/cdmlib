@@ -290,9 +290,23 @@ public class CondensedDistributionComposer {
                 return statusSymbol(statusList.iterator().next(), config, languages, true);
             }else{
                 //subarea status is handled at subarea level, usually parent area status is empty as the parent area will not have a status
-                return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
+                if (areaToStatusMap.get(areaNode.area) == null && containsBoldAreas(statusList, config)){
+                    //if parent area status is empty and at least one subarea has status native the parent area should also be bold (#8297#note-15)
+                    return new TripleResult<>("", true, false);
+                }else{
+                    return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
+                }
             }
         }
+    }
+
+    private boolean containsBoldAreas(Set<PresenceAbsenceTerm> statusList, CondensedDistributionConfiguration config) {
+        for (PresenceAbsenceTerm status : statusList){
+            if (config.statusForBoldAreas.contains(status.getUuid())){
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<PresenceAbsenceTerm> getStatusRecursive(AreaNode areaNode,

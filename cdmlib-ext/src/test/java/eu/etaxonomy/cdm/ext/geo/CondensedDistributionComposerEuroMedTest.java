@@ -145,6 +145,12 @@ public class CondensedDistributionComposerEuroMedTest extends TermTestBase {
         bawueDistribution.setStatus(PresenceAbsenceTerm.CASUAL());
         Assert.assertEquals("● <b>GER(B)</b> ?IT [cFR(J) aGER(BW) nS]", composer.createCondensedDistribution(distributions, languages, config).toString());
 
+        //#9583
+        distributions = new HashSet<>();
+        distributions.add(Distribution.NewInstance(berlin, PresenceAbsenceTerm.PRESENT_DOUBTFULLY()));
+        distributions.add(Distribution.NewInstance(bawue, PresenceAbsenceTerm.NATIVE()));
+        Assert.assertEquals("<b>GER(</b>?B <b>BW)</b>", composer.createCondensedDistribution(distributions, languages, config).toString());
+
     }
 
     @Test
