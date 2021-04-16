@@ -763,6 +763,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
     }
 
+
+    @Test
+    public final void testUninomials() {
+        String uninomial = "Anserineae";  //this, in reality is a tribe but the parser should recognize a suborder as the suborder ending -ineae is more specific then the tribe ending -eae
+        INonViralName name = parser.parseFullName(uninomial, botanicCode, null);
+        assertEquals(Rank.SUBORDER(), name.getRank());
+    }
+
     @Test
     public final void testUnrankedNames() {
         try {
