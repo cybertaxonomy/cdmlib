@@ -326,11 +326,14 @@ public class CondensedDistributionComposer {
 
     /**
      * @param status
-     * @param config configuration
-     * @param statusHandledByParent indicates if the status is handled by the parent. Will be passed to the (third) result
-     * @return a triple result with the first result being the symbol string, the second result being the isBold flag
-     *     and the third result indicates if this symbol includes information for all sub-areas (which passes the input parameter)
-     *     to the output here
+     * @param config
+     *              configuration
+     * @param statusHandledByParent
+     *              indicates if the status is handled by the parent. Will be passed to the (third) result
+     * @return
+     *      a triple result with the first result being the symbol string, the second result
+     *      being the isBold flag and the third result indicates if this symbol includes information
+     *      for all sub-areas (which passes the input parameter) to the output here
      */
     protected TripleResult<String, Boolean, Boolean> statusSymbol(PresenceAbsenceTerm status,
             CondensedDistributionConfiguration config, List<Language> languages, boolean statusHandledByParent) {

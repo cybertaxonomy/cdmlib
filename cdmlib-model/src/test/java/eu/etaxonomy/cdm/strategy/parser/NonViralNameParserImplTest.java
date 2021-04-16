@@ -717,7 +717,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("Name must have Orchis papilionacea var. schirvanica as second hybrid parent", "Orchis papilionacea var. schirvanica", secondParent.getTitleCache());
         assertEquals("Hybrid name must have the lower rank ('variety') as rank", Rank.VARIETY(), name1.getRank());
 
-      //subspecies and variety with genus part
+        //subspecies and variety with genus part
         nameStr = "Orchis morio subsp. syriaca \u00D7 Test papilionacea var. schirvanica";
         name1 = parser.parseFullName(nameStr, botanicCode, null);
         assertTrue("Name must have hybrid formula bit set", name1.isHybridFormula());
