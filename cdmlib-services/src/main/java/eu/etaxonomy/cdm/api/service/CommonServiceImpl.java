@@ -182,7 +182,11 @@ public class CommonServiceImpl
             targetEntity = entity;
         }
         targetEntity = CdmBase.deproxy(targetEntity);
-        String targetLabel = targetEntity instanceof IdentifiableEntity ? ((IdentifiableEntity)targetEntity).getTitleCache() : null;
+
+        if (targetEntity == null){
+            targetEntity = entity;
+        }
+        String targetLabel = targetEntity instanceof IdentifiableEntity ? ((IdentifiableEntity<?>)targetEntity).getTitleCache() : null;
         UuidAndTitleCache<CdmBase> result = new UuidAndTitleCache<>(targetEntity.getClass(), targetEntity.getUuid(), targetEntity.getId(), targetLabel);
         return result;
     }
