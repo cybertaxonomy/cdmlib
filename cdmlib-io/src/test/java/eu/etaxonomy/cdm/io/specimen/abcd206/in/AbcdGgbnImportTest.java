@@ -397,7 +397,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 //	@Ignore
-	public void testImportAssociatedSpecimenSamePopulation() throws ParseException {
+	public void testImportAssociatedSpecimenSamePopulation() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
