@@ -363,6 +363,7 @@ public class OccurrenceServiceImpl
                 }
             }
         }
+        long totalCount = rootUnitUuids.size();
         //dao.list() does the paging of the field units. Passing the field units directly to the Pager would not work
         List<SpecimenOrObservationBase> rootUnits = dao.list(rootUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
         List<T> castedUnits = new ArrayList<>(rootUnits.size());
@@ -370,7 +371,7 @@ public class OccurrenceServiceImpl
             // this cast should be save since the uuids have been filtered by type above
             castedUnits.add((T)sob);
         }
-        return new DefaultPagerImpl<T>(pageNumber, (long)castedUnits.size(), pageSize, castedUnits);
+        return new DefaultPagerImpl<T>(pageNumber, totalCount, pageSize, castedUnits);
     }
 
     @Override
