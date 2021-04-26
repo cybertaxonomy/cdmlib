@@ -60,6 +60,8 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
      *
      * @param fieldUnit
      *     The FieldUnit entity to create a DTO for. Is null save.
+     * @param maxDepth
+     *     The max number of levels to walk into the derivation tree, <code>null</code> means unlimited.
      * @param typeIncludeFilter
      *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
      */
@@ -94,7 +96,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	 *     The FieldUnit entity to create a DTO for
 	 * @param maxDepth
      *   The maximum number of derivation events levels up to which derivatives are to be collected.
-     *   <code>NULL</code> means infinitely.
+     *   <code>null</code> means infinitely.
 	 * @param typeIncludeFilter
 	 *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
 	 */
