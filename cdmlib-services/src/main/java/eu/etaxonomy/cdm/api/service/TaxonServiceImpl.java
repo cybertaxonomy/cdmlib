@@ -1425,7 +1425,7 @@ public class TaxonServiceImpl
             SynonymType newSynonymType) throws HomotypicalGroupChangeException {
         return moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup,
                 newSynonymType,
-                oldSynonym.getSec(),
+                oldSynonym.getSec()!= null?oldSynonym.getSec().getUuid():null,
                 oldSynonym.getSecMicroReference(),
                 true);
     }
@@ -1436,7 +1436,7 @@ public class TaxonServiceImpl
             Taxon newTaxon,
             boolean moveHomotypicGroup,
             SynonymType newSynonymType,
-            Reference newSecundum,
+            UUID newSecundumUuid,
             String newSecundumDetail,
             boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
 
@@ -1476,6 +1476,7 @@ public class TaxonServiceImpl
         UpdateResult result = new UpdateResult();
         //move all synonyms to new taxon
         List<Synonym> homotypicSynonyms = oldTaxon.getSynonymsInGroup(homotypicGroup);
+        Reference newSecundum = referenceService.load(newSecundumUuid);
         for (Synonym synRelation: homotypicSynonyms){
 
             newTaxon = HibernateProxyHelper.deproxy(newTaxon, Taxon.class);
@@ -3337,13 +3338,13 @@ public class TaxonServiceImpl
     @Override
 	@Transactional(readOnly = false)
 	public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, UUID newTaxonUUID, boolean moveHomotypicGroup,
-            SynonymType newSynonymType, Reference newSecundum, String newSecundumDetail,
+            SynonymType newSynonymType, UUID newSecundumUuid, String newSecundumDetail,
             boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
 
 	    UpdateResult result = new UpdateResult();
 		Taxon newTaxon = CdmBase.deproxy(dao.load(newTaxonUUID),Taxon.class);
 		result = moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup, newSynonymType,
-		        newSecundum, newSecundumDetail, keepSecundumIfUndefined);
+		        newSecundumUuid, newSecundumDetail, keepSecundumIfUndefined);
 
 		return result;
 	}

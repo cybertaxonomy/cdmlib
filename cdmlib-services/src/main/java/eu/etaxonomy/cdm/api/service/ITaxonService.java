@@ -239,7 +239,7 @@ public interface ITaxonService
      * 		(2) synonym is in homotypic group with other synonyms and <code>moveHomotypicGroup</code> is false
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymType newSynonymType, Reference newSecundum,
+            SynonymType newSynonymType, UUID newSecundumUuid,
             String newSecundumDetail, boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException;
 
 
@@ -259,7 +259,7 @@ public interface ITaxonService
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
             UUID newTaxonUUID, boolean moveHomotypicGroup,
             SynonymType newSynonymType,
-            Reference newSecundum, String newSecundumDetail, boolean keepSecundumIfUndefined)
+            UUID newSecundumUuid, String newSecundumDetail, boolean keepSecundumIfUndefined)
             throws HomotypicalGroupChangeException;
 
     /**
