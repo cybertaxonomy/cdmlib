@@ -154,13 +154,14 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
     public void updateTreeDependantData() {
         TreeLabels treeLabels = assembleLablesFromTree(true, true);
         setSummaryLabel(treeLabels.summaryLabel);
-        setCollectionStatistics(treeLabels.collectionsSummary);
+        setCollectionStatistics(treeLabels.collectionsStatistics);
     }
 
     /**
-     * Walks the tree of sub-derivatives to collect the summary label and the collections summary.*
+     * Walks the tree of sub-derivatives to collect the summary label and the collection statistics.
+     * The latter lists all collections with the number of specimens which are involved in this tree.
      */
-    public TreeLabels assembleLablesFromTree(boolean doSummaryLabel, boolean doCollectionsSummary) {
+    public TreeLabels assembleLablesFromTree(boolean doSummaryLabel, boolean collectionsStatistics) {
 
         TreeLabels treeLabels = new TreeLabels();
         Map<CollectionDTO, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
@@ -200,7 +201,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             treeLabels.summaryLabel = summaryLabel;
         }
 
-        if(doCollectionsSummary) {
+        if(collectionsStatistics) {
             String collectionsString = "";
             for (CollectionDTO collectionDTO : unitIdenfierLabelsByCollections.keySet()) {
                 int unitCount = unitIdenfierLabelsByCollections.get(collectionDTO).size();
@@ -213,7 +214,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
                 collectionsString += SEPARATOR_STRING;
             }
             collectionsString = removeTail(collectionsString, SEPARATOR_STRING);
-            treeLabels.collectionsSummary = collectionsString;
+            treeLabels.collectionsStatistics = collectionsString;
         }
 
         return treeLabels;
@@ -343,6 +344,6 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 
     static class TreeLabels {
         String summaryLabel = null;
-        String collectionsSummary = null;
+        String collectionsStatistics = null;
     }
 }
