@@ -494,7 +494,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         boolean keepReference = false;
         boolean moveHomotypicGroup = false;
         try {
-            service.moveSynonymToAnotherTaxon(synonym, t2, moveHomotypicGroup, heteroTypicSynonymType, reference, referenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(synonym, t2, moveHomotypicGroup, heteroTypicSynonymType, reference.getUuid(), referenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Method call should not throw exception");
         }
@@ -545,7 +545,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon oldTaxon = homotypicSynonym.getAcceptedTaxon();
 
         try {
-            service.moveSynonymToAnotherTaxon(homotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(homotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
             Assert.fail("Homotypic synonym move to other taxon should throw an exception");
         } catch (HomotypicalGroupChangeException e) {
             if (e.getMessage().contains("Synonym is in homotypic group with accepted taxon and other synonym(s). First remove synonym from homotypic group of accepted taxon before moving to other taxon")){
@@ -571,7 +571,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         moveHomotypicGroup = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
             Assert.fail("Heterotypic synonym move to other taxon should throw an exception");
         } catch (HomotypicalGroupChangeException e) {
             if (e.getMessage().contains("Synonym is in homotypic group with other synonym(s). Either move complete homotypic group or remove synonym from homotypic group prior to moving to other taxon")){
@@ -600,7 +600,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         moveHomotypicGroup = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }
@@ -636,7 +636,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         keepReference = false;
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym4, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym4, newTaxon, moveHomotypicGroup, newSynonymType, null, newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Move with 'moveHomotypicGroup = true' should not throw exception: " + e.getMessage());
         }
@@ -675,7 +675,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         newSynonymType = SynonymType.HOMOTYPIC_SYNONYM_OF();
 
         try {
-            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference, newReferenceDetail, keepReference);
+            service.moveSynonymToAnotherTaxon(heterotypicSynonym, newTaxon, moveHomotypicGroup, newSynonymType, newReference.getUuid(), newReferenceDetail, keepReference);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }
