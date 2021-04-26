@@ -396,7 +396,7 @@ public class OccurrenceServiceImpl
         if (!getSession().contains(derivedUnit)) {
             derivedUnit = (DerivedUnit) load(derivedUnit.getUuid());
         }
-        DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null, null);
+        DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null);
 
         // individuals associations
         Collection<IndividualsAssociation> individualsAssociations = listIndividualsAssociations(derivedUnit, null, null, null, null);
@@ -550,7 +550,7 @@ public class OccurrenceServiceImpl
                         if (unit instanceof DnaSample) {
                             derivativeDTO = DNASampleDTO.fromEntity((DnaSample)unit);
                         } else {
-                            derivativeDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null, null);
+                            derivativeDTO = DerivedUnitDTO.fromEntity(derivedUnit, null, null);
                         }
                         alreadyCollectedUnits.put(derivativeDTO.getUuid(), derivativeDTO);
                         derivativeDTO.addAllDerivatives(getDerivedUnitDTOsFor(derivativeDTO, derivedUnit, alreadyCollectedUnits));
@@ -817,7 +817,7 @@ public class OccurrenceServiceImpl
                     // the direct derivatives of the field unit are added in the factory method, so it is guaranteed that
                     // the derivedUnitDTO is already contained.
                     // ----
-                    // Don't assemble derivatives for the field unit, since we have them collected already
+                    // Don't assemble derivatives for originals since we have them collected already
                     // when ascending to the originals, we only want to collect those derivatives which are on the path up to the root
                     final Integer maxDepth = 0;
                     SpecimenOrObservationBaseDTO originalDTO = SpecimenOrObservationDTOFactory.fromEntity(original, maxDepth);

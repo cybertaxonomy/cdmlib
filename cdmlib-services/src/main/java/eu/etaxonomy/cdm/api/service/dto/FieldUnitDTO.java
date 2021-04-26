@@ -134,8 +134,6 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             setDate(gatheringEvent.getGatheringDate());
         }
 
-        Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
-        assembleDerivatives(fieldUnit, maxDepth, typeIncludeFilter, unitIdenfierLabelsByCollections);
 
         // assemble derivate data DTO
         DerivationTreeSummaryDTO derivateDataDTO = DerivationTreeSummaryDTO.fromEntity(fieldUnit, null);
@@ -149,36 +147,76 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             summaryLabel = fieldUnit.getTitleCache();
         }
 
-        List<String> derivativesAccessionNumbers = new ArrayList<>();
-        for(List<String> labels : unitIdenfierLabelsByCollections.values()) {
-            derivativesAccessionNumbers.addAll(labels);
-        }
-        if (!derivativesAccessionNumbers.isEmpty()) {
-            summaryLabel += " (";
-            for (String accessionNumber : derivativesAccessionNumbers) {
-                if (accessionNumber != null && !accessionNumber.isEmpty()) {
-                    summaryLabel += accessionNumber + SEPARATOR_STRING;
-                }
-            }
-            summaryLabel = removeTail(summaryLabel, SEPARATOR_STRING);
-            summaryLabel += ")";
-        }
-        setSummaryLabel(summaryLabel);
+        addAllDerivatives(assembleDerivatives(fieldUnit, maxDepth, typeIncludeFilter));
+    }
 
-        // assemble herbaria string
-        String herbariaString = "";
-        for (eu.etaxonomy.cdm.model.occurrence.Collection collection : unitIdenfierLabelsByCollections.keySet()) {
-            int unitCount = unitIdenfierLabelsByCollections.get(collection).size();
-            if (collection.getCode() != null) {
-                herbariaString += collection.getCode();
+    @Override
+    public void updateTreeDependantData() {
+        TreeLabels treeLabels = assembleLablesFromTree(true, true);
+        setSummaryLabel(treeLabels.summaryLabel);
+        setCollectionStatistics(treeLabels.collectionsSummary);
+    }
+
+    /**
+     * Walks the tree of sub-derivatives to collect the summary label and the collections summary.*
+     */
+    public TreeLabels assembleLablesFromTree(boolean doSummaryLabel, boolean doCollectionsSummary) {
+
+        TreeLabels treeLabels = new TreeLabels();
+        Map<CollectionDTO, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
+
+        // TODO collectDerivatives(maxDepth)
+        for(DerivedUnitDTO subDTO : collectDerivatives()) {
+            CollectionDTO collectionDTO = subDTO.getCollection();
+            if (collectionDTO != null) {
+                //combine collection with identifier
+                String identifier = subDTO.getMostSignificantIdentifier();
+                if (identifier != null && collectionDTO.getCode()!=null) {
+                    identifier = (collectionDTO.getCode()!=null?collectionDTO.getCode():"[no collection]")+" "+identifier;
+                }
+                if(!unitIdenfierLabelsByCollections.containsKey(collectionDTO)) {
+                    unitIdenfierLabelsByCollections.put(collectionDTO, new ArrayList<>());
+                }
+                unitIdenfierLabelsByCollections.get(collectionDTO).add(identifier);
             }
-            if (unitCount > 1) {
-                herbariaString += "(" + unitCount + ")";
-            }
-            herbariaString += SEPARATOR_STRING;
         }
-        herbariaString = removeTail(herbariaString, SEPARATOR_STRING);
-        setCollectionStatistics(herbariaString);
+
+        if(doSummaryLabel) {
+            String summaryLabel = "";
+            List<String> derivativesAccessionNumbers = new ArrayList<>();
+            for(List<String> labels : unitIdenfierLabelsByCollections.values()) {
+                derivativesAccessionNumbers.addAll(labels);
+            }
+            if (!derivativesAccessionNumbers.isEmpty()) {
+                summaryLabel += " (";
+                for (String accessionNumber : derivativesAccessionNumbers) {
+                    if (accessionNumber != null && !accessionNumber.isEmpty()) {
+                        summaryLabel += accessionNumber + SEPARATOR_STRING;
+                    }
+                }
+                summaryLabel = removeTail(summaryLabel, SEPARATOR_STRING);
+                summaryLabel += ")";
+            }
+            treeLabels.summaryLabel = summaryLabel;
+        }
+
+        if(doCollectionsSummary) {
+            String collectionsString = "";
+            for (CollectionDTO collectionDTO : unitIdenfierLabelsByCollections.keySet()) {
+                int unitCount = unitIdenfierLabelsByCollections.get(collectionDTO).size();
+                if (collectionDTO.getCode() != null) {
+                    collectionsString += collectionDTO.getCode();
+                }
+                if (unitCount > 1) {
+                    collectionsString += "(" + unitCount + ")";
+                }
+                collectionsString += SEPARATOR_STRING;
+            }
+            collectionsString = removeTail(collectionsString, SEPARATOR_STRING);
+            treeLabels.collectionsSummary = collectionsString;
+        }
+
+        return treeLabels;
     }
 
     private String removeTail(String string, final String tail) {
@@ -301,5 +339,10 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
      */
     public void setCollectioDTO(CollectionDTO collection) {
         this.collection = collection;
+    }
+
+    static class TreeLabels {
+        String summaryLabel = null;
+        String collectionsSummary = null;
     }
 }

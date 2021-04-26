@@ -38,7 +38,7 @@ public class SpecimenOrObservationDTOFactory {
             if (entity.isInstanceOf(DnaSample.class)){
                 return new DNASampleDTO(HibernateProxyHelper.deproxy(entity, DnaSample.class)); // FIXME use factory method
             } else {
-                return DerivedUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, DerivedUnit.class), maxDepth, null, null);
+                return DerivedUnitDTO.fromEntity(HibernateProxyHelper.deproxy(entity, DerivedUnit.class), maxDepth, null);
             }
         }
     }

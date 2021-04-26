@@ -16,7 +16,6 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -278,6 +277,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     public void setDerivatives(Set<DerivedUnitDTO> derivatives) {
         this.derivatives = derivatives;
+        updateTreeDependantData();
     }
 
     public void addDerivative(DerivedUnitDTO derivate){
@@ -285,13 +285,21 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
             this.derivatives = new HashSet<>();
         }
         this.derivatives.add(derivate);
+        updateTreeDependantData();
     }
     public void addAllDerivatives(Set<DerivedUnitDTO> derivatives){
         if (this.derivatives == null){
             this.derivatives = new HashSet<>();
         }
         this.derivatives.addAll(derivatives);
+        updateTreeDependantData();
     }
+
+    /**
+     * To be overwritten by implementing classes to
+     * update data which depends on the derivation tree
+     */
+    protected abstract void updateTreeDependantData();
 
     /**
      * Recursively collects all derivatives from this.
@@ -382,38 +390,25 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
      * @param unitLabelsByCollection
      *      A map to record the unit labels (most significant identifier + collection code) per collection.
      *      Optional parameter, may be <code>NULL</code>.
+     * @return
      */
-    protected void assembleDerivatives(SpecimenOrObservationBase<?> sob,
-            Integer maxDepth, EnumSet<SpecimenOrObservationType> includeTypes,
-            Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String>> unitLabelsByCollection) {
+    protected Set<DerivedUnitDTO> assembleDerivatives(SpecimenOrObservationBase<?> sob,
+            Integer maxDepth, EnumSet<SpecimenOrObservationType> includeTypes) {
 
         boolean doDescend = maxDepth == null || maxDepth > 0;
         Integer nextLevelMaxDepth = maxDepth != null ? maxDepth - 1 : null;
-        for (DerivedUnit derivedUnit : sob.collectDerivedUnits(maxDepth)) {
+        Set<DerivedUnitDTO> derivateDTOs = new HashSet<>();
+        // collectDerivedUnitsMaxdepth => 0 to avoid aggregation of sub ordinate
+        // derivatives at each level
+        Integer collectDerivedUnitsMaxdepth = 0;
+        for (DerivedUnit derivedUnit : sob.collectDerivedUnits(collectDerivedUnitsMaxdepth)) {
             if(!derivedUnit.isPublish()){
                 continue;
             }
 
-            if(unitLabelsByCollection != null) {
-                // collect accession numbers for citation
-                // collect collections for herbaria column
-                eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
-                if (collection != null) {
-                    //combine collection with identifier
-                    String identifier = derivedUnit.getMostSignificantIdentifier();
-                    if (identifier != null && collection.getCode()!=null) {
-                        identifier = (collection.getCode()!=null?collection.getCode():"[no collection]")+" "+identifier;
-                    }
-                    if(!unitLabelsByCollection.containsKey(collection)) {
-                        unitLabelsByCollection.put(collection, new ArrayList<>());
-                    }
-                    unitLabelsByCollection.get(collection).add(identifier);
-                }
-            }
-
             if (doDescend && (includeTypes == null || includeTypes.contains(derivedUnit.getRecordBasis()))) {
-                DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, nextLevelMaxDepth, includeTypes, null);
-                addDerivative(derivedUnitDTO);
+                DerivedUnitDTO derivedUnitDTO = DerivedUnitDTO.fromEntity(derivedUnit, nextLevelMaxDepth, includeTypes);
+                derivateDTOs.add(derivedUnitDTO);
                 setHasCharacterData(isHasCharacterData() || derivedUnitDTO.isHasCharacterData());
                 // NOTE! the flags setHasDetailImage, setHasDna, setHasSpecimenScan are also set in
                 // setDerivateDataDTO(), see below
@@ -422,6 +417,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 setHasSpecimenScan(isHasSpecimenScan() || derivedUnitDTO.isHasSpecimenScan());
             }
         }
+        return derivateDTOs;
     }
 
     public TermBase getKindOfUnit() {

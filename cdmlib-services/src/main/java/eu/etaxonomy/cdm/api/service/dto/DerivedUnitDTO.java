@@ -79,7 +79,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      * @return <code>null</code> or the new DerivedUnitDTO
      */
     public static DerivedUnitDTO fromEntity(DerivedUnit entity){
-        return fromEntity(entity, null, null, null);
+        return fromEntity(entity, null, null);
     }
 
     /**
@@ -93,14 +93,11 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      *   <code>NULL</code> means infinitely.
      * @param specimenOrObservationTypeFilter
      *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
-     * @param unitLabelsByCollection
-     *   see {@link #assembleDerivatives(SpecimenOrObservationBase, java.util.EnumSet, Map).
      * @return
      *  The DTO
      */
     public static DerivedUnitDTO fromEntity(DerivedUnit entity, Integer maxDepth,
-            EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter,
-            Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String>> unitLabelsByCollection){
+            EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter){
 
         if(entity == null) {
             return null;
@@ -110,9 +107,10 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         // ---- assemble derivation tree summary
         //      this data should be sufficient in clients for showing the unit in a list view
         dto.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(entity, dto.getSpecimenIdentifier()));
+
         // ---- assemble derivatives
         //      this data is is often only required for clients in order to show the details of the derivation tree
-        dto.assembleDerivatives(entity, maxDepth, specimenOrObservationTypeFilter, unitLabelsByCollection);
+        dto.addAllDerivatives(dto.assembleDerivatives(entity, maxDepth, specimenOrObservationTypeFilter));
 
         return dto;
     }
@@ -357,6 +355,12 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      */
     public void setCollectioDTO(CollectionDTO collection) {
         this.collection = collection;
+    }
+
+    @Override
+    protected void updateTreeDependantData() {
+        // TODO DerivationTreeSummaryDTO should be updated here once it is refactored so that it can operate on dtos
+
     }
 
 }
