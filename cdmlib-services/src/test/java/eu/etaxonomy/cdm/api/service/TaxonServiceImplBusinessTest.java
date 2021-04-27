@@ -100,7 +100,8 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 
 		UpdateResult result = service.swapSynonymAndAcceptedTaxon(s1, t1, true);
 		Synonym syn = (Synonym)service.load(s1.getUuid());
-		Assert.assertNull(syn);
+		//only the name has changed
+		Assert.assertNotNull(syn);
 		TaxonName name = nameService.load(s1n.getUuid());
 		Assert.assertNotNull(name);
 
