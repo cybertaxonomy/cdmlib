@@ -209,12 +209,42 @@ public class TaxonServiceImpl
     @Transactional(readOnly = false)
     public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
         UpdateResult result = new UpdateResult();
-    	acceptedTaxon.removeSynonym(synonym);
+//    	acceptedTaxon.removeSynonym(synonym);
     	TaxonName synonymName = synonym.getName();
     	TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
 
     	boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(taxonName.getHomotypicalGroup());
 
+    	acceptedTaxon.setName(synonymName);
+    	synonym.setName(taxonName);
+
+    	for(TaxonDescription description : acceptedTaxon.getDescriptions()){
+            String message = "Description copied from former accepted taxon: %s (Old title: %s)";
+            message = String.format(message, acceptedTaxon.getTitleCache(), description.getTitleCache());
+            description.setTitleCache(message, true);
+            if(setNameInSource){
+                for (DescriptionElementBase element: description.getElements()){
+                    for (DescriptionElementSource source: element.getSources()){
+                        if (source.getNameUsedInSource() == null){
+                            source.setNameUsedInSource(taxonName);
+                        }
+                    }
+                }
+            }
+//            //oldTaxon.removeDescription(description, false);
+ //           newTaxon.addDescription(description);
+        }
+
+    	acceptedTaxon.setTitleCache(null, true);
+    	acceptedTaxon.getTitleCache();
+    	synonym.setTitleCache(null, true);
+    	synonym.getTitleCache();
+    	saveOrUpdate(acceptedTaxon);
+    	saveOrUpdate(synonym);
+    	result.setCdmEntity(acceptedTaxon);
+    	result.addUpdatedObject(synonym);
+
+/*
         synonymName.removeTaxonBase(synonym);
 
         //taxonName.removeTaxonBase(acceptedTaxon);
@@ -236,7 +266,7 @@ public class TaxonServiceImpl
         }
 
         newTaxon.setName(synonymName);
-        newTaxon.setSec(synonym.getSec());
+
         newTaxon.setPublish(synonym.isPublish());
         for (Synonym syn: synonyms){
             if (!syn.getName().equals(newTaxon.getName())){
@@ -304,7 +334,7 @@ public class TaxonServiceImpl
         }
         Synonym newSynonym = synonym.clone();
         newSynonym.setName(taxonName);
-        newSynonym.setSec(acceptedTaxon.getSec());
+//        newSynonym.setSec(acceptedTaxon.getSec());
         newSynonym.setPublish(acceptedTaxon.isPublish());
         if (sameHomotypicGroup){
             newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
@@ -321,11 +351,14 @@ public class TaxonServiceImpl
 
         DeleteResult deleteResult = deleteTaxon(acceptedTaxon.getUuid(), conf, null);
         if (synonym.isPersited()){
+            synonym.getSecSource().setSourcedTaxon(null);
+            synonym.setSecSource(null);
             deleteResult.includeResult(deleteSynonym(synonym.getUuid(), confSyn));
         }
-        saveOrUpdate(newSynonym);
-        saveOrUpdate(newTaxon);
+//        saveOrUpdate(newSynonym);
+//        saveOrUpdate(newTaxon);
         result.includeResult(deleteResult);
+        */
 		return result;
     }
 
