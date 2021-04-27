@@ -19,6 +19,12 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class AbstractCdmFormatter implements ICdmFormatter {
 
+
+    public static final String COMMA_CHAR = ",";
+    public static final String SPACE_CHAR = " ";
+    public static final String OPEN_BRACKET_CHAR = "(";
+    public static final String CLOSE_BRACKET_CHAR = ")";
+
     protected FormatKey[] formatKeys;
 
     protected Map<FormatKey, String> formatKeyMap = new HashMap<>();
@@ -46,10 +52,10 @@ public abstract class AbstractCdmFormatter implements ICdmFormatter {
     }
 
     protected void initFormatKeys(Object object){
-        formatKeyMap.put(FormatKey.CLOSE_BRACKET, ")");
-        formatKeyMap.put(FormatKey.OPEN_BRACKET, "(");
-        formatKeyMap.put(FormatKey.SPACE, " ");
-        formatKeyMap.put(FormatKey.COMMA, ",");
+        formatKeyMap.put(FormatKey.CLOSE_BRACKET, CLOSE_BRACKET_CHAR);
+        formatKeyMap.put(FormatKey.OPEN_BRACKET, OPEN_BRACKET_CHAR);
+        formatKeyMap.put(FormatKey.SPACE, SPACE_CHAR);
+        formatKeyMap.put(FormatKey.COMMA, COMMA_CHAR);
     }
 
 

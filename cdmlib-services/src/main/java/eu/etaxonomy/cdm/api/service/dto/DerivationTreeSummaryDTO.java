@@ -60,7 +60,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
      *      The {@link SpecimenOrObservationBase} to create the summary for.
      * @param specimenIdentifier
      *      In case of a {@link DerivedUnit} being passed to this factory method, the <code>specimenIdentifier</code> should
-     *      be set to the result of {@link DerivedUnitDTO#composeSpecimenIdentifier(DerivedUnit)}
+     *      be set to the result of {@link DerivedUnitDTO#composeSpecimenShortTitle(DerivedUnit)}
      * @return
      *      The new instance.
      */

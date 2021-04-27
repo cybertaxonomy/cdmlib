@@ -50,7 +50,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private static final long serialVersionUID = 2345864166579381295L;
 
     private String accessionNumber;
-    private String specimenIdentifier;
+    private String specimenShortTitle;
     private TypedEntityReference<TaxonName> storedUnder;
     private URI preferredStableUri;
 
@@ -106,7 +106,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
         // ---- assemble derivation tree summary
         //      this data should be sufficient in clients for showing the unit in a list view
-        dto.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(entity, dto.getSpecimenIdentifier()));
+        dto.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(entity, dto.getSpecimenShortTitle()));
 
         // ---- assemble derivatives
         //      this data is is often only required for clients in order to show the details of the derivation tree
@@ -146,8 +146,8 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
         mostSignificantIdentifier = derivedUnit.getMostSignificantIdentifier();
 
-        //specimen identifier
-        setSpecimenIdentifier(composeSpecimenIdentifier(derivedUnit));
+        //specimenShortTitle
+        setSpecimenShortTitle(composeSpecimenShortTitle(derivedUnit));
 
 
         //preferred stable URI
@@ -203,24 +203,32 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     }
 
-    protected String composeSpecimenIdentifier(DerivedUnit derivedUnit) {
+    protected String composeSpecimenShortTitle(DerivedUnit derivedUnit) {
         FormatKey collectionKey = FormatKey.COLLECTION_CODE;
-        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, collectionKey);
-        if (CdmUtils.isBlank(specimenIdentifier)) {
+        String specimenShortTitle = CdmFormatterFactory.format(derivedUnit, collectionKey);
+        if (CdmUtils.isBlank(specimenShortTitle)) {
             collectionKey = FormatKey.COLLECTION_NAME;
         }
         if(CdmUtils.isNotBlank(derivedUnit.getMostSignificantIdentifier())){
-            specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
-                    collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
-                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+            specimenShortTitle = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
+                    collectionKey,
+                    FormatKey.SPACE,
+                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER
+                    });
+            if(!specimenShortTitle.isEmpty() && derivedUnit instanceof MediaSpecimen) {
+                Media media = ((MediaSpecimen)derivedUnit).getMediaSpecimen();
+                if(media != null && !CdmUtils.isBlank(media.getTitleCache()) ) {
+                    specimenShortTitle += " (" + media.getTitleCache() + ")";
+                }
+            }
         }
-        if(CdmUtils.isBlank(specimenIdentifier)){
-            specimenIdentifier = derivedUnit.getTitleCache();
+        if(CdmUtils.isBlank(specimenShortTitle)){
+            specimenShortTitle = derivedUnit.getTitleCache();
         }
-        if(CdmUtils.isBlank(specimenIdentifier)){
-            specimenIdentifier = derivedUnit.getUuid().toString();
+        if(CdmUtils.isBlank(specimenShortTitle)){
+            specimenShortTitle = derivedUnit.getUuid().toString();
         }
-        return specimenIdentifier;
+        return specimenShortTitle;
     }
 
     @Override
@@ -269,11 +277,11 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public URI getPreferredStableUri() {
         return preferredStableUri;
     }
-    public String getSpecimenIdentifier() {
-        return specimenIdentifier;
+    public String getSpecimenShortTitle() {
+        return specimenShortTitle;
     }
-    public void setSpecimenIdentifier(String specimenIdentifier) {
-        this.specimenIdentifier = specimenIdentifier;
+    public void setSpecimenShortTitle(String specimenIdentifier) {
+        this.specimenShortTitle = specimenIdentifier;
     }
     public String getMostSignificantIdentifier() {
         return mostSignificantIdentifier;

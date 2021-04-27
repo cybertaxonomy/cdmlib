@@ -185,7 +185,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
         }
 
         if(doSummaryLabel) {
-            String summaryLabel = "";
+            String summaryLabel = this.label;
             List<String> derivativesAccessionNumbers = new ArrayList<>();
             for(List<String> labels : unitIdenfierLabelsByCollections.values()) {
                 derivativesAccessionNumbers.addAll(labels);
