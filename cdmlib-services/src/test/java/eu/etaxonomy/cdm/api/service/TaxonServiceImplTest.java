@@ -275,6 +275,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 			e.printStackTrace();
 		}
 
+        synonym.setSec(ReferenceFactory.newArticle());
+        service.saveOrUpdate(synonym);
         UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true);
 
         // find forces flush
@@ -1981,8 +1983,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         taxWithSyn.addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         taxWithSyn.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
-        tax2WithSyn.setSec(ReferenceFactory.newArticle());
-        synonym.setSec(ReferenceFactory.newArticle());
+//        tax2WithSyn.setSec(ReferenceFactory.newArticle());
+//        synonym.setSec(ReferenceFactory.newArticle());
         uuidTaxWithoutSyn = service.save(taxWithoutSyn).getUuid();
         uuidSyn = service.save(synonym).getUuid();
         uuidSyn2 = service.save(synonym2).getUuid();
