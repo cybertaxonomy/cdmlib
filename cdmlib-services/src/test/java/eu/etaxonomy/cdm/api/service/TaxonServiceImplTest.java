@@ -298,6 +298,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+
     public final void testChangeSynonymToAcceptedTaxon() throws FileNotFoundException{
 
 		createTestDataSet();
@@ -1967,9 +1968,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Override
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="ClearDBDataSet.xml")
     public void createTestDataSet() throws FileNotFoundException {
     	Rank rank = Rank.SPECIES();
-
         taxWithoutSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test1", null, null, null, null, null, null, null), null);
         taxWithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test3", null, null, null, null, null, null, null), null);
         tax2WithSyn = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(rank, "Test5", null, null, null, null, null, null, null), null);
