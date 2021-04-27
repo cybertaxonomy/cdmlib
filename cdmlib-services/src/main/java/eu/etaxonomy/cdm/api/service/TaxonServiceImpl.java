@@ -312,8 +312,7 @@ public class TaxonServiceImpl
             newTaxon.addSynonym(newSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         }
 
-        saveOrUpdate(newSynonym);
-        saveOrUpdate(newTaxon);
+
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteNameIfPossible(false);
         SynonymDeletionConfigurator confSyn = new SynonymDeletionConfigurator();
@@ -322,8 +321,10 @@ public class TaxonServiceImpl
 
         DeleteResult deleteResult = deleteTaxon(acceptedTaxon.getUuid(), conf, null);
         if (synonym.isPersited()){
-            deleteResult.includeResult(deleteSynonym(synonym, confSyn));
+            deleteResult.includeResult(deleteSynonym(synonym.getUuid(), confSyn));
         }
+        saveOrUpdate(newSynonym);
+        saveOrUpdate(newTaxon);
         result.includeResult(deleteResult);
 		return result;
     }
