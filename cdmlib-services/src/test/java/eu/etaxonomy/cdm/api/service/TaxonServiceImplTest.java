@@ -900,6 +900,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
+        synonym1.setSec(ReferenceFactory.newArticle());
+
         taxon2.addSynonym(synonym1, SynonymType.HETEROTYPIC_SYNONYM_OF());
         service.saveOrUpdate(synonym1);
         long nRelations = service.countSynonyms(true);
@@ -1978,6 +1980,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         taxWithSyn.addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         taxWithSyn.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
+        tax2WithSyn.setSec(ReferenceFactory.newArticle());
+        synonym.setSec(ReferenceFactory.newArticle());
         uuidTaxWithoutSyn = service.save(taxWithoutSyn).getUuid();
         uuidSyn = service.save(synonym).getUuid();
         uuidSyn2 = service.save(synonym2).getUuid();
