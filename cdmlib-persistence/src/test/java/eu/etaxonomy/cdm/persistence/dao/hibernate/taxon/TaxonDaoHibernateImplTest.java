@@ -127,10 +127,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private static final boolean doAuthors = true;
     private static final boolean noAuthors = false;
 
-    @SuppressWarnings("unused")
-    private static final String[] TABLE_NAMES = new String[] {
-        "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
-        , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
+//    @SuppressWarnings("unused")
+//    private static final String[] TABLE_NAMES = new String[] {
+//        "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
+//        , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
 
     @Before
     public void setUp() {
@@ -159,8 +159,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testInit() {
         logger.warn("testInit()");
-        assertNotNull("Instance of ITaxonDao expected",taxonDao);
-        assertNotNull("Instance of IReferenceDao expected",referenceDao);
+        assertNotNull("Instance of ITaxonDao expected", taxonDao);
+        assertNotNull("Instance of IReferenceDao expected", referenceDao);
     }
 
     @Test
