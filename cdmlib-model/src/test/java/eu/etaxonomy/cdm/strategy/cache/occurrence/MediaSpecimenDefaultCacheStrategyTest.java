@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -47,6 +48,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
 
         Media media = Media.NewInstance();
         media.setTitleCache("Media title");
+        media.setArtist(Person.NewTitledInstance("Artist"));
         specimen.setMediaSpecimen(media);
         Assert.assertEquals("B 123 (Media title)", strategy.getTitleCache(specimen));
 
@@ -54,7 +56,11 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         specimen.setAccessionNumber(null);
         Assert.assertEquals("Media title", strategy.getTitleCache(specimen));
 
+        //remove title
         media.putTitle(Language.DEFAULT(), null);
+        Assert.assertEquals("Artist", strategy.getTitleCache(specimen));
+        //remove artist
+        media.setArtist(null);
         Assert.assertEquals("MediaSpecimen#0<b5fa679f-12a1-4f47-906a-28b41c90f019>", strategy.getTitleCache(specimen));
 
         MediaRepresentation mediaRep = MediaRepresentation.NewInstance("jpg", null, URI.create("https://www.abc.de/test.jpg"), 20, ImageFile.class);

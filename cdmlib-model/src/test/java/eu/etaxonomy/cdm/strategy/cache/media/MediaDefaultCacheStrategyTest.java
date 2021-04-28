@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -35,10 +36,17 @@ public class MediaDefaultCacheStrategyTest extends TermTestBase {
 			Assert.assertEquals("Wrong title cache for media", "My best media", media.getTitleCache());
 
 			media = Media.NewInstance();
-			Assert.assertTrue("Wrong title cache for media", media.getTitleCache().startsWith("- empty"));
+			Assert.assertTrue("Wrong title cache for empty media", media.getTitleCache().startsWith("- empty"));
+
+			Person person = Person.NewTitledInstance("Artist");
+			media.setArtist(person);
+			Assert.assertEquals("Wrong title cache for media with artist", "Artist", media.getTitleCache());
 
 			MediaRepresentation representation = MediaRepresentation.NewInstance(null, null, new URI("www.abc.de/myFileName.jpg"), 0, null);
 			media.addRepresentation(representation);
+			Assert.assertEquals("Wrong title cache for media with artist", "Artist", media.getTitleCache());
+
+			media.setArtist(null);
 			Assert.assertEquals("Wrong title cache for media", "myFileName.jpg", media.getTitleCache());
 			media.removeRepresentation(representation);
 

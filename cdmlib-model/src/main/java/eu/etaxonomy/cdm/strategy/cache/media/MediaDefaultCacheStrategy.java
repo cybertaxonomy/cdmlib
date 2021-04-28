@@ -56,6 +56,10 @@ public class MediaDefaultCacheStrategy
 		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(media.getAllTitles(), languages);
 		result = (languageString != null ? languageString.getText() : "");
 
+		if (isBlank(result) && media.getArtist() != null){
+		    result = media.getArtist().getTitleCache();
+		}
+
 		//get first image uri
 		if (isBlank(result)){
 			for (MediaRepresentation mediaRepresentation : media.getRepresentations()){
