@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
@@ -44,10 +44,9 @@ public class MediaDefaultCacheStrategy
 		return uuid;
 	}
 
-
 	@Override
     public String getTitleCache(Media media) {
-		media = HibernateProxyHelper.deproxy(media, Media.class);
+		media = CdmBase.deproxy(media);
 		return getTitleCacheByLanguage(media, Language.DEFAULT());
 	}
 
