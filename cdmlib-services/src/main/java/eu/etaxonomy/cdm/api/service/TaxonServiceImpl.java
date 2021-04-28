@@ -848,7 +848,7 @@ public class TaxonServiceImpl
 
         if (config.isDoSynonyms() || config.isDoTaxa() || config.isDoNamesWithoutTaxa() || config.isDoTaxaByCommonNames()){
         	return dao.getTaxaByNameForEditor(config.isDoTaxa(), config.isDoSynonyms(), config.isDoNamesWithoutTaxa(),
-        	        config.isDoMisappliedNames(), config.isDoTaxaByCommonNames(), config.isIncludeUnpublished(),
+        	        config.isDoMisappliedNames(), config.isDoTaxaByCommonNames(), config.isIncludeUnpublished(), config.isDoIncludeAuthors(),
         	        config.getTitleSearchStringSqlized(), config.getClassification(), config.getSubtree(),
         	        config.getMatchMode(), config.getNamedAreas(), config.getOrder());
         }else{

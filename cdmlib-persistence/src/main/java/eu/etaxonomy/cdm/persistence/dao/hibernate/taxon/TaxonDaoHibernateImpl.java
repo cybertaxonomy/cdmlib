@@ -245,7 +245,7 @@ public class TaxonDaoHibernateImpl
     @Override
     @SuppressWarnings("unchecked")
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
-            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, String queryString, Classification classification, TaxonNode subtree,
+            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, boolean includeAuthors, String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
 
         if (order == null){
@@ -253,7 +253,7 @@ public class TaxonDaoHibernateImpl
         }
 
         boolean doCount = false;
-        boolean includeAuthors = false;
+
         @SuppressWarnings("rawtypes")
         List<UuidAndTitleCache<? extends IdentifiableEntity>> resultObjects = new ArrayList<>();
         if (doNamesWithoutTaxa){
@@ -1938,7 +1938,7 @@ public class TaxonDaoHibernateImpl
     }
 
     @Override
-    public  List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern){
+    public  List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean includeDoubtful){
         Session session = getSession();
         Query query = null;
         if (pattern != null){
@@ -1965,6 +1965,53 @@ public class TaxonDaoHibernateImpl
 
         return getUuidAndTitleCache(query);
     }
+
+
+    @Override
+    public  List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Class clazz, Integer limit, String pattern, boolean includeDoubtful){
+        Session session = getSession();
+        Query query = null;
+        if (pattern != null){
+            String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                    + " tb.uuid, tb.id, tb.titleCache, tb.name.rank "
+                    + ") "
+                    + " FROM TaxonBase as tb "
+                    + " WHERE tb.titleCache LIKE :pattern";
+
+            if (includeDoubtful){
+                queryString = queryString + " OR tb.titleCache LIKE :doubtfulPattern";
+            }
+
+
+            query = session.createQuery(queryString);
+
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            pattern = pattern + "%";
+            query.setParameter("pattern", pattern);
+            if (includeDoubtful){
+                String doubtfulPattern = "?" + pattern;
+                query.setParameter("doubtfulPattern", doubtfulPattern);
+            }
+
+        } else {
+            query = session.createQuery(
+                    " SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                    +" tb.uuid, taxonBase.id, tb.titleCache, tb.name.rank "
+                    + ") "
+                  + " FROM :clazz AS tb");
+            query.setParameter("clazz", clazz.getSimpleName());
+        }
+
+
+        if (limit != null){
+           query.setMaxResults(limit);
+        }
+
+        return getUuidAndTitleCache(query);
+    }
+
+
 
     @Override
     protected List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Query query){

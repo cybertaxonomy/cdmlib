@@ -350,7 +350,7 @@ public interface ITaxonDao
     public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNames(List<UUID> sourceRefUuids, List<String> propertyPaths);
 
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
-            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,
+            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, boolean includeAuthors,
             String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order);
 
@@ -466,6 +466,25 @@ public interface ITaxonDao
      */
     long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includePublished);
 
+
+
+    /**
+     * @param limit
+     * @param pattern
+     * @param includeDoubtful
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean includeDoubtful);
+
+    /**
+     * @param clazz
+     * @param limit
+     * @param pattern
+     * @param includeDoubtful
+     * @return
+     */
+    List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Class clazz, Integer limit, String pattern,
+            boolean includeDoubtful);
 
 
 }
