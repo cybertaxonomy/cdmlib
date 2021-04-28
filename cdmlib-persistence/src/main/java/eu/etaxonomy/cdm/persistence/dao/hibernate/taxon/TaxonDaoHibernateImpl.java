@@ -270,8 +270,9 @@ public class TaxonDaoHibernateImpl
         		return resultObjects;
         	}
         }
+        String searchField = includeAuthors ? "titleCache" : "nameCache";
         Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
-                "nameCache", queryString, classification, subtree, matchMode, namedAreas, doCount, order);
+                searchField, queryString, classification, subtree, matchMode, namedAreas, doCount, order);
 
         if (query != null){
             List<Object[]> results = query.list();
