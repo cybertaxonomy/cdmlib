@@ -218,7 +218,9 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
             if(!specimenShortTitle.isEmpty() && derivedUnit instanceof MediaSpecimen) {
                 Media media = ((MediaSpecimen)derivedUnit).getMediaSpecimen();
                 if(media != null && !CdmUtils.isBlank(media.getTitleCache()) ) {
-                    specimenShortTitle += " (" + media.getTitleCache() + ")";
+                    if(media.getTitle() != null && !media.getTitle().getText().isEmpty()) {
+                        specimenShortTitle += " (" + media.getTitle().getText() + ")";
+                    }
                 }
             }
         }

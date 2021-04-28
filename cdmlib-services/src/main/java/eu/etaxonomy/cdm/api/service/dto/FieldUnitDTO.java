@@ -9,10 +9,12 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.joda.time.Partial;
 
@@ -190,43 +192,26 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             for(List<String> labels : unitIdenfierLabelsByCollections.values()) {
                 derivativesAccessionNumbers.addAll(labels);
             }
+            derivativesAccessionNumbers = derivativesAccessionNumbers.stream().filter(s -> s != null).sorted().collect(Collectors.toList());
             if (!derivativesAccessionNumbers.isEmpty()) {
-                summaryLabel += " (";
-                for (String accessionNumber : derivativesAccessionNumbers) {
-                    if (accessionNumber != null && !accessionNumber.isEmpty()) {
-                        summaryLabel += accessionNumber + SEPARATOR_STRING;
-                    }
-                }
-                summaryLabel = removeTail(summaryLabel, SEPARATOR_STRING);
-                summaryLabel += ")";
+                summaryLabel += " (" + String.join(SEPARATOR_STRING, derivativesAccessionNumbers) +  ")";
             }
             treeLabels.summaryLabel = summaryLabel;
         }
 
         if(collectionsStatistics) {
-            String collectionsString = "";
+            List<String> collectionStats = new ArrayList<>();
             for (CollectionDTO collectionDTO : unitIdenfierLabelsByCollections.keySet()) {
                 int unitCount = unitIdenfierLabelsByCollections.get(collectionDTO).size();
                 if (collectionDTO.getCode() != null) {
-                    collectionsString += collectionDTO.getCode();
+                    collectionStats.add(collectionDTO.getCode() + (unitCount > 1 ? "(" + unitCount + ")" : ""));
                 }
-                if (unitCount > 1) {
-                    collectionsString += "(" + unitCount + ")";
-                }
-                collectionsString += SEPARATOR_STRING;
             }
-            collectionsString = removeTail(collectionsString, SEPARATOR_STRING);
-            treeLabels.collectionsStatistics = collectionsString;
+            Collections.sort(collectionStats);
+            treeLabels.collectionsStatistics = String.join(SEPARATOR_STRING, collectionStats);
         }
 
         return treeLabels;
-    }
-
-    private String removeTail(String string, final String tail) {
-        if (string.endsWith(tail)) {
-            string = string.substring(0, string.length() - tail.length());
-        }
-        return string;
     }
 
     public String getCountry() {
