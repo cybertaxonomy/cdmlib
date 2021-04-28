@@ -234,11 +234,11 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 //	@ExpectedDataSet
 	public void testRemoveTypeDesignationsFromName() {
 		IBotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-		name1.setTitleCache("Name1");
+		name1.setTitleCache("Name1", true);
 		name1.setUuid(UUID.fromString("2cfc05fc-138e-452d-b4ea-8798134c7410"));
 
 		IBotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
-		name2.setTitleCache("Name2");
+		name2.setTitleCache("Name2", true);
 		name2.setUuid(UUID.fromString("7a12057d-2e99-471e-ac7e-633f1d0b5686"));
 
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();

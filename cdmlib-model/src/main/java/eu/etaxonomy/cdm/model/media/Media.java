@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.media.IMediaCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -85,7 +85,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media
-        extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
+        extends IdentifiableEntity<IMediaCacheStrategy>
         implements IMultiLanguageTextHolder, IIntextReferenceTarget {
 
     private static final long serialVersionUID = -1927421567263473658L;
@@ -239,6 +239,9 @@ public class Media
 
 //************************ title / title cache *********************************
 
+    /**
+     * Returns the title in the default language.
+     */
     public LanguageString getTitle(){
         return getTitle(Language.DEFAULT());
     }
@@ -297,7 +300,8 @@ public class Media
 
     /**
      * Puts the title into the title field which is a multi-language string
-     * with default language as language
+     * with default language as language.
+     * TODO: this may be adapted in future as it overrides the titleCache setter, not sure why it was implemented like this
      */
     @Override
     public void setTitleCache(String titleCache) {

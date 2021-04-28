@@ -23,9 +23,11 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
-public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Media> {
+public class MediaDefaultCacheStrategy
+        extends StrategyBase
+        implements IMediaCacheStrategy {
+
     private static final long serialVersionUID = 7246846028810250751L;
 
     protected static final  Logger logger = Logger.getLogger(MediaDefaultCacheStrategy.class);
@@ -63,7 +65,8 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 					if (isBlank(result)){
 						continue;
 					}
-					int lastSlashPos = result.lastIndexOf("/");
+					@SuppressWarnings("null")
+                    int lastSlashPos = result.lastIndexOf("/");
 					if (lastSlashPos != -1 && lastSlashPos + 1 < result.length()){
 						result = result.substring(lastSlashPos + 1);
 					}
