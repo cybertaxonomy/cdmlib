@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 
 /**
@@ -44,14 +45,19 @@ public class MediaSpecimenDefaultCacheStrategy
     protected String doGetTitleCache(MediaSpecimen specimen) {
 	    //add code if it exists
         String result = getCollectionAndAccession(specimen);
-		String mediaTitle = specimen.getMediaSpecimen() == null? null : specimen.getMediaSpecimen().getTitleCache();
-		if (isNotBlank(mediaTitle)){
-		    if (isNotBlank(result)){
-		        result += " (" + mediaTitle +")";
-		    }else{
-		        result = mediaTitle;
-		    }
-		}
+        if (specimen.getMediaSpecimen() != null){
+            if (isBlank(result)){
+                result = specimen.getMediaSpecimen().getTitleCache();
+                if (result.startsWith("- empty media - <")){  //empty media we do not want to handle Media level but on MediaSpecimen level
+                    result = null;
+                }
+            }else{
+                LanguageString titleLs = specimen.getMediaSpecimen().getTitle();
+                if (titleLs != null && isNotBlank(titleLs.getText())) {
+                    result += " (" + titleLs.getText() +")";
+                }
+            }
+        }
 
 		return result;
 	}
