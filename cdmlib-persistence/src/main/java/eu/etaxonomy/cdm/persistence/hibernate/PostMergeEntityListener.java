@@ -20,10 +20,11 @@ import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermNode;
+import eu.etaxonomy.cdm.model.term.TermTree;
 
 /**
  * @author cmathew
@@ -100,9 +101,20 @@ public class PostMergeEntityListener implements MergeEventListener {
 
                 }
 
-            }   else if(TermTree.class.isAssignableFrom(entityClazz)){
+            }else if (PolytomousKey.class.isAssignableFrom(entityClazz)){
+                PolytomousKey key = (PolytomousKey) entity;
+                PolytomousKeyNode node = key.getRoot();
+                if (node.getChildren() != null && Hibernate.isInitialized(node.getChildren()) ){
+                    node.removeNullValueFromChildren();
+                    for (PolytomousKeyNode childNode: node.getChildren()){
+                        removeNullFromCollections(childNode);
+                    }
+
+                }
+            }else if(TermTree.class.isAssignableFrom(entityClazz)){
 
                 TermTree<?> tree = (TermTree)entity;
+                tree.removeNullValueFromChildren();
                 for (TermNode<?> node:tree.getRootChildren()){
                     node.removeNullValueFromChildren();
                     if (node.getChildNodes() != null){
@@ -114,7 +126,9 @@ public class PostMergeEntityListener implements MergeEventListener {
                 }
             } else if (TermNode.class.isAssignableFrom(entityClazz)){
                 TermNode node = (TermNode)entity;
-                node.removeNullValueFromChildren();
+                if (Hibernate.isInitialized(node.getChildNodes())){
+                    node.removeNullValueFromChildren();
+                }
             }
 
         }
