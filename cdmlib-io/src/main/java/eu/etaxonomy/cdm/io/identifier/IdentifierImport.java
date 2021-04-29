@@ -166,7 +166,7 @@ public class IdentifierImport
             return null;
         }
 
-        Identifier<?> identifier = null;
+        Identifier identifier = null;
         //TODO clean redundant code
         if (config.isWarnAndDoNotOverrideIfExists()){
             boolean wasAlreadyImported = entityUuidsHandled.contains(uuid);
@@ -228,7 +228,7 @@ public class IdentifierImport
     }
 
     private void addNewIdentifier(DefinedTerm idType, IdentifiableEntity<?> entity, String value,
-            Identifier<?> identifier) {
+            Identifier identifier) {
         if (identifier == null){
             identifier = Identifier.NewInstance(value, idType);
             entity.addIdentifier(identifier);

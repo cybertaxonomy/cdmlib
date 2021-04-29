@@ -30,7 +30,7 @@ public class IdentifiableEntityFormatter extends AbstractCdmFormatter {
         IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity<?>)object;
         List<Identifier> identifiers = identifiableEntity.getIdentifiers();
         String identifierString = null;
-        for (Identifier<?> identifier : identifiers) {
+        for (Identifier identifier : identifiers) {
             if(identifier.getType()!=null && identifier.getType().getUuid().equals(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc"))){
                 identifierString = identifier.getIdentifier();
                 break;

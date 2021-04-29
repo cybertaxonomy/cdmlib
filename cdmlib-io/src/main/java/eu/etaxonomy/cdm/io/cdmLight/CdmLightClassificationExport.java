@@ -1458,7 +1458,7 @@ public class CdmLightClassificationExport
                         tableName = "PersonOrTeam";
                     }
 
-                    for (Identifier<?> identifier: identifiers){
+                    for (Identifier identifier: identifiers){
                         if (identifier.getType() == null && identifier.getIdentifier() == null){
                             state.getResult().addWarning("Please check the identifiers for "
                                     + cdmBaseStr(cdmBase) + " there is an empty identifier");

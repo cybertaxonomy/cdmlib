@@ -42,7 +42,7 @@ public class DnaSampleDefaultCacheStrategyTest extends TermTestBase {
         specimen.setAccessionNumber("123");
         Assert.assertEquals("B 123", strategy.getTitleCache(specimen));
 
-        Identifier<DnaSample> identifier = Identifier.NewInstance(specimen, "id3", DefinedTerm.IDENTIFIER_NAME_IPNI());
+        Identifier identifier = Identifier.NewInstance(specimen, "id3", DefinedTerm.IDENTIFIER_NAME_IPNI());
         Assert.assertEquals("B 123", strategy.getTitleCache(specimen));
         specimen.setCollection(null);
         specimen.setAccessionNumber(null);

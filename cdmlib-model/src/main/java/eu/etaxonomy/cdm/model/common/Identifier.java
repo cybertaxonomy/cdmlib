@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Entity
 @Audited
 @Table(name="Identifier", indexes = { @Index(name = "identifierIndex", columnList = "identifier") })
-public class Identifier<T extends IdentifiableEntity<?>>
+public class Identifier
             extends AnnotatableEntity {
 
     private static final long serialVersionUID = 3337567049024506936L;
@@ -64,13 +64,13 @@ public class Identifier<T extends IdentifiableEntity<?>>
 
 // **************************** FACTORY ******************************/
 
-    public static <T extends IdentifiableEntity<?>> Identifier<T> NewInstance(String identifier, DefinedTerm type){
-    	return new Identifier<T>(identifier, type);
+    public static Identifier NewInstance(String identifier, DefinedTerm type){
+    	return new Identifier(identifier, type);
     }
 
-    public static <T extends IdentifiableEntity<?>> Identifier<T> NewInstance(T identifiableEntity,
+    public static Identifier NewInstance(IdentifiableEntity<?> identifiableEntity,
             String identifier, DefinedTerm type){
-        Identifier<T> result = new Identifier<T>(identifier, type);
+        Identifier result = new Identifier(identifier, type);
         identifiableEntity.addIdentifier(result);
         return result;
     }
@@ -110,8 +110,8 @@ public class Identifier<T extends IdentifiableEntity<?>>
 	//****************** CLONE ************************************************/
 
 	@Override
-	public Identifier<T> clone() throws CloneNotSupportedException{
-		Identifier<T> result = (Identifier<T>)super.clone();
+	public Identifier clone() throws CloneNotSupportedException{
+		Identifier result = (Identifier)super.clone();
 		//no changes to: type, value
 		return result;
 	}

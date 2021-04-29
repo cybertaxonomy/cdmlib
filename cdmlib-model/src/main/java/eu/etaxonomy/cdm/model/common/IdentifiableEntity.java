@@ -436,7 +436,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
         Set<String> result = new HashSet<>();
-        for (Identifier<?> identifier : getIdentifiers()){
+        for (Identifier identifier : getIdentifiers()){
             if ( (identifier.getType()== null && identifierTypeUuid == null)
                 || (identifier.getType().getUuid().equals(identifierTypeUuid))){
                 result.add(identifier.getIdentifier());
@@ -447,7 +447,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     public Set<Identifier> getIdentifiers_(UUID identifierTypeUuid){
         Set<Identifier> result = new HashSet<>();
-        for (Identifier<?> identifier : getIdentifiers()){
+        for (Identifier identifier : getIdentifiers()){
             if ( (identifier.getType()== null && identifierTypeUuid == null)
                 || (identifier.getType().getUuid().equals(identifierTypeUuid))){
                 result.add(identifier);
@@ -458,7 +458,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @Override
     public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
-    	Identifier<?> result = Identifier.NewInstance(identifier, identifierType);
+    	Identifier result = Identifier.NewInstance(identifier, identifierType);
     	addIdentifier(result);
     	return result;
     }
@@ -703,8 +703,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
         //Identifier
         result.identifiers = new ArrayList<>();
-        for (Identifier<?> identifier : getIdentifiers() ){
-        	Identifier<?> newIdentifier = identifier.clone();
+        for (Identifier identifier : getIdentifiers() ){
+        	Identifier newIdentifier = identifier.clone();
             result.addIdentifier(newIdentifier);
         }
 
