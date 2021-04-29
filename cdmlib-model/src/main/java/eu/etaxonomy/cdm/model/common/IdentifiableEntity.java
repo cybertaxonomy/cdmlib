@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
-
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -248,10 +246,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return getTitleCache();
     }
 
-    /**
-     * @param cache
-     * @return
-     */
     @Transient
     protected String getTruncatedCache(String cache) {
         int maxLength = 800;
@@ -261,7 +255,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return cache;
     }
-
 
     @Override
     public boolean isProtectedTitleCache() {
@@ -274,7 +267,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
     /**
-     *
      * @return true, if the current state of the titleCache (without generating it new)
      * is <code>null</code> or the empty string. This is primarily meant for internal use.
      */

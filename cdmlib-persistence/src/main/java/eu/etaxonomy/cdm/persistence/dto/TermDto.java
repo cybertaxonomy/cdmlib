@@ -68,19 +68,19 @@ public class TermDto extends AbstractTermDto{
         setTermType(termType);
     }
 
-    static public TermDto fromTerm(DefinedTermBase term) {
+    static public TermDto fromTerm(DefinedTermBase<?> term) {
         return fromTerm(term, null, false);
     }
 
-    static public TermDto fromTerm(DefinedTermBase term, boolean initializeToTop) {
+    static public TermDto fromTerm(DefinedTermBase<?> term, boolean initializeToTop) {
         return fromTerm(term, null, initializeToTop);
     }
 
-    static public TermDto fromTerm(DefinedTermBase term, Set<Representation> representations) {
+    static public TermDto fromTerm(DefinedTermBase<?> term, Set<Representation> representations) {
         return fromTerm(term, representations, false);
     }
 
-    static public TermDto fromTerm(DefinedTermBase term, Set<Representation> representations, boolean initializeToTop) {
+    static public TermDto fromTerm(DefinedTermBase<?> term, Set<Representation> representations, boolean initializeToTop) {
         DefinedTermBase<?> partOf = term.getPartOf();
         DefinedTermBase<?> kindOf = term.getKindOf();
         TermVocabulary<?> vocabulary = term.getVocabulary();
@@ -92,7 +92,7 @@ public class TermDto extends AbstractTermDto{
                         (partOf!=null?partOf.getUuid():null),
                         (kindOf!=null?kindOf.getUuid():null),
                         (vocabulary!=null?vocabulary.getUuid():null),
-                        (term instanceof OrderedTermBase)?((OrderedTermBase) term).getOrderIndex():null,
+                        (term instanceof OrderedTermBase)?((OrderedTermBase<?>) term).getOrderIndex():null,
                          term.getIdInVocabulary(), term.getTitleCache());
         dto.setUri(term.getUri());
         if(initializeToTop){
@@ -314,7 +314,7 @@ public class TermDto extends AbstractTermDto{
                 // term representation
                 Set<Representation> representations = new HashSet<>();
                 if(elements[1] instanceof Representation) {
-                    representations = new HashSet<Representation>(1);
+                    representations = new HashSet<>(1);
                     representations.add((Representation)elements[1]);
                 }
                 // term media
@@ -325,7 +325,7 @@ public class TermDto extends AbstractTermDto{
                 // voc representation
                 Set<Representation> vocRepresentations = new HashSet<>();
                 if(elements[7] instanceof Representation) {
-                    vocRepresentations = new HashSet<Representation>(7);
+                    vocRepresentations = new HashSet<>(7);
                     vocRepresentations.add((Representation)elements[7]);
                 }
                 TermDto termDto = new TermDto(

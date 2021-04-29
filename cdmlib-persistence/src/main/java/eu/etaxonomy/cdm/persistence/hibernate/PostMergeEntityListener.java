@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 /**
  * @author cmathew
  * @since 23 Sep 2015
- *
  */
 public class PostMergeEntityListener implements MergeEventListener {
     private static final long serialVersionUID = 1565797119368313987L;
@@ -52,7 +51,6 @@ public class PostMergeEntityListener implements MergeEventListener {
     @Override
     public void onMerge(MergeEvent event) throws HibernateException {
         Object entity = event.getEntity();
-
     }
 
     @Override
@@ -73,17 +71,8 @@ public class PostMergeEntityListener implements MergeEventListener {
                 }
             }
         }
-
-
-
-
     }
 
-
-
-    /**
-     * @param entity
-     */
     private static void removeNullFromCollections(Object entity) {
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
@@ -98,9 +87,7 @@ public class PostMergeEntityListener implements MergeEventListener {
                     for (PolytomousKeyNode childNode: node.getChildren()){
                         removeNullFromCollections(childNode);
                     }
-
                 }
-
             }else if (PolytomousKey.class.isAssignableFrom(entityClazz)){
                 PolytomousKey key = (PolytomousKey) entity;
                 PolytomousKeyNode node = key.getRoot();
@@ -109,30 +96,25 @@ public class PostMergeEntityListener implements MergeEventListener {
                     for (PolytomousKeyNode childNode: node.getChildren()){
                         removeNullFromCollections(childNode);
                     }
-
                 }
             }else if(TermTree.class.isAssignableFrom(entityClazz)){
 
-                TermTree<?> tree = (TermTree)entity;
+                TermTree<?> tree = (TermTree<?>)entity;
                 tree.removeNullValueFromChildren();
                 for (TermNode<?> node:tree.getRootChildren()){
                     node.removeNullValueFromChildren();
                     if (node.getChildNodes() != null){
-                        for (TermNode childNode: node.getChildNodes()){
+                        for (TermNode<?> childNode: node.getChildNodes()){
                             removeNullFromCollections(childNode);
                         }
                     }
-
                 }
             } else if (TermNode.class.isAssignableFrom(entityClazz)){
-                TermNode node = (TermNode)entity;
+                TermNode<?> node = (TermNode<?>)entity;
                 if (Hibernate.isInitialized(node.getChildNodes())){
                     node.removeNullValueFromChildren();
                 }
             }
-
         }
-
     }
-
 }

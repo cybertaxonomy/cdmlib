@@ -227,7 +227,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         if(CdmUtils.isBlank(specimenShortTitle)){
             specimenShortTitle = derivedUnit.getTitleCache();
         }
-        if(CdmUtils.isBlank(specimenShortTitle)){
+        if(CdmUtils.isBlank(specimenShortTitle)){  //should not be necessary as titleCache should never be empty
             specimenShortTitle = derivedUnit.getUuid().toString();
         }
         return specimenShortTitle;
