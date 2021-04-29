@@ -468,23 +468,23 @@ public interface ITaxonDao
 
 
 
-    /**
-     * @param limit
-     * @param pattern
-     * @param includeDoubtful
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean includeDoubtful);
-
-    /**
-     * @param clazz
-     * @param limit
-     * @param pattern
-     * @param includeDoubtful
-     * @return
-     */
-    List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Class clazz, Integer limit, String pattern,
-            boolean includeDoubtful);
+//    /**
+//     * @param limit
+//     * @param pattern
+//     * @param includeDoubtful
+//     * @return
+//     */
+//    List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern, boolean includeDoubtful);
+//
+//    /**
+//     * @param clazz
+//     * @param limit
+//     * @param pattern
+//     * @param includeDoubtful
+//     * @return
+//     */
+//    List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Class clazz, Integer limit, String pattern,
+//            boolean includeDoubtful);
 
 
 }
