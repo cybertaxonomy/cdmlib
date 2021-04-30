@@ -122,7 +122,7 @@ public class DnaSample extends DerivedUnit {
 
     @Override
     protected void initDefaultCacheStrategy() {
-        if (SpecimenOrObservationType.DnaSample.equals(this.getRecordBasis())){
+        if (this.getRecordBasis() == null || SpecimenOrObservationType.DnaSample.equals(this.getRecordBasis())){
             this.cacheStrategy = new DnaSampleDefaultCacheStrategy();
         }else{
             super.initDefaultCacheStrategy();
