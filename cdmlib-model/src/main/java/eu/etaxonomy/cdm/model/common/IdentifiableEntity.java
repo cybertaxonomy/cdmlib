@@ -436,6 +436,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return result;
     }
+    /**
+     * Returns the first identifier value of the given type.
+     * <code>null</code> if no such identifier exists.
+     * @param identifierTypeUuid
+     */
+    public String getIdentifier(UUID identifierTypeUuid){
+        Set<Identifier> set = getIdentifiers_(identifierTypeUuid);
+        return set.isEmpty()? null : set.iterator().next().getIdentifier();
+    }
+
 
     public Set<Identifier> getIdentifiers_(UUID identifierTypeUuid){
         Set<Identifier> result = new HashSet<>();
