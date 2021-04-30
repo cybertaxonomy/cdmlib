@@ -63,11 +63,6 @@ public class TypeDesignationSetFormatter {
     boolean withStartingTypeLabel;
     boolean withNameIfAvailable;
 
-    /**
-     * @param withCitation
-     * @param withStartingTypeLabel
-     * @param withNameIfAvailable
-     */
     public TypeDesignationSetFormatter(boolean withCitation, boolean withStartingTypeLabel,
             boolean withNameIfAvailable) {
         this.withCitation = withCitation;

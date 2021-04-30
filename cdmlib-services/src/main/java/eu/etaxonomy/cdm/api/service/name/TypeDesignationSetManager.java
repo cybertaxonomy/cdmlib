@@ -172,9 +172,10 @@ public class TypeDesignationSetManager {
             boolean withCitation = true;
             TypeDesignationSetFormatter.buildTaggedTextForSingleType(td, withCitation, workingsetBuilder, 0);
 
-            TypeDesignationDTO typeDesignationDTO
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            TypeDesignationDTO<?> typeDesignationDTO
                 = new TypeDesignationDTO(
-                    HibernateProxyHelper.deproxy((TypeDesignationBase)td).getClass(),
+                    HibernateProxyHelper.deproxy((TypeDesignationBase<?>)td).getClass(),
                     td.getUuid(),
                     workingsetBuilder.getTaggedText());
 
