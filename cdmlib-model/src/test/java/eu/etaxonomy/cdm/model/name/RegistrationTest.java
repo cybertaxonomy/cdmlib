@@ -68,7 +68,6 @@ public class RegistrationTest {
         Assert.assertTrue(name1.getRegistrations().size() == 2);
         Assert.assertTrue(name1.getRegistrations().contains(registration));
         Assert.assertTrue(name1.getRegistrations().contains(registration2));
-
     }
 
     /**
@@ -85,10 +84,9 @@ public class RegistrationTest {
         registration.updateStatusAndDate(RegistrationStatus.PUBLISHED);
         assertNotNull(registration.getRegistrationDate());
         assertTrue(registration.getRegistrationDate().isAfter(registration.getRegistrationDate()) || registration.getRegistrationDate().isEqual(before) );
-        assertTrue(registration.getRegistrationDate().isBeforeNow() || registration.getRegistrationDate().isEqual(before));
+        assertTrue("date is not before or equal now", registration.getRegistrationDate().isBeforeNow() || registration.getRegistrationDate().isEqual(before));
 
         registration.updateStatusAndDate(RegistrationStatus.CURATION);
         assertNull(registration.getRegistrationDate());
     }
-
 }
