@@ -443,6 +443,53 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         return this.determinations;
     }
 
+    /**
+     * This method returns the preferred determination.
+     * @see #getOtherDeterminations()
+     * @see #getDeterminations()
+     */
+    @Transient
+    public DeterminationEvent getPreferredDetermination() {
+        for (DeterminationEvent event : getDeterminations()){
+            if (event.getPreferredFlag() == true){
+                return event;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method returns the preferred determination.
+     * @see #getOtherDeterminations()
+     * @see #getDeterminations()
+     */
+    @Transient
+    public void setPreferredDetermination(DeterminationEvent newEvent) {
+        for (DeterminationEvent event : getDeterminations()){
+            if (event.getPreferredFlag() == true){
+                event.setPreferredFlag(false);
+            }
+        }
+        newEvent.setPreferredFlag(true);
+        getDeterminations().add(newEvent);
+    }
+
+    /**
+     * This method returns all determinations except for the preferred one.
+     * @see #getPreferredDetermination()
+     * @see #getDeterminations()
+     */
+    @Transient
+    public Set<DeterminationEvent> getOtherDeterminations(){
+        Set<DeterminationEvent> result = new HashSet<>();
+        for (DeterminationEvent event : getDeterminations()){
+            if (event.getPreferredFlag() == false){
+                result.add(event);
+            }
+        }
+        return result;
+    }
+
     public void addDetermination(DeterminationEvent determination) {
         // FIXME bidirectional integrity. Use protected Determination setter
         this.determinations.add(determination);
