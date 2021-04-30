@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -147,9 +149,11 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             mtd_HT_published.setId(5);
             MediaSpecimen mediaSpecimen_published = (MediaSpecimen)DerivedUnit.NewInstance(SpecimenOrObservationType.Media);
             Media media = Media.NewInstance();
-            Reference ref = ReferenceFactory.newGeneric();
-            ref.setTitleCache("A.K. & W.K (2008) Algae of the BGBM", true);
-            media.addSource(IdentifiableSource.NewPrimaryMediaSourceInstance(ref, "p.33"));
+            Reference ref = ReferenceFactory.newBook();
+            ref.setTitle("Algae of the BGBM");
+            ref.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(2008));
+            ref.setAuthorship(Team.NewInstance(Person.NewInstance(null, "Kohlbecker", "A.", null), Person.NewInstance(null, "Kusber", "W.-H.", null)));
+            media.addSource(IdentifiableSource.NewPrimaryMediaSourceInstance(ref, "33"));
             mediaSpecimen_published.setMediaSpecimen(media);
             createDerivationEvent(fu_1, mediaSpecimen_published);
             mtd_HT_published.setTypeSpecimen(mediaSpecimen_published);
@@ -305,10 +309,24 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                 typeDesignationManager.addTypeDesigations(mtd_HT_published);
                 typeDesignationManager.addTypeDesigations(mtd_IT_unpublished);
 
-                assertEquals("failed after repreating " + i + " times",
-                        "Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] p.33 in A.K. & W.K (2008) Algae of the BGBM; isotype: [icon] B Slide A565656)"
+                assertEquals("failed after repeating " + i + " times",
+                        "Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
                         , typeDesignationManager.print(true, true, true)
                         );
+
+                Media media = ((MediaSpecimen)mtd_HT_published.getTypeSpecimen()).getMediaSpecimen();
+                Reference ref2 = ReferenceFactory.newBook();
+                ref2.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(2009));
+                ref2.setAuthorship(Person.NewInstance(null, "Mueller", "A.", null));
+                IdentifiableSource newSource = IdentifiableSource.NewPrimaryMediaSourceInstance(ref2, "tab. 4");
+                media.addSource(newSource);
+                String with2Sources = typeDesignationManager.print(true, true, true);
+                Assert.assertTrue("failed after repeating " + i + " times",
+                        //the order of the sources is currently not yet defined (rare case), therefore 2 possibilities
+                        with2Sources.equals("Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
+                        || with2Sources.equals("Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
+                        ;
+
             }
         }
 }

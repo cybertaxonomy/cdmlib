@@ -305,40 +305,44 @@ public class TypeDesignationSetFormatter {
     private static void buildTaggedTextForSpecimenTypeDesignation(SpecimenTypeDesignation td, boolean useTitleCache,
             TaggedTextBuilder workingsetBuilder, TypedEntityReference<?> typeDesignationEntity) {
 
-        String  result = "";
+
         if(useTitleCache){
+            String typeDesigTitle = "";
             if(td.getTypeSpecimen() != null){
                 String nameTitleCache = td.getTypeSpecimen().getTitleCache();
                 //TODO is this needed?
 //                if(getTypifiedNameCache() != null){
 //                    nameTitleCache = nameTitleCache.replace(getTypifiedNameCache(), "");
 //                }
-                result += nameTitleCache;
+                typeDesigTitle += nameTitleCache;
             }
-            workingsetBuilder.add(TagEnum.typeDesignation, result, typeDesignationEntity);
+            workingsetBuilder.add(TagEnum.typeDesignation, typeDesigTitle, typeDesignationEntity);
         } else {
-            if(td.getTypeSpecimen() != null){
+            if (td.getTypeSpecimen() == null){
+                workingsetBuilder.add(TagEnum.typeDesignation, "", typeDesignationEntity);
+            }else{
                 DerivedUnit du = td.getTypeSpecimen();
                 if(du.isProtectedTitleCache()){
-                    result += du.getTitleCache();
+                    workingsetBuilder.add(TagEnum.typeDesignation, du.getTitleCache(), typeDesignationEntity);
                 } else {
                     du = HibernateProxyHelper.deproxy(du);
                     boolean isMediaSpecimen = du instanceof MediaSpecimen;
-                    String typeSpecimenTitle = "";
-                    if(isMediaSpecimen && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null) {
-                        // special case of an published image which is not covered by the DerivedUnitFacadeCacheStrategy
+                    String typeSpecimenTitle = (isMediaSpecimen ? "[icon] " : "");
+                    if(isMediaSpecimen
+                                && HibernateProxyHelper.deproxyOrNull(du.getCollection()) == null  //TODO not sure if only checking the collection is enough, but as we also check existence of sources now the case that only an accession number exists is also covered here
+                                && ((MediaSpecimen)du).getMediaSpecimen() != null
+                                && !((MediaSpecimen)du).getMediaSpecimen().getSources().isEmpty()
+                            ){
+                        // special case of a published image which is not covered by the DerivedUnitFacadeCacheStrategy
+                        workingsetBuilder.add(TagEnum.typeDesignation, "[icon] in", typeDesignationEntity); //TODO how to better use tagged text here, the type designation itself has no real text; we could include the sources but that makes them unusable as sources :-(
                         MediaSpecimen msp = (MediaSpecimen)du;
-                        if(msp.getMediaSpecimen() != null){
-                            for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
-                                String referenceStr = source.getCitation() == null? "": source.getCitation().getTitleCache();
-                                String refDetailStr = source.getCitationMicroReference();
-                                if(isNotBlank(refDetailStr)){
-                                    typeSpecimenTitle += refDetailStr;
+                        int count = 0;
+                        for(IdentifiableSource source : msp.getMediaSpecimen().getSources()){
+                            if (source.getType().isPrimarySource()){
+                                if (count++ > 0){
+                                    workingsetBuilder.add(TagEnum.separator, SOURCE_SEPARATOR);
                                 }
-                                if(!typeSpecimenTitle.isEmpty() && !referenceStr.isEmpty()){
-                                    typeSpecimenTitle += " in ";
-                                }
-                                typeSpecimenTitle += referenceStr + " ";
+                                addSource(workingsetBuilder, source);
                             }
                         }
                     } else {
@@ -347,13 +351,11 @@ public class TypeDesignationSetFormatter {
                         // removing parentheses from code + accession number, see https://dev.e-taxonomy.eu/redmine/issues/8365
                         titleCache = titleCache.replaceAll("[\\(\\)]", "");
                         typeSpecimenTitle += titleCache;
+                        workingsetBuilder.add(TagEnum.typeDesignation, typeSpecimenTitle, typeDesignationEntity);
                     }
-
-                    result += (isMediaSpecimen ? "[icon] " : "") + typeSpecimenTitle.trim();
-                }
-            }
-            workingsetBuilder.add(TagEnum.typeDesignation, result, typeDesignationEntity);
-        }
+                } //protected titleCache
+            }//fi specimen == null
+        }//fi useTitelCache
 
         if(td.isNotDesignated()){
             //this should not happen together with a defined specimen, therefore we may handle it in a separate tag
