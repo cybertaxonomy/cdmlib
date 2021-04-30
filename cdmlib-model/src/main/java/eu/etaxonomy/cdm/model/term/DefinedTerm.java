@@ -55,6 +55,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> implements Compara
 
 
 	//Identifier Type
+	public static final UUID uuidSampleDesignation = UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc");
 	public static final UUID uuidLsid = UUID.fromString("26729412-9df6-4cc3-9e5d-501531ca21f0");
 	public static final UUID uuidAlternativeFieldNumber = UUID.fromString("054fd3d1-1961-42f8-b024-b91184ac9e0c");
     public static final UUID uuidTropicosNameIdentifier = UUID.fromString("6205e531-75b0-4f2a-9a9c-b1247fb080ab");

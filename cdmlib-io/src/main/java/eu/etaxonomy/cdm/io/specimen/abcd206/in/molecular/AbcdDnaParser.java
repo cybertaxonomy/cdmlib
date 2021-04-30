@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in.molecular;
 
 import java.util.Date;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -138,7 +137,7 @@ public class AbcdDnaParser {
     private void parseSampleDesignations(Element item, DnaSample dnaSample) {
         NodeList sampleDesignationList = item.getElementsByTagName(prefix+"sampleDesignation");
         for(int i=0;i<sampleDesignationList.getLength();i++){
-            dnaSample.addIdentifier(sampleDesignationList.item(i).getTextContent(), (DefinedTerm)cdmAppController.getTermService().find(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc")));
+            dnaSample.addIdentifier(sampleDesignationList.item(i).getTextContent(), (DefinedTerm)cdmAppController.getTermService().find(DefinedTerm.uuidSampleDesignation));
         }
 
     }
