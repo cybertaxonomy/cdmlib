@@ -130,10 +130,6 @@ public class AbcdDnaParser {
         }
     }
 
-    /**
-     * @param item
-     * @param dnaSample
-     */
     private void parseSampleDesignations(Element item, DnaSample dnaSample) {
         NodeList sampleDesignationList = item.getElementsByTagName(prefix+"sampleDesignation");
         for(int i=0;i<sampleDesignationList.getLength();i++){
