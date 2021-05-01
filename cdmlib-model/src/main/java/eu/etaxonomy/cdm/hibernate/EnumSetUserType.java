@@ -83,10 +83,10 @@ public class EnumSetUserType<E extends Enum<E>>
 			throws HibernateException, SQLException {
         String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 
+        EnumSet<E> result = EnumSet.noneOf(clazz);
 		if(val == null) {
-			return null;
+			return result;
 		} else {
-		    EnumSet<E> result = EnumSet.noneOf(clazz);
 			String[] splits = val.split(SEP);
 			for (String split:splits){
 			    if (StringUtils.isNotEmpty(split)) {

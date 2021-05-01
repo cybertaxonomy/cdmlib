@@ -41,6 +41,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.AvailableForTermBase;
 import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -108,20 +109,13 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class Feature extends DefinedTermBase<Feature> {
+public class Feature extends AvailableForTermBase<Feature> {
 
 	private static final long serialVersionUID = 6754598791831848704L;
 	@SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(Feature.class);
 
 	protected static Map<UUID, Feature> termMap = null;
-
-    @XmlAttribute(name ="availableFor")
-    @NotNull
-    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
-        parameters = {@Parameter(name = "enumClass", value = "eu.etaxonomy.cdm.model.common.CdmClass")}
-    )
-    private EnumSet<CdmClass> availableFor = EnumSet.noneOf(CdmClass.class);
 
     @XmlAttribute(name ="supportedDataTypes")
     @NotNull
@@ -159,6 +153,7 @@ public class Feature extends DefinedTermBase<Feature> {
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 //    @IndexedEmbedded(depth = 2)
     private Set<Representation> inverseRepresentations = new HashSet<>();
+
 
     private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
     public static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
@@ -264,7 +259,7 @@ public class Feature extends DefinedTermBase<Feature> {
      */
     @XmlElement(name = "AvailableForTaxon")
     public boolean isAvailableForTaxon() {
-        return availableFor.contains(CdmClass.TAXON);
+        return getAvailableFor().contains(CdmClass.TAXON);
     }
     /**
      * @see #isAvailableForTaxon()
@@ -278,7 +273,7 @@ public class Feature extends DefinedTermBase<Feature> {
      */
     @XmlElement(name = "AvailableForTaxonName")
     public boolean isAvailableForTaxonName() {
-        return availableFor.contains(CdmClass.TAXON_NAME);
+        return getAvailableFor().contains(CdmClass.TAXON_NAME);
     }
     /**
      * @see #isAvailableForTaxon()
@@ -292,7 +287,7 @@ public class Feature extends DefinedTermBase<Feature> {
      */
     @XmlElement(name = "AvailableForOccurrence")
     public boolean isAvailableForOccurrence() {
-        return availableFor.contains(CdmClass.OCCURRENCE);
+        return getAvailableFor().contains(CdmClass.OCCURRENCE);
     }
     /**
      * @see #isAvailableForOccurrence()
@@ -474,45 +469,6 @@ public class Feature extends DefinedTermBase<Feature> {
         this.supportedDataTypes = dataTypes;
     }
 
-    /**
-     * EnumSets being part of the model should be immutable to make hibernate know if they have been changed.
-     * Therefore any change to the enum set should result in a new enum set.
-     */
-    private EnumSet<CdmClass> newEnumSet(@NotNull EnumSet<CdmClass> enumSet, CdmClass additionalClass, CdmClass classToRemove) {
-        EnumSet<CdmClass> result = EnumSet.copyOf(enumSet);
-        if (additionalClass != null){
-            result.add(additionalClass);
-        }
-        if (classToRemove != null){
-            result.remove(classToRemove);
-        }
-        return result;
-    }
-
-    /**
-     * Sets the value for supported classes
-     * @param cdmClass the supported class
-     * @param value the value if it is supported (<code>true</code>) or not (<code>false</code>)
-     */
-    private void setAvailableFor(CdmClass cdmClass, boolean value) {
-        if (value && !this.availableFor.contains(cdmClass)){
-            setAvailableFor(newEnumSet(this.availableFor, cdmClass, null));
-        }else if (!value && this.availableFor.contains(cdmClass)){
-            setAvailableFor(newEnumSet(this.availableFor, null, cdmClass));
-        }else{
-            return;
-        }
-    }
-
-    /**
-     * for know it is private and the boolean getters and setters should be used instead.
-     * If you make it public make sure to guarantee that any change to the enum set results
-     * in a new enum set (see also {@link #newEnumSet(EnumSet, CdmClass, CdmClass)}
-     * and that the client is aware of the enum set being immutable.
-     */
-    private void setAvailableFor(EnumSet<CdmClass> availableFor){
-        this.availableFor = availableFor;
-    }
 
     /**
 	 * Returns the set of {@link TermVocabulary term vocabularies} containing the

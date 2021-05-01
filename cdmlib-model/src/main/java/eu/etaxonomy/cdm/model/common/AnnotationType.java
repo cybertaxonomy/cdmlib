@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -39,7 +38,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class AnnotationType extends DefinedTermBase<AnnotationType> {
+public class AnnotationType extends AvailableForIdentifiableBase<AnnotationType> {
 
 	private static final long serialVersionUID = 49629121282854575L;
 	@SuppressWarnings("unused")
