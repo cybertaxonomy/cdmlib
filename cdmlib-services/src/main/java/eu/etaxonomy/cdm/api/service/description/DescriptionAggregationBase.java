@@ -104,6 +104,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
             Long countTaxonNodes = getTaxonNodeService().count(filter);
             int aggregationWorkTicks = countTaxonNodes.intValue();
+            logger.info(aggregationWorkTicks + " taxa to aggregate");
             int getIdListTicks = 1;
             int preAccumulateTicks = 1;
             beginTask("Accumulating " + pluralDataType(), (aggregationWorkTicks) + getIdListTicks + preAccumulateTicks);
