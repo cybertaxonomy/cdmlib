@@ -63,7 +63,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     public static final Logger logger = Logger.getLogger(DescriptionAggregationBase.class);
 
-    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;
+    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;  //800 MB
     /**
      * ratio of the initially free heap which should not be used
      * during the batch processing. This amount of the heap is reserved
@@ -86,7 +86,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         return doInvoke();
     }
 
-    protected UpdateResult doInvoke() throws JvmLimitsException {
+    protected UpdateResult doInvoke() {
 
         try {
             //TODO FIXME use UpdateResult
@@ -117,6 +117,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 preAggregate();
             } catch (Exception e) {
                 result.addException(new RuntimeException("Unhandled error during pre-aggregation", e));
+                result.setError();
                 done();
                 return result;
             }
@@ -131,6 +132,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 aggregate(taxonNodeIdList, subMonitor);
             } catch (Exception e) {
                 result.addException(new RuntimeException("Unhandled error during aggregation", e));
+                result.setError();
                 done();
                 return result;
             }
@@ -340,7 +342,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             }
             if(!contained) {
                 try {
-                    target.add((DescriptionElementSource)source.clone());
+                    target.add(source.clone());
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     throw new RuntimeException(e);

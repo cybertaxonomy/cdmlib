@@ -118,7 +118,6 @@ public class DistributionAggregation
         makeSuperAreas();
         double end2 = System.currentTimeMillis();
         logger.info("Time elapsed for making super areas : " + (end2 - end1) / (1000) + "s");
-
     }
 
     @Override

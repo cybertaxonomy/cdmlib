@@ -37,7 +37,7 @@ public class DynamicBatch {
     private int itemWhereLimitsTouched = 0;
 
 
-    List<Integer> unprocessedIds = new ArrayList<Integer>(batchSize);
+    List<Integer> unprocessedIds = new ArrayList<>(batchSize);
 
     private final JvmMonitor jvmMonitor = new JvmMonitor();
 
@@ -114,7 +114,7 @@ public class DynamicBatch {
     public List<Integer> nextItems(Iterator<Integer> itemIterator){
 
         logger.debug("new batch of items with size of " + batchSize);
-        items = new ArrayList<Integer>(batchSize);
+        items = new ArrayList<>(batchSize);
         if(unprocessedIds.size() > 0) {
             List<Integer> remainingUnprocessed = null;
             Iterator<Integer> unprocessedIt = unprocessedIds.iterator();
@@ -168,7 +168,6 @@ public class DynamicBatch {
     }
 
     protected void manageUnprocessedItems() {
-
         if(itemWhereLimitsTouched > 0) {
             int batchItemsUnprocessed = items.size() - itemWhereLimitsTouched;
             logger.info("batchSize reduced to " + itemWhereLimitsTouched);
@@ -190,7 +189,6 @@ public class DynamicBatch {
             reduceSize();
             return false;
         }
-
         return true;
     }
 
