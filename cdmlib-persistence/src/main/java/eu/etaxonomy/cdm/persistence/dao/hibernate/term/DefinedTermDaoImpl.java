@@ -687,7 +687,7 @@ public class DefinedTermDaoImpl
 
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
-        List<NamedArea> results = crit.list();
+        List<NamedArea> results = deduplicateResult(crit.list());
         return results;
     }
 
