@@ -393,6 +393,9 @@ public class DistributionAggregation
 
             LinkedList<Taxon> childStack = new LinkedList<>();
             for (TaxonNode node : taxonNode.getChildNodes()){
+                if (node == null){
+                    continue;  //just in case if sortindex is broken
+                }
                 Taxon child = CdmBase.deproxy(node.getTaxon());
                 //TODO maybe we should also use child catching from taxon node filter
                 //     we could e.g. clone the filter and set the parent as subtree filter
