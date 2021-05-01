@@ -198,13 +198,6 @@ public interface IDefinedTermDao
 	 */
 	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 
-    /**
-     * @param clazz
-     * @param vocs
-     * @param limit
-     * @param pattern
-     * @return
-     */
     public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer limit,
             String pattern);
 

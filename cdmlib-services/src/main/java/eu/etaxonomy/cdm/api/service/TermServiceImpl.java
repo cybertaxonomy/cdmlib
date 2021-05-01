@@ -464,10 +464,10 @@ public class TermServiceImpl
     public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
         List<NamedArea> areas = dao.listNamedArea(vocs, limit, pattern);
 
-        List<UuidAndTitleCache<NamedArea>> result = new ArrayList();
+        List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
         for (NamedArea area: areas){
-            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
+            uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), NamedArea.labelWithLevel(area, lang));
             result.add(uuidAndTitleCache);
         }
 
