@@ -666,12 +666,18 @@ public class DefinedTermDaoImpl
         }
         Criteria crit = getSession().createCriteria(clazz, "term");
         if (!StringUtils.isBlank(pattern)){
+            crit.createAlias("term.representations", "reps");
+            Disjunction or = Restrictions.disjunction();
             if (matchmode == MatchMode.EXACT) {
-                crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.eq("reps.label", matchmode.queryStringFrom(pattern)));
             } else {
-                crit.add(Restrictions.like("titleCache", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.like("titleCache", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.like("reps.label", matchmode.queryStringFrom(pattern)));
             }
+            crit.add(or);
         }
+
         if (limit != null && limit >= 0) {
             crit.setMaxResults(limit);
         }
