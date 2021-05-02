@@ -273,20 +273,12 @@ public interface IDefinedTermDao
      */
     public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
 
-    /**
-     * @param uuidList
-     * @return
-     */
     public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
 
-
-    /**
-     * @param uuidList
-     * @return
-     */
     public Collection<TermDto> findByTypeAsDto(TermType termType);
 
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);
+
     public Collection<TermDto> findFeatureByTitleAsDto(String pattern);
 
 }

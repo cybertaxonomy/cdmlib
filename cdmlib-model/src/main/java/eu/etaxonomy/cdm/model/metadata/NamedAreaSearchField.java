@@ -18,9 +18,8 @@ public enum NamedAreaSearchField implements IKeyLabel{
     Symbol2("symbol2", "Second symbol"),
     NoAbbrev("titleCache", "Title cache");
 
-
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private NamedAreaSearchField(String key, String label){
         this.label = label;

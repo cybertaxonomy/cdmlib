@@ -479,7 +479,7 @@ public class TermServiceImpl
     public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang, NamedAreaSearchField type) {
         List<NamedArea> areas = dao.listNamedAreaByAbbrev(vocs, limit, pattern, type);
 
-        List<UuidAndTitleCache<NamedArea>> result = new ArrayList();
+        List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
         for (NamedArea area: areas){
             if (type.equals(NamedAreaSearchField.NoAbbrev)){
