@@ -462,7 +462,7 @@ public class TermServiceImpl
     @Override
     @Transactional(readOnly = true)
     public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang) {
-        List<NamedArea> areas = dao.listNamedArea(vocs, limit, pattern);
+        List<NamedArea> areas = dao.list(NamedArea.class, vocs, limit, pattern);
 
         List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
@@ -477,7 +477,7 @@ public class TermServiceImpl
     @Override
     @Transactional(readOnly = true)
     public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang, NamedAreaSearchField type) {
-        List<NamedArea> areas = dao.listNamedAreaByAbbrev(vocs, limit, pattern, type);
+        List<NamedArea> areas = dao.listByAbbrev(NamedArea.class, vocs, limit, pattern, type);
 
         List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;

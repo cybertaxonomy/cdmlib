@@ -633,7 +633,12 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern) {
+        return list(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING);
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
         Session session = getSession();
 //        Query query = null;
 //        if (pattern != null){
@@ -656,12 +661,14 @@ public class DefinedTermDaoImpl
 //           query.setMaxResults(limit);
 //        }
 
-        Criteria crit = getSession().createCriteria(type, "namedArea");
+        if (clazz == null){
+            clazz = (Class)type;
+        }
+        Criteria crit = getSession().createCriteria(clazz, "term");
         if (!StringUtils.isBlank(pattern)){
             if (matchmode == MatchMode.EXACT) {
                 crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(pattern)));
             } else {
-    //          crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
                 crit.add(Restrictions.like("titleCache", matchmode.queryStringFrom(pattern)));
             }
         }
@@ -670,7 +677,7 @@ public class DefinedTermDaoImpl
         }
 
         if (vocs != null &&!vocs.isEmpty()){
-            crit.createAlias("namedArea.vocabulary", "voc");
+            crit.createAlias("term.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
             for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());
@@ -687,20 +694,26 @@ public class DefinedTermDaoImpl
 
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
-        List<NamedArea> results = deduplicateResult(crit.list());
+        List<S> results = deduplicateResult(crit.list());
         return results;
     }
 
+    @Override
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type) {
+        return listByAbbrev(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
+    }
 
     @Override
-    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField abbrevType){
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField abbrevType){
 
-        Criteria crit = getSession().createCriteria(type, "namedArea");
+        if (clazz == null){
+            clazz = (Class)type;
+        }
+        Criteria crit = getSession().createCriteria(clazz, "type");
         if (!StringUtils.isBlank(pattern)){
             if (matchmode == MatchMode.EXACT) {
                 crit.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
             } else {
-    //          crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
                 crit.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
             }
         }
@@ -709,7 +722,7 @@ public class DefinedTermDaoImpl
         }
 
         if (vocs != null &&!vocs.isEmpty()){
-            crit.createAlias("namedArea.vocabulary", "voc");
+            crit.createAlias("type.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
             for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());
@@ -726,10 +739,11 @@ public class DefinedTermDaoImpl
 
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
-        List<NamedArea> results = crit.list();
+        List<S> results = deduplicateResult(crit.list());
         return results;
     }
 
+    //FIXME AM: this returns only NamedArea counts though not mentioned in method name, fortunately it is currently not in use
     @Override
     public long count(List<TermVocabulary> vocs, String pattern){
         Session session = getSession();
@@ -857,18 +871,6 @@ public class DefinedTermDaoImpl
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
-    }
-
-    @Override
-    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern) {
-
-        return listNamedArea(vocs, 0, limit, pattern, MatchMode.BEGINNING);
-    }
-
-    @Override
-    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type) {
-
-        return listNamedAreaByAbbrev(vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
     }
 
     @Override
