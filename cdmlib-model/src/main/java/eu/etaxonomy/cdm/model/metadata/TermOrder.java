@@ -19,9 +19,8 @@ public enum TermOrder implements IKeyLabel{
     Label("Label", "Label"),
     Natural("Natural", "Natural");
 
-
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private TermOrder(String key, String label){
         this.label = label;

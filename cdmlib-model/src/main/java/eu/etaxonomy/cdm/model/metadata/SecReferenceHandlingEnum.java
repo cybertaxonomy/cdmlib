@@ -21,14 +21,13 @@ public enum SecReferenceHandlingEnum implements IKeyLabel {
     UseNewParentSec("UseNewParentSec", "Always use new parent sec");
 //    UseOldParentSec("UseOldParentSec", "Always use old parent sec");
 
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private SecReferenceHandlingEnum(String key, String label){
         this.label = label;
         this.key = key;
     }
-
 
     @Override
     public String getLabel() {
@@ -39,5 +38,4 @@ public enum SecReferenceHandlingEnum implements IKeyLabel {
     public String getKey() {
         return key;
     }
-
 }

@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.metadata;
  * @since 12.09.2019
  */
 public enum NamedAreaSearchField implements IKeyLabel{
+
     IDInVocabulary("idInVocabulary", "ID in vocabulary"),
     Symbol1("symbol1", "First symbol"),
     Symbol2("symbol2", "Second symbol"),
@@ -25,7 +26,6 @@ public enum NamedAreaSearchField implements IKeyLabel{
         this.label = label;
         this.key = key;
     }
-
 
     @Override
     public String getLabel() {
@@ -45,5 +45,4 @@ public enum NamedAreaSearchField implements IKeyLabel{
         }
         throw new IllegalArgumentException();
     }
-
 }

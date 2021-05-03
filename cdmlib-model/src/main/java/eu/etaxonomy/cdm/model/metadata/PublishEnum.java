@@ -19,9 +19,8 @@ public enum PublishEnum implements IKeyLabel{
     NotPublish("NotPublish", "Don't publish"),
     InheritFromParent("InheritFromParent", "Inherit from parent");
 
-
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private PublishEnum(String key, String label){
         this.label = label;
