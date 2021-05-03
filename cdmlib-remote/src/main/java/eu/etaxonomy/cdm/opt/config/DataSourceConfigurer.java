@@ -181,8 +181,12 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             jndiName = findProperty(ATTRIBUTE_JDBC_JNDI_NAME, false);
 
             if(jndiName != null){
-                dataSource = useJndiDataSource(jndiName);
-                dataSourceId = FilenameUtils.getName(jndiName);
+                try {
+                    dataSource = useJndiDataSource(jndiName);
+                    dataSourceId = FilenameUtils.getName(jndiName);
+                } catch (NamingException e) {
+                   throw new DataSourceException("JNDI data source (" + jndiName + ") not found. Jdbc URI correct? Does the database exist?", e);
+                }
             } else {
                 dataSource = loadDataSourceBean(beanName);
                 dataSourceId = beanName;
@@ -291,7 +295,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
     }
 
 
-    private DataSource useJndiDataSource(String jndiName) {
+    private DataSource useJndiDataSource(String jndiName) throws NamingException {
         logger.info("using jndi datasource '" + jndiName + "'");
 
         JndiObjectFactoryBean jndiFactory = new JndiObjectFactoryBean();
@@ -309,6 +313,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             logger.error(e, e);
         } catch (NamingException e) {
             logger.error(e, e);
+            throw e;
         }
         Object obj = jndiFactory.getObject();
         return (DataSource)obj;
