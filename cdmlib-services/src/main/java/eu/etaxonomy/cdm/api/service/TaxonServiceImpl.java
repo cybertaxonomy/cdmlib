@@ -481,8 +481,6 @@ public class TaxonServiceImpl
                 synonym.getSecSource().setSourcedTaxon(null);
             }
             synonym.setSecSource(null);
-            saveOrUpdate(synonym);
-            dao.flush();
             deleteResult.includeResult(deleteSynonym(synonym.getUuid(), confSyn));
         }
         result.includeResult(deleteResult);
