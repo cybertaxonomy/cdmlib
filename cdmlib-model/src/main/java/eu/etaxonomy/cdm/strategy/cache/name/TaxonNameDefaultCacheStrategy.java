@@ -273,7 +273,10 @@ public class TaxonNameDefaultCacheStrategy
         List<TaggedText> tags = new ArrayList<>();
         if (taxonName.getNameType().isViral()){
             String acronym = taxonName.getAcronym();
-            tags.add(new TaggedText(TagEnum.name, acronym));
+            if (isNotBlank(taxonName.getAcronym())){
+                //this is not according to the code
+                tags.add(new TaggedText(TagEnum.name, acronym));
+            }
             return tags;
         }else if (taxonName.isHybridFormula()){
             //hybrid formula

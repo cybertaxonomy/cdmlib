@@ -52,6 +52,9 @@ public class NomenclaturalSourceFormatter extends CdmFormatterBase<Nomenclatural
         }
         Reference reference = source.getCitation();
         String microReference = source.getCitationMicroReference();
+        if (reference == null && isBlank(microReference)){
+            return null;
+        }
         return format(reference, microReference);
     }
 
