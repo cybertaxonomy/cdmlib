@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
-import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -705,12 +705,12 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type) {
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type) {
         return listByAbbrev(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
     }
 
     @Override
-    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField abbrevType){
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField abbrevType){
 
         if (clazz == null){
             clazz = (Class)type;

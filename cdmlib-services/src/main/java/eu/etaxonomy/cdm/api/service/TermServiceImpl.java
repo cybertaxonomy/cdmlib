@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -476,21 +476,21 @@ public class TermServiceImpl
 
     @Override
     @Transactional(readOnly = true)
-    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang, NamedAreaSearchField type) {
+    public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, Language lang, TermSearchField type) {
         List<NamedArea> areas = dao.listByAbbrev(NamedArea.class, vocs, limit, pattern, type);
 
         List<UuidAndTitleCache<NamedArea>> result = new ArrayList<>();
         UuidAndTitleCache<NamedArea> uuidAndTitleCache;
         for (NamedArea area: areas){
-            if (type.equals(NamedAreaSearchField.NoAbbrev)){
+            if (type.equals(TermSearchField.NoAbbrev)){
                 uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), area.labelWithLevel(area, lang));
             }else{
                 String display = area.labelWithLevel(area, lang);
-                if (type.equals(NamedAreaSearchField.IDInVocabulary)){
+                if (type.equals(TermSearchField.IDInVocabulary)){
                     display += " - " + area.getIdInVocabulary();
-                }else if (type.equals(NamedAreaSearchField.Symbol1)){
+                }else if (type.equals(TermSearchField.Symbol1)){
                     display += " - " + area.getSymbol();
-                }else if (type.equals(NamedAreaSearchField.Symbol2)){
+                }else if (type.equals(TermSearchField.Symbol2)){
                     display += " - " + area.getSymbol2();
                 }
                 uuidAndTitleCache = new UuidAndTitleCache<>(area.getUuid(), area.getId(), display);
