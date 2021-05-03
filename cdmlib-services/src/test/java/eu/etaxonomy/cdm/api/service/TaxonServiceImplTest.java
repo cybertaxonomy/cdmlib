@@ -300,6 +300,40 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
+    @Ignore
+    public final void testMakeTaxonSynonymNewUuid() {
+        try {
+            createTestDataSet();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        synonym.setSec(ReferenceFactory.newArticle());
+        service.saveOrUpdate(synonym);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxonNewUuid(synonym, taxWithSyn, true);
+
+        // find forces flush
+        Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
+        MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
+        configurator.setTaxonNameTitle("Test3");
+        List<TaxonBase> synList = service.findTaxaByName(configurator);
+        HomotypicalGroup groupTest2 = null;
+        if (synList.size() > 0){
+            TaxonBase syn = synList.get(0);
+            groupTest2 = syn.getHomotypicGroup();
+            assertTrue(tax.getSynonyms().contains(syn));
+        }else{
+            Assert.fail("There should be a synonym with name Test3");
+        }
+
+        assertTrue(tax.getName().getTitleCache().equals("Test2"));
+
+
+
+    }
+
+    @Test
 
     public final void testChangeSynonymToAcceptedTaxon() throws FileNotFoundException{
 
@@ -1983,8 +2017,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         taxWithSyn.addSynonym(synonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         taxWithSyn.addSynonym(synonym2, SynonymType.HETEROTYPIC_SYNONYM_OF());
 
-//        tax2WithSyn.setSec(ReferenceFactory.newArticle());
-//        synonym.setSec(ReferenceFactory.newArticle());
         uuidTaxWithoutSyn = service.save(taxWithoutSyn).getUuid();
         uuidSyn = service.save(synonym).getUuid();
         uuidSyn2 = service.save(synonym2).getUuid();

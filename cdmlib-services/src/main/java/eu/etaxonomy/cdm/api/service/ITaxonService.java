@@ -1000,6 +1000,14 @@ public interface ITaxonService
     public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 
+    /**
+     * @param synonym
+     * @param acceptedTaxon
+     * @param setNameInSource
+     * @return
+     */
+    UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource);
+
 
 
 
