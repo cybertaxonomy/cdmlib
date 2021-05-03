@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
-import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -222,7 +222,7 @@ public class TypeDesignationSetFormatter {
             OriginalSourceBase source) {
         Reference ref = source.getCitation();
         if (ref != null){
-            DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)ref.getCacheStrategy());
+            ReferenceDefaultCacheStrategy strategy = ((ReferenceDefaultCacheStrategy)ref.getCacheStrategy());
             String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
             workingsetBuilder.add(TagEnum.reference, shortCitation, TypedEntityReference.fromEntity(ref, false));
         }

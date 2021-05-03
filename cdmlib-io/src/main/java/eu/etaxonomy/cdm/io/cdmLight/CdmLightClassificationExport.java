@@ -100,7 +100,7 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -1254,7 +1254,7 @@ public class CdmLightClassificationExport
                     int index = 1;
                     for (IdentifiableSource source: typeDesignation.getSources()){
                         if (source.getCitation() != null){
-                            DefaultReferenceCacheStrategy cacheStrategy = ((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy());
+                            ReferenceDefaultCacheStrategy cacheStrategy = ((ReferenceDefaultCacheStrategy)source.getCitation().getCacheStrategy());
                             stringbuilder.append(cacheStrategy.getCitation(source.getCitation(), source.getCitationMicroReference()));
                         }
                         if (index < typeDesignation.getSources().size()) {
@@ -1644,7 +1644,7 @@ public class CdmLightClassificationExport
                             statusString += ": " + nameStatus.getRuleConsidered();
                         }
                         if (nameStatus.getCitation() != null) {
-                            String shortCitation = ((DefaultReferenceCacheStrategy) nameStatus.getCitation().getCacheStrategy())
+                            String shortCitation = ((ReferenceDefaultCacheStrategy) nameStatus.getCitation().getCacheStrategy())
                                     .createShortCitation(nameStatus.getCitation(), null, false);
                             statusString += " (" + shortCitation + ")";
                         }
@@ -1729,7 +1729,7 @@ public class CdmLightClassificationExport
                      taxonBase = HibernateProxyHelper.deproxy(taxonBases.iterator().next());
                      Reference secRef = taxonBase.getSec();
                      if (secRef != null){
-                         sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
+                         sec = ((ReferenceDefaultCacheStrategy) secRef.getCacheStrategy())
                              .createShortCitation(secRef, taxonBase.getSecMicroReference(), true);
                      }
                      if (taxonBase.isDoubtful()){
@@ -1757,7 +1757,7 @@ public class CdmLightClassificationExport
                     for (TaxonBase<?> tb: taxonBases){
                         Reference secRef = tb.getSec();
                         if (secRef != null){
-                            sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
+                            sec = ((ReferenceDefaultCacheStrategy) secRef.getCacheStrategy())
                                 .createShortCitation(secRef, tb.getSecMicroReference(), true);
                         }
                         if (tb.isDoubtful()){
@@ -2050,7 +2050,7 @@ public class CdmLightClassificationExport
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             // TODO short citations correctly
-            String shortCitation = ((DefaultReferenceCacheStrategy) reference.getCacheStrategy())
+            String shortCitation = ((ReferenceDefaultCacheStrategy) reference.getCacheStrategy())
                     .createShortCitation(reference, null, true); // Should be Author(year)
                                                      // like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;

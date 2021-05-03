@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
-import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * Factory class for creating iiif manifests.
@@ -458,7 +458,7 @@ public class ManifestComposer {
         StringBuilder html = new StringBuilder();
         Reference citation = source.getCitation();
         if(citation != null) {
-            DefaultReferenceCacheStrategy strategy = ((DefaultReferenceCacheStrategy)citation.getCacheStrategy());
+            ReferenceDefaultCacheStrategy strategy = ((ReferenceDefaultCacheStrategy)citation.getCacheStrategy());
             html.append(strategy.createShortCitation(citation, source.getCitationMicroReference(), false)).append(" ");
             if(citation.getDoi() != null) {
                 try {

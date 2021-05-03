@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -1182,7 +1182,7 @@ public class Reference
 
     @Override
     protected void initDefaultCacheStrategy() {
-        this.setCacheStrategy(DefaultReferenceCacheStrategy.NewInstance());
+        this.setCacheStrategy(ReferenceDefaultCacheStrategy.NewInstance());
     }
 
    @Override

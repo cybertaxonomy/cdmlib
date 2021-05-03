@@ -37,15 +37,15 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
- * Copy of {@link ArticleDefaultCacheStrategyTest} to test the {@link DefaultReferenceCacheStrategy}.
+ * Copy of {@link ArticleDefaultCacheStrategyTest} to test the {@link ReferenceDefaultCacheStrategy}.
  *
  * @author a.mueller
  * @since 25.05.2016
  */
-public class DefaultReferenceCacheStrategyTest {
+public class ReferenceDefaultCacheStrategyTest {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DefaultReferenceCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(ReferenceDefaultCacheStrategyTest.class);
 
 	private static final String SEP = TimePeriod.SEP;
 
@@ -76,12 +76,12 @@ public class DefaultReferenceCacheStrategyTest {
     private static Team webPageTeam1;
 
 	//common
-	private static DefaultReferenceCacheStrategy defaultStrategy;
+	private static ReferenceDefaultCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		defaultStrategy = DefaultReferenceCacheStrategy.NewInstance();
+		defaultStrategy = ReferenceDefaultCacheStrategy.NewInstance();
 	}
 
 	@Before
@@ -141,7 +141,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setInJournal(null);
 		//TODO should not be needed here
 		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
+		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class DefaultReferenceCacheStrategyTest {
 		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" My journal. 1975", article1.getTitleCache());
 
 		article1.setInJournal(null);
-		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
+		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	//#6496
@@ -196,7 +196,7 @@ public class DefaultReferenceCacheStrategyTest {
 		article1.setInJournal(null);
 		//TODO should not be needed here
 		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
+		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	@Test
