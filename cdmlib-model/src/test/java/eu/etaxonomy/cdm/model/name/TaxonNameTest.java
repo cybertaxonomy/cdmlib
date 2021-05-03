@@ -347,7 +347,7 @@ public class TaxonNameTest extends EntityTestBase {
 	@Test
 	public void testGetCitationString() {
 		String citation = nameBase1.getCitationString();
-	    logger.warn("not yet implemented");
+	    logger.warn("testGetCitationString not yet implemented");
 	}
 
 	@Test

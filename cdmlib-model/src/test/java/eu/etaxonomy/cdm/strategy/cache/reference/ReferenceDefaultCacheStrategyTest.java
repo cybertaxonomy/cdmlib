@@ -370,7 +370,6 @@ public class ReferenceDefaultCacheStrategyTest {
         Assert.assertEquals("Unexpected title cache.", "Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title", generic1.getTitleCache());
     }
 
-
     @Test
     public void testGenericGetAbbrevTitleCache(){
         generic1.setTitle("Part Title");
@@ -515,8 +514,5 @@ public class ReferenceDefaultCacheStrategyTest {
         team.setHasMoreMembers(true);
         Assert.assertEquals("Unexpected title cache.", "Person & al. 1975: 55", book1.getCacheStrategy().createShortCitation((Reference)book1, "55", false));
         team.setHasMoreMembers(false);  //in case we want to continue test
-
-
     }
-
 }

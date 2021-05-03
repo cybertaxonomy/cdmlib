@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.metadata;
 /**
  * @author k.luther
  * @since 19.11.2018
- *
  */
 public enum PublishEnum implements IKeyLabel{
 
