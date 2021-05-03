@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
@@ -124,11 +125,9 @@ public class TestTaxonNameParserBotanicalNameImpl {
 		System.out.println(nvName.hasProblem());
 		System.out.println("  Name: " + nvName.getTitleCache());
 		System.out.println("  Reference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : nvName.getNomenclaturalReference().getTitleCache()));
-		System.out.println("  FullReference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : nvName.getNomenclaturalReference().getNomenclaturalCitation(nvName.getNomenclaturalMicroReference())));
+		System.out.println("  FullReference: " + NomenclaturalSourceFormatter.INSTANCE().format(nvName.getNomenclaturalSource()));
 		return nvName.hasProblem() ? 1: 0;
-
 	}
-
 
 	/**
 	 * @param args

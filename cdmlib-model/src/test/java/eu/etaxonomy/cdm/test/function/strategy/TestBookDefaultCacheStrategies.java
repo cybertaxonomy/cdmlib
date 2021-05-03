@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.test.function.strategy;
 
 import java.util.Calendar;
 
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -20,7 +21,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author AM
- *
  */
 public class TestBookDefaultCacheStrategies {
 
@@ -37,7 +37,7 @@ public class TestBookDefaultCacheStrategies {
 		book.setAuthorship(bookAuthor);
 		book.setVolume("v 22");
 		book.setEdition("55");
-		System.out.println("FULL" + book.getNomenclaturalCitation("344"));
+		System.out.println("FULL: " + NomenclaturalSourceFormatter.INSTANCE().format(book, "344"));
 		System.out.println("Citation: " + book.getCitation());
 		System.out.println("Titel: " + book.getTitleCache());
 
@@ -45,7 +45,7 @@ public class TestBookDefaultCacheStrategies {
 		System.out.println("*********** BOOK SECTION**************");
 		Person partAuthor = Person.NewTitledInstance("PartAuthorTitle");
 		Reference bookSection = ReferenceFactory.newBookSection(book, partAuthor, "SectionTitle der Biene", "222-234");
-		System.out.println("FULL: " + bookSection.getNomenclaturalCitation("344"));
+		System.out.println("FULL: " + NomenclaturalSourceFormatter.INSTANCE().format(bookSection, "344"));
 		System.out.println("Citation: " + bookSection.getCitation());
 		System.out.println("Titel: " + bookSection.getTitleCache());
 
@@ -57,7 +57,7 @@ public class TestBookDefaultCacheStrategies {
 		inJournal.setTitle("JournalTitle");
 		inJournal.setIssn("issn");
 		Reference article = ReferenceFactory.newArticle(inJournal, partAuthor, "artTitel", "123-456", "ser4", "55", VerbatimTimePeriod.NewVerbatimInstance(cal));
-		System.out.println("FULL: " + article.getNomenclaturalCitation("922 fig"));
+		System.out.println("FULL: " + NomenclaturalSourceFormatter.INSTANCE().format(article, "922 fig"));
 		System.out.println("Citation: " + article.getCitation());
 		System.out.println("Titel: " + article.getTitleCache());
 
@@ -73,27 +73,20 @@ public class TestBookDefaultCacheStrategies {
 		generic.setPages("p.124-754");
 		generic.setSeriesPart("ser2");
 		generic.setVolume("33");
-		System.out.println("FULL: " + generic.getNomenclaturalCitation("4444"));
+		System.out.println("FULL: " + NomenclaturalSourceFormatter.INSTANCE().format(generic, "4444"));
 		System.out.println("Citation: " + generic.getCitation());
 		System.out.println("Titel: " + generic.getTitleCache());
 
 		Media media = Media.NewInstance();
 		generic.addMedia(media);
-		IGeneric newGeneric = (IGeneric)generic.clone();
+		IGeneric newGeneric = generic.clone();
 		System.out.println(newGeneric);
 
 		return true;
-
 	}
 
-
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		TestBookDefaultCacheStrategies test = new TestBookDefaultCacheStrategies();
     	test.testNonViralNameDefaultCacheStrategy();
-
 	}
-
 }

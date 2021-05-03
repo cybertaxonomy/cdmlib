@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import io.swagger.annotations.Api;
@@ -89,7 +90,7 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
         ModelAndView mv = new ModelAndView();
         Reference rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
         if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
-            String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
+            String nomRefCit = NomenclaturalSourceFormatter.INSTANCE().format(rb, microReference);
             mv.addObject(nomRefCit);
             return mv;
         } else {

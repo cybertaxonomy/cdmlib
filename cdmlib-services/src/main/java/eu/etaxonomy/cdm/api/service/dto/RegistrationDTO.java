@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.name.TypeDesignationDTO;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetFormatter;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationSetManager;
 import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -300,7 +301,7 @@ public class RegistrationDTO {
             nomenclaturalCitationString = null;
         } else {
             if(INomenclaturalReference.class.isAssignableFrom(citation.getClass())){
-                nomenclaturalCitationString = ((INomenclaturalReference)citation).getNomenclaturalCitation(citationDetail);
+                nomenclaturalCitationString = NomenclaturalSourceFormatter.INSTANCE().format(citation, citationDetail);
             } else {
                 logger.error("The citation is not a NomenclaturalReference");
                 nomenclaturalCitationString = citation.generateTitle();

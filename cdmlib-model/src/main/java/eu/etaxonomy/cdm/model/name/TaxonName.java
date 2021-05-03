@@ -63,6 +63,7 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
@@ -2652,8 +2653,8 @@ public class TaxonName
     @Override
     @Transient
     public String getCitationString(){
-        Reference nomRef = getNomenclaturalReference();
-        return nomRef == null ? null : nomRef.getNomenclaturalCitation(getNomenclaturalMicroReference());
+        NomenclaturalSource nomSource = getNomenclaturalSource();
+        return NomenclaturalSourceFormatter.INSTANCE().format(nomSource);
     }
 
     /**

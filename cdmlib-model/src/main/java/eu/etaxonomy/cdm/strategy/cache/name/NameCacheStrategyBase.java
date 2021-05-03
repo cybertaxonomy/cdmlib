@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,15 +17,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -192,13 +191,7 @@ public abstract class NameCacheStrategyBase
         tags.addAll(titleTags);
 
         //reference
-        String microReference = taxonName.getNomenclaturalMicroReference();
-        INomenclaturalReference ref = taxonName.getNomenclaturalReference();
-        String referenceCache = null;
-        if (ref != null){
-            Reference reference = HibernateProxyHelper.deproxy(ref, Reference.class);
-            referenceCache = reference.getNomenclaturalCitation(microReference);
-        }
+        String referenceCache = NomenclaturalSourceFormatter.INSTANCE().format(taxonName.getNomenclaturalSource());
             //add to tags
         if (isNotBlank(referenceCache)){
             if (! referenceCache.trim().startsWith("in ")){

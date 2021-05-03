@@ -26,14 +26,11 @@ import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.ICdDvd;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
@@ -200,67 +197,6 @@ public class ReferenceDefaultCacheStrategyTest {
 	}
 
 	@Test
-	public void testArticleGetNomenclaturalCitation(){
-		journal1.setTitle("My journal");
-		journal1.setTitle("M. J.");
-		((Reference)journal1).setAuthorship(articleTeam2);
-		article1.setTitle("My article");
-		article1.setInJournal(journal1);
-		article1.setAuthorship(articleTeam1);
-		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-		Assert.assertEquals("in M. J.: 55. 1975", article1.getNomenclaturalCitation(detail1));
-
-		article1.setVolume("22");
-		Assert.assertEquals("in M. J. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		article1.setSeriesPart("ser. 11");
-		Assert.assertEquals("in M. J., ser. 11, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-
-		article1.setPages("33"); //#6496 don't show pages in nomencl. citation
-        Assert.assertEquals("in M. J., ser. 11, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-	}
-
-	/**
-	 * After ser. , sect. , abt. we want to have a comma, if there is not yet one following anyway
-	 */
-	@Test
-	public void testArticleGetNomenclaturalCitationSerSectAbt(){
-		article1.setInJournal(journal1);
-		article1.setVolume("22");
-		journal1.setAbbrevTitle("J. Pl. Eur.");
-		((Reference)journal1).setAuthorship(articleTeam2);
-		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-		//no ser, sect, abt
-		Assert.assertEquals("in J. Pl. Eur. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		//ser
-		journal1.setAbbrevTitle("J. Pl. Eur., ser. 3");
-		Assert.assertEquals("in J. Pl. Eur., ser. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		journal1.setAbbrevTitle("J. Pl. Eur., Ser. 3");
-		Assert.assertEquals("in J. Pl. Eur., Ser. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		journal1.setAbbrevTitle("J. Pl. Eur., ser. 3, s.n.");
-		Assert.assertEquals("in J. Pl. Eur., ser. 3, s.n. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		//sect
-		journal1.setAbbrevTitle("J. Pl. Eur., sect. 3");
-		Assert.assertEquals("in J. Pl. Eur., sect. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		journal1.setAbbrevTitle("J. Pl. Eur., Sect. 3");
-		Assert.assertEquals("in J. Pl. Eur., Sect. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		journal1.setAbbrevTitle("J. Pl. Eur., Sect. 3, something");
-		Assert.assertEquals("in J. Pl. Eur., Sect. 3, something 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		//abt
-		journal1.setAbbrevTitle("J. Pl. Eur., abt. 3");
-		Assert.assertEquals("in J. Pl. Eur., abt. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		journal1.setAbbrevTitle("J. Pl. Eur., Abt. 3");
-		Assert.assertEquals("in J. Pl. Eur., Abt. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		journal1.setAbbrevTitle("J. Pl. Eur., abt. 3, no comma");
-		Assert.assertEquals("in J. Pl. Eur., abt. 3, no comma 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-
-		journal1.setAbbrevTitle("J. Pl. Eur., sect. 3");
-		article1.setSeriesPart("1");
-		Assert.assertEquals("in J. Pl. Eur., sect. 3, ser. 1, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-		article1.setSeriesPart("Series 2");
-		Assert.assertEquals("in J. Pl. Eur., sect. 3, Series 2, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
-	}
-
-	@Test
 	public void testArticleGetTitleWithoutYearAndAuthor(){
 		journal1.setTitle("My journal");
 		((Reference)journal1).setAuthorship(articleTeam2);
@@ -313,73 +249,16 @@ public class ReferenceDefaultCacheStrategyTest {
 
     }
 
-    //https://dev.e-taxonomy.eu/redmine/issues/8881
-    @Test
-    public void testInRefAuthor(){
-        Person person1 = Person.NewInstance("Inauth.", "Inauthor", "A.B.", "Ala Bala");
-        Person person2 = Person.NewInstance("Twoauth.", "Twoauthor", "C.", "Cla");
-        Person person3 = Person.NewTitledInstance("Threeauth.");
-        Team team = Team.NewInstance(person1, person2, person3);
-        IBook book1 = ReferenceFactory.newBook();
-        book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
-        book1.setVolume("Fasc. 11");
-        book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
-        bookSection1.setTitle("My chapter");
-        bookSection1.setInBook(book1);
-        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1956));
-
-        book1.setAuthorship(person1);
-        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-        book1.setAuthorship(team);
-        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Twoauthor & Threeauth., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-        team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Twoauthor, Threeauth. & al., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-        book1.setAuthorship(Team.NewInstance(person1));
-        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-
-        //for the following the behavior is not yet finally discussed, may change in future
-        book1.setAuthorship(team);
-        team.setTitleCache("Teamcache", true);
-        Assert.assertEquals("Unexpected nomencl. reference", "in Teamcache, Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-        team.setTitleCache("Teamc.", true);
-        Assert.assertEquals("Unexpected nomencl. reference", "in Teamc., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-        book1.setAuthorship(Team.NewInstance());
-        Assert.assertEquals("Unexpected nomencl. reference", "in "+TeamDefaultCacheStrategy.EMPTY_TEAM+", Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", bookSection1.getNomenclaturalCitation("248"));
-    }
-
     @Test
     public void testBookGetTitleCache1(){
-        //series
-        IBook book1 = ReferenceFactory.newBook();
-        book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
-        book1.setSeriesPart("1");
-        book1.setVolume("Fasc. 11");
-        book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
-        Assert.assertEquals("Unexpected abbrev title cache", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11. 1955", book1.getTitleCache());
-        Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
-    }
-
-    @Test
-    public void testBookGetTitleCache2(){
         //series
         IBook book1 = ReferenceFactory.newBook();
         book1.setAbbrevTitle("Acta Inst. Bot. Acad. Sci. URSS");
         book1.setVolume("Fasc. 11");
         book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
         Assert.assertEquals("Unexpected abbrev title cache", "Acta Inst. Bot. Acad. Sci. URSS Fasc. 11. 1955", book1.getTitleCache());
-        Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
         book1.setSeriesPart("1");
-        Assert.assertEquals("Unexpected nomencl. reference", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11: 248. 1955", book1.getNomenclaturalCitation("248"));
-    }
-
-    @Test
-    public void testBookGetNomenclaturalCitation(){
-        book1.setTitle("My book");
-        book1.setAuthorship(bookTeam1);
-        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("My book: 55. 1975", book1.getNomenclaturalCitation(detail1));
-        book1.setAbbrevTitle("Analect. Bot.");
-        Assert.assertEquals("Analect. Bot. 1975", book1.getNomenclaturalCitation(null));
+        Assert.assertEquals("Unexpected abbrev title cache", "Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11. 1955", book1.getTitleCache());
     }
 
 // ***************************** Book Section ************************/
@@ -438,26 +317,6 @@ public class ReferenceDefaultCacheStrategyTest {
     }
 
     @Test
-    public void testBookSectionGetNomenclaturalCitation(){
-        book1.setTitle("My book");
-        book1.setAuthorship(bookTeam1);
-        bookSection1.setTitle("My chapter");
-        bookSection1.setInBook(book1);
-        bookSection1.setAuthorship(sectionTeam1);
-        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        //TODO still unclear which is correct
-//      Assert.assertEquals("in Book Author, My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
-        Assert.assertEquals("in TT., My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
-
-        book1.setSeriesPart("2");
-        Assert.assertEquals("in TT., My book, ser. 2: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
-        //#6496 don't show pages in nom.ref. citations
-        bookSection1.setPages("35-39");
-        Assert.assertEquals("in TT., My book, ser. 2: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
-
-    }
-
-    @Test
     public void testBookSectionRealExample(){
         Team bookTeam = Team.NewTitledInstance("Chaudhary S. A.(ed.)", "Chaudhary S. A.(ed.)");
         IBook book = ReferenceFactory.newBook();
@@ -500,28 +359,6 @@ public class ReferenceDefaultCacheStrategyTest {
     }
 
     @Test
-    public void testGenericGetInRef(){
-        generic1.setTitle("auct.");
-        IBook book1 = ReferenceFactory.newBook();
-        book1.setTitle("My book title");
-        book1.setAuthorship(genericTeam1);
-        Reference inRef = (Reference)book1;
-        generic1.setInReference(inRef);
-        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        //TODO author still unclear
-//      Assert.assertEquals("Unexpected title cache.", "in Authorteam, My book title: 2", generic1.getNomenclaturalCitation("2"));
-        Assert.assertEquals("Unexpected title cache.", "in AT., My book title: 2", generic1.getNomenclaturalCitation("2"));
-    }
-
-    @Test
-    public void testGenericGetInRefWithoutInRef(){
-        generic1.setTitle("My generic title");
-        generic1.setAuthorship(genericTeam1);
-        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "My generic title: 2", generic1.getNomenclaturalCitation("2"));
-    }
-
-    @Test
     public void testGenericGetTitleCache2(){
         generic1.setTitle("Part Title");
         IBook book1 = ReferenceFactory.newBook();
@@ -549,27 +386,11 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setAbbrevTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("Unexpected abbrev title cache.", "Pt. Tit. "+UTF8.EN_DASH+" In: AT., My bk. tit. 1987", generic1.getAbbrevTitleCache());
         Assert.assertEquals("Title cache must still be the same", "Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title. 1987", generic1.getTitleCache());
-        //TODO author still unclear
-//      Assert.assertEquals("Unexpected nom. ref.", "in Authorteam, My bk. tit.: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
-        Assert.assertEquals("Unexpected nom. ref.", "in AT., My bk. tit.: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
-        generic1.setVolume("23");
-        Assert.assertEquals("Unexpected nom. ref.", "in AT., My bk. tit. 23: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
-        generic1.setSeriesPart("ser. 11");
-        //TODO
-//      Assert.assertEquals("Unexpected nom. ref.", "in AT., My bk. tit., ser. 11, 23: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
 
         //protected
         generic1.setAbbrevTitleCache("My prot. abb. tit. in a bk.", true);
         Assert.assertEquals("Unexpected abbrev title cache.", "My prot. abb. tit. in a bk.", generic1.getAbbrevTitleCache());
         Assert.assertEquals("Unexpected title cache.", "Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title. 1987", generic1.getTitleCache());
-
-        generic1.setDatePublished((VerbatimTimePeriod)null);
-        Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(null));
-        Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.", generic1.getNomenclaturalCitation(""));
-        Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.: pp. 44", generic1.getNomenclaturalCitation("pp. 44"));
-
-        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1893"));
-        Assert.assertEquals("Unexpected nom. ref.", "My prot. abb. tit. in a bk.: pp. 44. 1893", generic1.getNomenclaturalCitation("pp. 44"));
     }
 
     @Test
@@ -585,7 +406,6 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setAuthorship(genericTeam1);
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("Unexpected title cache.", "Authorteam", generic1.getTitleCache());
-        Assert.assertEquals("", generic1.getNomenclaturalCitation(null));
     }
 
     @Test
@@ -594,17 +414,6 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1792"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());
-        Assert.assertEquals("1792", generic1.getNomenclaturalCitation(null));
-    }
-
-    @Test
-    public void testGenericDoubleDotBeforeYear(){
-        generic1.setAuthorship(genericTeam1);
-        String detail = "sine no.";
-        generic1.setAbbrevTitle("My title");
-        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
-        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("My title: sine no. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail));
     }
 
     //#4338
@@ -614,9 +423,7 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setAuthorship(genericTeam1);
         generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("My generic: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
         generic1.setVolume("7");
-        Assert.assertEquals("My generic 7: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
         Assert.assertEquals("Authorteam, My generic 7. 1883"+SEP+"1884", generic1.getTitleCache());
         Assert.assertEquals("AT., My generic 7. 1883"+SEP+"1884", generic1.getAbbrevTitleCache());
 
@@ -629,86 +436,19 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setInReference(generic2);
 
         //only reference has a volume
-        Assert.assertEquals("in InRefAuthor, My InRef 7: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
+//        Assert.assertEquals("in InRefAuthor, My InRef 7: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
 //        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getTitleCache());
 //        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getAbbrevTitleCache());
 
         //both have a volume
         generic2.setVolume("9");  //still unclear what should happen if you have such dirty data
-//        Assert.assertEquals("in InRefAuthor, My InRef 7: 55. 1883-1884", generic1.getNomenclaturalCitation(detail1));
 //        Assert.assertEquals("Authorteam - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getTitleCache());
 //        Assert.assertEquals("AT. - My generic in InRefAuthor, My InRef 7. 1883-1884", generic1.getAbbrevTitleCache());
 
         //only inref has volume
         generic1.setVolume(null);
-        Assert.assertEquals("in InRefAuthor, My InRef 9: 55. 1883"+SEP+"1884", generic1.getNomenclaturalCitation(detail1));
         Assert.assertEquals("Authorteam - My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9. 1883"+SEP+"1884", generic1.getTitleCache());
         Assert.assertEquals("AT. - My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9. 1883"+SEP+"1884", generic1.getAbbrevTitleCache());
-   }
-
-    //#3532
-    @Test
-    public void testUnexpectedNomenclaturalReferences(){
-        Reference reference;
-
-        //database
-        IDatabase database1 = ReferenceFactory.newDatabase();
-        reference = (Reference)database1;
-
-        database1.setTitle("My database");
-        //maybe we should have a trailing dot here
-        Assert.assertEquals("My database: 55", reference.getNomenclaturalCitation(detail1));
-        database1.setDatePublished(TimePeriodParser.parseStringVerbatim("1998"));
-        Assert.assertEquals("My database: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-        database1.setTitleCache("Your database", true);
-        Assert.assertEquals("My database: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-        //unclear if it is wanted that the year is shown, though the abbrev cache is protected, probably not
-        reference.setAbbrevTitleCache("You. Db.", true);
-        Assert.assertEquals("You. Db.: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-
-        //CD/DVD
-        ICdDvd cdDvd = ReferenceFactory.newCdDvd();
-        reference= (Reference)cdDvd;
-        cdDvd.setTitle("My Cd/Dvd");
-        //maybe we should have a trailing dot here
-        Assert.assertEquals("My Cd/Dvd: 55", reference.getNomenclaturalCitation(detail1));
-        cdDvd.setDatePublished(TimePeriodParser.parseStringVerbatim("1998"));
-        Assert.assertEquals("My Cd/Dvd: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-        cdDvd.setTitleCache("Your Cd/Dvd", true);
-        Assert.assertEquals("My Cd/Dvd: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-        //unclear if it is wanted that the year is shown, though the abbrev cache is protected, probably not
-        reference.setAbbrevTitleCache("You. Cd.", true);
-        Assert.assertEquals("You. Cd.: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-
-        //WebSite
-        IWebPage webPage = ReferenceFactory.newWebPage();
-        reference= (Reference)webPage;
-        webPage.setTitle("My WebPage");
-        //maybe we should have a trailing dot here
-        Assert.assertEquals("My WebPage: 55", reference.getNomenclaturalCitation(detail1));
-        webPage.setDatePublished(TimePeriodParser.parseStringVerbatim("1998"));
-        Assert.assertEquals("My WebPage: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-        webPage.setTitleCache("Your WebPage", true);
-        Assert.assertEquals("My WebPage: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-        //unclear if it is wanted that the year is shown, though the abbrev cache is protected, probably not
-        reference.setAbbrevTitleCache("You. WP.", true);
-        Assert.assertEquals("You. WP.: 55. 1998", reference.getNomenclaturalCitation(detail1));
-
-        //uri
-        webPage = ReferenceFactory.newWebPage();
-        reference= (Reference)webPage;
-        webPage.setUri(URI.create("http://www.abc.de"));
-        Assert.assertEquals("http://www.abc.de: 55", reference.getNomenclaturalCitation(detail1));
-
-        //TBC
    }
 
 // ********************************** WEB PAGE ********************************************/

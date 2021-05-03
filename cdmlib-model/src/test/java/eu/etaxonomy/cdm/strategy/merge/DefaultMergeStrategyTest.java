@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
@@ -176,7 +176,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 
 	@Test
 	public void testInvokeReferences() throws MergeException {
-		INomenclaturalReferenceCacheStrategy cacheStrategy1 = book1.getCacheStrategy();
+		IReferenceCacheStrategy cacheStrategy1 = book1.getCacheStrategy();
 		int id = book1.getId();
 		UUID uuid = book1.getUuid();
 		try {
