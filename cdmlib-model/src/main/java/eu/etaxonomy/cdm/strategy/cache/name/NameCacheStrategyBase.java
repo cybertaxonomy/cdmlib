@@ -79,14 +79,18 @@ public abstract class NameCacheStrategyBase
             String nomStatusStr = "not defined";
             if(ncStatus.getType() != null){
                 NomenclaturalStatusType statusType =  ncStatus.getType();
-                Language lang = Language.LATIN();
-                Representation repr = statusType.getRepresentation(lang);
+                List<Language> prefLangs = Arrays.asList(new Language[]{Language.LATIN(), Language.DEFAULT()});
+                Representation repr = statusType.getPreferredRepresentation(prefLangs);
                 if (repr != null){
+                    if(!Language.LATIN().equals(repr.getLanguage())){
+                        String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                        logger.info(message);
+                    }
                     nomStatusStr = repr.getAbbreviatedLabel();
                 }else{
-                    String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                    String message = "No representation available for nom. status. " + statusType.getTitleCache();
                     logger.warn(message);
-                    throw new IllegalStateException(message);
+                    nomStatusStr = statusType.getTitleCache();
                 }
             }else if(isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();

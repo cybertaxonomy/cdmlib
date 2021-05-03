@@ -9,29 +9,18 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.INonViralName;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.term.Representation;
-import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -280,106 +269,11 @@ public class TaxonNameDefaultCacheStrategy
 // ************* TAGGED NAME ***************************************/
 
     @Override
-    public List<TaggedText> getTaggedFullTitle(TaxonName nonViralName) {
+    protected List<TaggedText> doGetTaggedTitle(TaxonName taxonName) {
         List<TaggedText> tags = new ArrayList<>();
-
-        //null
-        if (nonViralName == null){
-            return null;
-        }
-
-        //protected full title cache
-        if (nonViralName.isProtectedFullTitleCache()){
-            tags.add(new TaggedText(TagEnum.fullName, nonViralName.getFullTitleCache()));
-            return tags;
-        }
-
-        //title cache
-//		String titleCache = nonViralName.getTitleCache();
-        List<TaggedText> titleTags = getTaggedTitle(nonViralName);
-        tags.addAll(titleTags);
-
-        //reference
-        String microReference = nonViralName.getNomenclaturalMicroReference();
-        INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
-        String referenceCache = null;
-        if (ref != null){
-            Reference reference = HibernateProxyHelper.deproxy(ref, Reference.class);
-            referenceCache = reference.getNomenclaturalCitation(microReference);
-        }
-            //add to tags
-        if (referenceCache!= null && isNotBlank(referenceCache)){
-            if (! referenceCache.trim().startsWith("in ")){
-                String refConcat = ", ";
-                tags.add(new TaggedText(TagEnum.separator, refConcat));
-            }
-            tags.add(new TaggedText(TagEnum.reference, referenceCache));
-        }
-
-        addOriginalSpelling(tags, nonViralName);
-
-        //nomenclatural status
-        tags.addAll(getNomStatusTags(nonViralName, true, false));
-        return tags;
-    }
-
-    @Override
-    public List<TaggedText> getNomStatusTags(TaxonName nonViralName, boolean includeSeparatorBefore,
-            boolean includeSeparatorAfter) {
-
-        Set<NomenclaturalStatus> ncStati = nonViralName.getStatus();
-        Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
-        List<TaggedText> nomStatusTags = new ArrayList<>();
-        while (iterator.hasNext()) {
-            NomenclaturalStatus ncStatus = iterator.next();
-            // since the NewInstance method of nomencatural status allows null as parameter
-            // we have to check for null values here
-            String nomStatusStr = "not defined";
-            if(ncStatus.getType() != null){
-                NomenclaturalStatusType statusType =  ncStatus.getType();
-                List<Language> prefLangs = Arrays.asList(new Language[]{Language.LATIN(), Language.DEFAULT()});
-                Representation repr = statusType.getPreferredRepresentation(prefLangs);
-                if (repr != null){
-                    if(!Language.LATIN().equals(repr.getLanguage())){
-                        String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
-                        logger.info(message);
-                    }
-                    nomStatusStr = repr.getAbbreviatedLabel();
-                }else{
-                    String message = "No representation available for nom. status. " + statusType.getTitleCache();
-                    logger.warn(message);
-                    nomStatusStr = statusType.getTitleCache();
-                }
-            }else if(isNotBlank(ncStatus.getRuleConsidered())){
-                nomStatusStr = ncStatus.getRuleConsidered();
-            }
-            String statusSeparator = ", ";
-            if (includeSeparatorBefore){
-                nomStatusTags.add(new TaggedText(TagEnum.separator, statusSeparator));
-            }
-            nomStatusTags.add(new TaggedText(TagEnum.nomStatus, nomStatusStr, new TypedEntityReference<>(ncStatus.getClass(), ncStatus.getUuid())));
-            if (includeSeparatorAfter){
-                nomStatusTags.add(new TaggedText(TagEnum.postSeparator, ","));
-            }
-        }
-        return nomStatusTags;
-    }
-
-    @Override
-    public List<TaggedText> getTaggedTitle(TaxonName taxonName) {
-        if (taxonName == null){
-            return null;
-        }
-
-        List<TaggedText> tags = new ArrayList<>();
-
-        if (taxonName.isViral()){
-            return getViralTaggedTitle(taxonName);
-        }
-        //TODO how to handle protected fullTitleCache here?
-        if (taxonName.isProtectedTitleCache()){
-            //protected title cache
-            tags.add(new TaggedText(TagEnum.name, taxonName.getTitleCache()));
+        if (taxonName.getNameType().isViral()){
+            String acronym = taxonName.getAcronym();
+            tags.add(new TaggedText(TagEnum.name, acronym));
             return tags;
         }else if (taxonName.isHybridFormula()){
             //hybrid formula
@@ -398,58 +292,38 @@ public class TaxonNameDefaultCacheStrategy
             //Autonym
             tags.addAll(handleTaggedAutonym(taxonName));
         }else{ //not Autonym
-            List<TaggedText> nameTags = getTaggedName(taxonName);
+             List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
             String authorCache = getAuthorshipCache(taxonName);
             if (isNotBlank(authorCache)){
                 tags.add(new TaggedText(TagEnum.authors, authorCache));
             }
         }
-
         return tags;
     }
 
     /**
+     * Returns the tag list of the name part (without author and reference).
      * @param taxonName
      * @return
      */
-    private List<TaggedText> getViralTaggedTitle(TaxonName viralName) {
-        List<TaggedText> tags = new ArrayList<>();
-        if (viralName.isProtectedTitleCache()){
-            //protected title cache
-            tags.add(new TaggedText(TagEnum.name, viralName.getTitleCache()));
-            return tags;
-        }else{
-            if (isNotBlank(viralName.getAcronym())){
-                //this is not according to the code
-                tags.add(new TaggedText(TagEnum.name, viralName.getAcronym()));
-            }
-            return tags;
-        }
-    }
-
-    /**
-     * Returns the tag list of the name part (without author and reference).
-     * @param nonViralName
-     * @return
-     */
     @Override
-    public List<TaggedText> getTaggedName(TaxonName nonViralName) {
-        if (nonViralName == null){
+    public List<TaggedText> getTaggedName(TaxonName taxonName) {
+        if (taxonName == null){
             return null;
-        }else if (nonViralName.isViral()){
+        }else if (taxonName.isViral()){
             return null;
         }
         List<TaggedText> tags = new ArrayList<>();
-        Rank rank = nonViralName.getRank();
+        Rank rank = taxonName.getRank();
 
-        if (nonViralName.isProtectedNameCache()){
-            tags.add(new TaggedText(TagEnum.name, nonViralName.getNameCache()));
-        }else if (nonViralName.isHybridFormula()){
+        if (taxonName.isProtectedNameCache()){
+            tags.add(new TaggedText(TagEnum.name, taxonName.getNameCache()));
+        }else if (taxonName.isHybridFormula()){
             //hybrid formula
             String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
             boolean isFirst = true;
-            List<HybridRelationship> rels = nonViralName.getOrderedChildRelationships();
+            List<HybridRelationship> rels = taxonName.getOrderedChildRelationships();
             for (HybridRelationship rel: rels){
                 if (! isFirst){
                     tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
@@ -460,28 +334,27 @@ public class TaxonNameDefaultCacheStrategy
             return tags;
 
         }else if (rank == null){
-            tags = getRanklessTaggedNameCache(nonViralName);
+            tags = getRanklessTaggedNameCache(taxonName);
 //		}else if (nonViralName.isInfragenericUnranked()){
 //			result = getUnrankedInfragenericNameCache(nonViralName);
         }else if (rank.isInfraSpecific()){
-            tags = getInfraSpeciesTaggedNameCache(nonViralName);
-        }else if (rank.isSpecies() || isAggregateWithAuthorship(nonViralName, rank) ){ //exception see #4288
-            tags = getSpeciesTaggedNameCache(nonViralName);
+            tags = getInfraSpeciesTaggedNameCache(taxonName);
+        }else if (rank.isSpecies() || isAggregateWithAuthorship(taxonName, rank) ){ //exception see #4288
+            tags = getSpeciesTaggedNameCache(taxonName);
         }else if (rank.isInfraGeneric()){
-            tags = getInfraGenusTaggedNameCache(nonViralName);
+            tags = getInfraGenusTaggedNameCache(taxonName);
         }else if (rank.isGenus()){
-            tags = getGenusOrUninomialTaggedNameCache(nonViralName);
+            tags = getGenusOrUninomialTaggedNameCache(taxonName);
         }else if (rank.isSupraGeneric()){
-            tags = getGenusOrUninomialTaggedNameCache(nonViralName);
+            tags = getGenusOrUninomialTaggedNameCache(taxonName);
         }else{
-            tags = getRanklessTaggedNameCache(nonViralName);
-            logger.warn("Rank does not belong to a rank class: " + rank.getTitleCache() + ". Used rankless nameCache for name " + nonViralName.getUuid());
+            tags = getRanklessTaggedNameCache(taxonName);
+            logger.warn("Rank does not belong to a rank class: " + rank.getTitleCache() + ". Used rankless nameCache for name " + taxonName.getUuid());
         }
         //TODO handle appended phrase here instead of different places, check first if this is true for all
         //cases
 
         return tags;
-
     }
 
 //***************************** PRIVATES ***************************************/
@@ -852,38 +725,5 @@ public class TaxonNameDefaultCacheStrategy
         }
     }
 
-    @Override
-    protected List<TaggedText> doGetTaggedTitle(TaxonName taxonName) {
-        List<TaggedText> tags = new ArrayList<>();
-        if (taxonName.getNameType().isViral()){
-            String acronym = taxonName.getAcronym();
-            tags.add(new TaggedText(TagEnum.name, acronym));
-            return tags;
-        }else if (taxonName.isHybridFormula()){
-            //hybrid formula
-            String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
-            boolean isFirst = true;
-            List<HybridRelationship> rels = taxonName.getOrderedChildRelationships();
-            for (HybridRelationship rel: rels){
-                if (! isFirst){
-                    tags.add(new TaggedText(TagEnum.hybridSign, hybridSeparator));
-                }
-                isFirst = false;
-                tags.addAll(getTaggedTitle(rel.getParentName()));
-            }
-            return tags;
-        }else if (taxonName.isAutonym()){
-            //Autonym
-            tags.addAll(handleTaggedAutonym(taxonName));
-        }else{ //not Autonym
-             List<TaggedText> nameTags = getTaggedName(taxonName);
-            tags.addAll(nameTags);
-            String authorCache = getAuthorshipCache(taxonName);
-            if (isNotBlank(authorCache)){
-                tags.add(new TaggedText(TagEnum.authors, authorCache));
-            }
-        }
-        return tags;
-    }
 
 }
