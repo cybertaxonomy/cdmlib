@@ -17,6 +17,8 @@ public enum TermOrder implements IKeyLabel{
 
     IdInVoc("IdInVoc", "Id in Vocabulary"),
     Label("Label", "Label"),
+    Symbol1("Symbol1", "Symbol 1"),
+    Symbol2("Symbol2", "Symbol 2"),
     Natural("Natural", "Natural");
 
     private String label;
