@@ -1407,7 +1407,7 @@ public class OccurrenceServiceImpl
             Taxon taxon = null;
             if(occurrenceConfig.getAssociatedTaxonUuid()!=null){
                 TaxonBase<?> taxonBase = taxonService.load(occurrenceConfig.getAssociatedTaxonUuid());
-                if(taxonBase.isInstanceOf(Taxon.class)){
+                if(taxonBase != null && taxonBase.isInstanceOf(Taxon.class)){
                     taxon = HibernateProxyHelper.deproxy(taxonBase, Taxon.class);
                 }
             }
