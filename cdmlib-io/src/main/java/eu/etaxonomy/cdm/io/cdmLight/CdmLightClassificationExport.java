@@ -953,6 +953,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
 
             Reference secRef = ppSyonym.getSec();
+            if (!state.getReferenceStore().contains(secRef.getUuid())) {
+                handleReference(state, secRef);
+            }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
             Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSyonym);
@@ -976,6 +979,9 @@ public class CdmLightClassificationExport
             }
             if (rel != null){
                 Reference synSecRef = rel.getCitation();
+                if (!state.getReferenceStore().contains(synSecRef.getUuid())) {
+                    handleReference(state, synSecRef);
+                }
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synSecRef);
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synSecRef);
                 isProParte = rel.getType().isProParte();
