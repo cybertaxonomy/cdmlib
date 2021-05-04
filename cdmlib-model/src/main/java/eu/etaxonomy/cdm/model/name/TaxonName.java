@@ -3708,8 +3708,14 @@ public class TaxonName
                 result.registrations.add(registration);
             }
 
-            //no changes to: appendedPharse, nomenclaturalReference,
-            //nomenclaturalMicroReference, parsingProblem, problemEnds, problemStarts
+            //nomenclatural source
+            if (this.getNomenclaturalSource() != null){
+                result.setNomenclaturalSource(this.getNomenclaturalSource().clone());
+                result.getNomenclaturalSource().setSourcedName(result);
+            }
+
+
+            //no changes to: appendedPharse, parsingProblem, problemEnds, problemStarts
             //protectedFullTitleCache, rank
             //basionamyAuthorship, combinationAuthorship, exBasionymAuthorship, exCombinationAuthorship
             //genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
