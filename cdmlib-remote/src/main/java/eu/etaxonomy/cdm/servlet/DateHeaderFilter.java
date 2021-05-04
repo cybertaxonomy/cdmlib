@@ -33,17 +33,12 @@ import org.apache.log4j.Logger;
  */
 public class DateHeaderFilter implements Filter {
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         // Nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -57,12 +52,8 @@ public class DateHeaderFilter implements Filter {
             Logger.getLogger(this.getClass()).warn("Can not add data header.", e);
             // no point adding a timestamp, just ignore any exception
         }
-
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void destroy() {
         // Nothing to do
