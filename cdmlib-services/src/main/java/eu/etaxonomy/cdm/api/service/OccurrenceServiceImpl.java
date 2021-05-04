@@ -1448,7 +1448,7 @@ public class OccurrenceServiceImpl
         Taxon taxon = null;
         if(config.getAssociatedTaxonUuid()!=null){
             TaxonBase<?> taxonBase = taxonService.load(config.getAssociatedTaxonUuid());
-            if(taxonBase.isInstanceOf(Taxon.class)){
+            if(taxonBase != null && taxonBase.isInstanceOf(Taxon.class)){
                 taxon = CdmBase.deproxy(taxonBase, Taxon.class);
             }
         }
