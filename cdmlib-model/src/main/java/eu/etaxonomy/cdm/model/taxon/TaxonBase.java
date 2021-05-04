@@ -468,6 +468,10 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         TaxonBase<S> result;
         try {
             result = (TaxonBase<S>)super.clone();
+            if (this.getSecSource() != null){
+                result.setSecSource(this.getSecSource().clone());
+                result.getSecSource().setSourcedTaxon(result);
+            }
 
 //            result.setSec(null);
 

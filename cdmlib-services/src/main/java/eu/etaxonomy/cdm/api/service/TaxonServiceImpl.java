@@ -477,9 +477,6 @@ public class TaxonServiceImpl
 
         DeleteResult deleteResult = deleteTaxon(acceptedTaxon.getUuid(), conf, null);
         if (synonym.isPersited()){
-            if (synonym.getSecSource() != null){
-                synonym.getSecSource().setSourcedTaxon(null);
-            }
             synonym.setSecSource(null);
             deleteResult.includeResult(deleteSynonym(synonym.getUuid(), confSyn));
         }
