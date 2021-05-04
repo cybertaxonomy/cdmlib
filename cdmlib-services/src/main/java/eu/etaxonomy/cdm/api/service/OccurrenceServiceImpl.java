@@ -1422,10 +1422,11 @@ public class OccurrenceServiceImpl
              */
             if(occurrenceConfig.isRetrieveIndirectlyAssociatedSpecimens() || !occurrenceConfig.getAssignmentStatus().equals(AssignmentStatus.ALL_SPECIMENS)){
                 List<SpecimenOrObservationBase> occurrences = new ArrayList<>();
-                occurrences.addAll(dao.findOccurrences(occurrenceConfig.getClazz(),
+                List<SpecimenOrObservationBase> sobs = dao.findOccurrences(occurrenceConfig.getClazz(),
                         occurrenceConfig.getTitleSearchStringSqlized(), occurrenceConfig.getSignificantIdentifier(),
                         occurrenceConfig.getSpecimenType(), taxon, taxonName, occurrenceConfig.getMatchMode(), null, null,
-                        occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths()));
+                        occurrenceConfig.getOrderHints(), occurrenceConfig.getPropertyPaths());
+                occurrences.addAll(sobs);
                 occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
                 return occurrences.size();
             }

@@ -53,7 +53,6 @@ public class CdmLightExportConfigurator
 
     private Comparator<TaxonNodeDto> comparator;
 
-
     //metadata /gfbio
     private String description;
     private String creator;
@@ -78,6 +77,18 @@ public class CdmLightExportConfigurator
         setUserFriendlyIOName("Cdm Light Export");
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void makeIoClassList() {
+        ioClassList = new Class[] {
+                CdmLightClassificationExport.class
+        };
+    }
+
+    @Override
+    public CdmLightExportState getNewState() {
+        return new CdmLightExportState(this);
+    }
 
     public String getEncoding() {
         return csvIOConfig.getEncoding();
@@ -115,199 +126,91 @@ public class CdmLightExportConfigurator
     }
 
     @Override
-    public CdmLightExportState getNewState() {
-        return new CdmLightExportState(this);
-    }
-
-    @Override
     public String getDestinationNameString() {
         // TODO Auto-generated method stub
         return null;
     }
-    /**
-     * @return the description
-     */
+
     public String getDescription() {
         return description;
     }
-
-
-    /**
-     * @param description the description to set
-     */
     public void setDescription(String description) {
         this.description = description;
     }
 
-
-    /**
-     * @return the creator
-     */
     public String getCreator() {
         return creator;
     }
-
-
-    /**
-     * @param creator the creator to set
-     */
     public void setCreator(String creator) {
         this.creator = creator;
     }
 
-
     public String getContributor() {
         return contributor;
     }
-
-
     public void setContributor(String contributor) {
         this.contributor = contributor;
     }
 
-
-    /**
-     * @return the title
-     */
     public String getTitle() {
         return title;
     }
-
-
-    /**
-     * @param title the title to set
-     */
     public void setTitle(String title) {
         this.title = title;
     }
 
-
-    /**
-     * @return the language
-     */
     public Language getLanguage() {
         return language;
     }
-
-
-    /**
-     * @param language the language to set
-     */
     public void setLanguage(Language language) {
         this.language = language;
     }
 
-
-
-
-
-    /**
-     * @return the dataSet_landing_page
-     */
     public String getDataSet_landing_page() {
         return dataSet_landing_page;
     }
-
-
-    /**
-     * @param dataSet_landing_page the dataSet_landing_page to set
-     */
     public void setDataSet_landing_page(String dataSet_landing_page) {
         this.dataSet_landing_page = dataSet_landing_page;
     }
 
-
-    /**
-     * @return the dataset_download_link
-     */
     public String getDataset_download_link() {
         return dataset_download_link;
     }
-
-
-    /**
-     * @param dataset_download_link the dataset_download_link to set
-     */
     public void setDataset_download_link(String dataset_download_link) {
         this.dataset_download_link = dataset_download_link;
     }
 
-
-    /**
-     * @return the base_url
-     */
     public String getBase_url() {
         return base_url;
     }
-
-
-    /**
-     * @param base_url the base_url to set
-     */
     public void setBase_url(String base_url) {
         this.base_url = base_url;
     }
 
-
-    /**
-     * @return the recommended_citation
-     */
     public String getRecommended_citation() {
         return recommended_citation;
     }
-
-
-    /**
-     * @param recommended_citation the recommended_citation to set
-     */
     public void setRecommended_citation(String recommended_citation) {
         this.recommended_citation = recommended_citation;
     }
 
-
-    /**
-     * @return the location
-     */
     public String getLocation() {
         return location;
     }
-
-
-    /**
-     * @param location the location to set
-     */
     public void setLocation(String location) {
         this.location = location;
     }
 
-
-    /**
-     * @return the keywords
-     */
     public String getKeywords() {
         return keywords;
     }
-
-
-    /**
-     * @param keywords the keywords to set
-     */
     public void setKeywords(String keywords) {
         this.keywords = keywords;
     }
 
-
-    /**
-     * @return the licence
-     */
     public String getLicence() {
         return licence;
     }
-
-
-    /**
-     * @param licence the licence to set
-     */
     public void setLicence(String licence) {
         this.licence = licence;
     }
@@ -324,14 +227,12 @@ public class CdmLightExportConfigurator
         this.createZipFile = createZipFile;
     }
 
-
     public boolean isFilterIntextReferences() {
         return isFilterIntextReferences;
     }
     public void setRemoveIntextReferences(boolean isRemoveIntextReferences) {
         this.isFilterIntextReferences = isRemoveIntextReferences;
     }
-
 
     public Comparator<TaxonNodeDto> getComparator() {
         return comparator;
@@ -340,7 +241,6 @@ public class CdmLightExportConfigurator
         this.comparator = comparator;
     }
 
-
     public boolean isFilterImportSources() {
         return isFilterImportSources;
     }
@@ -348,39 +248,23 @@ public class CdmLightExportConfigurator
         this.isFilterImportSources = isFilterImportSources;
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void makeIoClassList() {
-        ioClassList = new Class[] {
-                CdmLightClassificationExport.class
-        };
-    }
-
-
     public boolean isAddHTML() {
         return isAddHTML;
     }
-
-
     public void setAddHTML(boolean isAddHTML) {
         this.isAddHTML = isAddHTML;
     }
 
-
     public boolean isCreateCondensedDistributionString() {
         return this.isCreateCondensedDistributionString;
     }
-
     public void setCreateCondensedDistributionString(boolean isCreateCondensedDistributionString) {
          this.isCreateCondensedDistributionString = isCreateCondensedDistributionString;
     }
 
-
-
     public CondensedDistributionRecipe getCondensedDistributionRecipe() {
         return this.recipe;
     }
-
     public void setCondensedDistributionRecipe(CondensedDistributionRecipe recipe) {
         this.recipe = recipe;
     }
