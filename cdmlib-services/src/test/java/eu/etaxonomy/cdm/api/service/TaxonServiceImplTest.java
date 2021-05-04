@@ -294,13 +294,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
 
         assertTrue(tax.getName().getTitleCache().equals("Test2"));
-
-
-
     }
 
     @Test
-//    @Ignore
     public final void testMakeTaxonSynonymNewUuid() {
         try {
             createTestDataSet();
@@ -334,7 +330,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-
     public final void testChangeSynonymToAcceptedTaxon() throws FileNotFoundException{
 
 		createTestDataSet();
