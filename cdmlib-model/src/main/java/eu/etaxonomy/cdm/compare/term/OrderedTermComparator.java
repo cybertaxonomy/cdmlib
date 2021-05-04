@@ -25,7 +25,7 @@ public class OrderedTermComparator <T extends DefinedTermBase<T>> implements Com
             OrderedTermBase odt1 = (OrderedTermBase) o1;
             OrderedTermBase odt2 = (OrderedTermBase) o2;
             if (odt1.getVocabulary().equals(odt2.getVocabulary())){
-                return odt1.compareTo(odt2);
+                return - odt1.compareTo(odt2);
             }else{
                 return odt1.getVocabulary().getTitleCache().compareTo(odt2.getVocabulary().getTitleCache());
             }
