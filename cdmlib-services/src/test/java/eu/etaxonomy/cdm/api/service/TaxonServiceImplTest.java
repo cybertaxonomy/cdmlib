@@ -283,6 +283,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
         MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
         configurator.setTaxonNameTitle("Test3");
+        @SuppressWarnings("rawtypes")
         List<TaxonBase> synList = service.findTaxaByName(configurator);
 
         if (synList.size() > 0){
