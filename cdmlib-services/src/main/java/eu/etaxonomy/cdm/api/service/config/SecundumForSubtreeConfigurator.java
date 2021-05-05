@@ -1,5 +1,3 @@
-package eu.etaxonomy.cdm.api.service.config;
-
 /**
 * Copyright (C) 2017 EDIT
 * European Distributed Institute of Taxonomy
@@ -8,7 +6,7 @@ package eu.etaxonomy.cdm.api.service.config;
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
+package eu.etaxonomy.cdm.api.service.config;
 
 import java.util.UUID;
 
@@ -30,22 +28,10 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
     private boolean overwriteExistingSynonyms = true;
     private boolean emptySecundumDetail = true;
 
-
-    /**
-     * @return the emptySecundumDetail
-     */
-    public boolean isEmptySecundumDetail() {
-        return emptySecundumDetail;
-    }
-
-
-
     public SecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor) {
         super(subtreeUuid, monitor);
         this.newSecundum = newSecundum;
-
     }
-
 
     public SecundumForSubtreeConfigurator(UUID subtreeUuid) {
         super(subtreeUuid);
@@ -54,34 +40,27 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
     public Reference getNewSecundum() {
         return newSecundum;
     }
-
-
     public void setNewSecundum(Reference newSecundum) {
         this.newSecundum = newSecundum;
     }
 
-
-
+    public boolean isEmptySecundumDetail() {
+        return emptySecundumDetail;
+    }
     public void setEmptySecundumDetail(boolean emptySecundumDetail) {
         this.emptySecundumDetail = emptySecundumDetail;
     }
 
-
     public boolean isOverwriteExistingAccepted() {
         return overwriteExistingAccepted;
     }
-
-
     public void setOverwriteExistingAccepted(boolean overwriteExistingAccepted) {
         this.overwriteExistingAccepted = overwriteExistingAccepted;
     }
 
-
     public boolean isOverwriteExistingSynonyms() {
         return overwriteExistingSynonyms;
     }
-
-
     public void setOverwriteExistingSynonyms(boolean overwriteExistingSynonyms) {
         this.overwriteExistingSynonyms = overwriteExistingSynonyms;
     }

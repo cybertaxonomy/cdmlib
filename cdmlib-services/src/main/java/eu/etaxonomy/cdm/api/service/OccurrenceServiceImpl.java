@@ -163,7 +163,7 @@ public class OccurrenceServiceImpl
             results = dao.getDerivationEvents(occurence, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class OccurrenceServiceImpl
             results = dao.getMedia(occurence, pageSize, pageNumber, propertyPaths);
         }
 
-        return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class OccurrenceServiceImpl
                 .flatMap(dtos -> dtos.stream())
                 .collect(Collectors.toList()
                 );
-        return new DefaultPagerImpl<MediaDTO>(pageNumber, numberOfResults, pageSize, mediaDTOs);
+        return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, mediaDTOs);
     }
 
     @Override
@@ -245,7 +245,7 @@ public class OccurrenceServiceImpl
                 }
             }
         }
-        return new DefaultPagerImpl<Media>(pageNumber, Long.valueOf(media.size()), pageSize, media);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(media.size()), pageSize, media);
     }
 
     @Override
@@ -367,11 +367,11 @@ public class OccurrenceServiceImpl
         //dao.list() does the paging of the field units. Passing the field units directly to the Pager would not work
         List<SpecimenOrObservationBase> rootUnits = dao.list(rootUnitUuids, pageSize, pageNumber, orderHints, propertyPaths);
         List<T> castedUnits = new ArrayList<>(rootUnits.size());
-        for(SpecimenOrObservationBase sob : rootUnits) {
+        for(SpecimenOrObservationBase<?> sob : rootUnits) {
             // this cast should be save since the uuids have been filtered by type above
             castedUnits.add((T)sob);
         }
-        return new DefaultPagerImpl<T>(pageNumber, totalCount, pageSize, castedUnits);
+        return new DefaultPagerImpl<>(pageNumber, totalCount, pageSize, castedUnits);
     }
 
     @Override
@@ -503,7 +503,7 @@ public class OccurrenceServiceImpl
         }
         occurrences = (List<T>) dao.loadList(occurrenceIds, null, propertyPaths);
 
-        return new DefaultPagerImpl<T>(pageNumber, Long.valueOf(occurrences.size()), pageSize, occurrences);
+        return new DefaultPagerImpl<>(pageNumber, Long.valueOf(occurrences.size()), pageSize, occurrences);
 
     }
 
@@ -1460,8 +1460,8 @@ public class OccurrenceServiceImpl
                 config.getTitleSearchString(), config.getSignificantIdentifier(),
                 config.getSpecimenType(), taxon, taxonName, config.getMatchMode(), null, null,
                 config.getOrderHints()));
-
-        return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), occurrences);
+        long count = Integer.valueOf(occurrences.size()).longValue();
+        return new DefaultPagerImpl<>(config.getPageNumber(), count, config.getPageSize(), occurrences);
     }
 
     @Override
@@ -1512,7 +1512,8 @@ public class OccurrenceServiceImpl
             occurrences.addAll(foundOccurrences);
             occurrences = filterOccurencesByAssignmentAndHierarchy(occurrenceConfig, occurrences, taxon, taxonName);
 
-            return new DefaultPagerImpl<>(config.getPageNumber(), occurrences.size(), config.getPageSize(), (List<S>)occurrences);
+            long count = Integer.valueOf(occurrences.size()).longValue();
+            return new DefaultPagerImpl<>(config.getPageNumber(), count, config.getPageSize(), (List<S>)occurrences);
         }
         return super.findByTitle(config);
     }
@@ -1525,7 +1526,7 @@ public class OccurrenceServiceImpl
             AssignmentStatus assignmentStatus = occurrenceConfig.getAssignmentStatus();
             List<SpecimenOrObservationBase> specimenWithAssociations = new ArrayList<>();
             if(!assignmentStatus.equals(AssignmentStatus.ALL_SPECIMENS)){
-                for (SpecimenOrObservationBase specimenOrObservationBase : occurrences) {
+                for (SpecimenOrObservationBase<?> specimenOrObservationBase : occurrences) {
                     boolean includeUnpublished = true;  //TODO not sure if this is correct, maybe we have to propagate publish flag to higher methods.
                     Collection<TaxonBase<?>> associatedTaxa = listAssociatedTaxa(specimenOrObservationBase,
                             includeUnpublished, null, null, null, null);

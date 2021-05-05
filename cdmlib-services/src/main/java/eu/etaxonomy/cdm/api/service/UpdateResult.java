@@ -148,7 +148,7 @@ public class UpdateResult implements Serializable{
     //****************** CONVENIENCE *********************************************/
 
     /**
-     * Sets the status to {@link DeleteStatus#ERROR} if not yet set to a more serious
+     * Sets the status to {@link Status#ERROR} if not yet set to a more serious
      * status.
      */
     public void setError(){
@@ -156,7 +156,7 @@ public class UpdateResult implements Serializable{
     }
 
     /**
-     * Sets the status to {@link DeleteStatus#ABORT} if not yet set to a more serious
+     * Sets the status to {@link Status#ABORT} if not yet set to a more serious
      * status.
      */
     public void setAbort(){
