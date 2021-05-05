@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -248,33 +247,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#removeTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
-     */
-    @Test
-    public final void testRemoveTaxon() {
-        Taxon taxon = Taxon.NewInstance(TaxonNameFactory.NewBotanicalInstance(Rank.UNKNOWN_RANK()), null);
-        UUID uuid = service.save(taxon).getUuid();
-       // try {
-			service.deleteTaxon(taxon.getUuid(), null, null);
-		/*} catch (DataChangeNoRollbackException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-        TaxonBase<?> actualTaxon = service.find(uuid);
-        assertNull(actualTaxon);
-    }
-
 
     @Test
-    public final void testMakeTaxonSynonym() {
-        try {
-			createTestDataSet();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    public final void testSwapSynonymAndAcceptedTaxon() throws FileNotFoundException{
 
+        createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
         service.saveOrUpdate(synonym);
         UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true);
@@ -284,27 +261,20 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
         configurator.setTaxonNameTitle("Test3");
         List<TaxonBase> synList = service.findTaxaByName(configurator);
-        HomotypicalGroup groupTest2 = null;
+
         if (synList.size() > 0){
             TaxonBase syn = synList.get(0);
-            groupTest2 = syn.getHomotypicGroup();
             assertTrue(tax.getSynonyms().contains(syn));
         }else{
             Assert.fail("There should be a synonym with name Test3");
         }
-
         assertTrue(tax.getName().getTitleCache().equals("Test2"));
     }
 
     @Test
-    public final void testMakeTaxonSynonymNewUuid() {
-        try {
-            createTestDataSet();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public final void testSwapSynonymAndAcceptedTaxonNewUuid() throws FileNotFoundException{
 
+        createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
         service.saveOrUpdate(synonym);
         UpdateResult result = service.swapSynonymAndAcceptedTaxonNewUuid(synonym, taxWithSyn, true);
@@ -314,19 +284,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         MatchingTaxonConfigurator configurator = MatchingTaxonConfigurator.NewInstance();
         configurator.setTaxonNameTitle("Test3");
         List<TaxonBase> synList = service.findTaxaByName(configurator);
-        HomotypicalGroup groupTest2 = null;
+
         if (synList.size() > 0){
-            TaxonBase syn = synList.get(0);
-            groupTest2 = syn.getHomotypicGroup();
+            TaxonBase<?> syn = synList.get(0);
             assertTrue(tax.getSynonyms().contains(syn));
         }else{
             Assert.fail("There should be a synonym with name Test3");
         }
-
         assertTrue(tax.getName().getTitleCache().equals("Test2"));
-
-
-
     }
 
     @Test
