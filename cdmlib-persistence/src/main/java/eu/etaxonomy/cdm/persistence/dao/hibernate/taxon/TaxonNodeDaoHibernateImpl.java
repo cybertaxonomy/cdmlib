@@ -756,11 +756,19 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase<?> taxonBase : taxonList){
                 if (taxonBase != null){
-                    taxonBase.setSec(newSec);
-                    if (emptyDetail){
-                        taxonBase.setSecMicroReference(null);
+                    taxonBase = CdmBase.deproxy(taxonBase);
+                    if (newSec == null && taxonBase.getSec() !=null
+                            || newSec != null && (taxonBase.getSec() == null || !newSec.equals(taxonBase.getSec()) )){
+                        taxonBase.setSec(newSec);
+                        result.add((T)taxonBase);
                     }
-                    result.add((T)CdmBase.deproxy(taxonBase));
+                    if (emptyDetail){
+                        if (taxonBase.getSecMicroReference() != null){
+                            taxonBase.setSecMicroReference(null);
+                            result.add((T)taxonBase);
+                        }
+                    }
+
                     monitor.worked(1);
                     if (monitor.isCanceled()){
                         return result;

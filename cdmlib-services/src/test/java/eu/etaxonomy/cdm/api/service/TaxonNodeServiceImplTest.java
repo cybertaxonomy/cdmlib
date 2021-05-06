@@ -760,6 +760,11 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Taxon taxon2 = (Taxon)taxonService.find(2);
         Assert.assertEquals(1, taxon2.getProParteAndPartialSynonymRelations().size());
         Assert.assertNull(taxon2.getProParteAndPartialSynonymRelations().iterator().next().getSource());
+
+        result = taxonNodeService.setSecundumForSubtree(config);
+        Assert.assertTrue(result.getExceptions().isEmpty() && result.isOk());
+        Assert.assertEquals(0, result.getUpdatedObjects().size());
+
     }
 
     @Test
