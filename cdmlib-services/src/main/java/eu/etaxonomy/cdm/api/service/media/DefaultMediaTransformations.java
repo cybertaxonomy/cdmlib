@@ -91,4 +91,20 @@ public class DefaultMediaTransformations {
 
         return defaultTransformations;
     }
+
+    /**
+     * Transforms a BGBM gigilib image server URI like
+     *
+     * https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file
+     *
+     * to a <a href="https://github.com/cybertaxonomy/MediaInfoService">MediaInfoService</a> URI:
+     *
+     * https://image.bgbm.org/metadata/info?file=Cyprus/Sisymbrium_aegyptiacum_C1.jpg
+     *     */
+    static public MediaUriTransformation bgbmMediaMetadataService() {
+        MediaUriTransformation mut = new MediaUriTransformation();
+        mut.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
+        mut.setPathQueryFragment(new SearchReplace("(digilib\\/Scaler\\?fn=)([^&]+)(&mo=file)", "file=$2"));
+        return mut;
+    }
 }

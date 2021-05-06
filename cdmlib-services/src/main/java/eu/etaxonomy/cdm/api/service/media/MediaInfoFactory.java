@@ -30,23 +30,9 @@ public class MediaInfoFactory {
      */
     private List<MediaUriTransformation> uriTransformations = new ArrayList<>();
 
-    /**
-     * TODO needs to be managed in CDM PREFERENCES
-     *
-     * Transformation from
-     * https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file
-     *  to
-     * https://image.bgbm.org/metadata/info?file=Cyprus/Sisymbrium_aegyptiacum_C1.jpg
-     */
-    private MediaUriTransformation bgbmMediaMetadataService() {
-        MediaUriTransformation mut = new MediaUriTransformation();
-        mut.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
-        mut.setPathQueryFragment(new SearchReplace("(digilib\\/Scaler\\?fn=)([^&]+)(&mo=file)", "file=$2"));
-        return mut;
-    }
 
     public MediaInfoFactory() {
-        uriTransformations.add(bgbmMediaMetadataService());
+        uriTransformations.add(DefaultMediaTransformations.bgbmMediaMetadataService());
     }
 
     public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException {
