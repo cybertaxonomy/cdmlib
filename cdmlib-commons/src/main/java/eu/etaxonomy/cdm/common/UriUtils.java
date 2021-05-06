@@ -118,7 +118,7 @@ public class UriUtils {
         if(! uri.isAbsolute()){
         	throw new IOException(URI_IS_NOT_ABSOLUTE);
         }else if ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())){
-            HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
+            HttpResponse response = UriUtils.getResponse(uri, requestHeaders); // FIXME must use HTTP HEAD!
             if(UriUtils.isOk(response)){
                 Header[] contentLengths = response.getHeaders("Content-Length");
 

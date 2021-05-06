@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
+import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -768,22 +769,19 @@ public class CdmApplicationController implements ICdmRepository {
         return;
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IRightsService getRightsService() {
         return configuration.getRightsService();
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IRegistrationService getRegistrationService() {
         return configuration.getRegistrationService();
+    }
+
+    @Override
+    public MediaInfoFactory getMediaInfoFactory() {
+        return configuration.getMediaInfoFactory();
     }
 
 }

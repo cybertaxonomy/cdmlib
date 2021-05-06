@@ -30,8 +30,8 @@ import de.digitalcollections.iiif.model.sharedcanvas.Manifest;
 import de.digitalcollections.iiif.model.sharedcanvas.Resource;
 import de.digitalcollections.iiif.model.sharedcanvas.Sequence;
 import eu.etaxonomy.cdm.api.service.IMediaService;
-import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
+import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -69,6 +69,8 @@ public class ManifestComposer {
     private IMediaToolbox mediaTools;
 
     private IMediaService mediaService;
+
+    private MediaInfoFactory mediaInfoFactory; // FIXME define and use interface
 
     private String iiifIdPrefix;
 
@@ -126,10 +128,11 @@ public class ManifestComposer {
     }
 
 
-    public ManifestComposer(String iiifIdPrefix, IMediaToolbox mediaTools, IMediaService mediaService) {
+    public ManifestComposer(String iiifIdPrefix, IMediaToolbox mediaTools, IMediaService mediaService, MediaInfoFactory mediaInfoFactory) {
         this.mediaTools = mediaTools;
         this.iiifIdPrefix = iiifIdPrefix;
         this.mediaService = mediaService;
+        this.mediaInfoFactory = mediaInfoFactory;
     }
 
     <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) throws IOException {
@@ -376,7 +379,8 @@ public class ManifestComposer {
     }
 
     /**
-     * @deprecated unused as media metadata is now read via the mediaService, see
+     * @deprecated unused as media metadata is now read via the mediaService,
+     *  see {@link IMediaService#readResourceMetadataFiltered(MediaRepresentation)}
      */
     @Deprecated
     private List<MetadataEntry> mediaRepresentationMetaData(MediaRepresentation representation) {
@@ -392,7 +396,7 @@ public class ManifestComposer {
             }
             if (part.getUri() != null) {
                 try {
-                    CdmImageInfo cdmImageInfo = CdmImageInfo.NewInstanceWithMetaData(part.getUri(), MediaServiceImpl.IMAGE_READ_TIMEOUT);
+                    CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(part.getUri());
                     Map<String, String> result = cdmImageInfo.getMetaData();
                     if(result != null){
                         for (String key : result.keySet()) {

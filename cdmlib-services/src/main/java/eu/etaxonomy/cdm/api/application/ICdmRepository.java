@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
+import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -176,6 +177,8 @@ public interface ICdmRepository{
 	 *         {@link CdmPermissionEvaluator}
 	 */
 	public ICdmPermissionEvaluator getPermissionEvaluator();
+
+	public MediaInfoFactory getMediaInfoFactory(); // FIXME define and user interface
 
 	void authenticate(String username, String password);
 
