@@ -503,7 +503,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         }
         List<TermVocabularyDto> list = new ArrayList<>();
 
-
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + "where a.uuid in :uuidList ";
 //                + "order by a.titleCache";
@@ -517,7 +516,4 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         return list;
 
     }
-
-
-
 }
