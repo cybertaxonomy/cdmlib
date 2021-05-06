@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -616,7 +617,7 @@ public class DefinedTermDaoImpl
      * @param orginals
      * @return
      */
-    protected static <S extends DefinedTermBase<?>> List<S> deduplicateResult(List<S> orginals) {
+    protected static <S extends TermBase> List<S> deduplicateResult(List<S> orginals) {
         List<S> result = new ArrayList<>();
         Iterator<S> it = orginals.iterator();
         S last = null;
