@@ -785,7 +785,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private void commitAndRestartTransaction(CdmBase... cdmBaseToUpdate) {
         getSession().getTransaction().commit();
         getSession().beginTransaction();
-        getSession().update(cdmBaseToUpdate);
+        for (CdmBase cdmBase : cdmBaseToUpdate){
+            getSession().update(cdmBase);
+        }
     }
 
     @Override
