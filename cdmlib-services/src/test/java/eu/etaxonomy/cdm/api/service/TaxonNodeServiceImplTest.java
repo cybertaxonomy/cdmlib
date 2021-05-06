@@ -731,7 +731,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNull(taxonService.find(2).getSec());
         Assert.assertNull(taxonService.find(3).getSec());
         Assert.assertNull(taxonService.find(4).getSec());
-        TaxonBase<?> taxon5 = taxonService.find(5);
+        Taxon taxon5 = (Taxon)taxonService.find(5);
         Assert.assertNotNull(taxon5.getSec());
         Assert.assertNotEquals(newSec, taxon5.getSec());
         Assert.assertNotNull(taxon5.getSecMicroReference());
@@ -739,14 +739,17 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         //set secundum
         SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(subTreeUuid);
         config.setNewSecundum(newSec);
-        taxonNodeService.setSecundumForSubtree(config);
+        UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
+        Assert.assertTrue(result.getExceptions().isEmpty());
+        Assert.assertTrue(result.isOk());
+        Assert.assertEquals(5, result.getUpdatedObjects().size());
 
         commitAndStartNewTransaction(/*new String[]{"TaxonBase","TaxonBase_AUD"}*/);
         Assert.assertEquals(newSec, taxonService.find(1).getSec());
         Assert.assertNull(taxonService.find(2).getSec());
         Assert.assertEquals(newSec, taxonService.find(3).getSec());
         Assert.assertNull(taxonService.find(4).getSec());
-        taxon5 = taxonService.find(5);
+        taxon5 = (Taxon)taxonService.find(5);
         Assert.assertEquals(newSec, taxon5.getSec());
         Assert.assertNull(taxon5.getSecMicroReference());
     }
@@ -984,7 +987,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         config.setIncludeMisapplications(false);
         config.setIncludeProParteSynonyms(false);
         taxonNodeService.setPublishForSubtree(config);
-
 
         commitAndStartNewTransaction(new String[]{});
         Assert.assertEquals(true, taxonService.find(1).isPublish());

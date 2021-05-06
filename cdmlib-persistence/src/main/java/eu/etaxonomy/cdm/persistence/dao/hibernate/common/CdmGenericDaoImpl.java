@@ -414,17 +414,6 @@ public class CdmGenericDaoImpl
 		return result;
 	}
 
-	/**
-	 * @param referencedCdmBase
-	 * @param result
-	 * @param referencedClass
-	 * @param sessionFactory
-	 * @param cdmClass
-	 * @param propertyType
-	 * @param propertyName
-	 * @throws ClassNotFoundException
-	 * @throws NoSuchFieldException
-	 */
 	private void makePropertyType(
 //			CdmBase referencedCdmBase,
 			Set<ReferenceHolder> result,
