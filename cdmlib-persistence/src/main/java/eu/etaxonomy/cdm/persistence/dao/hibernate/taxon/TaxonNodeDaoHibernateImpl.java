@@ -772,7 +772,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public Set<TaxonRelationship> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+    public Set<TaxonRelationship> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newRef,
             Set<UUID> relationTypes,  boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
 
         String queryStr = forSubtreeRelationQueryStr(includeSharedTaxa, overwriteExisting, subTreeIndex, SelectMode.ID);
@@ -781,15 +781,23 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
-        for (List<Integer> taxonIdList : partitionList){
-            List<TaxonRelationship> relList = taxonRelDao.loadList(taxonIdList, null, null);
+        for (List<Integer> relIdList : partitionList){
+            List<TaxonRelationship> relList = taxonRelDao.loadList(relIdList, null, null);
             for (TaxonRelationship rel : relList){
                 if (rel != null){
-                    rel.setCitation(newSec);
-                    if (emptyDetail){
-                        rel.setCitationMicroReference(null);
+                    rel = CdmBase.deproxy(rel);
+                    if (newRef == null && rel.getCitation() !=null
+                            || newRef != null && (rel.getCitation() == null || !newRef.equals(rel.getCitation()) )){
+                        rel.setCitation(newRef);
+                        result.add(rel);
                     }
-                    result.add(CdmBase.deproxy(rel));
+                    if (emptyDetail){
+                        if (rel.getCitationMicroReference() != null){
+                            rel.setCitationMicroReference(null);
+                            result.add(rel);
+                        }
+                    }
+                    //TODO do we also need to add NamedSource to result?
                     monitor.worked(1);
                     if (monitor.isCanceled()){
                         return result;
@@ -879,8 +887,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase<?> taxonBase : taxonList){
                 if (taxonBase != null){
-                    taxonBase.setPublish(publish);
-                    result.add((T)CdmBase.deproxy(taxonBase));
+                    if (taxonBase.isPublish() != publish){  //to be on the save side
+                        taxonBase.setPublish(publish);
+                        result.add((T)CdmBase.deproxy(taxonBase));
+                    }
                     monitor.worked(1);
                     if (monitor.isCanceled()){
                         return result;
