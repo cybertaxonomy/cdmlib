@@ -46,11 +46,13 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonRelationshipDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -72,6 +74,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 	private ITaxonDao taxonDao;
 	@Autowired
 	private IClassificationDao classificationDao;
+    @Autowired
+    private ITaxonRelationshipDao taxonRelDao;
 
 	public TaxonNodeDaoHibernateImpl() {
 		super(TaxonNode.class);
@@ -700,6 +704,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return countResult(queryStr);
     }
 
+    @Override
+    public int countSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
+        String queryStr = forSubtreeRelationQueryStr(includeSharedTaxa, overwriteExisting, subTreeIndex, SelectMode.COUNT);
+        return countResult(queryStr);
+    }
+
     //#3465
     @Override
     public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
@@ -757,6 +768,36 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                 }
             }
         }
+        return result;
+    }
+
+    @Override
+    public Set<TaxonRelationship> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+            Set<UUID> relationTypes,  boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
+
+        String queryStr = forSubtreeRelationQueryStr(includeSharedTaxa, overwriteExisting, subTreeIndex, SelectMode.ID);
+
+        Set<TaxonRelationship> result = new HashSet<>();
+        Query query = getSession().createQuery(queryStr);
+        @SuppressWarnings("unchecked")
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
+        for (List<Integer> taxonIdList : partitionList){
+            List<TaxonRelationship> relList = taxonRelDao.loadList(taxonIdList, null, null);
+            for (TaxonRelationship rel : relList){
+                if (rel != null){
+                    rel.setCitation(newSec);
+                    if (emptyDetail){
+                        rel.setCitationMicroReference(null);
+                    }
+                    result.add(CdmBase.deproxy(rel));
+                    monitor.worked(1);
+                    if (monitor.isCanceled()){
+                        return result;
+                    }
+                }
+            }
+        }
+
         return result;
     }
 
@@ -886,7 +927,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                 + " FROM TaxonNode tn "
                 + "   JOIN tn.taxon t "
                 + "   JOIN t.relationsToThisTaxon rel"
-                + "   JOIN rel.relatedFrom relTax  LEFT JOIN relTax.name n ";
+                + "   JOIN rel.relatedFrom relTax "
+                + "   LEFT JOIN relTax.name n ";
         String whereStr =" tn.treeIndex LIKE '%1$s%%' ";
         if (!includeSharedTaxa){
             //toTaxon should only be used in the given subtree
@@ -905,6 +947,31 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         whereStr = handleExcludeHybrids(whereStr, excludeHybrids, "relTax");
         queryStr += " WHERE " + String.format(whereStr, subTreeIndex.toString());
+
+        return queryStr;
+    }
+
+    /**
+     * query for
+     */
+    private String forSubtreeRelationQueryStr(boolean includeSharedTaxa, boolean overwriteExisting,
+            TreeIndex subTreeIndex, SelectMode mode) {
+
+        String queryStr = "SELECT " + mode.hql("rel")
+                + " FROM TaxonNode tn "
+                + "   JOIN tn.taxon t "
+                + "   JOIN t.relationsToThisTaxon rel "
+                + "   LEFT JOIN rel.source src ";
+        String whereStr =" tn.treeIndex LIKE '%1$s%%' ";
+        if (!includeSharedTaxa){
+            //toTaxon should only be used in the given subtree
+            whereStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn2 WHERE tn2.taxon = t AND tn2.treeIndex not like '%1$s%%')  ";
+        }
+        queryStr += " WHERE " + String.format(whereStr, subTreeIndex.toString());
+        if (!overwriteExisting){
+            queryStr += " AND (rel.source IS NULL OR src.citation IS NULL) ";
+        }
 
         return queryStr;
     }

@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -130,9 +131,20 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public int countSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
-    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+    public int countSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExistingRelations, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
-    public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+
+    public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+
+    public  Set<TaxonRelationship> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+            Set<UUID> relationTypes, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail,
+            IProgressMonitor monitor);
+
+//----------------------------- PUBLISH FOR SUBTREE -------------------------------/
 
     public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, boolean includeHybrids);

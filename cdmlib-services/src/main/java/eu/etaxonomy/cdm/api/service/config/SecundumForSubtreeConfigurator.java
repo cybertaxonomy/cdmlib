@@ -26,6 +26,7 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
     private Reference newSecundum;
     private boolean overwriteExistingAccepted = true;
     private boolean overwriteExistingSynonyms = true;
+    private boolean overwriteExistingRelations = true;
     private boolean emptySecundumDetail = true;
 
     public SecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor) {
@@ -65,4 +66,10 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
         this.overwriteExistingSynonyms = overwriteExistingSynonyms;
     }
 
+    public boolean isOverwriteExistingRelations() {
+        return overwriteExistingRelations;
+    }
+    public void setOverwriteExistingRelations(boolean overwriteExistingRelations) {
+        this.overwriteExistingRelations = overwriteExistingRelations;
+    }
 }

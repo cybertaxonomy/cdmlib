@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
+import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
@@ -971,10 +972,12 @@ public class TaxonNodeServiceImpl
         }
 
         try {
+            boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
 
             TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
-            count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail()) :0;
+            count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()) :0;
+            count += includeRelatedTaxa ? dao.countSecundumForSubtreeRelations(subTreeIndex, newSec, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             monitor.beginTask("Update Secundum Reference", count);
 
             //Reference ref = config.getNewSecundum();
@@ -988,6 +991,13 @@ public class TaxonNodeServiceImpl
                monitor.subTask("Update Synonyms");
                Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
                result.addUpdatedObjects(updatedSynonyms);
+            }
+            if (includeRelatedTaxa){
+                monitor.subTask("Update Related Taxa");
+                Set<UUID> relationTypes = getRelationTypesForSubtree(config);
+                Set<TaxonRelationship> updatedRels = dao.setSecundumForSubtreeRelations(subTreeIndex, newSec,
+                        relationTypes, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
+                result.addUpdatedObjects(updatedRels);
             }
         } catch (Exception e) {
             result.setError();
@@ -1047,7 +1057,7 @@ public class TaxonNodeServiceImpl
             }
             if (includeRelatedTaxa){
                 monitor.subTask("Update Related Taxa");
-                Set<UUID> relationTypes = new HashSet<>();
+                Set<UUID> relationTypes = getRelationTypesForSubtree(config);
                 if (config.isIncludeMisapplications()){
                     relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
                 }
@@ -1066,6 +1076,17 @@ public class TaxonNodeServiceImpl
 
         monitor.done();
         return result;
+    }
+
+    private Set<UUID> getRelationTypesForSubtree(ForSubtreeConfiguratorBase config) {
+        Set<UUID> relationTypes = new HashSet<>();
+        if (config.isIncludeMisapplications()){
+            relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+        }
+        if (config.isIncludeProParteSynonyms()){
+            relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+        }
+        return relationTypes;
     }
 
     @Override

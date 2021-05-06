@@ -27,8 +27,6 @@ public class PublishForSubtreeConfigurator
     private static final long serialVersionUID = 1202667588493272030L;
 
     private boolean publish = false;
-    private boolean includeMisapplications = true;
-    private boolean includeProParteSynonyms = true;
     //for now, we keep hybrids here, maybe moved to superclass in future
     private boolean includeHybrids = true;
 
@@ -79,22 +77,6 @@ public class PublishForSubtreeConfigurator
     public PublishForSubtreeConfigurator setIncludedRelationTypes(Set<TaxonRelationshipType> includedRelationTypes) {
         this.includedRelationTypes = includedRelationTypes;
         return this;
-    }
-
-    public boolean isIncludeMisapplications() {
-        return includeMisapplications;
-    }
-    public void setIncludeMisapplications(boolean includeMisapplications) {
-        this.includeMisapplications = includeMisapplications;
-
-    }
-
-    public boolean isIncludeProParteSynonyms() {
-        return includeProParteSynonyms;
-    }
-    public void setIncludeProParteSynonyms(boolean includeProParteSynonyms) {
-        this.includeProParteSynonyms = includeProParteSynonyms;
-
     }
 
     public boolean isIncludeHybrids() {

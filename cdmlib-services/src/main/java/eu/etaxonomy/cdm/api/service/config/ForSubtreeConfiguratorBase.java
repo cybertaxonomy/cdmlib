@@ -28,6 +28,8 @@ public abstract class ForSubtreeConfiguratorBase
     private boolean includeAcceptedTaxa = true;
     private boolean includeSynonyms = true;
     private boolean includeSharedTaxa = true;
+    private boolean includeMisapplications = true;  //for err. sec.
+    private boolean includeProParteSynonyms = true;  //for syn. sec.
     private IProgressMonitor monitor;
 
     protected ForSubtreeConfiguratorBase(UUID subtreeUuid, IProgressMonitor monitor) {
@@ -78,6 +80,20 @@ public abstract class ForSubtreeConfiguratorBase
     }
     public void setIncludeSharedTaxa(boolean includeSharedTaxa) {
         this.includeSharedTaxa = includeSharedTaxa;
+    }
+
+    public boolean isIncludeMisapplications() {
+        return includeMisapplications;
+    }
+    public void setIncludeMisapplications(boolean includeMisapplications) {
+        this.includeMisapplications = includeMisapplications;
+    }
+
+    public boolean isIncludeProParteSynonyms() {
+        return includeProParteSynonyms;
+    }
+    public void setIncludeProParteSynonyms(boolean includeProParteSynonyms) {
+        this.includeProParteSynonyms = includeProParteSynonyms;
     }
 
     public IProgressMonitor getMonitor() {
