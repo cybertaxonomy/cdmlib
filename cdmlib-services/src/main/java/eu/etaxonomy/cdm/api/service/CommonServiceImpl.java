@@ -107,12 +107,6 @@ public class CommonServiceImpl
         }return result;
     }
 
-
-    @Override
-    public Set<ReferencingObjectDto> getReferencingObjectDtos(Class<? extends CdmBase> clazz, UUID uuid){
-        return null; //this.genericDao.getReferencingObjectsDto(referencedCdmBase);
-    }
-
     @Override
     public Set<ReferencingObjectDto> getReferencingObjectDtos(CdmBase referencedCdmBase){
         return this.genericDao.getReferencingObjectsDto(referencedCdmBase);
