@@ -70,6 +70,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
 	private static final Logger logger = Logger.getLogger(TaxonNodeDaoHibernateImpl.class);
 
+    private static final int DEFAULT_SET_SUBTREE_PARTITION_SIZE = 100;
+
 	@Autowired
 	private ITaxonDao taxonDao;
 	@Autowired
@@ -751,7 +753,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     private <T extends TaxonBase<?>> Set<T> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
-        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase<?> taxonBase : taxonList){
@@ -775,8 +777,15 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     }
                 }
             }
+            commitAndRestartTransaction(newSec);
         }
         return result;
+    }
+
+    private void commitAndRestartTransaction(CdmBase... cdmBaseToUpdate) {
+        getSession().getTransaction().commit();
+        getSession().beginTransaction();
+        getSession().update(cdmBaseToUpdate);
     }
 
     @Override
@@ -788,7 +797,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         Set<TaxonRelationship> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
-        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> relIdList : partitionList){
             List<TaxonRelationship> relList = taxonRelDao.loadList(relIdList, null, null);
             for (TaxonRelationship rel : relList){
@@ -812,6 +821,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     }
                 }
             }
+            commitAndRestartTransaction();
         }
 
         return result;
@@ -880,8 +890,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return setPublish(publish, queryStr, relationTypes, monitor);
     }
 
-    private static final int DEFAULT_PARTITION_SIZE = 100;
-
     private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr, Set<UUID> relTypeUuids, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
@@ -890,7 +898,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             query.setParameterList("relTypeUuid", relTypeUuids);
         }
         @SuppressWarnings("unchecked")
-        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase<?> taxonBase : taxonList){
@@ -905,6 +913,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     }
                 }
             }
+            commitAndRestartTransaction();
         }
         return result;
     }
