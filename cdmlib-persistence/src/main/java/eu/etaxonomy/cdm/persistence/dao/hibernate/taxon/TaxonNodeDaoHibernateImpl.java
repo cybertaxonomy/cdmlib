@@ -755,8 +755,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            @SuppressWarnings("unchecked")
-            List<T> taxonList = (List<T>)taxonDao.loadList(taxonIdList, null, null);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            List<T> taxonList = (List)taxonDao.loadList(taxonIdList, null, null);
             for (T taxonBase : taxonList){
                 if (taxonBase != null){
                     taxonBase = CdmBase.deproxy(taxonBase);
