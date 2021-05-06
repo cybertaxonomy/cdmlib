@@ -969,26 +969,30 @@ public class TaxonNodeServiceImpl
             result.addException(new NullPointerException("Subtree does not exist"));
             monitor.done();
             return result;
-        }else{
+        }
+
+        try {
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail()) :0;
             monitor.beginTask("Update Secundum Reference", count);
-        }
 
-        //Reference ref = config.getNewSecundum();
-        if (config.isIncludeAcceptedTaxa()){
-            monitor.subTask("Update Accepted Taxa");
+            //Reference ref = config.getNewSecundum();
+            if (config.isIncludeAcceptedTaxa()){
+                monitor.subTask("Update Accepted Taxa");
 
-            Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), monitor);
-            result.addUpdatedObjects(updatedTaxa);
+                Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), monitor);
+                result.addUpdatedObjects(updatedTaxa);
+            }
+            if (config.isIncludeSynonyms()){
+               monitor.subTask("Update Synonyms");
+               Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
+               result.addUpdatedObjects(updatedSynonyms);
+            }
+        } catch (Exception e) {
+            result.setError();
+            result.addException(e);
         }
-        if (config.isIncludeSynonyms()){
-           monitor.subTask("Update Synonyms");
-           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
-           result.addUpdatedObjects(updatedSynonyms);
-        }
-
         monitor.done();
         return result;
     }
