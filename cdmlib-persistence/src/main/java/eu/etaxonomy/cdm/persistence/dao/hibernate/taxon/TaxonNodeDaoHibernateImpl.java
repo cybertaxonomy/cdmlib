@@ -749,25 +749,26 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
     }
 
-    @SuppressWarnings("unchecked")
     private <T extends TaxonBase<?>> Set<T> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
+        @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
-            for (TaxonBase<?> taxonBase : taxonList){
+            @SuppressWarnings("unchecked")
+            List<T> taxonList = (List<T>)taxonDao.loadList(taxonIdList, null, null);
+            for (T taxonBase : taxonList){
                 if (taxonBase != null){
                     taxonBase = CdmBase.deproxy(taxonBase);
                     if (newSec == null && taxonBase.getSec() !=null
                             || newSec != null && (taxonBase.getSec() == null || !newSec.equals(taxonBase.getSec()) )){
                         taxonBase.setSec(newSec);
-                        result.add((T)taxonBase);
+                        result.add(taxonBase);
                     }
                     if (emptyDetail){
                         if (taxonBase.getSecMicroReference() != null){
                             taxonBase.setSecMicroReference(null);
-                            result.add((T)taxonBase);
+                            result.add(taxonBase);
                         }
                     }
 
