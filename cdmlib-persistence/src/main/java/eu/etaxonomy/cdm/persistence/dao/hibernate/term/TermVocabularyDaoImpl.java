@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -42,15 +43,11 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
- *
  */
 @Repository
 public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
 		ITermVocabularyDao {
 
-	/**
-	 * @param type
-	 */
 	public TermVocabularyDaoImpl() {
 		super(TermVocabulary.class);
 		indexedClasses = new Class[2];
@@ -113,7 +110,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    	TermVocabulary<T> result = (TermVocabulary<T>)query.uniqueResult();
 	    	return result;
 		} else {
-			@SuppressWarnings("unchecked")
             AuditQuery query = makeAuditQuery(clazz, auditEvent);
 			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
 
@@ -123,19 +119,17 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		}
 	}
 
-
 	@Override
     public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize,	Integer pageNumber) {
 		return getTerms(termVocabulary, pageSize, pageNumber, null, null);
 	}
-
 
     @Override
     public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths) {
 
         Criteria criteria = getSession().createCriteria(type);
         criteria.add(Restrictions.eq("termType", termType));
-        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         //this.addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")

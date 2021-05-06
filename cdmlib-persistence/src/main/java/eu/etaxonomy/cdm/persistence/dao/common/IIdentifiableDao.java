@@ -25,7 +25,8 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnotatableDao<T>, ITitledDao<T>, ISearchableDao<T>{
+public interface IIdentifiableDao <T extends IdentifiableEntity>
+        extends IAnnotatableDao<T>, ITitledDao<T>, ISearchableDao<T>{
 
 	/**
 	 * Return an object by LSID. NOTE: Because of the fact that LSIDs are supposed to
