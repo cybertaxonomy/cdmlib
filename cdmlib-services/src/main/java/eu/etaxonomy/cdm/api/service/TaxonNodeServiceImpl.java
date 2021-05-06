@@ -1025,40 +1025,44 @@ public class TaxonNodeServiceImpl
             result.addException(new NullPointerException("Subtree does not exist"));
             monitor.done();
             return result;
-        }else{
+        }
+
+        try {
             subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             monitor.beginTask("Update publish flag", count);
-        }
 
-
-        if (includeAcceptedTaxa){
-            monitor.subTask("Update Accepted Taxa");
-            @SuppressWarnings("rawtypes")
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
-            result.addUpdatedObjects(updatedTaxa);
-        }
-        if (includeSynonyms){
-            monitor.subTask("Update Synonyms");
-            @SuppressWarnings("rawtypes")
-            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
-            result.addUpdatedObjects(updatedSynonyms);
-        }
-        if (includeRelatedTaxa){
-            monitor.subTask("Update Related Taxa");
-            Set<UUID> relationTypes = new HashSet<>();
-            if (config.isIncludeMisapplications()){
-                relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+            if (includeAcceptedTaxa){
+                monitor.subTask("Update Accepted Taxa");
+                @SuppressWarnings("rawtypes")
+                Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
+                result.addUpdatedObjects(updatedTaxa);
             }
-            if (config.isIncludeProParteSynonyms()){
-                relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+            if (includeSynonyms){
+                monitor.subTask("Update Synonyms");
+                @SuppressWarnings("rawtypes")
+                Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
+                result.addUpdatedObjects(updatedSynonyms);
             }
-            @SuppressWarnings("rawtypes")
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
-                    relationTypes, includeSharedTaxa, includeHybrids, monitor);
-            result.addUpdatedObjects(updatedTaxa);
+            if (includeRelatedTaxa){
+                monitor.subTask("Update Related Taxa");
+                Set<UUID> relationTypes = new HashSet<>();
+                if (config.isIncludeMisapplications()){
+                    relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+                }
+                if (config.isIncludeProParteSynonyms()){
+                    relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+                }
+                @SuppressWarnings("rawtypes")
+                Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
+                        relationTypes, includeSharedTaxa, includeHybrids, monitor);
+                result.addUpdatedObjects(updatedTaxa);
+            }
+        } catch (Exception e) {
+            result.setError();
+            result.addException(e);
         }
 
         monitor.done();
