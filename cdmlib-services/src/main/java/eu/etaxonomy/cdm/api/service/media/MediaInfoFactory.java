@@ -51,9 +51,7 @@ public class MediaInfoFactory {
 
     public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException {
         return new MediaMedadataFileReader(imageUri)
-               .readSuffix()
-               .readImageLength()
-               .readImageInfo()
+               .readBaseInfo()
                .readMetaData()
                .getCdmImageInfo();
 
@@ -61,11 +59,8 @@ public class MediaInfoFactory {
 
     public CdmImageInfo cdmImageInfo(URI imageUri) throws IOException, HttpException {
         return new MediaMedadataFileReader(imageUri)
-                .readSuffix()
-                .readImageLength()
-                .readImageInfo()
-                .getCdmImageInfo();
-
+               .readBaseInfo()
+               .getCdmImageInfo();
     }
 
 

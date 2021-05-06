@@ -1,7 +1,7 @@
 /**
  *
  */
-package eu.etaxonomy.cdm.common.media;
+package eu.etaxonomy.cdm.api.service.media;
 
 import static org.junit.Assert.fail;
 
@@ -17,15 +17,17 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
+import eu.etaxonomy.cdm.common.media.CdmImageInfo;
+import eu.etaxonomy.cdm.common.media.MimeType;
 
 /**
  * @author n.hoffmann
  */
-public class CdmImageInfoTest {
+public class MediaMedadataFileReaderTest {
 
     private static final String OFFLINE = "OFFLINE";
 
-    public static final Logger logger = Logger.getLogger(CdmImageInfoTest.class);
+    public static final Logger logger = Logger.getLogger(MediaMedadataFileReaderTest.class);
 
     private URI jpegUri;
     private URI tiffUri;
@@ -37,10 +39,10 @@ public class CdmImageInfoTest {
 
     @Before
     public void setUp() throws Exception {
-        URL jpegUrl = CdmImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.jpg");
+        URL jpegUrl = MediaMedadataFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.jpg");
         jpegUri = new URI(jpegUrl);
 
-        URL tiffUrl = CdmImageInfoTest.class.getResource("/images/OregonScientificDS6639-DSC_0307-small.tif");
+        URL tiffUrl = MediaMedadataFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.tif");
         tiffUri = new URI(tiffUrl);
 
         remotePngUri = URI.create("https://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
@@ -49,7 +51,7 @@ public class CdmImageInfoTest {
     @Test
     public void testNewInstanceJpeg(){
         try {
-            CdmImageInfo.NewInstance(jpegUri, 0);
+            new MediaMedadataFileReader(jpegUri).readBaseInfo();
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -58,7 +60,7 @@ public class CdmImageInfoTest {
     @Test
     public void testNewInstanceTiff() {
         try {
-            CdmImageInfo.NewInstance(tiffUri, 0);
+            new MediaMedadataFileReader(tiffUri).readBaseInfo();
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -68,7 +70,7 @@ public class CdmImageInfoTest {
     public void testNewInstanceRemotePng() {
         if(UriUtils.isInternetAvailable(remotePngUri)){
             try {
-                CdmImageInfo.NewInstance(remotePngUri, 3000);
+                new MediaMedadataFileReader(remotePngUri).readBaseInfo();
             } catch (Exception e) {
                 fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
             }
@@ -81,13 +83,13 @@ public class CdmImageInfoTest {
     public void testNewInstanceFileDoesNotExist() throws HttpException, IOException {
         URI nonExistentUri = URI.create("file:///nonExistentImage.jpg");
 
-        CdmImageInfo.NewInstance(nonExistentUri, 0);
+        new MediaMedadataFileReader(nonExistentUri).readBaseInfo();
     }
 
     private CdmImageInfo getJpegInstance(){
         if(jpegInstance == null){
             try {
-                jpegInstance = CdmImageInfo.NewInstance(jpegUri, 0);
+                jpegInstance =  new MediaMedadataFileReader(jpegUri).readBaseInfo().getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -99,7 +101,7 @@ public class CdmImageInfoTest {
     private CdmImageInfo getTifInstance(){
         if(tifInstance == null){
             try {
-                tifInstance = CdmImageInfo.NewInstance(tiffUri, 0);
+                tifInstance = new MediaMedadataFileReader(tiffUri).readBaseInfo().getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -108,13 +110,13 @@ public class CdmImageInfoTest {
         return tifInstance;
     }
 
-    private CdmImageInfo getRemotePngInstance() throws IOException{
+    private CdmImageInfo getRemotePngBaseInfo() throws IOException{
         if (!UriUtils.isInternetAvailable(remotePngUri)){
             throw new IOException(OFFLINE);
         }
         if(pngInstance == null){
             try {
-                pngInstance = CdmImageInfo.NewInstance(remotePngUri, 3000);
+                pngInstance = new MediaMedadataFileReader(remotePngUri).readBaseInfo().getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -132,7 +134,7 @@ public class CdmImageInfoTest {
         Assert.assertEquals(300, getTifInstance().getWidth());
 
         try {
-            Assert.assertEquals(93, getRemotePngInstance().getWidth());
+            Assert.assertEquals(93, getRemotePngBaseInfo().getWidth());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -149,7 +151,7 @@ public class CdmImageInfoTest {
         Assert.assertEquals(225, getTifInstance().getHeight());
 
         try {
-            Assert.assertEquals(93, getRemotePngInstance().getHeight());
+            Assert.assertEquals(93, getRemotePngBaseInfo().getHeight());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -166,7 +168,7 @@ public class CdmImageInfoTest {
         Assert.assertEquals(24, getTifInstance().getBitPerPixel());
 
         try {
-            Assert.assertEquals(32, getRemotePngInstance().getBitPerPixel());
+            Assert.assertEquals(32, getRemotePngBaseInfo().getBitPerPixel());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -183,7 +185,7 @@ public class CdmImageInfoTest {
         Assert.assertEquals("TIFF Tag-based Image File Format", getTifInstance().getFormatName());
 
         try {
-            Assert.assertEquals("PNG Portable Network Graphics", getRemotePngInstance().getFormatName());
+            Assert.assertEquals("PNG Portable Network Graphics", getRemotePngBaseInfo().getFormatName());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -200,7 +202,7 @@ public class CdmImageInfoTest {
         Assert.assertEquals(MimeType.TIFF.getMimeType(), getTifInstance().getMimeType());
 
         try {
-            Assert.assertEquals(MimeType.PNG.getMimeType(), getRemotePngInstance().getMimeType());
+            Assert.assertEquals(MimeType.PNG.getMimeType(), getRemotePngBaseInfo().getMimeType());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -214,7 +216,7 @@ public class CdmImageInfoTest {
         Assert.assertEquals(202926, getTifInstance().getLength());
 
         try {
-            Assert.assertEquals(9143, getRemotePngInstance().getLength());
+            Assert.assertEquals(9143, getRemotePngBaseInfo().getLength());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -228,7 +230,7 @@ public class CdmImageInfoTest {
         Assert.assertEquals("tif", getTifInstance().getSuffix());
 
         try {
-            Assert.assertEquals("png", getRemotePngInstance().getSuffix());
+            Assert.assertEquals("png", getRemotePngBaseInfo().getSuffix());
         } catch (IOException e){
             if(e.getMessage().equals(OFFLINE)){
                 logger.warn("test part skipped, since server is not available.");
@@ -238,9 +240,8 @@ public class CdmImageInfoTest {
 
     @Test
     public void testReadMetaDataJpeg() throws IOException, HttpException{
-        CdmImageInfo instance = getJpegInstance();
 
-        instance.readMetaData(0);
+        CdmImageInfo instance = new MediaMedadataFileReader(jpegUri).readMetaData().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
         Assert.assertEquals(52, metaData.size());
 
@@ -254,18 +255,16 @@ public class CdmImageInfoTest {
 
     @Test
     public void testReadMetaDataTif() throws IOException, HttpException{
-        CdmImageInfo instance = getTifInstance();
-        instance.readMetaData(0);
+        CdmImageInfo instance = new MediaMedadataFileReader(tiffUri).readBaseInfo().readMetaData().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
         Assert.assertEquals(15, metaData.size());
     }
 
     @Test
-    public void testReadMetaDataRemotePng() throws HttpException{
+    public void testReadMetaDataRemotePng() throws HttpException {
 
         try {
-            CdmImageInfo instance = getRemotePngInstance();
-            instance.readMetaData(3000);
+            CdmImageInfo instance = new MediaMedadataFileReader(remotePngUri).readMetaData().getCdmImageInfo();
             Map<String, String> metaData = instance.getMetaData();
             Assert.assertEquals(1, metaData.size());
 

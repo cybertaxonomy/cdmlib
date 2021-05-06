@@ -44,12 +44,29 @@ public class MediaMedadataFileReader {
 
     private Integer timeOut = IMAGE_READ_TIMEOUT; // setting default
 
-    public MediaMedadataFileReader(CdmImageInfo cdmImageInfo) {
-        this.cdmImageInfo = cdmImageInfo;
-    }
-
     public MediaMedadataFileReader(URI uri) {
         this.cdmImageInfo = new CdmImageInfo(uri);
+    }
+
+    /**
+     * Combines the calls to:
+     *
+     * <ul>
+     * <li>{@link #readImageInfo()}</li>
+     * <li>{@link #readImageLength()}</li>
+     * <li>{@link #readSuffix()}</li>
+     * </ul>
+     * to read the commonly needed base information.
+     *
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    public MediaMedadataFileReader readBaseInfo() throws IOException, HttpException{
+        readImageInfo();
+        readImageLength();
+        readSuffix();
+        return this;
     }
 
     /**

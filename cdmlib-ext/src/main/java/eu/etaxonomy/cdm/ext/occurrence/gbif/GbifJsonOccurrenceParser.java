@@ -428,9 +428,7 @@ public class GbifJsonOccurrenceParser {
                                 try {
                                     uri = new URI(mediaRecord.getString("identifier"));
                                     imageInf = new MediaMedadataFileReader(uri)
-                                        .readSuffix()
-                                        .readImageLength()
-                                        .readImageInfo()
+                                        .readBaseInfo()
                                         .getCdmImageInfo();
                                 } catch (URISyntaxException |IOException | HttpException e) {
                                     e.printStackTrace();
