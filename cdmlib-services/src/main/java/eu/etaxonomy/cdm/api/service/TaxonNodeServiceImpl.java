@@ -950,12 +950,6 @@ public class TaxonNodeServiceImpl
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        TaxonNode subTree = load(config.getSubtreeUuid());
-        TreeIndex subTreeIndex = null;
-        Reference newSec = null;
-        if (config.getNewSecundum() != null){
-            newSec = referenceService.load(config.getNewSecundum().getUuid());
-        }
 
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -963,7 +957,7 @@ public class TaxonNodeServiceImpl
             monitor.done();
             return result;
         }
-
+        TaxonNode subTree = load(config.getSubtreeUuid());
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
@@ -971,8 +965,14 @@ public class TaxonNodeServiceImpl
             return result;
         }
 
+        Reference newSec = null;
+        if (config.getNewSecundum() != null){
+            newSec = referenceService.load(config.getNewSecundum().getUuid());
+        }
+
         try {
-            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+
+            TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail()) :0;
             monitor.beginTask("Update Secundum Reference", count);
@@ -1005,7 +1005,6 @@ public class TaxonNodeServiceImpl
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        TreeIndex subTreeIndex = null;
 
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -1028,7 +1027,7 @@ public class TaxonNodeServiceImpl
         }
 
         try {
-            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+            TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;

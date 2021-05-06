@@ -32,12 +32,8 @@ public class PublishForSubtreeConfigurator
     //for now, we keep hybrids here, maybe moved to superclass in future
     private boolean includeHybrids = true;
 
-
-
-
     //TODO UUIDs ??
     private Set<TaxonRelationshipType> includedRelationTypes = new HashSet<>();
-
 
     public static PublishForSubtreeConfigurator NewInstance(UUID subtreeUuid, boolean publish,
             IProgressMonitor monitor) {
@@ -55,10 +51,6 @@ public class PublishForSubtreeConfigurator
 
 // ****************************** CONSTRUCTOR ******************************/
 
-    /**
-     * @param subtreeUuid
-     * @param newSecundum
-     */
     private PublishForSubtreeConfigurator(UUID subtreeUuid, boolean publish, IProgressMonitor monitor) {
         super(subtreeUuid, monitor);
         this.publish = publish;
@@ -111,7 +103,5 @@ public class PublishForSubtreeConfigurator
 
     public void setIncludeHybrids(boolean includeHybrids) {
         this.includeHybrids = includeHybrids;
-
     }
-
 }

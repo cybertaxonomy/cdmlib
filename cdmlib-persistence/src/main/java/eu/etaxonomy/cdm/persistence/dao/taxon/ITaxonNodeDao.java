@@ -37,7 +37,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
 	public UUID delete(TaxonNode persistentObject, boolean deleteChildren);
 
-   public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end);
+    public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end);
 
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
 
@@ -85,7 +85,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classification
      * @return
      */
-    List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+   public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit, List<String> propertyPaths);
 
     /**
@@ -99,7 +99,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classification
      * @return
      */
-    long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
 
     /**
      * Computes a map treeIndex->rank(sortIndex) for each given taxon node treeIndex. Required by #5957.
@@ -111,7 +111,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param maxRankOrderIndex max rank
      * @return
      */
-    Map<TreeIndex, Integer> rankOrderIndexForTreeIndex(List<TreeIndex> treeIndex, Integer minRankOrderIndex,
+    public Map<TreeIndex, Integer> rankOrderIndexForTreeIndex(List<TreeIndex> treeIndex, Integer minRankOrderIndex,
             Integer maxRankOrderIndex);
 
     /**
@@ -121,6 +121,8 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @return map with treeindex and uuidAndTitleCache of the represented taxon
      */
     public Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
+
+//----------------------------- SEC FOR SUBTREE -------------------------------/
 
     public int countSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExistingAccepted, boolean includeSharedTaxa, boolean emptySecundumDetail);
@@ -147,6 +149,8 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public Set<TaxonBase> setPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish,
             Set<UUID> relationTypes, boolean includeSharedTaxa, boolean includeHybrids,
             IProgressMonitor monitor);
+
+//---------------------------------------------------------------------------------/
 
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 
