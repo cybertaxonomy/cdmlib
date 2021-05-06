@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -951,6 +952,8 @@ public class TaxonNodeServiceImpl
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
+        monitor.beginTask("Update Secundum Reference", 100);
+        monitor.subTask("Check start conditions");
 
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -958,6 +961,7 @@ public class TaxonNodeServiceImpl
             monitor.done();
             return result;
         }
+        monitor.worked(1);
         TaxonNode subTree = load(config.getSubtreeUuid());
         if (subTree == null){
             result.setError();
@@ -965,20 +969,26 @@ public class TaxonNodeServiceImpl
             monitor.done();
             return result;
         }
+        monitor.worked(1);
 
         Reference newSec = null;
         if (config.getNewSecundum() != null){
             newSec = referenceService.load(config.getNewSecundum().getUuid());
         }
+        monitor.worked(1);
 
+        monitor.subTask("Count records");
         try {
             boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
 
             TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
+            monitor.worked(2);
             count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()) :0;
+            monitor.worked(3);
             count += includeRelatedTaxa ? dao.countSecundumForSubtreeRelations(subTreeIndex, newSec, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
-            monitor.beginTask("Update Secundum Reference", count);
+            monitor.worked(2);
+            monitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
 
             //Reference ref = config.getNewSecundum();
             if (config.isIncludeAcceptedTaxa()){
