@@ -6,14 +6,12 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -169,36 +167,10 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         this.addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<TermVocabulary> result = deduplicateResult(criteria.list());
+        List<TermVocabulary> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
-
-	/**
-     * Workaround for https://dev.e-taxonomy.eu/redmine/issues/5871 and #5945
-     * Terms with multiple representations return identical duplicates
-     * due to eager representation loading. We expect these duplicates to appear
-     * in line wo we only compare one term with its predecessor. If it already
-     * exists we remove it from the result.
-     * @param orginals
-     * @return
-     */
-    private List<TermVocabulary> deduplicateResult(List<TermVocabulary> orginals) {
-        List<TermVocabulary> result = new ArrayList<>();
-        Iterator<TermVocabulary> it = orginals.iterator();
-        TermVocabulary last = null;
-        while (it.hasNext()){
-            TermVocabulary a = it.next();
-            if (a != last){
-                if (!result.contains(a)){
-                    result.add(a);
-                }
-            }
-            last = a;
-        }
-        return result;
-    }
-
 
 	@Override
 	public void missingTermUuids(

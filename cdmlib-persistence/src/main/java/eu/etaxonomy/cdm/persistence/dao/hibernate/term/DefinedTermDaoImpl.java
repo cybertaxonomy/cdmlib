@@ -616,7 +616,7 @@ public class DefinedTermDaoImpl
      * @param orginals
      * @return
      */
-    private <S extends DefinedTermBase<?>> List<S> deduplicateResult(List<S> orginals) {
+    protected static <S extends DefinedTermBase<?>> List<S> deduplicateResult(List<S> orginals) {
         List<S> result = new ArrayList<>();
         Iterator<S> it = orginals.iterator();
         S last = null;
