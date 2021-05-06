@@ -745,7 +745,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
             for (TaxonBase<?> taxonBase : taxonList){
                 if (taxonBase != null){
-                    taxonBase = taxonDao.load(taxonBase.getUuid());
                     taxonBase.setSec(newSec);
                     if (emptyDetail){
                         taxonBase.setSecMicroReference(null);
