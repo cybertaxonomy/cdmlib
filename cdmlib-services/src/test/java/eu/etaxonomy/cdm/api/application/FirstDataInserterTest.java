@@ -11,11 +11,11 @@ package eu.etaxonomy.cdm.api.application;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  *
  * @author a.kohlbecker
  * @since Oct 12, 2012
- *
  */
 @DataSet
 public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
@@ -73,12 +73,15 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
-    @Ignore
     public void testInsertData(){
     	commitAndStartNewTransaction(null);
 
     	Taxon newTaxon = TaxonGenerator.getTestTaxon();
     	UUID taxonUUID = taxonService.save(newTaxon).getUuid();
+    	nameService.save(newTaxon.getName().getBasionyms());
+    	List<TaxonNode> childNodes = newTaxon.getTaxonNodes().iterator().next().getChildNodes();
+    	classificationService.saveTaxonNodeAll(childNodes);
+    	taxonService.saveOrUpdate(childNodes.stream().filter(tn->!tn.getTaxon().getAllMisappliedNames().isEmpty()).findFirst().get().getTaxon().getAllMisappliedNames().iterator().next());
 
     	TaxonDescription description = TaxonGenerator.getTestDescription(1);
     	newTaxon.addDescription(description);
