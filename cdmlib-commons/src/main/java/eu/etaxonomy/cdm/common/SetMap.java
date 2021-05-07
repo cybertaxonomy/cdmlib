@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This class wrapps a {@link Map} with a {@link Set} as value.
+ * This class wraps a {@link Map} with a {@link Set} as value.
  * It offers convenience methods to avoid Set creation for the user.
  *
  * @author a.mueller
@@ -39,6 +39,14 @@ public class SetMap<K,V> implements Map<K, Set<V>>{
     @Override
     public int size() {
         return map.size();
+    }
+
+    public int sizeAll() {
+        int result = 0;
+        for (Set<V> set : map.values()){
+            result += set.size();
+        }
+        return result;
     }
 
     @Override
