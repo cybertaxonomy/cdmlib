@@ -123,6 +123,10 @@ public class FirstDataInserter extends AbstractDataInserter {
             Role.ROLE_ADMIN.toString()
     };
 
+    public static final String[] USER_MANAGER_AUTHORITIES = new String[]{
+            Role.ROLE_USER_MANAGER.toString()
+    };
+
     @Autowired
     private ICommonService commonService;
 
@@ -188,7 +192,6 @@ public class FirstDataInserter extends AbstractDataInserter {
             checkAdminUser();
             checkDefaultGroups();
             assureRole_REMOTING_forEditors();
-            assureRole(Role.ROLE_USER_MANAGER);
             checkMetadata();
             firstDataInserted = true;
 
@@ -232,6 +235,7 @@ public class FirstDataInserter extends AbstractDataInserter {
         checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE_NAME, EDITOR_REFERENCE_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_ALLOW_ALL_TAXA_UUID, Group.GROUP_ALLOW_ALL_TAXA_NAME, EDIT_ALL_TAXA_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_PUBLISH_UUID, Group.GROUP_PUBLISH_NAME, PUBLISH_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_USER_MANAGER_UUID, Group.GROUP_USER_MANAGER_NAME, USER_MANAGER_AUTHORITIES);
         progressMonitor.worked(1);
     }
 
