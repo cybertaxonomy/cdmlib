@@ -39,8 +39,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -715,7 +717,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     //#3465
     @Override
-    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
+    public Set<CdmBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
         //for some reason this does not work, maybe because the listeners are not activated,
         //but also the first taxon for some reason does not get updated in terms of secundum, but only by the update listener
@@ -735,11 +737,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             queryStr += " AND t.secSource.citation IS NULL ";
         }
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
-
     }
 
     @Override
-    public Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
+    public Set<CdmBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
 
         String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.ID);
@@ -749,8 +750,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
     }
 
-    private <T extends TaxonBase<?>> Set<T> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
-        Set<T> result = new HashSet<>();
+    private <T extends TaxonBase<?>> Set<CdmBase> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
+        Set<CdmBase> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
@@ -760,16 +761,27 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             for (T taxonBase : taxonList){
                 if (taxonBase != null){
                     taxonBase = CdmBase.deproxy(taxonBase);
+                    SecundumSource secSourceBefore = taxonBase.getSecSource();
+                    Reference refBefore = taxonBase.getSec();
+                    String refDetailBefore = taxonBase.getSecMicroReference();
                     if (newSec == null && taxonBase.getSec() !=null
                             || newSec != null && (taxonBase.getSec() == null || !newSec.equals(taxonBase.getSec()) )){
                         taxonBase.setSec(newSec);
-                        result.add(taxonBase);
                     }
                     if (emptyDetail){
                         if (taxonBase.getSecMicroReference() != null){
                             taxonBase.setSecMicroReference(null);
-                            result.add(taxonBase);
                         }
+                    }
+                    //compute updated objects
+                    SecundumSource secSourceAfter = taxonBase.getSecSource();
+                    if (!CdmUtils.nullSafeEqual(secSourceBefore, secSourceAfter)){
+                        result.add(taxonBase);
+                    }else if (secSourceBefore != null && secSourceBefore.equals(secSourceAfter)
+                            && (!CdmUtils.nullSafeEqual(refBefore, secSourceAfter.getCitation())
+                                 || !CdmUtils.nullSafeEqual(refDetailBefore, secSourceAfter.getCitationMicroReference()))
+                            ){
+                        result.add(secSourceBefore);
                     }
 
                     monitor.worked(1);
@@ -793,12 +805,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
-    public Set<TaxonRelationship> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newRef,
+    public Set<CdmBase> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newRef,
             Set<UUID> relationTypes,  boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
 
         String queryStr = forSubtreeRelationQueryStr(includeSharedTaxa, overwriteExisting, subTreeIndex, SelectMode.ID);
 
-        Set<TaxonRelationship> result = new HashSet<>();
+        Set<CdmBase> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
@@ -807,18 +819,30 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             for (TaxonRelationship rel : relList){
                 if (rel != null){
                     rel = CdmBase.deproxy(rel);
+
+                    NamedSource sourceBefore = rel.getSource();
+                    Reference refBefore = rel.getCitation();
+                    String refDetailBefore = rel.getCitationMicroReference();
                     if (newRef == null && rel.getCitation() !=null
                             || newRef != null && (rel.getCitation() == null || !newRef.equals(rel.getCitation()) )){
                         rel.setCitation(newRef);
-                        result.add(rel);
                     }
                     if (emptyDetail){
                         if (rel.getCitationMicroReference() != null){
                             rel.setCitationMicroReference(null);
-                            result.add(rel);
                         }
                     }
-                    //TODO do we also need to add NamedSource to result?
+                    //compute updated objects
+                    NamedSource sourceAfter = rel.getSource();
+                    if (!CdmUtils.nullSafeEqual(sourceBefore, sourceAfter)){
+                        result.add(rel);
+                    }else if (sourceBefore != null && sourceBefore.equals(sourceAfter)
+                            && (!CdmUtils.nullSafeEqual(refBefore, sourceAfter.getCitation())
+                                 || !CdmUtils.nullSafeEqual(refDetailBefore,sourceAfter.getCitationMicroReference()))
+                            ){
+                        result.add(sourceBefore);
+                    }
+
                     monitor.worked(1);
                     if (monitor.isCanceled()){
                         return result;

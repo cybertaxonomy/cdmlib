@@ -1002,7 +1002,7 @@ public class TaxonNodeServiceImpl
             //Reference ref = config.getNewSecundum();
             if (config.isIncludeAcceptedTaxa()){
                 monitor.subTask("Update Accepted Taxa");
-                Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec,
+                Set<CdmBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec,
                         config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), subMonitor);
                 result.addUpdatedObjects(updatedTaxa);
                 if (monitor.isCanceled()){
@@ -1011,7 +1011,7 @@ public class TaxonNodeServiceImpl
             }
             if (config.isIncludeSynonyms()){
                monitor.subTask("Update Synonyms");
-               Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec,
+               Set<CdmBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec,
                        config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
                result.addUpdatedObjects(updatedSynonyms);
                if (monitor.isCanceled()){
@@ -1021,7 +1021,7 @@ public class TaxonNodeServiceImpl
             if (includeRelatedTaxa){
                 monitor.subTask("Update Related Taxa");
                 Set<UUID> relationTypes = getRelationTypesForSubtree(config);
-                Set<TaxonRelationship> updatedRels = dao.setSecundumForSubtreeRelations(subTreeIndex, newSec,
+                Set<CdmBase> updatedRels = dao.setSecundumForSubtreeRelations(subTreeIndex, newSec,
                         relationTypes, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
                 result.addUpdatedObjects(updatedRels);
                 if (monitor.isCanceled()){
