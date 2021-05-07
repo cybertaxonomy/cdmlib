@@ -298,10 +298,10 @@ public class UriUtils {
     }
 
     /**
-     * Tests internet connectivity by testing HEAD request for 4 known URL's.<BR>
+     * Tests Internet connectivity by testing HEAD request for 4 known URL's.<BR>
      * If non of them is available <code>false</code> is returned. Otherwise true.<BR>
      * @param firstUriToTest if not <code>null</code> this URI is tested before testing the standard URLs.
-     * @return true if internetconnectivity is given.
+     * @return true if Internet connectivity is given.
      */
     public static boolean isInternetAvailable(URI firstUriToTest){
         boolean result = false;
