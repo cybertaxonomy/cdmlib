@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.application;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -62,24 +61,18 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
     </bean>
     }
  *
- *
- *
  * @author a.kohlbecker
  * @since Oct 12, 2012
- *
  */
 //@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
 public class FirstDataInserter extends AbstractDataInserter {
 
-    /**
-     *
-     */
+    public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
+
     private static final EnumSet<CRUD> CREATE_READ = EnumSet.of(CRUD.CREATE, CRUD.READ);
     private static final EnumSet<CRUD> UPDATE_DELETE = EnumSet.of(CRUD.UPDATE, CRUD.DELETE);
     private static final EnumSet<CRUD> CREATE_READ_UPDATE = EnumSet.of(CRUD.CREATE, CRUD.READ, CRUD.UPDATE);
     private static final EnumSet<CRUD> CREATE_READ_UPDATE_DELETE = EnumSet.of(CRUD.CREATE, CRUD.READ, CRUD.UPDATE, CRUD.DELETE);
-
-    public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
 
     public static final String[] EDITOR_GROUP_AUTHORITIES = new String[]{
             new CdmAuthority(PermissionClass.REFERENCE, CREATE_READ).toString(),
@@ -189,7 +182,6 @@ public class FirstDataInserter extends AbstractDataInserter {
         if(!firstDataInserted){
 
             runAsAuthentication(Role.ROLE_ADMIN);
-
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 
             logger.info("inserting first data");
@@ -201,9 +193,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             firstDataInserted = true;
 
             transactionManager.commit(txStatus);
-
             restoreAuthentication();
-
         } else {
             logger.debug("insertFirstData() already executed before, skipping this time");
         }
@@ -245,11 +235,6 @@ public class FirstDataInserter extends AbstractDataInserter {
         progressMonitor.worked(1);
     }
 
-    /**
-     * @param newGroups
-     * @param groupName
-     * @param requiredAuthorities
-     */
     private void checkGroup(UUID groupUuid, String groupName, String[] requiredAuthorities) {
         Group group = groupService.load(groupUuid);
         if(group == null){
@@ -285,9 +270,6 @@ public class FirstDataInserter extends AbstractDataInserter {
         logger.info("Check of group  '" + groupName + "' done");
     }
 
-    /**
-     * @return
-     */
     private User findFirstUser() {
         User firstUser = null;
         List<User> users = userService.list(null, 1, null, Arrays.asList(new OrderHint[]{new OrderHint("id", OrderHint.SortOrder.ASCENDING)}), null);
@@ -329,10 +311,8 @@ public class FirstDataInserter extends AbstractDataInserter {
     }
 
     private void checkAdminRole(User admin) {
-        Set<GrantedAuthority> authorities = new HashSet<>();
 
-
-        authorities = (Set<GrantedAuthority>) admin.getAuthorities();
+        Set<GrantedAuthority> authorities = (Set<GrantedAuthority>) admin.getAuthorities();
 
         boolean hasRoleAdmin = false;
         for(GrantedAuthority grau : authorities){
@@ -351,9 +331,6 @@ public class FirstDataInserter extends AbstractDataInserter {
         }
     }
 
-    /**
-     * @return
-     */
     private GrantedAuthorityImpl assureRole(Role role) {
         GrantedAuthorityImpl roleLoaded = grantedAuthorityService.find(role.getUuid());
         if(roleLoaded == null){
