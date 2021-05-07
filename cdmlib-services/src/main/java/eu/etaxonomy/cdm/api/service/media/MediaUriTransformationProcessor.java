@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
 import org.apache.log4j.Logger;
@@ -48,6 +49,14 @@ public class MediaUriTransformationProcessor {
         transformations.addAll(trans);
     }
 
+    /**
+     * Applies the the transformations of this processor to the given URI.
+     * And returns the all the URLs which resulted from the transformations
+     * or an empty list if none was applicable.
+     *
+     * @param uri
+     *  the URI to transform
+     */
     public List<URI> applyTo(URI uri) {
 
         logger.debug("original:    " + uri.toString());
@@ -57,8 +66,8 @@ public class MediaUriTransformationProcessor {
         for (MediaUriTransformation transformation : transformations) {
 
             try {
-                URI newUri = uriTransformation(uri, pathQueryFragment, transformation);
-                newUris.add(newUri);
+                Optional<URI> newUri = uriTransformation(uri, pathQueryFragment, transformation);
+                newUri.ifPresent(u -> newUris.add(u));
             } catch (URISyntaxException e) {
                 logger.error(e);
             }
@@ -67,7 +76,7 @@ public class MediaUriTransformationProcessor {
         return newUris;
     }
 
-    protected URI uriTransformation(URI uri, String pathQueryFragment, MediaUriTransformation replacement)
+    private Optional<URI> uriTransformation(URI uri, String pathQueryFragment, MediaUriTransformation replacement)
             throws URISyntaxException {
 
         String newScheme = uri.getScheme();
@@ -101,9 +110,9 @@ public class MediaUriTransformationProcessor {
 
             URI newUri = new URI(newURIString);
             logger.debug("transformed: " + newUri.toString());
-            return newUri;
+            return Optional.of(newUri);
         } else {
-            return uri;
+            return Optional.empty();
         }
     }
 
@@ -128,17 +137,18 @@ public class MediaUriTransformationProcessor {
         for (MediaUriTransformation transformation : transformations) {
 
             try {
-                URI newUri = uriTransformation(uri, pathQueryFragment, transformation);
-                MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(),
-                        null);
-                MediaRepresentationPart part;
-                if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
-                    part = ImageFile.NewInstance(newUri, null, transformation.getHeight(), transformation.getWidth());
-                } else {
-                    part = MediaRepresentationPart.NewInstance(newUri, null);
+                Optional<URI> newUri = uriTransformation(uri, pathQueryFragment, transformation);
+                if(newUri.isPresent()) {
+                    MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(), null);
+                    MediaRepresentationPart part;
+                    if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
+                        part = ImageFile.NewInstance(newUri.get(), null, transformation.getHeight(), transformation.getWidth());
+                    } else {
+                        part = MediaRepresentationPart.NewInstance(newUri.get(), null);
+                    }
+                    mRepresentation.addRepresentationPart(part);
+                    repr.add(mRepresentation);
                 }
-                mRepresentation.addRepresentationPart(part);
-                repr.add(mRepresentation);
 
             } catch (URISyntaxException e) {
                 logger.error(e);
@@ -157,29 +167,27 @@ public class MediaUriTransformationProcessor {
         for (MediaUriTransformation transformation : transformations) {
 
             try {
-                URI newUri = uriTransformation(part.getUri(), pathQueryFragment, transformation);
-                if (newUri.equals(part.getUri())) {
-                    // transformation did not apply
-                    continue;
-                }
-                MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(),
-                        null);
-                MediaRepresentationPart newPart;
-                if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
-                    if (part instanceof ImageFile) {
-                        ImageFile originalImageFile = (ImageFile) part;
-                        Point newSize = calculateTargetSize(transformation, originalImageFile.getWidth(),
-                                originalImageFile.getHeight());
-                        newPart = ImageFile.NewInstance(newUri, null, newSize.y, newSize.x);
+                Optional<URI> newUri = uriTransformation(part.getUri(), pathQueryFragment, transformation);
+                if (newUri.isPresent()) {
+                    MediaRepresentation mRepresentation = MediaRepresentation.NewInstance(transformation.getMimeType(),
+                            null);
+                    MediaRepresentationPart newPart;
+                    if (transformation.getMimeType() != null && transformation.getMimeType().startsWith("image/")) {
+                        if (part instanceof ImageFile) {
+                            ImageFile originalImageFile = (ImageFile) part;
+                            Point newSize = calculateTargetSize(transformation, originalImageFile.getWidth(),
+                                    originalImageFile.getHeight());
+                            newPart = ImageFile.NewInstance(newUri.get(), null, newSize.y, newSize.x);
+                        } else {
+                            newPart = ImageFile.NewInstance(newUri.get(), null, transformation.getHeight(),
+                                    transformation.getWidth());
+                        }
                     } else {
-                        newPart = ImageFile.NewInstance(newUri, null, transformation.getHeight(),
-                                transformation.getWidth());
+                        newPart = MediaRepresentationPart.NewInstance(newUri.get(), null);
                     }
-                } else {
-                    newPart = MediaRepresentationPart.NewInstance(newUri, null);
+                    mRepresentation.addRepresentationPart(newPart);
+                    repr.add(mRepresentation);
                 }
-                mRepresentation.addRepresentationPart(newPart);
-                repr.add(mRepresentation);
 
             } catch (URISyntaxException e) {
                 logger.error(e);
