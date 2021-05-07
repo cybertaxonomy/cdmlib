@@ -46,21 +46,6 @@ public class MediaInfoFactory implements IMediaInfoFactory {
      * @throws IOException
      * @throws HttpException
      */
-    public CdmImageInfo cdmImageInfoWithMetaData(eu.etaxonomy.cdm.common.URI imageUri) throws IOException, HttpException {
-        return cdmImageInfoWithMetaData(imageUri.getJavaUri());
-    }
-
-    /**
-     * This method only exists due to performance issues for cases when
-     * the {@link MediaMetadataFileReader} to reduce the overhead imposed by reading
-     * the image metadata from the file itself.
-     *
-     *
-     * @param imageUri
-     * @return
-     * @throws IOException
-     * @throws HttpException
-     */
     public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException {
 
         // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
@@ -74,10 +59,6 @@ public class MediaInfoFactory implements IMediaInfoFactory {
                .readMetaData()
                .getCdmImageInfo();
 
-    }
-
-    public CdmImageInfo cdmImageInfo(eu.etaxonomy.cdm.common.URI imageUri) throws IOException, HttpException {
-        return cdmImageInfo(imageUri.getJavaUri());
     }
 
     public CdmImageInfo cdmImageInfo(URI imageUri) throws IOException, HttpException {

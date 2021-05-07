@@ -56,10 +56,6 @@ public class MediaMetadataFileReader {
         return new MediaMetadataFileReader(uri);
     }
 
-    protected MediaMetadataFileReader(URI uri) {
-        this.cdmImageInfo = new CdmImageInfo(new eu.etaxonomy.cdm.common.URI(uri));
-    }
-
     protected MediaMetadataFileReader(eu.etaxonomy.cdm.common.URI uri) {
         this.cdmImageInfo = new CdmImageInfo(uri);
     }
