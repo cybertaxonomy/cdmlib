@@ -23,20 +23,19 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 
 /**
- *  TODO make use of timeOut ?
+ * TODO make use of timeOut ?
  *
- * @author a.kohlbecker
- * @since May 6, 2021
+ * Most code  was extracted from CdmImageInfo.
+ *
  */
-public class MediaMedadataFileReader {
+public class MediaMetadataFileReader {
 
 
-    private static Logger logger = Logger.getLogger(MediaMedadataFileReader.class);
+    private static Logger logger = Logger.getLogger(MediaMetadataFileReader.class);
 
     private CdmImageInfo cdmImageInfo;
 
@@ -44,7 +43,24 @@ public class MediaMedadataFileReader {
 
     private Integer timeOut = IMAGE_READ_TIMEOUT; // setting default
 
-    public MediaMedadataFileReader(URI uri) {
+    /**
+     * The <code>MediaMetadataFileReader</code> should not be used directly this method
+     * only exists for not to break legacy code.
+     * <p>
+     * Instead the {@link IMediaInfoFactory} should always be used for to allow
+     * all application parts to benefit from the potential speed up through the
+     * MediaMetadataService or other fast source of metadata.
+     */
+    @Deprecated
+    public static MediaMetadataFileReader legacyFactoryMethod(eu.etaxonomy.cdm.common.URI uri) {
+        return new MediaMetadataFileReader(uri);
+    }
+
+    protected MediaMetadataFileReader(URI uri) {
+        this.cdmImageInfo = new CdmImageInfo(new eu.etaxonomy.cdm.common.URI(uri));
+    }
+
+    protected MediaMetadataFileReader(eu.etaxonomy.cdm.common.URI uri) {
         this.cdmImageInfo = new CdmImageInfo(uri);
     }
 
@@ -62,7 +78,7 @@ public class MediaMedadataFileReader {
      * @throws IOException
      * @throws HttpException
      */
-    public MediaMedadataFileReader readBaseInfo() throws IOException, HttpException{
+    public MediaMetadataFileReader readBaseInfo() throws IOException, HttpException{
         readImageInfo();
         readImageLength();
         readSuffix();
@@ -72,7 +88,7 @@ public class MediaMedadataFileReader {
     /**
      * Reads the image info (width, height, bitPerPixel, metadata, format, mime type)
      */
-    public MediaMedadataFileReader readImageInfo() throws IOException, HttpException{
+    public MediaMetadataFileReader readImageInfo() throws IOException, HttpException{
 
         InputStream inputStream;
         try {
@@ -94,7 +110,7 @@ public class MediaMedadataFileReader {
         return this;
     }
 
-    public MediaMedadataFileReader readMetaData() throws IOException, HttpException {
+    public MediaMetadataFileReader readMetaData() throws IOException, HttpException {
 
         ImageMetadata mediaData = null;
         try {
@@ -141,7 +157,7 @@ public class MediaMedadataFileReader {
     /**
      * Reads the size of the image defined by the {@link #imageUri} in bytes
      */
-    public MediaMedadataFileReader readImageLength() throws ClientProtocolException, IOException, HttpException{
+    public MediaMetadataFileReader readImageLength() throws ClientProtocolException, IOException, HttpException{
         try {
             long length = UriUtils.getResourceLength(cdmImageInfo.getUri(), null);
             cdmImageInfo.setLength(length);
@@ -162,7 +178,7 @@ public class MediaMedadataFileReader {
         return this;
     }
 
-    public MediaMedadataFileReader readSuffix(){
+    public MediaMetadataFileReader readSuffix(){
         String path = cdmImageInfo.getUri().getPath();
         String suffix = path.substring(StringUtils.lastIndexOf(path, '.') + 1);
         cdmImageInfo.setSuffix(suffix);

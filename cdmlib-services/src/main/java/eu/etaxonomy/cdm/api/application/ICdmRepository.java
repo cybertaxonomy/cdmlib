@@ -178,7 +178,7 @@ public interface ICdmRepository{
 	 */
 	public ICdmPermissionEvaluator getPermissionEvaluator();
 
-	public MediaInfoFactory getMediaInfoFactory(); // FIXME define and user interface
+	public MediaInfoFactory getMediaInfoFactory(); // FIXME define and use interface
 
 	void authenticate(String username, String password);
 

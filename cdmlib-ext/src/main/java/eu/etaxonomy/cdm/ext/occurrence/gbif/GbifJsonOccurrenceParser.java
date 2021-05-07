@@ -24,7 +24,7 @@ import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.service.media.MediaMedadataFileReader;
+import eu.etaxonomy.cdm.api.service.media.MediaMetadataFileReader;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
@@ -427,7 +427,7 @@ public class GbifJsonOccurrenceParser {
                             if (mediaRecord.has("identifier")){
                                 try {
                                     uri = new URI(mediaRecord.getString("identifier"));
-                                    imageInf = new MediaMedadataFileReader(uri)
+                                    imageInf = MediaMetadataFileReader.legacyFactoryMethod(uri)
                                         .readBaseInfo()
                                         .getCdmImageInfo();
                                 } catch (URISyntaxException |IOException | HttpException e) {

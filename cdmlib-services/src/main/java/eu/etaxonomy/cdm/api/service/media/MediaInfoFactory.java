@@ -35,16 +35,57 @@ public class MediaInfoFactory {
         uriTransformations.add(DefaultMediaTransformations.bgbmMediaMetadataService());
     }
 
+    /**
+     * This method only exists due to performance issues for cases when
+     * the {@link MediaMetadataFileReader} to reduce the overhead imposed by reading
+     * the image metadata from the file itself.
+     *
+     *
+     * @param imageUri
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
+    public CdmImageInfo cdmImageInfoWithMetaData(eu.etaxonomy.cdm.common.URI imageUri) throws IOException, HttpException {
+        return cdmImageInfoWithMetaData(imageUri.getJavaUri());
+    }
+
+    /**
+     * This method only exists due to performance issues for cases when
+     * the {@link MediaMetadataFileReader} to reduce the overhead imposed by reading
+     * the image metadata from the file itself.
+     *
+     *
+     * @param imageUri
+     * @return
+     * @throws IOException
+     * @throws HttpException
+     */
     public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException {
-        return new MediaMedadataFileReader(imageUri)
+
+        // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
+        MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
+        processor.addAll(uriTransformations);
+        processor.applyTo(imageUri);
+
+        // :-( need to use the files reader
+        return new MediaMetadataFileReader(imageUri)
                .readBaseInfo()
                .readMetaData()
                .getCdmImageInfo();
 
     }
 
+    public CdmImageInfo cdmImageInfo(eu.etaxonomy.cdm.common.URI imageUri) throws IOException, HttpException {
+        return cdmImageInfo(imageUri.getJavaUri());
+    }
+
     public CdmImageInfo cdmImageInfo(URI imageUri) throws IOException, HttpException {
-        return new MediaMedadataFileReader(imageUri)
+
+        // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
+
+        // :-( need to use the files reader
+        return new MediaMetadataFileReader(imageUri)
                .readBaseInfo()
                .getCdmImageInfo();
     }

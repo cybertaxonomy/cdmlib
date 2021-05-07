@@ -23,11 +23,11 @@ import eu.etaxonomy.cdm.common.media.MimeType;
 /**
  * @author n.hoffmann
  */
-public class MediaMedadataFileReaderTest {
+public class MediaMetadataFileReaderTest {
 
     private static final String OFFLINE = "OFFLINE";
 
-    public static final Logger logger = Logger.getLogger(MediaMedadataFileReaderTest.class);
+    public static final Logger logger = Logger.getLogger(MediaMetadataFileReaderTest.class);
 
     private URI jpegUri;
     private URI tiffUri;
@@ -39,10 +39,10 @@ public class MediaMedadataFileReaderTest {
 
     @Before
     public void setUp() throws Exception {
-        URL jpegUrl = MediaMedadataFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.jpg");
+        URL jpegUrl = MediaMetadataFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.jpg");
         jpegUri = new URI(jpegUrl);
 
-        URL tiffUrl = MediaMedadataFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.tif");
+        URL tiffUrl = MediaMetadataFileReaderTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.tif");
         tiffUri = new URI(tiffUrl);
 
         remotePngUri = URI.create("https://dev.e-taxonomy.eu/trac_htdocs/logo_edit.png");
@@ -51,7 +51,7 @@ public class MediaMedadataFileReaderTest {
     @Test
     public void testNewInstanceJpeg(){
         try {
-            new MediaMedadataFileReader(jpegUri).readBaseInfo();
+            new MediaMetadataFileReader(jpegUri).readBaseInfo();
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -60,7 +60,7 @@ public class MediaMedadataFileReaderTest {
     @Test
     public void testNewInstanceTiff() {
         try {
-            new MediaMedadataFileReader(tiffUri).readBaseInfo();
+            new MediaMetadataFileReader(tiffUri).readBaseInfo();
         } catch (Exception e) {
             fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
         }
@@ -70,7 +70,7 @@ public class MediaMedadataFileReaderTest {
     public void testNewInstanceRemotePng() {
         if(UriUtils.isInternetAvailable(remotePngUri)){
             try {
-                new MediaMedadataFileReader(remotePngUri).readBaseInfo();
+                new MediaMetadataFileReader(remotePngUri).readBaseInfo();
             } catch (Exception e) {
                 fail("NewInstance method should not throw exceptions for existing uncorrupted images.");
             }
@@ -83,13 +83,13 @@ public class MediaMedadataFileReaderTest {
     public void testNewInstanceFileDoesNotExist() throws HttpException, IOException {
         URI nonExistentUri = URI.create("file:///nonExistentImage.jpg");
 
-        new MediaMedadataFileReader(nonExistentUri).readBaseInfo();
+        new MediaMetadataFileReader(nonExistentUri).readBaseInfo();
     }
 
     private CdmImageInfo getJpegInstance(){
         if(jpegInstance == null){
             try {
-                jpegInstance =  new MediaMedadataFileReader(jpegUri).readBaseInfo().getCdmImageInfo();
+                jpegInstance =  new MediaMetadataFileReader(jpegUri).readBaseInfo().getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -101,7 +101,7 @@ public class MediaMedadataFileReaderTest {
     private CdmImageInfo getTifInstance(){
         if(tifInstance == null){
             try {
-                tifInstance = new MediaMedadataFileReader(tiffUri).readBaseInfo().getCdmImageInfo();
+                tifInstance = new MediaMetadataFileReader(tiffUri).readBaseInfo().getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -116,7 +116,7 @@ public class MediaMedadataFileReaderTest {
         }
         if(pngInstance == null){
             try {
-                pngInstance = new MediaMedadataFileReader(remotePngUri).readBaseInfo().getCdmImageInfo();
+                pngInstance = new MediaMetadataFileReader(remotePngUri).readBaseInfo().getCdmImageInfo();
             } catch (Exception e) {
                 fail("This case should have been covered by other tests.");
                 return null;
@@ -241,7 +241,7 @@ public class MediaMedadataFileReaderTest {
     @Test
     public void testReadMetaDataJpeg() throws IOException, HttpException{
 
-        CdmImageInfo instance = new MediaMedadataFileReader(jpegUri).readMetaData().getCdmImageInfo();
+        CdmImageInfo instance = new MediaMetadataFileReader(jpegUri).readMetaData().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
         Assert.assertEquals(52, metaData.size());
 
@@ -255,7 +255,7 @@ public class MediaMedadataFileReaderTest {
 
     @Test
     public void testReadMetaDataTif() throws IOException, HttpException{
-        CdmImageInfo instance = new MediaMedadataFileReader(tiffUri).readBaseInfo().readMetaData().getCdmImageInfo();
+        CdmImageInfo instance = new MediaMetadataFileReader(tiffUri).readBaseInfo().readMetaData().getCdmImageInfo();
         Map<String, String> metaData = instance.getMetaData();
         Assert.assertEquals(15, metaData.size());
     }
@@ -264,7 +264,7 @@ public class MediaMedadataFileReaderTest {
     public void testReadMetaDataRemotePng() throws HttpException {
 
         try {
-            CdmImageInfo instance = new MediaMedadataFileReader(remotePngUri).readMetaData().getCdmImageInfo();
+            CdmImageInfo instance = new MediaMetadataFileReader(remotePngUri).readMetaData().getCdmImageInfo();
             Map<String, String> metaData = instance.getMetaData();
             Assert.assertEquals(1, metaData.size());
 
