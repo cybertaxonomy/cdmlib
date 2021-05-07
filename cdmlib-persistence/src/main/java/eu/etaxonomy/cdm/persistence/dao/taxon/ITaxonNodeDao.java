@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -24,7 +25,6 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -134,13 +134,13 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public int countSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExistingRelations, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
-    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
+    public Set<CdmBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
 
-    public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
+    public  Set<CdmBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
 
-    public  Set<TaxonRelationship> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+    public  Set<CdmBase> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
             Set<UUID> relationTypes, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail,
             IProgressMonitor monitor);
 
