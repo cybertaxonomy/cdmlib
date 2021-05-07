@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -141,7 +140,7 @@ public class FirstDataInserter extends AbstractDataInserter {
     private IGrantedAuthorityService grantedAuthorityService;
 
     // not to be autowired, since the FirstdataInserter must be usable without security
-    private AuthenticationProvider runAsAuthenticationProvider = null;
+//    private AuthenticationProvider runAsAuthenticationProvider = null;
 
     protected PlatformTransactionManager transactionManager;
 
@@ -177,7 +176,6 @@ public class FirstDataInserter extends AbstractDataInserter {
 
         insertFirstData();
     }
-
 
     private void insertFirstData() {
 

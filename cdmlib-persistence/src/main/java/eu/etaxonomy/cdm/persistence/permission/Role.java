@@ -33,11 +33,6 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     public final static Role ROLE_REMOTING = new Role(UUID.fromString("be004bf6-0498-48e3-9f06-ff93fc9cdc9a"), "ROLE_REMOTING");
 
     private final UUID uuid;
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     private final String authority;
 
     public Role(UUID uuid, String authority) {
@@ -104,6 +99,10 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
 		return role;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
     @Override
     public String getAuthority() {
         return authority;
@@ -113,5 +112,4 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     public String toString(){
         return getAuthority();
     }
-
 }
