@@ -13,6 +13,7 @@ import java.io.IOException;
 import org.apache.commons.imaging.common.GenericImageMetadata.GenericImageMetadataItem;
 import org.apache.http.HttpException;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 
 /**
@@ -21,10 +22,12 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
  */
 public abstract class AbstactMediaMetadataReader {
 
-    private CdmImageInfo cdmImageInfo;
+    protected CdmImageInfo cdmImageInfo;
+    protected URI metadataUri;
 
-    protected AbstactMediaMetadataReader(eu.etaxonomy.cdm.common.URI uri) {
-        this.cdmImageInfo = new CdmImageInfo(uri);
+    protected AbstactMediaMetadataReader(URI imageUri, URI metadataUri) {
+        this.cdmImageInfo = new CdmImageInfo(imageUri);
+        this.metadataUri = metadataUri;
     }
 
     public abstract MediaMetadataFileReader read() throws IOException, HttpException;

@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
-import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 
 /**
  * TODO make use of timeOut ?
@@ -34,10 +33,7 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
  */
 public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
 
-
     private static Logger logger = Logger.getLogger(MediaMetadataFileReader.class);
-
-    private CdmImageInfo cdmImageInfo;
 
     public static final Integer IMAGE_READ_TIMEOUT = 3000; // ms
 
@@ -57,7 +53,7 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
     }
 
     protected MediaMetadataFileReader(eu.etaxonomy.cdm.common.URI uri) {
-        super(uri);
+        super(uri, uri);
     }
 
     @Override
