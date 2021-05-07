@@ -952,7 +952,7 @@ public class TaxonNodeServiceImpl
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        monitor.beginTask("Update Secundum Reference", 100);
+        monitor.beginTask("Update secundum reference for subtree", 100);
         monitor.subTask("Check start conditions");
 
         if (config.getSubtreeUuid() == null){
@@ -974,6 +974,12 @@ public class TaxonNodeServiceImpl
         Reference newSec = null;
         if (config.getNewSecundum() != null){
             newSec = referenceService.load(config.getNewSecundum().getUuid());
+            if (newSec == null){
+                result.setError();
+                result.addException(new NullPointerException("New secundum reference does not exist"));
+                monitor.done();
+                return result;
+            }
         }
         monitor.worked(1);
 
@@ -988,16 +994,16 @@ public class TaxonNodeServiceImpl
             monitor.worked(3);
             count += includeRelatedTaxa ? dao.countSecundumForSubtreeRelations(subTreeIndex, newSec, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             monitor.worked(2);
-            monitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
             if (monitor.isCanceled()){
                 return result;
             }
 
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
             //Reference ref = config.getNewSecundum();
             if (config.isIncludeAcceptedTaxa()){
                 monitor.subTask("Update Accepted Taxa");
-
-                Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), monitor);
+                Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec,
+                        config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), subMonitor);
                 result.addUpdatedObjects(updatedTaxa);
                 if (monitor.isCanceled()){
                     return result;
@@ -1005,7 +1011,8 @@ public class TaxonNodeServiceImpl
             }
             if (config.isIncludeSynonyms()){
                monitor.subTask("Update Synonyms");
-               Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
+               Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec,
+                       config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
                result.addUpdatedObjects(updatedSynonyms);
                if (monitor.isCanceled()){
                    return result;
@@ -1015,7 +1022,7 @@ public class TaxonNodeServiceImpl
                 monitor.subTask("Update Related Taxa");
                 Set<UUID> relationTypes = getRelationTypesForSubtree(config);
                 Set<TaxonRelationship> updatedRels = dao.setSecundumForSubtreeRelations(subTreeIndex, newSec,
-                        relationTypes, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
+                        relationTypes, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
                 result.addUpdatedObjects(updatedRels);
                 if (monitor.isCanceled()){
                     return result;
@@ -1037,6 +1044,8 @@ public class TaxonNodeServiceImpl
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
+        monitor.beginTask("Update publish flag for subtree", 100);
+        monitor.subTask("Check start conditions");
 
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -1044,34 +1053,42 @@ public class TaxonNodeServiceImpl
             monitor.done();
             return result;
         }
+        monitor.worked(1);
+
         TaxonNode subTree = find(config.getSubtreeUuid());
-        boolean includeAcceptedTaxa = config.isIncludeAcceptedTaxa();
-        boolean publish = config.isPublish();
-        boolean includeSynonyms = config.isIncludeSynonyms();
-        boolean includeSharedTaxa = config.isIncludeSharedTaxa();
-        boolean includeHybrids = config.isIncludeHybrids();
-        boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
             monitor.done();
             return result;
         }
+        monitor.worked(1);
 
+        monitor.subTask("Count records");
+        boolean includeAcceptedTaxa = config.isIncludeAcceptedTaxa();
+        boolean publish = config.isPublish();
+        boolean includeSynonyms = config.isIncludeSynonyms();
+        boolean includeSharedTaxa = config.isIncludeSharedTaxa();
+        boolean includeHybrids = config.isIncludeHybrids();
+        boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
         try {
             TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            monitor.worked(3);
             count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            monitor.worked(3);
             count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            monitor.worked(2);
             if (monitor.isCanceled()){
                 return result;
             }
-            monitor.beginTask("Update publish flag", count);
 
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
             if (includeAcceptedTaxa){
                 monitor.subTask("Update Accepted Taxa");
                 @SuppressWarnings("rawtypes")
-                Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
+                Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex,
+                        publish, includeSharedTaxa, includeHybrids, subMonitor);
                 result.addUpdatedObjects(updatedTaxa);
                 if (monitor.isCanceled()){
                     return result;
@@ -1080,7 +1097,8 @@ public class TaxonNodeServiceImpl
             if (includeSynonyms){
                 monitor.subTask("Update Synonyms");
                 @SuppressWarnings("rawtypes")
-                Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
+                Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex,
+                        publish, includeSharedTaxa, includeHybrids, subMonitor);
                 result.addUpdatedObjects(updatedSynonyms);
                 if (monitor.isCanceled()){
                     return result;
@@ -1097,7 +1115,7 @@ public class TaxonNodeServiceImpl
                 }
                 @SuppressWarnings("rawtypes")
                 Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
-                        relationTypes, includeSharedTaxa, includeHybrids, monitor);
+                        relationTypes, includeSharedTaxa, includeHybrids, subMonitor);
                 result.addUpdatedObjects(updatedTaxa);
                 if (monitor.isCanceled()){
                     return result;
