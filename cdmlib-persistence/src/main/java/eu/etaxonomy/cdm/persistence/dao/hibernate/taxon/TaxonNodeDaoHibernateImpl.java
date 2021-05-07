@@ -904,12 +904,13 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         @SuppressWarnings("unchecked")
         List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
-            for (TaxonBase<?> taxonBase : taxonList){
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            List<T> taxonList = (List)taxonDao.loadList(taxonIdList, null, null);
+            for (T taxonBase : taxonList){
                 if (taxonBase != null){
                     if (taxonBase.isPublish() != publish){  //to be on the save side
                         taxonBase.setPublish(publish);
-                        result.add((T)CdmBase.deproxy(taxonBase));
+                        result.add(CdmBase.deproxy(taxonBase));
                     }
                     monitor.worked(1);
                     if (monitor.isCanceled()){
