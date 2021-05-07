@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableDropper;
 import eu.etaxonomy.cdm.database.update.v518_522.SchemaUpdater_5186_5220;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
@@ -87,6 +88,32 @@ public class SchemaUpdater_5220_5230 extends SchemaUpdaterBase {
         stepName = "Remove table TaxonName_NomenclaturalStatus ";
         tableName = "TaxonName_NomenclaturalStatus";
         TableDropper.NewInstance(stepList, stepName, tableName, INCLUDE_AUDIT);
+
+        //#9613 fix uuids for roles
+        stepName = "Set uuid for role project manager";
+        String query = "UPDATE @@GrantedAuthorityImpl@@ "
+                + " SET uuid = '9eabd2c6-0590-4a1e-95f5-99cc58b63aa7' "
+                + " WHERE authority = 'ROLE_PROJECT_MANAGER'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+
+        stepName = "Set uuid for role user manager";
+        query = "UPDATE @@GrantedAuthorityImpl@@ "
+                + " SET uuid = '74d340a9-b472-4b97-b52a-c140e27a5c76' "
+                + " WHERE authority = 'ROLE_USER_MANAGER'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+
+        stepName = "Set uuid for role publish";
+        query = "UPDATE @@GrantedAuthorityImpl@@ "
+                + " SET uuid = '9ffa7879-cc67-4592-a14a-b251cccde1a7' "
+                + " WHERE authority = 'ROLE_PUBLISH'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+
+        //probably fixed already, but just in case
+        stepName = "Set uuid for role project manager";
+        query = "UPDATE @@GrantedAuthorityImpl@@ "
+                + " SET uuid = 'be004bf6-0498-48e3-9f06-ff93fc9cdc9a' "
+                + " WHERE authority = 'ROLE_REMOTING'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
 
         return stepList;
     }
