@@ -86,19 +86,19 @@ public class MediaUriTransformationProcessor {
 
         boolean isMatch = true;
         // replace the parts
-        if (replacement.getScheme() != null) {
+        if (replacement.getScheme() != null && newScheme != null) {
             Matcher m = replacement.getScheme().searchPattern().matcher(newScheme);
             isMatch &= m.find();
             newScheme = m.replaceAll(replacement.getScheme().getReplace());
         }
-        if (replacement.getHost() != null) {
+        if (replacement.getHost() != null && newHost != null) {
             Matcher m = replacement.getHost().searchPattern().matcher(newHost);
             isMatch &= m.find();
             newHost = m.replaceAll(replacement.getHost().getReplace());
         }
         // TODO port
 
-        if (replacement.getPathQueryFragment() != null) {
+        if (replacement.getPathQueryFragment() != null && newPathQueryFragment != null) {
             Matcher m = replacement.getPathQueryFragment().searchPattern().matcher(newPathQueryFragment);
             isMatch &= m.find();
             newPathQueryFragment = m.replaceAll(replacement.getPathQueryFragment().getReplace());
