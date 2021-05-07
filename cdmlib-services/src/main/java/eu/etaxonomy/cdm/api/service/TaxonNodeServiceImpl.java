@@ -989,6 +989,9 @@ public class TaxonNodeServiceImpl
             count += includeRelatedTaxa ? dao.countSecundumForSubtreeRelations(subTreeIndex, newSec, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             monitor.worked(2);
             monitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
+            if (monitor.isCanceled()){
+                return result;
+            }
 
             //Reference ref = config.getNewSecundum();
             if (config.isIncludeAcceptedTaxa()){
@@ -996,11 +999,17 @@ public class TaxonNodeServiceImpl
 
                 Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), monitor);
                 result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
             }
             if (config.isIncludeSynonyms()){
                monitor.subTask("Update Synonyms");
                Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
                result.addUpdatedObjects(updatedSynonyms);
+               if (monitor.isCanceled()){
+                   return result;
+               }
             }
             if (includeRelatedTaxa){
                 monitor.subTask("Update Related Taxa");
@@ -1008,6 +1017,9 @@ public class TaxonNodeServiceImpl
                 Set<TaxonRelationship> updatedRels = dao.setSecundumForSubtreeRelations(subTreeIndex, newSec,
                         relationTypes, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
                 result.addUpdatedObjects(updatedRels);
+                if (monitor.isCanceled()){
+                    return result;
+                }
             }
         } catch (Exception e) {
             result.setError();
@@ -1051,6 +1063,9 @@ public class TaxonNodeServiceImpl
             int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
             count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            if (monitor.isCanceled()){
+                return result;
+            }
             monitor.beginTask("Update publish flag", count);
 
             if (includeAcceptedTaxa){
@@ -1058,12 +1073,18 @@ public class TaxonNodeServiceImpl
                 @SuppressWarnings("rawtypes")
                 Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
                 result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
             }
             if (includeSynonyms){
                 monitor.subTask("Update Synonyms");
                 @SuppressWarnings("rawtypes")
                 Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
                 result.addUpdatedObjects(updatedSynonyms);
+                if (monitor.isCanceled()){
+                    return result;
+                }
             }
             if (includeRelatedTaxa){
                 monitor.subTask("Update Related Taxa");
@@ -1078,6 +1099,9 @@ public class TaxonNodeServiceImpl
                 Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
                         relationTypes, includeSharedTaxa, includeHybrids, monitor);
                 result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
             }
         } catch (Exception e) {
             result.setError();
