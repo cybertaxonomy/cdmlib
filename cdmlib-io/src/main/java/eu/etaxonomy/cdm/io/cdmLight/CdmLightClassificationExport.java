@@ -953,7 +953,8 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
 
             Reference secRef = ppSyonym.getSec();
-            if (!state.getReferenceStore().contains(secRef.getUuid())) {
+
+            if (secRef != null && !state.getReferenceStore().contains(secRef.getUuid())) {
                 handleReference(state, secRef);
             }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
@@ -979,7 +980,7 @@ public class CdmLightClassificationExport
             }
             if (rel != null){
                 Reference synSecRef = rel.getCitation();
-                if (!state.getReferenceStore().contains(synSecRef.getUuid())) {
+                if (synSecRef != null && !state.getReferenceStore().contains(synSecRef.getUuid())) {
                     handleReference(state, synSecRef);
                 }
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synSecRef);
