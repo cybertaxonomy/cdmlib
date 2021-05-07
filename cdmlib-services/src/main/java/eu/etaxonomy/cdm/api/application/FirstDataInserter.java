@@ -266,7 +266,7 @@ public class FirstDataInserter extends AbstractDataInserter {
             }
         }
 
-        groupService.merge(group, true);
+        groupService.saveOrUpdate(group);
         logger.info("Check of group  '" + groupName + "' done");
     }
 
