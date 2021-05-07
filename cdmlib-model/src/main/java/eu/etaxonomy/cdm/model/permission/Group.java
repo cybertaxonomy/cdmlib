@@ -66,10 +66,10 @@ public class Group extends CdmBase {
     /**
      * This group will in future replace the group Editor, see issue #7150
      */
-    public final static String GROUP_EDITOR_EXTENDED_CREATE_NAME = "EditorExtendedCreate";
-    public final static String GROUP_PROJECT_MANAGER_NAME = "ProjectManager";
+    public final static String GROUP_EDITOR_EXTENDED_CREATE_NAME = "Editor_Extended_Create";
+    public final static String GROUP_PROJECT_MANAGER_NAME = "Project_Manager";
     public final static String GROUP_ADMIN_NAME = "Admin";
-    public static final String GROUP_EDITOR_REFERENCE_NAME = "Editor-Reference";
+    public static final String GROUP_EDITOR_REFERENCE_NAME = "Editor_Reference";
     public static final String GROUP_ALLOW_ALL_TAXA_NAME = "Allow_for_all_taxa";
     public static final String GROUP_PUBLISH_NAME = "Publish";
     public final static String GROUP_USER_MANAGER_NAME = "User_Manager";

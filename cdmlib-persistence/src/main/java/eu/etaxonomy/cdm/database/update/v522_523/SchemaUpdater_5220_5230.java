@@ -115,6 +115,25 @@ public class SchemaUpdater_5220_5230 extends SchemaUpdaterBase {
                 + " WHERE authority = 'ROLE_REMOTING'";
         SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
 
+        //#9614 use underscore for role based group names
+        stepName = "Use underscore for group Editor_Extended_Create";
+        query = "UPDATE @@PermissionGroup@@ "
+                + " SET name = 'Editor_Extended_Create' "
+                + " WHERE name = 'EditorExtendedCreate'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+
+        stepName = "Use underscore for group Project_Manager";
+        query = "UPDATE @@PermissionGroup@@ "
+                + " SET name = 'Project_Manager' "
+                + " WHERE name = 'ProjectManager'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+
+        stepName = "Use underscore for group Editor_Reference";
+        query = "UPDATE @@PermissionGroup@@ "
+                + " SET name = 'Editor_Reference' "
+                + " WHERE name = 'Editor-Reference'";
+        SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+
         return stepList;
     }
 
