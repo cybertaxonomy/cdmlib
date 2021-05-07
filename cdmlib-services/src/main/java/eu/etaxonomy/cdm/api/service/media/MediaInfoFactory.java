@@ -26,13 +26,15 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 public class MediaInfoFactory implements IMediaInfoFactory {
 
     /**
-     * TODO needs to be managed in CDM PREFERENCES
+     * TODO needs to be managed in CDM PREFERENCES per service and version.
+     *
+     * ./MediaInfoService/1.0/ --> MediaUriTransformation
      */
-    private List<MediaUriTransformation> uriTransformations = new ArrayList<>();
+    private List<MediaUriTransformation> mediaInfoService_1_0_Transformations = new ArrayList<>();
 
 
     public MediaInfoFactory() {
-        uriTransformations.add(DefaultMediaTransformations.bgbmMediaMetadataService());
+        mediaInfoService_1_0_Transformations.add(DefaultMediaTransformations.bgbmMediaMetadataService());
     }
 
     /**
@@ -50,14 +52,17 @@ public class MediaInfoFactory implements IMediaInfoFactory {
 
         // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
         MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
-        processor.addAll(uriTransformations);
-        processor.applyTo(imageUri);
-
-        // :-( need to use the files reader
-        return new MediaMetadataFileReader(imageUri)
-               .readBaseInfo()
-               .readMetaData()
-               .getCdmImageInfo();
+        processor.addAll(mediaInfoService_1_0_Transformations);
+        List<URI> metadataServiceURIs = processor.applyTo(imageUri);
+        if(!metadataServiceURIs.isEmpty()) {
+            return null; // FIMXE
+        } else {
+            // :-( need to use the files reader
+            return new MediaMetadataFileReader(imageUri)
+                   .readBaseInfo()
+                   .readMetaData()
+                   .getCdmImageInfo();
+        }
 
     }
 

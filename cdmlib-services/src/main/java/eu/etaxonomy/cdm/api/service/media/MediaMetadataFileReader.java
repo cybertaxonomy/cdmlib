@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
  * Most code  was extracted from CdmImageInfo.
  *
  */
-public class MediaMetadataFileReader {
+public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
 
 
     private static Logger logger = Logger.getLogger(MediaMetadataFileReader.class);
@@ -57,7 +57,12 @@ public class MediaMetadataFileReader {
     }
 
     protected MediaMetadataFileReader(eu.etaxonomy.cdm.common.URI uri) {
-        this.cdmImageInfo = new CdmImageInfo(uri);
+        super(uri);
+    }
+
+    @Override
+    public MediaMetadataFileReader read() throws IOException, HttpException {
+        return readBaseInfo().readMetaData();
     }
 
     /**
@@ -180,26 +185,5 @@ public class MediaMetadataFileReader {
         cdmImageInfo.setSuffix(suffix);
         return this;
     }
-
-    public CdmImageInfo getCdmImageInfo() {
-        return cdmImageInfo;
-    }
-
-    /**
-     * Wrapper for the Item.getText() method which applies cleaning of the text representation.
-     * <ol>
-     * <li>Strings are surrounded by single quotes, these must be removed</li>
-     * </ol>
-     * @param item
-     */
-    private String text(GenericImageMetadataItem item) {
-        String  text = item.getText();
-        if(text.startsWith("'") && text.endsWith("'")) {
-            text = text.substring(1 , text.length() - 1);
-        }
-        return text;
-    }
-
-
 
 }
