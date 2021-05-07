@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.common.media.CdmImageInfo;
  * @since May 5, 2021
  */
 @Component
-public class MediaInfoFactory {
+public class MediaInfoFactory implements IMediaInfoFactory {
 
     /**
      * TODO needs to be managed in CDM PREFERENCES
