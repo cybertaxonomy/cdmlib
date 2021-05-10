@@ -57,4 +57,17 @@ public enum CondensedDistributionRecipe implements IKeyLabel{
             return CondensedDistributionConfiguration.NewDefaultInstance();
         }
     }
+
+    public CondensedDistributionRecipe byKey(String key) {
+        if (key == null){
+            return null;
+        }else{
+            for (CondensedDistributionRecipe rec: values()){
+                if (rec.getKey().equalsIgnoreCase(key)){
+                    return rec;
+                }
+            }
+        }
+        return null;
+    }
 }
