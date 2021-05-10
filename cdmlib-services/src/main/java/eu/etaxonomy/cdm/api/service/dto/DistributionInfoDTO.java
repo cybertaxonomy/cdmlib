@@ -16,10 +16,8 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 /**
  * @author a.kohlbecker
  * @since Jan 29, 2014
- *
  */
 public class DistributionInfoDTO {
-
 
     private CondensedDistribution condensedDistribution = null;
     private DistributionTree tree = null;
@@ -27,54 +25,31 @@ public class DistributionInfoDTO {
     private Set<Distribution> elements = null;
 
 
-    /**
-     * @param condensedDistribution the condensedDistribution to set
-     */
-    public void setCondensedDistribution(CondensedDistribution condensedDistribution) {
-        this.condensedDistribution = condensedDistribution;
-    }
-    /**
-     * @param tree the tree to set
-     */
-    public void setTree(DistributionTree tree) {
-        this.tree = tree;
-    }
-    /**
-     * @param mapUriParams the mapUriParams to set
-     */
-    public void setMapUriParams(String mapUriParams) {
-        this.mapUriParams = mapUriParams;
-    }
-    /**
-     * @param elements the elements to set
-     */
-    public void setElements(Set<Distribution> elements) {
-        this.elements = elements;
-    }
-
-    /**
-     * @return the condensedDistribution
-     */
     public CondensedDistribution getCondensedDistribution() {
         return condensedDistribution;
     }
-    /**
-     * @return the tree
-     */
+    public void setCondensedDistribution(CondensedDistribution condensedDistribution) {
+        this.condensedDistribution = condensedDistribution;
+    }
+
     public DistributionTree getTree() {
         return tree;
     }
-    /**
-     * @return the mapUriParams
-     */
+    public void setTree(DistributionTree tree) {
+        this.tree = tree;
+    }
+
     public String getMapUriParams() {
         return mapUriParams;
     }
-    /**
-     * @return the elements
-     */
+    public void setMapUriParams(String mapUriParams) {
+        this.mapUriParams = mapUriParams;
+    }
+
     public Set<Distribution> getElements() {
         return elements;
+    }    public void setElements(Set<Distribution> elements) {
+        this.elements = elements;
     }
 
     public enum InfoPart{
@@ -83,6 +58,4 @@ public class DistributionInfoDTO {
         mapUriParams,
         elements,
     }
-
-
 }
