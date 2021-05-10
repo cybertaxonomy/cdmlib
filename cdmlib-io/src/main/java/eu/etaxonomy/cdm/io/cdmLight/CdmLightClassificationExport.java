@@ -827,12 +827,18 @@ public class CdmLightClassificationExport
                      //TODO add CondensedDistributionConfiguration to export configuration
                      distributions, true, null, state.getConfig().getCondensedDistributionRecipe().toConfiguration(), langs);
              CdmLightExportTable tableCondensed =
-                     CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
+                     CdmLightExportTable.SIMPLE_FACT;
              String[] csvLine = new String[table.getSize()];
              csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
                      getId(state, taxon);
              csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
                      conDis.toString();
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_CATEGORY)] =
+                     "CondensedDistribution";
+             UUID randomUuid = UUID.randomUUID();
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] = randomUuid.toString();
+
+
              state.getProcessor().put(tableCondensed, taxon, csvLine);
          }
     }
