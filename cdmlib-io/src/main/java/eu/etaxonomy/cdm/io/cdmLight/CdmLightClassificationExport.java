@@ -822,22 +822,24 @@ public class CdmLightClassificationExport
          if(state.getConfig().isCreateCondensedDistributionString()){
              List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
-
+//FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY
              CondensedDistribution conDis = geoService.getCondensedDistribution(
                      //TODO add CondensedDistributionConfiguration to export configuration
                      distributions, true, null, state.getConfig().getCondensedDistributionRecipe().toConfiguration(), langs);
              CdmLightExportTable tableCondensed =
                      CdmLightExportTable.SIMPLE_FACT;
-             String[] csvLine = new String[table.getSize()];
+             String[] csvLine = new String[tableCondensed.getSize()];
+             UUID randomUuid = UUID.randomUUID();
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] =
+                     randomUuid.toString();
              csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
                      getId(state, taxon);
              csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
                      conDis.toString();
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.LANGUAGE)] =Language.ENGLISH().toString();
+
              csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_CATEGORY)] =
                      "CondensedDistribution";
-             UUID randomUuid = UUID.randomUUID();
-             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] = randomUuid.toString();
-
 
              state.getProcessor().put(tableCondensed, taxon, csvLine);
          }
