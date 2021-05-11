@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * The class representing the taxonomical ranks (like "Family", "Genus" or
  * "Species") used for {@link TaxonName taxon names} across all {@link NomenclaturalCode nomenclatural codes}
- * for bacteria (ICNB), viruses (ICVCN), plants and fungi (ICBN),
+ * for bacteria/prokaryotes (ICNP), viruses (ICVCN), plants and fungi (ICBN),
  * cultivars (ICNCP) and animals (ICZN).
  * <P>
  * A standard (ordered) list of taxonomical rank instances will be automatically
