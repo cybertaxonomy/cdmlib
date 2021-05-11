@@ -943,60 +943,23 @@ public interface ITaxonService
      */
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
 
-
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
 			UUID toTaxonUuid);
 
-
-    /**
-     * @param synonymUuid
-     * @param toTaxonUuid
-     * @param taxonRelationshipType
-     * @param citation
-     * @param microcitation
-     * @return
-     */
     public UpdateResult changeSynonymToRelatedTaxon(UUID synonymUuid, UUID toTaxonUuid, TaxonRelationshipType taxonRelationshipType,
             Reference citation, String microcitation);
 
-    /**
-     * @param fromTaxonUuid
-     * @param toTaxonUuid
-     * @param oldRelationshipType
-     * @param synonymType
-     * @return
-     * @throws DataChangeNoRollbackException
-     */
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
 
     /**
      * Returns a list of taxon relationships for a given taxon as DTO.
-     * @param taxonUuid
-     * @param directTypes
-     * @param inversTypes
-     * @param direction
-     * @param groupMisapplications
-     * @param includeUnpublished
-     * @param pageSize
-     * @param pageNumber
-     * @return
      */
     public TaxonRelationshipsDTO listTaxonRelationships(UUID taxonUuid,
             Set<TaxonRelationshipType> directTypes,
             Set<TaxonRelationshipType> inversTypes, Direction direction, boolean groupMisapplications,
             boolean includeUnpublished, Integer pageSize, Integer pageNumber);
 
-    /**
-     * @param clazz
-     * @param restrictions
-     * @param pageSize
-     * @param pageIndex
-     * @param orderHints
-     * @param propertyPaths
-     * @param includeUnpublished
-     * @return
-     */
     public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 

@@ -421,8 +421,8 @@ public class TaxonServiceImpl
             }else{
                 logger.warn("Taxon is not part of its own Taxonrelationship");
             }
-            // Remove old relationships
 
+            // Remove old relationships
             fromTaxon.removeTaxonRelation(taxonRelationship);
             toTaxon.removeTaxonRelation(taxonRelationship);
             taxonRelationship.setToTaxon(null);

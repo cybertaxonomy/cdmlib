@@ -133,7 +133,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public long countMedia(SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countMedia(SpecimenOrObservationBase occurence)");
-        Query query = getSession().createQuery("select count(media) from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
+        Query query = getSession().createQuery("SELECT count(media) FROM SpecimenOrObservationBase occurence JOIN occurence.media media WHERE occurence = :occurence");
         query.setParameter("occurence", occurence);
 
         return (Long)query.uniqueResult();
@@ -142,7 +142,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber)");
-        Query query = getSession().createQuery("select distinct derivationEvent from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
+        Query query = getSession().createQuery("SELECT DISTINCT derivationEvent FROM DerivationEvent derivationEvent JOIN derivationEvent.originals occurence WHERE occurence = :occurence");
         query.setParameter("occurence", occurence);
 
         addPageSizeAndNumber(query, pageSize, pageNumber);
