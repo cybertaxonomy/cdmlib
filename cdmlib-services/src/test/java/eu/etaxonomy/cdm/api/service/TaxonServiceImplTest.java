@@ -254,7 +254,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
         service.saveOrUpdate(synonym);
-        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, false);
 
         // find forces flush
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
@@ -277,7 +277,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
         service.saveOrUpdate(synonym);
-        UpdateResult result = service.swapSynonymAndAcceptedTaxonNewUuid(synonym, taxWithSyn, true);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, true);
 
         // find forces flush
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());

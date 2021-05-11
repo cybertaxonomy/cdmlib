@@ -207,7 +207,15 @@ public class TaxonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, boolean newUuidForAcceptedTaxon){
+        if (newUuidForAcceptedTaxon){
+            return swapSynonymAndAcceptedTaxonNewUuid(synonym, acceptedTaxon, setNameInSource);
+        }else{
+            return swapSynonymAndAcceptedTaxon(synonym, acceptedTaxon, setNameInSource);
+        }
+    }
+
+    private UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
         UpdateResult result = new UpdateResult();
 //    	acceptedTaxon.removeSynonym(synonym);
     	TaxonName synonymName = synonym.getName();
@@ -362,11 +370,9 @@ public class TaxonServiceImpl
 		return result;
     }
 
-    @Override
-    @Transactional(readOnly = false)
-    public UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
+    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
         UpdateResult result = new UpdateResult();
-      acceptedTaxon.removeSynonym(synonym);
+        acceptedTaxon.removeSynonym(synonym);
         TaxonName synonymName = synonym.getName();
         TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
 
@@ -3543,13 +3549,13 @@ public class TaxonServiceImpl
 	@Override
 	@Transactional(readOnly = false)
 	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,
-			UUID acceptedTaxonUuid, boolean setNameInSource) {
+			UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon) {
 		TaxonBase<?> base = this.load(synonymUUid);
 		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
 		base = this.load(acceptedTaxonUuid);
 		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
 
-		return this.swapSynonymAndAcceptedTaxon(syn, taxon, setNameInSource);
+		return this.swapSynonymAndAcceptedTaxon(syn, taxon, setNameInSource, newUuidForAcceptedTaxon);
 	}
 
     @Override

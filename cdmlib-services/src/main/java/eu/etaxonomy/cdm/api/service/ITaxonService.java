@@ -98,7 +98,9 @@ public interface ITaxonService
      * @param setNameInSource
      * @return
      */
-    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource);
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, boolean newUuidForAcceptedTaxon);
+
+    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon);
 
     /**
      * Changes a synonym into an accepted taxon and removes
@@ -927,20 +929,6 @@ public interface ITaxonService
             TaxonNode subtreeFilter, boolean includeEntity, TaxonTitleType titleType,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-    /**
-     * @param synonymUUid
-     * @param acceptedTaxonUuid
-     * @param setNameInSource
-     * @return
-     */
-    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid, boolean setNameInSource);
-
-    /**
-     * @param taxonUuid
-     * @param config
-     * @param classificationUuid
-     * @return
-     */
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
 
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
@@ -962,17 +950,5 @@ public interface ITaxonService
 
     public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
-
-    /**
-     * @param synonym
-     * @param acceptedTaxon
-     * @param setNameInSource
-     * @return
-     */
-    UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource);
-
-
-
-
 
 }
