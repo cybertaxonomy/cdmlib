@@ -89,5 +89,19 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
         }
     }
 
+ // ****************************** CLONE ***********************************
 
+    /**
+    * @see java.lang.Object#clone()
+    */
+   @Override
+   public AvailableForTermBase<T> clone()  {
+       AvailableForTermBase<T> result;
+
+       result = (AvailableForTermBase<T>)super.clone();
+
+       result.availableFor = this.availableFor.clone();
+
+       return result;
+   }
 }
