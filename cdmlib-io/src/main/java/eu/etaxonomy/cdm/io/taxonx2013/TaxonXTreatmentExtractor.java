@@ -1969,7 +1969,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
                 nameTBF = TaxonNameFactory.NewZoologicalInstance(null);
             }
-            if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)){
+            if (nomenclaturalCode.equals(NomenclaturalCode.ICNP)){
                 nameTBF= TaxonNameFactory.NewBacterialInstance(null);
             }
             parser.parseReferencedName(nameTBF, fullname, rank, false);
@@ -2001,7 +2001,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)) {
                         ((ZoologicalName) nameTBF).setAuthorshipCache(currentMyName.getAuthor());
                     }
-                    if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)) {
+                    if (nomenclaturalCode.equals(NomenclaturalCode.ICNP)) {
                         ((BacterialName) nameTBF).setAuthorshipCache(currentMyName.getAuthor());
                     }
                 }
@@ -2302,7 +2302,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
                         nameToBeFilled = TaxonNameFactory.NewZoologicalInstance(null);
                     }
-                    if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)){
+                    if (nomenclaturalCode.equals(NomenclaturalCode.ICNP)){
                         nameToBeFilled = TaxonNameFactory.NewBacterialInstance(null);
                     }
                     nameToBeFilled.setTitleCache(s, true);

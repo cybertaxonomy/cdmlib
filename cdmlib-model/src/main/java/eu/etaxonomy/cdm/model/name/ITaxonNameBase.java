@@ -954,7 +954,7 @@ public interface ITaxonNameBase
     boolean isCultivar();
 
     /**
-     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNB} or
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNP} or
      * any sub type and is supposed to be handled via {@link IBacterialName}
      */
     boolean isBacterial();

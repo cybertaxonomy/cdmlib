@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
- * The class for the nomenclature code edition of the 5 nomenclatural codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
+ * The class for the nomenclature code edition of the 5 nomenclatural codes (ICNP, ICBN, ICNCP, ICZN and ICVCN)
  * ruling {@link TaxonName taxon names}.
  * <P>
  * See also https://www.wikidata.org/wiki/Q693148
@@ -189,24 +189,24 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * Parker, C.T., Tindall, B.J. & Garrity, G.M. (2019) International Code of Nomenclature of Prokaryotes. 2008 Revision. Microbiology Society
      * https://en.wikipedia.org/wiki/International_Code_of_Nomenclature_of_Prokaryotes#Versions
      */
-    @XmlEnumValue("ICNB_2008")
-    ICNB_2008(UUID.fromString("1297a8e9-dfde-4db7-9f93-672453e8b3e6"), null, 2008, NomenclaturalCode.ICNB, null, "10.1099/ijsem.0.000778"),
+    @XmlEnumValue("ICNP_2008")
+    ICNP_2008(UUID.fromString("1297a8e9-dfde-4db7-9f93-672453e8b3e6"), null, 2008, NomenclaturalCode.ICNP, null, "10.1099/ijsem.0.000778"),
 
     //bact2
     /**
      * Lapage, S.P., Sneath, P.H.A., Lessel, E.F., Skerman, V.B.D., Seeliger, H.P.R. & Clark, W.A. (1992). International Code of Nomenclature of Bacteria. Bacteriological Code. 1990 Revision. American Society for Microbiology, Washington, D.C., ISBN 1-55581-039-X
      * https://en.wikipedia.org/wiki/International_Code_of_Nomenclature_of_Prokaryotes#Versions
      */
-    @XmlEnumValue("ICNB_1990")
-    ICNB_1990(UUID.fromString("fd5d6dd3-de58-4244-8290-c8d89323f163"), null, 1990, NomenclaturalCode.ICNB, null, "10.5962/bhl.title.50303"),
+    @XmlEnumValue("ICNP_1990")
+    ICNP_1990(UUID.fromString("fd5d6dd3-de58-4244-8290-c8d89323f163"), null, 1990, NomenclaturalCode.ICNP, null, "10.5962/bhl.title.50303"),
 
     //bact3
     /**
      * Lapage, S.P., Sneath, P.H.A., Lessel, E.F., Skerman, V.B.D., Seeliger, H.P.R. & Clark, W.A. (1975). International Code of Nomenclature of Bacteria. 1975 Revision. American Society of Microbiology, Washington, D.C
      * https://en.wikipedia.org/wiki/International_Code_of_Nomenclature_of_Prokaryotes#Versions
      */
-    @XmlEnumValue("ICNB_1975")
-    ICNB_1975(UUID.fromString("2dafaf3c-abf6-4baf-82db-3332db25d654"), null, 1975, NomenclaturalCode.ICNB, null, null),
+    @XmlEnumValue("ICNP_1975")
+    ICNP_1975(UUID.fromString("2dafaf3c-abf6-4baf-82db-3332db25d654"), null, 1975, NomenclaturalCode.ICNP, null, null),
 
     //cult plants 1
     /**
@@ -214,7 +214,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://www.ishs.org/news/icncp-international-code-nomenclature-cultivated-plants-9th-edition
      */
     @XmlEnumValue("ICNCP_2016")
-    ICNB_2016(UUID.fromString("e395e7be-405f-4214-a3a2-2b19eef6a055"), null, 2016, NomenclaturalCode.ICNCP, null, null),
+    ICNCP_2016(UUID.fromString("e395e7be-405f-4214-a3a2-2b19eef6a055"), null, 2016, NomenclaturalCode.ICNCP, null, null),
 
     //cult plants 2
     /**
@@ -222,7 +222,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://www.ishs.org/news/icncp-international-code-nomenclature-cultivated-plants-9th-edition
      */
     @XmlEnumValue("ICNCP_2009")
-    ICNB_2009(UUID.fromString("bc66202a-0ffb-4cf3-a1c9-520efd5e76e9"), null, 2009, NomenclaturalCode.ICNCP, null, null),
+    ICNCP_2009(UUID.fromString("bc66202a-0ffb-4cf3-a1c9-520efd5e76e9"), null, 2009, NomenclaturalCode.ICNCP, null, null),
 
     //cult plants 3
     /**
@@ -230,7 +230,7 @@ public enum NomenclaturalCodeEdition implements IEnumTerm<NomenclaturalCodeEditi
      * https://de.wikipedia.org/wiki/Internationaler_Code_der_Nomenklatur_der_Kulturpflanzen
      */
     @XmlEnumValue("ICNCP_2004")
-    ICNB_2004(UUID.fromString("a29abcee-1f34-4320-afad-eb7ee23cc473"), null, 2004, NomenclaturalCode.ICNCP, null, null),
+    ICNCP_2004(UUID.fromString("a29abcee-1f34-4320-afad-eb7ee23cc473"), null, 2004, NomenclaturalCode.ICNCP, null, null),
 
     //virus1
     /**

@@ -175,6 +175,14 @@ public class SchemaUpdater_5220_5230 extends SchemaUpdaterBase {
         newColumnName = "currentConceptPeriod_freetext";
         ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
+        //#9617
+        stepName = "Rename ICNB to ICNP";
+        query = "UPDATE @@TaxonName@@ "
+                + " SET nameType = 'ICNP' "
+                + " WHERE nameType = 'ICNB'";
+        SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, query, "TaxonName", -99);
+
+
         return stepList;
     }
 

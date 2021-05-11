@@ -239,7 +239,7 @@ public class GbifJsonOccurrenceParser {
                                 name = TaxonNameFactory.NewZoologicalInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNAFP.getTitleCache())) {
                                 name = TaxonNameFactory.NewBotanicalInstance(rank);
-                            } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
+                            } else if (string.equals(NomenclaturalCode.ICNP.getTitleCache())){
                                 name = TaxonNameFactory.NewBacterialInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
                                 name = TaxonNameFactory.NewCultivarInstance(rank);

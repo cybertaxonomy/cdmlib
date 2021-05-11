@@ -129,8 +129,8 @@ public class NonViralNameParserImpl
 				logger.warn("ICNCP parsing not yet implemented");
 				result = TaxonNameFactory.NewCultivarInstance(rank);
 				break;
-			case ICNB:
-				logger.warn("ICNB not yet implemented");
+			case ICNP:
+				logger.warn("ICNP not yet implemented");
 				result = TaxonNameFactory.NewBacterialInstance(rank);
 				break;
 			case ICVCN:

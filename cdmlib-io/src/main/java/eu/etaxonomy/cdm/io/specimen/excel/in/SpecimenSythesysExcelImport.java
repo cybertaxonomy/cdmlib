@@ -519,7 +519,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 problem=true;
             }}
         if (nomenclatureCode.toString().equals("Bacterial")){
-            taxonName = (TaxonName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB, null);
+            taxonName = (TaxonName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNP, null);
             if (taxonName.hasProblem()) {
                 problem=true;
             }

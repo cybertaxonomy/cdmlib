@@ -214,7 +214,7 @@ public final class TcsXmlTransformer {
 		}else if (nomCode.equals("Botanical")){return NomenclaturalCode.ICNAFP;
 		}else if (nomCode.equals("Zoological")){return NomenclaturalCode.ICZN;
 		}else if (nomCode.equals("Viral")){return NomenclaturalCode.ICVCN;
-		}else if (nomCode.equals("Bacteriological")){return NomenclaturalCode.ICNB;
+		}else if (nomCode.equals("Bacteriological")){return NomenclaturalCode.ICNP;
 		}else if (nomCode.equals("CultivatedPlant")){return NomenclaturalCode.ICNCP;
 		//TODO code Indeterminate
 //		}else if (nomCode.equals("Indeterminate")){return NomenclaturalCode.XXX();
