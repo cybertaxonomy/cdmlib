@@ -98,7 +98,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 	public final void testSwapSynonymAndAcceptedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymType);
 
-		UpdateResult result = service.swapSynonymAndAcceptedTaxon(s1, t1, true);
+		UpdateResult result = service.swapSynonymAndAcceptedTaxon(s1, t1, true, false);
 		Synonym syn = (Synonym)service.load(s1.getUuid());
 		//only the name has changed
 		Assert.assertNotNull(syn);
