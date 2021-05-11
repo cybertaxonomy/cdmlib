@@ -474,6 +474,8 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         }
     }
 
+//*************************************************************/
+
     @Transient
 	@Override
 	public String getUserFriendlyTypeName(){

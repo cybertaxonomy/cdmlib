@@ -175,10 +175,6 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
         return includesType(set, DescriptionType.INDIVIDUALS_ASSOCIATION);
     }
 
-    /**
-     * @param set
-     * @return
-     */
     protected static boolean includesType(EnumSet<DescriptionType> set, DescriptionType state) {
         EnumSet<DescriptionType> all;
         if (state.getGeneralizationOf(true).isEmpty()){

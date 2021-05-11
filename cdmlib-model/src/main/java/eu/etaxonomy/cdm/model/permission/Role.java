@@ -51,7 +51,6 @@ public class Role extends AuthorityBase {
     private Role(String role) {
         super();
         this.role = role;
-
     }
 
     // ********************** GETTER / SETTER **************************/
