@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.name;
 
 import java.util.HashMap;
@@ -38,7 +37,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * The class representing the taxonomical ranks (like "Family", "Genus" or
  * "Species") used for {@link TaxonName taxon names} across all {@link NomenclaturalCode nomenclatural codes}
- * for bacteria/prokaryotes (ICNP), viruses (ICVCN), plants and fungi (ICBN),
+ * for prokaryotes (bacteria) (ICNP, former ICNB), viruses (ICVCN), plants and fungi (ICBN),
  * cultivars (ICNCP) and animals (ICZN).
  * <P>
  * A standard (ordered) list of taxonomical rank instances will be automatically

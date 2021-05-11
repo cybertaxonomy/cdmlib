@@ -58,12 +58,11 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
     //1
 	/**
-	 * International Code of Nomenclature of Bacteria
-	 * => now International Code of Nomenclature of Prokaryotes
+	 * International Code of Nomenclature of Prokaryotes
+	 * (former International Code of Nomenclature of Bacteria)
 	*/
 	@XmlEnumValue("ICNP")
 	ICNP(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNP","BacterialName","Q743780", NonViral),
-
 
 	//2
 	/**
