@@ -263,7 +263,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         List<TaxonBase> synList = service.findTaxaByName(configurator);
 
         if (synList.size() > 0){
-            TaxonBase syn = synList.get(0);
+            TaxonBase<?> syn = synList.get(0);
             assertTrue(tax.getSynonyms().contains(syn));
         }else{
             Assert.fail("There should be a synonym with name Test3");
