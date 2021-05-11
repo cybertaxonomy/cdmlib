@@ -92,7 +92,7 @@ public class SchemaUpdater_5220_5230 extends SchemaUpdaterBase {
         //#9613 fix uuids for roles
         stepName = "Set uuid for role project manager";
         String query = "UPDATE @@GrantedAuthorityImpl@@ "
-                + " SET uuid = '9eabd2c6-0590-4a1e-95f5-99cc58b63aa7' "
+                + " SET uuid = '6d0c72a5-0d8a-4f2e-a8e0-31d7e0338f00' "
                 + " WHERE authority = 'ROLE_PROJECT_MANAGER'";
         SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
 

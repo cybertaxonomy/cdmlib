@@ -27,7 +27,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     private static final String ROLE_PREFIX = "ROLE_";
 
     private static final UUID uuidAdmin = UUID.fromString("56eac992-67ba-40be-896c-4e992ca2afc0");
-    private static final UUID uuidProjectManager = UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7");
+    private static final UUID uuidProjectManager = UUID.fromString("6d0c72a5-0d8a-4f2e-a8e0-31d7e0338f00");
     private static final UUID uuidUserManager = UUID.fromString("74d340a9-b472-4b97-b52a-c140e27a5c76");
     private static final UUID uuidPublish = UUID.fromString("9ffa7879-cc67-4592-a14a-b251cccde1a7");
     private static final UUID uuidRemoting = UUID.fromString("be004bf6-0498-48e3-9f06-ff93fc9cdc9a");
