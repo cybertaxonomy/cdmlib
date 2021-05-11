@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,6 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
@@ -54,8 +56,10 @@ import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmClass;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -85,7 +89,12 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.ITaxonCacheStrategy;
     "synonyms",
     "relationsFromThisTaxon",
     "relationsToThisTaxon",
-    "descriptions"
+    "descriptions",
+    "conceptId",
+    "conceptDefinitions",
+    "conceptStatus",
+    "taxonTypes",
+    "currentConceptPeriod"
 })
 @XmlRootElement(name = "Taxon")
 @Entity
@@ -165,6 +174,34 @@ public class Taxon
     @IndexedEmbedded
     private Set<TaxonNode> taxonNodes = new HashSet<>();
 
+    private String conceptId;
+
+    @XmlAttribute(name ="TaxonType")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.TaxonType")}
+    )
+    @Audited
+    private EnumSet<TaxonType> taxonTypes = EnumSet.noneOf(TaxonType.class);
+
+    @XmlAttribute(name ="ConceptDefinition")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.ConceptDefinition")}
+    )
+    @Audited
+    private EnumSet<ConceptDefinition> conceptDefinitions = EnumSet.noneOf(ConceptDefinition.class);
+
+    @XmlAttribute(name ="ConceptStatus")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumSetUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.taxon.ConceptStatus")}
+    )
+    @Audited
+    private EnumSet<ConceptStatus> conceptStatus = EnumSet.noneOf(ConceptStatus.class);
+
+    private TimePeriod currentConceptPeriod = TimePeriod.NewInstance();
+
 // ************************* FACTORY METHODS ********************************/
 
     /**
@@ -232,6 +269,163 @@ public class Taxon
     }
 
 //********* METHODS **************************************/
+
+    public String getConceptId() {
+        return conceptId;
+    }
+    public void setConceptId(String conceptId) {
+        this.conceptId = conceptId;
+    }
+
+    public TimePeriod getCurrentConceptPeriod() {
+        return currentConceptPeriod;
+    }
+    public void setCurrentConceptPeriod(TimePeriod currentConceptPeriod) {
+        this.currentConceptPeriod = currentConceptPeriod;
+    }
+
+// ************************ Concept Defintion ************************/
+
+    public boolean isHomotypicGroups() {
+        return ConceptDefinition.includesType(conceptDefinitions, ConceptDefinition.HOMOTYPIC_GROUP);
+    }
+    public void setHomotypicGroups(boolean isHomotypicGroups) {
+        setConceptDefinition(ConceptDefinition.HOMOTYPIC_GROUP, isHomotypicGroups);
+    }
+
+    //calling it descriptionConcept not Descriptions to avoid name clash with setter for TaxonDescriptions
+    public boolean isDescriptionConcept() {
+        return ConceptDefinition.includesType(conceptDefinitions, ConceptDefinition.DESCRIPTION);
+    }
+    public void setDescriptionConcept(boolean isDescriptions) {
+        setConceptDefinition(ConceptDefinition.DESCRIPTION, isDescriptions);
+    }
+
+    protected EnumSet<ConceptDefinition> getConceptDefinition() {
+        return conceptDefinitions;
+    }
+
+    /**
+     * for know it is private and the boolean getters and setters should be used instead.
+     * If you make it public make sure to guarantee that any change to the enum set results
+     * in a new enum set (see also {@link #newEnumSet(EnumSet, ConceptDefinition, ConceptDefinition)}
+     * and that the client is aware of the enum set being immutable.
+     */
+    private void setConceptDefinitions(EnumSet<ConceptDefinition> conceptDefinitions){
+        this.conceptDefinitions = conceptDefinitions;
+    }
+
+    /**
+     * Sets the value for taxon concept definitions
+     * @param conceptDefinition the concept definition
+     * @param value the value if this taxon has this concept definition (<code>true</code>) or not (<code>false</code>)
+     */
+    protected void setConceptDefinition(ConceptDefinition conceptDefinition, boolean value) {
+        if (value && !this.conceptDefinitions.contains(conceptDefinition)){
+            setConceptDefinitions(newEnumSet(this.conceptDefinitions, conceptDefinition, null));
+        }else if (!value && this.conceptDefinitions.contains(conceptDefinition)){
+            setConceptDefinitions(newEnumSet(this.conceptDefinitions, null, conceptDefinition));
+        }else{
+            return;
+        }
+    }
+
+// ************************ TaxonType ********************************/
+
+    public boolean isConcept() {
+        return TaxonType.includesType(taxonTypes, TaxonType.CONCEPT);
+    }
+    public void setConcept(boolean isConcept) {
+        setTaxonType(TaxonType.CONCEPT, isConcept);
+    }
+
+    public boolean isNameUsage() {
+        return TaxonType.includesType(taxonTypes, TaxonType.NAME_USAGE);
+    }
+    public void setNameUsage(boolean isNameUsage) {
+        setTaxonType(TaxonType.NAME_USAGE, isNameUsage);
+    }
+
+    protected EnumSet<TaxonType> getTaxonTypes() {
+        return taxonTypes;
+    }
+
+    /**
+     * for know it is private and the boolean getters and setters should be used instead.
+     * If you make it public make sure to guarantee that any change to the enum set results
+     * in a new enum set (see also {@link #newEnumSet(EnumSet, TaxonType, TaxonType)}
+     * and that the client is aware of the enum set being immutable.
+     */
+    private void setTaxonTypes(EnumSet<TaxonType> taxonTypes){
+        this.taxonTypes = taxonTypes;
+    }
+
+    /**
+     * Sets the value for taxon types
+     * @param type the taxon type
+     * @param value the value if this taxon has this type (<code>true</code>) or not (<code>false</code>)
+     */
+    protected void setTaxonType(TaxonType type, boolean value) {
+        if (value && !this.taxonTypes.contains(type)){
+            setTaxonTypes(newEnumSet(this.taxonTypes, type, null));
+        }else if (!value && this.taxonTypes.contains(type)){
+            setTaxonTypes(newEnumSet(this.taxonTypes, null, type));
+        }else{
+            return;
+        }
+    }
+
+// ************************ Concept Status ********************************/
+
+    public boolean isPersistent() {
+        return ConceptStatus.includesType(conceptStatus, ConceptStatus.PERSISTENT);
+    }
+    public void setPersistent(boolean isPersistent) {
+        setConceptStatus(ConceptStatus.PERSISTENT, isPersistent);
+    }
+    public boolean isSupportsProvenance() {
+        return ConceptStatus.includesType(conceptStatus, ConceptStatus.SUPPORTS_PROVENANCE);
+    }
+    public void setSupportsProvenance(boolean isSupportsProvenance) {
+        setConceptStatus(ConceptStatus.SUPPORTS_PROVENANCE, isSupportsProvenance);
+    }
+    public boolean isCurrentConcept() {
+        return ConceptStatus.includesType(conceptStatus, ConceptStatus.CURRENT);
+    }
+    public void setCurrentConcept(boolean isCurrentConcept) {
+        setConceptStatus(ConceptStatus.CURRENT, isCurrentConcept);
+    }
+
+    protected EnumSet<ConceptStatus> getConceptStatus() {
+        return conceptStatus;
+    }
+
+    /**
+     * for know it is private and the boolean getters and setters should be used instead.
+     * If you make it public make sure to guarantee that any change to the enum set results
+     * in a new enum set (see also {@link #newEnumSet(EnumSet, CdmClass, CdmClass)}
+     * and that the client is aware of the enum set being immutable.
+     */
+    private void setConceptStatus(EnumSet<ConceptStatus> conceptStatus){
+        this.conceptStatus = conceptStatus;
+    }
+
+    /**
+     * Sets the value for concept status
+     * @param conceptStatus the concept status
+     * @param value the value if this concept has this status (<code>true</code>) or not (<code>false</code>)
+     */
+    protected void setConceptStatus(ConceptStatus conceptStatus, boolean value) {
+        if (value && !this.conceptStatus.contains(conceptStatus)){
+            setConceptStatus(newEnumSet(this.conceptStatus, conceptStatus, null));
+        }else if (!value && this.conceptStatus.contains(conceptStatus)){
+            setConceptStatus(newEnumSet(this.conceptStatus, null, conceptStatus));
+        }else{
+            return;
+        }
+    }
+
+// ****************************************************************/
 
     /**
      * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
@@ -1792,6 +1986,17 @@ public class Taxon
             result.addTaxonNode(newTaxonNode);
         }*/
 
+
+        //concept related attributes
+        result.taxonTypes = this.taxonTypes.clone();
+        result.conceptDefinitions = this.conceptDefinitions.clone();
+        result.conceptStatus = this.conceptStatus.clone();
+
+        if (this.currentConceptPeriod != null){
+            result.currentConceptPeriod = this.currentConceptPeriod.clone();
+        }
+
         return result;
     }
+
 }

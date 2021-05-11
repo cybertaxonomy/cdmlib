@@ -671,6 +671,7 @@ public class FullCoverageDataGenerator {
 	}
 
 	private void createTaxon(List<CdmBase> cdmBases) {
+
 		Reference sec = getReference();
 		TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
@@ -689,6 +690,13 @@ public class FullCoverageDataGenerator {
 				sec, "444");
 		taxon.setTaxonStatusUnknown(true);
 		handleAnnotatableEntity(taxRel);
+		concept.setConcept(true);
+		concept.setNameUsage(true);
+		concept.setHomotypicGroups(true);
+		concept.setConceptId("euromed123");
+		concept.setPersistent(true);
+		concept.setCurrentConceptPeriod(TimePeriod.NewInstance(1999, 2019));
+		concept.setSupportsProvenance(true);
 
 		//Classification
 		Classification classification = Classification.NewInstance("My classification", sec);

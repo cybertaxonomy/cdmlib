@@ -40,7 +40,10 @@ import eu.etaxonomy.cdm.model.permission.CRUD;
 import eu.etaxonomy.cdm.model.permission.PermissionClass;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.ConceptDefinition;
+import eu.etaxonomy.cdm.model.taxon.ConceptStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
+import eu.etaxonomy.cdm.model.taxon.TaxonType;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 
@@ -156,6 +159,15 @@ public class EnumUserType<E extends Enum<E>>
         //CdmClass
         }else if (clazz.equals(CdmClass.class)){
             return CdmClass.getByKey(val);
+        //CdmClass
+        }else if (clazz.equals(ConceptDefinition.class)){
+            return ConceptDefinition.getByKey(val);
+        //CdmClass
+        }else if (clazz.equals(ConceptStatus.class)){
+            return ConceptStatus.getByKey(val);
+        //CdmClass
+        }else if (clazz.equals(TaxonType.class)){
+            return TaxonType.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

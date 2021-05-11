@@ -89,19 +89,5 @@ public abstract class AvailableForTermBase<T extends DefinedTermBase>
         }
     }
 
-    /**
-     * EnumSets being part of the model should be immutable to make hibernate know if they have been changed.
-     * Therefore any change to the enum set should result in a new enum set.
-     */
-    protected EnumSet<CdmClass> newEnumSet(@NotNull EnumSet<CdmClass> enumSet, CdmClass additionalClass, CdmClass classToRemove) {
-        EnumSet<CdmClass> result = EnumSet.copyOf(enumSet);
-        if (additionalClass != null){
-            result.add(additionalClass);
-        }
-        if (classToRemove != null){
-            result.remove(classToRemove);
-        }
-        return result;
-    }
 
 }

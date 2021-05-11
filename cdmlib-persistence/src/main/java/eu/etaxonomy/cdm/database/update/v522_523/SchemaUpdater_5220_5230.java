@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
@@ -133,6 +134,47 @@ public class SchemaUpdater_5220_5230 extends SchemaUpdaterBase {
                 + " SET name = 'Editor_Reference' "
                 + " WHERE name = 'Editor-Reference'";
         SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepList, stepName, query, -99);
+
+        //#9619
+        stepName = "Add Taxon.conceptId";
+        tableName = "TaxonBase";
+        newColumnName = "conceptId";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+
+        //#9619
+        stepName = "Add Taxon.conceptDefinitions";
+        tableName = "TaxonBase";
+        newColumnName = "conceptDefinitions";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+        //#9619
+        stepName = "Add Taxon.conceptStatus";
+        tableName = "TaxonBase";
+        newColumnName = "conceptStatus";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+        //#9619
+        stepName = "Add Taxon.taxonTypes";
+        tableName = "TaxonBase";
+        newColumnName = "taxonTypes";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+        //#9619
+        stepName = "Add Taxon.currentConceptPeriod_start";
+        tableName = "TaxonBase";
+        newColumnName = "currentConceptPeriod_start";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+        stepName = "Add Taxon.currentConceptPeriod_end";
+        tableName = "TaxonBase";
+        newColumnName = "currentConceptPeriod_end";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
+
+        stepName = "Add Taxon.currentConceptPeriod_freetext";
+        tableName = "TaxonBase";
+        newColumnName = "currentConceptPeriod_freetext";
+        ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
         return stepList;
     }
