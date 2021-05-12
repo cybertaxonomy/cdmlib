@@ -181,5 +181,4 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
         cdmImageInfo.setSuffix(suffix);
         return this;
     }
-
 }
