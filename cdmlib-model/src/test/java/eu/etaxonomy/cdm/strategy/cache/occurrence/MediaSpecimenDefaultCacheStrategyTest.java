@@ -47,11 +47,12 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         Assert.assertEquals("B 123", strategy.getTitleCache(specimen));
 
         Media media = Media.NewInstance();
-        media.setTitleCache("Media title");
+        media.putTitle(Language.DEFAULT(), "Media title");
         media.setArtist(Person.NewTitledInstance("Artist"));
         specimen.setMediaSpecimen(media);
         Assert.assertEquals("B 123 (Media title)", strategy.getTitleCache(specimen));
 
+        //remove collection and accession number
         specimen.setCollection(null);
         specimen.setAccessionNumber(null);
         Assert.assertEquals("Media title", strategy.getTitleCache(specimen));
