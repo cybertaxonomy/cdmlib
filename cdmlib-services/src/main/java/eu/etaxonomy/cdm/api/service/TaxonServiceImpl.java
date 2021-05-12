@@ -218,7 +218,7 @@ public class TaxonServiceImpl
     private UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
         UpdateResult result = new UpdateResult();
         String oldTaxonTitleCache = acceptedTaxon.getTitleCache();
-//    	acceptedTaxon.removeSynonym(synonym);
+
     	TaxonName synonymName = synonym.getName();
     	TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
 
@@ -344,14 +344,12 @@ public class TaxonServiceImpl
         }
         Synonym newSynonym = synonym.clone();
         newSynonym.setName(taxonName);
-//        newSynonym.setSec(acceptedTaxon.getSec());
         newSynonym.setPublish(acceptedTaxon.isPublish());
         if (sameHomotypicGroup){
             newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         }else{
             newTaxon.addSynonym(newSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         }
-
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteNameIfPossible(false);
