@@ -1450,6 +1450,20 @@ public class TaxonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
+    public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, UUID newTaxonUUID, boolean moveHomotypicGroup,
+            SynonymType newSynonymType, UUID newSecundumUuid, String newSecundumDetail,
+            boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
+
+        UpdateResult result = new UpdateResult();
+        Taxon newTaxon = CdmBase.deproxy(dao.load(newTaxonUUID), Taxon.class);
+        result = moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup, newSynonymType,
+                newSecundumUuid, newSecundumDetail, keepSecundumIfUndefined);
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
             Taxon newTaxon,
             boolean moveHomotypicGroup,
@@ -3365,20 +3379,6 @@ public class TaxonServiceImpl
         }
         return new DefaultPagerImpl<>(pageNumber, numberOfResults, pageSize, result);
     }
-
-    @Override
-	@Transactional(readOnly = false)
-	public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, UUID newTaxonUUID, boolean moveHomotypicGroup,
-            SynonymType newSynonymType, UUID newSecundumUuid, String newSecundumDetail,
-            boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException {
-
-	    UpdateResult result = new UpdateResult();
-		Taxon newTaxon = CdmBase.deproxy(dao.load(newTaxonUUID),Taxon.class);
-		result = moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup, newSynonymType,
-		        newSecundumUuid, newSecundumDetail, keepSecundumIfUndefined);
-
-		return result;
-	}
 
     @Override
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid, UUID toTaxonUuid){

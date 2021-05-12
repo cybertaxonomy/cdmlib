@@ -216,7 +216,6 @@ public interface ITaxonService
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
             SynonymType newSynonymType) throws HomotypicalGroupChangeException;
 
-
     /**
      * Moves a synonym to another taxon and removes the old synonym relationship.
      *
@@ -244,18 +243,7 @@ public interface ITaxonService
             SynonymType newSynonymType, UUID newSecundumUuid,
             String newSecundumDetail, boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException;
 
-
     /**
-     * @param oldSynonym
-     * @param newTaxonUUID
-     * @param moveHomotypicGroup
-     * @param newSynonymType
-     * @param reference
-     * @param referenceDetail
-     * @param keepReference
-     * @return
-     * @throws HomotypicalGroupChangeException
-     *
      * @see {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymType, Reference, String, boolean)}
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
