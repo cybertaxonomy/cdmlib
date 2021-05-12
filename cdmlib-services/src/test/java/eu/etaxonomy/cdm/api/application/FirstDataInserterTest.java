@@ -8,12 +8,7 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -27,10 +22,6 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
-import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -62,36 +53,17 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IDescriptionService descriptionService;
 
+    /**
+     * Runs the FirstDataInserter on a blank database and
+     * asserts that all groups and users have been created.
+     */
     @Test
     @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
     @ExpectedDataSet(value="FirstDataInserterTest.testBlankDB-result.xml")
-    public void testBlankDB(){
+    public void testOnBlankDatabase(){
 
         commitAndStartNewTransaction(null);
 //        printDataSet(System.err, tableNames);
-    }
-
-    @Test
-    @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
-    public void testInsertData(){
-    	commitAndStartNewTransaction(null);
-
-    	Taxon newTaxon = TaxonGenerator.getTestTaxon();
-    	UUID taxonUUID = taxonService.save(newTaxon).getUuid();
-    	nameService.save(newTaxon.getName().getBasionyms());
-    	List<TaxonNode> childNodes = newTaxon.getTaxonNodes().iterator().next().getChildNodes();
-    	classificationService.saveTaxonNodeAll(childNodes);
-    	taxonService.saveOrUpdate(childNodes.stream().filter(tn->!tn.getTaxon().getAllMisappliedNames().isEmpty()).findFirst().get().getTaxon().getAllMisappliedNames().iterator().next());
-
-    	TaxonDescription description = TaxonGenerator.getTestDescription(1);
-    	newTaxon.addDescription(description);
-    	Set<TaxonDescription> descriptions = newTaxon.getDescriptions();
-    	descriptionService.save(description);
-
-    	newTaxon = null;
-    	newTaxon = (Taxon)taxonService.find(taxonUUID);
-    	descriptions = newTaxon.getDescriptions();
-    	assertEquals(2, descriptions.size());
     }
 
 
