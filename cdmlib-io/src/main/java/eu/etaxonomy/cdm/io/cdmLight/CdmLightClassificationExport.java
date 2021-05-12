@@ -822,13 +822,14 @@ public class CdmLightClassificationExport
          if(state.getConfig().isCreateCondensedDistributionString()){
              List<Language> langs = new ArrayList<>();
              langs.add(Language.ENGLISH());
-//FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY
+
              CondensedDistribution conDis = geoService.getCondensedDistribution(
                      //TODO add CondensedDistributionConfiguration to export configuration
                      distributions, true, null, state.getConfig().getCondensedDistributionRecipe().toConfiguration(), langs);
              CdmLightExportTable tableCondensed =
                      CdmLightExportTable.SIMPLE_FACT;
              String[] csvLine = new String[tableCondensed.getSize()];
+             //the computed fact has no uuid, TODO: remember the uuid for later reference assignment
              UUID randomUuid = UUID.randomUUID();
              csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] =
                      randomUuid.toString();
