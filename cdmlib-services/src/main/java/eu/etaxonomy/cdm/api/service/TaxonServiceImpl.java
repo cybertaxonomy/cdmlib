@@ -329,19 +329,21 @@ public class TaxonServiceImpl
                     }
                 }
             }
-
         }
+
+        //taxon nodes
         List<TaxonNode> nodes = new ArrayList<>(acceptedTaxon.getTaxonNodes());
         for (TaxonNode node: nodes){
-            node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+            node = HibernateProxyHelper.deproxy(node);
             TaxonNode parent = node.getParent();
             acceptedTaxon.removeTaxonNode(node);
             node.setTaxon(newTaxon);
             if (parent != null){
                 parent.addChildNode(node, null, null);
             }
-
         }
+
+        //synonym
         Synonym newSynonym = synonym.clone();
         newSynonym.setName(taxonName);
         newSynonym.setPublish(acceptedTaxon.isPublish());
@@ -351,6 +353,7 @@ public class TaxonServiceImpl
             newTaxon.addSynonym(newSynonym, SynonymType.HETEROTYPIC_SYNONYM_OF());
         }
 
+        //deletes
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteNameIfPossible(false);
         SynonymDeletionConfigurator confSyn = new SynonymDeletionConfigurator();
