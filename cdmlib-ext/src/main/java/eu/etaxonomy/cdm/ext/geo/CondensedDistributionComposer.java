@@ -100,7 +100,9 @@ public class CondensedDistributionComposer {
 
         //4. replace the area by the abbreviated representation and add symbols
         AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);
-        Collections.sort(topLevelNodes, areaNodeComparator);
+        AreaNodeComparator topLevelAreaOfScopeComparator = config.orderType == OrderType.NATURAL ? areaNodeComparator : new AreaNodeComparator(config, languages, OrderType.NATURAL);
+
+        Collections.sort(topLevelNodes, topLevelAreaOfScopeComparator);
 
         final boolean NOT_BOLED = false;
         final boolean NOT_HANDLED_BY_PARENT = false;
@@ -134,6 +136,8 @@ public class CondensedDistributionComposer {
 
         //outOfScope areas  (areas outside the endemic area)
         if (!outOfScopeNodes.isEmpty()){
+            Collections.sort(topLevelNodes, areaNodeComparator);
+
             result.addPostSeparatorTaggedText(config.outOfScopeAreasSeperator);
             List<AreaNode> outOfScopeList = new ArrayList<>(outOfScopeNodes);
             Collections.sort(outOfScopeList, areaNodeComparator);
@@ -424,11 +428,18 @@ public class CondensedDistributionComposer {
     }
 
     private class AreaNodeComparator implements Comparator<AreaNode>{
-        CondensedDistributionConfiguration config;
-        List<Language> languages;
+        private CondensedDistributionConfiguration config;
+        private OrderType orderType;
+        private List<Language> languages;
+
         private AreaNodeComparator(CondensedDistributionConfiguration config, List<Language> languages){
+            this(config, languages, null);
+        }
+
+        private AreaNodeComparator(CondensedDistributionConfiguration config, List<Language> languages, OrderType divergentOrderType){
             this.config = config;
             this.languages = languages;
+            this.orderType = divergentOrderType != null? divergentOrderType : config.orderType;
         }
 
         @Override
@@ -443,7 +454,7 @@ public class CondensedDistributionComposer {
             }else if (area2 == null){
                 return 1;
             }else{
-                if (config.orderType == OrderType.NATURAL) {
+                if (orderType == OrderType.NATURAL) {
                     //- due to wrong ordering behavior in DefinedTerms
                     return - area1.compareTo(area2);
                 }else{

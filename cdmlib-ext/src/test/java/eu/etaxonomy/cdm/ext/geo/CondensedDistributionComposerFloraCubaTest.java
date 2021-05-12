@@ -18,6 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.service.dto.CondensedDistribution;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionComposer.SymbolUsage;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -115,7 +116,6 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
         config = CondensedDistributionConfiguration.NewCubaInstance();
     }
 
-
 // ********************* TESTS ******************************/
 
     @Test
@@ -172,6 +172,17 @@ public class CondensedDistributionComposerFloraCubaTest extends TermTestBase {
                 condensedDistribution.toString());
 
         //TODO work in progress
+
+        //test against default configuration (E+M) to see if the result looks reasonable
+        //this should better be done CondensedDistributionComposerEuroMedTest but we have the test data here, therefore we keep the test here
+        config = CondensedDistributionConfiguration.NewDefaultInstance();
+        config.statusSymbolField = SymbolUsage.Symbol1;
+        condensedDistribution = composer.createCondensedDistribution(filteredDistributions, null, config);
+        Assert.assertEquals("Condensed string for Cuba differs",
+                "n (c)CuE -dCuW(<b>Art Hab* IJ Mat May PR*</b>) [(c)CuE(-cGu nHo)]" + config.outOfScopeAreasSeperator + "<b>Bah</b> ?VM",
+                condensedDistribution.toString());
+        //Note: CuE is handled as both native and introduced as (c) is not yet defined as "introduced" status. Currently
+        //      introduced status are hardcoded in PresenceAbsence term. This will probably change in future by becoming an own attribute like "isPresent"
     }
 
     private static boolean makeAreas(){
