@@ -491,8 +491,6 @@ public class TaxonServiceImpl
         return result;
     }
 
-
-
     @Override
     @Transactional(readOnly = false)
     public UpdateResult changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, Reference newSecRef, String microRef, SecReferenceHandlingEnum secHandling, boolean deleteSynonym) {
@@ -581,11 +579,10 @@ public class TaxonServiceImpl
                 break;
             case WarningSelect:
                 newSecRef = CdmBase.deproxy(referenceService.load(newSec));
-
+                break;
             default:
                 break;
         }
-
 
         result =  changeSynonymToAcceptedTaxon(synonym, acceptedTaxon, newSecRef, microReference, secHandling, deleteSynonym);
         Taxon newTaxon = (Taxon)result.getCdmEntity();
@@ -596,7 +593,6 @@ public class TaxonServiceImpl
         result.addUpdatedObject(acceptedTaxon);
         result.setCdmEntity(newNode);
         return result;
-
     }
 
     @Override
