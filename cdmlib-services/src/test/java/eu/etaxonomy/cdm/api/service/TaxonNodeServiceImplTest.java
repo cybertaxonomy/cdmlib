@@ -790,9 +790,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
         //set secundum
         SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null);
-        config.setOverwriteExistingAccepted(false);
-        config.setOverwriteExistingSynonyms(false);
-        config.setOverwriteExistingRelations(false);
+        config.setOverwriteExisting(false);
         UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
         Assert.assertTrue(result.getExceptions().isEmpty());
         Assert.assertTrue(result.isOk());

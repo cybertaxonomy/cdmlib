@@ -988,11 +988,11 @@ public class TaxonNodeServiceImpl
             boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
 
             TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
-            int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
+            int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             monitor.worked(2);
-            count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()) :0;
+            count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()) :0;
             monitor.worked(3);
-            count += includeRelatedTaxa ? dao.countSecundumForSubtreeRelations(subTreeIndex, newSec, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
+            count += includeRelatedTaxa ? dao.countSecundumForSubtreeRelations(subTreeIndex, newSec, config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
             monitor.worked(2);
             if (monitor.isCanceled()){
                 return result;
@@ -1003,7 +1003,7 @@ public class TaxonNodeServiceImpl
             if (config.isIncludeAcceptedTaxa()){
                 monitor.subTask("Update Accepted Taxa");
                 Set<CdmBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec,
-                        config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), subMonitor);
+                        config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), subMonitor);
                 result.addUpdatedObjects(updatedTaxa);
                 if (monitor.isCanceled()){
                     return result;
@@ -1012,7 +1012,7 @@ public class TaxonNodeServiceImpl
             if (config.isIncludeSynonyms()){
                monitor.subTask("Update Synonyms");
                Set<CdmBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec,
-                       config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
+                       config.isOverwriteExisting(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
                result.addUpdatedObjects(updatedSynonyms);
                if (monitor.isCanceled()){
                    return result;
@@ -1022,7 +1022,7 @@ public class TaxonNodeServiceImpl
                 monitor.subTask("Update Related Taxa");
                 Set<UUID> relationTypes = getRelationTypesForSubtree(config);
                 Set<CdmBase> updatedRels = dao.setSecundumForSubtreeRelations(subTreeIndex, newSec,
-                        relationTypes, config.isOverwriteExistingRelations(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
+                        relationTypes, config.isOverwriteExisting(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
                 result.addUpdatedObjects(updatedRels);
                 if (monitor.isCanceled()){
                     return result;

@@ -24,9 +24,7 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
     private static final long serialVersionUID = -5181147074062916234L;
 
     private Reference newSecundum;
-    private boolean overwriteExistingAccepted = true;
-    private boolean overwriteExistingSynonyms = true;
-    private boolean overwriteExistingRelations = true;
+    private boolean overwriteExisting = true;
     private boolean emptySecundumDetail = true;
 
     public SecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor) {
@@ -52,24 +50,10 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
         this.emptySecundumDetail = emptySecundumDetail;
     }
 
-    public boolean isOverwriteExistingAccepted() {
-        return overwriteExistingAccepted;
+    public boolean isOverwriteExisting() {
+        return overwriteExisting;
     }
-    public void setOverwriteExistingAccepted(boolean overwriteExistingAccepted) {
-        this.overwriteExistingAccepted = overwriteExistingAccepted;
-    }
-
-    public boolean isOverwriteExistingSynonyms() {
-        return overwriteExistingSynonyms;
-    }
-    public void setOverwriteExistingSynonyms(boolean overwriteExistingSynonyms) {
-        this.overwriteExistingSynonyms = overwriteExistingSynonyms;
-    }
-
-    public boolean isOverwriteExistingRelations() {
-        return overwriteExistingRelations;
-    }
-    public void setOverwriteExistingRelations(boolean overwriteExistingRelations) {
-        this.overwriteExistingRelations = overwriteExistingRelations;
+    public void setOverwriteExisting(boolean overwriteExisting) {
+        this.overwriteExisting = overwriteExisting;
     }
 }
