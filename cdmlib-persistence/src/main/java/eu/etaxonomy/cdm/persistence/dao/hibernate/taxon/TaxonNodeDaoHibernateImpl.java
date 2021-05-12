@@ -800,7 +800,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         getSession().clear();
         getSession().beginTransaction();
         for (CdmBase cdmBase : cdmBaseToUpdate){
-            getSession().update(cdmBase);
+            if (cdmBase != null){
+                getSession().update(cdmBase);
+            }
         }
     }
 
