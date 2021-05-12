@@ -13,7 +13,6 @@ import java.util.Map;
 
 import eu.etaxonomy.cdm.common.URI;
 
-
 /**
  * @author k.luther
  * @author a.mueller
@@ -68,7 +67,6 @@ public  class CdmImageInfo extends MediaInfo {
 	public Map<String, String> getMetaData(){
 		return metaData;
 	}
-
 
 // ******************* TO STRING **********************************/
 
