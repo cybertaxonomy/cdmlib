@@ -28,8 +28,8 @@ public abstract class ForSubtreeConfiguratorBase
     private boolean includeAcceptedTaxa = true;
     private boolean includeSynonyms = true;
     private boolean includeSharedTaxa = true;
-    private boolean includeMisapplications = true;  //for err. sec.
-    private boolean includeProParteSynonyms = true;  //for syn. sec.
+    private boolean includeMisapplications = true;  //SecundumForSubtree overrides default value
+    private boolean includeProParteSynonyms = true;  //SecundumForSubtree overrides default value
     private IProgressMonitor monitor;
 
     protected ForSubtreeConfiguratorBase(UUID subtreeUuid, IProgressMonitor monitor) {

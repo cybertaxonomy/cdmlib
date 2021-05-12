@@ -30,10 +30,12 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
     public SecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor) {
         super(subtreeUuid, monitor);
         this.newSecundum = newSecundum;
+        setIncludeMisapplications(false);  //#9611-note11   //for err. sec.
+        setIncludeProParteSynonyms(false); //#9611-note11   //for syn. sec.
     }
 
     public SecundumForSubtreeConfigurator(UUID subtreeUuid) {
-        super(subtreeUuid);
+        this(subtreeUuid, null, null);
     }
 
     public Reference getNewSecundum() {
