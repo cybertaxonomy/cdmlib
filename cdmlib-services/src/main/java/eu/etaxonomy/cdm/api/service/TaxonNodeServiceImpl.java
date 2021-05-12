@@ -998,7 +998,7 @@ public class TaxonNodeServiceImpl
                 return result;
             }
 
-            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count * 2);  //*2 1 tick for update and 1 tick for commit
             //Reference ref = config.getNewSecundum();
             if (config.isIncludeAcceptedTaxa()){
                 monitor.subTask("Update Accepted Taxa");

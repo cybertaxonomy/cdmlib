@@ -791,6 +791,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                 }
             }
             commitAndRestartTransaction(newSec);
+            monitor.worked(taxonIdList.size());
         }
         return result;
     }
@@ -852,6 +853,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                 }
             }
             commitAndRestartTransaction();
+            monitor.worked(relList.size());
         }
 
         return result;
