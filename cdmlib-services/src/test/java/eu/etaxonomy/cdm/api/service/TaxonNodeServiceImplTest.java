@@ -740,7 +740,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNull(taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource());
 
         //set secundum
-        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, null, null, true);
+        config.setIncludeMisapplications(true);
+        config.setIncludeProParteSynonyms(true);
         config.setNewSecundum(newSec);
         UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
         Assert.assertTrue(result.getExceptions().isEmpty());
@@ -789,7 +791,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNull(taxon5.getProParteAndPartialSynonymRelations().iterator().next().getSource());
 
         //set secundum
-        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null, true);
         config.setOverwriteExisting(false);
         UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
         Assert.assertTrue(result.getExceptions().isEmpty());
@@ -830,10 +832,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null, false);
         config.setIncludeSynonyms(false);
-        config.setIncludeMisapplications(false);
-        config.setIncludeProParteSynonyms(false);
         taxonNodeService.setSecundumForSubtree(config);
 
 //        commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
@@ -863,10 +863,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull(taxon5.getSecMicroReference());
 
         //set secundum
-        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null, false);
         config.setIncludeAcceptedTaxa(false);
-        config.setIncludeMisapplications(false);
-        config.setIncludeProParteSynonyms(false);
         taxonNodeService.setSecundumForSubtree(config);
 
         commitAndStartNewTransaction(new String[]{"TaxonBase","TaxonBase_AUD"});
@@ -902,7 +900,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         commitAndStartNewTransaction();
 
         //set secundum
-        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null);
+        SecundumForSubtreeConfigurator config = new SecundumForSubtreeConfigurator(node1Uuid, newSec, null, true);
         config.setIncludeSharedTaxa(false);
         taxonNodeService.setSecundumForSubtree(config);
 
