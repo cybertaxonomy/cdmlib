@@ -1470,7 +1470,7 @@ public class TaxonServiceImpl
             SynonymType newSynonymType) throws HomotypicalGroupChangeException {
         return moveSynonymToAnotherTaxon(oldSynonym, newTaxon, moveHomotypicGroup,
                 newSynonymType,
-                oldSynonym.getSec()!= null?oldSynonym.getSec().getUuid():null,
+                oldSynonym.getSec()!= null? oldSynonym.getSec().getUuid(): null,
                 oldSynonym.getSecMicroReference(),
                 true);
     }
