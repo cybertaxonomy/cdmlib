@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -52,7 +53,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
 import eu.etaxonomy.cdm.remote.controller.util.IMediaToolbox;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * Factory class for creating iiif manifests.
@@ -462,8 +462,7 @@ public class ManifestComposer {
         StringBuilder html = new StringBuilder();
         Reference citation = source.getCitation();
         if(citation != null) {
-            ReferenceDefaultCacheStrategy strategy = ((ReferenceDefaultCacheStrategy)citation.getCacheStrategy());
-            html.append(strategy.createShortCitation(citation, source.getCitationMicroReference(), false)).append(" ");
+            html.append(OriginalSourceFormatter.INSTANCE.format(source)).append(" ");
             if(citation.getDoi() != null) {
                 try {
                     html.append(" ").append(htmlLink(new URI("http://doi.org/" + citation.getDoiString()), citation.getDoiString()));
