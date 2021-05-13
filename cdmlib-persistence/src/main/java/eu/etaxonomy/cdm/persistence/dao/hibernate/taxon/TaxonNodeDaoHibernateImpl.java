@@ -872,7 +872,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa, boolean includeHybrids) {
         String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, !includeHybrids, SelectMode.COUNT);
         queryStr += " AND t.publish != :publish ";
-        System.out.println(queryStr);
         Query query = getSession().createQuery(queryStr);
         query.setBoolean("publish", publish);
         return ((Long)query.uniqueResult()).intValue();

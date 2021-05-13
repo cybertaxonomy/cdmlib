@@ -67,13 +67,13 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
  *
  * @author Anton Güntsch (author of original Transmission Engine Occurrence version 14 written in Visual Basic)
  * @author Andreas Kohlbecker (2013, porting Transmission Engine Occurrence to Java)
+ * @author a.mueller (refactoring and merge with Structured Description Aggregation)
  * @since Feb 22, 2013
  */
 public class DistributionAggregation
             extends DescriptionAggregationBase<DistributionAggregation,DistributionAggregationConfiguration>{
 
     public static final Logger logger = Logger.getLogger(DistributionAggregation.class);
-
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "description.elements.area",
@@ -83,7 +83,6 @@ public class DistributionAggregation
 //            "description.elements.multilanguageText",
 //            "name.status.type",
     });
-
 
     /**
      * A map which contains the status terms as key and the priority as value
