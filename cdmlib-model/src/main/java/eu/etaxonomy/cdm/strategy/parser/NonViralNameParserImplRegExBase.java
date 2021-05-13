@@ -240,6 +240,14 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
 
+    protected static String originalSpellingName = "("+capitalEpiWord +")?(" + fWs + "\\(" + capitalEpiWord + "\\))?(" +
+                        fWs + nonCapitalEpiWord+")?(" + oWs + infraSpeciesMarker + oWs + nonCapitalEpiWord + ")?";
+    protected static String originalSpellingStart = "\\[as \"";
+    protected static String originalSpellingEnd = "\"\\]";
+
+    protected static String pOriginalSpelling = oWs + originalSpellingStart + originalSpellingName + originalSpellingEnd;
+    protected static Pattern originalSpellingPattern = Pattern.compile(pOriginalSpelling);
+
     protected static String pNomStatusNom =
             "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s*(prop|des)\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|val\\.|"+
     			"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?)";
