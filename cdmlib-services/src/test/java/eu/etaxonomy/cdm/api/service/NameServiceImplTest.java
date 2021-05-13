@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -1055,6 +1056,27 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("Expecting nameCache to be updated", "Third", nameCacheField.get(name3));
         assertEquals("Expecting authorshipCache to be updated", "No-author", authorCacheField.get(name3));
         assertEquals("Expecting fullTitleCache to be updated", "Name3", fullTitleCacheField.get(name3));
+    }
+
+    @Test  //#3666
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.xml")
+    public void testParseName() {
+        Assert.assertEquals(3, nameService.count(TaxonName.class));
+        String nameToParseStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
+        TaxonName parsedName = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
+        UUID parsedNameUuid = parsedName.getUuid();
+        UUID originalSpellingUuid = parsedName.getOriginalSpelling().getUuid();
+        nameService.save(parsedName);
+
+        TaxonName parsedName2 = (TaxonName)nameService.parseName(nameToParseStr, NomenclaturalCode.ICNAFP, Rank.SPECIES(), true).getCdmEntity();
+        UUID parsedNameUuid2 = parsedName2.getUuid();
+        UUID originalSpelling2Uuid = parsedName2.getOriginalSpelling().getUuid();
+        Assert.assertEquals(originalSpellingUuid, originalSpelling2Uuid);
+        Assert.assertNotEquals(parsedNameUuid, parsedNameUuid2);  //currently we do not deduplicate the main name yet
+        nameService.save(parsedName2);
+
+
+
     }
 
     private Rank getSpeciesRank() {

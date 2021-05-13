@@ -1268,6 +1268,18 @@ public class NameServiceImpl
                 if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersited()){
                     name.setExBasionymAuthorship(deduplicateAuthor(name.getExBasionymAuthorship()));
                 }
+
+                //originalSpelling
+                if (name.getOriginalSpelling()!= null && !name.getOriginalSpelling().isPersited()){
+                    TaxonName origName = name.getOriginalSpelling();
+                    IMatchStrategy nameMatcher = MatchStrategyFactory.NewParsedOriginalSpellingInstance();
+                    List<TaxonName> matchingNames = commonService.findMatching(origName, nameMatcher);
+                    if(matchingNames.size() >= 1){
+                        TaxonName duplicate = findBestMatching(origName, matchingNames, nameMatcher);
+                        name.setOriginalSpelling(duplicate);
+                    }
+                }
+
 //              Logger.getLogger("org.hibernate.SQL").setLevel(sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);

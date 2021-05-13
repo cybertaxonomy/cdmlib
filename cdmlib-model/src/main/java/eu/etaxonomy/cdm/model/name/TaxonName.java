@@ -239,14 +239,17 @@ public class TaxonName
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
+    @Match(value=MatchMode.IGNORE)
     private int parsingProblem = 0;
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
+    @Match(value=MatchMode.IGNORE)
     private int problemStarts = -1;
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
+    @Match(value=MatchMode.IGNORE)
     private int problemEnds = -1;
 
     @XmlElementWrapper(name = "TypeDesignations")

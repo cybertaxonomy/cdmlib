@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.strategy.match;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
@@ -382,4 +383,68 @@ public class MatchStrategyFactory {
     //      IMatchStrategy result = new DefaultMatchStrategy(TaxonName.class);
     //      return result;
     //  }
+
+    public static IParsedMatchStrategy NewParsedOriginalSpellingInstance(){
+        try {
+            IParsedMatchStrategy originalSpellingMatchStrategy = (IParsedMatchStrategy)NewDefaultInstance(TaxonName.class);
+            addParsedIdentifiableEntityModes(originalSpellingMatchStrategy);
+
+            //authorshipCache, nameCache, fullTitleCache,
+            //protectedFullTitleCache, protectedNameCache, protectedAuthorshipCache,
+            //nomenclaturalSource,
+            originalSpellingMatchStrategy.setMatchMode("genusOrUninomial", MatchMode.EQUAL_REQUIRED);
+            originalSpellingMatchStrategy.setMatchMode("nameType", MatchMode.EQUAL_REQUIRED);
+            originalSpellingMatchStrategy.setMatchMode("rank", MatchMode.EQUAL_REQUIRED);  //?? MatchMode.MATCH_REQUIRED => not yet implemented as Match class
+
+            //equal
+            String[] equalParams = new String[]{"acronym","anamorphic","appendedPhrase",
+                    "binomHybrid", "monomHybrid","trinomHybrid","hybridFormula",
+                    "breed","cultivarName","infraGenericEpithet","infraSpecificEpithet",
+                    "publicationYear","originalPublicationYear","specificEpithet","subGenusAuthorship"};
+            for(String param : equalParams){
+                originalSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL);
+            }
+
+            //equal or first
+            String[] equalOrNullParams = new String[]{"nameApprobation"};
+            for(String param : equalOrNullParams){
+                originalSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
+            }
+
+            //match
+            String[] authorMatchParams = new String[]{"combinationAuthorship","basionymAuthorship","exCombinationAuthorship",
+                    "exBasionymAuthorship","inBasionymAuthorship", "inCombinationAuthorship"};
+            for(String param : authorMatchParams){
+                originalSpellingMatchStrategy.setMatchMode(param, MatchMode.MATCH, NewParsedTeamOrPersonInstance());
+            }
+
+            //match or first
+            String[] matchOrNullParams = new String[]{"nomenclaturalSource"};
+            for(String param : matchOrNullParams){
+                originalSpellingMatchStrategy.setMatchMode(param, MatchMode.MATCH_OR_FIRST_NULL);
+            }
+
+            //?? should be MatchMode.EQUAL_OR_FIRST_NULL for Collections
+            String[] ignoreCollectionParams = new String[]{"taxonBases", "typeDesignations", "descriptions", "registrations",
+                    "relationsFromThisName", "relationsToThisName", "hybridChildRelations", "hybridParentRelations",
+                    "status"};
+            for(String param : ignoreCollectionParams){
+                originalSpellingMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            //ignore
+            String[] ignoreParams = new String[]{"homotypicalGroup"   //??
+                    ,"parsingProblem", "problemEnds", "problemStarts"};
+            for(String param : ignoreParams){
+                originalSpellingMatchStrategy.setMatchMode(param, MatchMode.IGNORE);
+            }
+
+            //TODO caches
+
+            return originalSpellingMatchStrategy;
+        } catch (MatchException e) {
+            throw new RuntimeException("Exception when creating parsed original spelling match strategy.", e);
+        }
+    }
+
 }
