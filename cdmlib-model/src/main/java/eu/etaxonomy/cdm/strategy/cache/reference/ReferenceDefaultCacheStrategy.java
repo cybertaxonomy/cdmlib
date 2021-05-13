@@ -161,16 +161,9 @@ public class ReferenceDefaultCacheStrategy
         //pages
         if (isNotBlank(reference.getPages())){
             //Removing trailing added just in case, maybe not necessary
-            result = RemoveTrailingDot(Nz(result)).trim() + ": " + reference.getPages();
+            result = removeTrailingDots(result).trim() + ": " + reference.getPages();
         }
         return result;
-    }
-
-    private static String RemoveTrailingDot(String str) {
-        if (str != null && str.endsWith(".")){
-            str = str.substring(0, str.length()-1);
-        }
-        return str;
     }
 
     @Override
@@ -475,17 +468,24 @@ public class ReferenceDefaultCacheStrategy
 
 // ******************************* HELPER *****************************************/
 
-    public static String addYear(String yearStr, Reference nomRef, boolean useFullDatePublished){
+    /**
+     * Adds the year or full date of a reference to a given string
+     * @param currentStr the given string
+     * @param reference the reference
+     * @param useFullDatePublished wether to add the year only or the full date
+     * @return the concatenated string
+     */
+    public static String addYear(String currentStr, Reference reference, boolean useFullDatePublished){
         String result;
-        if (yearStr == null){
+        if (currentStr == null){
             return null;
         }
-        String year = useFullDatePublished ? nomRef.getDatePublishedString() : nomRef.getYear();
+        String year = useFullDatePublished ? reference.getDatePublishedString() : reference.getYear();
         if (isBlank(year)){
-            result = yearStr + afterYear;
+            result = currentStr + afterYear;
         }else{
-            String concat = isBlank(yearStr)  ? "" : yearStr.endsWith(".")  ? " " : beforeYear;
-            result = yearStr + concat + year + afterYear;
+            String concat = isBlank(currentStr)  ? "" : currentStr.endsWith(".")  ? " " : beforeYear;
+            result = currentStr + concat + year + afterYear;
         }
         return result;
     }
@@ -529,23 +529,10 @@ public class ReferenceDefaultCacheStrategy
      * Returns <code>true</code> if the type of the reference originally corresponded to a cache strategy
      * which inherited from {@link NomRefDefaultCacheStrategyBase}.
      * @param type
+     * @see ReferenceType#isNomRef()
      */
     public static boolean isNomRef(ReferenceType type){
-        switch (type){
-            case Article:
-            case Book:
-            case BookSection:
-            case CdDvd:
-            case Generic:
-            case Section:
-            case Thesis:
-            case WebPage:
-                return true;
-
-            case Journal:
-            default:
-                return false;
-        }
+        return type == null ? false : type.isNomRef();
     }
 
     /**
@@ -567,11 +554,11 @@ public class ReferenceDefaultCacheStrategy
 
 // *************************** EXTERNAL USE *******************************************/
 
-   public static String putAuthorToEndOfString(String referenceTitleCache, String authorTitleCache) {
-       if(authorTitleCache != null){
-           referenceTitleCache = referenceTitleCache.replace(authorTitleCache + ", ", "");
-           referenceTitleCache += " - " + authorTitleCache;
+   public static String putAuthorToEndOfString(String referenceTitle, String authorTitle) {
+       if(authorTitle != null){
+           referenceTitle = referenceTitle.replace(authorTitle + ", ", "");
+           referenceTitle += " - " + authorTitle;
        }
-       return referenceTitleCache;
+       return referenceTitle;
    }
 }

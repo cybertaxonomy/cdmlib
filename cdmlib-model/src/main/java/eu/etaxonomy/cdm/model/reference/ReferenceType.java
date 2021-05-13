@@ -250,6 +250,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
 	public static ReferenceType getByKey(String key){return delegateVoc.getByKey(key);}
     public static ReferenceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
+// *********************************** END DELEGATE *************************************/
 
     public boolean isArticle() {
         return this == Article;
@@ -302,5 +303,27 @@ public enum ReferenceType implements IEnumTerm<ReferenceType> {
      */
     public boolean isSectionOnly() {
         return this == Section;
+    }
+
+    /**
+     * Returns <code>true</code> if the type of the reference originally corresponded to a cache strategy
+     * which inherited from {@link NomRefDefaultCacheStrategyBase}.
+     */
+    public boolean isNomRef(){
+        switch (this){
+            case Article:
+            case Book:
+            case BookSection:
+            case CdDvd:
+            case Generic:
+            case Section:
+            case Thesis:
+            case WebPage:
+                return true;
+
+            case Journal:
+            default:
+                return false;
+        }
     }
 }

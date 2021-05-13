@@ -111,4 +111,8 @@ public abstract class StrategyBase
 	protected static boolean isBlank(String str){
 		return StringUtils.isBlank(str);
 	}
+
+	protected String removeTrailingDots(String str){
+	    return CdmUtils.removeTrailingDots(str);
+	}
 }

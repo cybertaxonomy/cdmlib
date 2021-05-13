@@ -58,21 +58,21 @@ public class NomenclaturalSourceFormatter extends CdmFormatterBase<Nomenclatural
         return format(reference, microReference);
     }
 
-  /**
-  * Returns a formatted string containing the entire citation used for
-  * nomenclatural purposes based on the {@link Reference reference} supplied - including
-  * (abbreviated) title  but not authors - and on the given details.<BR>
-  *
-  * @param  reference
-  *                         the nomenclatural reference
-  * @param  microReference  the string with the details (generally pages)
-  *                         corresponding to the nomenclatural reference supplied
-  *                         as the first argument
-  * @return                 the formatted string representing the
-  *                         nomenclatural citation
-  * @see                    INomenclaturalReference#getNomenclaturalCitation(String)
-  * @see                    TaxonName#getNomenclaturalReference()
-  */
+    /**
+    * Returns a formatted string containing the entire citation used for
+    * nomenclatural purposes based on the {@link Reference reference} supplied - including
+    * (abbreviated) title  but not authors - and on the given details.<BR>
+    *
+    * @param  reference
+    *                         the nomenclatural reference
+    * @param  microReference  the string with the details (generally pages)
+    *                         corresponding to the nomenclatural reference supplied
+    *                         as the first argument
+    * @return                 the formatted string representing the
+    *                         nomenclatural citation
+    * @see                    INomenclaturalReference#getNomenclaturalCitation(String)
+    * @see                    TaxonName#getNomenclaturalReference()
+    */
     public String format(Reference reference, String microReference){
         if (reference == null){
             return CdmUtils.concat(beforeMicroReference, "-", microReference);
@@ -300,6 +300,9 @@ public class NomenclaturalSourceFormatter extends CdmFormatterBase<Nomenclatural
         return result;
     }
 
+    /**
+     * @see ReferenceDefaultCacheStrategy#addYear(String, Reference, boolean)
+     */
     private String addYear(String yearStr, Reference ref, boolean useFullDatePublished) {
         return ReferenceDefaultCacheStrategy.addYear(yearStr, ref, useFullDatePublished);
     }

@@ -1754,7 +1754,7 @@ public class CdmLightClassificationExport
                          doubtful = "";
                      }
                      if (taxonBase instanceof Synonym){
-                         if (StringUtils.isNotBlank(sec)){
+                         if (isNotBlank(sec)){
                              sec = " syn. sec. " + sec + " ";
                          }else {
                              sec = "";

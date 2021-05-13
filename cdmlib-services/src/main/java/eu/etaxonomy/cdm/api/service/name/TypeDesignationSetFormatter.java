@@ -212,9 +212,6 @@ public class TypeDesignationSetFormatter {
         return typeDesignationCount;
     }
 
-
-
-
     /**
      * Adds the tags for the given source.
      */
