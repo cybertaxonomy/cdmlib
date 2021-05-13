@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -38,7 +39,6 @@ import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -219,9 +219,8 @@ public class TypeDesignationSetFormatter {
             OriginalSourceBase source) {
         Reference ref = source.getCitation();
         if (ref != null){
-            ReferenceDefaultCacheStrategy strategy = ((ReferenceDefaultCacheStrategy)ref.getCacheStrategy());
-            String shortCitation = strategy.createShortCitation(ref, source.getCitationMicroReference(), false);
-            workingsetBuilder.add(TagEnum.reference, shortCitation, TypedEntityReference.fromEntity(ref, false));
+            String citation = OriginalSourceFormatter.INSTANCE.format(source);
+            workingsetBuilder.add(TagEnum.reference, citation, TypedEntityReference.fromEntity(ref, false));
         }
     }
 

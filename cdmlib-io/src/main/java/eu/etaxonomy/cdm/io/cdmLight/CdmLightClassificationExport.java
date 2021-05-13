@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
@@ -100,7 +101,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -1270,8 +1270,7 @@ public class CdmLightClassificationExport
                     int index = 1;
                     for (IdentifiableSource source: typeDesignation.getSources()){
                         if (source.getCitation() != null){
-                            ReferenceDefaultCacheStrategy cacheStrategy = ((ReferenceDefaultCacheStrategy)source.getCitation().getCacheStrategy());
-                            stringbuilder.append(cacheStrategy.getCitation(source.getCitation(), source.getCitationMicroReference()));
+                            stringbuilder.append(OriginalSourceFormatter.INSTANCE.format(source));
                         }
                         if (index < typeDesignation.getSources().size()) {
                             stringbuilder.append( ", ");
@@ -1660,8 +1659,7 @@ public class CdmLightClassificationExport
                             statusString += ": " + nameStatus.getRuleConsidered();
                         }
                         if (nameStatus.getCitation() != null) {
-                            String shortCitation = ((ReferenceDefaultCacheStrategy) nameStatus.getCitation().getCacheStrategy())
-                                    .createShortCitation(nameStatus.getCitation(), null, false);
+                            String shortCitation = OriginalSourceFormatter.INSTANCE.format(nameStatus.getCitation(), null);
                             statusString += " (" + shortCitation + ")";
                         }
 //                        if (nameStatus.getCitationMicroReference() != null
@@ -1743,10 +1741,8 @@ public class CdmLightClassificationExport
 
                 if (taxonBases.size() == 1){
                      taxonBase = HibernateProxyHelper.deproxy(taxonBases.iterator().next());
-                     Reference secRef = taxonBase.getSec();
-                     if (secRef != null){
-                         sec = ((ReferenceDefaultCacheStrategy) secRef.getCacheStrategy())
-                             .createShortCitation(secRef, taxonBase.getSecMicroReference(), true);
+                     if (taxonBase.getSec() != null){
+                         sec = OriginalSourceFormatter.INSTANCE_WITH_BRACKETS.format(taxonBase.getSecSource());
                      }
                      if (taxonBase.isDoubtful()){
                          doubtful = "?";
@@ -1771,10 +1767,8 @@ public class CdmLightClassificationExport
                 }else{
                     //there are names used more than once?
                     for (TaxonBase<?> tb: taxonBases){
-                        Reference secRef = tb.getSec();
-                        if (secRef != null){
-                            sec = ((ReferenceDefaultCacheStrategy) secRef.getCacheStrategy())
-                                .createShortCitation(secRef, tb.getSecMicroReference(), true);
+                        if (tb.getSec() != null){
+                            sec = OriginalSourceFormatter.INSTANCE_WITH_BRACKETS.format(tb.getSecSource());
                         }
                         if (tb.isDoubtful()){
                             doubtful = "?";
@@ -2066,9 +2060,7 @@ public class CdmLightClassificationExport
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             // TODO short citations correctly
-            String shortCitation = ((ReferenceDefaultCacheStrategy) reference.getCacheStrategy())
-                    .createShortCitation(reference, null, true); // Should be Author(year)
-                                                     // like in Taxon.sec
+            String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             // TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()

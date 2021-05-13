@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -134,7 +135,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     sec.getAuthorship() != null &&
                     isNotBlank(sec.getAuthorship().getTitleCache()) &&
                     isNotBlank(sec.getYear())){
-                secRef = sec.getCacheStrategy().getCitation(sec, null);  //microRef is handled later
+                secRef = OriginalSourceFormatter.INSTANCE.format(sec, null);  //microRef is handled later
             }else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
                     && titleExists(sec)){  //maybe we should also test protected caches (but which one, the abbrev cache or the titleCache?
                 secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();

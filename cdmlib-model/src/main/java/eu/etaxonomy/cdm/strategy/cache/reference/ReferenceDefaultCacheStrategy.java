@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,15 +18,11 @@ import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
-import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * #5833
@@ -215,141 +210,6 @@ public class ReferenceDefaultCacheStrategy
         }
 
         return result;
-    }
-
-    //TODO see comment on createShortCitation(...)
-    @Override
-    public String getCitation(Reference reference, String microReference) {
-        // mostly copied from nomRefCacheStrat, refCache, journalCache
-
-        if (reference == null){
-            return null;
-        }
-        StringBuilder result = new StringBuilder();
-        TeamOrPersonBase<?> team = reference.getAuthorship();
-
-        String nextConcat = "";
-
-        if (team != null &&  isNotBlank(team.getTitleCache())){
-            result.append(team.getTitleCache() );
-            //here is the difference between nomRef and others
-            if (isNomRef(reference.getType())) {
-                nextConcat = afterAuthor;
-            }else{
-                //FIXME check if this really makes sense
-                result.append(afterAuthor);
-                nextConcat = beforeYear;
-            }
-        }
-
-        String year = reference.getYear();
-        if (isNotBlank(year)){
-            result.append(nextConcat + year);
-        }
-        if (isNotBlank(microReference)){
-            result.append(": " + microReference);
-        }
-
-        return result.toString();
-    }
-
-    //TODO this method should probably be unified with getCitation(Reference reference, String microReference)
-    @Override
-    public String createShortCitation(Reference reference, String citationDetail, Boolean withYearBrackets) {
-        if (withYearBrackets == null){
-            withYearBrackets = false;
-        }
-        if(reference.isProtectedTitleCache()){
-            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
-        }
-        TeamOrPersonBase<?> authorship = reference.getAuthorship();
-        String shortCitation = "";
-        if (authorship == null) {
-            return handleCitationDetailInTitleCache(reference.getTitleCache(), citationDetail);
-        }
-        authorship = CdmBase.deproxy(authorship);
-        if (authorship instanceof Person){
-            shortCitation = getPersonString((Person)authorship);
-        }
-        else if (authorship instanceof Team){
-
-            Team team = CdmBase.deproxy(authorship, Team.class);
-            if (team.isProtectedTitleCache()){
-                shortCitation = team.getTitleCache();
-            }else{
-                List<Person> teamMembers = team.getTeamMembers();
-                int etAlPosition = 2;
-                for (int i = 1; i <= teamMembers.size() &&
-                        (i < etAlPosition || teamMembers.size() == etAlPosition && !team.isHasMoreMembers()) ; i++){
-                    Person teamMember = teamMembers.get(i-1);
-                    if(teamMember == null){
-                        // this can happen in UIs in the process of adding new members
-                        continue;
-                    }
-                    String concat = TeamDefaultCacheStrategy.concatString(team, teamMembers, i);
-                    shortCitation += concat + getPersonString(teamMember);
-                }
-                if (teamMembers.size() == 0){
-                    shortCitation = TeamDefaultCacheStrategy.EMPTY_TEAM;
-                } else if (team.isHasMoreMembers() || teamMembers.size() > etAlPosition){
-                    shortCitation += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
-                }
-            }
-        }
-        shortCitation = CdmUtils.concat(" ", shortCitation, getShortCitationDate(reference, withYearBrackets, citationDetail));
-
-        return shortCitation;
-    }
-
-    /**
-     * Adds the citationDetail to the titleCache string that is returned from a method as data is not
-     * accurately parsed.
-     * @return
-     */
-    private String handleCitationDetailInTitleCache(String titleCache, String citationDetail) {
-        if (StringUtils.isBlank(citationDetail)){
-            return titleCache;
-        }else if (StringUtils.isBlank(titleCache)){
-            return ": " + citationDetail;
-        }else if (citationDetail.length() <= 3){
-            if (titleCache.contains(": " + citationDetail)){
-                return titleCache;
-            }
-        }else{
-            if (titleCache.contains(citationDetail)){
-                return titleCache;
-            }
-        }
-        return titleCache + ": " + citationDetail;
-    }
-
-    private String getShortCitationDate(Reference reference, boolean withBrackets, String citationDetail) {
-        String result = null;
-        if (reference.getDatePublished() != null && !reference.getDatePublished().isEmpty()) {
-            if (isNotBlank(reference.getDatePublished().getFreeText())){
-                result = reference.getDatePublished().getFreeText();
-            }else if (isNotBlank(reference.getYear()) ){
-                result = reference.getYear();
-            }
-            if (StringUtils.isNotEmpty(citationDetail)){
-                result = CdmUtils.Nz(result) + ": " + citationDetail;
-            }
-            if (StringUtils.isNotBlank(result) && withBrackets){
-                result = "(" + result + ")";
-            }
-        }else if (reference.getInReference() != null){
-            result = getShortCitationDate(reference.getInReference(), withBrackets, citationDetail);
-        }
-        return result;
-    }
-
-    private String getPersonString(Person person) {
-        String shortCitation;
-        shortCitation = person.getFamilyName();
-        if (isBlank(shortCitation) ){
-            shortCitation = person.getTitleCache();
-        }
-        return shortCitation;
     }
 
 // ************************ TITLE CACHE SUBS ********************************************/

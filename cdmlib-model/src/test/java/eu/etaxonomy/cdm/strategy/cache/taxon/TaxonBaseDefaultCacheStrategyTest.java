@@ -177,7 +177,7 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         sec.setAuthorship(Team.NewTitledInstance("Team", "T."));
         sec.setDatePublished(TimePeriodParser.parseStringVerbatim("1798"));
         taxonBase.setTitleCache(null);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Team, 1798: p. 553",
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Team 1798: p. 553",
                 taxonBase.getTitleCache());
     }
 
