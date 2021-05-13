@@ -101,10 +101,14 @@ public class ProgressMonitorManager<T extends IRestServiceProgressMonitor> {
 
         //finally remove the monitors
         for(UUID uuid : timedOutMonitors){
-            timeoutMap.remove(uuid);
-            monitors.remove(uuid);
-            threads.remove(uuid);
+            releaseMonitor(uuid);
         }
+    }
+
+    public void releaseMonitor(UUID uuid) {
+        timeoutMap.remove(uuid);
+        monitors.remove(uuid);
+        threads.remove(uuid);
     }
 
     public RemotingProgressMonitorThread getThread(UUID uuid) {

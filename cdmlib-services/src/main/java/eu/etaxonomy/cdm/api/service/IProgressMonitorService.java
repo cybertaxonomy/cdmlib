@@ -65,4 +65,6 @@ public interface IProgressMonitorService {
 
     public void setFeedback(UUID uuid, Serializable feedback);
 
+    public void releaseRemotingMonitor(UUID uuid);
+
 }
