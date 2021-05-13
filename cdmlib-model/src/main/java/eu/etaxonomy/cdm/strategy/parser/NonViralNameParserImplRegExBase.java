@@ -93,8 +93,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String InfraGenusMarker = "(n|notho)?(subg(en)?\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\]|\\[ranglos\\])";
     protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
     protected static String infraSpeciesMarkerNoNotho = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|forma|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|\\[ranglos\\]|tax\\." + fWs + "infrasp\\.)";
-    protected static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
-    protected static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
+    public static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
+    public static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
 
     //AuthorString

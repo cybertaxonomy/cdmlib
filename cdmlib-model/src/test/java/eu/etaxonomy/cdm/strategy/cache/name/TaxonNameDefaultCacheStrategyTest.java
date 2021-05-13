@@ -333,6 +333,42 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
     }
 
+    //3667
+    @Test
+    public void testOriginalSpellingItalics() {
+
+        TaxonName originalName = subSpeciesName.clone();
+        originalName.setSpecificEpithet("alpa");
+        Assert.assertEquals("Preconditions are wrong", "Abies alpa subsp. beta", originalName.getTitleCache());
+
+        subSpeciesName.setOriginalSpelling(originalName);
+
+        List<TaggedText> taggedFullTitle = subSpeciesName.getCacheStrategy().getTaggedFullTitle(subSpeciesName);
+        Assert.assertEquals(7, taggedFullTitle.size());
+        Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, " [as \""), taggedFullTitle.get(4));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, "\"]"), taggedFullTitle.get(6));
+
+        originalName.setInfraSpecificEpithet("peta");
+        originalName.setNameCache(null, false);
+        taggedFullTitle = subSpeciesName.getCacheStrategy().getTaggedFullTitle(subSpeciesName);
+        Assert.assertEquals(9, taggedFullTitle.size());
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, " [as \""), taggedFullTitle.get(4));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
+        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(6));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "peta"), taggedFullTitle.get(7));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, "\"]"), taggedFullTitle.get(8));
+    }
+
     @Test
     public void testCacheListener() {
         Reference ref = ReferenceFactory.newGeneric();
