@@ -2025,6 +2025,17 @@ public class TaxonName
         }
     }
 
+    @Override
+    @Transient
+    public void setOriginalNameString(String originalNameString){
+        if (isNotBlank(originalNameString)){
+            this.getNomenclaturalSource(true).setOriginalNameString(originalNameString);
+        }else if (this.getNomenclaturalSource() != null){
+            this.getNomenclaturalSource().setOriginalNameString(null);
+            checkNullSource();
+        }
+    }
+
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
      * The basionym {@link NameRelationship relationship} will be added to <i>this</i> taxon name
@@ -2168,7 +2179,7 @@ public class TaxonName
         return this.nomenclaturalSource;
     }
 
-    protected NomenclaturalSource getNomenclaturalSource(boolean createIfNotExist){
+    public NomenclaturalSource getNomenclaturalSource(boolean createIfNotExist){
         if (this.nomenclaturalSource == null && createIfNotExist){
             setNomenclaturalSource(NomenclaturalSource.NewNomenclaturalInstance(this));
         }

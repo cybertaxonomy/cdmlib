@@ -369,6 +369,11 @@ public interface ITaxonNameBase
      */
     public void setOriginalSpelling(TaxonName originalSpelling);
 
+    /**
+     * Sets the orginal name string in the nomenclatural source.
+     * Creates the source if it does not exist.
+     */
+    public void setOriginalNameString(String originalNameString);
 
     /**
      * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.

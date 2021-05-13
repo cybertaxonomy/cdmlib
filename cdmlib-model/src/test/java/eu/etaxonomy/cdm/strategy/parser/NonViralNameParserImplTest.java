@@ -2896,6 +2896,55 @@ public class NonViralNameParserImplTest extends TermTestBase {
     }
 
     @Test
+    //#3666
+    public final void testOriginalSpelling(){
+        String nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
+        TaxonName name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Reference ref = name.getNomenclaturalReference();
+        Assert.assertFalse("Reference should be parsable", ref.isProtectedTitleCache());
+        TaxonName originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertNotNull("An original spelling should exist", originalName);
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Abies alpa", originalName.getNameCache());
+
+        nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"Abies alpa\"]";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Abies alpa", originalName.getNameCache());
+
+        nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"Apies alpa\"]";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Apies alpa", originalName.getNameCache());
+
+        nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"Apies\"]";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Apies alba", originalName.getNameCache());
+
+        nameStr = "Abies alba subsp. beta Mill, Sp. Pl. 2: 333. 1751 [as \"peta\"]";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Abies alba subsp. peta", originalName.getNameCache());
+
+        nameStr = "Abies alba subsp. beta Mill, Sp. Pl. 2: 333. 1751 [as \"alpa subsp. peta\"]";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Abies alpa subsp. peta", originalName.getNameCache());
+
+        //unparsable
+        nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa Err\"]";
+        Assert.assertTrue("Reference should notbe parsable", parser.parseReferencedName(nameStr).getNomenclaturalReference().isProtectedTitleCache());
+
+    }
+
+    @Test
     @Ignore
     public final void openIssues(){
         //#6100  jun.
