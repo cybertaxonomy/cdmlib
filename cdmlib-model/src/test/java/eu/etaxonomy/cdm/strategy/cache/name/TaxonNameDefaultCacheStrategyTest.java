@@ -281,7 +281,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
     }
 
-    //TODO add more tests when specification is clearer
     //3665
     @Test
     public void testOriginalSpelling() {
@@ -316,13 +315,17 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         subSpeciesName.setOriginalSpelling(originalName);
         Assert.assertEquals("Abies alba subsp. beta [as \"peta\"]", subSpeciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba subsp. beta", subSpeciesName.getTitleCache());
-        originalName.setInfraSpecificEpithet("beta");
         originalName.setSpecificEpithet("alpa");
+        originalName.setNameCache(null, false);
+        subSpeciesName.setFullTitleCache(null, false);
+        Assert.assertEquals("Abies alba subsp. beta [as \"alpa subsp. peta\"]", subSpeciesName.getFullTitleCache());
+
+        originalName.setInfraSpecificEpithet("beta");
+        originalName.setNameCache(null, false);
         subSpeciesName.setFullTitleCache(null, false);
         //not fully sure if it is wanted that here only the specific epithet is given and not the infra specific epithet too, may change if required by users
         Assert.assertEquals("Abies alba subsp. beta [as \"alpa\"]", subSpeciesName.getFullTitleCache());
 
-    	//#3665
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
     	TaxonName originalSpelling = (TaxonName)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
     	correctName.setOriginalSpelling(originalSpelling);
