@@ -1217,6 +1217,7 @@ public class NameServiceImpl
     @Override
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
             boolean doEmpty, boolean doDeduplicate){
+
         UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
         nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);

@@ -259,7 +259,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
         name1 = nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
-
     }
 
     @Test
@@ -279,12 +278,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         NameDeletionConfigurator config = new NameDeletionConfigurator();
         config.setIgnoreHasBasionym(false);
 
-       name1 = nameService.find(name1.getUuid());
-       DeleteResult result = nameService.delete(name1.getUuid(), config);
-       if (result.isOk()){
-    	  Assert.fail("Delete should throw an error as long as name relationships exist.");
+        name1 = nameService.find(name1.getUuid());
+        DeleteResult result = nameService.delete(name1.getUuid(), config);
+        if (result.isOk()){
+    	    Assert.fail("Delete should throw an error as long as name relationships exist.");
         }
-
 
         name1 = nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
@@ -304,7 +302,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-   // @Ignore //currently does not run in suite
     public void testDeleteTaxonNameWithHybridRelations() {
         final String[] tableNames = new String[]{"TaxonName","NameRelationship","HybridRelationship"};
 
@@ -319,13 +316,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Set<HybridRelationship> childRelations = hybrid.getHybridChildRelations();
        for (HybridRelationship rel : childRelations){
-           TaxonName name = rel.getHybridName();
-           TaxonName parentName = rel.getParentName();
            nameService.save(rel.getHybridName());
            nameService.save(rel.getParentName());
        }
-
-
 
         commitAndStartNewTransaction(tableNames); //otherwise first save is rolled back with following failing delete
         HybridRelationshipType relType = (HybridRelationshipType)termService.find(HybridRelationshipType.FIRST_PARENT().getUuid());
@@ -646,62 +639,19 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         name1 = nameService.find(name1.getUuid());
 
-        	nameService.delete(name1);  //should throw now exception
+        nameService.delete(name1);  //should throw now exception
 
         setComplete();
         endTransaction();
-//		printDataSet(System.out, tableNames);
-
     }
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTypeDesignation() {
-        final String[] tableNames = new String[]{
-                "TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase",
-                "SpecimenOrObservationBase"};
 
-//		IBotanicalName name1 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
-//		name1.setTitleCache("Name1");
-//		name1.setUuid(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
-//
-//		IBotanicalName name2 = TaxonNameFactory.NewBotanicalInstance(getSpeciesRank());
-//		name2.setTitleCache("Name2");
-//		name2.setUuid(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
-//
-//		IBotanicalName name3 = TaxonNameFactory.NewBotanicalInstance(getGenusRank());
-//		name3.setTitleCache("Name3");
-//		name3.setUuid(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
-//
-//
-//		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
-//		desig1.setUuid(UUID.fromString("1357c307-00c3-499c-8e20-0849d4706125"));
-//		name1.addTypeDesignation(desig1, true);
-//		name2.addTypeDesignation(desig1, true);
-//
-//		SpecimenTypeDesignation desig2 = SpecimenTypeDesignation.NewInstance();
-//		desig2.setUuid(UUID.fromString("9bbda70b-7272-4e65-a807-852a3f2eba63"));
-//		name1.addTypeDesignation(desig2, true);
-//
-//		Specimen specimen1 = Specimen.NewInstance();
-//		Fossil specimen2 = Fossil.NewInstance();
-//
-//		desig1.setTypeSpecimen(specimen1);
-//		desig2.setTypeSpecimen(specimen2);
-//
-//		NameTypeDesignation nameDesig = NameTypeDesignation.NewInstance();
-//		nameDesig.setTypeName(name1);
-//		name3.addTypeDesignation(nameDesig, true);
-//
-//		nameService.save(name1);
-//		nameService.save(name2);
-//		nameService.save(name3);
-//
-//		commitAndStartNewTransaction(tableNames);
-//
-//		printDataSet(System.out, tableNames);
-//
-
+//        final String[] tableNames = new String[]{
+//                "TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase",
+//                "SpecimenOrObservationBase"};
 
         TaxonName name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         TaxonName name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -709,8 +659,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
+        @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
+        @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
+        @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
         Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
@@ -721,7 +674,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         nameService.deleteTypeDesignation((TaxonName)null, null);
 
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -741,7 +694,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         nameService.deleteTypeDesignation(name1, null);
 
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -762,7 +715,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         SpecimenTypeDesignation desig2 = (SpecimenTypeDesignation)name2.getTypeDesignations().iterator().next();
         nameService.deleteTypeDesignation(name2, desig2);
 
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -787,21 +740,19 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         desigs3 = name3.getTypeDesignations();
 
-        NameTypeDesignation desigNew = NameTypeDesignation.NewInstance();
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
         name3 = nameService.load(name3.getUuid());
 
         Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
 
         nameService.deleteTypeDesignation(name3, desig3);
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
-
 
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
@@ -812,18 +763,18 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("name3 should have 0 type designations", 1, desigs3.size());
         Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
         Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
-
     }
 
     @Test
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDeleteTypeDesignationWithRegistration() {
-        final String[] tableNames = new String[]{
-                "TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase",
-                "SpecimenOrObservationBase"};
+//        final String[] tableNames = new String[]{
+//                "TaxonName","TypeDesignationBase","TaxonName_TypeDesignationBase",
+//                "SpecimenOrObservationBase"};
 
         TaxonName name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
 
+        @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
@@ -839,10 +790,10 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         setAuthentication(submiterToken);
         Registration registration = Registration.NewInstance("abc", "abc", name3, null);
         registration.addTypeDesignation(desigNew);
-        UUID uuidReg = registrationService.saveOrUpdate(registration);
+        registrationService.saveOrUpdate(registration);
         unsetAuthentication();
 
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
 
         name3 = nameService.load(name3.getUuid());
 
@@ -853,7 +804,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("registration should have 1 type designations",1, regs.iterator().next().getTypeDesignations().size());
 
         nameService.deleteTypeDesignation(name3, desig3);
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
 
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
 
@@ -864,7 +815,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         desigs3 = name3.getTypeDesignations();
 
         nameService.deleteTypeDesignation(name3, desigNew);
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
         name3 = this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
         regs = name3.getRegistrations();
         desigs3 = name3.getTypeDesignations();
@@ -873,14 +824,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("registration should have 0 type designations",0, regs.iterator().next().getTypeDesignations().size());
     }
 
-
     @Test
     @DataSet
     public void testDeleteTypeDesignationAllNames() {
-        final String[] tableNames = new String[]{
-                "TaxonName","TypeDesignationBase",
-                "TaxonName_TypeDesignationBase","SpecimenOrObservationBase"};
-
+//        final String[] tableNames = new String[]{
+//                "TaxonName","TypeDesignationBase",
+//                "TaxonName_TypeDesignationBase","SpecimenOrObservationBase"};
 
         TaxonName name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         TaxonName name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -888,8 +837,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         DerivedUnit specimen1 = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("0d19a9ca-21a7-4adb-8640-8d6719e15eea")), DerivedUnit.class);
         DerivedUnit fossil = CdmBase.deproxy(this.occurrenceService.load(UUID.fromString("4c48b7c8-4c8d-4e48-b083-0837fe51a0a9")), DerivedUnit.class);
 
+        @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs1 = name1.getTypeDesignations();
+        @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs2 = name2.getTypeDesignations();
+        @SuppressWarnings("rawtypes")
         Set<TypeDesignationBase> desigs3 = name3.getTypeDesignations();
 
         Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
@@ -902,7 +854,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         nameService.deleteTypeDesignation(null, desig2);
 
-        commitAndStartNewTransaction(tableNames);
+        commitAndStartNewTransaction(/*tableNames*/);
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -919,7 +871,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
         Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
         Assert.assertEquals("Fossil should be used in 1 type designation", 1, fossil.getSpecimenTypeDesignations().size());
-
     }
 
     @Test
@@ -932,7 +883,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         // Name2 -> SpecimenTypeDesignation -> Specimen2
 
         // Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
-
 
         List<Restriction<?>> restrictions;
         Pager<TaxonName> result;
@@ -979,7 +929,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeSpecimen.titleCache", MatchMode.BEGINNING, "Specimen"));
         result = nameService.findByTitleWithRestrictions(null, "Name", MatchMode.BEGINNING, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
-
     }
 
     @Test
@@ -1040,7 +989,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         restrictions = Arrays.asList(new Restriction<String>("typeDesignations.typeName.titleCache", Operator.OR_NOT, null, "Name1"));
         result = nameService.findByTitleWithRestrictions(null, "Name1", MatchMode.EXACT, restrictions, null, null, null, null);
         assertEquals(2l, result.getCount().longValue());
-
     }
 
     @Test
@@ -1057,7 +1005,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Pager<TaxonName> results = nameService.findByTitle(searchConfigurator);
         assertTrue(results.getRecords().size() > 0);
-
     }
 
     @Test  //7874 //8030

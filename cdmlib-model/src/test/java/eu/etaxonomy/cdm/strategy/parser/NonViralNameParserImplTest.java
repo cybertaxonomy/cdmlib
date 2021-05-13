@@ -2898,6 +2898,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
     @Test
     //#3666
     public final void testOriginalSpelling(){
+
         String nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"]";
         TaxonName name = parser.parseReferencedName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
