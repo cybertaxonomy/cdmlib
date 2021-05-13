@@ -2908,6 +2908,30 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNotNull("An original spelling should exist", originalName);
         Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
         Assert.assertEquals("Abies alpa", originalName.getNameCache());
+        Assert.assertEquals("Sp. Pl.", name.getNomenclaturalSource().getCitation().getAbbrevTitle());
+        Assert.assertEquals("1751", name.getNomenclaturalSource().getCitation().getYear());
+
+        //without ref
+        nameStr = "Abies alba Mill [as \"alpa\"]";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Abies alpa", originalName.getNameCache());
+
+        //without author
+        nameStr = "Abies alba [as \"alpa\"]";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Abies alpa", originalName.getNameCache());
+
+        //with status
+        nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"alpa\"], nom. inval.";
+        name = parser.parseReferencedName(nameStr);
+        originalName = name.getNomenclaturalSource().getNameUsedInSource();
+        Assert.assertFalse("Namecache should not be parsable", originalName.isProtectedNameCache());
+        Assert.assertEquals("Abies alpa", originalName.getNameCache());
+        Assert.assertEquals(1, name.getStatus().size());
 
         nameStr = "Abies alba Mill, Sp. Pl. 2: 333. 1751 [as \"Abies alpa\"]";
         name = parser.parseReferencedName(nameStr);

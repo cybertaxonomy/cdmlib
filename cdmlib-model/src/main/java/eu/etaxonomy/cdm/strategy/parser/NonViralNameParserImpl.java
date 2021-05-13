@@ -343,9 +343,7 @@ public class NonViralNameParserImpl
 	    nameToBeFilled.setProblemEnds(oldProblemEnds);
 
 	    //original spelling
-        if (nameToBeFilled.getNomenclaturalSource()!= null && CdmUtils.isNotBlank(nameToBeFilled.getNomenclaturalSource().getOriginalNameString())){
-            handleOriginalSpelling(nameToBeFilled);
-        }
+        handleOriginalSpelling(nameToBeFilled);
 
 		//zoological new combinations should not have a nom. reference to be parsed
 	    if (nameToBeFilled.isZoological()){
@@ -404,6 +402,9 @@ public class NonViralNameParserImpl
      * Tries to create the best name (without authors) that makes an original spelling name for the nameToBeFilled.
      */
     private void handleOriginalSpelling(INonViralName nameToBeFilled) {
+        if (nameToBeFilled.getNomenclaturalSource()== null || CdmUtils.isBlank(nameToBeFilled.getNomenclaturalSource().getOriginalNameString())){
+            return;
+        }
         String originalNameString = nameToBeFilled.getNomenclaturalSource().getOriginalNameString();
 
         final int n = 5;
@@ -1145,6 +1146,7 @@ public class NonViralNameParserImpl
 		    if (StringUtils.isNotBlank(authorString) ){
 				handleAuthors(nameToBeFilled, fullNameString, authorString);
 			}
+		    handleOriginalSpelling(nameToBeFilled);
 		    return;
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.RankNotSupported);
