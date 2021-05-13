@@ -295,6 +295,23 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     	Assert.assertEquals("Abies alba [as \"Apies alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
+        originalName.setSpecificEpithet("alba");
+        speciesName.setNameCache(null, false);
+        //not fully sure if it is wanted that here only the genus name is given and not the specific epithet too, may change if required by users
+        Assert.assertEquals("Abies alba [as \"Apies\"]", speciesName.getFullTitleCache());
+
+        //subspecies
+        originalName = subSpeciesName.clone();
+        originalName.setInfraSpecificEpithet("peta");
+        Assert.assertEquals("Preconditions are wrong", "Abies alba subsp. peta", originalName.getTitleCache());
+        subSpeciesName.setOriginalSpelling(originalName);
+        Assert.assertEquals("Abies alba subsp. beta [as \"peta\"]", subSpeciesName.getFullTitleCache());
+        Assert.assertEquals("Abies alba subsp. beta", subSpeciesName.getTitleCache());
+        originalName.setInfraSpecificEpithet("beta");
+        originalName.setSpecificEpithet("alpa");
+        subSpeciesName.setFullTitleCache(null, false);
+        //not fully sure if it is wanted that here only the specific epithet is given and not the infra specific epithet too, may change if required by users
+        Assert.assertEquals("Abies alba subsp. beta [as \"alpa\"]", subSpeciesName.getFullTitleCache());
 
     	//#3665
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
@@ -314,8 +331,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         correctName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         correctName.setFullTitleCache(null, false);
         Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
-
-    	//TODO add more tests when specification of exact behaviour is clearer
     }
 
     @Test
