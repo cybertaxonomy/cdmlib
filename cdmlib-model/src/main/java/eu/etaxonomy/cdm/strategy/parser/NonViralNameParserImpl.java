@@ -364,9 +364,7 @@ public class NonViralNameParserImpl
 
 	    //problem start
 	    int start = nameToBeFilled.getProblemStarts();
-	    int nameLength = name.length();
 	    int nameAndSeparatorLength = nameAndSeparator.length();
-	    int fullRefLength = nameToBeFilled.getFullTitleCache().length();
 
 	    if (nameToBeFilled.isProtectedTitleCache() || nameToBeFilled.getParsingProblems().contains(ParserProblem.CheckRank)){
 	    	start = Math.max(0, start);
@@ -469,12 +467,12 @@ public class NonViralNameParserImpl
     //TODO make it an Array of status
 	/**
 	 * Extracts a {@link NomenclaturalStatus} from the reference String and adds it to the @link {@link TaxonName}.
-	 * The nomenclatural status part ist deleted from the reference String.
+	 * The nomenclatural status part is deleted from the reference String.
 	 * @return  String the new (shortend) reference String
 	 */
 	public String parseNomStatus(String fullString, INonViralName nameToBeFilled, boolean makeEmpty) {
-		Set<NomenclaturalStatusType> existingStatusTypeSet = new HashSet<NomenclaturalStatusType>();
-		Set<NomenclaturalStatusType> newStatusTypeSet = new HashSet<NomenclaturalStatusType>();
+		Set<NomenclaturalStatusType> existingStatusTypeSet = new HashSet<>();
+		Set<NomenclaturalStatusType> newStatusTypeSet = new HashSet<>();
 		for (NomenclaturalStatus existingStatus : nameToBeFilled.getStatus()){
 			existingStatusTypeSet.add(existingStatus.getType());
 		}
@@ -505,7 +503,7 @@ public class NonViralNameParserImpl
 		}
 		//remove not existing nom status
 		if (makeEmpty){
-			Set<NomenclaturalStatus> tmpStatus = new HashSet<NomenclaturalStatus>();
+			Set<NomenclaturalStatus> tmpStatus = new HashSet<>();
 			tmpStatus.addAll(nameToBeFilled.getStatus());
 			for (NomenclaturalStatus status : tmpStatus){
 				if (! newStatusTypeSet.contains(status.getType())){

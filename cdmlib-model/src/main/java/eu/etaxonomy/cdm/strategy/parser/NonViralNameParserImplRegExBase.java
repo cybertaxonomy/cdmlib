@@ -162,8 +162,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pPages = "(" + pSinglePages +"|" + pMultiPages +")";
     protected static String pPagesTabFig = pPages +"([,\\.]" + fWs + pTabFigPl + "){1,2}";
 
-
-
     protected static String pCouv = "couv\\." + fWs + "\\d{1,3}";
 
     protected static String pTabSpecial = "tab\\." + fWs + "(ad" + fWs + "\\d{1,3}|alphab)";
@@ -264,14 +262,12 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pNomStatusPhrase = "(?:" + pNomStatusPhrase1 + "|" + pNomStatusPhrase2 + ")";
 
 // Soraya
-//opus utique oppr.
 //pro syn.
 //provisional synonym
 //fossil name
 
-
     //cultivars and hybrids
-    protected static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
+    protected static String cultivar = oWs + "'..+'"; //Careful with apostorph in author names
     protected static String cultivarMarker = oWs + "(cv\\.|')";
     protected static String notho = "notho";
     protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|"+notho+")";
