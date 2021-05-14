@@ -1248,6 +1248,7 @@ public class NameServiceImpl
                     }
                 }
                 Reference nomRef = name.getNomenclaturalReference();
+
                 //authors
                 IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
                 if (name.getCombinationAuthorship()!= null && !name.getCombinationAuthorship().isPersited()){
@@ -1320,7 +1321,7 @@ public class NameServiceImpl
     }
 
     private <M extends IMatchable> M findBestMatching(M matchable, List<M> matchingList,
-            IMatchStrategy referenceMatcher) {
+            IMatchStrategy matcher) {
         // FIXME TODO resolve multiple duplications. Use first match for a start
         if(matchingList.isEmpty()){
             return null;
@@ -1328,7 +1329,4 @@ public class NameServiceImpl
         M bestMatching = matchingList.iterator().next();
         return bestMatching;
     }
-
-
-
 }

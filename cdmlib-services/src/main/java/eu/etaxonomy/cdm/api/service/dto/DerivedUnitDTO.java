@@ -257,7 +257,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     }
     public void addTypes(String typeStatus, List<String> typedTaxa){
         if(types==null){
-            types = new HashMap<String, List<String>>();
+            types = new HashMap<>();
         }
         types.put(typeStatus, typedTaxa);
     }
@@ -275,22 +275,24 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public void setPreferredStableUri(URI preferredStableUri) {
         this.preferredStableUri = preferredStableUri;
     }
-
     public URI getPreferredStableUri() {
         return preferredStableUri;
     }
+
     public String getSpecimenShortTitle() {
         return specimenShortTitle;
     }
     public void setSpecimenShortTitle(String specimenIdentifier) {
         this.specimenShortTitle = specimenIdentifier;
     }
+
     public String getMostSignificantIdentifier() {
         return mostSignificantIdentifier;
     }
     public void setMostSignificantIdentifier(String mostSignificantIdentifier) {
         this.mostSignificantIdentifier = mostSignificantIdentifier;
     }
+
     public TypedEntityReference<TaxonName> getStoredUnder() {
         return storedUnder;
     }
@@ -304,6 +306,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public void setOriginalLabelInfo(String originalLabelInfo) {
         this.originalLabelInfo = originalLabelInfo;
     }
+
     public String getExsiccatum() {
         return exsiccatum;
     }
@@ -311,14 +314,9 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         this.exsiccatum = exsiccatum;
     }
 
-    public void setCollection(CollectionDTO collection) {
-        this.collection = collection;
-    }
-
     public String getCatalogNumber() {
         return catalogNumber;
     }
-
     public void setCatalogNumber(String catalogNumber) {
         this.catalogNumber = catalogNumber;
     }
@@ -326,7 +324,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public String getBarcode() {
         return barcode;
     }
-
     public void setBarcode(String barcode) {
         this.barcode = barcode;
     }
@@ -334,35 +331,13 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public String getPreservationMethod() {
         return preservationMethod;
     }
-
     public void setPreservationMethod(String preservationMethod) {
         this.preservationMethod = preservationMethod;
     }
 
-    /**
-     * @return the collection
-     *
-     * @deprecated TODO remove as it only duplicates the information contained in the collectionDTO
-     */
-    @Deprecated
-    public String getCollectionCode() {
-        if (collection != null){
-            return collection.getCode();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @return the collection
-     */
     public CollectionDTO getCollection() {
         return collection;
     }
-
-    /**
-     * @param collection the collection to set
-     */
     public void setCollectioDTO(CollectionDTO collection) {
         this.collection = collection;
     }
@@ -370,7 +345,5 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     @Override
     protected void updateTreeDependantData() {
         // TODO DerivationTreeSummaryDTO should be updated here once it is refactored so that it can operate on dtos
-
     }
-
 }

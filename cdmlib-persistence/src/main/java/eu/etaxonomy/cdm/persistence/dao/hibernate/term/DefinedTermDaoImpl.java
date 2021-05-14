@@ -84,7 +84,8 @@ public class DefinedTermDaoImpl
 
     private static final Logger logger = Logger.getLogger(DefinedTermDaoImpl.class);
 
-	public DefinedTermDaoImpl() {
+	@SuppressWarnings("unchecked")
+    public DefinedTermDaoImpl() {
 		super(DefinedTermBase.class);
 		indexedClasses = new Class[25];
 		indexedClasses[0] = Rank.class;
@@ -255,9 +256,9 @@ public class DefinedTermDaoImpl
 
 		String queryStr;
 		if (isIso639_1){
-			queryStr = "from Language where iso639_1 = :isoCode";
+			queryStr = "FROM Language WHERE iso639_1 = :isoCode";
 		}else{
-			queryStr = "from Language where idInVocabulary = :isoCode and vocabulary.uuid = :vocUuid";
+			queryStr = "FROM Language WHERE idInVocabulary = :isoCode AND vocabulary.uuid = :vocUuid";
 		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -286,7 +287,7 @@ public class DefinedTermDaoImpl
 	 */
 	@Override
     public List<Language> getLanguagesByIso(List<String> iso639List) {
-		List<Language> languages = new ArrayList<Language>(iso639List.size());
+		List<Language> languages = new ArrayList<>(iso639List.size());
 		for (String iso639 : iso639List) {
 			languages.add(getLanguageByIso(iso639));
 		}
@@ -295,7 +296,7 @@ public class DefinedTermDaoImpl
 
 	@Override
     public List<Language> getLanguagesByLocale(Enumeration<Locale> locales) {
-		List<Language> languages = new ArrayList<Language>();
+		List<Language> languages = new ArrayList<>();
 		while(locales.hasMoreElements()) {
 			Locale locale = locales.nextElement();
 			languages.add(getLanguageByIso(locale.getLanguage()));
@@ -347,7 +348,11 @@ public class DefinedTermDaoImpl
 	@Override
     public List<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber)");
-		Query query = getSession().createQuery("select media from DefinedTermBase definedTerm join definedTerm.media media where definedTerm = :definedTerm");
+		Query query = getSession().createQuery(
+		           "SELECT media "
+		        + " FROM DefinedTermBase definedTerm "
+		        + " JOIN definedTerm.media media "
+		        + " WHERE definedTerm = :definedTerm");
 		query.setParameter("definedTerm", definedTerm);
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);
@@ -510,7 +515,7 @@ public class DefinedTermDaoImpl
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		    return results;
 		} else {
-			List<T> result = new ArrayList<T>();
+			List<T> result = new ArrayList<>();
 			for(T t : partOf) {
 				AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 				query.add(AuditEntity.relatedId("partOf").eq(t.getId()));
@@ -846,9 +851,7 @@ public class DefinedTermDaoImpl
                 + " where a.termType = :termType ";
         Query query =  getSession().createQuery(queryString);
 
-        if(termType!=null){
-            query.setParameter("termType", termType);
-        }
+        query.setParameter("termType", termType);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
