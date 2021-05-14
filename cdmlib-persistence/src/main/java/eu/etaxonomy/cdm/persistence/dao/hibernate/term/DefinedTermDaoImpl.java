@@ -62,7 +62,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
-import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -138,7 +137,6 @@ public class DefinedTermDaoImpl
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		List<DefinedTermBase> result = deduplicateResult(query.list());
 		return result;
-
 	}
 
 	@Override
@@ -394,7 +392,7 @@ public class DefinedTermDaoImpl
 		    }
 
 		    @SuppressWarnings("unchecked")
-            List<NamedArea> result = query.getResultList();
+            List<NamedArea> result = deduplicateResult(query.getResultList());
 		    return result;
 		}
 	}
@@ -623,7 +621,7 @@ public class DefinedTermDaoImpl
      * @param orginals
      * @return
      */
-    protected static <S extends TermBase> List<S> deduplicateResult(List<S> orginals) {
+    protected static <S extends CdmBase> List<S> deduplicateResult(List<S> orginals) {
         List<S> result = new ArrayList<>();
         Iterator<S> it = orginals.iterator();
         S last = null;
@@ -804,8 +802,8 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> getKindOfsAsDto(
-            TermDto parentTerm) {
+    public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm) {
+
         String queryString;
         if (parentTerm.getTermType().equals(TermType.NamedArea)){
             queryString = TermDto.getTermDtoSelectNamedArea();
@@ -817,7 +815,7 @@ public class DefinedTermDaoImpl
         query.setParameter("parentUuid", parentTerm.getUuid());
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -837,7 +835,7 @@ public class DefinedTermDaoImpl
         }
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -855,7 +853,7 @@ public class DefinedTermDaoImpl
         query.setParameter("termType", termType);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -878,7 +876,7 @@ public class DefinedTermDaoImpl
         }
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -906,7 +904,7 @@ public class DefinedTermDaoImpl
         query.setParameterList("supportedCategories", supportedCategories);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         list = TermDto.termDtoListFrom(result);
         return list;
@@ -926,7 +924,7 @@ public class DefinedTermDaoImpl
         query.setParameterList("uuidList", uuidList);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         list = TermDto.termDtoListFrom(result);
         return list;
@@ -946,7 +944,7 @@ public class DefinedTermDaoImpl
         query.setParameterList("uuidList", uuidList);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         list = FeatureDto.termDtoListFrom(result);
         return list;
@@ -965,10 +963,9 @@ public class DefinedTermDaoImpl
 
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         List<TermDto> list = FeatureDto.termDtoListFrom(result);
         return list;
     }
-
 }
