@@ -136,7 +136,7 @@ public class DefinedTermDaoImpl
 		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
 		query.setParameter("label", queryString);
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		List<DefinedTermBase> result = query.list();
+		List<DefinedTermBase> result = deduplicateResult(query.list());
 		return result;
 
 	}
@@ -150,7 +150,8 @@ public class DefinedTermDaoImpl
 		crit.setMaxResults(pagesize);
 		int firstItem = (page - 1) * pagesize + 1;
 		crit.setFirstResult(firstItem);
-		List<DefinedTermBase> results = crit.list();
+		@SuppressWarnings("unchecked")
+        List<DefinedTermBase> results = deduplicateResult(crit.list());
 		return results;
 	}
 
@@ -187,7 +188,7 @@ public class DefinedTermDaoImpl
 		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 		@SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        List<T> result = deduplicateResult(criteria.list());
 		return result;
 	}
 
@@ -216,7 +217,7 @@ public class DefinedTermDaoImpl
 		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 		@SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        List<T> result = deduplicateResult(criteria.list());
 		return result;
 	}
 
@@ -231,7 +232,7 @@ public class DefinedTermDaoImpl
 		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 		@SuppressWarnings("unchecked")
-		List<T> result = criteria.list();
+		List<T> result = deduplicateResult(criteria.list());
 		return result;
 	}
 
@@ -379,7 +380,7 @@ public class DefinedTermDaoImpl
 		    addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 	        @SuppressWarnings("unchecked")
-	        List<NamedArea> result = criteria.list();
+	        List<NamedArea> result = deduplicateResult(criteria.list());
 	        return result;
 		} else {
             AuditQuery query = makeAuditQuery(NamedArea.class, auditEvent);
@@ -417,7 +418,7 @@ public class DefinedTermDaoImpl
 			addOrder(criteria,orderHints);
 			addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-			result = criteria.list();
+			result = deduplicateResult(criteria.list());
 
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,
@@ -428,7 +429,7 @@ public class DefinedTermDaoImpl
 			if (type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));
 			}
-			result = query.getResultList();
+			result = deduplicateResult(query.getResultList());
 		}
 
 		defaultBeanInitializer.initializeAll(result, propertyPaths);
@@ -484,7 +485,7 @@ public class DefinedTermDaoImpl
 		    addPageSizeAndNumber(query, pageSize, pageNumber);
 
 		    @SuppressWarnings("unchecked")
-            List<T> result = query.list();
+            List<T> result = deduplicateResult(query.list());
 		    return result;
 		} else {
 			 AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
@@ -493,7 +494,7 @@ public class DefinedTermDaoImpl
 			 addPageSizeAndNumber(query, pageSize, pageNumber);
 
              @SuppressWarnings("unchecked")
-             List<T> result = query.getResultList();
+             List<T> result = deduplicateResult(query.getResultList());
              return result;
 		}
 	}
@@ -511,7 +512,7 @@ public class DefinedTermDaoImpl
     		addPageSizeAndNumber(query, pageSize, pageNumber);
 
 		    @SuppressWarnings("unchecked")
-            List<T> results = query.list();
+            List<T> results = deduplicateResult(query.list());
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		    return results;
 		} else {
@@ -521,7 +522,7 @@ public class DefinedTermDaoImpl
 				query.add(AuditEntity.relatedId("partOf").eq(t.getId()));
 				addPageSizeAndNumber(query, pageSize, pageNumber);
 
-			    result.addAll(query.getResultList());
+			    result.addAll(deduplicateResult(query.getResultList()));
 			}
 			defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
@@ -586,7 +587,7 @@ public class DefinedTermDaoImpl
 	    query.setParameter("termType", termType);
 
 	    @SuppressWarnings("unchecked")
-        List<T> result = query.list();
+        List<T> result = deduplicateResult(query.list());
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -599,7 +600,7 @@ public class DefinedTermDaoImpl
 		Query query = getSession().createQuery("FROM " + clazz.getSimpleName());
 
 	    @SuppressWarnings("unchecked")
-        List<TERM> result = query.list();
+        List<TERM> result = deduplicateResult(query.list());
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
 
@@ -796,7 +797,7 @@ public class DefinedTermDaoImpl
         query.setParameter("parentUuid", parentTerm.getUuid());
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -816,7 +817,7 @@ public class DefinedTermDaoImpl
         query.setParameter("parentUuid", parentTerm.getUuid());
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -836,7 +837,7 @@ public class DefinedTermDaoImpl
         }
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -854,7 +855,7 @@ public class DefinedTermDaoImpl
         query.setParameter("termType", termType);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -877,7 +878,7 @@ public class DefinedTermDaoImpl
         }
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -905,7 +906,7 @@ public class DefinedTermDaoImpl
         query.setParameterList("supportedCategories", supportedCategories);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         list = TermDto.termDtoListFrom(result);
         return list;
@@ -925,7 +926,7 @@ public class DefinedTermDaoImpl
         query.setParameterList("uuidList", uuidList);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         list = TermDto.termDtoListFrom(result);
         return list;
@@ -945,7 +946,7 @@ public class DefinedTermDaoImpl
         query.setParameterList("uuidList", uuidList);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         list = FeatureDto.termDtoListFrom(result);
         return list;
@@ -964,7 +965,7 @@ public class DefinedTermDaoImpl
 
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = deduplicateResult(query.list());
 
         List<TermDto> list = FeatureDto.termDtoListFrom(result);
         return list;
