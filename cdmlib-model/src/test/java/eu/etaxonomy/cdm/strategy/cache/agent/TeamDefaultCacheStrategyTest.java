@@ -35,7 +35,7 @@ public class TeamDefaultCacheStrategyTest {
 	private static Person person1;
 	private static Person person2;
 	private static Person person3;
-	private static Person emptyPerson;
+	private static Person person4;
 
 	@Before
 	public void setUp() throws Exception {
@@ -59,7 +59,9 @@ public class TeamDefaultCacheStrategyTest {
 		person3 = Person.NewInstance();
 		person3.setNomenclaturalTitle("P3NomT");
 
-		emptyPerson = Person.NewInstance(); //empty person
+	    person4 = Person.NewInstance();
+	    person4.setNomenclaturalTitle("P4NomT");
+	    person4.setFamilyName("P4LN");
 
 		team1.addTeamMember(person1);
 		team2.addTeamMember(person2);
@@ -87,8 +89,9 @@ public class TeamDefaultCacheStrategyTest {
 		//team2
 		Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, P1LN, P. & P3NomT'",
 		        "P2NomT, P1LN, P. & P3NomT", team2.getNomenclaturalTitle());
-        ((TeamDefaultCacheStrategy)team2.getCacheStrategy()).setEtAlPosition(3);;
-        team2.setTitleCache(null);
+		TeamDefaultCacheStrategy.NewInstanceNomEtAl(3);
+		team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstanceNomEtAl(3));
+        team2.setTitleCache(null, false);
         Assert.assertEquals("team2 nomenclatural title should still be 'P2NomT, P1LN, P. & P3NomT' now.",
                 "P2NomT, P1LN, P. & P3NomT", team2.getNomenclaturalTitle());
 
@@ -123,9 +126,9 @@ public class TeamDefaultCacheStrategyTest {
         Assert.assertEquals("team2 title cache should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.'",
                 "P2LN, P., P1LN, P., P3NomT & al.", team2.getTitleCache());
 
-		((TeamDefaultCacheStrategy)team2.getCacheStrategy()).setEtAlPosition(3);
+		team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstanceTitleEtAl(3));
 		team2.setHasMoreMembers(false);
-		team2.setTitleCache(null);
+		team2.setTitleCache(null, false);
         Assert.assertEquals("team2 nomenclatural title should still be 'P2LN, P., P1LN, P. & al.' now.",
                 "P2LN, P., P1LN, P. & al.", team2.getTitleCache());
 
@@ -135,9 +138,8 @@ public class TeamDefaultCacheStrategyTest {
 		Assert.assertTrue("team3 title cache must not be empty",
 		        StringUtils.isNotBlank(team3.getTitleCache()));
 
-
 		//don't take to exact, may be also something different, but not empty
-		Assert.assertEquals("team3 title cache should should be empty team replacement string",
+		Assert.assertEquals("team3 title cache should be empty team replacement string",
 		        TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getTitleCache());
 	}
 
@@ -175,5 +177,4 @@ public class TeamDefaultCacheStrategyTest {
 		person1.setGivenName("O.");
 		Assert.assertEquals("team1 title cache should be P1LN, O.", "P1LN, O.", team1.getTitleCache());
 	}
-
 }
