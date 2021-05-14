@@ -176,7 +176,11 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
             result += concat + cacheType.getCache(teamMember);
         }
         if (teamMembers.size() == 0){
-            result = EMPTY_TEAM;
+            if (cacheType == CacheType.TITLECACHE){
+                result = EMPTY_TEAM;
+            }else{
+                return team.getTitleCache();
+            }
         } else if (team.isHasMoreMembers() || teamMembers.size() > etAlPosition){
             result = addHasMoreMembers(result);
         }
