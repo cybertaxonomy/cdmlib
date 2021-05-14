@@ -63,7 +63,7 @@ public class ReferenceDefaultCacheStrategy
     //book
 
     //(book?) section
-    private String afterSectionAuthor = " - ";
+    private String afterSectionAuthor = " "+UTF8.EN_DASH+" ";
 
     //in reference
     private String biblioInSeparator = UTF8.EN_DASH + " In: "; //#9529
@@ -248,7 +248,8 @@ public class ReferenceDefaultCacheStrategy
             thisRefAuthor = CdmUtils.getPreferredNonEmptyString(thisRefTeam.getTitleCache(),
                     thisRefTeam.getNomenclaturalTitle(), isAbbrev, trim);
         }
-        result = CdmUtils.concat(afterSectionAuthor, thisRefAuthor, result);
+        String sep = result.startsWith(biblioInSeparator)? " ": afterSectionAuthor;
+        result = CdmUtils.concat(sep, thisRefAuthor, result);
 
         //date
         if (reference.getDatePublished() != null && ! reference.getDatePublished().isEmpty()){
