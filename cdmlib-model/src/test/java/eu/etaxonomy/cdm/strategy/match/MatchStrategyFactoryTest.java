@@ -583,6 +583,5 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         Assert.assertTrue("Only ... should match", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
 
         //TODO
-
     }
 }

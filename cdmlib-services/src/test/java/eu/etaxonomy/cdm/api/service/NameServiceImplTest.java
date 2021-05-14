@@ -1058,7 +1058,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals("Expecting fullTitleCache to be updated", "Name3", fullTitleCacheField.get(name3));
     }
 
-    @Test  //#3666
+    @Test  //#3666 and others
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="NameServiceImplTest.xml")
     public void testParseName() {
         Assert.assertEquals(3, nameService.count(TaxonName.class));
@@ -1073,10 +1073,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID originalSpelling2Uuid = parsedName2.getOriginalSpelling().getUuid();
         Assert.assertEquals(originalSpellingUuid, originalSpelling2Uuid);
         Assert.assertNotEquals(parsedNameUuid, parsedNameUuid2);  //currently we do not deduplicate the main name yet
-        nameService.save(parsedName2);
 
-
-
+        //tbc
     }
 
     private Rank getSpeciesRank() {
