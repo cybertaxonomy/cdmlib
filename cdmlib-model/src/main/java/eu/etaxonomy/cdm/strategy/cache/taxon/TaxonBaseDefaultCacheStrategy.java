@@ -54,39 +54,40 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
         List<TaggedText> tags = new ArrayList<>();
 
-        if (taxonBase.isDoubtful()){
-            tags.add(new TaggedText(TagEnum.separator, "?"));
-        }
         if (taxonBase.isProtectedTitleCache()){
             //protected title cache
             tags.add(new TaggedText(TagEnum.name, taxonBase.getTitleCache()));
+            return tags;
+        }
+
+        if (taxonBase.isDoubtful()){
+            tags.add(new TaggedText(TagEnum.separator, "?"));
+        }
+        //name
+        List<TaggedText> nameTags = getNameTags(taxonBase);
+
+        if (nameTags.size() > 0){
+            tags.addAll(nameTags);
         }else{
-            //name
-            List<TaggedText> nameTags = getNameTags(taxonBase);
+            tags.add(new TaggedText(TagEnum.fullName, "???"));
+        }
 
-            if (nameTags.size() > 0){
-                tags.addAll(nameTags);
-            }else{
-                tags.add(new TaggedText(TagEnum.fullName, "???"));
-            }
-
-            boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
-            String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
-            //not used: we currently use a post-separator in the name tags
+        boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
+        String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
+        //not used: we currently use a post-separator in the name tags
 //                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
 //                    secSeparator = "," + secSeparator;
 //                }
 
-            //ref.
-            List<TaggedText> secTags = getSecundumTags(taxonBase);
+        //ref.
+        List<TaggedText> secTags = getSecundumTags(taxonBase);
 
-            //sec.
-            if (!secTags.isEmpty()){
-                tags.add(new TaggedText(TagEnum.separator, secSeparator));
-                tags.addAll(secTags);
-            }
-
+        //sec.
+        if (!secTags.isEmpty()){
+            tags.add(new TaggedText(TagEnum.separator, secSeparator));
+            tags.addAll(secTags);
         }
+
         return tags;
     }
 
