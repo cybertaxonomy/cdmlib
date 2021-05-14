@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.format.reference;
 
-import java.util.List;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.CdmFormatterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -84,23 +82,7 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
             if (team.isProtectedTitleCache()){
                 authorStr = team.getTitleCache();
             }else{
-                List<Person> teamMembers = team.getTeamMembers();
-                int etAlPosition = 2;
-                for (int i = 1; i <= teamMembers.size() &&
-                        (i < etAlPosition || teamMembers.size() == etAlPosition && !team.isHasMoreMembers()) ; i++){
-                    Person teamMember = teamMembers.get(i-1);
-                    if(teamMember == null){
-                        // this can happen in UIs in the process of adding new members
-                        continue;
-                    }
-                    String concat = TeamDefaultCacheStrategy.concatString(team, teamMembers, i);
-                    authorStr += concat + getPersonString(teamMember);
-                }
-                if (teamMembers.size() == 0){
-                    authorStr = TeamDefaultCacheStrategy.EMPTY_TEAM;
-                } else if (team.isHasMoreMembers() || teamMembers.size() > etAlPosition){
-                    authorStr += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
-                }
+                authorStr = TeamDefaultCacheStrategy.INSTANCE_ET_AL_2().getFamilyTitle(team);
             }
         }
         String result = CdmUtils.concat(" ", authorStr, getShortCitationDate(reference, withYearBrackets, citationDetail));

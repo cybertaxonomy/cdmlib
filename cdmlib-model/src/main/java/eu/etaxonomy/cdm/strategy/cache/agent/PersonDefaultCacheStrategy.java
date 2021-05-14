@@ -32,18 +32,26 @@ public class PersonDefaultCacheStrategy
 
 	final static UUID uuid = UUID.fromString("9abda0e1-d5cc-480f-be38-40a510a3f253");
 
+	private static PersonDefaultCacheStrategy instance;
+
 	private String initialsSeparator = "";
 
-	static public PersonDefaultCacheStrategy NewInstance(){
+	public static PersonDefaultCacheStrategy NewInstance(){
 		return new PersonDefaultCacheStrategy();
 	}
 
+	public static PersonDefaultCacheStrategy INSTANCE(){
+	    if (instance == null){
+	        instance = PersonDefaultCacheStrategy.NewInstance();
+	    }
+	    return instance;
+	}
+
 // ******************** CONSTRUCTOR **********************************/
+
 	private PersonDefaultCacheStrategy() {
 		super();
 	}
-
-
 
 	@Override
 	protected UUID getUuid() {
@@ -54,6 +62,11 @@ public class PersonDefaultCacheStrategy
     public String getNomenclaturalTitle(Person person) {
 		return person.getNomenclaturalTitle();
 	}
+
+    @Override
+    public String getFamilyTitle(Person person) {
+        return isNotBlank(person.getFamilyName())? person.getFamilyName() : person.getTitleCache();
+    }
 
     @Override
     public String getTitleCache(Person person) {
@@ -75,11 +88,6 @@ public class PersonDefaultCacheStrategy
         return person.toString();
     }
 
-    /**
-     * @param existing
-     * @param person
-     * @return
-     */
     private String addInitials(String existing, Person person) {
         String result = existing;
         String initials = person.getInitials();

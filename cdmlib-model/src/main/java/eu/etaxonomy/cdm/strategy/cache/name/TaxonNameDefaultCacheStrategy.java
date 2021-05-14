@@ -230,26 +230,24 @@ public class TaxonNameDefaultCacheStrategy
      * combination authors as well as on basionym/orginal combination authors.
      * The correct order is exAuthor ex author though some botanist do not know about and do it the
      * other way round. (see 46.4-46.6 ICBN (Vienna Code, 2006))
-     *
-     * @param author the author
-     * @param exAuthor the ex-author
-     * @return
      */
     protected String getAuthorAndExAuthor(INomenclaturalAuthor author, INomenclaturalAuthor exAuthor){
         String authorString = "";
         String exAuthorString = "";
         if (author != null){
-            authorString = CdmUtils.Nz(author.getNomenclaturalTitle());
+            authorString = getNomAuthorTitle(author);
         }
         if (exAuthor != null){
-            exAuthorString = CdmUtils.Nz(exAuthor.getNomenclaturalTitle());
+            exAuthorString = getNomAuthorTitle(exAuthor);
             exAuthorString += exAuthorSeperator;
         }
         String result = exAuthorString + authorString;
         return result;
     }
 
-
+    private String getNomAuthorTitle(INomenclaturalAuthor author) {
+        return CdmUtils.Nz(author.getNomenclaturalTitle());
+    }
 
     /**
      * Checks if the given name should include the author in it's cached version.<BR>

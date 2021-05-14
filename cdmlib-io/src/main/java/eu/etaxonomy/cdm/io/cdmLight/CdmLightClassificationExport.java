@@ -2125,34 +2125,11 @@ public class CdmLightClassificationExport
 
         } else if (authorship instanceof Team) {
 
-            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
-            int index = 0;
-
-            for (Person teamMember : authorTeam.getTeamMembers()) {
-                index++;
-                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                fullAuthorship += concat + teamMember.getTitleCache();
-            }
-            if (StringUtils.isBlank(fullAuthorship)){
-                fullAuthorship = authorTeam.getTitleCache();
-            }
+            Team authorTeam = (Team)authorship;
+            fullAuthorship = authorTeam.getCacheStrategy().getTitleCache(authorTeam);
         }
         return fullAuthorship;
     }
-
-    private static String concatString(Team team, List<Person> teamMembers, int i) {
-        String concat;
-        if (i <= 1) {
-            concat = "";
-        } else if (i < teamMembers.size() || (team.isHasMoreMembers() && i == teamMembers.size())) {
-            concat = STD_TEAM_CONCATINATION;
-        } else {
-            concat = FINAL_TEAM_CONCATINATION;
-        }
-        return concat;
-    }
-
-
 
     private void handleSpecimen(CdmLightExportState state, SpecimenOrObservationBase<?> specimen) {
         try {

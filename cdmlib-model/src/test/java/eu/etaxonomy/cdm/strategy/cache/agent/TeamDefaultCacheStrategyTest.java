@@ -64,9 +64,11 @@ public class TeamDefaultCacheStrategyTest {
 	    person4.setFamilyName("P4LN");
 
 		team1.addTeamMember(person1);
+
 		team2.addTeamMember(person2);
 		team2.addTeamMember(person1);
 		team2.addTeamMember(person3);
+		team2.addTeamMember(person4);
 	}
 
 //**************************************** TESTS **************************************
@@ -86,24 +88,32 @@ public class TeamDefaultCacheStrategyTest {
 		person1.setSuffix(null);
 		Assert.assertEquals("team1 nomenclatural title should be P1LN, P.",
 		        "P1LN, P.", team1.getNomenclaturalTitle());
+
 		//team2
-		Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, P1LN, P. & P3NomT'",
-		        "P2NomT, P1LN, P. & P3NomT", team2.getNomenclaturalTitle());
-		TeamDefaultCacheStrategy.NewInstanceNomEtAl(3);
+		Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, P1LN, P., P3NomT & P4NomT'",
+		        "P2NomT, P1LN, P., P3NomT & P4NomT", team2.getNomenclaturalTitle());
+		//more
+		team2.setHasMoreMembers(true);
+        Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, P1LN, P., P3NomT & al.'",
+                "P2NomT, P1LN, P., P3NomT & al.", team2.getNomenclaturalTitle());
+        team2.setHasMoreMembers(false);
+        //3 members
 		team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstanceNomEtAl(3));
         team2.setTitleCache(null, false);
-        Assert.assertEquals("team2 nomenclatural title should still be 'P2NomT, P1LN, P. & P3NomT' now.",
-                "P2NomT, P1LN, P. & P3NomT", team2.getNomenclaturalTitle());
+        Assert.assertEquals("team2 nomenclatural title should still be 'P2NomT, P1LN, P. & al.' now.",
+                "P2NomT, P1LN, P. & al.", team2.getNomenclaturalTitle());
+        //4 members
+        team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstanceNomEtAl(4));
+        team2.setTitleCache(null, false);
+        Assert.assertEquals("team2 nomenclatural title should still be 'P2NomT, P1LN, P., P3NomT & P4NomT' now.",
+                "P2NomT, P1LN, P., P3NomT & P4NomT", team2.getNomenclaturalTitle());
+
 
 		//team3/empty team
 		Assert.assertNotNull("team3 nomenclatural title must not to be null",
 		        team3.getNomenclaturalTitle());
 		Assert.assertTrue("team3 nomenclatural title must not be empty",
 		        StringUtils.isNotBlank(team3.getNomenclaturalTitle()));
-
-		team2.setHasMoreMembers(true);
-		Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, P1LN, P. & P3NomT & al.'",
-		        "P2NomT, P1LN, P., P3NomT & al.", team2.getNomenclaturalTitle());
 
 		//don't take next test to serious, may be also something different, but not empty
 		Assert.assertEquals("team3 nomenclatural title should be empty team replacement string", TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getNomenclaturalTitle());
@@ -119,18 +129,28 @@ public class TeamDefaultCacheStrategyTest {
 		Assert.assertEquals("team1 title cache should be P1LN, P.",
 		        "P1LN, P.", team1.getTitleCache());
 		//peson2
-		Assert.assertEquals("team2 title cache should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN & P3NomT'",
-		        "P2LN, P., P1LN, P. & P3NomT", team2.getTitleCache());
+		Assert.assertEquals("team2 title cache should be 'P2LN, P., P1LN, P., P3NomT & P4LN'",
+		        "P2LN, P., P1LN, P., P3NomT & P4LN", team2.getTitleCache());
         team2.setHasMoreMembers(true);
 
-        Assert.assertEquals("team2 title cache should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.'",
-                "P2LN, P., P1LN, P., P3NomT & al.", team2.getTitleCache());
+        Assert.assertEquals("team2 title cache should be 'P2LN, P., P1LN, P., P3NomT, P4LN & al.'",
+                "P2LN, P., P1LN, P., P3NomT, P4LN & al.", team2.getTitleCache());
+        team2.setHasMoreMembers(false);
 
 		team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstanceTitleEtAl(3));
-		team2.setHasMoreMembers(false);
 		team2.setTitleCache(null, false);
         Assert.assertEquals("team2 nomenclatural title should still be 'P2LN, P., P1LN, P. & al.' now.",
                 "P2LN, P., P1LN, P. & al.", team2.getTitleCache());
+
+        team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstanceTitleEtAl(4));
+        team2.setTitleCache(null, false);
+        Assert.assertEquals("team2 nomenclatural title should still be 'P2LN, P., P1LN, P., P3NomT & P4LN' now.",
+                "P2LN, P., P1LN, P., P3NomT & P4LN", team2.getTitleCache());
+        team2.setHasMoreMembers(true);
+        team2.setTitleCache(null, false);
+        Assert.assertEquals("team2 nomenclatural title should still be 'P2LN, P., P1LN, P., P3NomT & al.' now.",
+                "P2LN, P., P1LN, P., P3NomT & al.", team2.getTitleCache());
+
 
 		//person3
 		Assert.assertNotNull("team3 title cache must not to be null",
@@ -151,18 +171,18 @@ public class TeamDefaultCacheStrategyTest {
         person1.setSuffix(null);
         Assert.assertEquals("team1 full title should be Dr1. P1FN P1LN", "Dr1. P1FN P1LN",
                 team1.getFullTitle());
-        //peson2
-        Assert.assertEquals("team2 full title should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN & P3NomT'",
-                "P2FN P2LN P2Suff, Dr1. P1FN P1LN & P3NomT", team2.getFullTitle());
-        //person3
+        //team2
+        Assert.assertEquals("team2 full title should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & P4LN'",
+                "P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & P4LN", team2.getFullTitle());
+        team2.setHasMoreMembers(true);
+        Assert.assertEquals("team2 full title should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT, P4LN & al.'",
+                "P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT, P4LN & al.", team2.getFullTitle());
+
+        //team3
         Assert.assertNotNull("team3 full title must not to be null",
                 team3.getFullTitle());
         Assert.assertTrue("team3 full title must not be empty",
                 StringUtils.isNotBlank(team3.getFullTitle()));
-
-        team2.setHasMoreMembers(true);
-        Assert.assertEquals("team2 full title should be 'P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.'",
-                "P2FN P2LN P2Suff, Dr1. P1FN P1LN, P3NomT & al.", team2.getFullTitle());
 
         //don't take to serious, may be also something different, but not empty
         Assert.assertEquals("team3 full title should should be empty team replacement string",

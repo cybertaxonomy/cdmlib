@@ -249,6 +249,7 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
+        //TODO needs to be checked if 3 authors are really wanted
         Assert.assertTrue(str.contains("rel. sec. Macfarlane, Cheek & ToSecAuthor 1919"));
 
         //add et al.

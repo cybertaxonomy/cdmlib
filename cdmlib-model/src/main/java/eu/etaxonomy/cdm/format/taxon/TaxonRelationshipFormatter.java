@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -30,6 +29,7 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
+import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
@@ -174,7 +174,8 @@ public class TaxonRelationshipFormatter {
         String secRef;
 
         if (ref != null){
-            TeamOrPersonBase<?> author = ref.getAuthorship();
+            TeamOrPersonBase<?> author = CdmBase.deproxy(ref.getAuthorship());
+
             //TODO distinguish linked and unlinked usage,
             // if reference is not linked short citation should only be used
             //   if both author and year exists, also initials should be added in this case
@@ -182,12 +183,11 @@ public class TaxonRelationshipFormatter {
             if (ref.isProtectedTitleCache() == false &&
                     author != null &&
                     isNotBlank(author.getTitleCache())){
-                //TODO move to authorFormatter
-                String familyNames = getFamilyNames(author);
-                if (isNotBlank(familyNames)){
-                    secRef = familyNames;
+                if (author.isInstanceOf(Person.class)){
+                    secRef = PersonDefaultCacheStrategy.INSTANCE().getFamilyTitle((Person)author);
                 }else{
-                    secRef = ref.getAuthorship().getTitleCache();
+                    //TODO this may become ET_AL_2 in future
+                    secRef = TeamDefaultCacheStrategy.INSTANCE().getFamilyTitle((Team)author);
                 }
                 if (isNotBlank(ref.getYear())){
                    secRef += " " + ref.getYear();
@@ -207,32 +207,6 @@ public class TaxonRelationshipFormatter {
             result.add(microTag);
         }
         return result;
-    }
-
-    private String getFamilyNames(TeamOrPersonBase<?> author) {
-        if (author.isInstanceOf(Person.class)){
-            Person person = CdmBase.deproxy(author, Person.class);
-            return isNotBlank(person.getFamilyName())? person.getFamilyName() : null;
-        }else{
-            Team team = CdmBase.deproxy(author, Team.class);
-            String result = null;
-            int n = team.getTeamMembers().size();
-            int index = 1;
-            if (team.isHasMoreMembers()){
-                n++;
-            }
-            for (Person member : team.getTeamMembers()){
-                String name = isNotBlank(member.getFamilyName())? member.getFamilyName(): member.getTitleCache();
-                String separator = index < n ? TeamDefaultCacheStrategy.STD_TEAM_CONCATINATION : TeamDefaultCacheStrategy.FINAL_TEAM_CONCATINATION;
-                result = CdmUtils.concat(separator, result, name);
-                index++;
-            }
-            if (team.isHasMoreMembers()){
-                //TODO or et al.???
-                result += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
-            }
-            return result;
-        }
     }
 
     private List<TaggedText> getNameCacheTags(TaxonName name) {

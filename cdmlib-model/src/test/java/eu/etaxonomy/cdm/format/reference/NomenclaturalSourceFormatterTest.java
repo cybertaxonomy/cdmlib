@@ -175,7 +175,7 @@ public class NomenclaturalSourceFormatterTest {
         book1.setAuthorship(team);
         Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Twoauthor & Threeauth., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", formatter.format((Reference)bookSection1, "248"));
         team.setHasMoreMembers(true);
-        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Twoauthor, Threeauth. & al., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", formatter.format((Reference)bookSection1, "248"));
+        Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Twoauthor & al., Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", formatter.format((Reference)bookSection1, "248"));
         book1.setAuthorship(Team.NewInstance(person1));
         Assert.assertEquals("Unexpected nomencl. reference", "in Inauthor, Acta Inst. Bot. Acad. Sci. URSS Fasc. 11: 248. 1956", formatter.format((Reference)bookSection1, "248"));
 

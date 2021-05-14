@@ -2812,7 +2812,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         nameStr = "Phytophthora multivesiculata Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters";
         name = parser.parseFullName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & al.",
+        assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters",
                 name.getCombinationAuthorship().getTitleCache());
         assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters",
                 name.getCombinationAuthorship().getNomenclaturalTitle());
@@ -2820,7 +2820,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         nameStr = "Thymus \u00D7 herberoi De la Torre, Vicedo, Alonso & Paya";
         name = parser.parseFullName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals("De la Torre, Vicedo, Alonso & al.",
+        //TODO may become ... Alonso & al. again in future
+        assertEquals("Thymus \u00D7herberoi De la Torre, Vicedo, Alonso & Paya", name.getTitleCache());
+        assertEquals("De la Torre, Vicedo, Alonso & Paya",
                 name.getCombinationAuthorship().getTitleCache());
         assertEquals("De la Torre, Vicedo, Alonso & Paya",
                 name.getCombinationAuthorship().getNomenclaturalTitle());

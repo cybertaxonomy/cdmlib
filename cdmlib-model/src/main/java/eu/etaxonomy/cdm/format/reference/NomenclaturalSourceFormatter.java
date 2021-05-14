@@ -267,17 +267,7 @@ public class NomenclaturalSourceFormatter extends CdmFormatterBase<Nomenclatural
                 //not yet finally discussed may change in future
                 result = team.getTitleCache();
             }else{
-                result = "";
-                int size = team.getTeamMembers().size();
-                for (Person person : team.getTeamMembers()){
-                    int index = team.getTeamMembers().lastIndexOf(person);
-                    String sep = (team.isHasMoreMembers() || index != size - 1) ?
-                            TeamDefaultCacheStrategy.STD_TEAM_CONCATINATION : TeamDefaultCacheStrategy.FINAL_TEAM_CONCATINATION;
-                    result = CdmUtils.concat(sep, result, getInRefPerson(person));
-                }
-                if (team.isHasMoreMembers()){
-                    result += TeamDefaultCacheStrategy.ET_AL_TEAM_CONCATINATION_FULL + "al.";
-                }
+                result = TeamDefaultCacheStrategy.INSTANCE_ET_AL_3().getFamilyTitle(team);
             }
         }
 
