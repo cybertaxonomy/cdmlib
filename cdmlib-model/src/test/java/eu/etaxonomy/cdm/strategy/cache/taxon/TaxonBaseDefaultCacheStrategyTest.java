@@ -98,87 +98,87 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 	//same as for accepted taxa but with syn. sec. instead of sec.
     @Test
     public void testSynSec() {
-        Synonym taxonBase = Synonym.NewInstance(name, sec);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        Synonym syn = Synonym.NewInstance(name, sec);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. Sp.Pl.", syn.getTitleCache());
         //without sec.
-        taxonBase.setSec(null);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. ???", taxonBase.getTitleCache());
+        syn.setSec(null);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " syn. sec. ???", syn.getTitleCache());
         //appended phrase without sec.
         String appendedPhrase = "aff. 'schippii'";
-        taxonBase.setAppendedPhrase(appendedPhrase);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", taxonBase.getTitleCache());
+        syn.setAppendedPhrase(appendedPhrase);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", syn.getTitleCache());
         //appended phrase with sec.
-        taxonBase.setSec(sec);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        syn.setSec(sec);
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache());
         //use name cache
-        taxonBase.setUseNameCache(true);
-        assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", taxonBase.getTitleCache());
-        taxonBase.setDoubtful(true);
-        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        syn.setUseNameCache(true);
+        assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache());
+        syn.setDoubtful(true);
+        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' syn. sec. Sp.Pl.", syn.getTitleCache());
         //with nom status
-        taxonBase.setAppendedPhrase(null);
-        taxonBase.setUseNameCache(false);
-        taxonBase.setDoubtful(false);
+        syn.setAppendedPhrase(null);
+        syn.setUseNameCache(false);
+        syn.setDoubtful(false);
         name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., syn. sec. Sp.Pl.", taxonBase.getTitleCache());
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., syn. sec. Sp.Pl.", syn.getTitleCache());
     }
 
    @Test
     public void testGetTitleCacheWithoutName() {
-        TaxonBase<?> taxonBase = Taxon.NewInstance(null, sec);
-        assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxonBase.getTitleCache());
+        Taxon taxon = Taxon.NewInstance(null, sec);
+        assertEquals("Taxon titlecache is wrong", "??? sec. Sp.Pl.", taxon.getTitleCache());
     }
 
 	//test missing "&" in title cache  #3822
 	@Test
 	public void testAndInTitleCache() {
-		TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+		Taxon taxon = Taxon.NewInstance(name, sec);
 		Team team = Team.NewInstance();
 		team.addTeamMember((Person)name.getCombinationAuthorship());
 		team.addTeamMember((Person)name.getBasionymAuthorship());
 		name.setCombinationAuthorship(team);
 //		System.out.println(taxonBase.generateTitle());
-		assertEquals("Abies alba (L.) Mill. \u0026 L. sec. Sp.Pl.", taxonBase.generateTitle());
+		assertEquals("Abies alba (L.) Mill. \u0026 L. sec. Sp.Pl.", taxon.generateTitle());
 
 		name = TaxonNameFactory.NewBotanicalInstance(null);
 		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
-		Taxon taxon = Taxon.NewInstance(name, sec);
-		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
+		Taxon taxon2 = Taxon.NewInstance(name, sec);
+		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon2.getTitleCache());
 	}
 
     @Test
 	public void testProtectedTitleCache(){
-	    TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
-        taxonBase.setTitleCache("abc", true);
-        taxonBase.setDoubtful(true);
-        Assert.assertEquals("abc", taxonBase.getTitleCache());
+	    Taxon taxon = Taxon.NewInstance(name, sec);
+        taxon.setTitleCache("abc", true);
+        taxon.setDoubtful(true);
+        Assert.assertEquals("abc", taxon.getTitleCache());
 	}
 
     @Test
     public void testProtectedSecTitleCache(){
-        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        Taxon taxon = Taxon.NewInstance(name, sec);
         sec.setTitleCache("My protected sec ref", true);
-        taxonBase.setDoubtful(true);
-        taxonBase.setSecMicroReference("123");
-        Assert.assertEquals("?Abies alba (L.) Mill. sec. My protected sec ref: 123", taxonBase.getTitleCache());
+        taxon.setDoubtful(true);
+        taxon.setSecMicroReference("123");
+        Assert.assertEquals("?Abies alba (L.) Mill. sec. My protected sec ref: 123", taxon.getTitleCache());
     }
 
     @Test
     public void testMicroReference(){
-        TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+        Taxon taxon = Taxon.NewInstance(name, sec);
         String secMicroRef = "p. 553";
 
         //not atomized
-        taxonBase.setSecMicroReference(secMicroRef);
+        taxon.setSecMicroReference(secMicroRef);
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.: p. 553",
-                taxonBase.getTitleCache());
+                taxon.getTitleCache());
 
         //atomized
         sec.setAuthorship(Team.NewTitledInstance("Team", "T."));
         sec.setDatePublished(TimePeriodParser.parseStringVerbatim("1798"));
-        taxonBase.setTitleCache(null);
+        taxon.setTitleCache(null);
         assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Team 1798: p. 553",
-                taxonBase.getTitleCache());
+                taxon.getTitleCache());
     }
 
     @Test

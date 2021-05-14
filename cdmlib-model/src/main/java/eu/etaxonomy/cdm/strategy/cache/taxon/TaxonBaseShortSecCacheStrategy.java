@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
 	protected UUID getUuid() {
 		return uuid;
 	}
-
 
 	@Override
     public String getTitleCache(T taxonBase) {
@@ -191,9 +189,6 @@ public class TaxonBaseShortSecCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    /**
-     * @param ref
-     */
     private List<TaggedText> getSecReferenceTags(Reference sec) {
         List<TaggedText> tags = new ArrayList<>();
 
