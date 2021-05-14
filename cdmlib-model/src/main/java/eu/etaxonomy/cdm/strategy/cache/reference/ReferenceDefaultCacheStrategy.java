@@ -18,6 +18,8 @@ import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -31,18 +33,15 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * we may also only need 1 single cache strategy. However, care must be taken as the formatting
  * differs dependent on the type an the in-reference structure.
  *
- * Generally the cache strategy allows to compute 3 formats:<BR>
+ * Generally the cache strategy allows to compute 2 formats:<BR><BR>
  *
  *  1.) for bibliographic references (stored in {@link Reference#getTitleCache() titleCache}).<BR>
  *
  *  2.) for nomenclatural references (stored in {@link Reference#getAbbrevTitleCache() abbrevTitleCache}),
  *      but without micro reference (detail).<BR>
- *
- *  3.) for nomenclatural references with micro reference, but not stored anywhere as the micro reference
- *      is part of the name, not of the reference<BR>
- *
- *  4.) for short citation (e.g. Author 2009) as defined in {@link IReferenceCacheStrategy#getCitation(Reference, String)}
- *  and {@link IReferenceCacheStrategy#createShortCitation(Reference, String, Boolean)}
+ * <BR>
+ * The formatting of nomenclatural references with micro references has been moved to {@link NomenclaturalSourceFormatter}
+ * and the formatting of short citations has been moved to {@link OriginalSourceFormatter}.
  *
  * @author a.mueller
  * @since 25.05.2016
