@@ -10,6 +10,9 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -191,23 +194,28 @@ public class ReferenceDefaultCacheStrategyTest {
 		Assert.assertEquals("T., M. Art. "+UTF8.EN_DASH+" M. Journ. 1975", article1.getAbbrevTitleCache());  //double dot may be removed in future #3645
 
 		article1.setInJournal(null);
-		//TODO should not be needed here
 		article1.setTitleCache(null, false);
 		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
 	}
 
 	@Test
-	public void testArticleGetTitleWithoutYearAndAuthor(){
+	public void testArticleGetTitleWithoutYearAndAuthor() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		journal1.setTitle("My journal");
+		journal1.setAbbrevTitle("My journ.");
 		((Reference)journal1).setAuthorship(articleTeam2);
 		article1.setTitle("My article");
+		article1.setAbbrevTitle("My art.");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
 		article1.setVolume("34");
 		article1.setSeriesPart("ser. 2");
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-		//FIXME removed for new formatter
-//		Assert.assertEquals("in My journal, ser. 2, 34", defaultStrategy.getTitleWithoutYearAndAuthor((Reference)article1, false));
+		Method method = ReferenceDefaultCacheStrategy.class.getDeclaredMethod("getTitleWithoutYearAndAuthor", Reference.class, boolean.class, boolean.class);
+		method.setAccessible(true);
+		Assert.assertEquals(UTF8.EN_DASH + " My journal, ser. 2, 34", method.invoke(defaultStrategy, article1, false, false));
+		Assert.assertEquals(UTF8.EN_DASH + " My journ., ser. 2, 34", method.invoke(defaultStrategy, article1, true, false));
+		Assert.assertEquals("in My journal, ser. 2, 34", method.invoke(defaultStrategy, article1, false, true));
+		Assert.assertEquals("in My journ., ser. 2, 34", method.invoke(defaultStrategy, article1, true, true));
 	}
 
 	@Test
