@@ -55,6 +55,23 @@ public class TaxonRelationshipFormatter {
     private static final String INVERT_SYMBOL = "<-"; //TODO
     private static final String UNDEFINED_SYMBOL = "??";  //TODO
 
+    private static TaxonRelationshipFormatter instance;
+
+    public static TaxonRelationshipFormatter NewInstance(){
+        return new TaxonRelationshipFormatter();
+    }
+
+    public static TaxonRelationshipFormatter INSTANCE(){
+        if (instance == null){
+            instance = NewInstance();
+        }
+        return instance;
+    }
+
+    private TaxonRelationshipFormatter(){
+
+    }
+
     public List<TaggedText> getTaggedText(TaxonRelationship taxonRelationship, boolean reverse, List<Language> languages) {
         return getTaggedText(taxonRelationship, reverse, languages, false);
     }

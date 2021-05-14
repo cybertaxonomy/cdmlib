@@ -73,7 +73,7 @@ public class TaxonRelationshipsDTO {
 //                TODO localize
 //                termDto.localize(representation_L10n);
             }
-            List<TaggedText> tags = new TaxonRelationshipFormatter().getTaggedText(
+            List<TaggedText> tags = TaxonRelationshipFormatter.INSTANCE().getTaggedText(
                     relation, direction == Direction.relatedFrom, languages);
             this.taggedText = tags;
             this.setCache(TaggedCacheHelper.createString(tags));

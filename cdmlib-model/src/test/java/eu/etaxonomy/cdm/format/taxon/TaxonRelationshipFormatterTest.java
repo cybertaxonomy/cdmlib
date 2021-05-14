@@ -99,7 +99,7 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         taxonRel = fromTaxon.addTaxonRelation(toTaxon, type, relSec, "123");
         reverse = false;
 
-        formatter = new TaxonRelationshipFormatter();
+        formatter = TaxonRelationshipFormatter.INSTANCE();
 
         languages = null;
     }
