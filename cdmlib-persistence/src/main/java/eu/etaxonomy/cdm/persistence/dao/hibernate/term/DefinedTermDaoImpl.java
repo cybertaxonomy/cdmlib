@@ -795,7 +795,7 @@ public class DefinedTermDaoImpl
         query.setParameter("parentUuid", parentTerm.getUuid());
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = deduplicateResult(query.list());
+        List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
