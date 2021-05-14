@@ -236,6 +236,10 @@ public class ReferenceDefaultCacheStrategy
         if (title.matches(".*[.!\\?]")){
             title = title.substring(0, title.length() - 1);
         }
+        String pages = getPages(reference);
+        if (isNotBlank(pages)){
+            title = CdmUtils.concat(", ", title, pages);
+        }
         if (title.length() > 0){
             result = title.trim() + "." + blank + result;
         }
@@ -273,6 +277,20 @@ public class ReferenceDefaultCacheStrategy
             }
         }
         return result;
+    }
+
+    private static final String pageNoRe = "[0-9iIvVxXlLcCdDmM]+";
+    private String getPages(Reference reference) {
+
+        if (isBlank(reference.getPages())){
+            return null;
+        }else if (reference.getPages().matches(pageNoRe + "\\s*[-"+UTF8.EN_DASH+"]\\s*"+ pageNoRe)){
+            return "pp. " + reference.getPages();
+        }else if (reference.getPages().matches(pageNoRe)){
+            return "p. " + reference.getPages();
+        }else{
+            return reference.getPages();
+        }
     }
 
     private String titleCacheJournal(Reference reference, boolean isAbbrev) {
