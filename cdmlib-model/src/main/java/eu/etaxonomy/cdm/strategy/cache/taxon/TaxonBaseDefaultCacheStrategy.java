@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -73,7 +74,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
 
         boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
-        String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
+        String secSeparator =  isMisapplication(taxonBase)? " sensu " : (isSynonym? " syn." : "") + " sec. ";
         //not used: we currently use a post-separator in the name tags
 //                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
 //                    secSeparator = "," + secSeparator;
@@ -89,6 +90,14 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
 
         return tags;
+    }
+
+    private boolean isMisapplication(T taxonBase) {
+        if (! taxonBase.isInstanceOf(Taxon.class)){
+            return false;
+        }else{
+            return CdmBase.deproxy(taxonBase, Taxon.class).isMisapplicationOnly();
+        }
     }
 
     private List<TaggedText> getNameTags(T taxonBase) {

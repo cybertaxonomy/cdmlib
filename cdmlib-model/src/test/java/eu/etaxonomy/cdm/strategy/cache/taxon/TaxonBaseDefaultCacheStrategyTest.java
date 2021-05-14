@@ -27,9 +27,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
@@ -215,5 +219,38 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         taxonBase.setTitleCache(null, false);
         Assert.assertEquals("Abies alba (L.) Mill. sec. MLW 1983", taxonBase.getTitleCache());
 
+    }
+
+    @Test
+    public void testMisapplication(){
+        //assert default (taxon without relation)
+        Taxon man = Taxon.NewInstance(name, sec);
+        ITaxonCacheStrategy<Taxon> cacheStrategy = man.getCacheStrategy();
+        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+
+        //make it a MAN only
+        Taxon mainTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
+        mainTaxon.addMisappliedName(man, null, null);
+        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
+
+        //add another from relation
+        Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
+        TaxonRelationship rel = man.addTaxonRelation(relatedTaxon, TaxonRelationshipType.CONGRUENT_TO(), null, null);
+        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+        man.removeTaxonRelation(rel);
+        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
+
+        //add another to relation
+        rel = relatedTaxon.addTaxonRelation(man, TaxonRelationshipType.CONGRUENT_TO(), null, null);
+        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+        man.removeTaxonRelation(rel);
+        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
+
+        //add taxon node
+        Classification c = Classification.NewInstance("Test");
+        TaxonNode tn = c.addChildTaxon(man, null);
+        assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
+        man.removeTaxonNode(tn);
+        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
     }
 }

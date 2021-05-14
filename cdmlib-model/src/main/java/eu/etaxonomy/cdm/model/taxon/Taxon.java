@@ -997,6 +997,18 @@ public class Taxon
         }
     }
 
+    public boolean isMisapplicationOnly() {
+        if (!getTaxonNodes().isEmpty()){
+            return false;
+        }
+        int nMan = computeMisapliedNameRelations();
+        if (nMan > 0 && nMan == this.relationsFromThisTaxon.size() + this.relationsToThisTaxon.size()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /**
      * Returns the boolean value indicating whether <i>this</i> taxon is a misapplication
      * (misapplied name) for at least one other taxon.
