@@ -62,7 +62,7 @@ public class ReferenceDefaultCacheStrategy
     //book
 
     //(book?) section
-    private String afterSectionAuthor = " "+UTF8.EN_DASH+" ";
+    private String afterSectionAuthor = ", ";
 
     //in reference
     private String biblioInSeparator = UTF8.EN_DASH + " In: "; //#9529
