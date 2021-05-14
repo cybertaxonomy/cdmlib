@@ -157,6 +157,8 @@ public class ReferenceDefaultCacheStrategyTest {
 
 		article1.setInJournal(null);
 		Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());
+        article1.setDatePublished(null);
+        Assert.assertEquals("Team1, My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
 	}
 
 	//#6496
@@ -321,7 +323,7 @@ public class ReferenceDefaultCacheStrategyTest {
 
     @Test
     //This test is just to show that setInBook(null) now resets caches  #1815
-    public void testBookSectionGetTitleCache2(){
+    public void testBookSectionSetInBook(){
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
         bookSection1.setTitle("My chapter");
