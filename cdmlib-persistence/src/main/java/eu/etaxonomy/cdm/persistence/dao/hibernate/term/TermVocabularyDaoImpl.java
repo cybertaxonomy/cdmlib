@@ -350,18 +350,11 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         String queryVocWithFittingTerms = "SELECT DISTINCT(v.uuid) FROM DefinedTermBase term JOIN term.vocabulary as v WHERE " ;
         for (CdmClass availableFor: availableForSet){
             queryVocWithFittingTerms += " term.availableFor like '%"+availableFor.getKey()+"%' AND term.termType = :feature";
-
         }
-
-//        Query query1 =  getSession().createQuery(queryVocWithFittingTerms);
-//        List<Object[]> result1 = query1.list();
 
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + " WHERE a.uuid in "
                 + " (" + queryVocWithFittingTerms + ")";
-
-
-
 
         Query query =  getSession().createQuery(queryString);
         query.setParameter("feature", TermType.Feature);
@@ -369,7 +362,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         @SuppressWarnings("unchecked")
         List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
 
-//        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
         List<TermVocabularyDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
 
         return dtos;

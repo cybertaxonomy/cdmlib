@@ -70,29 +70,29 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
 
 	@Test
 	public void testGetTitleCache() {
-		TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxonBase.getTitleCache());
+		Taxon taxon = Taxon.NewInstance(name, sec);
+		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. Sp.Pl.", taxon.getTitleCache());
 		//without sec.
-		taxonBase.setSec(null);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. ???", taxonBase.getTitleCache());
+		taxon.setSec(null);
+		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " sec. ???", taxon.getTitleCache());
 		//appended phrase without sec.
 		String appendedPhrase = "aff. 'schippii'";
-		taxonBase.setAppendedPhrase(appendedPhrase);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", taxonBase.getTitleCache());
+		taxon.setAppendedPhrase(appendedPhrase);
+		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii'", taxon.getTitleCache());
 		//appended phrase with sec.
-		taxonBase.setSec(sec);
-		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
+		taxon.setSec(sec);
+		assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache());
 		//use name cache
-		taxonBase.setUseNameCache(true);
-		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
-		taxonBase.setDoubtful(true);
-        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
+		taxon.setUseNameCache(true);
+		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache());
+		taxon.setDoubtful(true);
+        assertEquals("Taxon titlecache is wrong", "?" + expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxon.getTitleCache());
         //with nom status
-        taxonBase.setAppendedPhrase(null);
-        taxonBase.setUseNameCache(false);
-        taxonBase.setDoubtful(false);
+        taxon.setAppendedPhrase(null);
+        taxon.setUseNameCache(false);
+        taxon.setDoubtful(false);
         name.addStatus(NomenclaturalStatusType.ILLEGITIMATE(), null, null);
-        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxonBase.getTitleCache());
+        assertEquals("Taxon titlecache is wrong", expectedNameTitleCache + ", nom. illeg., sec. Sp.Pl.", taxon.getTitleCache());
 	}
 
 	//same as for accepted taxa but with syn. sec. instead of sec.
