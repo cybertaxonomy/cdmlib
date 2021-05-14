@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
 		ITermVocabularyDao {
 
-	public TermVocabularyDaoImpl() {
+	@SuppressWarnings("unchecked")
+    public TermVocabularyDaoImpl() {
 		super(TermVocabulary.class);
 		indexedClasses = new Class[2];
 		indexedClasses[0] = TermVocabulary.class;
@@ -82,7 +83,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		    this.addOrder(criteria, orderHints);
 
 		    @SuppressWarnings("unchecked")
-            List<T> result = criteria.list();
+            List<T> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		} else {
@@ -92,7 +93,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			addPageSizeAndNumber(query, pageSize, pageNumber);
 
 			@SuppressWarnings("unchecked")
-            List<T> result = query.getResultList();
+            List<T> result = DefinedTermDaoImpl.deduplicateResult(query.getResultList());
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
 		}
@@ -133,7 +134,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         //this.addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<TermVocabulary<T>> result = criteria.list();
+        List<TermVocabulary<T>> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -253,7 +254,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    query.setParameterList("vocabularyUuids", vocabularyUuids);
 
 	    @SuppressWarnings("unchecked")
-	    List<Object[]> result = query.list();
+	    List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
 
 	    List<TermDto> list = TermDto.termDtoListFrom(result);
 	    return list;
@@ -268,7 +269,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    query.setParameter("vocabularyUuid", vocabularyUuid);
 
 	    @SuppressWarnings("unchecked")
-	    List<Object[]> result = query.list();
+	    List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
 
 	    List<TermDto> list = TermDto.termDtoListFrom(result);
 	    return list;
@@ -283,7 +284,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameterList("vocabularyUuids", vocabularyUuids);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -299,7 +300,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameter("vocabularyUuid", vocabularyUuid);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
@@ -323,7 +324,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameter("vocabularyUuid", vocabularyUuid);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
         List<TermDto> list = null;
         if (type.equals(TermType.Feature)|| type.isKindOf(TermType.Feature)){
             list = FeatureDto.termDtoListFrom(result);
@@ -342,7 +343,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
     public List<TermVocabularyDto> findVocabularyDtoByTermTypes(Set<TermType> termTypes, boolean includeSubtypes) {
         return findVocabularyDtoByTermTypes(termTypes, null, includeSubtypes);
     }
-
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableForSet) {
@@ -367,7 +367,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameter("feature", TermType.Feature);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
 
 //        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
         List<TermVocabularyDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
@@ -415,7 +415,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
             query.setParameter("pattern", pattern);
         }
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
         List<TermVocabularyDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return dtos;
 
@@ -488,7 +488,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameter("uuid", vocUuid);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
         if (result.size() == 1){
             return TermVocabularyDto.termVocabularyDtoListFrom(result).get(0);
         }
@@ -510,7 +510,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         query.setParameterList("uuidList", vocUuids);
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
 
         list = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return list;
