@@ -297,10 +297,14 @@ public class ReferenceDefaultCacheStrategyTest {
         Assert.assertEquals("Unexpected title cache.", "Section Author "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2. 1976", bookSection1.getTitleCache());
         bookSection1.setTitle(bookSetionTitle);
 
-        //FIXME #6496
-//        bookSection1.setPages("33-38");
-//        bookSection1.setTitleCache(null);
-//        Assert.assertEquals("Unexpected title cache.", "Section Author - My chapter in Book Author, My book, ser. 2: 33-38. 1976", bookSection1.getTitleCache());
+        //#6496, 9529, 9530
+        bookSection1.setPages("33-38");
+        bookSection1.setTitleCache(null, false);
+        Assert.assertEquals("Unexpected title cache.", "Section Author, My chapter, pp. 33-38. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2. 1976", bookSection1.getTitleCache());
+        bookSection1.setPages("v");
+        bookSection1.setTitleCache(null, false);
+        Assert.assertEquals("Unexpected title cache.", "Section Author, My chapter, p. v. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2. 1976", bookSection1.getTitleCache());
+        bookSection1.setPages(null);
 
         bookSection1.setInBook(null);
         bookSection1.setTitleCache(null, false);
