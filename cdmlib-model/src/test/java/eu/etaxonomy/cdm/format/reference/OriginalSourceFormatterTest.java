@@ -29,7 +29,7 @@ public class OriginalSourceFormatterTest {
     private static Team bookTeam1;
 
     private static OriginalSourceFormatter formatter = OriginalSourceFormatter.INSTANCE;
-    private static OriginalSourceFormatter formatterWithBrackets = OriginalSourceFormatter.INSTANCE_WITH_BRACKETS;
+    private static OriginalSourceFormatter formatterWithBrackets = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS;
 
     @Before
     public void setUp() throws Exception {

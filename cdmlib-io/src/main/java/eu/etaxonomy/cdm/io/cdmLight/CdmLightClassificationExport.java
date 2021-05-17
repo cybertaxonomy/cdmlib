@@ -1747,7 +1747,7 @@ public class CdmLightClassificationExport
                 if (taxonBases.size() == 1){
                      taxonBase = HibernateProxyHelper.deproxy(taxonBases.iterator().next());
                      if (taxonBase.getSec() != null){
-                         sec = OriginalSourceFormatter.INSTANCE_WITH_BRACKETS.format(taxonBase.getSecSource());
+                         sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSecSource());
                      }
                      if (taxonBase.isDoubtful()){
                          doubtful = "?";
@@ -1773,7 +1773,7 @@ public class CdmLightClassificationExport
                     //there are names used more than once?
                     for (TaxonBase<?> tb: taxonBases){
                         if (tb.getSec() != null){
-                            sec = OriginalSourceFormatter.INSTANCE_WITH_BRACKETS.format(tb.getSecSource());
+                            sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSecSource());
                         }
                         if (tb.isDoubtful()){
                             doubtful = "?";

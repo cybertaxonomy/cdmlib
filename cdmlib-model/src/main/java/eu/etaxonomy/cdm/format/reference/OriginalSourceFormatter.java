@@ -27,7 +27,9 @@ public class OriginalSourceFormatter extends CdmFormatterBase<OriginalSourceBase
     private final boolean withYearBrackets;
 
     public static OriginalSourceFormatter INSTANCE = new OriginalSourceFormatter(false);
-    public static OriginalSourceFormatter INSTANCE_WITH_BRACKETS = new OriginalSourceFormatter(true);
+
+    //this can be used e.g. for in-text references, like "... following the opinion of Autor (2000: 22) we posit that ..."
+    public static OriginalSourceFormatter INSTANCE_WITH_YEAR_BRACKETS = new OriginalSourceFormatter(true);
 
     /**
       * @param withYearBrackets if <code>false</code> the result comes without brackets (default is <code>false</code>)
