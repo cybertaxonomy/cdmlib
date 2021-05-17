@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <!--
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-   -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!-- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" -->
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
@@ -11,13 +11,11 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>cdmlib-services</artifactId>    
+  <artifactId>cdmlib-services</artifactId>
   <name>CDM Services</name>
   <description>EDIT CDM library services. The local API and basis for webservices too.</description>
-  <!-- 
-        cdmlib/services as osgi bundle?
-       see https://dev.e-taxonomy.eu/redmine/issues/5302 and https://dev.e-taxonomy.eu/redmine/issues/6695 
-  -->
+  <!-- cdmlib/services as osgi bundle? see https://dev.e-taxonomy.eu/redmine/issues/5302 
+    and https://dev.e-taxonomy.eu/redmine/issues/6695 -->
   <packaging>bundle</packaging>
 
   <build>
@@ -39,16 +37,17 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Xms256m -Xmx512m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+          <argLine>-Xms256m -Xmx512m
+            -Dfile.encoding=${project.build.sourceEncoding}</argLine>
         </configuration>
       </plugin>
-   </plugins>
+    </plugins>
   </build>
   <dependencies>
     <dependency>
-        <!-- see comment on <packaging> above for why osgi is required -->
-        <groupId>org.osgi</groupId>
-        <artifactId>osgi.core</artifactId>
+      <!-- see comment on <packaging> above for why osgi is required -->
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.core</artifactId>
     </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
@@ -60,38 +59,50 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-       <groupId>org.apache.lucene</groupId>
-       <artifactId>lucene-highlighter</artifactId>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-highlighter</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.apache.lucene</groupId>
-       <artifactId>lucene-grouping</artifactId>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-grouping</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.apache.lucene</groupId>
-       <artifactId>lucene-join</artifactId>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-join</artifactId>
     </dependency>
     <dependency>
-       <groupId>org.apache.lucene</groupId>
-       <artifactId>lucene-suggest</artifactId>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-suggest</artifactId>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-<!--       <exclusions> -->
-<!--         <exclusion> -->
-<!--           <groupId>xml-apis</groupId> -->
-<!--           <artifactId>xml-apis</artifactId> -->
-<!--         </exclusion> -->
-<!--       </exclusions> -->
+      <!-- <exclusions> -->
+      <!-- <exclusion> -->
+      <!-- <groupId>xml-apis</groupId> -->
+      <!-- <artifactId>xml-apis</artifactId> -->
+      <!-- </exclusion> -->
+      <!-- </exclusions> -->
     </dependency>
     <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-config</artifactId>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
     </dependency>
     <dependency>
       <groupId>com.ibm.lsid</groupId>
       <artifactId>lsid-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.cybertaxonomy.media</groupId>
+      <artifactId>media-info-model</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.dozermapper</groupId>
+      <artifactId>dozer-core</artifactId>
     </dependency>
   </dependencies>
 </project>
