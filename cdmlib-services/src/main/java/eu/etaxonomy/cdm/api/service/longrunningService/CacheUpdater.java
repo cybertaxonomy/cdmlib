@@ -94,16 +94,26 @@ public class CacheUpdater implements Serializable {
     @Autowired
     protected IProgressMonitorService progressMonitorService;
 
+
+
 	public UpdateResult doInvoke(CacheUpdaterConfigurator config) {
 	    UpdateResult result = new UpdateResult();
+	    IProgressMonitor monitor = config.getMonitor();
+	    monitor.beginTask("Update caches", 100);
+        monitor.subTask("Check start conditions");
 		if (config.getClassList() == null || config.getClassList().isEmpty()){
 			//!! not yet implemented
 			logger.warn("Create class list from boolean values is not yet implemented for cache updater");
 			createClassListFromBoolean();
 		}
-		config.getMonitor().beginTask("Update Caches", 100);
+		monitor.worked(1);
+		monitor.subTask("Count records");
+		Integer count = countAllUpdatableObjects(config.getClassList());
+
+		SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count * 2);  //*2 1 tick for update and 1 tick for commit
+
 		//handle class list
-		result = handleClassList(config.getClassList(), config.getMonitor());
+		result = handleClassList(config.getClassList(), subMonitor);
 		config.getMonitor().done();
 		return result;
 	}
@@ -118,9 +128,10 @@ public class CacheUpdater implements Serializable {
 		    UpdateResult multipleResult = handleMultiTableClasses(clazz, monitor);
 
 			if (multipleResult == null){
-			    SubProgressMonitor subMonitor= new SubProgressMonitor(monitor, ticksForSubTasks);
-			    subMonitor.setTaskName("Update " + clazz.getSimpleName());
-				result.includeResult(this.handleSingleTableClass(clazz, subMonitor));
+			    monitor.subTask("Update " + clazz.getSimpleName());
+//			    SubProgressMonitor subMonitor= new SubProgressMonitor(monitor, ticksForSubTasks);
+			    //subMonitor.setTaskName("Update " + clazz.getSimpleName());
+				result.includeResult(this.handleSingleTableClass(clazz, monitor));
 			}else{
 			    result.includeResult(multipleResult);
 			}
@@ -227,6 +238,67 @@ public class CacheUpdater implements Serializable {
 			result.addException(e);
 			return result;
 		}
+	}
+
+	private Integer countAllUpdatableObjects(List<Class<? extends IdentifiableEntity>> list){
+	    Integer count = 0;
+
+
+	    for (Class clazz: list){
+
+            logger.info("count class " + clazz.getSimpleName() + " ...");
+
+
+            //TermBase
+            if (DefinedTermBase.class.isAssignableFrom(clazz)){
+                count += termService.count(clazz);
+            }else if (TermTree.class.isAssignableFrom(clazz)){
+                count +=termTreeService.count(clazz);
+            }else if (TermVocabulary.class.isAssignableFrom(clazz)){
+                count += vocabularyService.count(clazz);
+            }
+            //DescriptionBase
+            else if (DescriptionBase.class.isAssignableFrom(clazz)){
+                count += descriptionService.count(clazz);
+            }
+            //Media
+            else if (Media.class.isAssignableFrom(clazz)){
+                count += mediaService.count(clazz);
+            }//TaxonBase
+            else if (TaxonBase.class.isAssignableFrom(clazz)){
+                count += taxonService.count(clazz);
+            }
+            //IdentifiableMediaEntity
+            else if (AgentBase.class.isAssignableFrom(clazz)){
+                count += agentService.count(clazz);
+            }else if (Collection.class.isAssignableFrom(clazz)){
+                count += collectionService.count(clazz);
+            }else if (Reference.class.isAssignableFrom(clazz)){
+                count += referenceService.count(clazz);
+            }else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
+                count += occurrenceService.count(clazz);
+
+            }
+//          //Sequence  //currently not identifiable and therefore has not caches
+//          else if (Sequence.class.isAssignableFrom(clazz)){
+//              //TODO misuse TaxonService for sequence update, use sequence service when it exists
+//              getTaxonService().updateTitleCache((Class) clazz, null, null, null);
+//          }
+            //TaxonName
+            else if (TaxonName.class.isAssignableFrom(clazz)){
+
+                count += nameService.count(clazz);
+            }
+            //Classification
+            else if (Classification.class.isAssignableFrom(clazz)){
+                count += classificationService.count(clazz);
+            }
+            //Polytomous Key
+            else if (PolytomousKey.class.isAssignableFrom(clazz)){
+                count += polytomousKeyService.count(clazz);
+            }
+        }
+	    return count;
 	}
 
 	private void createClassListFromBoolean() {
