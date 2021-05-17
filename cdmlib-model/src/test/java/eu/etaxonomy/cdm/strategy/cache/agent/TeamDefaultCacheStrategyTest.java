@@ -94,8 +94,8 @@ public class TeamDefaultCacheStrategyTest {
 		        "P2NomT, P1LN, P., P3NomT & P4NomT", team2.getNomenclaturalTitle());
 		//more
 		team2.setHasMoreMembers(true);
-        Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, P1LN, P., P3NomT & al.'",
-                "P2NomT, P1LN, P., P3NomT & al.", team2.getNomenclaturalTitle());
+        Assert.assertEquals("team2 nomenclatural title should be 'P2NomT, P1LN, P., P3NomT, P4NomT & al.'",
+                "P2NomT, P1LN, P., P3NomT, P4NomT & al.", team2.getNomenclaturalTitle());
         team2.setHasMoreMembers(false);
         //3 members
 		team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstanceNomEtAl(3));

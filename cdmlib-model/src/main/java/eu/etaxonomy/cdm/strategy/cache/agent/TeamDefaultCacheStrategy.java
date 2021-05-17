@@ -33,7 +33,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 	public static final String ET_AL_TEAM_CONCATINATION_ABBREV = " & ";
 
 	private static final int DEFAULT_ET_AL_POS = Integer.MAX_VALUE;
-	private static final int DEFAULT_NOM_ET_AL_POS = 4;
+	private static final int DEFAULT_NOM_ET_AL_POS = Integer.MAX_VALUE;
 
 	public static final String EMPTY_TEAM = "-empty team-";
 
