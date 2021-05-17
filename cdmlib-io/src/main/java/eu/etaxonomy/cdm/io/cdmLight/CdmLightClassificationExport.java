@@ -2065,7 +2065,7 @@ public class CdmLightClassificationExport
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             // TODO short citations correctly
-            String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
+            String shortCitation = OriginalSourceFormatter.INSTANCE.format(reference, null); // Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             // TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()
