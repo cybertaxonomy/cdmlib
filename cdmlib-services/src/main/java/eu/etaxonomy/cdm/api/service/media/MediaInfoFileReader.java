@@ -31,9 +31,9 @@ import eu.etaxonomy.cdm.common.UriUtils;
  * Most code  was extracted from CdmImageInfo.
  *
  */
-public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
+public class MediaInfoFileReader extends AbstactMediaMetadataReader {
 
-    private static Logger logger = Logger.getLogger(MediaMetadataFileReader.class);
+    private static Logger logger = Logger.getLogger(MediaInfoFileReader.class);
 
     public static final Integer IMAGE_READ_TIMEOUT = 3000; // ms
 
@@ -48,16 +48,16 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
      * MediaMetadataService or other fast source of metadata.
      */
     @Deprecated
-    public static MediaMetadataFileReader legacyFactoryMethod(eu.etaxonomy.cdm.common.URI uri) {
-        return new MediaMetadataFileReader(uri);
+    public static MediaInfoFileReader legacyFactoryMethod(eu.etaxonomy.cdm.common.URI uri) {
+        return new MediaInfoFileReader(uri);
     }
 
-    protected MediaMetadataFileReader(eu.etaxonomy.cdm.common.URI uri) {
+    protected MediaInfoFileReader(eu.etaxonomy.cdm.common.URI uri) {
         super(uri, uri);
     }
 
     @Override
-    public MediaMetadataFileReader read() throws IOException, HttpException {
+    public MediaInfoFileReader read() throws IOException, HttpException {
         return readBaseInfo().readMetaData();
     }
 
@@ -75,7 +75,7 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
      * @throws IOException
      * @throws HttpException
      */
-    public MediaMetadataFileReader readBaseInfo() throws IOException, HttpException{
+    public MediaInfoFileReader readBaseInfo() throws IOException, HttpException{
         readImageInfo();
         readImageLength();
         readSuffix();
@@ -85,7 +85,7 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
     /**
      * Reads the image info (width, height, bitPerPixel, metadata, format, mime type)
      */
-    public MediaMetadataFileReader readImageInfo() throws IOException, HttpException{
+    public MediaInfoFileReader readImageInfo() throws IOException, HttpException{
 
         InputStream inputStream;
         try {
@@ -107,7 +107,7 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
         return this;
     }
 
-    public MediaMetadataFileReader readMetaData() throws IOException, HttpException {
+    public MediaInfoFileReader readMetaData() throws IOException, HttpException {
 
         ImageMetadata mediaData = null;
         try {
@@ -154,7 +154,7 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
     /**
      * Reads the size of the image defined by the {@link #imageUri} in bytes
      */
-    public MediaMetadataFileReader readImageLength() throws ClientProtocolException, IOException, HttpException{
+    public MediaInfoFileReader readImageLength() throws ClientProtocolException, IOException, HttpException{
         try {
             long length = UriUtils.getResourceLength(cdmImageInfo.getUri(), null);
             cdmImageInfo.setLength(length);
@@ -175,7 +175,7 @@ public class MediaMetadataFileReader extends AbstactMediaMetadataReader {
         return this;
     }
 
-    public MediaMetadataFileReader readSuffix(){
+    public MediaInfoFileReader readSuffix(){
         String path = cdmImageInfo.getUri().getPath();
         String suffix = path.substring(StringUtils.lastIndexOf(path, '.') + 1);
         cdmImageInfo.setSuffix(suffix);
