@@ -178,7 +178,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         Session session = getSession();
 
         clazz = clazz == null? (Class)type : clazz;
-        String clazzString = " FROM " + type.getSimpleName();
+        String clazzString = " FROM " + clazz.getSimpleName();
 
         Query query = null;
 
