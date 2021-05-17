@@ -247,9 +247,9 @@ public class CacheUpdater implements Serializable {
 	    for (Class clazz: list){
 
             logger.info("count class " + clazz.getSimpleName() + " ...");
+            count += termService.count(clazz);
 
-
-            //TermBase
+           /* //TermBase
             if (DefinedTermBase.class.isAssignableFrom(clazz)){
                 count += termService.count(clazz);
             }else if (TermTree.class.isAssignableFrom(clazz)){
@@ -296,7 +296,7 @@ public class CacheUpdater implements Serializable {
             //Polytomous Key
             else if (PolytomousKey.class.isAssignableFrom(clazz)){
                 count += polytomousKeyService.count(clazz);
-            }
+            }*/
         }
 	    return count;
 	}
