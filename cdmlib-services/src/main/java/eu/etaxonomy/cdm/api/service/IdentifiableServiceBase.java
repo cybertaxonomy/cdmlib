@@ -166,9 +166,9 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	    if(withCriteria && withRestrictions){
 	        throw new RuntimeException("Restrictions and Criteria can not be used at the same time");
 	    } else if(withRestrictions){
-	        return findByTitleWithRestrictions((Class<S>)config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getRestrictions(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+	        return findByTitleWithRestrictions(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getRestrictions(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	    } else {
-	        return findByTitle((Class<S>) config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
+	        return findByTitle(config.getClazz(), config.getTitleSearchStringSqlized(), config.getMatchMode(), config.getCriteria(), config.getPageSize(), config.getPageNumber(), config.getOrderHints(), config.getPropertyPaths());
 	    }
 	}
 
@@ -273,45 +273,33 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		long count = dao.count(clazz);
 		long countUpdated = 0;
 
-		try {
-		    subMonitor.beginTask("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
-		    subMonitor.setTaskName("Update " + clazz.getSimpleName());
+		int worked = 0;
+		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet();
+		for(int i = 0 ; i < count ; i = i + stepSize){
+			// not sure if such strict ordering is necessary here, but for safety reasons I do it
+			ArrayList<OrderHint> orderHints = new ArrayList<>();
+			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
 
+			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
+			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
+			switchOnOldAutoInitializer(oldAutoInit);
 
-    		//SubProgressMonitor subMonitor = monitor.("update titles for " + clazz.getSimpleName(), Long.valueOf(count).intValue());
-    		int worked = 0;
-    		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet();
-    		for(int i = 0 ; i < count ; i = i + stepSize){
-    			// not sure if such strict ordering is necessary here, but for safety reasons I do it
-    			ArrayList<OrderHint> orderHints = new ArrayList<>();
-    			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
+			List<T> entitiesToUpdate = new ArrayList<>();
+			for (T entity : list){
+				entity = HibernateProxyHelper.deproxy(entity);
+			    if (entity.updateCaches(cacheStrategy)){
+			        countUpdated++;
+			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
+			    }
+				worked++;
+				subMonitor.internalWorked(1);
+			}
 
-
-    			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
-    			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
-    			switchOnOldAutoInitializer(oldAutoInit);
-
-    			List<T> entitiesToUpdate = new ArrayList<>();
-    			for (T entity : list){
-    				entity = HibernateProxyHelper.deproxy(entity);
-    			    if (entity.updateCaches(cacheStrategy)){
-    			        countUpdated++;
-    			        updatedCdmIds.add(new CdmEntityIdentifier(entity.getId(), clazz));
-    			    }
-    				worked++;
-    				subMonitor.internalWorked(1);
-    			}
-
-
-    			if (subMonitor.isCanceled()){
-    				break;
-    			}
-    		}
-    		result.addUpdatedCdmIds(updatedCdmIds);
-    	} finally {
-            subMonitor.done();
-        }
-
+			if (subMonitor.isCanceled()){
+				break;
+			}
+		}
+		result.addUpdatedCdmIds(updatedCdmIds);
 		return result;
 	}
 
