@@ -42,6 +42,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
@@ -89,7 +90,7 @@ public class UriUtils {
                 InputStream stream = getContent(response);
                 return stream;
             } else {
-                throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
+                throw new HttpException("HTTP GET response " + UriUtils.getStatus(response) + " for " + uri.toString());
             }
         }else if (uri.getScheme().equals("file")){
             File file = new File(uri.getJavaUri());
@@ -355,7 +356,7 @@ public class UriUtils {
 
         //Http
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet(serviceUri.getJavaUri());
+        HttpHead httpget = new HttpHead(serviceUri.getJavaUri());
 
 
         if(timeout!=null){
