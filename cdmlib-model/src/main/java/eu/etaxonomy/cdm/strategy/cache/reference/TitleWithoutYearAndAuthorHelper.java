@@ -198,7 +198,6 @@ public class TitleWithoutYearAndAuthorHelper {
         return nomRefCache.trim();
     }
 
-
     public static  String getTitleWithoutYearAndAuthorGeneric(Reference genericReference, boolean isAbbrev){
         if (genericReference == null){
             return null;
@@ -223,7 +222,6 @@ public class TitleWithoutYearAndAuthorHelper {
 //      if(lastCharIsDouble  && edition.length() == 0 && series.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
 //          titelAbbrev =  titelAbbrev.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
 //      }
-
 
         boolean needsComma = false;
         //titelAbbrev
