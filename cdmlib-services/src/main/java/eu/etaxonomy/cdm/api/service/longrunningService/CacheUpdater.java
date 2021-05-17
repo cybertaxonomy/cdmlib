@@ -249,54 +249,7 @@ public class CacheUpdater implements Serializable {
             logger.info("count class " + clazz.getSimpleName() + " ...");
             count += termService.count(clazz);
 
-           /* //TermBase
-            if (DefinedTermBase.class.isAssignableFrom(clazz)){
-                count += termService.count(clazz);
-            }else if (TermTree.class.isAssignableFrom(clazz)){
-                count +=termTreeService.count(clazz);
-            }else if (TermVocabulary.class.isAssignableFrom(clazz)){
-                count += vocabularyService.count(clazz);
-            }
-            //DescriptionBase
-            else if (DescriptionBase.class.isAssignableFrom(clazz)){
-                count += descriptionService.count(clazz);
-            }
-            //Media
-            else if (Media.class.isAssignableFrom(clazz)){
-                count += mediaService.count(clazz);
-            }//TaxonBase
-            else if (TaxonBase.class.isAssignableFrom(clazz)){
-                count += taxonService.count(clazz);
-            }
-            //IdentifiableMediaEntity
-            else if (AgentBase.class.isAssignableFrom(clazz)){
-                count += agentService.count(clazz);
-            }else if (Collection.class.isAssignableFrom(clazz)){
-                count += collectionService.count(clazz);
-            }else if (Reference.class.isAssignableFrom(clazz)){
-                count += referenceService.count(clazz);
-            }else if (SpecimenOrObservationBase.class.isAssignableFrom(clazz)){
-                count += occurrenceService.count(clazz);
 
-            }
-//          //Sequence  //currently not identifiable and therefore has not caches
-//          else if (Sequence.class.isAssignableFrom(clazz)){
-//              //TODO misuse TaxonService for sequence update, use sequence service when it exists
-//              getTaxonService().updateTitleCache((Class) clazz, null, null, null);
-//          }
-            //TaxonName
-            else if (TaxonName.class.isAssignableFrom(clazz)){
-
-                count += nameService.count(clazz);
-            }
-            //Classification
-            else if (Classification.class.isAssignableFrom(clazz)){
-                count += classificationService.count(clazz);
-            }
-            //Polytomous Key
-            else if (PolytomousKey.class.isAssignableFrom(clazz)){
-                count += polytomousKeyService.count(clazz);
-            }*/
         }
 	    return count;
 	}
