@@ -186,8 +186,7 @@ public class TaxonRelationshipFormatter {
                 if (author.isInstanceOf(Person.class)){
                     secRef = PersonDefaultCacheStrategy.INSTANCE().getFamilyTitle((Person)author);
                 }else{
-                    //TODO this may become ET_AL_2 in future
-                    secRef = TeamDefaultCacheStrategy.INSTANCE().getFamilyTitle((Team)author);
+                    secRef = TeamDefaultCacheStrategy.INSTANCE_ET_AL_2().getFamilyTitle((Team)author);
                 }
                 if (isNotBlank(ref.getYear())){
                    secRef += " " + ref.getYear();
