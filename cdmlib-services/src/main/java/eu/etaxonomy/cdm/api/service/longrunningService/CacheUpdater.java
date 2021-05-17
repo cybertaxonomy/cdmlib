@@ -245,11 +245,8 @@ public class CacheUpdater implements Serializable {
 
 
 	    for (Class clazz: list){
-
             logger.info("count class " + clazz.getSimpleName() + " ...");
             count += termService.count(clazz);
-
-
         }
 	    return count;
 	}
