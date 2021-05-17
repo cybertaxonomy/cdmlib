@@ -222,8 +222,6 @@ public class TaxonServiceImpl
     	TaxonName synonymName = synonym.getName();
     	TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
 
-    	boolean sameHomotypicGroup = synonymName.getHomotypicalGroup().equals(taxonName.getHomotypicalGroup());
-
     	acceptedTaxon.setName(synonymName);
     	synonym.setName(taxonName);
 
