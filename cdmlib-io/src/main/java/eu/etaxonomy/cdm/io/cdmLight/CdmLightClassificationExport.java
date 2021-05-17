@@ -361,6 +361,7 @@ public class CdmLightClassificationExport
                             handleReference(state, taxon.getSec());
                         }
                     }
+                    csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = taxon.getAppendedPhrase();
                     csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_ID)] = getId(state,
                             taxonNode.getClassification());
                     csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification()
@@ -924,6 +925,7 @@ public class CdmLightClassificationExport
             if (synonym.getSec() != null && !state.getReferenceStore().contains(synonym.getSec().getUuid())) {
                 handleReference(state, synonym.getSec());
             }
+            csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = synonym.getAppendedPhrase();
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synonym.getSec());
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
@@ -1083,6 +1085,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SPECIFIC_EPITHET)] = name.getSpecificEpithet();
 
             csvLine[table.getIndex(CdmLightExportTable.INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
+
+            csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = name.getAppendedPhrase();
+
             csvLine[table.getIndex(CdmLightExportTable.BAS_AUTHORTEAM_FK)] = getId(state, name.getBasionymAuthorship());
             if (name.getBasionymAuthorship() != null) {
                 if (state.getAuthorFromStore(name.getBasionymAuthorship().getId()) == null) {
