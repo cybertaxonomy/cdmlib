@@ -30,10 +30,14 @@ public abstract class AbstactMediaMetadataReader {
         this.metadataUri = metadataUri;
     }
 
-    public abstract MediaMetadataFileReader read() throws IOException, HttpException;
+    public abstract AbstactMediaMetadataReader read() throws IOException, HttpException;
 
     public CdmImageInfo getCdmImageInfo() {
         return cdmImageInfo;
+    }
+
+    protected void setCdmImageInfo(CdmImageInfo cdmImageInfo) {
+        this.cdmImageInfo = cdmImageInfo;
     }
 
     /**

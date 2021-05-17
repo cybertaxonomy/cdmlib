@@ -38,33 +38,46 @@ public class MediaInfoFactory implements IMediaInfoFactory {
 
     /**
      * This method only exists due to performance issues for cases when
-     * the {@link MediaMetadataFileReader} to reduce the overhead imposed by reading
+     * the {@link MediaInfoFileReader} to reduce the overhead imposed by reading
      * the image metadata from the file itself.
      */
     public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException {
 
-        // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
-        MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
-        processor.addAll(mediaInfoService_1_0_Transformations);
-        List<URI> metadataServiceURIs = processor.applyTo(imageUri);
+        List<URI> metadataServiceURIs = applyURITransformations(imageUri);
         if(!metadataServiceURIs.isEmpty()) {
-            return null; // FIMXE
+            // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
+            return new MediaInfoServiceReader(imageUri, metadataServiceURIs.get(0))
+                    .read()
+                    .getCdmImageInfo();
         } else {
             // :-( need to use the files reader
-            return new MediaMetadataFileReader(imageUri)
+            return new MediaInfoFileReader(imageUri)
                    .readBaseInfo()
                    .readMetaData()
                    .getCdmImageInfo();
         }
     }
 
+    protected List<URI> applyURITransformations(URI imageUri) {
+        MediaUriTransformationProcessor processor = new MediaUriTransformationProcessor();
+        processor.addAll(mediaInfoService_1_0_Transformations);
+        List<URI> metadataServiceURIs = processor.applyTo(imageUri);
+        return metadataServiceURIs;
+    }
+
     public CdmImageInfo cdmImageInfo(URI imageUri) throws IOException, HttpException {
 
+        List<URI> metadataServiceURIs = applyURITransformations(imageUri);
         // :-) Hooray, we can get the metadata from the web service, this is going to be snappy
-
-        // :-( need to use the files reader
-        return new MediaMetadataFileReader(imageUri)
-               .readBaseInfo()
-               .getCdmImageInfo();
+        if(!metadataServiceURIs.isEmpty()) {
+            return new MediaInfoServiceReader(imageUri, metadataServiceURIs.get(0))
+                    .read()
+                    .getCdmImageInfo();
+        } else {
+            // :-( need to use the files reader
+            return new MediaInfoFileReader(imageUri)
+                   .readBaseInfo()
+                   .getCdmImageInfo();
+        }
     }
 }

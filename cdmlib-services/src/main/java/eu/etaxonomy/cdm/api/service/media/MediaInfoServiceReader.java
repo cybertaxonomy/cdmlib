@@ -9,8 +9,14 @@
 package eu.etaxonomy.cdm.api.service.media;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.http.HttpException;
+import org.cybertaxonomy.media.info.model.MediaInfo;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -30,14 +36,13 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
     }
 
     @Override
-    public MediaMetadataFileReader read() throws IOException, HttpException {
-        try {
-            UriUtils.getInputStream(metadataUri);
-
-        } catch(IOException e) {
-            //FIMXE
-        }
-        return null;
+    public AbstactMediaMetadataReader read() throws IOException, HttpException {
+        InputStream jsonStream = UriUtils.getInputStream(metadataUri);
+        ObjectMapper mapper = new ObjectMapper();
+        MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
+        Mapper dozerMapper = DozerBeanMapperBuilder.buildDefault();
+        dozerMapper.map(mediaInfo, getCdmImageInfo());
+        return this;
     }
 
 }

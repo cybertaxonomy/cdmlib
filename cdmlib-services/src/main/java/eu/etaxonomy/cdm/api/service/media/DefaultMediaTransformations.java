@@ -104,7 +104,7 @@ public class DefaultMediaTransformations {
     static public MediaUriTransformation bgbmMediaMetadataService() {
         MediaUriTransformation mut = new MediaUriTransformation();
         mut.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
-        mut.setPathQueryFragment(new SearchReplace("(digilib\\/Scaler\\?fn=)([^&]+)(&mo=file)", "file=$2"));
+        mut.setPathQueryFragment(new SearchReplace("(digilib\\/Scaler\\?fn=)([^&]+)(&mo=file)", "metadata/info?file=$2"));
         return mut;
     }
 }
