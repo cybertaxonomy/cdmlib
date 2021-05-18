@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.media;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -62,6 +63,15 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             assertNotNull(cdmImageInfo);
             assertEquals(954, cdmImageInfo.getHeight());
             assertEquals(1400, cdmImageInfo.getWidth());
+            assertEquals("JPEG", cdmImageInfo.getSuffix());
+            assertEquals("JPEG", cdmImageInfo.getFormatName());
+            assertEquals(24, cdmImageInfo.getBitPerPixel());
+            assertEquals("image/jpeg", cdmImageInfo.getMimeType());
+            assertEquals(321414, cdmImageInfo.getLength());
+            assertFalse(cdmImageInfo.getMetaData().isEmpty());
+            assertEquals(55, cdmImageInfo.getMetaData().size());
+            assertTrue(cdmImageInfo.getMetaData().containsKey("XResolution"));
+            assertEquals("300; 72", cdmImageInfo.getMetaData().get("XResolution"));
         }
 
     }

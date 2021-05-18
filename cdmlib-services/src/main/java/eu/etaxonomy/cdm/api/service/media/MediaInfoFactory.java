@@ -33,7 +33,7 @@ public class MediaInfoFactory implements IMediaInfoFactory {
     private List<MediaUriTransformation> mediaInfoService_1_0_Transformations = new ArrayList<>();
 
     public MediaInfoFactory() {
-        mediaInfoService_1_0_Transformations.add(DefaultMediaTransformations.bgbmMediaMetadataService());
+        mediaInfoService_1_0_Transformations.addAll(DefaultMediaTransformations.bgbmMediaMetadataService());
     }
 
     /**
@@ -41,6 +41,7 @@ public class MediaInfoFactory implements IMediaInfoFactory {
      * the {@link MediaInfoFileReader} to reduce the overhead imposed by reading
      * the image metadata from the file itself.
      */
+    @Override
     public CdmImageInfo cdmImageInfoWithMetaData(URI imageUri) throws IOException, HttpException {
 
         List<URI> metadataServiceURIs = applyURITransformations(imageUri);
@@ -65,6 +66,7 @@ public class MediaInfoFactory implements IMediaInfoFactory {
         return metadataServiceURIs;
     }
 
+    @Override
     public CdmImageInfo cdmImageInfo(URI imageUri) throws IOException, HttpException {
 
         List<URI> metadataServiceURIs = applyURITransformations(imageUri);
