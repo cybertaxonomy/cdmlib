@@ -390,7 +390,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         return repository.getTransactionManager();
     }
 
-
     // TODO merge with CdmRepository#startTransaction() into common base class
     protected void commitTransaction(TransactionStatus txStatus){
         logger.debug("commiting transaction ...");
@@ -421,7 +420,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
         return txStatus;
     }
-
 
     protected Session getSession() {
         return getDescriptionService().getSession();

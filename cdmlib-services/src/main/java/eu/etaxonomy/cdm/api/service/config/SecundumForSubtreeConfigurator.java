@@ -27,8 +27,6 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
     private boolean overwriteExisting = true;
     private boolean emptySecundumDetail = true;
 
-
-
     public SecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor, boolean includeRelations) {
         super(subtreeUuid, monitor);
         this.newSecundum = newSecundum;
