@@ -36,13 +36,15 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
     @SpringBeanByType
     private IMediaInfoFactory mediaInfoFactory;
 
-    private URI transformableURI;
+    private URI transformableURI_ScalerAPI;
+    private URI transformableURI_IIIF_API;
 
     private URI notTransformableURI;
 
     @Before
     public void initUris() throws URISyntaxException {
-        transformableURI = new URI("https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file");
+        transformableURI_ScalerAPI = new URI("https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file");
+        transformableURI_IIIF_API = new URI("https://pictures.bgbm.org/digilib/Scaler/IIIF/Cichorieae!Lactuca_serriola_Bc_08.jpg/full/full/0/default.jpg");
         notTransformableURI = new URI(MediaInfoFactoryTest.class.getResource("./images/OregonScientificDS6639-DSC_0307-small.jpg"));
     }
 
@@ -56,10 +58,10 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
     }
 
     @Test
-    public void readMediaInfoViaServiceReader() throws IOException, HttpException, URISyntaxException {
-        assertEquals(1, ((MediaInfoFactory)mediaInfoFactory).applyURITransformations(transformableURI).size());
+    public void readMediaInfoViaServiceReaderScalerAPI() throws IOException, HttpException, URISyntaxException {
+        assertEquals(1, ((MediaInfoFactory)mediaInfoFactory).applyURITransformations(transformableURI_ScalerAPI).size());
         if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
-            CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(transformableURI);
+            CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(transformableURI_ScalerAPI);
             assertNotNull(cdmImageInfo);
             assertEquals(954, cdmImageInfo.getHeight());
             assertEquals(1400, cdmImageInfo.getWidth());
@@ -68,10 +70,41 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             assertEquals(24, cdmImageInfo.getBitPerPixel());
             assertEquals("image/jpeg", cdmImageInfo.getMimeType());
             assertEquals(321414, cdmImageInfo.getLength());
+            // generic metadata
             assertFalse(cdmImageInfo.getMetaData().isEmpty());
             assertEquals(55, cdmImageInfo.getMetaData().size());
             assertTrue(cdmImageInfo.getMetaData().containsKey("XResolution"));
+            // multiple values for XResolution concatenated
             assertEquals("300; 72", cdmImageInfo.getMetaData().get("XResolution"));
+        }
+
+    }
+
+
+    @Test
+    public void readMediaInfoViaServiceReaderIIIF_API() throws IOException, HttpException, URISyntaxException {
+        assertEquals(1, ((MediaInfoFactory)mediaInfoFactory).applyURITransformations(transformableURI_IIIF_API).size());
+        if(UriUtils.isInternetAvailable(new URI("https://image.bgbm.org/"))){
+            CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(transformableURI_IIIF_API);
+            assertNotNull(cdmImageInfo);
+            assertEquals(2592, cdmImageInfo.getHeight());
+            assertEquals(3456, cdmImageInfo.getWidth());
+            assertEquals("JPEG", cdmImageInfo.getSuffix());
+            assertEquals("JPEG", cdmImageInfo.getFormatName());
+            assertEquals(24, cdmImageInfo.getBitPerPixel());
+            assertEquals("image/jpeg", cdmImageInfo.getMimeType());
+            assertEquals(3429785, cdmImageInfo.getLength());
+            // generic metadata
+            assertFalse(cdmImageInfo.getMetaData().isEmpty());
+            assertEquals(56, cdmImageInfo.getMetaData().size());
+            assertTrue(cdmImageInfo.getMetaData().containsKey("ExifVersion"));
+            assertEquals("48, 50, 50, 49", cdmImageInfo.getMetaData().get("ExifVersion"));
+            // custom metadata stored in the "Keywords"
+            assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
+            assertEquals("Germany, Sachsen-Anhalt, am Jersleber See", cdmImageInfo.getMetaData().get("Locality"));
+            assertEquals("Lactuca serriola", cdmImageInfo.getMetaData().get("Taxon"));
+            assertEquals("23.8.2009", cdmImageInfo.getMetaData().get("Date"));
+            assertEquals("N. Kilian", cdmImageInfo.getMetaData().get("Photographer"));
         }
 
     }

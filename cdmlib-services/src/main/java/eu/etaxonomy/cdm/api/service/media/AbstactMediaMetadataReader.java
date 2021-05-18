@@ -9,8 +9,8 @@
 package eu.etaxonomy.cdm.api.service.media;
 
 import java.io.IOException;
+import java.util.Collection;
 
-import org.apache.commons.imaging.common.GenericImageMetadata.GenericImageMetadataItem;
 import org.apache.http.HttpException;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -47,12 +47,45 @@ public abstract class AbstactMediaMetadataReader {
      * </ol>
      * @param item
      */
-    protected String text(GenericImageMetadataItem item) {
-        String  text = item.getText();
+    protected String text(String  text) {
         if(text.startsWith("'") && text.endsWith("'")) {
             text = text.substring(1 , text.length() - 1);
         }
         return text;
+    }
+
+    protected void processPutMetadataEntry(String key, Collection<String> values) {
+        values.stream().forEach(v -> processPutMetadataEntry(key, v));
+    }
+
+    protected void processPutMetadataEntry(String key, String value) {
+
+        String text = text(value);
+        if ("Keywords".equals(key)){
+            String[] customKeyVal = text.split(":");
+            if (customKeyVal.length == 2){
+                //convention used e.g. for Flora of cyprus (#9137)
+                appendMetadataEntry(customKeyVal[0].trim(), customKeyVal[1].trim());
+            }else{
+                appendMetadataEntry(key, text);
+            }
+        }else if (key.contains("/")){
+            //TODO: not sure where this syntax is used originally
+            //key.replace("/", "");
+            int index = key.indexOf("/");
+            key = key.substring(0, index);
+            appendMetadataEntry(key, text);
+        } else {
+            appendMetadataEntry(key, text);
+        }
+    }
+
+    public void appendMetadataEntry(String key, String text) {
+        if(cdmImageInfo.getMetaData().containsKey(key)) {
+            cdmImageInfo.getMetaData().put(key, cdmImageInfo.getMetaData().get(key).concat("; ").concat(text));
+        } else {
+            cdmImageInfo.getMetaData().put(key, text);
+        }
     }
 
 

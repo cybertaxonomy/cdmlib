@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.service.media;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.Collectors;
 
 import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
@@ -60,7 +59,6 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
                         field("suffix"),
                         FieldsMappingOptions.oneWay()
                         );
-
             }
         }).build();
 
@@ -72,14 +70,13 @@ public class MediaInfoServiceReader extends AbstactMediaMetadataReader {
 
     @Override
     public AbstactMediaMetadataReader read() throws IOException, HttpException {
+        logger.info("reading metadata from " + metadataUri);
         InputStream jsonStream = UriUtils.getInputStream(metadataUri);
         ObjectMapper mapper = new ObjectMapper();
         MediaInfo mediaInfo = mapper.readValue(jsonStream, MediaInfo.class);
-        long start = System.currentTimeMillis();
         dozerMapper.map(mediaInfo, getCdmImageInfo());
-        logger.info("dozer took: " + (System.currentTimeMillis() - start) + " ms");
         // TODO how to do this with Dozer?:
-        mediaInfo.getMetaData().entrySet().forEach(e -> getCdmImageInfo().getMetaData().put(e.getKey(), e.getValue().stream().collect(Collectors.joining("; "))));
+        mediaInfo.getMetaData().entrySet().forEach(e -> processPutMetadataEntry(e.getKey(), e.getValue()));
         return this;
     }
 

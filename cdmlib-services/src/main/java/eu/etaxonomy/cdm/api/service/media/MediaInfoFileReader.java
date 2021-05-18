@@ -22,7 +22,6 @@ import org.apache.http.HttpException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
@@ -57,7 +56,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
     }
 
     @Override
-    public MediaInfoFileReader read() throws IOException, HttpException {
+    public AbstactMediaMetadataReader read() throws IOException, HttpException {
         return readBaseInfo().readMetaData();
     }
 
@@ -85,7 +84,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
     /**
      * Reads the image info (width, height, bitPerPixel, metadata, format, mime type)
      */
-    public MediaInfoFileReader readImageInfo() throws IOException, HttpException{
+    public AbstactMediaMetadataReader readImageInfo() throws IOException, HttpException{
 
         InputStream inputStream;
         try {
@@ -107,7 +106,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
         return this;
     }
 
-    public MediaInfoFileReader readMetaData() throws IOException, HttpException {
+    public AbstactMediaMetadataReader readMetaData() throws IOException, HttpException {
 
         ImageMetadata mediaData = null;
         try {
@@ -122,28 +121,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
             for (ImageMetadataItem imItem : mediaData.getItems()){
                 if (imItem instanceof GenericImageMetadataItem){
                     GenericImageMetadataItem item = (GenericImageMetadataItem)imItem;
-                    if ("Keywords".equals(item.getKeyword())){
-                        String value = text(item);
-                        String[] splits = value.split(":");
-                        if (splits.length == 2){
-                            //convention used e.g. for Flora of cyprus (#9137)
-                            cdmImageInfo.getMetaData().put(splits[0].trim(), splits[1].trim());
-                        }else{
-                            cdmImageInfo.getMetaData().put(
-                                    item.getKeyword(),
-                                    CdmUtils.concat("; ", cdmImageInfo.getMetaData().get(item.getKeyword()), value)
-                                    );
-                        }
-                    }else if (item.getKeyword().contains("/")){
-                        //TODO: not sure where this syntax is used originally
-                        String key = item.getKeyword();
-                        //key.replace("/", "");
-                        int index = key.indexOf("/");
-                        key = key.substring(0, index);
-                        cdmImageInfo.getMetaData().put(key, text(item));
-                    }else{
-                        cdmImageInfo.getMetaData().put(item.getKeyword(), text(item));
-                    }
+                    processPutMetadataEntry(item.getKeyword(), item.getText());
                 }
             }
         }
@@ -154,7 +132,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
     /**
      * Reads the size of the image defined by the {@link #imageUri} in bytes
      */
-    public MediaInfoFileReader readImageLength() throws ClientProtocolException, IOException, HttpException{
+    public AbstactMediaMetadataReader readImageLength() throws ClientProtocolException, IOException, HttpException{
         try {
             long length = UriUtils.getResourceLength(cdmImageInfo.getUri(), null);
             cdmImageInfo.setLength(length);
@@ -175,7 +153,7 @@ public class MediaInfoFileReader extends AbstactMediaMetadataReader {
         return this;
     }
 
-    public MediaInfoFileReader readSuffix(){
+    public AbstactMediaMetadataReader readSuffix(){
         String path = cdmImageInfo.getUri().getPath();
         String suffix = path.substring(StringUtils.lastIndexOf(path, '.') + 1);
         cdmImageInfo.setSuffix(suffix);
