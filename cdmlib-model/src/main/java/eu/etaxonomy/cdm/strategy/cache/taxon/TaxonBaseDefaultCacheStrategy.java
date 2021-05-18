@@ -157,7 +157,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             }else{
                 secRef = sec.getTitleCache();
                 //TODO maybe not always correct
-                secRef = CdmUtils.removeTrailingDots(secRef);
+                if (secTitleTrailingDotShouldBeRemoved(sec)){
+                    secRef = CdmUtils.removeTrailingDots(secRef);
+                }
             }
         }
         if (secRef != null){
@@ -169,6 +171,18 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             tags.add(new TaggedText(TagEnum.secMicroReference, taxonBase.getSecMicroReference()));
         }
         return tags;
+    }
+
+
+    private boolean secTitleTrailingDotShouldBeRemoved(Reference sec) {
+        if (sec.isProtectedTitleCache()){
+            return false;
+        }else if (sec.getAbbrevTitle()!= null && sec.getTitleCache().endsWith(sec.getAbbrevTitle())){
+            return false;
+        }else if (sec.getTitle() != null && sec.getTitle().endsWith(".") && sec.getTitleCache().endsWith(sec.getTitle())){
+            return false;
+        }
+        return true;
     }
 
     private boolean titleExists(Reference ref) {
