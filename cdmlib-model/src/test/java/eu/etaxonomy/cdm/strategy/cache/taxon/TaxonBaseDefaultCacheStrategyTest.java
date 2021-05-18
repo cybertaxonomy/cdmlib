@@ -231,26 +231,26 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         //make it a MAN only
         Taxon mainTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
         mainTaxon.addMisappliedName(man, null, null);
-        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
 
         //add another from relation
         Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
         TaxonRelationship rel = man.addTaxonRelation(relatedTaxon, TaxonRelationshipType.CONGRUENT_TO(), null, null);
         assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
         man.removeTaxonRelation(rel);
-        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
 
         //add another to relation
         rel = relatedTaxon.addTaxonRelation(man, TaxonRelationshipType.CONGRUENT_TO(), null, null);
         assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
         man.removeTaxonRelation(rel);
-        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
 
         //add taxon node
         Classification c = Classification.NewInstance("Test");
         TaxonNode tn = c.addChildTaxon(man, null);
         assertEquals("Taxon titlecache must use sec", expectedNameTitleCache + " sec. Sp.Pl.", cacheStrategy.getTitleCache(man));
         man.removeTaxonNode(tn);
-        assertEquals("Taxon titlecache must use sensu", expectedNameTitleCache + " sensu Sp.Pl.", cacheStrategy.getTitleCache(man));
+        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
     }
 }

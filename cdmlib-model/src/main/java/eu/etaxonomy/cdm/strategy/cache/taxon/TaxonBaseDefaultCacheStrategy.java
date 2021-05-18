@@ -64,8 +64,10 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         if (taxonBase.isDoubtful()){
             tags.add(new TaggedText(TagEnum.separator, "?"));
         }
+
+        boolean isMisapplication = isMisapplication(taxonBase);
         //name
-        List<TaggedText> nameTags = getNameTags(taxonBase);
+        List<TaggedText> nameTags = getNameTags(taxonBase, isMisapplication);
 
         if (nameTags.size() > 0){
             tags.addAll(nameTags);
@@ -74,19 +76,25 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
 
         boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
-        String secSeparator =  isMisapplication(taxonBase)? " sensu " : (isSynonym? " syn." : "") + " sec. ";
+        String secSeparator =  isMisapplication ? " sensu " : (isSynonym? " syn." : "") + " sec. ";
         //not used: we currently use a post-separator in the name tags
 //                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
 //                    secSeparator = "," + secSeparator;
 //                }
 
-        //ref.
-        List<TaggedText> secTags = getSecundumTags(taxonBase);
-
         //sec.
+        List<TaggedText> secTags = getSecundumTags(taxonBase);
         if (!secTags.isEmpty()){
             tags.add(new TaggedText(TagEnum.separator, secSeparator));
             tags.addAll(secTags);
+        }
+
+        if (isMisapplication){
+            TaxonName name = CdmBase.deproxy(taxonBase.getName());
+            if (name != null && isNotBlank(name.getAuthorshipCache())){
+                tags.add(new TaggedText(TagEnum.separator, ", non "));
+                tags.add(new TaggedText(TagEnum.authors, name.getAuthorshipCache()));
+            }
         }
 
         return tags;
@@ -100,13 +108,14 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         }
     }
 
-    private List<TaggedText> getNameTags(T taxonBase) {
+    private List<TaggedText> getNameTags(T taxonBase, boolean useNameCache) {
         List<TaggedText> tags = new ArrayList<>();
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
         if (name != null){
             INameCacheStrategy nameCacheStrategy = name.getCacheStrategy();
-            if (taxonBase.isUseNameCache() && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy){
+            useNameCache = (useNameCache || taxonBase.isUseNameCache()) && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy;
+            if (useNameCache){
                 INonViralNameCacheStrategy nvnCacheStrategy = (INonViralNameCacheStrategy)nameCacheStrategy;
                 List<TaggedText> nameCacheTags = nvnCacheStrategy.getTaggedName(name);
                 tags.addAll(nameCacheTags);
