@@ -110,7 +110,7 @@ public class CacheUpdater implements Serializable {
 		monitor.subTask("Count records");
 		Integer count = countAllUpdatableObjects(config.getClassList());
 
-		SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count * 2);  //*2 1 tick for update and 1 tick for commit
+		SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
 
 		//handle class list
 		result = handleClassList(config.getClassList(), subMonitor);
@@ -120,7 +120,7 @@ public class CacheUpdater implements Serializable {
 
 	private UpdateResult handleClassList(List<Class<? extends IdentifiableEntity>> classList, IProgressMonitor monitor) {
 	    UpdateResult result = new UpdateResult();
-	    int ticksForSubTasks = 100/classList.size();
+
 		for (Class<? extends IdentifiableEntity> clazz : classList){
 			//WE need to separate classes , because hibernate
 			//returns multiple values for service.count() for e.g. IdentifableEntity.class
@@ -129,8 +129,6 @@ public class CacheUpdater implements Serializable {
 
 			if (multipleResult == null){
 			    monitor.subTask("Update " + clazz.getSimpleName());
-//			    SubProgressMonitor subMonitor= new SubProgressMonitor(monitor, ticksForSubTasks);
-			    //subMonitor.setTaskName("Update " + clazz.getSimpleName());
 				result.includeResult(this.handleSingleTableClass(clazz, monitor));
 			}else{
 			    result.includeResult(multipleResult);
