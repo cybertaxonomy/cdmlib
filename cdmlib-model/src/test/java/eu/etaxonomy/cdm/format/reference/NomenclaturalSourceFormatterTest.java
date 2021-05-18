@@ -274,25 +274,6 @@ public class NomenclaturalSourceFormatterTest {
     }
 
     @Test
-    public void testGenericYearAndAuthorOnly(){
-        generic1.setAuthorship(genericTeam1);
-        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1792"));
-        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());
-        Assert.assertEquals("1792", formatter.format(generic1, null));
-    }
-
-
-    @Test
-    public void testGenericAuthorOnly(){
-        generic1.setAuthorship(genericTeam1);
-        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Authorteam", generic1.getTitleCache());
-        Assert.assertEquals("", formatter.format(generic1, null));
-    }
-
-
-    @Test
     public void testGenericGetInRef(){
         generic1.setTitle("auct.");
         IBook book1 = ReferenceFactory.newBook();

@@ -156,6 +156,8 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 secRef = CdmUtils.concat(" ", secRef, secDate);
             }else{
                 secRef = sec.getTitleCache();
+                //TODO maybe not always correct
+                secRef = CdmUtils.removeTrailingDots(secRef);
             }
         }
         if (secRef != null){

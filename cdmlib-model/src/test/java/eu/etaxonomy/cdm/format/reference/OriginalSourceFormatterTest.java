@@ -44,7 +44,7 @@ public class OriginalSourceFormatterTest {
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Unexpected title cache.", "Book Author, My book. 1975", book1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book.", book1.getTitleCache());
 
         book1.setTitleCache(null, false);
         book1.setEdition("ed. 3");

@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @since 18.03.2009
  */
 public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest {
+
 	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
 
 	private TaxonBase<?> cdmBase;

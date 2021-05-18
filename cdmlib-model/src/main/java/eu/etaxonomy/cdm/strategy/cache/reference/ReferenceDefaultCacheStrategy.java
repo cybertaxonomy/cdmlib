@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -56,13 +55,15 @@ public class ReferenceDefaultCacheStrategy
     private final static UUID uuid = UUID.fromString("63e669ca-c6be-4a8a-b157-e391c22580f9");
 
     //article
-    public static final String UNDEFINED_JOURNAL = "- undefined journal -";
-    private static final String afterAuthor = ", ";
+    public static final String UNDEFINED_JOURNAL = "undefined journal " + UTF8.EN_DASH;
+    private static final String afterAuthor = ": ";
 
     //book
 
     //(book?) section
-    private String afterSectionAuthor = ": ";
+    private static final String afterSectionAuthor = ": ";
+    private static final String afterInRefAuthor = ", ";  //TODO needs discussion
+
 
     //in reference
     private String biblioInSeparator = UTF8.EN_DASH + " In: "; //#9529
@@ -100,32 +101,35 @@ public class ReferenceDefaultCacheStrategy
 
         String result;
         ReferenceType type = reference.getType();
+        String authorAndYear = getAuthorAndYear(reference, isNotAbbrev, false);
 
         if (isRealInRef(reference)){
+            //Section, Book-Section or Generic with inRef
             result = titleCacheRealInRef(reference, isNotAbbrev);
         }else if(isNomRef(type)){
             //all Non-InRef NomRefs
-            result =  getTitleWithoutYearAndAuthor(reference, isNotAbbrev, false);
-            result = addPages(result, reference);
-            result = addYear(result, reference, false);
-            TeamOrPersonBase<?> team = reference.getAuthorship();
+            //Article, CdDvd, Generic, Section, Thesis, WebPage (+Book, BookSection but not here)
+            String title = getTitleWithoutYearAndAuthor(reference, isNotAbbrev, false);
+            result = addPages(title, reference);
 
             if (type == ReferenceType.Article){
                 String artTitle = CdmUtils.addTrailingDotIfNotExists(reference.getTitle());
                 result = CdmUtils.concat(" ", artTitle, result);
-                if (team != null && isNotBlank(team.getTitleCache())){
-                    String authorSeparator = isNotBlank(reference.getTitle())? afterAuthor : " ";
-                    result = team.getTitleCache() + authorSeparator + result;
+                if (isNotBlank(authorAndYear)){
+//                    String authorSeparator = isNotBlank(artTitle)? afterAuthor : " ";
+                    String authorSeparator = afterAuthor;
+                    authorAndYear += authorSeparator;
                 }
+                result = authorAndYear + result;
             }else{  //if Book, CdDvd, flat Generic, Thesis, WebPage
-                if (team != null){
-                    String teamTitle = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(),
-                            team.getNomenclaturalTitle(), isNotAbbrev, trim);
-                    if (teamTitle.length() > 0 ){
-                        String concat = isNotBlank(result) ? afterAuthor : "";
-                        result = teamTitle + concat + result;
-                    }
+                if (isNotBlank(authorAndYear)){
+                    String authorSeparator = isNotBlank(title)? afterAuthor : "";
+                    authorAndYear += authorSeparator;
                 }
+                result = authorAndYear + result;
+            }
+            if (!type.isWebPage()){
+                result = CdmUtils.addTrailingDotIfNotExists(result);
             }
         }else if (type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isNotAbbrev);
@@ -139,6 +143,14 @@ public class ReferenceDefaultCacheStrategy
             //TODO still a bit preliminary, also brackets may change in future
             result = result + " [accessed " + getAccessedString(reference.getAccessed()) +"]";
         }
+        return result == null ? null : result.trim();
+    }
+
+    private String getAuthorAndYear(Reference reference, boolean isAbbrev, boolean useFullDatePublished) {
+        TeamOrPersonBase<?> author = reference.getAuthorship();
+        String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
+                author.getNomenclaturalTitle(), isAbbrev, trim);
+        String result = addAuthorYear(authorStr, reference, useFullDatePublished);
         return result;
     }
 
@@ -174,33 +186,34 @@ public class ReferenceDefaultCacheStrategy
         }
 
         if (type == ReferenceType.Article){
-            result =  getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
+            result = getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
             boolean useFullDatePublished = false;
-            result = addYear(result, reference, useFullDatePublished);
-            TeamOrPersonBase<?> team = reference.getAuthorship();
             String articleTitle = CdmUtils.getPreferredNonEmptyString(reference.getTitle(),
                     reference.getAbbrevTitle(), isAbbrev, trim);
             result = CdmUtils.concat(" ", articleTitle, result);  //Article should maybe left out for nomenclatural references (?)
-            if (team != null &&  isNotBlank(team.getNomenclaturalTitle())){
-                String authorSeparator = isNotBlank(articleTitle) ? afterAuthor : " ";
-                result = team.getNomenclaturalTitle() + authorSeparator + result;
+            String authorAndYear = getAuthorAndYear(reference, isAbbrev, useFullDatePublished);
+            if (isNotBlank(authorAndYear)){
+//                String authorSeparator = isNotBlank(reference.getTitle())? afterAuthor : " ";
+                String authorSeparator = afterAuthor;
+                authorAndYear += authorSeparator;
             }
+            result = authorAndYear + result;
+            result = CdmUtils.addTrailingDotIfNotExists(result);
         }else if (isRealInRef(reference)){
             result = titleCacheRealInRef(reference, isAbbrev);
         }else if (isNomRef(type)){
-            //FIXME same as titleCache => try to merge, but note article case
-            result =  getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
-            boolean useFullDatePublished = false;
-            result = addYear(result, reference, useFullDatePublished);
-            TeamOrPersonBase<?> team = reference.getAuthorship();
+            String authorAndYear = getAuthorAndYear(reference, isAbbrev, false);
+            String title = getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
+            result = addPages(title, reference);
+            //if Book, CdDvd, flat Generic, Thesis, WebPage
+            if (isNotBlank(authorAndYear)){
+                String authorSeparator = isNotBlank(title)? afterAuthor : "";
+                authorAndYear += authorSeparator;
+            }
+            result = authorAndYear + result;
 
-            if (team != null){
-                String teamTitle = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(),
-                        team.getNomenclaturalTitle(), isAbbrev, trim);
-                if (teamTitle.length() > 0 ){
-                    String concat = isNotBlank(result) ? afterAuthor : "";
-                    result = teamTitle + concat + result;
-                }
+            if (!type.isWebPage()){
+                result = CdmUtils.addTrailingDotIfNotExists(result);
             }
         }else if(type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isAbbrev);
@@ -213,22 +226,27 @@ public class ReferenceDefaultCacheStrategy
 
 // ************************ TITLE CACHE SUBS ********************************************/
 
+    //section, book section or generic with inRef
     private String titleCacheRealInRef(Reference reference, boolean isAbbrev) {
         ReferenceType type = reference.getType();
         Reference inRef = reference.getInReference();
         boolean hasInRef = (inRef != null);
 
-        String result;
+        String inRefAuthorAndTitle;
         //copy from InRefDefaultCacheStrategyBase
         if (inRef != null){
-            result = CdmUtils.getPreferredNonEmptyString(inRef.getTitleCache(),
-                    inRef.getAbbrevTitleCache(), isAbbrev, trim)  ;
+            String inRefTitle = TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(inRef, isAbbrev, false);
+            TeamOrPersonBase<?> inRefAuthor = inRef.getAuthorship();
+            String authorStr = (inRefAuthor == null)? "" : CdmUtils.getPreferredNonEmptyString(inRefAuthor.getTitleCache(),
+                    inRefAuthor.getNomenclaturalTitle(), isAbbrev, trim);
+            inRefAuthorAndTitle = CdmUtils.concat(afterInRefAuthor, authorStr, inRefTitle);
         }else{
-            result = String.format("- undefined %s -", getUndefinedLabel(type));
+            inRefAuthorAndTitle = String.format("- undefined %s -", getUndefinedLabel(type));
         }
+        inRefAuthorAndTitle = CdmUtils.addTrailingDotIfNotExists(inRefAuthorAndTitle);
 
         //in
-        result = biblioInSeparator +  result;
+        String result = biblioInSeparator + inRefAuthorAndTitle;
 
         //section title
         String title = CdmUtils.getPreferredNonEmptyString(
@@ -236,6 +254,7 @@ public class ReferenceDefaultCacheStrategy
         if (title.matches(".*[.!\\?]")){
             title = title.substring(0, title.length() - 1);
         }
+        //pages
         String pages = getPages(reference);
         if (isNotBlank(pages)){
             title = CdmUtils.concat(", ", title, pages);
@@ -245,37 +264,25 @@ public class ReferenceDefaultCacheStrategy
         }
 
         //section author
-        TeamOrPersonBase<?> thisRefTeam = reference.getAuthorship();
-        String thisRefAuthor = "";
-        if (thisRefTeam != null){
-            thisRefAuthor = CdmUtils.getPreferredNonEmptyString(thisRefTeam.getTitleCache(),
-                    thisRefTeam.getNomenclaturalTitle(), isAbbrev, trim);
-        }
-        String sep = result.startsWith(biblioInSeparator)? " ": afterSectionAuthor;
-        result = CdmUtils.concat(sep, thisRefAuthor, result);
+        TeamOrPersonBase<?> author = reference.getAuthorship();
+        String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
+                author.getNomenclaturalTitle(), isAbbrev, trim);
 
         //date
-        if (reference.getDatePublished() != null && ! reference.getDatePublished().isEmpty()){
-            String thisRefDate = reference.getDatePublished().toString();
-            if (hasInRef && reference.getInBook().getDatePublished() != null){
-                VerbatimTimePeriod inRefDate = reference.getInReference().getDatePublished();
-                String inRefDateString = inRefDate.getYear();
-                if (isNotBlank(inRefDateString)){
-                    int pos = StringUtils.lastIndexOf(result, inRefDateString);
-                    if (pos > -1 ){
-                        result = result.substring(0, pos) + thisRefDate + result.substring(pos + inRefDateString.length());
-                    }else{
-                        logger.warn("InRefDateString (" + inRefDateString + ") could not be found in result (" + result +")");
-                    }
-                }else{
-                    //avoid duplicate dots ('..')
-                    String bYearSeparator = result.substring(result.length() -1).equals(beforeYear.substring(0, 1)) ? beforeYear.substring(1) : beforeYear;
-                    result = result + bYearSeparator + thisRefDate + afterYear;
-                }
-            }else{
-                result = result + beforeYear + thisRefDate + afterYear;
-            }
+        String dateStr = null;
+        VerbatimTimePeriod date = (reference.getDatePublished() != null && ! reference.getDatePublished().isEmpty())? reference.getDatePublished() : null;
+        if (date == null && hasInRef && reference.getInReference().getDatePublished() != null && !reference.getInReference().getDatePublished().isEmpty()){
+            date = reference.getInReference().getDatePublished();
         }
+        if (date != null){
+            dateStr = date.getYear();
+        }
+
+        String authorAndYear = CdmUtils.concat(" ", authorStr, dateStr);
+
+        String sep = result.startsWith(biblioInSeparator)? " ": afterSectionAuthor;
+        result = CdmUtils.concat(sep, authorAndYear, result);
+
         return result;
     }
 
@@ -366,6 +373,15 @@ public class ReferenceDefaultCacheStrategy
             result = currentStr + concat + year + afterYear;
         }
         return result;
+    }
+
+    private String addAuthorYear(String authorStr, Reference reference, boolean useFullDatePublished){
+        String year = useFullDatePublished ? reference.getDatePublishedString() : reference.getYear();
+        if (isBlank(year)){
+            return authorStr;
+        }else{
+            return CdmUtils.concat(" ", authorStr, year);
+        }
     }
 
     private String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev, boolean isNomRef){
