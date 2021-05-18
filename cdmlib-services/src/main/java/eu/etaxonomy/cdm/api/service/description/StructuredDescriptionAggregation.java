@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -63,8 +64,8 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
-    protected void preAggregate() {
-        subTask("preAccumulate - nothing to do");
+    protected void preAggregate(IProgressMonitor monitor) {
+        monitor.subTask("preAccumulate - nothing to do");
 
         // take start time for performance testing
         double start = System.currentTimeMillis();

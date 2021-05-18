@@ -374,6 +374,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         Distribution lc_yug_ko_distr = distributions_LC.get(1);
         removeDistributions(T_LAPSANA_COMMUNIS_UUID, lc_yug_ko_distr);
 
+        config.setMonitor(DefaultProgressMonitor.NewInstance());
         engine.invoke(config, repository);
 
         //test

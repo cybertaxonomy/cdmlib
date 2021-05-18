@@ -23,6 +23,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.search.Search;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -103,8 +104,8 @@ public class DistributionAggregation
 // ********************* METHODS *********************************/
 
     @Override
-    protected void preAggregate() {
-        subTask("make status order");
+    protected void preAggregate(IProgressMonitor monitor) {
+        monitor.subTask("make status order");
 
         // take start time for performance testing
         double start = System.currentTimeMillis();
