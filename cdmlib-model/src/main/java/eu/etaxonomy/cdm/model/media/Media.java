@@ -264,6 +264,7 @@ public class Media
     */
     public void putTitle(LanguageString title){
         this.title.put(title.getLanguage(), title);
+        this.titleCache = null;  //TODO #9632 handle with aspectj
     }
 
     /**
@@ -278,11 +279,12 @@ public class Media
      * @see    	   		#putTitle(LanguageString)
      */
     public void putTitle(Language language, String title){
-        this.title.put(language, LanguageString.NewInstance(title, language));
+        putTitle(LanguageString.NewInstance(title, language));
     }
 
     public void removeTitle(Language language){
         this.title.remove(language);
+        resetTitleCache(); //TODO #9632 handle with aspectj
     }
 
 
@@ -346,14 +348,16 @@ public class Media
 
     public void putDescription(LanguageString description){
         this.description.put(description.getLanguage(), description);
+        resetTitleCache(); //TODO #9632 handle with aspectj
     }
 
     public void putDescription(Language language, String text){
-        this.description.put(language, LanguageString.NewInstance(text, language));
+        putDescription(LanguageString.NewInstance(text, language));
     }
 
     public void removeDescription(Language language){
         this.description.remove(language);
+        resetTitleCache(); //TODO #9632 handle with aspectj
     }
 
 // ************************ SOURCE ***************************/
