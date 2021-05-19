@@ -137,82 +137,20 @@ public class ManifestComposer {
 
     <T extends IdentifiableEntity> Manifest manifestFor(EntityMediaContext<T> entityMediaContext, String onEntitiyType, String onEntityUuid) throws IOException {
 
-        List<Canvas> canvases = new ArrayList<>(entityMediaContext.getMedia().size());
-
 //        Logger.getLogger(MediaUtils.class).setLevel(Level.DEBUG);
 //        logger.setLevel(Level.DEBUG);
-
-        int mediaID = 0;
-        for(Media media : entityMediaContext.getMedia()){
-
-            MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, thumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
-            MediaRepresentation fullSizeRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
-            // MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
-            // MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
-            if(logger.isDebugEnabled()){
-                logger.debug("fullSizeRepresentation: " + fullSizeRepresentation.getParts().get(0).getUri());
-                logger.debug("thumbnailRepresentation: " + thumbnailRepresentation.getParts().get(0).getUri());
-            }
-
-            // FIXME the below only makes sense if the media is an Image!!!!!
-            List<ImageContent> fullSizeImageContents = representationPartsToImageContent(fullSizeRepresentation);
-
-            List<ImageContent> thumbnailImageContents;
-            if(fullSizeRepresentation.equals(thumbnailRepresentation)){
-                thumbnailImageContents = fullSizeImageContents;
-            } else {
-                thumbnailImageContents = representationPartsToImageContent(thumbnailRepresentation);
-            }
-
-            Canvas canvas = new Canvas(iiifID(onEntitiyType, onEntityUuid, Canvas.class, mediaID++));
-            for(Language lang : media.getAllTitles().keySet()){
-                LanguageString titleLocalized = media.getAllTitles().get(lang);
-                canvas.addLabel(titleLocalized.getText());
-            }
-            canvas.setLabel(new PropertyValue(media.getTitleCache()));
-            canvas.setThumbnails(thumbnailImageContents);
-            for(ImageContent image  : fullSizeImageContents){
-                canvas.addImage(image);
-            }
-            // TODO  if there is only one image canvas.addImage() internally sets the canvas width and height
-            //      to the height of the image, for multiple images it is required to follow the specification:
-            //
-            // IIIF Presentation API 2.1.1:
-            // It is recommended that if there is (at the time of implementation) a single image that depicts the page,
-            // then the dimensions of the image are used as the dimensions of the canvas for simplicity. If there are
-            // multiple full images, then the dimensions of the largest image should be used. If the largest image’s
-            // dimensions are less than 1200 pixels on either edge, then the canvas’s dimensions should be double those
-            // of the image.
-
-            // apply hack for accurate thumbnail container aspect ratios see setUseThumbnailDimensionsForCanvas() for an
-            // explanation
-            if(useThumbnailDimensionsForCanvas && !thumbnailImageContents.isEmpty()) {
-                if(thumbnailImageContents.get(0).getHeight() != null && thumbnailImageContents.get(0).getHeight() > 0 && thumbnailImageContents.get(0).getWidth() != null && thumbnailImageContents.get(0).getWidth() > 0) {
-                    canvas.setHeight(thumbnailImageContents.get(0).getHeight());
-                    canvas.setWidth(thumbnailImageContents.get(0).getWidth());
-                }
-            }
-
-            List<MetadataEntry> mediaMetadata = mediaMetaData(media);
-            List<MetadataEntry> representationMetadata;
+        List<Canvas> canvases = null;
+        try {
+        canvases = entityMediaContext.getMedia().parallelStream().map(m -> {
             try {
-                representationMetadata = mediaService.readResourceMetadataFiltered(fullSizeRepresentation)
-                         .entrySet()
-                         .stream()
-                         .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
-                mediaMetadata.addAll(representationMetadata);
+                return createCanvas(onEntitiyType, onEntityUuid, m);
             } catch (IOException e) {
-                logger.error("Error reading media metadata", e);
-            } catch (HttpException e) {
-                logger.error("Error accessing remote media resource", e);
+                throw new RuntimeException(e);
             }
-
-            // extractAndAddDesciptions(canvas, mediaMetadata);
-            mediaMetadata = deduplicateMetadata(mediaMetadata);
-            canvas = addAttributionAndLicense(media, canvas, mediaMetadata);
-            orderMedatadaItems(canvas);
-            canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
-            canvases.add(canvas);
+        }).collect(Collectors.toList());
+        } catch(RuntimeException re) {
+            // re-throw  IOException from lambda expression
+            throw new IOException(re.getCause());
         }
 
         Sequence sequence = null;
@@ -235,6 +173,78 @@ public class ManifestComposer {
         copyAttributionAndLicenseToManifest(manifest);
 
         return manifest;
+    }
+
+    public Canvas createCanvas(String onEntitiyType, String onEntityUuid, Media media) throws IOException {
+        Canvas canvas;
+        MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, thumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
+        MediaRepresentation fullSizeRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
+        // MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
+        // MediaRepresentation thumbnailRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, 100, 100, tumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
+        if(logger.isDebugEnabled()){
+            logger.debug("fullSizeRepresentation: " + fullSizeRepresentation.getParts().get(0).getUri());
+            logger.debug("thumbnailRepresentation: " + thumbnailRepresentation.getParts().get(0).getUri());
+        }
+
+        // FIXME the below only makes sense if the media is an Image!!!!!
+        List<ImageContent> fullSizeImageContents = representationPartsToImageContent(fullSizeRepresentation);
+
+        List<ImageContent> thumbnailImageContents;
+        if(fullSizeRepresentation.equals(thumbnailRepresentation)){
+            thumbnailImageContents = fullSizeImageContents;
+        } else {
+            thumbnailImageContents = representationPartsToImageContent(thumbnailRepresentation);
+        }
+
+        canvas = new Canvas(iiifID(onEntitiyType, onEntityUuid, Canvas.class, "media-" + media.getUuid()));
+        for(Language lang : media.getAllTitles().keySet()){
+            LanguageString titleLocalized = media.getAllTitles().get(lang);
+            canvas.addLabel(titleLocalized.getText());
+        }
+        canvas.setLabel(new PropertyValue(media.getTitleCache()));
+        canvas.setThumbnails(thumbnailImageContents);
+        for(ImageContent image  : fullSizeImageContents){
+            canvas.addImage(image);
+        }
+        // TODO  if there is only one image canvas.addImage() internally sets the canvas width and height
+        //      to the height of the image, for multiple images it is required to follow the specification:
+        //
+        // IIIF Presentation API 2.1.1:
+        // It is recommended that if there is (at the time of implementation) a single image that depicts the page,
+        // then the dimensions of the image are used as the dimensions of the canvas for simplicity. If there are
+        // multiple full images, then the dimensions of the largest image should be used. If the largest image’s
+        // dimensions are less than 1200 pixels on either edge, then the canvas’s dimensions should be double those
+        // of the image.
+
+        // apply hack for accurate thumbnail container aspect ratios see setUseThumbnailDimensionsForCanvas() for an
+        // explanation
+        if(useThumbnailDimensionsForCanvas && !thumbnailImageContents.isEmpty()) {
+            if(thumbnailImageContents.get(0).getHeight() != null && thumbnailImageContents.get(0).getHeight() > 0 && thumbnailImageContents.get(0).getWidth() != null && thumbnailImageContents.get(0).getWidth() > 0) {
+                canvas.setHeight(thumbnailImageContents.get(0).getHeight());
+                canvas.setWidth(thumbnailImageContents.get(0).getWidth());
+            }
+        }
+
+        List<MetadataEntry> mediaMetadata = mediaMetaData(media);
+        List<MetadataEntry> representationMetadata;
+        try {
+            representationMetadata = mediaService.readResourceMetadataFiltered(fullSizeRepresentation)
+                     .entrySet()
+                     .stream()
+                     .map(e -> new MetadataEntry(e.getKey(), e.getValue())).collect(Collectors.toList());
+            mediaMetadata.addAll(representationMetadata);
+        } catch (IOException e) {
+            logger.error("Error reading media metadata", e);
+        } catch (HttpException e) {
+            logger.error("Error accessing remote media resource", e);
+        }
+
+        // extractAndAddDesciptions(canvas, mediaMetadata);
+        mediaMetadata = deduplicateMetadata(mediaMetadata);
+        canvas = addAttributionAndLicense(media, canvas, mediaMetadata);
+        orderMedatadaItems(canvas);
+        canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
+        return canvas;
     }
 
     /**

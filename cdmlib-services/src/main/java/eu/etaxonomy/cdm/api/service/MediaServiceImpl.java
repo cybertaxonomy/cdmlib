@@ -300,7 +300,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
                 metadata.putAll(iInfo.getMetaData());
             }
         }
-
         if(logger.isDebugEnabled()) {
             logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }
