@@ -747,7 +747,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
         Assert.assertTrue(result.getExceptions().isEmpty());
         Assert.assertTrue(result.isOk());
-        Assert.assertEquals(5, result.getUpdatedObjects().size());
+        Assert.assertEquals(6, result.getUpdatedObjects().size());  //should be 5 without workaround for #9627,#6359
 
         commitAndStartNewTransaction(/*new String[]{"TaxonBase","TaxonBase_AUD"}*/);
         Assert.assertEquals(newSec, taxonService.find(1).getSec());
@@ -796,7 +796,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
         UpdateResult result = taxonNodeService.setSecundumForSubtree(config);
         Assert.assertTrue(result.getExceptions().isEmpty());
         Assert.assertTrue(result.isOk());
-        Assert.assertEquals(3, result.getUpdatedObjects().size());
+        Assert.assertEquals(4, result.getUpdatedObjects().size()); //should be 3 without workaround for #9627,#6359
 
         commitAndStartNewTransaction();  //new String[]{"TaxonBase","TaxonBase_AUD"}
         Assert.assertEquals(newSec, taxonService.find(1).getSec());

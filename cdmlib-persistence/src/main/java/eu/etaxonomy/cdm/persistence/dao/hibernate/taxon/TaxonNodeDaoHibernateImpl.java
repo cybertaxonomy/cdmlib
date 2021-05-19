@@ -775,19 +775,20 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     }
                     //compute updated objects
                     SecundumSource secSourceAfter = taxonBase.getSecSource();
-                    //FIXME #9627
-                    if (true){
-                        result.add(taxonBase);
-                    }
-                    //EMXIF
 
                     if (!CdmUtils.nullSafeEqual(secSourceBefore, secSourceAfter)){
                         result.add(taxonBase);
+                        //FIXME #9627 remove if fixed
+                        result.add(taxonBase);
+                        //EMXIF
                     }else if (secSourceBefore != null && secSourceBefore.equals(secSourceAfter)
                             && (!CdmUtils.nullSafeEqual(refBefore, secSourceAfter.getCitation())
                                  || !CdmUtils.nullSafeEqual(refDetailBefore, secSourceAfter.getCitationMicroReference()))
                             ){
                         result.add(secSourceBefore);
+                        //FIXME #9627 remove if fixed
+                        result.add(taxonBase);
+                        //EMXIF
                     }
 
                     monitor.worked(1);
@@ -843,18 +844,20 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     }
                     //compute updated objects
                     NamedSource sourceAfter = rel.getSource();
-                    //FIXME #9627 remove if fixed
-                    if (true){
-                        result.add(rel.getToTaxon());
-                    }
-                    //EMXIF
                     if (!CdmUtils.nullSafeEqual(sourceBefore, sourceAfter)){
                         result.add(rel);
+                        //FIXME #9627 remove if fixed
+                        result.add(rel.getToTaxon());
+                        //EMXIF
+
                     }else if (sourceBefore != null && sourceBefore.equals(sourceAfter)
                             && (!CdmUtils.nullSafeEqual(refBefore, sourceAfter.getCitation())
                                  || !CdmUtils.nullSafeEqual(refDetailBefore,sourceAfter.getCitationMicroReference()))
                             ){
                         result.add(sourceBefore);
+                        //FIXME #9627 remove if fixed
+                        result.add(rel.getToTaxon());
+                        //EMXIF
                     }
 
                     monitor.worked(1);
