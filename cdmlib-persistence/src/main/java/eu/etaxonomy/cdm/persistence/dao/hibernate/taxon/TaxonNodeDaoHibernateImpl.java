@@ -775,6 +775,12 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     }
                     //compute updated objects
                     SecundumSource secSourceAfter = taxonBase.getSecSource();
+                    //FIXME #9627
+                    if (true){
+                        result.add(taxonBase);
+                    }
+                    //EMXIF
+
                     if (!CdmUtils.nullSafeEqual(secSourceBefore, secSourceAfter)){
                         result.add(taxonBase);
                     }else if (secSourceBefore != null && secSourceBefore.equals(secSourceAfter)
@@ -837,6 +843,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                     }
                     //compute updated objects
                     NamedSource sourceAfter = rel.getSource();
+                    //FIXME #9627 remove if fixed
+                    if (true){
+                        result.add(rel.getToTaxon());
+                    }
+                    //EMXIF
                     if (!CdmUtils.nullSafeEqual(sourceBefore, sourceAfter)){
                         result.add(rel);
                     }else if (sourceBefore != null && sourceBefore.equals(sourceAfter)
