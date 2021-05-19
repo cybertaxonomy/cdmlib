@@ -263,8 +263,10 @@ public class Media
      * @see    	   		#putTitle(Language String)
     */
     public void putTitle(LanguageString title){
-        this.title.put(title.getLanguage(), title);
-        this.titleCache = null;  //TODO #9632 handle with aspectj
+        LanguageString oldValue = this.title.put(title.getLanguage(), title);
+        resetTitleCache();  //TODO #9632 handle with aspectj
+        this.firePropertyChange("title", oldValue, title);  //this is not fully correct but it is a workaround anyway
+
     }
 
     /**
@@ -283,10 +285,10 @@ public class Media
     }
 
     public void removeTitle(Language language){
-        this.title.remove(language);
+        LanguageString oldValue = this.title.remove(language);
         resetTitleCache(); //TODO #9632 handle with aspectj
+        this.firePropertyChange("title", oldValue, null);  //this is not fully correct but it is a workaround anyway
     }
-
 
     @Transient
     public String getTitleCacheByLanguage(Language lang){
@@ -347,8 +349,9 @@ public class Media
     }
 
     public void putDescription(LanguageString description){
-        this.description.put(description.getLanguage(), description);
+        LanguageString oldValue = this.description.put(description.getLanguage(), description);
         resetTitleCache(); //TODO #9632 handle with aspectj
+        this.firePropertyChange("title", oldValue, description);  //this is not fully correct but it is a workaround anyway
     }
 
     public void putDescription(Language language, String text){
@@ -356,9 +359,10 @@ public class Media
     }
 
     public void removeDescription(Language language){
-        this.description.remove(language);
+        LanguageString oldValue = this.description.remove(language);
         resetTitleCache(); //TODO #9632 handle with aspectj
-    }
+        this.firePropertyChange("title", oldValue, null);  //this is not fully correct but it is a workaround anyway
+   }
 
 // ************************ SOURCE ***************************/
 
