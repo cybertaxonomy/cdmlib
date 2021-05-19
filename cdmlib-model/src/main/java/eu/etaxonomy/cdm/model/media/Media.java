@@ -252,9 +252,6 @@ public class Media
 
     @Transient
     public Map<Language,LanguageString> getAllTitles(){
-        if(title == null) {
-            this.title = new HashMap<>();
-        }
         return this.title;
     }
     /**
@@ -347,7 +344,7 @@ public class Media
         return getAllDescriptions().get(language);
     }
 
-    public void addDescription(LanguageString description){
+    public void putDescription(LanguageString description){
         this.description.put(description.getLanguage(), description);
     }
 
