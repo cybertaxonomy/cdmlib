@@ -365,7 +365,7 @@ public class ReferenceDefaultCacheStrategyTest {
 
     @Test
     public void testSectionInArticle(){
-        //#9326
+        //#9326, #3764
         Reference journal = ReferenceFactory.newJournal();
         journal.setTitle("Phytotaxa");
         Reference article = ReferenceFactory.newArticle();
