@@ -55,20 +55,16 @@ public class ReferenceDefaultCacheStrategy
 
     private final static UUID uuid = UUID.fromString("63e669ca-c6be-4a8a-b157-e391c22580f9");
 
-    //article
-    public static final String UNDEFINED_JOURNAL = "undefined journal " + UTF8.EN_DASH;
     private static final String afterAuthor = ": ";
-
-    //book
-
-    //(book?) section
-    private static final String afterSectionAuthor = ": ";
     private static final String afterInRefAuthor = ", ";  //TODO needs discussion
 
+    //article
+    public static final String UNDEFINED_JOURNAL = "undefined journal " + UTF8.EN_DASH;
 
     //in reference
-    private String biblioInSeparator = UTF8.EN_DASH + " In: "; //#9529
+    private static String biblioInSeparator = " " + UTF8.EN_DASH + " In: "; //#9529
     private String biblioArticleInSeparator = UTF8.EN_DASH + " "; //#9529
+    private String webpageUriSeparator = " "+UTF8.EN_DASH+" ";
 
     //common
     private static final String blank = " ";
@@ -126,7 +122,7 @@ public class ReferenceDefaultCacheStrategy
             result = titleCacheDefaultReference(reference, isNotAbbrev);
         }
         if (reference.getType() == ReferenceType.WebPage && reference.getUri() != null && !result.contains(reference.getUri().toString())){
-            result = CdmUtils.concat(" "+UTF8.EN_DASH+" ", result, reference.getUri().toString());
+            result = CdmUtils.concat(webpageUriSeparator, result, reference.getUri().toString());
         }
         if(reference.getAccessed() != null){
             //TODO still a bit preliminary, also brackets may change in future
@@ -214,25 +210,21 @@ public class ReferenceDefaultCacheStrategy
 
     //section, book section or generic with inRef
     private String titleCacheRealInRef(Reference reference, boolean isAbbrev) {
-        ReferenceType type = reference.getType();
+
         Reference inRef = reference.getInReference();
-        boolean hasInRef = (inRef != null);
 
-        String inRefAuthorAndTitle;
-        //copy from InRefDefaultCacheStrategyBase
-        if (inRef != null){
-            String inRefTitle = TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(inRef, isAbbrev, false);
-            TeamOrPersonBase<?> inRefAuthor = inRef.getAuthorship();
-            String authorStr = (inRefAuthor == null)? "" : CdmUtils.getPreferredNonEmptyString(inRefAuthor.getTitleCache(),
-                    inRefAuthor.getNomenclaturalTitle(), isAbbrev, trim);
-            inRefAuthorAndTitle = CdmUtils.concat(afterInRefAuthor, authorStr, inRefTitle);
-        }else{
-            inRefAuthorAndTitle = String.format("- undefined %s -", getUndefinedLabel(type));
+        String inRefPart = getInRefAuthorAndTitle(inRef, reference.getType(), isAbbrev);
+        if (inRef != null && !inRef.isArticle()){
+            inRefPart = addInRefPages(inRef, inRefPart);
         }
-        inRefAuthorAndTitle = CdmUtils.addTrailingDotIfNotExists(inRefAuthorAndTitle);
-
-        //in
-        String result = biblioInSeparator + inRefAuthorAndTitle;
+        inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
+        inRefPart = biblioInSeparator + inRefPart;
+        if (inRef != null && inRef.isBookSection()){
+            String inInRefPart = getInRefAuthorAndTitle(inRef.getInReference(), inRef.getType(), isAbbrev);
+            inInRefPart = CdmUtils.addTrailingDotIfNotExists(inInRefPart);
+            inInRefPart = biblioInSeparator + inInRefPart;
+            inRefPart += inInRefPart;
+        }
 
         //section title
         String title = CdmUtils.getPreferredNonEmptyString(
@@ -241,12 +233,13 @@ public class ReferenceDefaultCacheStrategy
             title = title.substring(0, title.length() - 1);
         }
         //pages
-        String pages = getPages(reference);
-        if (isNotBlank(pages)){
-            title = CdmUtils.concat(", ", title, pages);
-        }
+        title = addInRefPages(reference, title);
+
+        String result;
         if (title.length() > 0){
-            result = title.trim() + "." + blank + result;
+            result = title.trim() + "." + inRefPart;
+        }else{
+            result = inRefPart;
         }
 
         //section author
@@ -256,9 +249,12 @@ public class ReferenceDefaultCacheStrategy
 
         //date
         String dateStr = null;
-        VerbatimTimePeriod date = (reference.getDatePublished() != null && ! reference.getDatePublished().isEmpty())? reference.getDatePublished() : null;
-        if (date == null && hasInRef && reference.getInReference().getDatePublished() != null && !reference.getInReference().getDatePublished().isEmpty()){
+        VerbatimTimePeriod date = reference.hasDatePublished() ? reference.getDatePublished() : null;
+        if (date == null && inRef != null && inRef.hasDatePublished()){
             date = reference.getInReference().getDatePublished();
+            if (date == null && inRef.isSection() && inRef.getInReference() != null && inRef.getInReference().hasDatePublished()){
+                date = inRef.getInReference().getDatePublished();
+            }
         }
         if (date != null){
             dateStr = date.getYear();
@@ -266,16 +262,39 @@ public class ReferenceDefaultCacheStrategy
 
         String authorAndYear = CdmUtils.concat(" ", authorStr, dateStr);
 
-        String sep = result.startsWith(biblioInSeparator)? " ": afterSectionAuthor;
+        String sep = result.startsWith(biblioInSeparator)? "": afterAuthor;
         result = CdmUtils.concat(sep, authorAndYear, result);
 
         return result;
     }
 
+    private String addInRefPages(Reference reference, String title) {
+        String pages = getPages(reference);
+        if (isNotBlank(pages)){
+            title = CdmUtils.concat(", ", title, pages);
+        }
+        return title;
+    }
+
+    private String getInRefAuthorAndTitle(Reference inRef, ReferenceType type, boolean isAbbrev) {
+        String inRefAuthorAndTitle;
+        if (inRef != null){
+            String inRefTitle = TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(inRef, isAbbrev, false);
+            TeamOrPersonBase<?> inRefAuthor = inRef.getAuthorship();
+            String authorStr = (inRefAuthor == null)? "" : CdmUtils.getPreferredNonEmptyString(inRefAuthor.getTitleCache(),
+                    inRefAuthor.getNomenclaturalTitle(), isAbbrev, trim);
+            inRefAuthorAndTitle = CdmUtils.concat(afterInRefAuthor, authorStr, inRefTitle);
+        }else{
+            inRefAuthorAndTitle = String.format("- undefined %s -", getUndefinedLabel(type));
+        }
+
+        return inRefAuthorAndTitle;
+    }
+
     private static final String pageNoRe = "[0-9iIvVxXlLcCdDmM]+";
     private String getPages(Reference reference) {
 
-        if (isBlank(reference.getPages())){
+        if (reference == null || isBlank(reference.getPages())){
             return null;
         }else if (reference.getPages().matches(pageNoRe + "\\s*[-"+UTF8.EN_DASH+"]\\s*"+ pageNoRe)){
             return "pp. " + reference.getPages();
@@ -380,9 +399,9 @@ public class ReferenceDefaultCacheStrategy
         }else if (type == ReferenceType.Generic){
             return "generic reference";
         }else if (type == ReferenceType.Section){
-            return "in reference";
+            return "in-reference";
         } else {
-            return type.getLabel();
+            return "in-reference for " + type.getLabel();
         }
     }
 

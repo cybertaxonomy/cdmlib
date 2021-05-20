@@ -64,7 +64,9 @@ public class TitleWithoutYearAndAuthorHelper {
             return getTitleWithoutYearAndAuthorWebPage(ref, isAbbrev);
         }else if (type == ReferenceType.Thesis) {
             return getTitleWithoutYearAndAuthorThesis(ref, isAbbrev);
-        }else if (type == ReferenceType.Section || type == ReferenceType.BookSection){
+        }else if(type == ReferenceType.BookSection){
+            return getTitleWithoutYearAndAuthorBookSection(ref, isAbbrev);
+        }else if (type == ReferenceType.Section || type == ReferenceType.BookSection ){
             // not needed in Section
             logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");
             return null;
@@ -149,7 +151,6 @@ public class TitleWithoutYearAndAuthorHelper {
             title =  title.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
         }
 
-
         boolean needsComma = false;
         //titelAbbrev
         if (!"".equals(title) ){
@@ -196,11 +197,19 @@ public class TitleWithoutYearAndAuthorHelper {
         nomRefCache += volumePart;
 
         //delete .
-        while (nomRefCache.endsWith(".")){
-            nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
-        }
+        nomRefCache = CdmUtils.removeTrailingDots(nomRefCache);
 
         return nomRefCache.trim();
+    }
+
+    private static String getTitleWithoutYearAndAuthorBookSection(Reference ref, boolean isAbbrev){
+        if (ref == null){
+            return null;
+        }
+        String title = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
+        title = CdmUtils.removeTrailingDots(title);
+
+        return title.trim();
     }
 
     public static  String getTitleWithoutYearAndAuthorGeneric(Reference genericReference, boolean isAbbrev){
