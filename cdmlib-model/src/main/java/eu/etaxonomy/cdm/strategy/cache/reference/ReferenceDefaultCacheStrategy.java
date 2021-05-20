@@ -50,6 +50,7 @@ public class ReferenceDefaultCacheStrategy
         implements IReferenceCacheStrategy {
 
     private static final long serialVersionUID = 6773742298840407263L;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(ReferenceDefaultCacheStrategy.class);
 
     private final static UUID uuid = UUID.fromString("63e669ca-c6be-4a8a-b157-e391c22580f9");
@@ -111,23 +112,11 @@ public class ReferenceDefaultCacheStrategy
             //Article, CdDvd, Generic, Section, Thesis, WebPage (+Book, BookSection but not here)
             String title = getTitleWithoutYearAndAuthor(reference, isNotAbbrev, false);
             result = addPages(title, reference);
-
-            if (type == ReferenceType.Article){
-                String artTitle = CdmUtils.addTrailingDotIfNotExists(reference.getTitle());
-                result = CdmUtils.concat(" ", artTitle, result);
-                if (isNotBlank(authorAndYear)){
-//                    String authorSeparator = isNotBlank(artTitle)? afterAuthor : " ";
-                    String authorSeparator = afterAuthor;
-                    authorAndYear += authorSeparator;
-                }
-                result = authorAndYear + result;
-            }else{  //if Book, CdDvd, flat Generic, Thesis, WebPage
-                if (isNotBlank(authorAndYear)){
-                    String authorSeparator = isNotBlank(title)? afterAuthor : "";
-                    authorAndYear += authorSeparator;
-                }
-                result = authorAndYear + result;
+            if (isNotBlank(authorAndYear)){
+                String authorSeparator = isNotBlank(title)? afterAuthor : "";
+                authorAndYear += authorSeparator;
             }
+            result = authorAndYear + result;
             if (!type.isWebPage()){
                 result = CdmUtils.addTrailingDotIfNotExists(result);
             }
@@ -188,9 +177,6 @@ public class ReferenceDefaultCacheStrategy
         if (type == ReferenceType.Article){
             result = getTitleWithoutYearAndAuthor(reference, isAbbrev, false);
             boolean useFullDatePublished = false;
-            String articleTitle = CdmUtils.getPreferredNonEmptyString(reference.getTitle(),
-                    reference.getAbbrevTitle(), isAbbrev, trim);
-            result = CdmUtils.concat(" ", articleTitle, result);  //Article should maybe left out for nomenclatural references (?)
             String authorAndYear = getAuthorAndYear(reference, isAbbrev, useFullDatePublished);
             if (isNotBlank(authorAndYear)){
 //                String authorSeparator = isNotBlank(reference.getTitle())? afterAuthor : " ";

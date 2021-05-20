@@ -93,26 +93,31 @@ public class TitleWithoutYearAndAuthorHelper {
         boolean needsComma = false;
 
         //inJournal
-        String nomRefCache = isNomRef? "in ": prefixArticleReferenceJounal;
+        String result = isNomRef? "in ": prefixArticleReferenceJounal;
 
         //titelAbbrev
         if (isNotBlank(journalTitel)){
-            nomRefCache = nomRefCache + journalTitel;
-            needsComma = makeNeedsCommaArticle(needsComma, nomRefCache, volume, series);
+            result = result + journalTitel;
+            needsComma = makeNeedsCommaArticle(needsComma, result, volume, series);
             if (! needsComma){
-                nomRefCache = nomRefCache + blank;
+                result = result + blank;
             }
         }
 
         //series and vol.
-        nomRefCache = getSeriesAndVolPartArticle(series, volume, needsComma, nomRefCache);
+        result = getSeriesAndVolPartArticle(series, volume, needsComma, result);
 
         //delete "."
-        while (nomRefCache.endsWith(".")){
-            nomRefCache = CdmUtils.removeTrailingDots(nomRefCache);
+        while (result.endsWith(".")){
+            result = CdmUtils.removeTrailingDots(result);
         }
 
-        return nomRefCache.trim();
+        String articleTitle = CdmUtils.getPreferredNonEmptyString(article.getTitle(), article.getAbbrevTitle(), isAbbrev, true);
+        if (!isNomRef && isNotBlank(articleTitle)){
+            articleTitle = CdmUtils.addTrailingDotIfNotExists(articleTitle);
+            result = articleTitle + " " + result;
+        }
+        return result.trim();
     }
 
 
