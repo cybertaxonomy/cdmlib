@@ -166,9 +166,9 @@ public class NomenclaturalSourceFormatter extends CdmFormatterBase<Nomenclatural
             return null;
         }
 
-        Reference inRef = CdmBase.deproxy(thisRef.getInReference(), Reference.class);
+        Reference inRef = CdmBase.deproxy(thisRef.getInReference());
         if (inRef != null && inRef.getInReference() != null && thisRef.getType() == ReferenceType.Section){
-            //this is a reference of type Section which has a in-in-Ref
+            //this is a reference of type Section which has an in-in-Ref
             //TODO maybe we do not need to restrict to type=Section only
             return this.getTokenizedNomenclaturalTitelInInRef(thisRef);
         }
@@ -211,8 +211,8 @@ public class NomenclaturalSourceFormatter extends CdmFormatterBase<Nomenclatural
     private String getTokenizedNomenclaturalTitelInInRef(Reference ref) {
         String result;
 
-        Reference inRef = CdmBase.deproxy(ref.getInReference(), Reference.class);
-        Reference inInRef = CdmBase.deproxy(inRef.getInReference(), Reference.class);
+        Reference inRef = CdmBase.deproxy(ref.getInReference());
+        Reference inInRef = CdmBase.deproxy(inRef.getInReference());
 
         if (! ReferenceDefaultCacheStrategy.isNomRef(inInRef.getType())){
             if (! ReferenceDefaultCacheStrategy.isNomRef(inRef.getType())){
