@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -213,8 +214,8 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		Method method = ReferenceDefaultCacheStrategy.class.getDeclaredMethod("getTitleWithoutYearAndAuthor", Reference.class, boolean.class, boolean.class);
 		method.setAccessible(true);
-		Assert.assertEquals(UTF8.EN_DASH + " My journal, ser. 2, 34", method.invoke(defaultStrategy, article1, false, false));
-		Assert.assertEquals(UTF8.EN_DASH + " My journ., ser. 2, 34", method.invoke(defaultStrategy, article1, true, false));
+		Assert.assertEquals("My article. " + UTF8.EN_DASH + " My journal, ser. 2, 34", method.invoke(defaultStrategy, article1, false, false));
+		Assert.assertEquals("My art. " + UTF8.EN_DASH + " My journ., ser. 2, 34", method.invoke(defaultStrategy, article1, true, false));
 		Assert.assertEquals("in My journal, ser. 2, 34", method.invoke(defaultStrategy, article1, false, true));
 		Assert.assertEquals("in My journ., ser. 2, 34", method.invoke(defaultStrategy, article1, true, true));
 	}
@@ -360,6 +361,31 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection.setPages("222-251");
         Assert.assertEquals("Chaudhary S. A. 2000: 73. Hedypnois - 87. Crepis, pp. 222-251. "+UTF8.EN_DASH+" In: Chaudhary S. A.(ed.), Flora of the Kingdom of Saudi Arabia 2(3).", bookSection.getTitleCache());
 
+    }
+
+    @Test
+    public void testSectionInArticle(){
+        //#9326
+        Reference journal = ReferenceFactory.newJournal();
+        journal.setTitle("Phytotaxa");
+        Reference article = ReferenceFactory.newArticle();
+        String articleTitle = "New diatom species Navicula davidovichii from Vietnam (Southeast Asia)";
+        article.setTitle(articleTitle);
+        Team articleTeam = Team.NewTitledInstance("Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P.", null);
+        article.setAuthorship(articleTeam);
+        article.setInJournal(journal);
+        article.setVolume("452(1)");
+        article.setVolume("83-91");
+        article.setDatePublished(TimePeriodParser.parseStringVerbatim("8 Jul 2020"));
+        article.setDoi(DOI.fromString("10.11646/phytotaxa.452.1.8"));
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Chudaev, D.A., Glushchenko, A., Kulikovskiy, M. & Kociolek, J.P.", null);
+        section.setAuthorship(sectionTeam);
+        section.setInReference(article);
+
+        Assert.assertEquals("Unexpected title cache.",
+                "Chudaev, D.A., Glushchenko, A., Kulikovskiy, M. & Kociolek, J.P. 2020 – In: "
+                + "Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P., New diatom species Navicula davidovichii from Vietnam (Southeast Asia). – Phytotaxa 83-91.", section.getTitleCache());
     }
 
     @Test
