@@ -27,6 +27,13 @@ public class TaxonNodeByRankAndNameComparator extends TaxonNodeByNameComparator 
 
 	@Override
     public int compare(TaxonNode node1, TaxonNode node2) {
+        if (node1 == null && node2 == null) {
+            return 0;
+        } else if (node1 == null) {
+            return 1;
+        } else if (node2 == null) {
+            return -1;
+        }
 
 	    boolean node1Excluded = node1.isExcluded();
         boolean node2Excluded = node2.isExcluded();

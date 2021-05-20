@@ -77,7 +77,6 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         return uuid;
     }
 
-
     @Override
     public <T extends DescriptionAggregationBase<T,C>, C extends DescriptionAggregationConfigurationBase<T>>
                 UUID invoke(C config){
@@ -105,7 +104,6 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         monitorThread.start();
         return uuid;
     }
-
 
     @Override
     public UUID addRowWrapperToDataset(Collection<SpecimenRowWrapperDTO> wrapper, UUID datasetUuid){
@@ -137,7 +135,6 @@ public class LongRunningTasksService implements ILongRunningTasksService{
                 }
                 monitor.setResult(updateResult);
                 return updateResult;
-
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
@@ -157,7 +154,6 @@ public class LongRunningTasksService implements ILongRunningTasksService{
                 }
                 monitor.setResult(updateResult);
                 return updateResult;
-
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);

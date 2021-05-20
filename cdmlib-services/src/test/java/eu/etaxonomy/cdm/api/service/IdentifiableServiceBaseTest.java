@@ -114,7 +114,7 @@ public class IdentifiableServiceBaseTest extends CdmTransactionalIntegrationTest
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), taxon.getUuid());
 		Assert.assertEquals(UUID.fromString("888cded1-cadc-48de-8629-e32927919879"), entity.getUuid());
 		Assert.assertEquals("Taxon should have 1 identifier", 1, taxon.getIdentifiers().size());
-		Identifier<?> identifier = taxon.getIdentifiers().get(0);
+		Identifier identifier = taxon.getIdentifiers().get(0);
 		DefinedTerm type = CdmBase.deproxy(identifier.getType(), DefinedTerm.class);
 		Assert.assertEquals(uuidIdentifierType1, type.getUuid());
 

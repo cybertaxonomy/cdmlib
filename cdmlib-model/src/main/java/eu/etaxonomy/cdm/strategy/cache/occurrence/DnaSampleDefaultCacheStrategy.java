@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.term.DefinedTerm;
 
 /**
  * A default cache strategy for {@link DnaSample}.
@@ -49,9 +50,11 @@ public class DnaSampleDefaultCacheStrategy
 	@Override
     protected String doGetTitleCache(DnaSample dnaSample) {
 		String result = getCollectionAndAccession(dnaSample);
-		//TODO still very unclear what to use, currently it is best practice to create
-		//a protected titleCache when creating the DnaSample so the application
-		//decides what title to give
+        //sample designation
+		if (isBlank(result)){
+            result = dnaSample.getIdentifier(DefinedTerm.uuidSampleDesignation);
+        }
+		//any other identifier
 		if (isBlank(result)){
 		    if (!dnaSample.getIdentifiers().isEmpty()){
 		        result = dnaSample.getIdentifiers().get(0).getIdentifier();
@@ -79,7 +82,6 @@ public class DnaSampleDefaultCacheStrategy
                     }
                 }
             }
-
         }
 
 		return result;

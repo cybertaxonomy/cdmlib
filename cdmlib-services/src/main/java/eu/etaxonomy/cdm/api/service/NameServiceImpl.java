@@ -1217,6 +1217,7 @@ public class NameServiceImpl
     @Override
     public UpdateResult parseName(TaxonName nameToBeFilled, String stringToBeParsed, Rank preferredRank,
             boolean doEmpty, boolean doDeduplicate){
+
         UpdateResult result = new UpdateResult();
         NonViralNameParserImpl nonViralNameParser = NonViralNameParserImpl.NewInstance();
         nonViralNameParser.parseReferencedName(nameToBeFilled, stringToBeParsed, preferredRank, doEmpty);
@@ -1247,6 +1248,7 @@ public class NameServiceImpl
                     }
                 }
                 Reference nomRef = name.getNomenclaturalReference();
+
                 //authors
                 IParsedMatchStrategy authorMatcher = MatchStrategyFactory.NewParsedTeamOrPersonInstance();
                 if (name.getCombinationAuthorship()!= null && !name.getCombinationAuthorship().isPersited()){
@@ -1267,6 +1269,18 @@ public class NameServiceImpl
                 if (name.getExBasionymAuthorship()!= null && !name.getExBasionymAuthorship().isPersited()){
                     name.setExBasionymAuthorship(deduplicateAuthor(name.getExBasionymAuthorship()));
                 }
+
+                //originalSpelling
+                if (name.getOriginalSpelling()!= null && !name.getOriginalSpelling().isPersited()){
+                    TaxonName origName = name.getOriginalSpelling();
+                    IMatchStrategy nameMatcher = MatchStrategyFactory.NewParsedOriginalSpellingInstance();
+                    List<TaxonName> matchingNames = commonService.findMatching(origName, nameMatcher);
+                    if(matchingNames.size() >= 1){
+                        TaxonName duplicate = findBestMatching(origName, matchingNames, nameMatcher);
+                        name.setOriginalSpelling(duplicate);
+                    }
+                }
+
 //              Logger.getLogger("org.hibernate.SQL").setLevel(sqlLogLevel);
             } catch (MatchException e) {
                 throw new RuntimeException(e);
@@ -1307,7 +1321,7 @@ public class NameServiceImpl
     }
 
     private <M extends IMatchable> M findBestMatching(M matchable, List<M> matchingList,
-            IMatchStrategy referenceMatcher) {
+            IMatchStrategy matcher) {
         // FIXME TODO resolve multiple duplications. Use first match for a start
         if(matchingList.isEmpty()){
             return null;
@@ -1315,7 +1329,4 @@ public class NameServiceImpl
         M bestMatching = matchingList.iterator().next();
         return bestMatching;
     }
-
-
-
 }

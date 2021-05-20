@@ -171,6 +171,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         botName.setInfraGenericEpithet("Infragenus");
         Assert.assertEquals("", "Genus sect. Infragenus", botName.getNameCache());
         botName.setRank(Rank.SUBSECTION_BOTANY());
+        botName.setNameCache(null, false);
         Assert.assertEquals("", "Genus subsect. Infragenus", botName.getNameCache());
 
         //zool. specific ranks (we don't have markers here therefore no problem should exist
@@ -195,7 +196,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertEquals("Name cache should be Lepidocaryum (Infralepi) tenue var. tenue", "Lepidocaryum (Infralepi) tenue var. tenue", botName.getNameCache());
 
         botName.setInfraGenericEpithet(" ");
-        //Note: This test may fail if aspectj doesn't work correctly
+        botName.setNameCache(null, false);
         assertEquals("Empty infrageneric epithet must be neglegted", "Lepidocaryum tenue var. tenue", botName.getNameCache());
     }
 
@@ -219,6 +220,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         String atomizedTitleCache = speciesNameString + " "+ strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
         //Note: This test may fail if aspectj doesn't work correctly
         assertEquals(atomizedTitleCache, speciesName.getTitleCache());
+        speciesName.setFullTitleCache(null, false);
         assertEquals(atomizedTitleCache, speciesName.getFullTitleCache());
     }
 
@@ -230,23 +232,28 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Should be Abies alba L.", "Abies alba L.", speciesName.getTitleCache());
 
         speciesName.setBinomHybrid(true);
-        //Note: This test may fail if aspectj doesn't work correctly
+        speciesName.setTitleCache(null, false);
         Assert.assertEquals("Should be Abies \u00D7alba L.", "Abies \u00D7alba L.", speciesName.getTitleCache());
         speciesName.setMonomHybrid(true);
+        speciesName.setTitleCache(null, false);
         Assert.assertEquals("Should be '\u00D7Abies \u00D7alba L.'", "\u00D7Abies \u00D7alba L.", speciesName.getTitleCache());
 
         Assert.assertEquals("Should be 'Genus'", "Genus", genusName.getTitleCache());
         genusName.setMonomHybrid(true);
+        genusName.setTitleCache(null, false);
         Assert.assertEquals("Should be '\u00D7Genus'", "\u00D7Genus", genusName.getTitleCache());
 
         Assert.assertEquals("Should be 'Abies alba subsp. beta'", subSpeciesNameString, subSpeciesName.getTitleCache());
         subSpeciesName.setTrinomHybrid(true);
+        subSpeciesName.setTitleCache(null, false);
         Assert.assertEquals("Should be 'Abies alba nothosubsp. beta or nbeta'", "Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
         subSpeciesName.setMonomHybrid(true);
+        subSpeciesName.setTitleCache(null, false);
         Assert.assertEquals("Should be '\u00D7Abies alba nothosubsp. beta'", "\u00D7Abies alba nothosubsp. beta", subSpeciesName.getTitleCache());
 
         Assert.assertEquals("Should be 'Genus subg. InfraGenericPart'", "Genus subg. InfraGenericPart", subGenusName.getTitleCache());
         subGenusName.setBinomHybrid(true);
+        subGenusName.setTitleCache(null, false);
         Assert.assertEquals("Should be 'Genus nothosubg. InfraGenericPart'", "Genus nothosubg. InfraGenericPart", subGenusName.getTitleCache());
     }
 
@@ -274,7 +281,6 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
     }
 
-    //TODO add more tests when specification is clearer
     //3665
     @Test
     public void testOriginalSpelling() {
@@ -290,13 +296,36 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
 
     	originalName.setGenusOrUninomial("Apies");
-    	speciesName.setNameCache(null, false);
+    	speciesName.setFullTitleCache(null, false);
+    	originalName.setNameCache(null, false);
     	//TODO update cache of current name (species name)
     	Assert.assertEquals("Abies alba [as \"Apies alpa\"]", speciesName.getFullTitleCache());
         Assert.assertEquals("Abies alba", speciesName.getTitleCache());
         Assert.assertEquals("Name cache should not show original spelling", "Abies alba", speciesName.getNameCache());
+        originalName.setSpecificEpithet("alba");
+        originalName.setNameCache(null, false);
+        speciesName.setFullTitleCache(null, false);
+        //not fully sure if it is wanted that here only the genus name is given and not the specific epithet too, may change if required by users
+        Assert.assertEquals("Abies alba [as \"Apies\"]", speciesName.getFullTitleCache());
 
-    	//#3665
+        //subspecies
+        originalName = subSpeciesName.clone();
+        originalName.setInfraSpecificEpithet("peta");
+        Assert.assertEquals("Preconditions are wrong", "Abies alba subsp. peta", originalName.getTitleCache());
+        subSpeciesName.setOriginalSpelling(originalName);
+        Assert.assertEquals("Abies alba subsp. beta [as \"peta\"]", subSpeciesName.getFullTitleCache());
+        Assert.assertEquals("Abies alba subsp. beta", subSpeciesName.getTitleCache());
+        originalName.setSpecificEpithet("alpa");
+        originalName.setNameCache(null, false);
+        subSpeciesName.setFullTitleCache(null, false);
+        Assert.assertEquals("Abies alba subsp. beta [as \"alpa subsp. peta\"]", subSpeciesName.getFullTitleCache());
+
+        originalName.setInfraSpecificEpithet("beta");
+        originalName.setNameCache(null, false);
+        subSpeciesName.setFullTitleCache(null, false);
+        //not fully sure if it is wanted that here only the specific epithet is given and not the infra specific epithet too, may change if required by users
+        Assert.assertEquals("Abies alba subsp. beta [as \"alpa\"]", subSpeciesName.getFullTitleCache());
+
     	INonViralName correctName = NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabrata J.R.Turnbull & A.T.Middleton");
     	TaxonName originalSpelling = (TaxonName)NonViralNameParserImpl.NewInstance().parseFullName("Nepenthes glabratus");
     	correctName.setOriginalSpelling(originalSpelling);
@@ -314,8 +343,42 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         correctName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
         correctName.setFullTitleCache(null, false);
         Assert.assertEquals("Nepenthes glabrata J.R.Turnbull & A.T.Middleton, Sp. Pl. 1988 [as \"glabratus\"], nom. illeg.", correctName.getFullTitleCache());
+    }
 
-    	//TODO add more tests when specification of exact behaviour is clearer
+    //3667
+    @Test
+    public void testOriginalSpellingItalics() {
+
+        TaxonName originalName = subSpeciesName.clone();
+        originalName.setSpecificEpithet("alpa");
+        Assert.assertEquals("Preconditions are wrong", "Abies alpa subsp. beta", originalName.getTitleCache());
+
+        subSpeciesName.setOriginalSpelling(originalName);
+
+        List<TaggedText> taggedFullTitle = subSpeciesName.getCacheStrategy().getTaggedFullTitle(subSpeciesName);
+        Assert.assertEquals(7, taggedFullTitle.size());
+        Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, " [as \""), taggedFullTitle.get(4));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, "\"]"), taggedFullTitle.get(6));
+
+        originalName.setInfraSpecificEpithet("peta");
+        originalName.setNameCache(null, false);
+        taggedFullTitle = subSpeciesName.getCacheStrategy().getTaggedFullTitle(subSpeciesName);
+        Assert.assertEquals(9, taggedFullTitle.size());
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "Abies"), taggedFullTitle.get(0));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alba"), taggedFullTitle.get(1));
+        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(2));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "beta"), taggedFullTitle.get(3));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, " [as \""), taggedFullTitle.get(4));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "alpa"), taggedFullTitle.get(5));
+        Assert.assertEquals(new TaggedText(TagEnum.rank, "subsp."), taggedFullTitle.get(6));
+        Assert.assertEquals(new TaggedText(TagEnum.name, "peta"), taggedFullTitle.get(7));
+        Assert.assertEquals(new TaggedText(TagEnum.separator, "\"]"), taggedFullTitle.get(8));
     }
 
     @Test

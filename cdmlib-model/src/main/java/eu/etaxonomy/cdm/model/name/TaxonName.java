@@ -63,6 +63,7 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UTF8;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
@@ -238,14 +239,17 @@ public class TaxonName
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
+    @Match(value=MatchMode.IGNORE)
     private int parsingProblem = 0;
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
+    @Match(value=MatchMode.IGNORE)
     private int problemStarts = -1;
 
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
+    @Match(value=MatchMode.IGNORE)
     private int problemEnds = -1;
 
     @XmlElementWrapper(name = "TypeDesignations")
@@ -2024,6 +2028,17 @@ public class TaxonName
         }
     }
 
+    @Override
+    @Transient
+    public void setOriginalNameString(String originalNameString){
+        if (isNotBlank(originalNameString)){
+            this.getNomenclaturalSource(true).setOriginalNameString(originalNameString);
+        }else if (this.getNomenclaturalSource() != null){
+            this.getNomenclaturalSource().setOriginalNameString(null);
+            checkNullSource();
+        }
+    }
+
     /**
      * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
      * The basionym {@link NameRelationship relationship} will be added to <i>this</i> taxon name
@@ -2167,7 +2182,7 @@ public class TaxonName
         return this.nomenclaturalSource;
     }
 
-    protected NomenclaturalSource getNomenclaturalSource(boolean createIfNotExist){
+    public NomenclaturalSource getNomenclaturalSource(boolean createIfNotExist){
         if (this.nomenclaturalSource == null && createIfNotExist){
             setNomenclaturalSource(NomenclaturalSource.NewNomenclaturalInstance(this));
         }
@@ -2652,8 +2667,8 @@ public class TaxonName
     @Override
     @Transient
     public String getCitationString(){
-        Reference nomRef = getNomenclaturalReference();
-        return nomRef == null ? null : nomRef.getNomenclaturalCitation(getNomenclaturalMicroReference());
+        NomenclaturalSource nomSource = getNomenclaturalSource();
+        return NomenclaturalSourceFormatter.INSTANCE().format(nomSource);
     }
 
     /**
@@ -3707,8 +3722,14 @@ public class TaxonName
                 result.registrations.add(registration);
             }
 
-            //no changes to: appendedPharse, nomenclaturalReference,
-            //nomenclaturalMicroReference, parsingProblem, problemEnds, problemStarts
+            //nomenclatural source
+            if (this.getNomenclaturalSource() != null){
+                result.setNomenclaturalSource(this.getNomenclaturalSource().clone());
+                result.getNomenclaturalSource().setSourcedName(result);
+            }
+
+
+            //no changes to: appendedPharse, parsingProblem, problemEnds, problemStarts
             //protectedFullTitleCache, rank
             //basionamyAuthorship, combinationAuthorship, exBasionymAuthorship, exCombinationAuthorship
             //genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,

@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -39,7 +38,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class ExtensionType extends DefinedTermBase<ExtensionType> {
+public class ExtensionType extends AvailableForIdentifiableBase<ExtensionType> {
+
 	private static final long serialVersionUID = -7761963794004133427L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExtensionType.class);

@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,15 +17,14 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedCacheHelper;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
 /**
  * @author AM
@@ -79,14 +80,18 @@ public abstract class NameCacheStrategyBase
             String nomStatusStr = "not defined";
             if(ncStatus.getType() != null){
                 NomenclaturalStatusType statusType =  ncStatus.getType();
-                Language lang = Language.LATIN();
-                Representation repr = statusType.getRepresentation(lang);
+                List<Language> prefLangs = Arrays.asList(new Language[]{Language.LATIN(), Language.DEFAULT()});
+                Representation repr = statusType.getPreferredRepresentation(prefLangs);
                 if (repr != null){
+                    if(!Language.LATIN().equals(repr.getLanguage())){
+                        String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                        logger.info(message);
+                    }
                     nomStatusStr = repr.getAbbreviatedLabel();
                 }else{
-                    String message = "No latin representation available for nom. status. " + statusType.getTitleCache();
+                    String message = "No representation available for nom. status. " + statusType.getTitleCache();
                     logger.warn(message);
-                    throw new IllegalStateException(message);
+                    nomStatusStr = statusType.getTitleCache();
                 }
             }else if(isNotBlank(ncStatus.getRuleConsidered())){
                 nomStatusStr = ncStatus.getRuleConsidered();
@@ -188,13 +193,7 @@ public abstract class NameCacheStrategyBase
         tags.addAll(titleTags);
 
         //reference
-        String microReference = taxonName.getNomenclaturalMicroReference();
-        INomenclaturalReference ref = taxonName.getNomenclaturalReference();
-        String referenceCache = null;
-        if (ref != null){
-            Reference reference = HibernateProxyHelper.deproxy(ref, Reference.class);
-            referenceCache = reference.getNomenclaturalCitation(microReference);
-        }
+        String referenceCache = NomenclaturalSourceFormatter.INSTANCE().format(taxonName.getNomenclaturalSource());
             //add to tags
         if (isNotBlank(referenceCache)){
             if (! referenceCache.trim().startsWith("in ")){
@@ -211,32 +210,36 @@ public abstract class NameCacheStrategyBase
         return tags;
     }
 
-    protected void addOriginalSpelling(List<TaggedText> tags, TaxonName taxonName){
-        String originalName = getOriginalNameString(taxonName, tags);
-        if (isNotBlank(originalName)){
-            tags.add(new TaggedText(TagEnum.name, originalName));
-        }
-    }
+    protected void addOriginalSpelling(List<TaggedText> tags, TaxonName currentName){
 
-    private String getOriginalNameString(TaxonName currentName, List<TaggedText> originalNameTaggs) {
         currentName = CdmBase.deproxy(currentName);
         //Hibernate.initialize(currentName.getRelationsToThisName());
         TaxonName originalName = currentName.getOriginalSpelling();
         if (originalName != null){
             String originalNameString;
+            tags.add(TaggedText.NewSeparatorInstance(" [as \""));
             if (!originalName.isNonViral()){
                 originalNameString = originalName.getTitleCache();
+                tags.add(new TaggedText(TagEnum.name, originalNameString));
             }else{
                 INonViralName originalNvName = CdmBase.deproxy(originalName);
-                originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs);
+                originalNameString = makeOriginalNameString(originalNvName, tags);
+                for (String split : originalNameString.split(" ")){
+                    if (split.matches(NonViralNameParserImplRegExBase.infraSpeciesMarker)
+                            || split.matches(NonViralNameParserImplRegExBase.oldInfraSpeciesMarker)) {
+                        tags.add(new TaggedText(TagEnum.rank, split));
+                    }else{
+                        tags.add(new TaggedText(TagEnum.name, split));
+                    }
+                }
             }
-            return "[as \"" + originalNameString + "\"]";
+            tags.add(TaggedText.NewSeparatorInstance("\"]"));
         }else{
-            return null;
+            return;
         }
     }
 
-    private String makeOriginalNameString(TaxonName currentName, INonViralName originalName,
+    private String makeOriginalNameString(INonViralName originalName,
             List<TaggedText> currentNameTags) {
         //use cache if necessary
         String cacheToUse = null;
@@ -267,15 +270,18 @@ public abstract class NameCacheStrategyBase
 
         //compute string
         String result = originalNameString;
+        Integer firstDiff = null;
+        Integer lastDiff = -1;
         for (int i = 0; i < Math.min(originalNameSplit.length, currentNameSplit.length); i++){
-            if (originalNameSplit[i].equals(currentNameSplit[i])){
-                result = result.replaceFirst(originalNameSplit[i], "").trim();
+            if (!originalNameSplit[i].equals(currentNameSplit[i])){
+                lastDiff = i;
+                firstDiff = (firstDiff == null) ? i : firstDiff;
             }
         }
-        //old
-//      if (originalName.getGenusOrUninomial() != null && originalName.getGenusOrUninomial().equals(currentName.getGenusOrUninomial())){
-//
-//      }
+        if (firstDiff != null){
+            result = CdmUtils.concat(" ", Arrays.asList(originalNameSplit).subList(firstDiff, lastDiff+1).toArray(new String[0]));
+        }
+
         return result;
     }
 

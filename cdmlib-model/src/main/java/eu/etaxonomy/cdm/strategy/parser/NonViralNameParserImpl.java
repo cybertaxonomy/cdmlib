@@ -129,8 +129,8 @@ public class NonViralNameParserImpl
 				logger.warn("ICNCP parsing not yet implemented");
 				result = TaxonNameFactory.NewCultivarInstance(rank);
 				break;
-			case ICNB:
-				logger.warn("ICNB not yet implemented");
+			case ICNP:
+				logger.warn("ICNP not yet implemented");
 				result = TaxonNameFactory.NewBacterialInstance(rank);
 				break;
 			case ICVCN:
@@ -240,6 +240,9 @@ public class NonViralNameParserImpl
 	    fullReferenceString = parseNomStatus(fullReferenceString, nameToBeFilled, makeEmpty);
 	    nameToBeFilled.setProblemEnds(fullReferenceString.length());
 
+	    fullReferenceString = parseOriginalSpelling(fullReferenceString, nameToBeFilled, makeEmpty);
+        nameToBeFilled.setProblemEnds(fullReferenceString.length());
+
 	    //get full name reg
 		String localFullNameRegEx = getCodeSpecificFullNameRegEx(nameToBeFilled);
 		//get full name reg
@@ -339,6 +342,9 @@ public class NonViralNameParserImpl
 		parseFullName(nameToBeFilled, name, rank, makeEmpty);
 	    nameToBeFilled.setProblemEnds(oldProblemEnds);
 
+	    //original spelling
+        handleOriginalSpelling(nameToBeFilled);
+
 		//zoological new combinations should not have a nom. reference to be parsed
 	    if (nameToBeFilled.isZoological()){
 			IZoologicalName zooName = (IZoologicalName)CdmBase.deproxy(nameToBeFilled);
@@ -356,9 +362,7 @@ public class NonViralNameParserImpl
 
 	    //problem start
 	    int start = nameToBeFilled.getProblemStarts();
-	    int nameLength = name.length();
 	    int nameAndSeparatorLength = nameAndSeparator.length();
-	    int fullRefLength = nameToBeFilled.getFullTitleCache().length();
 
 	    if (nameToBeFilled.isProtectedTitleCache() || nameToBeFilled.getParsingProblems().contains(ParserProblem.CheckRank)){
 	    	start = Math.max(0, start);
@@ -394,15 +398,82 @@ public class NonViralNameParserImpl
 		}
 	}
 
-	//TODO make it an Array of status
+	/**
+     * Tries to create the best name (without authors) that makes an original spelling name for the nameToBeFilled.
+     */
+    private void handleOriginalSpelling(INonViralName nameToBeFilled) {
+        if (nameToBeFilled.getNomenclaturalSource()== null || CdmUtils.isBlank(nameToBeFilled.getNomenclaturalSource().getOriginalNameString())){
+            return;
+        }
+        String originalNameString = nameToBeFilled.getNomenclaturalSource().getOriginalNameString();
+
+        final int n = 5;
+        String nameSplit[] = new String[n];
+        nameSplit[0] = nameToBeFilled.getGenusOrUninomial();
+        nameSplit[1] = nameToBeFilled.getInfraGenericEpithet();
+        nameSplit[2] = nameToBeFilled.getSpecificEpithet();
+        nameSplit[3] = nameToBeFilled.getRank()== null? null : nameToBeFilled.getRank().getAbbreviation();
+        nameSplit[4] = nameToBeFilled.getInfraSpecificEpithet();
+        String originalNameSplit[] = originalNameString.split(" ");
+
+        int bestOffset = -1;
+        int bestDiff = Integer.MAX_VALUE;
+        for (int off=0; off <= n - originalNameSplit.length; off++){
+            int diff = 0;
+            int off2 = 0;
+            for (int i=0+off;i<n && i-off-off2 < originalNameSplit.length; i++){
+                String namePart = CdmUtils.Nz(nameSplit[i]);
+                String originalPart = originalNameSplit[i-off-off2];
+                if (StringUtils.isBlank(namePart)){
+                    originalPart = null;
+                    off2++;
+                }
+                if (originalPart != null){
+                    int newDiff = StringUtils.getLevenshteinDistance(namePart, originalPart);
+                    diff += newDiff;
+                }
+            }
+            if (diff>0 && diff<=bestDiff){
+                bestOffset = off;
+                bestDiff = diff;
+            }
+        }
+        if (bestDiff == 0){
+            return;
+        }
+
+        String[] finalSplit = new String[n];
+        for (int i = 0; i < n; i++){
+            if (StringUtils.isBlank(nameSplit[i])){
+                if (bestOffset<i){
+                    bestOffset++;
+                }
+                continue;
+            }
+            int oi = i-bestOffset;
+            finalSplit[i] = (oi)<0 || (oi>= originalNameSplit.length)? nameSplit[i]: originalNameSplit[oi];
+        }
+        TaxonName originalName = TaxonNameFactory.NewNameInstance(nameToBeFilled.getNameType(), nameToBeFilled.getRank(), nameToBeFilled.getHomotypicalGroup());
+        originalName.setGenusOrUninomial(finalSplit[0]);
+        originalName.setInfraSpecificEpithet(finalSplit[1]);
+        originalName.setSpecificEpithet(finalSplit[2]);
+//        originalName.setRank(finalSplit[3]);
+        originalName.setInfraSpecificEpithet(finalSplit[4]);
+
+        nameToBeFilled.setOriginalSpelling(originalName);
+        nameToBeFilled.setOriginalNameString(null);
+        return;
+    }
+
+    //TODO make it an Array of status
 	/**
 	 * Extracts a {@link NomenclaturalStatus} from the reference String and adds it to the @link {@link TaxonName}.
-	 * The nomenclatural status part ist deleted from the reference String.
+	 * The nomenclatural status part is deleted from the reference String.
 	 * @return  String the new (shortend) reference String
 	 */
 	public String parseNomStatus(String fullString, INonViralName nameToBeFilled, boolean makeEmpty) {
-		Set<NomenclaturalStatusType> existingStatusTypeSet = new HashSet<NomenclaturalStatusType>();
-		Set<NomenclaturalStatusType> newStatusTypeSet = new HashSet<NomenclaturalStatusType>();
+		Set<NomenclaturalStatusType> existingStatusTypeSet = new HashSet<>();
+		Set<NomenclaturalStatusType> newStatusTypeSet = new HashSet<>();
 		for (NomenclaturalStatus existingStatus : nameToBeFilled.getStatus()){
 			existingStatusTypeSet.add(existingStatus.getType());
 		}
@@ -433,7 +504,7 @@ public class NonViralNameParserImpl
 		}
 		//remove not existing nom status
 		if (makeEmpty){
-			Set<NomenclaturalStatus> tmpStatus = new HashSet<NomenclaturalStatus>();
+			Set<NomenclaturalStatus> tmpStatus = new HashSet<>();
 			tmpStatus.addAll(nameToBeFilled.getStatus());
 			for (NomenclaturalStatus status : tmpStatus){
 				if (! newStatusTypeSet.contains(status.getType())){
@@ -444,6 +515,31 @@ public class NonViralNameParserImpl
 
 		return fullString;
 	}
+
+	/**
+     * Extracts the original spelling string and adds it to the original source as <code>originalNameString</code>.
+     * The original spelling part is deleted from the reference String.
+     * @return  String the new (shortend) reference String
+     */
+    public String parseOriginalSpelling(String fullString, INonViralName nameToBeFilled, boolean makeEmpty) {
+
+        Pattern hasOrginalSpellingPattern = Pattern.compile("(" + pOriginalSpelling + ")");
+        Matcher hasOrginalSpellingMatcher = hasOrginalSpellingPattern.matcher(fullString);
+
+        if (hasOrginalSpellingMatcher.find()) {
+            String originalSpellingPhrase = hasOrginalSpellingMatcher.group(0);
+            String originalSpellingStr = originalSpellingPhrase.substring(originalSpellingStart.length());
+            originalSpellingStr = originalSpellingStr.substring(0, originalSpellingStr.length() - originalSpellingEnd.length()+1);
+            nameToBeFilled.setOriginalNameString(originalSpellingStr);
+            fullString = fullString.replace(originalSpellingPhrase, "").trim();
+        }
+
+        if (makeEmpty){
+            nameToBeFilled.setOriginalSpelling(null);
+        }
+
+        return fullString;
+    }
 
 
 	private void parseReference(INonViralName nameToBeFilled, String strReference, boolean isInReference){
@@ -1050,6 +1146,7 @@ public class NonViralNameParserImpl
 		    if (StringUtils.isNotBlank(authorString) ){
 				handleAuthors(nameToBeFilled, fullNameString, authorString);
 			}
+		    handleOriginalSpelling(nameToBeFilled);
 		    return;
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.RankNotSupported);

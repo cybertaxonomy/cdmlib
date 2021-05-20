@@ -25,7 +25,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 
-import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
@@ -41,7 +40,8 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed disabled to reduce clutter in indexes, since this type is not used by any search
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
-public class MarkerType extends DefinedTermBase<MarkerType> {
+public class MarkerType extends AvailableForIdentifiableBase<MarkerType> {
+
 	private static final long serialVersionUID = -9117424749919907396L;
 	public static final Logger logger = Logger.getLogger(MarkerType.class);
 

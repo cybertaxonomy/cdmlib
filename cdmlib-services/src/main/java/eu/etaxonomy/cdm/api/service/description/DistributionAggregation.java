@@ -23,6 +23,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.search.Search;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -67,13 +68,13 @@ import eu.etaxonomy.cdm.model.term.VocabularyEnum;
  *
  * @author Anton Güntsch (author of original Transmission Engine Occurrence version 14 written in Visual Basic)
  * @author Andreas Kohlbecker (2013, porting Transmission Engine Occurrence to Java)
+ * @author a.mueller (refactoring and merge with Structured Description Aggregation)
  * @since Feb 22, 2013
  */
 public class DistributionAggregation
             extends DescriptionAggregationBase<DistributionAggregation,DistributionAggregationConfiguration>{
 
     public static final Logger logger = Logger.getLogger(DistributionAggregation.class);
-
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "description.elements.area",
@@ -83,7 +84,6 @@ public class DistributionAggregation
 //            "description.elements.multilanguageText",
 //            "name.status.type",
     });
-
 
     /**
      * A map which contains the status terms as key and the priority as value
@@ -104,8 +104,8 @@ public class DistributionAggregation
 // ********************* METHODS *********************************/
 
     @Override
-    protected void preAggregate() {
-        subTask("make status order");
+    protected void preAggregate(IProgressMonitor monitor) {
+        monitor.subTask("make status order");
 
         // take start time for performance testing
         double start = System.currentTimeMillis();
@@ -118,7 +118,6 @@ public class DistributionAggregation
         makeSuperAreas();
         double end2 = System.currentTimeMillis();
         logger.info("Time elapsed for making super areas : " + (end2 - end1) / (1000) + "s");
-
     }
 
     @Override
@@ -394,6 +393,9 @@ public class DistributionAggregation
 
             LinkedList<Taxon> childStack = new LinkedList<>();
             for (TaxonNode node : taxonNode.getChildNodes()){
+                if (node == null){
+                    continue;  //just in case if sortindex is broken
+                }
                 Taxon child = CdmBase.deproxy(node.getTaxon());
                 //TODO maybe we should also use child catching from taxon node filter
                 //     we could e.g. clone the filter and set the parent as subtree filter

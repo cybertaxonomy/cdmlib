@@ -47,7 +47,7 @@ public class TitleWithoutYearAndAuthorHelper {
 
     public static String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev, boolean isNomRef){
         ReferenceType type = ref.getType();
-        if (! DefaultReferenceCacheStrategy.isNomRef(type)){
+        if (! ReferenceDefaultCacheStrategy.isNomRef(type)){
             logger.warn("getTitleWithoutYearAndAuthor should not be required"
                     + " for reference type " + type.getLabel() +
                     " and does not exist. Use Generic getTitleWithoutYearAndAuthorGeneric instead");
@@ -64,7 +64,9 @@ public class TitleWithoutYearAndAuthorHelper {
             return getTitleWithoutYearAndAuthorWebPage(ref, isAbbrev);
         }else if (type == ReferenceType.Thesis) {
             return getTitleWithoutYearAndAuthorThesis(ref, isAbbrev);
-        }else if (type == ReferenceType.Section || type == ReferenceType.BookSection){
+        }else if(type == ReferenceType.BookSection){
+            return getTitleWithoutYearAndAuthorBookSection(ref, isAbbrev);
+        }else if (type == ReferenceType.Section || type == ReferenceType.BookSection ){
             // not needed in Section
             logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");
             return null;
@@ -84,7 +86,7 @@ public class TitleWithoutYearAndAuthorHelper {
         if (journal != null){
             journalTitel = CdmUtils.getPreferredNonEmptyString(journal.getTitle(), journal.getAbbrevTitle(), isAbbrev, true);
         }else{
-            journalTitel = DefaultReferenceCacheStrategy.UNDEFINED_JOURNAL;
+            journalTitel = ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL;
         }
 
         String series = Nz(article.getSeriesPart()).trim();
@@ -93,26 +95,31 @@ public class TitleWithoutYearAndAuthorHelper {
         boolean needsComma = false;
 
         //inJournal
-        String nomRefCache = isNomRef? "in ": prefixArticleReferenceJounal;
+        String result = isNomRef? "in ": prefixArticleReferenceJounal;
 
         //titelAbbrev
         if (isNotBlank(journalTitel)){
-            nomRefCache = nomRefCache + journalTitel;
-            needsComma = makeNeedsCommaArticle(needsComma, nomRefCache, volume, series);
+            result = result + journalTitel;
+            needsComma = makeNeedsCommaArticle(needsComma, result, volume, series);
             if (! needsComma){
-                nomRefCache = nomRefCache + blank;
+                result = result + blank;
             }
         }
 
         //series and vol.
-        nomRefCache = getSeriesAndVolPartArticle(series, volume, needsComma, nomRefCache);
+        result = getSeriesAndVolPartArticle(series, volume, needsComma, result);
 
         //delete "."
-        while (nomRefCache.endsWith(".")){
-            nomRefCache = CdmUtils.removeTrailingDots(nomRefCache);
+        while (result.endsWith(".")){
+            result = CdmUtils.removeTrailingDots(result);
         }
 
-        return nomRefCache.trim();
+        String articleTitle = CdmUtils.getPreferredNonEmptyString(article.getTitle(), article.getAbbrevTitle(), isAbbrev, true);
+        if (!isNomRef && isNotBlank(articleTitle)){
+            articleTitle = CdmUtils.addTrailingDotIfNotExists(articleTitle);
+            result = articleTitle + " " + result;
+        }
+        return result.trim();
     }
 
 
@@ -143,7 +150,6 @@ public class TitleWithoutYearAndAuthorHelper {
         if(lastCharIsDouble  && edition.length() == 0 && refSeriesPart.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
             title =  title.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
         }
-
 
         boolean needsComma = false;
         //titelAbbrev
@@ -191,13 +197,20 @@ public class TitleWithoutYearAndAuthorHelper {
         nomRefCache += volumePart;
 
         //delete .
-        while (nomRefCache.endsWith(".")){
-            nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
-        }
+        nomRefCache = CdmUtils.removeTrailingDots(nomRefCache);
 
         return nomRefCache.trim();
     }
 
+    private static String getTitleWithoutYearAndAuthorBookSection(Reference ref, boolean isAbbrev){
+        if (ref == null){
+            return null;
+        }
+        String title = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
+        title = CdmUtils.removeTrailingDots(title);
+
+        return title.trim();
+    }
 
     public static  String getTitleWithoutYearAndAuthorGeneric(Reference genericReference, boolean isAbbrev){
         if (genericReference == null){
@@ -223,7 +236,6 @@ public class TitleWithoutYearAndAuthorHelper {
 //      if(lastCharIsDouble  && edition.length() == 0 && series.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
 //          titelAbbrev =  titelAbbrev.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
 //      }
-
 
         boolean needsComma = false;
         //titelAbbrev

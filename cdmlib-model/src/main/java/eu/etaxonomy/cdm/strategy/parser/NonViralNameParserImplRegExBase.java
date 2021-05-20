@@ -93,8 +93,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String InfraGenusMarker = "(n|notho)?(subg(en)?\\.|sect\\.|subsect\\.|ser\\.|subser\\.|t\\.infgen\\.|\\[unranked\\]|\\[ranglos\\])";
     protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
     protected static String infraSpeciesMarkerNoNotho = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|forma|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|\\[ranglos\\]|tax\\." + fWs + "infrasp\\.)";
-    protected static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
-    protected static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
+    public static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
+    public static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
 
     //AuthorString
@@ -161,8 +161,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     //static String pPages = pPage + "(," + fWs + "(" + pPage + "|" + pTabFig + ")" + ")?";
     protected static String pPages = "(" + pSinglePages +"|" + pMultiPages +")";
     protected static String pPagesTabFig = pPages +"([,\\.]" + fWs + pTabFigPl + "){1,2}";
-
-
 
     protected static String pCouv = "couv\\." + fWs + "\\d{1,3}";
 
@@ -240,6 +238,14 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern referencePattern = Pattern.compile(pReference);
     protected static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
 
+    protected static String originalSpellingName = "("+capitalEpiWord +")?(" + fWs + "\\(" + capitalEpiWord + "\\))?(" +
+                        fWs + nonCapitalEpiWord+")?(" + oWs + infraSpeciesMarker + oWs + nonCapitalEpiWord + ")?";
+    protected static String originalSpellingStart = "\\[as \"";
+    protected static String originalSpellingEnd = "\"\\]";
+
+    protected static String pOriginalSpelling = oWs + originalSpellingStart + originalSpellingName + originalSpellingEnd;
+    protected static Pattern originalSpellingPattern = Pattern.compile(pOriginalSpelling);
+
     protected static String pNomStatusNom =
             "nom\\." + fWs + "(ambig\\.|dub\\.|confus\\.|superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.(\\s*(prop|des)\\.)?|altern(ativ)?\\.|subnud\\.|nov\\.|legit\\.|sanct\\.|val\\.|"+
     			"rej\\.("+ fWs + "prop\\.)?|provis\\.|utique"+fWs+"rej\\.("+fWs+"prop\\.)?)";
@@ -256,14 +262,12 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pNomStatusPhrase = "(?:" + pNomStatusPhrase1 + "|" + pNomStatusPhrase2 + ")";
 
 // Soraya
-//opus utique oppr.
 //pro syn.
 //provisional synonym
 //fossil name
 
-
     //cultivars and hybrids
-    protected static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
+    protected static String cultivar = oWs + "'..+'"; //Careful with apostorph in author names
     protected static String cultivarMarker = oWs + "(cv\\.|')";
     protected static String notho = "notho";
     protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|"+notho+")";

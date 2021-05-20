@@ -149,7 +149,7 @@ public final class TcsRdfTransformer {
 		}else if (tcsBotanical.equals(nomCode)){return NomenclaturalCode.ICNAFP;
 		}else if (tcsICZN.equals(nomCode)){return NomenclaturalCode.ICZN;
 		}else if (tcsICNCP.equals(nomCode)){return NomenclaturalCode.ICNCP;
-		}else if (tcsBacteriological.equals(nomCode)){return NomenclaturalCode.ICNB;
+		}else if (tcsBacteriological.equals(nomCode)){return NomenclaturalCode.ICNP;
 		}else if (tcsViral.equals(nomCode)){return NomenclaturalCode.ICVCN;
 		}
 		else {

@@ -6,13 +6,11 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.common.media;
 
 import org.apache.log4j.Logger;
 
 /**
- *
  * @author n.hoffmann
  * @since 13.11.2008
  */

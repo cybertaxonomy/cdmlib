@@ -9,10 +9,12 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.joda.time.Partial;
 
@@ -60,6 +62,8 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
      *
      * @param fieldUnit
      *     The FieldUnit entity to create a DTO for. Is null save.
+     * @param maxDepth
+     *     The max number of levels to walk into the derivation tree, <code>null</code> means unlimited.
      * @param typeIncludeFilter
      *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
      */
@@ -94,7 +98,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
 	 *     The FieldUnit entity to create a DTO for
 	 * @param maxDepth
      *   The maximum number of derivation events levels up to which derivatives are to be collected.
-     *   <code>NULL</code> means infinitely.
+     *   <code>null</code> means infinitely.
 	 * @param typeIncludeFilter
 	 *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
 	 */
@@ -134,8 +138,6 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             setDate(gatheringEvent.getGatheringDate());
         }
 
-        Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
-        assembleDerivatives(fieldUnit, maxDepth, typeIncludeFilter, unitIdenfierLabelsByCollections);
 
         // assemble derivate data DTO
         DerivationTreeSummaryDTO derivateDataDTO = DerivationTreeSummaryDTO.fromEntity(fieldUnit, null);
@@ -149,43 +151,67 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
             summaryLabel = fieldUnit.getTitleCache();
         }
 
-        List<String> derivativesAccessionNumbers = new ArrayList<>();
-        for(List<String> labels : unitIdenfierLabelsByCollections.values()) {
-            derivativesAccessionNumbers.addAll(labels);
-        }
-        if (!derivativesAccessionNumbers.isEmpty()) {
-            summaryLabel += " (";
-            for (String accessionNumber : derivativesAccessionNumbers) {
-                if (accessionNumber != null && !accessionNumber.isEmpty()) {
-                    summaryLabel += accessionNumber + SEPARATOR_STRING;
-                }
-            }
-            summaryLabel = removeTail(summaryLabel, SEPARATOR_STRING);
-            summaryLabel += ")";
-        }
-        setSummaryLabel(summaryLabel);
-
-        // assemble herbaria string
-        String herbariaString = "";
-        for (eu.etaxonomy.cdm.model.occurrence.Collection collection : unitIdenfierLabelsByCollections.keySet()) {
-            int unitCount = unitIdenfierLabelsByCollections.get(collection).size();
-            if (collection.getCode() != null) {
-                herbariaString += collection.getCode();
-            }
-            if (unitCount > 1) {
-                herbariaString += "(" + unitCount + ")";
-            }
-            herbariaString += SEPARATOR_STRING;
-        }
-        herbariaString = removeTail(herbariaString, SEPARATOR_STRING);
-        setCollectionStatistics(herbariaString);
+        addAllDerivatives(assembleDerivatives(fieldUnit, maxDepth, typeIncludeFilter));
     }
 
-    private String removeTail(String string, final String tail) {
-        if (string.endsWith(tail)) {
-            string = string.substring(0, string.length() - tail.length());
+    @Override
+    public void updateTreeDependantData() {
+        TreeLabels treeLabels = assembleLablesFromTree(true, true);
+        setSummaryLabel(treeLabels.summaryLabel);
+        setCollectionStatistics(treeLabels.collectionsStatistics);
+    }
+
+    /**
+     * Walks the tree of sub-derivatives to collect the summary label and the collection statistics.
+     * The latter lists all collections with the number of specimens which are involved in this tree.
+     */
+    public TreeLabels assembleLablesFromTree(boolean doSummaryLabel, boolean collectionsStatistics) {
+
+        TreeLabels treeLabels = new TreeLabels();
+        Map<CollectionDTO, List<String> > unitIdenfierLabelsByCollections = new HashMap<>();
+
+        // TODO collectDerivatives(maxDepth)
+        for(DerivedUnitDTO subDTO : collectDerivatives()) {
+            CollectionDTO collectionDTO = subDTO.getCollection();
+            if (collectionDTO != null) {
+                //combine collection with identifier
+                String identifier = subDTO.getMostSignificantIdentifier();
+                if (identifier != null && collectionDTO.getCode()!=null) {
+                    identifier = (collectionDTO.getCode()!=null?collectionDTO.getCode():"[no collection]")+" "+identifier;
+                }
+                if(!unitIdenfierLabelsByCollections.containsKey(collectionDTO)) {
+                    unitIdenfierLabelsByCollections.put(collectionDTO, new ArrayList<>());
+                }
+                unitIdenfierLabelsByCollections.get(collectionDTO).add(identifier);
+            }
         }
-        return string;
+
+        if(doSummaryLabel) {
+            String summaryLabel = this.label;
+            List<String> derivativesAccessionNumbers = new ArrayList<>();
+            for(List<String> labels : unitIdenfierLabelsByCollections.values()) {
+                derivativesAccessionNumbers.addAll(labels);
+            }
+            derivativesAccessionNumbers = derivativesAccessionNumbers.stream().filter(s -> s != null).sorted().collect(Collectors.toList());
+            if (!derivativesAccessionNumbers.isEmpty()) {
+                summaryLabel += " (" + String.join(SEPARATOR_STRING, derivativesAccessionNumbers) +  ")";
+            }
+            treeLabels.summaryLabel = summaryLabel;
+        }
+
+        if(collectionsStatistics) {
+            List<String> collectionStats = new ArrayList<>();
+            for (CollectionDTO collectionDTO : unitIdenfierLabelsByCollections.keySet()) {
+                int unitCount = unitIdenfierLabelsByCollections.get(collectionDTO).size();
+                if (collectionDTO.getCode() != null) {
+                    collectionStats.add(collectionDTO.getCode() + (unitCount > 1 ? "(" + unitCount + ")" : ""));
+                }
+            }
+            Collections.sort(collectionStats);
+            treeLabels.collectionsStatistics = String.join(SEPARATOR_STRING, collectionStats);
+        }
+
+        return treeLabels;
     }
 
     public String getCountry() {
@@ -301,5 +327,10 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
      */
     public void setCollectioDTO(CollectionDTO collection) {
         this.collection = collection;
+    }
+
+    static class TreeLabels {
+        String summaryLabel = null;
+        String collectionsStatistics = null;
     }
 }

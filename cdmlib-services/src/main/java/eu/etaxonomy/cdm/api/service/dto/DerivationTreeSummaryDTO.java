@@ -60,7 +60,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
      *      The {@link SpecimenOrObservationBase} to create the summary for.
      * @param specimenIdentifier
      *      In case of a {@link DerivedUnit} being passed to this factory method, the <code>specimenIdentifier</code> should
-     *      be set to the result of {@link DerivedUnitDTO#composeSpecimenIdentifier(DerivedUnit)}
+     *      be set to the result of {@link DerivedUnitDTO#composeSpecimenShortTitle(DerivedUnit)}
      * @return
      *      The new instance.
      */
@@ -68,7 +68,7 @@ public class DerivationTreeSummaryDTO implements Serializable {
 
         DerivationTreeSummaryDTO derivateDataDTO = new DerivationTreeSummaryDTO();
 
-        Collection<DerivedUnit> childDerivates = specimenOrObservation.collectDerivedUnits(null);
+        Collection<DerivedUnit> childDerivates = specimenOrObservation.collectDerivedUnits(0);
         for (DerivedUnit childDerivate : childDerivates) {
             // assemble molecular data
             //pattern: DNAMarker [contig1, primer1_1, primer1_2, ...][contig2, primer2_1, ...]...

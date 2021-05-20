@@ -468,9 +468,10 @@ public abstract class TaxonBase<S extends ITaxonCacheStrategy>
         TaxonBase<S> result;
         try {
             result = (TaxonBase<S>)super.clone();
-
-//            result.setSec(null);
-
+            if (this.getSecSource() != null){
+                result.setSecSource(this.getSecSource().clone());
+                result.getSecSource().setSourcedTaxon(result);
+            }
             return result;
         } catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");

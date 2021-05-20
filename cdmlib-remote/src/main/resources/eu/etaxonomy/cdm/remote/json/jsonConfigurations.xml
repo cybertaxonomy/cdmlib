@@ -25,8 +25,11 @@
              <value>TermNode.children</value>
              <value>TermNode.feature</value>
 
+             <!-- all NamedSourceBase classes need to be added here -->   
              <value>NomenclaturalStatus.source</value>
              <value>DescriptionElementSource.citation</value>
+             <value>SecundumSource.citation</value>
+             <value>NamedSource.citation</value>
 
              <value>TreeNode.data</value>
              <value>TreeNode.data</value>
@@ -62,8 +65,8 @@
              <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
              <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> -->
 
-             <value>Synonym.sec</value>
-             <value>Taxon.sec</value>
+             <value>Synonym.secSource</value>
+             <value>Taxon.secSource</value>
 
              <value>StateData.state</value>
              <value>StateData.modifiers</value>

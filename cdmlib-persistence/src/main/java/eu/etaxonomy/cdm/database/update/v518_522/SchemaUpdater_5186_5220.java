@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
  * @author a.mueller
- * @date 02.09.2020
+ * @date 15.02.2021
  */
 public class SchemaUpdater_5186_5220 extends SchemaUpdaterBase {
 

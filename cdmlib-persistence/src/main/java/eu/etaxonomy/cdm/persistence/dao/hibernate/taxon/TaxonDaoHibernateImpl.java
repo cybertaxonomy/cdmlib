@@ -245,7 +245,7 @@ public class TaxonDaoHibernateImpl
     @Override
     @SuppressWarnings("unchecked")
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
-            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, String queryString, Classification classification, TaxonNode subtree,
+            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, boolean includeAuthors, String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order) {
 
         if (order == null){
@@ -253,7 +253,7 @@ public class TaxonDaoHibernateImpl
         }
 
         boolean doCount = false;
-        boolean includeAuthors = false;
+
         @SuppressWarnings("rawtypes")
         List<UuidAndTitleCache<? extends IdentifiableEntity>> resultObjects = new ArrayList<>();
         if (doNamesWithoutTaxa){
@@ -270,8 +270,9 @@ public class TaxonDaoHibernateImpl
         		return resultObjects;
         	}
         }
+        String searchField = includeAuthors ? "titleCache" : "nameCache";
         Query query = prepareTaxaByNameForEditor(doTaxa, doSynonyms, doMisappliedNames, doCommonNames, includeUnpublished,
-                "nameCache", queryString, classification, subtree, matchMode, namedAreas, doCount, order);
+                searchField, queryString, classification, subtree, matchMode, namedAreas, doCount, order);
 
         if (query != null){
             List<Object[]> results = query.list();
@@ -1937,6 +1938,9 @@ public class TaxonDaoHibernateImpl
         return results;
     }
 
+   
+
+
     @Override
     public  List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Integer limit, String pattern){
         Session session = getSession();
@@ -1965,6 +1969,8 @@ public class TaxonDaoHibernateImpl
 
         return getUuidAndTitleCache(query);
     }
+
+
 
     @Override
     protected List<UuidAndTitleCache<TaxonBase>> getUuidAndTitleCache(Query query){

@@ -369,6 +369,11 @@ public interface ITaxonNameBase
      */
     public void setOriginalSpelling(TaxonName originalSpelling);
 
+    /**
+     * Sets the orginal name string in the nomenclatural source.
+     * Creates the source if it does not exist.
+     */
+    public void setOriginalNameString(String originalNameString);
 
     /**
      * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.
@@ -954,7 +959,7 @@ public interface ITaxonNameBase
     boolean isCultivar();
 
     /**
-     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNB} or
+     * Returns <code>true</code> if this name is of type {@link NomenclaturalCode#ICNP} or
      * any sub type and is supposed to be handled via {@link IBacterialName}
      */
     boolean isBacterial();

@@ -32,28 +32,72 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 	public static final String ET_AL_TEAM_CONCATINATION_FULL = " & ";
 	public static final String ET_AL_TEAM_CONCATINATION_ABBREV = " & ";
 
+	private static final int DEFAULT_ET_AL_POS = Integer.MAX_VALUE;
+	private static final int DEFAULT_NOM_ET_AL_POS = Integer.MAX_VALUE;
+
 	public static final String EMPTY_TEAM = "-empty team-";
+
+	private static TeamDefaultCacheStrategy instance;
+	private static TeamDefaultCacheStrategy instance2;
+	private static TeamDefaultCacheStrategy instance3;
 
 	final static UUID uuid = UUID.fromString("1cbda0d1-d5cc-480f-bf38-40a510a3f223");
 
-	private int etAlPosition = 4;
+	private final int etAlPositionTitleCache;   //NO_ET_AL_POS is default,
+    private final int etAlPositionNomTitleCache;   //NOMCACHE_ET_AL_POS is default
+    private final int etAlPositionFamilyTitle;   //NOMCACHE_ET_AL_POS is default
+    private final int etAlPositionFullTitle;   //NOMCACHE_ET_AL_POS is default
+    private final int etAlPositionCollectorTitle;   //NOMCACHE_ET_AL_POS is default
 
 // ************************* FACTORY ************************/
 
-	static public TeamDefaultCacheStrategy NewInstance(){
-		return new TeamDefaultCacheStrategy();
+    public static TeamDefaultCacheStrategy NewInstance(){
+		return new TeamDefaultCacheStrategy(DEFAULT_ET_AL_POS, DEFAULT_NOM_ET_AL_POS, DEFAULT_ET_AL_POS,
+		        DEFAULT_ET_AL_POS, DEFAULT_ET_AL_POS);
 	}
+    public static TeamDefaultCacheStrategy NewInstanceTitleEtAl(int etAlPositionForTitleCache){
+        return new TeamDefaultCacheStrategy(etAlPositionForTitleCache, DEFAULT_NOM_ET_AL_POS, DEFAULT_ET_AL_POS,
+                DEFAULT_ET_AL_POS, DEFAULT_ET_AL_POS);
+    }
+    public static TeamDefaultCacheStrategy NewInstanceNomEtAl(int etAlPositionForNomenclaturalCache){
+        return new TeamDefaultCacheStrategy(DEFAULT_ET_AL_POS, etAlPositionForNomenclaturalCache,
+                DEFAULT_ET_AL_POS, DEFAULT_ET_AL_POS, DEFAULT_ET_AL_POS);
+    }
+    public static TeamDefaultCacheStrategy NewInstance(int etAlPostionForAll){
+        return new TeamDefaultCacheStrategy(etAlPostionForAll, etAlPostionForAll,
+                etAlPostionForAll, etAlPostionForAll, etAlPostionForAll);
+    }
 
-    static public TeamDefaultCacheStrategy NewInstance(int etAlPosition){
-        TeamDefaultCacheStrategy result = new TeamDefaultCacheStrategy();
-        result.setEtAlPosition(etAlPosition);
-        return result;
+    public static TeamDefaultCacheStrategy INSTANCE(){
+        if (instance == null){
+            instance = NewInstance();
+        }
+        return instance;
+    }
+
+    public static TeamDefaultCacheStrategy INSTANCE_ET_AL_2(){
+        if (instance2 == null){
+            instance2 = NewInstance(2);
+        }
+        return instance2;
+    }
+
+    public static TeamDefaultCacheStrategy INSTANCE_ET_AL_3(){
+        if (instance3 == null){
+            instance3 = NewInstance(3);
+        }
+        return instance3;
     }
 
 // ********************* CONSTRUCTOR ***************************/
 
-	private TeamDefaultCacheStrategy() {
-		super();
+	private TeamDefaultCacheStrategy(int etAlPositionTitleCache, int etAlPositionForNomenclaturalCache,
+	        int etAlPositionFamilyTitle, int etAlPositionFullTitle, int etAlPositionCollectorTitle) {
+	    this.etAlPositionTitleCache = etAlPositionTitleCache;
+	    this.etAlPositionNomTitleCache = etAlPositionForNomenclaturalCache;
+	    this.etAlPositionFamilyTitle = etAlPositionFamilyTitle;
+	    this.etAlPositionFullTitle = etAlPositionFullTitle;
+	    this.etAlPositionCollectorTitle = etAlPositionCollectorTitle;
 	}
 
 	@Override
@@ -61,98 +105,104 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		return uuid;
 	}
 
-// ************** GETTER / SETTER *******************/
+    private enum CacheType{
+        TITLECACHE,
+        ABBREV,
+        FULL,
+        COLLECTOR,
+        FAMILY;
 
-    public int getEtAlPosition() {
-        return etAlPosition;
+        private String getCache(Person member){
+            if (this == TITLECACHE){
+                return member.getTitleCache();
+            }else if (this == ABBREV){
+                return member.getNomenclaturalTitle();
+            }else if (this == FULL){
+                return member.getFullTitle();
+            }else if (this == FAMILY){
+                return member.getCacheStrategy().getFamilyTitle(member);
+//          }else if (this == COLLECTOR){
+//              return member.getCollectroCache();
+            }
+            throw new IllegalStateException("CacheType not supported: " + this);
+        }
     }
 
-    public void setEtAlPosition(int etAlPosition) {
-        this.etAlPosition = etAlPosition;
+// ************** GETTER *******************/
+
+    public int getEtAlPositionNomTitleCache() {
+        return etAlPositionNomTitleCache;
+    }
+
+    public int getEtAlPositionTitleCache() {
+        return etAlPositionTitleCache;
     }
 
 // *********************** MTEHODS ****************/
 
-	@Override
-    public String getNomenclaturalTitle(Team team) {
-		String result = "";
-
-		List<Person> teamMembers = team.getTeamMembers();
-		int i = 0;
-		for (Person teamMember : teamMembers){
-			if(teamMember == null){
-                // this can happen in UIs in the process of adding new members
-			    continue;
-			}
-			i++;
-			String concat = concatString(team, teamMembers, i);
-			result += concat + teamMember.getNomenclaturalTitle();
-		}
-		if (teamMembers.size() == 0){
-			result = team.getTitleCache();
-		}else if (team.isHasMoreMembers()){
-		    result = addHasMoreMembers(result);
-		}
-		return result;
-	}
 
     @Override
     public String getTitleCache(Team team) {
+        return getCache(team, CacheType.TITLECACHE, etAlPositionTitleCache);
+    }
+
+    @Override
+    public String getNomenclaturalTitle(Team team) {
+        return getCache(team, CacheType.ABBREV, etAlPositionNomTitleCache);
+    }
+
+    @Override
+    public String getFullTitle(Team team) {
+        return getCache(team, CacheType.FULL, etAlPositionFullTitle);
+    }
+
+    @Override
+    public String getFamilyTitle(Team team) {
+        return getCache(team, CacheType.FAMILY, etAlPositionFamilyTitle);
+    }
+
+    private String getCache(Team team, CacheType cacheType, int etAlPosition) {
+
         String result = "";
         List<Person> teamMembers = team.getTeamMembers();
-
-        for (int i = 1; i <= teamMembers.size() && i < etAlPosition; i++){
+        int size = teamMembers.size();
+        for (int i = 1; i <= size && (i < etAlPosition || (size == etAlPosition && !team.isHasMoreMembers())); i++){
             Person teamMember = teamMembers.get(i-1);
             if(teamMember == null){
                 // this can happen in UIs in the process of adding new members
                 continue;
             }
-            String concat = concatString(team, teamMembers, i);
-            result += concat + teamMember.getTitleCache();
+            String concat = teamConcatSeparator(team, i);
+            result += concat + cacheType.getCache(teamMember);
         }
         if (teamMembers.size() == 0){
-            result = EMPTY_TEAM;
-        } else if (team.isHasMoreMembers() || teamMembers.size() >= etAlPosition){
-            result += ET_AL_TEAM_CONCATINATION_FULL + "al.";
+            if (cacheType == CacheType.TITLECACHE){
+                result = EMPTY_TEAM;
+            }else{
+                return team.getTitleCache();
+            }
+        } else if (team.isHasMoreMembers() || teamMembers.size() > etAlPosition){
+            result = addHasMoreMembers(result);
         }
         return result;
     }
 
-	@Override
-    public String getFullTitle(Team team) {
-		String result = "";
-		List<Person> teamMembers = team.getTeamMembers();
-
-		int i = 0;
-		for (Person teamMember : teamMembers){
-		    if(teamMember == null){
-                // this can happen in UIs in the process of adding new members
-                continue;
-            }
-			i++;
-			String concat = concatString(team, teamMembers, i);
-			result += concat + teamMember.getFullTitle();
-		}
-		if (teamMembers.size() == 0){
-			result = EMPTY_TEAM;
-		} else if (team.isHasMoreMembers()){
-		    result += ET_AL_TEAM_CONCATINATION_FULL + "al.";
-		}
-		return result;
-	}
-
-	public static String concatString(Team team, List<Person> teamMembers, int i) {
-		String concat;
-		if (i <= 1){
-			concat = "";
-		}else if (i < teamMembers.size() || ( team.isHasMoreMembers() && i == teamMembers.size())){
-			concat = STD_TEAM_CONCATINATION;
+    /**
+     * Computes the team concat separator for the member
+     * at position <code>index</code>
+     * @param team
+     * @param index
+     */
+	public static String teamConcatSeparator(Team team, int index) {
+	    List<Person> teamMembers = team.getTeamMembers();
+	    if (index <= 1){
+			return "";
+		}else if (index < teamMembers.size() || ( team.isHasMoreMembers() && index == teamMembers.size())){
+			return STD_TEAM_CONCATINATION;
 		}else{
-			concat = FINAL_TEAM_CONCATINATION;
+			return FINAL_TEAM_CONCATINATION;
 		}
-		return concat;
 	}
-
 
     /**
      * Add the et al. to the team string
@@ -162,5 +212,4 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     public static String addHasMoreMembers(String str) {
         return str + ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
     }
-
 }

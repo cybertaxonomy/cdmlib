@@ -98,7 +98,9 @@ public interface ITaxonService
      * @param setNameInSource
      * @return
      */
-    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource);
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, boolean newUuidForAcceptedTaxon);
+
+    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon);
 
     /**
      * Changes a synonym into an accepted taxon and removes
@@ -214,7 +216,6 @@ public interface ITaxonService
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
             SynonymType newSynonymType) throws HomotypicalGroupChangeException;
 
-
     /**
      * Moves a synonym to another taxon and removes the old synonym relationship.
      *
@@ -239,27 +240,16 @@ public interface ITaxonService
      * 		(2) synonym is in homotypic group with other synonyms and <code>moveHomotypicGroup</code> is false
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym, Taxon newTaxon, boolean moveHomotypicGroup,
-            SynonymType newSynonymType, Reference newSecundum,
+            SynonymType newSynonymType, UUID newSecundumUuid,
             String newSecundumDetail, boolean keepSecundumIfUndefined) throws HomotypicalGroupChangeException;
 
-
     /**
-     * @param oldSynonym
-     * @param newTaxonUUID
-     * @param moveHomotypicGroup
-     * @param newSynonymType
-     * @param reference
-     * @param referenceDetail
-     * @param keepReference
-     * @return
-     * @throws HomotypicalGroupChangeException
-     *
      * @see {@link #moveSynonymToAnotherTaxon(Synonym, Taxon, boolean, SynonymType, Reference, String, boolean)}
      */
     public UpdateResult moveSynonymToAnotherTaxon(Synonym oldSynonym,
             UUID newTaxonUUID, boolean moveHomotypicGroup,
             SynonymType newSynonymType,
-            Reference newSecundum, String newSecundumDetail, boolean keepSecundumIfUndefined)
+            UUID newSecundumUuid, String newSecundumDetail, boolean keepSecundumIfUndefined)
             throws HomotypicalGroupChangeException;
 
     /**
@@ -927,81 +917,26 @@ public interface ITaxonService
             TaxonNode subtreeFilter, boolean includeEntity, TaxonTitleType titleType,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-    /**
-     * @param synonymUUid
-     * @param acceptedTaxonUuid
-     * @param setNameInSource
-     * @return
-     */
-    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid, boolean setNameInSource);
-
-    /**
-     * @param taxonUuid
-     * @param config
-     * @param classificationUuid
-     * @return
-     */
     public DeleteResult deleteTaxon(UUID taxonUuid, TaxonDeletionConfigurator config, UUID classificationUuid);
-
 
 	public UpdateResult moveFactualDateToAnotherTaxon(UUID fromTaxonUuid,
 			UUID toTaxonUuid);
 
-
-    /**
-     * @param synonymUuid
-     * @param toTaxonUuid
-     * @param taxonRelationshipType
-     * @param citation
-     * @param microcitation
-     * @return
-     */
     public UpdateResult changeSynonymToRelatedTaxon(UUID synonymUuid, UUID toTaxonUuid, TaxonRelationshipType taxonRelationshipType,
             Reference citation, String microcitation);
 
-    /**
-     * @param fromTaxonUuid
-     * @param toTaxonUuid
-     * @param oldRelationshipType
-     * @param synonymType
-     * @return
-     * @throws DataChangeNoRollbackException
-     */
     public UpdateResult changeRelatedTaxonToSynonym(UUID fromTaxonUuid, UUID toTaxonUuid,
             TaxonRelationshipType oldRelationshipType, SynonymType synonymType) throws DataChangeNoRollbackException;
 
     /**
      * Returns a list of taxon relationships for a given taxon as DTO.
-     * @param taxonUuid
-     * @param directTypes
-     * @param inversTypes
-     * @param direction
-     * @param groupMisapplications
-     * @param includeUnpublished
-     * @param pageSize
-     * @param pageNumber
-     * @return
      */
     public TaxonRelationshipsDTO listTaxonRelationships(UUID taxonUuid,
             Set<TaxonRelationshipType> directTypes,
             Set<TaxonRelationshipType> inversTypes, Direction direction, boolean groupMisapplications,
             boolean includeUnpublished, Integer pageSize, Integer pageNumber);
 
-    /**
-     * @param clazz
-     * @param restrictions
-     * @param pageSize
-     * @param pageIndex
-     * @param orderHints
-     * @param propertyPaths
-     * @param includeUnpublished
-     * @return
-     */
     public <S extends TaxonBase> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
-
-
-
-
 
 }

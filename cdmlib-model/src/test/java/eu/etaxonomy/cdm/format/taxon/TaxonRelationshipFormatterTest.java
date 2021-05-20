@@ -99,7 +99,7 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         taxonRel = fromTaxon.addTaxonRelation(toTaxon, type, relSec, "123");
         reverse = false;
 
-        formatter = new TaxonRelationshipFormatter();
+        formatter = TaxonRelationshipFormatter.INSTANCE();
 
         languages = null;
     }
@@ -249,14 +249,14 @@ public class TaxonRelationshipFormatterTest extends TermTestBase{
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertTrue(str.contains("rel. sec. Macfarlane, Cheek & ToSecAuthor 1919"));
+        Assert.assertTrue(str.contains("rel. sec. Macfarlane & al. 1919"));
 
         //add et al.
         secRelTeam.setHasMoreMembers(true);
         tags = formatter.getTaggedText(taxonRel, reverse, languages);
         str = TaggedCacheHelper.createString(tags);
         System.out.println(str);
-        Assert.assertTrue(str.contains("rel. sec. Macfarlane, Cheek, ToSecAuthor & al. 1919"));
+        Assert.assertTrue(str.contains("rel. sec. Macfarlane & al. 1919"));
 
     }
 

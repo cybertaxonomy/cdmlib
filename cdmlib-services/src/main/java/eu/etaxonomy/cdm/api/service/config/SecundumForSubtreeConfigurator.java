@@ -1,5 +1,3 @@
-package eu.etaxonomy.cdm.api.service.config;
-
 /**
 * Copyright (C) 2017 EDIT
 * European Distributed Institute of Taxonomy
@@ -8,7 +6,7 @@ package eu.etaxonomy.cdm.api.service.config;
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
+package eu.etaxonomy.cdm.api.service.config;
 
 import java.util.UUID;
 
@@ -26,64 +24,34 @@ public class SecundumForSubtreeConfigurator extends ForSubtreeConfiguratorBase{
     private static final long serialVersionUID = -5181147074062916234L;
 
     private Reference newSecundum;
-    private boolean overwriteExistingAccepted = true;
-    private boolean overwriteExistingSynonyms = true;
+    private boolean overwriteExisting = true;
     private boolean emptySecundumDetail = true;
 
-
-    /**
-     * @return the emptySecundumDetail
-     */
-    public boolean isEmptySecundumDetail() {
-        return emptySecundumDetail;
-    }
-
-
-
-    public SecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor) {
+    public SecundumForSubtreeConfigurator(UUID subtreeUuid, Reference newSecundum, IRemotingProgressMonitor monitor, boolean includeRelations) {
         super(subtreeUuid, monitor);
         this.newSecundum = newSecundum;
-
-    }
-
-
-    public SecundumForSubtreeConfigurator(UUID subtreeUuid) {
-        super(subtreeUuid);
+        setIncludeMisapplications(includeRelations);  //#9611-note11   //for err. sec.
+        setIncludeProParteSynonyms(includeRelations); //#9611-note11   //for syn. sec.
     }
 
     public Reference getNewSecundum() {
         return newSecundum;
     }
-
-
     public void setNewSecundum(Reference newSecundum) {
         this.newSecundum = newSecundum;
     }
 
-
-
+    public boolean isEmptySecundumDetail() {
+        return emptySecundumDetail;
+    }
     public void setEmptySecundumDetail(boolean emptySecundumDetail) {
         this.emptySecundumDetail = emptySecundumDetail;
     }
 
-
-    public boolean isOverwriteExistingAccepted() {
-        return overwriteExistingAccepted;
+    public boolean isOverwriteExisting() {
+        return overwriteExisting;
     }
-
-
-    public void setOverwriteExistingAccepted(boolean overwriteExistingAccepted) {
-        this.overwriteExistingAccepted = overwriteExistingAccepted;
+    public void setOverwriteExisting(boolean overwriteExisting) {
+        this.overwriteExisting = overwriteExisting;
     }
-
-
-    public boolean isOverwriteExistingSynonyms() {
-        return overwriteExistingSynonyms;
-    }
-
-
-    public void setOverwriteExistingSynonyms(boolean overwriteExistingSynonyms) {
-        this.overwriteExistingSynonyms = overwriteExistingSynonyms;
-    }
-
 }

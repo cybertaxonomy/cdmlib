@@ -1942,31 +1942,17 @@ public class DerivedUnitFacade {
 
 	@Transient
 	public DeterminationEvent getPreferredDetermination() {
-		Set<DeterminationEvent> events = baseUnit().getDeterminations();
-		for (DeterminationEvent event : events){
-			if (event.getPreferredFlag() == true){
-				return event;
-			}
-		}
-		return null;
+		return baseUnit().getPreferredDetermination();
 	}
 
 	/**
 	 * This method returns the preferred determination.
 	 * @see #getOtherDeterminations()
 	 * @see #getDeterminations()
-	 * @return
 	 */
 	@Transient
 	public void setPreferredDetermination(DeterminationEvent newEvent) {
-		Set<DeterminationEvent> events = baseUnit().getDeterminations();
-		for (DeterminationEvent event : events){
-			if (event.getPreferredFlag() == true){
-				event.setPreferredFlag(false);
-			}
-		}
-		newEvent.setPreferredFlag(true);
-		events.add(newEvent);
+		baseUnit().setPreferredDetermination(newEvent);
 	}
 
 	/**
@@ -1977,14 +1963,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getOtherDeterminations() {
-		Set<DeterminationEvent> events = baseUnit().getDeterminations();
-		Set<DeterminationEvent> result = new HashSet<>();
-		for (DeterminationEvent event : events){
-			if (event.getPreferredFlag() != true){
-				result.add(event);
-			}
-		}
-		return result;
+		return baseUnit().getOtherDeterminations();
 	}
 
 	/**

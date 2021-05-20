@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -37,7 +38,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 
 	public UUID delete(TaxonNode persistentObject, boolean deleteChildren);
 
-   public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end);
+    public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end);
 
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
 
@@ -85,7 +86,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classification
      * @return
      */
-    List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
+   public List<TaxonNodeAgentRelation> listTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid,
             UUID agentUuid, UUID rankUuid, UUID relTypeUuid, Integer start, Integer limit, List<String> propertyPaths);
 
     /**
@@ -99,7 +100,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param classification
      * @return
      */
-    long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
+    public long countTaxonNodeAgentRelations(UUID taxonUuid, UUID classificationUuid, UUID agentUuid, UUID rankUuid, UUID relTypeUuid);
 
     /**
      * Computes a map treeIndex->rank(sortIndex) for each given taxon node treeIndex. Required by #5957.
@@ -111,7 +112,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      * @param maxRankOrderIndex max rank
      * @return
      */
-    Map<TreeIndex, Integer> rankOrderIndexForTreeIndex(List<TreeIndex> treeIndex, Integer minRankOrderIndex,
+    public Map<TreeIndex, Integer> rankOrderIndexForTreeIndex(List<TreeIndex> treeIndex, Integer minRankOrderIndex,
             Integer maxRankOrderIndex);
 
     /**
@@ -122,15 +123,28 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public Map<TreeIndex, UuidAndTitleCache<?>> taxonUuidsForTreeIndexes(Collection<TreeIndex> treeIndexSet);
 
+//----------------------------- SEC FOR SUBTREE -------------------------------/
+
     public int countSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExistingAccepted, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
     public int countSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExistingSynonyms, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
-    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+    public int countSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExistingRelations, boolean includeSharedTaxa, boolean emptySecundumDetail);
 
-    public  Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+    public Set<CdmBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+
+    public  Set<CdmBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor);
+
+    public  Set<CdmBase> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+            Set<UUID> relationTypes, boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail,
+            IProgressMonitor monitor);
+
+//----------------------------- PUBLISH FOR SUBTREE -------------------------------/
 
     public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish,
             boolean includeSharedTaxa, boolean includeHybrids);
@@ -147,6 +161,8 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     public Set<TaxonBase> setPublishForSubtreeRelatedTaxa(TreeIndex subTreeIndex, boolean publish,
             Set<UUID> relationTypes, boolean includeSharedTaxa, boolean includeHybrids,
             IProgressMonitor monitor);
+
+//---------------------------------------------------------------------------------/
 
     public List<TaxonNodeDto> listChildNodesAsTaxonNodeDto(TaxonNodeDto parent);
 

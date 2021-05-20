@@ -133,7 +133,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public long countMedia(SpecimenOrObservationBase occurence) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.countMedia(SpecimenOrObservationBase occurence)");
-        Query query = getSession().createQuery("select count(media) from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
+        Query query = getSession().createQuery("SELECT count(media) FROM SpecimenOrObservationBase occurence JOIN occurence.media media WHERE occurence = :occurence");
         query.setParameter("occurence", occurence);
 
         return (Long)query.uniqueResult();
@@ -142,7 +142,7 @@ public class OccurrenceDaoHibernateImpl
     @Override
     public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         checkNotInPriorView("OccurrenceDaoHibernateImpl.getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber)");
-        Query query = getSession().createQuery("select distinct derivationEvent from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
+        Query query = getSession().createQuery("SELECT DISTINCT derivationEvent FROM DerivationEvent derivationEvent JOIN derivationEvent.originals occurence WHERE occurence = :occurence");
         query.setParameter("occurence", occurence);
 
         addPageSizeAndNumber(query, pageSize, pageNumber);
@@ -341,7 +341,8 @@ public class OccurrenceDaoHibernateImpl
     }
 
     private <T extends SpecimenOrObservationBase> Criteria createFindOccurrenceCriteria(Class<T> clazz, String queryString,
-            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon, TaxonName associatedTaxonName, MatchMode matchmode, Integer limit,
+            String significantIdentifier, SpecimenOrObservationType recordBasis, Taxon associatedTaxon,
+            TaxonName associatedTaxonName, MatchMode matchmode, Integer limit,
             Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
 
@@ -374,7 +375,7 @@ public class OccurrenceDaoHibernateImpl
         }
 
         //recordBasis/SpecimenOrObservationType
-        Set<SpecimenOrObservationType> typeAndSubtypes = new HashSet<SpecimenOrObservationType>();
+        Set<SpecimenOrObservationType> typeAndSubtypes = new HashSet<>();
         if(recordBasis==null){
             //add all types
             SpecimenOrObservationType[] values = SpecimenOrObservationType.values();
@@ -388,7 +389,7 @@ public class OccurrenceDaoHibernateImpl
         }
         criteria.add(Restrictions.in("recordBasis", typeAndSubtypes));
 
-        Set<UUID> associationUuids = new HashSet<UUID>();
+        Set<UUID> associationUuids = new HashSet<>();
         //taxon associations
         if(associatedTaxon!=null){
             List<UuidAndTitleCache<SpecimenOrObservationBase>> associatedTaxaList = listUuidAndTitleCacheByAssociatedTaxon(clazz, associatedTaxon, limit, start, orderHints);

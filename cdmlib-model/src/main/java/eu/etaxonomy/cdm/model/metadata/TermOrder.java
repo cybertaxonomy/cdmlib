@@ -17,11 +17,12 @@ public enum TermOrder implements IKeyLabel{
 
     IdInVoc("IdInVoc", "Id in Vocabulary"),
     Label("Label", "Label"),
+    Symbol1("Symbol1", "Symbol 1"),
+    Symbol2("Symbol2", "Symbol 2"),
     Natural("Natural", "Natural");
 
-
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private TermOrder(String key, String label){
         this.label = label;

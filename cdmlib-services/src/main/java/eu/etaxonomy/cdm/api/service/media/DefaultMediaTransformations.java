@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.api.service.media;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -90,5 +92,34 @@ public class DefaultMediaTransformations {
         defaultTransformations.add(tr4);
 
         return defaultTransformations;
+    }
+
+    /**
+     * Transforms a BGBM digilib image server URI like
+     *
+     * https://pictures.bgbm.org/digilib/Scaler?fn=Cyprus/Sisymbrium_aegyptiacum_C1.jpg&mo=file
+     *
+     * to a <a href="https://github.com/cybertaxonomy/MediaInfoService">MediaInfoService</a> URI:
+     *
+     * https://image.bgbm.org/metadata/info?file=Cyprus/Sisymbrium_aegyptiacum_C1.jpg
+     */
+    static public Collection<MediaUriTransformation> bgbmMediaMetadataService() {
+        MediaUriTransformation mutScalerAPI = new MediaUriTransformation();
+        mutScalerAPI.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
+        mutScalerAPI.setPathQueryFragment(new SearchReplace("digilib\\/Scaler\\?fn=([^&]+)&mo=file", "metadata/info?file=$1"));
+
+        // https://pictures.bgbm.org/digilib/Scaler/IIIF/Cichorieae!Lactuca_serriola_Bc_08.jpg/full/full/0/default.jpg
+        MediaUriTransformation mutIIIFAPI_1segment = new MediaUriTransformation();
+        mutIIIFAPI_1segment.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
+        mutIIIFAPI_1segment.setPathQueryFragment(new SearchReplace("digilib\\/Scaler\\/IIIF\\/([^\\/!]+)\\/full/.*", "metadata/info?file=$1"));
+
+        MediaUriTransformation mutIIIFAPI_2segments = new MediaUriTransformation();
+        mutIIIFAPI_2segments.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
+        mutIIIFAPI_2segments.setPathQueryFragment(new SearchReplace("digilib\\/Scaler\\/IIIF\\/([^\\/!]+)!([^\\/!]+)\\/full/.*", "metadata/info?file=$1/$2"));
+
+        MediaUriTransformation mutIIIFAPI_3segments = new MediaUriTransformation();
+        mutIIIFAPI_3segments.setHost(new SearchReplace("pictures.bgbm.org", "image.bgbm.org"));
+        mutIIIFAPI_3segments.setPathQueryFragment(new SearchReplace("digilib\\/Scaler\\/IIIF\\/([^\\/!]+)!([^\\/!]+)!([^\\/!]+)\\/full/.*", "metadata/info?file=$1/$2/$3"));
+        return Arrays.asList(mutScalerAPI, mutIIIFAPI_1segment, mutIIIFAPI_2segments, mutIIIFAPI_3segments);
     }
 }

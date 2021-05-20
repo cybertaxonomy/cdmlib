@@ -12,6 +12,8 @@ target
 error.log
 cdmlib-developer.log
 
+src/main/resources/dbscripts
+
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
 cdmlib-io/cdmlib-io.uml
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/Markup_OLD.java

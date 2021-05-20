@@ -39,18 +39,22 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TreeIndex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.SecundumSource;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonRelationshipDao;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
 import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -68,10 +72,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
 	private static final Logger logger = Logger.getLogger(TaxonNodeDaoHibernateImpl.class);
 
+    private static final int DEFAULT_SET_SUBTREE_PARTITION_SIZE = 100;
+
 	@Autowired
 	private ITaxonDao taxonDao;
 	@Autowired
 	private IClassificationDao classificationDao;
+    @Autowired
+    private ITaxonRelationshipDao taxonRelDao;
 
 	public TaxonNodeDaoHibernateImpl() {
 		super(TaxonNode.class);
@@ -700,9 +708,16 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return countResult(queryStr);
     }
 
+    @Override
+    public int countSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newSec,
+            boolean overwriteExisting, boolean includeSharedTaxa, boolean emptySecundumDetail) {
+        String queryStr = forSubtreeRelationQueryStr(includeSharedTaxa, overwriteExisting, subTreeIndex, SelectMode.COUNT);
+        return countResult(queryStr);
+    }
+
     //#3465
     @Override
-    public Set<TaxonBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
+    public Set<CdmBase> setSecundumForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
         //for some reason this does not work, maybe because the listeners are not activated,
         //but also the first taxon for some reason does not get updated in terms of secundum, but only by the update listener
@@ -722,11 +737,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             queryStr += " AND t.secSource.citation IS NULL ";
         }
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
-
     }
 
     @Override
-    public Set<TaxonBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
+    public Set<CdmBase> setSecundumForSubtreeSynonyms(TreeIndex subTreeIndex, Reference newSec,
             boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
 
         String queryStr = forSubtreeSynonymQueryStr(includeSharedTaxa, subTreeIndex, false, SelectMode.ID);
@@ -736,28 +750,126 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return setSecundum(newSec, emptyDetail, queryStr, monitor);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T extends TaxonBase<?>> Set<T> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
-        Set<T> result = new HashSet<>();
+    private <T extends TaxonBase<?>> Set<CdmBase> setSecundum(Reference newSec, boolean emptyDetail, String queryStr, IProgressMonitor monitor) {
+        Set<CdmBase> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
-        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
+        @SuppressWarnings("unchecked")
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
-            for (TaxonBase<?> taxonBase : taxonList){
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            List<T> taxonList = (List)taxonDao.loadList(taxonIdList, null, null);
+            for (T taxonBase : taxonList){
                 if (taxonBase != null){
-                    taxonBase = taxonDao.load(taxonBase.getUuid());
-                    taxonBase.setSec(newSec);
-                    if (emptyDetail){
-                        taxonBase.setSecMicroReference(null);
+                    taxonBase = CdmBase.deproxy(taxonBase);
+                    SecundumSource secSourceBefore = taxonBase.getSecSource();
+                    Reference refBefore = taxonBase.getSec();
+                    String refDetailBefore = taxonBase.getSecMicroReference();
+                    if (newSec == null && taxonBase.getSec() !=null
+                            || newSec != null && (taxonBase.getSec() == null || !newSec.equals(taxonBase.getSec()) )){
+                        taxonBase.setSec(newSec);
                     }
-                    result.add((T)CdmBase.deproxy(taxonBase));
+                    if (emptyDetail){
+                        if (taxonBase.getSecMicroReference() != null){
+                            taxonBase.setSecMicroReference(null);
+                        }
+                    }
+                    //compute updated objects
+                    SecundumSource secSourceAfter = taxonBase.getSecSource();
+
+                    if (!CdmUtils.nullSafeEqual(secSourceBefore, secSourceAfter)){
+                        result.add(taxonBase);
+                        //FIXME #9627 remove if fixed
+                        result.add(taxonBase);
+                        //EMXIF
+                    }else if (secSourceBefore != null && secSourceBefore.equals(secSourceAfter)
+                            && (!CdmUtils.nullSafeEqual(refBefore, secSourceAfter.getCitation())
+                                 || !CdmUtils.nullSafeEqual(refDetailBefore, secSourceAfter.getCitationMicroReference()))
+                            ){
+                        result.add(secSourceBefore);
+                        //FIXME #9627 remove if fixed
+                        result.add(taxonBase);
+                        //EMXIF
+                    }
+
                     monitor.worked(1);
                     if (monitor.isCanceled()){
                         return result;
                     }
                 }
             }
+            commitAndRestartTransaction(newSec);
+            monitor.worked(taxonIdList.size());
         }
+        return result;
+    }
+
+    private void commitAndRestartTransaction(CdmBase... cdmBaseToUpdate) {
+        getSession().getTransaction().commit();
+        getSession().clear();
+        getSession().beginTransaction();
+        for (CdmBase cdmBase : cdmBaseToUpdate){
+            if (cdmBase != null){
+                getSession().update(cdmBase);
+            }
+        }
+    }
+
+    @Override
+    public Set<CdmBase> setSecundumForSubtreeRelations(TreeIndex subTreeIndex, Reference newRef,
+            Set<UUID> relationTypes,  boolean overwriteExisting, boolean includeSharedTaxa, boolean emptyDetail, IProgressMonitor monitor) {
+
+        String queryStr = forSubtreeRelationQueryStr(includeSharedTaxa, overwriteExisting, subTreeIndex, SelectMode.ID);
+
+        Set<CdmBase> result = new HashSet<>();
+        Query query = getSession().createQuery(queryStr);
+        @SuppressWarnings("unchecked")
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
+        for (List<Integer> relIdList : partitionList){
+            List<TaxonRelationship> relList = taxonRelDao.loadList(relIdList, null, null);
+            for (TaxonRelationship rel : relList){
+                if (rel != null){
+                    rel = CdmBase.deproxy(rel);
+
+                    NamedSource sourceBefore = rel.getSource();
+                    Reference refBefore = rel.getCitation();
+                    String refDetailBefore = rel.getCitationMicroReference();
+                    if (newRef == null && rel.getCitation() !=null
+                            || newRef != null && (rel.getCitation() == null || !newRef.equals(rel.getCitation()) )){
+                        rel.setCitation(newRef);
+                    }
+                    if (emptyDetail){
+                        if (rel.getCitationMicroReference() != null){
+                            rel.setCitationMicroReference(null);
+                        }
+                    }
+                    //compute updated objects
+                    NamedSource sourceAfter = rel.getSource();
+                    if (!CdmUtils.nullSafeEqual(sourceBefore, sourceAfter)){
+                        result.add(rel);
+                        //FIXME #9627 remove if fixed
+                        result.add(rel.getToTaxon());
+                        //EMXIF
+
+                    }else if (sourceBefore != null && sourceBefore.equals(sourceAfter)
+                            && (!CdmUtils.nullSafeEqual(refBefore, sourceAfter.getCitation())
+                                 || !CdmUtils.nullSafeEqual(refDetailBefore,sourceAfter.getCitationMicroReference()))
+                            ){
+                        result.add(sourceBefore);
+                        //FIXME #9627 remove if fixed
+                        result.add(rel.getToTaxon());
+                        //EMXIF
+                    }
+
+                    monitor.worked(1);
+                    if (monitor.isCanceled()){
+                        return result;
+                    }
+                }
+            }
+            commitAndRestartTransaction();
+            monitor.worked(relList.size());
+        }
+
         return result;
     }
 
@@ -774,7 +886,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     public int countPublishForSubtreeAcceptedTaxa(TreeIndex subTreeIndex, boolean publish, boolean includeSharedTaxa, boolean includeHybrids) {
         String queryStr = forSubtreeAcceptedQueryStr(includeSharedTaxa, subTreeIndex, !includeHybrids, SelectMode.COUNT);
         queryStr += " AND t.publish != :publish ";
-        System.out.println(queryStr);
         Query query = getSession().createQuery(queryStr);
         query.setBoolean("publish", publish);
         return ((Long)query.uniqueResult()).intValue();
@@ -824,8 +935,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         return setPublish(publish, queryStr, relationTypes, monitor);
     }
 
-    private static final int DEFAULT_PARTITION_SIZE = 100;
-
     private <T extends TaxonBase<?>> Set<T> setPublish(boolean publish, String queryStr, Set<UUID> relTypeUuids, IProgressMonitor monitor) {
         Set<T> result = new HashSet<>();
         Query query = getSession().createQuery(queryStr);
@@ -834,19 +943,23 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
             query.setParameterList("relTypeUuid", relTypeUuids);
         }
         @SuppressWarnings("unchecked")
-        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_PARTITION_SIZE);
+        List<List<Integer>> partitionList = splitIdList(query.list(), DEFAULT_SET_SUBTREE_PARTITION_SIZE);
         for (List<Integer> taxonIdList : partitionList){
-            List<TaxonBase> taxonList = taxonDao.loadList(taxonIdList, null, null);
-            for (TaxonBase<?> taxonBase : taxonList){
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            List<T> taxonList = (List)taxonDao.loadList(taxonIdList, null, null);
+            for (T taxonBase : taxonList){
                 if (taxonBase != null){
-                    taxonBase.setPublish(publish);
-                    result.add((T)CdmBase.deproxy(taxonBase));
+                    if (taxonBase.isPublish() != publish){  //to be on the save side
+                        taxonBase.setPublish(publish);
+                        result.add(CdmBase.deproxy(taxonBase));
+                    }
                     monitor.worked(1);
                     if (monitor.isCanceled()){
                         return result;
                     }
                 }
             }
+            commitAndRestartTransaction();
         }
         return result;
     }
@@ -887,7 +1000,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
                 + " FROM TaxonNode tn "
                 + "   JOIN tn.taxon t "
                 + "   JOIN t.relationsToThisTaxon rel"
-                + "   JOIN rel.relatedFrom relTax  LEFT JOIN relTax.name n ";
+                + "   JOIN rel.relatedFrom relTax "
+                + "   LEFT JOIN relTax.name n ";
         String whereStr =" tn.treeIndex LIKE '%1$s%%' ";
         if (!includeSharedTaxa){
             //toTaxon should only be used in the given subtree
@@ -906,6 +1020,31 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         }
         whereStr = handleExcludeHybrids(whereStr, excludeHybrids, "relTax");
         queryStr += " WHERE " + String.format(whereStr, subTreeIndex.toString());
+
+        return queryStr;
+    }
+
+    /**
+     * query for
+     */
+    private String forSubtreeRelationQueryStr(boolean includeSharedTaxa, boolean overwriteExisting,
+            TreeIndex subTreeIndex, SelectMode mode) {
+
+        String queryStr = "SELECT " + mode.hql("rel")
+                + " FROM TaxonNode tn "
+                + "   JOIN tn.taxon t "
+                + "   JOIN t.relationsToThisTaxon rel "
+                + "   LEFT JOIN rel.source src ";
+        String whereStr =" tn.treeIndex LIKE '%1$s%%' ";
+        if (!includeSharedTaxa){
+            //toTaxon should only be used in the given subtree
+            whereStr += " AND NOT EXISTS ("
+                    + "FROM TaxonNode tn2 WHERE tn2.taxon = t AND tn2.treeIndex not like '%1$s%%')  ";
+        }
+        queryStr += " WHERE " + String.format(whereStr, subTreeIndex.toString());
+        if (!overwriteExisting){
+            queryStr += " AND (rel.source IS NULL OR src.citation IS NULL) ";
+        }
 
         return queryStr;
     }

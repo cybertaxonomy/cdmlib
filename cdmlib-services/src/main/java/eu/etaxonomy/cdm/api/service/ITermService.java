@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -264,7 +264,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return
      */
     public List<UuidAndTitleCache<NamedArea>> getUuidAndTitleCacheNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit,
-            String pattern, Language lang, NamedAreaSearchField type);
+            String pattern, Language lang, TermSearchField type);
 
     /**
      * Returns a list of {@link TermDto} of terms with uuid matches one of uuids in list

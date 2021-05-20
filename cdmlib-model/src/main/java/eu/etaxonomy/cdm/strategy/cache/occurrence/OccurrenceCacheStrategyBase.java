@@ -46,7 +46,7 @@ public abstract class OccurrenceCacheStrategyBase<T extends DerivedUnit>
                 result = collection.getCode();
             }
         }
-        result = CdmUtils.concat(" ", result, CdmUtils.Ne(specimen.getAccessionNumber()));
+        result = CdmUtils.concat(" ", result, CdmUtils.Ne(specimen.getMostSignificantIdentifier()));
         return result;
     }
 

@@ -440,10 +440,7 @@ public class CdmUtils {
      * Trims the string and if the string ends with 1 or more dots removes it.
      */
     public static String removeTrailingDots(String string){
-        if (string == null){
-            return null;
-        }
-        while (string.trim().endsWith(".")){
+        while (string != null && string.trim().endsWith(".")){
             return string.substring(0, string.length() -1);
         }
         return string;

@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.api.application;
 
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStartedEvent;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -62,72 +60,70 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
     </bean>
     }
  *
- *
- *
  * @author a.kohlbecker
  * @since Oct 12, 2012
- *
  */
 //@RunAs("ROLE_ADMIN") // seems to be broken in spring see: https://jira.springsource.org/browse/SEC-1671
 public class FirstDataInserter extends AbstractDataInserter {
 
-    /**
-     *
-     */
+    public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
+
     private static final EnumSet<CRUD> CREATE_READ = EnumSet.of(CRUD.CREATE, CRUD.READ);
     private static final EnumSet<CRUD> UPDATE_DELETE = EnumSet.of(CRUD.UPDATE, CRUD.DELETE);
     private static final EnumSet<CRUD> CREATE_READ_UPDATE = EnumSet.of(CRUD.CREATE, CRUD.READ, CRUD.UPDATE);
     private static final EnumSet<CRUD> CREATE_READ_UPDATE_DELETE = EnumSet.of(CRUD.CREATE, CRUD.READ, CRUD.UPDATE, CRUD.DELETE);
 
-    public static final Logger logger = Logger.getLogger(FirstDataInserter.class);
-
-    public static final String[] EDITOR_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(PermissionClass.REFERENCE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.TAXONNAME, CREATE_READ_UPDATE).toString(),
-            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.TAXONBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(PermissionClass.DESCRIPTIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ_UPDATE_DELETE).toString(),
-            new CdmAuthority(PermissionClass.COLLECTION, CREATE_READ_UPDATE_DELETE).toString(),
+    public static final GrantedAuthority[] EDITOR_GROUP_AUTHORITIES = new GrantedAuthority[]{
+            new CdmAuthority(PermissionClass.REFERENCE, CREATE_READ),
+            new CdmAuthority(PermissionClass.TAXONNAME, CREATE_READ_UPDATE),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, CREATE_READ),
+            new CdmAuthority(PermissionClass.TAXONBASE, CREATE_READ_UPDATE_DELETE),
+            new CdmAuthority(PermissionClass.DESCRIPTIONBASE, CREATE_READ_UPDATE_DELETE),
+            new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ_UPDATE_DELETE),
+            new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ_UPDATE_DELETE),
+            new CdmAuthority(PermissionClass.COLLECTION, CREATE_READ_UPDATE_DELETE),
     };
 
     /**
      * This group will in future replace the group Editor, see issue #7150
      */
-    public static final String[] EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(PermissionClass.REFERENCE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.TAXONNAME, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.TAXONBASE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.DESCRIPTIONBASE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ).toString(),
-            new CdmAuthority(PermissionClass.COLLECTION, CREATE_READ).toString(),
+    public static final CdmAuthority[] EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES = new CdmAuthority[]{
+            new CdmAuthority(PermissionClass.REFERENCE, CREATE_READ),
+            new CdmAuthority(PermissionClass.TAXONNAME, CREATE_READ),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, CREATE_READ),
+            new CdmAuthority(PermissionClass.TAXONBASE, CREATE_READ),
+            new CdmAuthority(PermissionClass.DESCRIPTIONBASE, CREATE_READ),
+            new CdmAuthority(PermissionClass.DESCRIPTIONELEMENTBASE, CREATE_READ),
+            new CdmAuthority(PermissionClass.SPECIMENOROBSERVATIONBASE, CREATE_READ),
+            new CdmAuthority(PermissionClass.COLLECTION, CREATE_READ),
     };
 
-    public static final String[] PROJECT_MANAGER_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(PermissionClass.REFERENCE, UPDATE_DELETE).toString(),
-            new CdmAuthority(PermissionClass.TAXONNAME, EnumSet.of(CRUD.DELETE)).toString(),
-            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString(),
-            Role.ROLE_PROJECT_MANAGER.toString(),
+    public static final GrantedAuthority[] PROJECT_MANAGER_GROUP_AUTHORITIES = new GrantedAuthority[]{
+            new CdmAuthority(PermissionClass.REFERENCE, UPDATE_DELETE),
+            new CdmAuthority(PermissionClass.TAXONNAME, EnumSet.of(CRUD.DELETE)),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE),
+            Role.ROLE_PROJECT_MANAGER,
     };
 
-    public static final String[] EDITOR_REFERENCE_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(PermissionClass.REFERENCE, UPDATE_DELETE).toString(),
-            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE).toString()
+    public static final CdmAuthority[] EDITOR_REFERENCE_GROUP_AUTHORITIES = new CdmAuthority[]{
+            new CdmAuthority(PermissionClass.REFERENCE, UPDATE_DELETE),
+            new CdmAuthority(PermissionClass.TEAMORPERSONBASE, UPDATE_DELETE)
     };
 
-    public static final String[] PUBLISH_GROUP_AUTHORITIES = new String[]{
-            Role.ROLE_PUBLISH.toString()
+    public static final Role[] PUBLISH_GROUP_ROLES = new Role[]{
+            Role.ROLE_PUBLISH
     };
 
-    public static final String[] EDIT_ALL_TAXA_GROUP_AUTHORITIES = new String[]{
-            new CdmAuthority(PermissionClass.TAXONNODE, CREATE_READ_UPDATE_DELETE).toString()
+    public static final CdmAuthority[] EDIT_ALL_TAXA_GROUP_AUTHORITIES = new CdmAuthority[]{
+            new CdmAuthority(PermissionClass.TAXONNODE, CREATE_READ_UPDATE_DELETE)
     };
 
-    public static final String[] ADMIN_GROUP_AUTHORITIES = new String[]{
-            Role.ROLE_ADMIN.toString()
+    public static final Role[] ADMIN_GROUP_ROLES = new Role[]{
+            Role.ROLE_ADMIN
+    };
+
+    public static final Role[] USER_MANAGER_ROLES = new Role[]{
+            Role.ROLE_USER_MANAGER
     };
 
     @Autowired
@@ -144,7 +140,7 @@ public class FirstDataInserter extends AbstractDataInserter {
     private IGrantedAuthorityService grantedAuthorityService;
 
     // not to be autowired, since the FirstdataInserter must be usable without security
-    private AuthenticationProvider runAsAuthenticationProvider = null;
+//    private AuthenticationProvider runAsAuthenticationProvider = null;
 
     protected PlatformTransactionManager transactionManager;
 
@@ -181,7 +177,6 @@ public class FirstDataInserter extends AbstractDataInserter {
         insertFirstData();
     }
 
-
     private void insertFirstData() {
 
         // this ApplicationListener may be called multiple times in nested
@@ -189,21 +184,17 @@ public class FirstDataInserter extends AbstractDataInserter {
         if(!firstDataInserted){
 
             runAsAuthentication(Role.ROLE_ADMIN);
-
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 
             logger.info("inserting first data");
             checkAdminUser();
             checkDefaultGroups();
             assureRole_REMOTING_forEditors();
-            assureRole(Role.ROLE_USER_MANAGER);
             checkMetadata();
             firstDataInserted = true;
 
             transactionManager.commit(txStatus);
-
             restoreAuthentication();
-
         } else {
             logger.debug("insertFirstData() already executed before, skipping this time");
         }
@@ -238,19 +229,15 @@ public class FirstDataInserter extends AbstractDataInserter {
         checkGroup(Group.GROUP_EDITOR_UUID, Group.GROUP_EDITOR_NAME, EDITOR_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_EDITOR_EXTENDED_CREATE_UUID, Group.GROUP_EDITOR_EXTENDED_CREATE_NAME, EDITOR_GROUP_EXTENDED_CREATE_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_PROJECT_MANAGER_UUID, Group.GROUP_PROJECT_MANAGER_NAME, PROJECT_MANAGER_GROUP_AUTHORITIES);
-        checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_ADMIN_UUID, Group.GROUP_ADMIN_NAME, ADMIN_GROUP_ROLES);
         checkGroup(Group.GROUP_EDITOR_REFERENCE_UUID, Group.GROUP_EDITOR_REFERENCE_NAME, EDITOR_REFERENCE_GROUP_AUTHORITIES);
         checkGroup(Group.GROUP_ALLOW_ALL_TAXA_UUID, Group.GROUP_ALLOW_ALL_TAXA_NAME, EDIT_ALL_TAXA_GROUP_AUTHORITIES);
-        checkGroup(Group.GROUP_PUBLISH_UUID, Group.GROUP_PUBLISH_NAME, PUBLISH_GROUP_AUTHORITIES);
+        checkGroup(Group.GROUP_PUBLISH_UUID, Group.GROUP_PUBLISH_NAME, PUBLISH_GROUP_ROLES);
+        checkGroup(Group.GROUP_USER_MANAGER_UUID, Group.GROUP_USER_MANAGER_NAME, USER_MANAGER_ROLES);
         progressMonitor.worked(1);
     }
 
-    /**
-     * @param newGroups
-     * @param groupName
-     * @param requiredAuthorities
-     */
-    private void checkGroup(UUID groupUuid, String groupName, String[] requiredAuthorities) {
+    private void checkGroup(UUID groupUuid, String groupName, GrantedAuthority[] requiredAuthorities) {
         Group group = groupService.load(groupUuid);
         if(group == null){
             group = Group.NewInstance();
@@ -261,33 +248,38 @@ public class FirstDataInserter extends AbstractDataInserter {
 
         Set<GrantedAuthority> grantedAuthorities = group.getGrantedAuthorities();
 
-        for(String a : requiredAuthorities){
+        for(GrantedAuthority requiredAuthority : requiredAuthorities){
             boolean isMissing = true;
             for(GrantedAuthority ga : grantedAuthorities){
-                if(a.equals(ga.getAuthority())){
+                if(requiredAuthority.getAuthority().equals(ga.getAuthority())){
                     isMissing = false;
                     break;
                 }
             }
             if(isMissing){
-                GrantedAuthorityImpl newGa = grantedAuthorityService.findAuthorityString(a);
-
-                if (newGa == null){
-                    newGa = GrantedAuthorityImpl.NewInstance(a);
-                }
-
-                group.addGrantedAuthority(newGa);
-                logger.info("New GrantedAuthority '" + a + "' added  to '" + groupName + "'");
+                addMissingAuthority(groupName, group, requiredAuthority);
             }
         }
 
-        groupService.merge(group, true);
+        groupService.saveOrUpdate(group);
         logger.info("Check of group  '" + groupName + "' done");
     }
 
-    /**
-     * @return
-     */
+    private void addMissingAuthority(String groupName, Group group, GrantedAuthority requiredAuthority) {
+        //NOTE: we still have to do this by string until UUIDs are fixed
+        GrantedAuthorityImpl newGa = grantedAuthorityService.findAuthorityString(requiredAuthority.getAuthority());
+
+        if (newGa == null){
+            newGa = GrantedAuthorityImpl.NewInstance(requiredAuthority.toString());
+            if (requiredAuthority instanceof Role){
+                newGa.setUuid(((Role)requiredAuthority).getUuid());
+            }
+        }
+
+        group.addGrantedAuthority(newGa);
+        logger.info("New GrantedAuthority '" + requiredAuthority + "' added  to '" + groupName + "'");
+    }
+
     private User findFirstUser() {
         User firstUser = null;
         List<User> users = userService.list(null, 1, null, Arrays.asList(new OrderHint[]{new OrderHint("id", OrderHint.SortOrder.ASCENDING)}), null);
@@ -329,10 +321,8 @@ public class FirstDataInserter extends AbstractDataInserter {
     }
 
     private void checkAdminRole(User admin) {
-        Set<GrantedAuthority> authorities = new HashSet<>();
 
-
-        authorities = (Set<GrantedAuthority>) admin.getAuthorities();
+        Set<GrantedAuthority> authorities = (Set<GrantedAuthority>) admin.getAuthorities();
 
         boolean hasRoleAdmin = false;
         for(GrantedAuthority grau : authorities){
@@ -351,9 +341,6 @@ public class FirstDataInserter extends AbstractDataInserter {
         }
     }
 
-    /**
-     * @return
-     */
     private GrantedAuthorityImpl assureRole(Role role) {
         GrantedAuthorityImpl roleLoaded = grantedAuthorityService.find(role.getUuid());
         if(roleLoaded == null){

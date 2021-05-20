@@ -26,18 +26,19 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
      */
     private static final String ROLE_PREFIX = "ROLE_";
 
-    public final static Role ROLE_ADMIN = new Role(UUID.fromString("56eac992-67ba-40be-896c-4e992ca2afc0"), "ROLE_ADMIN");
-    public final static Role ROLE_PROJECT_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_PROJECT_MANAGER");
-    public final static Role ROLE_USER_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_USER_MANAGER");
-    public final static Role ROLE_PUBLISH = new Role(UUID.fromString("9ffa7879-cc67-4592-a14a-b251cccde1a7"), "ROLE_PUBLISH");
-    public final static Role ROLE_REMOTING = new Role(UUID.fromString("be004bf6-0498-48e3-9f06-ff93fc9cdc9a"), "ROLE_REMOTING");
+    private static final UUID uuidAdmin = UUID.fromString("56eac992-67ba-40be-896c-4e992ca2afc0");
+    private static final UUID uuidProjectManager = UUID.fromString("6d0c72a5-0d8a-4f2e-a8e0-31d7e0338f00");
+    private static final UUID uuidUserManager = UUID.fromString("74d340a9-b472-4b97-b52a-c140e27a5c76");
+    private static final UUID uuidPublish = UUID.fromString("9ffa7879-cc67-4592-a14a-b251cccde1a7");
+    private static final UUID uuidRemoting = UUID.fromString("be004bf6-0498-48e3-9f06-ff93fc9cdc9a");
+
+    public final static Role ROLE_ADMIN = new Role(uuidAdmin, "ROLE_ADMIN");
+    public final static Role ROLE_PROJECT_MANAGER = new Role(uuidProjectManager, "ROLE_PROJECT_MANAGER");
+    public final static Role ROLE_USER_MANAGER = new Role(uuidUserManager, "ROLE_USER_MANAGER");
+    public final static Role ROLE_PUBLISH = new Role(uuidPublish, "ROLE_PUBLISH");
+    public final static Role ROLE_REMOTING = new Role(uuidRemoting, "ROLE_REMOTING");
 
     private final UUID uuid;
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
     private final String authority;
 
     public Role(UUID uuid, String authority) {
@@ -104,6 +105,10 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
 		return role;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
     @Override
     public String getAuthority() {
         return authority;
@@ -113,5 +118,4 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     public String toString(){
         return getAuthority();
     }
-
 }

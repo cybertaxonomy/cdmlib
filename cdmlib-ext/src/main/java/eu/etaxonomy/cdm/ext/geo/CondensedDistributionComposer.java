@@ -100,7 +100,9 @@ public class CondensedDistributionComposer {
 
         //4. replace the area by the abbreviated representation and add symbols
         AreaNodeComparator areaNodeComparator = new AreaNodeComparator(config, languages);
-        Collections.sort(topLevelNodes, areaNodeComparator);
+        AreaNodeComparator topLevelAreaOfScopeComparator = config.orderType == OrderType.NATURAL ? areaNodeComparator : new AreaNodeComparator(config, languages, OrderType.NATURAL);
+
+        Collections.sort(topLevelNodes, topLevelAreaOfScopeComparator);
 
         final boolean NOT_BOLED = false;
         final boolean NOT_HANDLED_BY_PARENT = false;
@@ -134,6 +136,8 @@ public class CondensedDistributionComposer {
 
         //outOfScope areas  (areas outside the endemic area)
         if (!outOfScopeNodes.isEmpty()){
+            Collections.sort(topLevelNodes, areaNodeComparator);
+
             result.addPostSeparatorTaggedText(config.outOfScopeAreasSeperator);
             List<AreaNode> outOfScopeList = new ArrayList<>(outOfScopeNodes);
             Collections.sort(outOfScopeList, areaNodeComparator);
@@ -290,9 +294,23 @@ public class CondensedDistributionComposer {
                 return statusSymbol(statusList.iterator().next(), config, languages, true);
             }else{
                 //subarea status is handled at subarea level, usually parent area status is empty as the parent area will not have a status
-                return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
+                if (areaToStatusMap.get(areaNode.area) == null && containsBoldAreas(statusList, config)){
+                    //if parent area status is empty and at least one subarea has status native the parent area should also be bold (#8297#note-15)
+                    return new TripleResult<>("", true, false);
+                }else{
+                    return statusSymbol(areaToStatusMap.get(areaNode.area), config, languages, false);
+                }
             }
         }
+    }
+
+    private boolean containsBoldAreas(Set<PresenceAbsenceTerm> statusList, CondensedDistributionConfiguration config) {
+        for (PresenceAbsenceTerm status : statusList){
+            if (config.statusForBoldAreas.contains(status.getUuid())){
+                return true;
+            }
+        }
+        return false;
     }
 
     private Set<PresenceAbsenceTerm> getStatusRecursive(AreaNode areaNode,
@@ -312,11 +330,14 @@ public class CondensedDistributionComposer {
 
     /**
      * @param status
-     * @param config configuration
-     * @param statusHandledByParent indicates if the status is handled by the parent. Will be passed to the (third) result
-     * @return a triple result with the first result being the symbol string, the second result being the isBold flag
-     *     and the third result indicates if this symbol includes information for all sub-areas (which passes the input parameter)
-     *     to the output here
+     * @param config
+     *              configuration
+     * @param statusHandledByParent
+     *              indicates if the status is handled by the parent. Will be passed to the (third) result
+     * @return
+     *      a triple result with the first result being the symbol string, the second result
+     *      being the isBold flag and the third result indicates if this symbol includes information
+     *      for all sub-areas (which passes the input parameter) to the output here
      */
     protected TripleResult<String, Boolean, Boolean> statusSymbol(PresenceAbsenceTerm status,
             CondensedDistributionConfiguration config, List<Language> languages, boolean statusHandledByParent) {
@@ -407,11 +428,18 @@ public class CondensedDistributionComposer {
     }
 
     private class AreaNodeComparator implements Comparator<AreaNode>{
-        CondensedDistributionConfiguration config;
-        List<Language> languages;
+        private CondensedDistributionConfiguration config;
+        private OrderType orderType;
+        private List<Language> languages;
+
         private AreaNodeComparator(CondensedDistributionConfiguration config, List<Language> languages){
+            this(config, languages, null);
+        }
+
+        private AreaNodeComparator(CondensedDistributionConfiguration config, List<Language> languages, OrderType divergentOrderType){
             this.config = config;
             this.languages = languages;
+            this.orderType = divergentOrderType != null? divergentOrderType : config.orderType;
         }
 
         @Override
@@ -426,7 +454,7 @@ public class CondensedDistributionComposer {
             }else if (area2 == null){
                 return 1;
             }else{
-                if (config.orderType == OrderType.NATURAL) {
+                if (orderType == OrderType.NATURAL) {
                     //- due to wrong ordering behavior in DefinedTerms
                     return - area1.compareTo(area2);
                 }else{

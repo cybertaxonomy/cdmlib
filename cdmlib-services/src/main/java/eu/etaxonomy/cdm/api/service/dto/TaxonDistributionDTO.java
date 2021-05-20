@@ -36,7 +36,6 @@ public class TaxonDistributionDTO implements Serializable{
 
         Taxon taxon = HibernateProxyHelper.deproxy(node.getTaxon());
 
-
         this.descriptionsWrapper = new TaxonDescriptionDTO(taxon);
         concatenateSynonyms(taxon);
     }
@@ -54,9 +53,7 @@ public class TaxonDistributionDTO implements Serializable{
             return nodeDto.getNameCache();
         }
         return null;
-
     }
-
 
     public String getRankString() {
         if (nodeDto != null){
@@ -75,8 +72,6 @@ public class TaxonDistributionDTO implements Serializable{
     public TaxonNodeDto getTaxonNodeDto(){
         return nodeDto;
     }
-
-
 
     public TaxonDescriptionDTO getDescriptionsWrapper() {
         return descriptionsWrapper;
@@ -99,6 +94,4 @@ public class TaxonDistributionDTO implements Serializable{
     public TaxonNodeDto getParentDto() {
         return parentNodeDto;
     }
-
-
 }

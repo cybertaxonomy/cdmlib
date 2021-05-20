@@ -59,7 +59,7 @@ public class MediaTest extends EntityTestBase {
         media1.setArtist(team1);
         media1.setMediaCreated(TimePeriod.NewInstance(2002));
         languageString1 = LanguageString.NewInstance("media1Desc", Language.DEFAULT());
-        media1.addDescription(languageString1);
+        media1.putDescription(languageString1);
         media1.putDescription(Language.GERMAN(), "media1Desc2");
         mediaRepresentation1 = MediaRepresentation.NewInstance();
         mediaRepresentation2 = MediaRepresentation.NewInstance();
@@ -178,7 +178,7 @@ public class MediaTest extends EntityTestBase {
         Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
         Assert.assertTrue("Clone must have a default language description", media1.getAllDescriptions().containsKey(Language.DEFAULT()));
         Assert.assertSame("Description1 must be the same", languageString1, media1.getAllDescriptions().get(Language.DEFAULT()) );
-        media1.addDescription(languageString2);
+        media1.putDescription(languageString2);
         Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
         Assert.assertEquals("Default language description must be languageString2", languageString2, media1.getAllDescriptions().get(Language.DEFAULT()) );
     }

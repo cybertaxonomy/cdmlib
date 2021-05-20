@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -198,15 +198,13 @@ public interface IDefinedTermDao
 	 */
 	public <TERM extends DefinedTermBase> List<TERM> getDefinedTermByIdInVocabulary(String idInVoc, UUID vocUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 
-    /**
-     * @param clazz
-     * @param vocs
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer limit,
-            String pattern);
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern);
+
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchMode);
+
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField type);
+
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type);
 
     /**
      * Returns all terms that are included in the given parent term resp. a part of the given term.
@@ -249,51 +247,18 @@ public interface IDefinedTermDao
     public long count(List<TermVocabulary> vocs, String pattern);
 
     /**
-     * @param vocs
-     * @param pageNumber
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchMode);
-
-    /**
-     * @param vocs
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField type);
-
-    /**
-     * @param vocs
-     * @param limit
-     * @param pattern
-     * @return
-     */
-    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type);
-
-    /**
      * Returns all states for all supportedCategoricalEnumeration of this categorical feature
      * @param featureUuid the feature which has to support categorical data
      * @return list of all supported states
      */
     public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
 
-    /**
-     * @param uuidList
-     * @return
-     */
     public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
 
-
-    /**
-     * @param uuidList
-     * @return
-     */
     public Collection<TermDto> findByTypeAsDto(TermType termType);
 
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);
+
     public Collection<TermDto> findFeatureByTitleAsDto(String pattern);
 
 }

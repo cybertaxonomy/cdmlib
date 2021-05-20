@@ -42,6 +42,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
@@ -89,7 +90,7 @@ public class UriUtils {
                 InputStream stream = getContent(response);
                 return stream;
             } else {
-                throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
+                throw new HttpException("HTTP GET response " + UriUtils.getStatus(response) + " for " + uri.toString());
             }
         }else if (uri.getScheme().equals("file")){
             File file = new File(uri.getJavaUri());
@@ -118,7 +119,7 @@ public class UriUtils {
         if(! uri.isAbsolute()){
         	throw new IOException(URI_IS_NOT_ABSOLUTE);
         }else if ("http".equals(uri.getScheme()) || "https".equals(uri.getScheme())){
-            HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
+            HttpResponse response = UriUtils.getResponse(uri, requestHeaders); // FIXME must use HTTP HEAD!
             if(UriUtils.isOk(response)){
                 Header[] contentLengths = response.getHeaders("Content-Length");
 
@@ -298,10 +299,10 @@ public class UriUtils {
     }
 
     /**
-     * Tests internet connectivity by testing HEAD request for 4 known URL's.<BR>
+     * Tests Internet connectivity by testing HEAD request for 4 known URL's.<BR>
      * If non of them is available <code>false</code> is returned. Otherwise true.<BR>
      * @param firstUriToTest if not <code>null</code> this URI is tested before testing the standard URLs.
-     * @return true if internetconnectivity is given.
+     * @return true if Internet connectivity is given.
      */
     public static boolean isInternetAvailable(URI firstUriToTest){
         boolean result = false;
@@ -355,7 +356,7 @@ public class UriUtils {
 
         //Http
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet(serviceUri.getJavaUri());
+        HttpHead httpget = new HttpHead(serviceUri.getJavaUri());
 
 
         if(timeout!=null){

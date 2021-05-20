@@ -51,6 +51,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
@@ -63,8 +64,8 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -136,7 +137,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 @InReference(groups=Level3.class)
 @NoRecursiveInReference(groups=Level3.class)  //may become Level1 in future  #
 public class Reference
-        extends IdentifiableMediaEntity<INomenclaturalReferenceCacheStrategy>
+        extends IdentifiableMediaEntity<IReferenceCacheStrategy>
         implements IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,
                    IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport,
                    IThesis,IWebPage, IPersonalCommunication,
@@ -166,7 +167,7 @@ public class Reference
 	@Column(length=4096, name="title")
 	@Lob
 	@Field
-	@Match(MatchMode.EQUAL_REQUIRED) //TODO correct? was EQUAL_REQUIRED before, but with abbrevTitle this is not realistic anymore
+	@Match(MatchMode.EQUAL_REQUIRED) //TODO correct? was EQUAL_REQUIRED before, but with abbrevTitle this is not realistic anymore, see also #6427
     //TODO Val #3379
 //	@NullOrNotEmpty
 	private String title;
@@ -944,7 +945,7 @@ public class Reference
 		if (getCacheStrategy() == null){
 		    throw new IllegalStateException("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 		}else{
-		    return getCacheStrategy().getNomenclaturalCitation(this, microReference);
+		    return NomenclaturalSourceFormatter.INSTANCE().format(this, microReference);
 		}
 	}
 
@@ -1182,7 +1183,7 @@ public class Reference
 
     @Override
     protected void initDefaultCacheStrategy() {
-        this.setCacheStrategy(DefaultReferenceCacheStrategy.NewInstance());
+        this.setCacheStrategy(ReferenceDefaultCacheStrategy.NewInstance());
     }
 
    @Override

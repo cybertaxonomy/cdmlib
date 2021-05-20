@@ -24,6 +24,7 @@ import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.service.media.MediaInfoFileReader;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
@@ -238,7 +239,7 @@ public class GbifJsonOccurrenceParser {
                                 name = TaxonNameFactory.NewZoologicalInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNAFP.getTitleCache())) {
                                 name = TaxonNameFactory.NewBotanicalInstance(rank);
-                            } else if (string.equals(NomenclaturalCode.ICNB.getTitleCache())){
+                            } else if (string.equals(NomenclaturalCode.ICNP.getTitleCache())){
                                 name = TaxonNameFactory.NewBacterialInstance(rank);
                             } else if (string.equals(NomenclaturalCode.ICNCP.getTitleCache())){
                                 name = TaxonNameFactory.NewCultivarInstance(rank);
@@ -426,7 +427,9 @@ public class GbifJsonOccurrenceParser {
                             if (mediaRecord.has("identifier")){
                                 try {
                                     uri = new URI(mediaRecord.getString("identifier"));
-                                    imageInf = CdmImageInfo.NewInstance(uri, 0);
+                                    imageInf = MediaInfoFileReader.legacyFactoryMethod(uri)
+                                        .readBaseInfo()
+                                        .getCdmImageInfo();
                                 } catch (URISyntaxException |IOException | HttpException e) {
                                     e.printStackTrace();
                                 }
@@ -454,7 +457,7 @@ public class GbifJsonOccurrenceParser {
                         derivedUnitFacade.addDerivedUnitMedia(media);
                     }
                     //identifier=http://ww2.bgbm.org/herbarium/images/B/-W/08/53/B_-W_08537%20-00%201__3.jpg
-                   //references=http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=136628
+                    //references=http://ww2.bgbm.org/herbarium/view_biocase.cfm?SpecimenPK=136628
                     //format=image/jpeg
                     //type=StillImage
                 }

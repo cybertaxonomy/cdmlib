@@ -94,23 +94,33 @@ public class CacheUpdater implements Serializable {
     @Autowired
     protected IProgressMonitorService progressMonitorService;
 
+
+
 	public UpdateResult doInvoke(CacheUpdaterConfigurator config) {
 	    UpdateResult result = new UpdateResult();
+	    IProgressMonitor monitor = config.getMonitor();
+	    monitor.beginTask("Update caches", 100);
+        monitor.subTask("Check start conditions");
 		if (config.getClassList() == null || config.getClassList().isEmpty()){
 			//!! not yet implemented
 			logger.warn("Create class list from boolean values is not yet implemented for cache updater");
 			createClassListFromBoolean();
 		}
-		config.getMonitor().beginTask("Update Caches", 100);
+		monitor.worked(1);
+		monitor.subTask("Count records");
+		Integer count = countAllUpdatableObjects(config.getClassList());
+
+		SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
+
 		//handle class list
-		result = handleClassList(config.getClassList(), config.getMonitor());
+		result = handleClassList(config.getClassList(), subMonitor);
 		config.getMonitor().done();
 		return result;
 	}
 
 	private UpdateResult handleClassList(List<Class<? extends IdentifiableEntity>> classList, IProgressMonitor monitor) {
 	    UpdateResult result = new UpdateResult();
-	    int ticksForSubTasks = 100/classList.size();
+
 		for (Class<? extends IdentifiableEntity> clazz : classList){
 			//WE need to separate classes , because hibernate
 			//returns multiple values for service.count() for e.g. IdentifableEntity.class
@@ -118,9 +128,8 @@ public class CacheUpdater implements Serializable {
 		    UpdateResult multipleResult = handleMultiTableClasses(clazz, monitor);
 
 			if (multipleResult == null){
-			    SubProgressMonitor subMonitor= new SubProgressMonitor(monitor, ticksForSubTasks);
-			    subMonitor.setTaskName("Update " + clazz.getSimpleName());
-				result.includeResult(this.handleSingleTableClass(clazz, subMonitor));
+			    monitor.subTask("Update " + clazz.getSimpleName());
+				result.includeResult(this.handleSingleTableClass(clazz, monitor));
 			}else{
 			    result.includeResult(multipleResult);
 			}
@@ -227,6 +236,17 @@ public class CacheUpdater implements Serializable {
 			result.addException(e);
 			return result;
 		}
+	}
+
+	private Integer countAllUpdatableObjects(List<Class<? extends IdentifiableEntity>> list){
+	    Integer count = 0;
+
+
+	    for (Class clazz: list){
+            logger.info("count class " + clazz.getSimpleName() + " ...");
+            count += termService.count(clazz);
+        }
+	    return count;
 	}
 
 	private void createClassListFromBoolean() {

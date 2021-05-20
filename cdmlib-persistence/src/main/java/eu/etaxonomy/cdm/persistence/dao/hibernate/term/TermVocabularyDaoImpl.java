@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ import java.util.UUID;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -43,16 +43,13 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
- *
  */
 @Repository
 public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
 		ITermVocabularyDao {
 
-	/**
-	 * @param type
-	 */
-	public TermVocabularyDaoImpl() {
+	@SuppressWarnings("unchecked")
+    public TermVocabularyDaoImpl() {
 		super(TermVocabulary.class);
 		indexedClasses = new Class[2];
 		indexedClasses[0] = TermVocabulary.class;
@@ -86,7 +83,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		    this.addOrder(criteria, orderHints);
 
 		    @SuppressWarnings("unchecked")
-            List<T> result = criteria.list();
+            List<T> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		} else {
@@ -96,7 +93,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			addPageSizeAndNumber(query, pageSize, pageNumber);
 
 			@SuppressWarnings("unchecked")
-            List<T> result = query.getResultList();
+            List<T> result = DefinedTermDaoImpl.deduplicateResult(query.getResultList());
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
 		}
@@ -114,7 +111,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	    	TermVocabulary<T> result = (TermVocabulary<T>)query.uniqueResult();
 	    	return result;
 		} else {
-			@SuppressWarnings("unchecked")
             AuditQuery query = makeAuditQuery(clazz, auditEvent);
 			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
 
@@ -124,23 +120,21 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		}
 	}
 
-
 	@Override
     public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize,	Integer pageNumber) {
 		return getTerms(termVocabulary, pageSize, pageNumber, null, null);
 	}
-
 
     @Override
     public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType, List<String> propertyPaths) {
 
         Criteria criteria = getSession().createCriteria(type);
         criteria.add(Restrictions.eq("termType", termType));
-        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         //this.addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<TermVocabulary<T>> result = criteria.list();
+        List<TermVocabulary<T>> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -168,7 +162,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         this.addOrder(criteria, orderHints);
 
         @SuppressWarnings("unchecked")
-        List<TermVocabulary> result = criteria.list();
+        List<TermVocabulary> result = DefinedTermDaoImpl.deduplicateResult(criteria.list());
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }
@@ -350,25 +344,17 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         return findVocabularyDtoByTermTypes(termTypes, null, includeSubtypes);
     }
 
-
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByAvailableFor(Set<CdmClass> availableForSet) {
 
         String queryVocWithFittingTerms = "SELECT DISTINCT(v.uuid) FROM DefinedTermBase term JOIN term.vocabulary as v WHERE " ;
         for (CdmClass availableFor: availableForSet){
             queryVocWithFittingTerms += " term.availableFor like '%"+availableFor.getKey()+"%' AND term.termType = :feature";
-
         }
-
-//        Query query1 =  getSession().createQuery(queryVocWithFittingTerms);
-//        List<Object[]> result1 = query1.list();
 
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + " WHERE a.uuid in "
                 + " (" + queryVocWithFittingTerms + ")";
-
-
-
 
         Query query =  getSession().createQuery(queryString);
         query.setParameter("feature", TermType.Feature);
@@ -376,7 +362,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
 
-//        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
         List<TermVocabularyDto>  dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
 
         return dtos;
@@ -510,7 +495,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         }
         List<TermVocabularyDto> list = new ArrayList<>();
 
-
         String queryString = TermCollectionDto.getTermCollectionDtoSelect()
                 + "where a.uuid in :uuidList ";
 //                + "order by a.titleCache";
@@ -524,7 +508,4 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         return list;
 
     }
-
-
-
 }

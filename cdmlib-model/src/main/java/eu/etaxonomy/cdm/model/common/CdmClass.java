@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.TemporalData;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
@@ -44,6 +46,10 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
     OCCURRENCE(SpecimenOrObservationBase.class, "OCC", true, false, UUID.fromString("2a584229-15e6-4efa-ab73-0b3e8fbd6a1e"), "Occurrence"),
     @XmlEnumValue("TNA")
     TAXON_NAME(TaxonName.class, "TNA", true, false, UUID.fromString("c292d1ac-d8cf-4a76-b63b-74f29976597a"), "Taxon name"),
+    @XmlEnumValue("REF")
+    REFERENCE(Reference.class, "REF", false, false, UUID.fromString("d2c75a59-6490-4428-b079-6dc4409c9088"), "Reference"),
+    @XmlEnumValue("PER")
+    RERSON(Person.class, "PER", false, false, UUID.fromString("8d327639-8e38-4c20-9534-5107e5bdfc7f"), "Person"),
 
     @XmlEnumValue("TDA")
     TEXT_DATA(TextData.class, "TDA", false, true, UUID.fromString("3b15b116-bfbb-493d-8747-bd9741ebcac8"), "Text Data"),
@@ -66,6 +72,7 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
     private Class<? extends CdmBase> clazz;
     boolean isDescribed;
     boolean isDescriptionElement;
+    boolean isIdentifiable;
 
 
     @SuppressWarnings("unused")
@@ -78,6 +85,7 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
         this.clazz = clazz;
         this.isDescribed = isDescribed;
         this.isDescriptionElement = isDescriptionElement;
+        this.isIdentifiable = IdentifiableEntity.class.isAssignableFrom(clazz);
     }
 
  // *************************** DELEGATE **************************************/
@@ -130,6 +138,12 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
         return result;
     }
 
+    public static final EnumSet<CdmClass> IDENTIFIABLE(){
+        EnumSet<CdmClass> result = EnumSet.allOf(CdmClass.class);
+        result.removeIf(e->!e.isIdentifiable);
+        return result;
+    }
+
     public Class<? extends CdmBase> getClazz() {
         return clazz;
     }
@@ -149,6 +163,15 @@ public enum CdmClass implements IEnumTerm<CdmClass>{
             throw new java.lang.UnsupportedOperationException("getDescriptionElementClazz() not available enum item " + this);
         }else{
             return (Class<? extends DescriptionElementBase>)clazz;
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public Class<? extends IdentifiableEntity> getIdentifiableClazz() {
+        if (!isIdentifiable){
+            throw new java.lang.UnsupportedOperationException("getIdentifiableClazz() not available enum item " + this);
+        }else{
+            return (Class<? extends IdentifiableEntity>)clazz;
         }
     }
 

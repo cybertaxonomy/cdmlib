@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.compare.name.TypeComparator;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.ExportResult.ExportResultState;
@@ -100,7 +101,6 @@ import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDtoByRankAndNameComparator;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
-import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -361,6 +361,7 @@ public class CdmLightClassificationExport
                             handleReference(state, taxon.getSec());
                         }
                     }
+                    csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = taxon.getAppendedPhrase();
                     csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_ID)] = getId(state,
                             taxonNode.getClassification());
                     csvLine[table.getIndex(CdmLightExportTable.CLASSIFICATION_TITLE)] = taxonNode.getClassification()
@@ -827,12 +828,21 @@ public class CdmLightClassificationExport
                      //TODO add CondensedDistributionConfiguration to export configuration
                      distributions, true, null, state.getConfig().getCondensedDistributionRecipe().toConfiguration(), langs);
              CdmLightExportTable tableCondensed =
-                     CdmLightExportTable.CONDENSED_DISTRIBUTION_FACT;
-             String[] csvLine = new String[table.getSize()];
+                     CdmLightExportTable.SIMPLE_FACT;
+             String[] csvLine = new String[tableCondensed.getSize()];
+             //the computed fact has no uuid, TODO: remember the uuid for later reference assignment
+             UUID randomUuid = UUID.randomUUID();
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_ID)] =
+                     randomUuid.toString();
              csvLine[tableCondensed.getIndex(CdmLightExportTable.TAXON_FK)] =
                      getId(state, taxon);
              csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_TEXT)] =
                      conDis.toString();
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.LANGUAGE)] =Language.ENGLISH().toString();
+
+             csvLine[tableCondensed.getIndex(CdmLightExportTable.FACT_CATEGORY)] =
+                     "CondensedDistribution";
+
              state.getProcessor().put(tableCondensed, taxon, csvLine);
          }
     }
@@ -915,6 +925,7 @@ public class CdmLightClassificationExport
             if (synonym.getSec() != null && !state.getReferenceStore().contains(synonym.getSec().getUuid())) {
                 handleReference(state, synonym.getSec());
             }
+            csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = synonym.getAppendedPhrase();
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synonym.getSec());
             csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synonym.getSec());
             csvLine[table.getIndex(CdmLightExportTable.PUBLISHED)] = synonym.isPublish() ? "1" : "0";
@@ -953,6 +964,10 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
 
             Reference secRef = ppSyonym.getSec();
+
+            if (secRef != null && !state.getReferenceStore().contains(secRef.getUuid())) {
+                handleReference(state, secRef);
+            }
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE_FK)] = getId(state, secRef);
             csvLine[table.getIndex(CdmLightExportTable.SEC_REFERENCE)] = getTitleCache(secRef);
             Set<TaxonRelationship> rels = accepted.getTaxonRelations(ppSyonym);
@@ -976,6 +991,9 @@ public class CdmLightClassificationExport
             }
             if (rel != null){
                 Reference synSecRef = rel.getCitation();
+                if (synSecRef != null && !state.getReferenceStore().contains(synSecRef.getUuid())) {
+                    handleReference(state, synSecRef);
+                }
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE_FK)] = getId(state, synSecRef);
                 csvLine[table.getIndex(CdmLightExportTable.SYN_SEC_REFERENCE)] = getTitleCache(synSecRef);
                 isProParte = rel.getType().isProParte();
@@ -1067,6 +1085,9 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SPECIFIC_EPITHET)] = name.getSpecificEpithet();
 
             csvLine[table.getIndex(CdmLightExportTable.INFRASPECIFIC_EPITHET)] = name.getInfraSpecificEpithet();
+
+            csvLine[table.getIndex(CdmLightExportTable.APPENDED_PHRASE)] = name.getAppendedPhrase();
+
             csvLine[table.getIndex(CdmLightExportTable.BAS_AUTHORTEAM_FK)] = getId(state, name.getBasionymAuthorship());
             if (name.getBasionymAuthorship() != null) {
                 if (state.getAuthorFromStore(name.getBasionymAuthorship().getId()) == null) {
@@ -1254,8 +1275,7 @@ public class CdmLightClassificationExport
                     int index = 1;
                     for (IdentifiableSource source: typeDesignation.getSources()){
                         if (source.getCitation() != null){
-                            DefaultReferenceCacheStrategy cacheStrategy = ((DefaultReferenceCacheStrategy)source.getCitation().getCacheStrategy());
-                            stringbuilder.append(cacheStrategy.getCitation(source.getCitation(), source.getCitationMicroReference()));
+                            stringbuilder.append(OriginalSourceFormatter.INSTANCE.format(source));
                         }
                         if (index < typeDesignation.getSources().size()) {
                             stringbuilder.append( ", ");
@@ -1458,7 +1478,7 @@ public class CdmLightClassificationExport
                         tableName = "PersonOrTeam";
                     }
 
-                    for (Identifier<?> identifier: identifiers){
+                    for (Identifier identifier: identifiers){
                         if (identifier.getType() == null && identifier.getIdentifier() == null){
                             state.getResult().addWarning("Please check the identifiers for "
                                     + cdmBaseStr(cdmBase) + " there is an empty identifier");
@@ -1644,8 +1664,7 @@ public class CdmLightClassificationExport
                             statusString += ": " + nameStatus.getRuleConsidered();
                         }
                         if (nameStatus.getCitation() != null) {
-                            String shortCitation = ((DefaultReferenceCacheStrategy) nameStatus.getCitation().getCacheStrategy())
-                                    .createShortCitation(nameStatus.getCitation(), null, false);
+                            String shortCitation = OriginalSourceFormatter.INSTANCE.format(nameStatus.getCitation(), null);
                             statusString += " (" + shortCitation + ")";
                         }
 //                        if (nameStatus.getCitationMicroReference() != null
@@ -1727,10 +1746,8 @@ public class CdmLightClassificationExport
 
                 if (taxonBases.size() == 1){
                      taxonBase = HibernateProxyHelper.deproxy(taxonBases.iterator().next());
-                     Reference secRef = taxonBase.getSec();
-                     if (secRef != null){
-                         sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
-                             .createShortCitation(secRef, taxonBase.getSecMicroReference(), true);
+                     if (taxonBase.getSec() != null){
+                         sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSecSource());
                      }
                      if (taxonBase.isDoubtful()){
                          doubtful = "?";
@@ -1738,7 +1755,7 @@ public class CdmLightClassificationExport
                          doubtful = "";
                      }
                      if (taxonBase instanceof Synonym){
-                         if (StringUtils.isNotBlank(sec)){
+                         if (isNotBlank(sec)){
                              sec = " syn. sec. " + sec + " ";
                          }else {
                              sec = "";
@@ -1755,10 +1772,8 @@ public class CdmLightClassificationExport
                 }else{
                     //there are names used more than once?
                     for (TaxonBase<?> tb: taxonBases){
-                        Reference secRef = tb.getSec();
-                        if (secRef != null){
-                            sec = ((DefaultReferenceCacheStrategy) secRef.getCacheStrategy())
-                                .createShortCitation(secRef, tb.getSecMicroReference(), true);
+                        if (tb.getSec() != null){
+                            sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(tb.getSecSource());
                         }
                         if (tb.isDoubtful()){
                             doubtful = "?";
@@ -2050,9 +2065,7 @@ public class CdmLightClassificationExport
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             // TODO short citations correctly
-            String shortCitation = ((DefaultReferenceCacheStrategy) reference.getCacheStrategy())
-                    .createShortCitation(reference, null, true); // Should be Author(year)
-                                                     // like in Taxon.sec
+            String shortCitation = OriginalSourceFormatter.INSTANCE.format(reference, null); // Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             // TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()
@@ -2117,34 +2130,11 @@ public class CdmLightClassificationExport
 
         } else if (authorship instanceof Team) {
 
-            Team authorTeam = HibernateProxyHelper.deproxy(authorship, Team.class);
-            int index = 0;
-
-            for (Person teamMember : authorTeam.getTeamMembers()) {
-                index++;
-                String concat = concatString(authorTeam, authorTeam.getTeamMembers(), index);
-                fullAuthorship += concat + teamMember.getTitleCache();
-            }
-            if (StringUtils.isBlank(fullAuthorship)){
-                fullAuthorship = authorTeam.getTitleCache();
-            }
+            Team authorTeam = (Team)authorship;
+            fullAuthorship = authorTeam.getCacheStrategy().getTitleCache(authorTeam);
         }
         return fullAuthorship;
     }
-
-    private static String concatString(Team team, List<Person> teamMembers, int i) {
-        String concat;
-        if (i <= 1) {
-            concat = "";
-        } else if (i < teamMembers.size() || (team.isHasMoreMembers() && i == teamMembers.size())) {
-            concat = STD_TEAM_CONCATINATION;
-        } else {
-            concat = FINAL_TEAM_CONCATINATION;
-        }
-        return concat;
-    }
-
-
 
     private void handleSpecimen(CdmLightExportState state, SpecimenOrObservationBase<?> specimen) {
         try {

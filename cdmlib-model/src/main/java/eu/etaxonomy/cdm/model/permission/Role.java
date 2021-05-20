@@ -51,9 +51,7 @@ public class Role extends AuthorityBase {
     private Role(String role) {
         super();
         this.role = role;
-
     }
-
 
     // ********************** GETTER / SETTER **************************/
 
@@ -64,10 +62,10 @@ public class Role extends AuthorityBase {
         this.role = role;
     }
 
+    //************************* STRING ***********************************/
+
     @Override
     public String toString() {
         return this.role;
     }
-
-
 }

@@ -1505,12 +1505,12 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value = "OccurrenceServiceTest.testDnaSampleDesignation.xml")
     public void testDnaSampleDesignation(){
-        DefinedTerm sampleDesignationTermType = (DefinedTerm) termService.load(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc"));
+        DefinedTerm sampleDesignationTermType = (DefinedTerm) termService.load(DefinedTerm.uuidSampleDesignation);
 
         UUID dnaSampleUuid = UUID.fromString("4bee91b9-23d8-438b-8569-6d6aaa5b6587");
         DnaSample dnaSample = HibernateProxyHelper.deproxy(occurrenceService.load(dnaSampleUuid), DnaSample.class);
         assertEquals(1, dnaSample.getIdentifiers().size());
-        Identifier<?> identifier = dnaSample.getIdentifiers().iterator().next();
+        Identifier identifier = dnaSample.getIdentifiers().iterator().next();
         assertEquals("NK 2088", identifier.getIdentifier());
         assertEquals(sampleDesignationTermType, identifier.getType());
 
@@ -1519,11 +1519,11 @@ public class OccurrenceServiceTest extends CdmTransactionalIntegrationTest {
         occurrenceService.saveOrUpdate(dnaSample);
         SpecimenOrObservationBase<?> dnaSampleReloaded = occurrenceService.load(dnaSampleUuid);
         assertEquals(1, dnaSample.getIdentifiers().size());
-        Identifier<?> identifierReloaded = dnaSample.getIdentifiers().iterator().next();
+        Identifier identifierReloaded = dnaSample.getIdentifiers().iterator().next();
         assertEquals("WB10", identifierReloaded.getIdentifier());
         assertEquals(sampleDesignationTermType, identifierReloaded.getType());
 
-//        DefinedTerm sampleDesignationTermType = (DefinedTerm) termService.load(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc"));
+//        DefinedTerm sampleDesignationTermType = (DefinedTerm) termService.load(DefinedTerm.uuidSampleDesignation);
 //        //UUIDS
 //        UUID dnaSampleUuid = UUID.fromString("4bee91b9-23d8-438b-8569-6d6aaa5b6587");
 //        DerivedUnit dnaSample = DnaSample.NewInstance();

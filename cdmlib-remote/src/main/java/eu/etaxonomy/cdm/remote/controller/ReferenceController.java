@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.format.reference.NomenclaturalSourceFormatter;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import io.swagger.annotations.Api;
@@ -36,12 +37,10 @@ import io.swagger.annotations.Api;
  * @author a.kohlbecker
  * @since 24.03.2009
  */
-
 @Controller
 @Api("reference")
 @RequestMapping(value = {"/reference/{uuid}"})
-public class ReferenceController extends AbstractIdentifiableController<Reference, IReferenceService>
-{
+public class ReferenceController extends AbstractIdentifiableController<Reference, IReferenceService>{
 
     private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -61,9 +60,6 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
              }));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(IReferenceService service) {
@@ -89,7 +85,7 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
         ModelAndView mv = new ModelAndView();
         Reference rb = service.load(uuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
         if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
-            String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
+            String nomRefCit = NomenclaturalSourceFormatter.INSTANCE().format(rb, microReference);
             mv.addObject(nomRefCit);
             return mv;
         } else {
@@ -103,8 +99,8 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
             method = RequestMethod.GET)
         public ModelAndView doGetAuthorship(
                 @PathVariable("uuid") UUID uuid,
-                HttpServletRequest request,
-                HttpServletResponse response) {
+                @SuppressWarnings("unused") HttpServletRequest request,
+                @SuppressWarnings("unused") HttpServletResponse response) {
         ModelAndView mv = new ModelAndView();
         Reference rb = service.load(uuid, CITATION_WITH_AUTHORSHIP_INIT_STRATEGY);
         if(rb.getAuthorship() != null){
@@ -112,5 +108,4 @@ public class ReferenceController extends AbstractIdentifiableController<Referenc
         }
         return mv;
     }
-
 }

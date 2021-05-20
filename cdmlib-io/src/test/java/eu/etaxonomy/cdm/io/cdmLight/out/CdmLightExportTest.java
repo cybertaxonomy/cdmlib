@@ -123,13 +123,13 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             String taxonStr = new String(taxon);
             String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
             Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
-            String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
+            String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref.\"";
             Assert.assertTrue(taxonStr.contains(expected));
 
             byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
             String referenceString = new String(reference);
             Assert.assertNotNull("Reference table must not be null", reference);
-            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
+            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. 1804\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
             Assert.assertTrue(referenceString.contains(expected));
 
             byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
@@ -218,13 +218,13 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             String taxonStr = new String(taxon);
             String notExpected =  "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\"";
             Assert.assertFalse("Result must not contain root taxon", taxonStr.startsWith(notExpected));
-            String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref\"";
+            String expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"4096df99-7274-421e-8843-211b603d832e\",\"CdmLightExportTest Classification\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"4b6acca1-959b-4790-b76e-e474a0882990\",\"My sec ref.\"";
             Assert.assertTrue(taxonStr.contains(expected));
 
             byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
             String referenceString = new String(reference);
             Assert.assertNotNull("Reference table must not be null", reference);
-            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
+            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. 1804\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
             Assert.assertTrue(referenceString.contains(expected));
 
             byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());

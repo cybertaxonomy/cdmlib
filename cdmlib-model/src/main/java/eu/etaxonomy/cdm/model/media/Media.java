@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.media.IMediaCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.media.MediaDefaultCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -85,7 +85,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media
-        extends IdentifiableEntity<IIdentifiableEntityCacheStrategy>
+        extends IdentifiableEntity<IMediaCacheStrategy>
         implements IMultiLanguageTextHolder, IIntextReferenceTarget {
 
     private static final long serialVersionUID = -1927421567263473658L;
@@ -239,6 +239,9 @@ public class Media
 
 //************************ title / title cache *********************************
 
+    /**
+     * Returns the title in the default language.
+     */
     public LanguageString getTitle(){
         return getTitle(Language.DEFAULT());
     }
@@ -249,9 +252,6 @@ public class Media
 
     @Transient
     public Map<Language,LanguageString> getAllTitles(){
-        if(title == null) {
-            this.title = new HashMap<>();
-        }
         return this.title;
     }
     /**
@@ -263,7 +263,10 @@ public class Media
      * @see    	   		#putTitle(Language String)
     */
     public void putTitle(LanguageString title){
-        this.title.put(title.getLanguage(), title);
+        LanguageString oldValue = this.title.put(title.getLanguage(), title);
+        resetTitleCache();  //TODO #9632 handle with aspectj
+        this.firePropertyChange("title", oldValue, title);  //this is not fully correct but it is a workaround anyway
+
     }
 
     /**
@@ -278,13 +281,14 @@ public class Media
      * @see    	   		#putTitle(LanguageString)
      */
     public void putTitle(Language language, String title){
-        this.title.put(language, LanguageString.NewInstance(title, language));
+        putTitle(LanguageString.NewInstance(title, language));
     }
 
     public void removeTitle(Language language){
-        this.title.remove(language);
+        LanguageString oldValue = this.title.remove(language);
+        resetTitleCache(); //TODO #9632 handle with aspectj
+        this.firePropertyChange("title", oldValue, null);  //this is not fully correct but it is a workaround anyway
     }
-
 
     @Transient
     public String getTitleCacheByLanguage(Language lang){
@@ -297,7 +301,8 @@ public class Media
 
     /**
      * Puts the title into the title field which is a multi-language string
-     * with default language as language
+     * with default language as language.
+     * TODO: this may be adapted in future as it overrides the titleCache setter, not sure why it was implemented like this
      */
     @Override
     public void setTitleCache(String titleCache) {
@@ -343,17 +348,21 @@ public class Media
         return getAllDescriptions().get(language);
     }
 
-    public void addDescription(LanguageString description){
-        this.description.put(description.getLanguage(), description);
+    public void putDescription(LanguageString description){
+        LanguageString oldValue = this.description.put(description.getLanguage(), description);
+        resetTitleCache(); //TODO #9632 handle with aspectj
+        this.firePropertyChange("title", oldValue, description);  //this is not fully correct but it is a workaround anyway
     }
 
     public void putDescription(Language language, String text){
-        this.description.put(language, LanguageString.NewInstance(text, language));
+        putDescription(LanguageString.NewInstance(text, language));
     }
 
     public void removeDescription(Language language){
-        this.description.remove(language);
-    }
+        LanguageString oldValue = this.description.remove(language);
+        resetTitleCache(); //TODO #9632 handle with aspectj
+        this.firePropertyChange("title", oldValue, null);  //this is not fully correct but it is a workaround anyway
+   }
 
 // ************************ SOURCE ***************************/
 

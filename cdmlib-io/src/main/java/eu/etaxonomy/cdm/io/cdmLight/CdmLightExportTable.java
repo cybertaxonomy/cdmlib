@@ -34,7 +34,7 @@ public enum CdmLightExportTable {
     FACT_SOURCES("FactSources", factSourcesColumns()),
     IDENTIFIER("Identifier", identifierColumns()),
     MEDIA("MediaFact", mediaColumns()),
-    CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
+//    CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
     NAME_FACT("NameFact", nameFactColumns())
     ;
 
@@ -107,6 +107,7 @@ public enum CdmLightExportTable {
     protected static final String SPECIFIC_EPITHET = "SpecificEpithet";
     protected static final String INFRASPECIFIC_RANK = "InfraspecificRank";
     protected static final String INFRASPECIFIC_EPITHET = "InfraSpecificEpithet ";
+    protected static final String APPENDED_PHRASE = "AppendedPhrase";
     protected static final String BAS_EX_AUTHORTEAM_FK = "BasionymExAuthorTeam_Fk";
     protected static final String BAS_AUTHORTEAM_FK = "BasionymAuthorTeam_Fk";
     protected static final String COMB_EX_AUTHORTEAM_FK = "PublishingExAuthorTeam_Fk";
@@ -254,9 +255,9 @@ public enum CdmLightExportTable {
 
     }
 
-    private static String[] compressedDistributionFactColumns() {
-        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT};
-    }
+//    private static String[] compressedDistributionFactColumns() {
+//        return new String[]{FACT_ID, TAXON_FK, FACT_TEXT};
+//    }
 
     private Object usageFactColumns() {
         return new String[]{FACT_ID, TAXON_FK, FACT_TEXT, LANGUAGE, MEDIA_URI, FACT_CATEGORY};
@@ -325,17 +326,17 @@ public enum CdmLightExportTable {
                 ABBREV_REF_AUTHOR, FULL_REF_AUTHOR, COLLATION, VOLUME_ISSUE,
                 DETAIL, DATE_PUBLISHED, YEAR_PUBLISHED, VERBATIM_DATE, PROTOLOGUE_URI,
                 NOM_STATUS, NOM_STATUS_ABBREV, HOMOTYPIC_GROUP_FK,
-                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT, FULL_NAME_WITH_REF, NAME_USED_IN_SOURCE
+                HOMOTYPIC_GROUP_SEQ, PROTOLOGUE_TYPE_STATEMENT, TYPE_SPECIMEN, TYPE_STATEMENT, FULL_NAME_WITH_REF, NAME_USED_IN_SOURCE, APPENDED_PHRASE
         };
     }
 
     final static String[] taxonColumns(){
-        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, STATUS_NOTES, PUBLISHED, UNPLACED, DOUBTFUL};
+        return new String[]{TAXON_ID, CLASSIFICATION_ID, CLASSIFICATION_TITLE, NAME_FK, PARENT_FK, SEC_REFERENCE_FK, SEC_REFERENCE, SORT_INDEX, EXCLUDED, STATUS_NOTES, PUBLISHED, UNPLACED, DOUBTFUL, APPENDED_PHRASE};
     }
 
     final static String[] synonymColumns(){
         return new String[]{SYNONYM_ID, TAXON_FK, NAME_FK, SYN_SEC_REFERENCE_FK, SYN_SEC_REFERENCE, SEC_REFERENCE_FK, SEC_REFERENCE,
-                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED, PUBLISHED, SORT_INDEX};
+                IS_PRO_PARTE, IS_PARTIAL, IS_MISAPPLIED, PUBLISHED, SORT_INDEX, APPENDED_PHRASE};
     }
 
     final static String[] referenceColumns(){

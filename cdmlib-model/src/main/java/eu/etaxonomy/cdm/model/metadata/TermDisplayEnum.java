@@ -19,8 +19,8 @@ public enum TermDisplayEnum implements IKeyLabel{
     Symbol2("Symbol2", "Symbol 2"),
     Title("Label", "Label");
 
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private TermDisplayEnum(String key, String label){
         this.label = label;

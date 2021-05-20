@@ -147,14 +147,12 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 			}
 
 			int counter = 0;
-//			int teamSize = collectorTeam.getTeamMembers().size();
 			boolean fieldNumberAdded = false;
 			List<Person> teamMembers = collectorTeam.getTeamMembers();
 			for (Person member : teamMembers){
 				counter++;
-				String concatString = TeamDefaultCacheStrategy.concatString(collectorTeam, teamMembers, counter);
-				//(counter >= teamSize)? " & " : ", ";
-				result = CdmUtils.concat(concatString, result, getMemberString(member) );
+				String sep = TeamDefaultCacheStrategy.teamConcatSeparator(collectorTeam, counter);
+				result = CdmUtils.concat(sep, result, getMemberString(member) );
 				if (member.equals(primaryCollector)){
 					result = addFieldNumber(result, fieldNumber);
 					fieldNumberAdded = true;

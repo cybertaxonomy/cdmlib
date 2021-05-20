@@ -63,7 +63,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     public static final Logger logger = Logger.getLogger(DescriptionAggregationBase.class);
 
-    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;
+    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;  //800 MB
     /**
      * ratio of the initially free heap which should not be used
      * during the batch processing. This amount of the heap is reserved
@@ -86,12 +86,13 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         return doInvoke();
     }
 
-    protected UpdateResult doInvoke() throws JvmLimitsException {
+    protected UpdateResult doInvoke() {
 
         try {
             //TODO FIXME use UpdateResult
 
             double start = System.currentTimeMillis();
+            IProgressMonitor monitor = getConfig().getMonitor();
 
             // only for debugging:
             //logger.setLevel(Level.TRACE); // TRACE will slow down a lot since it forces loading all term representations
@@ -102,35 +103,42 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             filter.setOrder(ORDER.TREEINDEX_DESC); //DESC guarantees that child taxa are aggregated before parent
             filter.setIncludeRootNodes(false);  //root nodes do not make sense for aggregation
 
+            monitor.beginTask("Accumulating " + pluralDataType(), 100);
             Long countTaxonNodes = getTaxonNodeService().count(filter);
             int aggregationWorkTicks = countTaxonNodes.intValue();
+            logger.info(aggregationWorkTicks + " taxa to aggregate");
             int getIdListTicks = 1;
             int preAccumulateTicks = 1;
-            beginTask("Accumulating " + pluralDataType(), (aggregationWorkTicks) + getIdListTicks + preAccumulateTicks);
+            monitor.worked(5);
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor,
+                    95, "Accumulating " + pluralDataType(), aggregationWorkTicks + getIdListTicks + preAccumulateTicks);
 
-            subTask("Get taxon node ID list");
+            subMonitor.subTask("Get taxon node ID list");
             List<Integer> taxonNodeIdList = getTaxonNodeService().idList(filter);
 
-            worked(getIdListTicks);
+            subMonitor.worked(getIdListTicks);
 
             try {
-                preAggregate();
+                preAggregate(subMonitor);
             } catch (Exception e) {
                 result.addException(new RuntimeException("Unhandled error during pre-aggregation", e));
+                result.setError();
                 done();
                 return result;
             }
 
-            workedAndNewTask(preAccumulateTicks, "Accumulating "+pluralDataType()+" per taxon for taxon filter " + filter.toString());
+            subMonitor.worked(preAccumulateTicks);
+            subMonitor.subTask("Accumulating "+pluralDataType()+" per taxon for taxon filter " + filter.toString());
 
             double startAccumulate = System.currentTimeMillis();
 
             //TODO AM move to invokeOnSingleTaxon()
-            IProgressMonitor subMonitor = new SubProgressMonitor(getMonitor(), aggregationWorkTicks);
+            IProgressMonitor aggregateMonitor = new SubProgressMonitor(subMonitor, aggregationWorkTicks);
             try {
-                aggregate(taxonNodeIdList, subMonitor);
+                aggregate(taxonNodeIdList, aggregateMonitor);
             } catch (Exception e) {
                 result.addException(new RuntimeException("Unhandled error during aggregation", e));
+                result.setError();
                 done();
                 return result;
             }
@@ -308,7 +316,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     protected abstract List<String> descriptionInitStrategy();
 
-    protected abstract void preAggregate();
+    protected abstract void preAggregate(IProgressMonitor monitor);
 
     /**
      * hook for initializing object when a new transaction starts
@@ -340,7 +348,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             }
             if(!contained) {
                 try {
-                    target.add((DescriptionElementSource)source.clone());
+                    target.add(source.clone());
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     throw new RuntimeException(e);
@@ -387,7 +395,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         return repository.getTransactionManager();
     }
 
-
     // TODO merge with CdmRepository#startTransaction() into common base class
     protected void commitTransaction(TransactionStatus txStatus){
         logger.debug("commiting transaction ...");
@@ -419,7 +426,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         return txStatus;
     }
 
-
     protected Session getSession() {
         return getDescriptionService().getSession();
     }
@@ -436,31 +442,8 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         return result;
     }
 
-    protected IProgressMonitor getMonitor() {
-        return config.getMonitor();
-    }
-
-    protected void beginTask(String name, int totalWork){
-        if (! (getMonitor() instanceof SubProgressMonitor)){
-            getMonitor().beginTask(name, totalWork);
-        }
-    }
-
-    protected void worked(int work){
-        getMonitor().worked(work);
-    }
-
-    protected void workedAndNewTask(int work, String newTask){
-        getMonitor().worked(work);
-        getMonitor().subTask(newTask);
-    }
-
-    protected void subTask(String name){
-        getMonitor().subTask(name);
-    }
-
     protected void done(){
-        getMonitor().done();
+        getConfig().getMonitor().done();
     }
 
     public void setBatchMinFreeHeap(long batchMinFreeHeap) {

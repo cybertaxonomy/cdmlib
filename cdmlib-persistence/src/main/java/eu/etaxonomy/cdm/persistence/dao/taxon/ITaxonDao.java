@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.persistence.query.TaxonTitleType;
 
 /**
  * @author a.mueller
- *
  */
 public interface ITaxonDao
           extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase>, IPublishableDao<TaxonBase> {
@@ -89,7 +88,6 @@ public interface ITaxonDao
      */
     public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
             Boolean accepted, boolean includeUnpublished, Integer pageSize, Integer pageNumber);
-
 
     /**
      * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false)
@@ -232,21 +230,8 @@ public interface ITaxonDao
      */
     public long countSynonyms(boolean onlyAttachedToTaxon);
 
-    /**
-     * @param queryString
-     * @param matchMode
-     * @param onlyAcccepted
-     * @return
-     */
     public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
 
-    /**
-     * @param queryString
-     * @param matchMode
-     * @param onlyAcccepted
-     * @param criteria
-     * @return
-     */
     public long countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 
     /**
@@ -350,7 +335,7 @@ public interface ITaxonDao
     public Map<String, Map<UUID,Set<TaxonName>>> findIdenticalNames(List<UUID> sourceRefUuids, List<String> propertyPaths);
 
     public List<UuidAndTitleCache<? extends IdentifiableEntity>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, boolean doNamesWithoutTaxa,
-            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished,
+            boolean doMisappliedNames, boolean doCommonNames, boolean includeUnpublished, boolean includeAuthors,
             String queryString, Classification classification, TaxonNode subtree,
             MatchMode matchMode, Set<NamedArea> namedAreas, NameSearchOrder order);
 
@@ -410,62 +395,19 @@ public interface ITaxonDao
     public <S extends TaxonBase> long countByMarker(Class<S> clazz, MarkerType markerType,
             Boolean markerValue, TaxonNode subtreeFilter);
 
-    /**
-     * @param clazz
-     * @param markerType
-     * @param markerValue
-     * @param subtreeFilter
-     * @param includeEntity
-     * @param pageSize
-     * @param pageNumber
-     * @param propertyPaths
-     * @return
-     */
     public <S extends TaxonBase> List<Object[]> findByMarker(Class<S> clazz, MarkerType markerType,
             Boolean markerValue, TaxonNode subtreeFilter, boolean includeEntity, TaxonTitleType titleType,
             Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-
-    /**
-     * @param types
-     * @return
-     */
     public long countTaxonRelationships(Set<TaxonRelationshipType> types);
 
-    /**
-     * @param types
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
     public List<TaxonRelationship> getTaxonRelationships(Set<TaxonRelationshipType> types,
             Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths);
 
-
-    /**
-     * @param type
-     * @param restrictions
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @param includePublished
-     * @return
-     */
     public <S extends TaxonBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includePublished);
 
-    /**
-     * @param type
-     * @param restrictions
-     * @param includePublished
-     * @return
-     */
     long count(Class<? extends TaxonBase> type, List<Restriction<?>> restrictions, boolean includePublished);
-
-
 
 }

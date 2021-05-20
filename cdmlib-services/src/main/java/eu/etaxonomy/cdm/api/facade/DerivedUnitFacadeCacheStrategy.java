@@ -130,10 +130,6 @@ public class DerivedUnitFacadeCacheStrategy
         return result;
     }
 
-
-	/**
-	 * @param facade
-	 */
 	private String getCode(DerivedUnitFacade facade) {
 		String code = "";
 		if(facade.getCollection() != null){

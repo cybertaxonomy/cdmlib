@@ -13,7 +13,7 @@ import java.beans.Transient;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
@@ -100,9 +100,9 @@ public interface IReference
     /**
      * @param defaultStrategy
      */
-    public void setCacheStrategy(INomenclaturalReferenceCacheStrategy defaultStrategy);
+    public void setCacheStrategy(IReferenceCacheStrategy defaultStrategy);
 
-    public INomenclaturalReferenceCacheStrategy getCacheStrategy();
+    public IReferenceCacheStrategy getCacheStrategy();
 
     /**
 	 * @see Cloneable

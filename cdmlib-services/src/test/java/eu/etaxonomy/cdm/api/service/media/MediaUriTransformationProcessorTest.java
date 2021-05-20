@@ -86,7 +86,7 @@ public class MediaUriTransformationProcessorTest {
         processor.add(transformation2);
 
         List<URI> transformed =  processor.applyTo(uri);
-        assertEquals(URI_STRING_1, transformed.get(0).toString());
+        assertTrue(transformed.isEmpty());
     }
 
     @Test

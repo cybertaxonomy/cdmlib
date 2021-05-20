@@ -165,10 +165,10 @@ public class CommonServiceImpl
         }else if (entity instanceof DescriptionElementBase){
            targetEntity = getTarget((DescriptionElementBase)entity);
         }else if (entity instanceof IdentifiableSource){
-            IdentifiableSource source = ((IdentifiableSource) entity);
+            IdentifiableSource source = (IdentifiableSource) entity;
             targetEntity = originalSourceDao.findIdentifiableBySourceId(IdentifiableEntity.class, source.getId());
         }else if (entity instanceof NamedSource){
-            NamedSource source = ((NamedSource) entity);
+            NamedSource source = (NamedSource) entity;
             SingleSourcedEntityBase singleSourced = originalSourceDao.findSingleSourceBySourceId(SingleSourcedEntityBase.class, source.getId());
             if (singleSourced != null){
                 targetEntity = singleSourced;
@@ -177,21 +177,25 @@ public class CommonServiceImpl
                 targetEntity = entity;
             }
         }else if (entity instanceof DescriptionBase){
-            targetEntity = getTarget((DescriptionBase)entity);
+            targetEntity = getTarget((DescriptionBase<?>)entity);
         }else{
             targetEntity = entity;
         }
         targetEntity = CdmBase.deproxy(targetEntity);
-        String targetLabel = targetEntity instanceof IdentifiableEntity ? ((IdentifiableEntity)targetEntity).getTitleCache() : null;
+
+        if (targetEntity == null){
+            targetEntity = entity;
+        }
+        String targetLabel = targetEntity instanceof IdentifiableEntity ? ((IdentifiableEntity<?>)targetEntity).getTitleCache() : null;
         UuidAndTitleCache<CdmBase> result = new UuidAndTitleCache<>(targetEntity.getClass(), targetEntity.getUuid(), targetEntity.getId(), targetLabel);
         return result;
     }
 
     private CdmBase getTarget(DescriptionElementBase element) {
-        return getTarget(element.getInDescription());
+        return element == null ? null :getTarget(element.getInDescription());
     }
 
-    private CdmBase getTarget(DescriptionBase db) {
+    private CdmBase getTarget(DescriptionBase<?> db) {
         return db.describedEntity() != null ? (CdmBase)db.describedEntity() : db;
     }
 

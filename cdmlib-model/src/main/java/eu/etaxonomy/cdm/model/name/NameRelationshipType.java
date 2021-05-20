@@ -182,7 +182,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 		termMap = null;
 	}
 
-
     @Override
     @Transient
     public boolean isInvalidExplicit() {

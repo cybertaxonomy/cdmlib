@@ -13,6 +13,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -473,6 +474,8 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
         }
     }
 
+//*************************************************************/
+
     @Transient
 	@Override
 	public String getUserFriendlyTypeName(){
@@ -489,6 +492,22 @@ public abstract class CdmBase implements Serializable, ICdmBase, ISelfDescriptiv
 	public String getUserFriendlyFieldName(String field){
 		return field;
 	}
+
+
+    /**
+     * EnumSets being part of the model should be immutable to make hibernate know if they have been changed.
+     * Therefore any change to the enum set should result in a new enum set.
+     */
+    protected <T extends Enum<T>> EnumSet<T> newEnumSet(@NotNull EnumSet<T> enumSet, T additionalClass, T classToRemove) {
+        EnumSet<T> result = EnumSet.copyOf(enumSet);
+        if (additionalClass != null){
+            result.add(additionalClass);
+        }
+        if (classToRemove != null){
+            result.remove(classToRemove);
+        }
+        return result;
+    }
 
 // ********************* HELPER ****************************************/
 

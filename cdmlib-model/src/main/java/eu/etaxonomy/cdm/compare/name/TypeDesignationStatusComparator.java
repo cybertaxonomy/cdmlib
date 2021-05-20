@@ -32,6 +32,6 @@ public class TypeDesignationStatusComparator<T extends TypeDesignationStatusBase
             return 1;
         }
 
-        return -1 * super.compare(o1, o2);
+        return super.compare(o1, o2);
     }
 }

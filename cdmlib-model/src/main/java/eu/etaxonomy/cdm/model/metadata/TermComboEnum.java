@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.metadata;
 /**
  * @author k.luther
  * @since 03.06.2019
- *
  */
 public enum TermComboEnum implements IKeyLabel{
 
@@ -21,8 +20,8 @@ public enum TermComboEnum implements IKeyLabel{
     Title("Label", "Label"),
     TermDisplayPlusTitle("TermDisplay+Label", "[Term Display] Label");
 
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private TermComboEnum(String key, String label){
         this.label = label;

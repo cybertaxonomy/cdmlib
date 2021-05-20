@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
+import eu.etaxonomy.cdm.api.service.config.ForSubtreeConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.config.PublishForSubtreeConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SecundumForSubtreeConfigurator;
@@ -44,6 +45,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonNodeSortMode;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -950,12 +952,8 @@ public class TaxonNodeServiceImpl
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        TaxonNode subTree = load(config.getSubtreeUuid());
-        TreeIndex subTreeIndex = null;
-        Reference newSec = null;
-        if (config.getNewSecundum() != null){
-            newSec = referenceService.load(config.getNewSecundum().getUuid());
-        }
+        monitor.beginTask("Update secundum reference for subtree", 100);
+        monitor.subTask("Check start conditions");
 
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -963,32 +961,77 @@ public class TaxonNodeServiceImpl
             monitor.done();
             return result;
         }
-
+        monitor.worked(1);
+        TaxonNode subTree = load(config.getSubtreeUuid());
         if (subTree == null){
             result.setError();
             result.addException(new NullPointerException("Subtree does not exist"));
             monitor.done();
             return result;
-        }else{
-            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
-            int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
-            count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail()) :0;
-            monitor.beginTask("Update Secundum Reference", count);
         }
+        monitor.worked(1);
 
-        //Reference ref = config.getNewSecundum();
-        if (config.isIncludeAcceptedTaxa()){
-            monitor.subTask("Update Accepted Taxa");
-
-            Set<TaxonBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExistingAccepted(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), monitor);
-            result.addUpdatedObjects(updatedTaxa);
+        Reference newSec = null;
+        if (config.getNewSecundum() != null){
+            newSec = referenceService.load(config.getNewSecundum().getUuid());
+            if (newSec == null){
+                result.setError();
+                result.addException(new NullPointerException("New secundum reference does not exist"));
+                monitor.done();
+                return result;
+            }
         }
-        if (config.isIncludeSynonyms()){
-           monitor.subTask("Update Synonyms");
-           Set<TaxonBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExistingSynonyms(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), monitor);
-           result.addUpdatedObjects(updatedSynonyms);
-        }
+        monitor.worked(1);
 
+        monitor.subTask("Count records");
+        try {
+            boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
+
+            TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+            int count = config.isIncludeAcceptedTaxa() ? dao.countSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec, config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
+            monitor.worked(2);
+            count += config.isIncludeSynonyms() ? dao.countSecundumForSubtreeSynonyms(subTreeIndex, newSec, config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()) :0;
+            monitor.worked(3);
+            count += includeRelatedTaxa ? dao.countSecundumForSubtreeRelations(subTreeIndex, newSec, config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail()):0;
+            monitor.worked(2);
+            if (monitor.isCanceled()){
+                return result;
+            }
+
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count * 2);  //*2 1 tick for update and 1 tick for commit
+            //Reference ref = config.getNewSecundum();
+            if (config.isIncludeAcceptedTaxa()){
+                monitor.subTask("Update Accepted Taxa");
+                Set<CdmBase> updatedTaxa = dao.setSecundumForSubtreeAcceptedTaxa(subTreeIndex, newSec,
+                        config.isOverwriteExisting(), config.isIncludeSharedTaxa(), config.isEmptySecundumDetail(), subMonitor);
+                result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+            if (config.isIncludeSynonyms()){
+               monitor.subTask("Update Synonyms");
+               Set<CdmBase> updatedSynonyms = dao.setSecundumForSubtreeSynonyms(subTreeIndex, newSec,
+                       config.isOverwriteExisting(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
+               result.addUpdatedObjects(updatedSynonyms);
+               if (monitor.isCanceled()){
+                   return result;
+               }
+            }
+            if (includeRelatedTaxa){
+                monitor.subTask("Update Related Taxa");
+                Set<UUID> relationTypes = getRelationTypesForSubtree(config);
+                Set<CdmBase> updatedRels = dao.setSecundumForSubtreeRelations(subTreeIndex, newSec,
+                        relationTypes, config.isOverwriteExisting(), config.isIncludeSharedTaxa() , config.isEmptySecundumDetail(), subMonitor);
+                result.addUpdatedObjects(updatedRels);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+        } catch (Exception e) {
+            result.setError();
+            result.addException(e);
+        }
         monitor.done();
         return result;
     }
@@ -1001,7 +1044,8 @@ public class TaxonNodeServiceImpl
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
-        TreeIndex subTreeIndex = null;
+        monitor.beginTask("Update publish flag for subtree", 100);
+        monitor.subTask("Check start conditions");
 
         if (config.getSubtreeUuid() == null){
             result.setError();
@@ -1009,56 +1053,92 @@ public class TaxonNodeServiceImpl
             monitor.done();
             return result;
         }
+        monitor.worked(1);
+
         TaxonNode subTree = find(config.getSubtreeUuid());
+        if (subTree == null){
+            result.setError();
+            result.addException(new NullPointerException("Subtree does not exist"));
+            monitor.done();
+            return result;
+        }
+        monitor.worked(1);
+
+        monitor.subTask("Count records");
         boolean includeAcceptedTaxa = config.isIncludeAcceptedTaxa();
         boolean publish = config.isPublish();
         boolean includeSynonyms = config.isIncludeSynonyms();
         boolean includeSharedTaxa = config.isIncludeSharedTaxa();
         boolean includeHybrids = config.isIncludeHybrids();
         boolean includeRelatedTaxa = config.isIncludeProParteSynonyms() || config.isIncludeMisapplications();
-        if (subTree == null){
-            result.setError();
-            result.addException(new NullPointerException("Subtree does not exist"));
-            monitor.done();
-            return result;
-        }else{
-            subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
+        try {
+            TreeIndex subTreeIndex = TreeIndex.NewInstance(subTree.treeIndex());
             int count = includeAcceptedTaxa ? dao.countPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            monitor.worked(3);
             count += includeSynonyms ? dao.countPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
+            monitor.worked(3);
             count += includeRelatedTaxa ? dao.countPublishForSubtreeRelatedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids):0;
-            monitor.beginTask("Update publish flag", count);
-        }
-
-
-        if (includeAcceptedTaxa){
-            monitor.subTask("Update Accepted Taxa");
-            @SuppressWarnings("rawtypes")
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
-            result.addUpdatedObjects(updatedTaxa);
-        }
-        if (includeSynonyms){
-            monitor.subTask("Update Synonyms");
-            @SuppressWarnings("rawtypes")
-            Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex, publish, includeSharedTaxa, includeHybrids, monitor);
-            result.addUpdatedObjects(updatedSynonyms);
-        }
-        if (includeRelatedTaxa){
-            monitor.subTask("Update Related Taxa");
-            Set<UUID> relationTypes = new HashSet<>();
-            if (config.isIncludeMisapplications()){
-                relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+            monitor.worked(2);
+            if (monitor.isCanceled()){
+                return result;
             }
-            if (config.isIncludeProParteSynonyms()){
-                relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+
+            SubProgressMonitor subMonitor = SubProgressMonitor.NewStarted(monitor, 90, "Updating secundum for subtree", count);
+            if (includeAcceptedTaxa){
+                monitor.subTask("Update Accepted Taxa");
+                @SuppressWarnings("rawtypes")
+                Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeAcceptedTaxa(subTreeIndex,
+                        publish, includeSharedTaxa, includeHybrids, subMonitor);
+                result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
             }
-            @SuppressWarnings("rawtypes")
-            Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
-                    relationTypes, includeSharedTaxa, includeHybrids, monitor);
-            result.addUpdatedObjects(updatedTaxa);
+            if (includeSynonyms){
+                monitor.subTask("Update Synonyms");
+                @SuppressWarnings("rawtypes")
+                Set<TaxonBase> updatedSynonyms = dao.setPublishForSubtreeSynonyms(subTreeIndex,
+                        publish, includeSharedTaxa, includeHybrids, subMonitor);
+                result.addUpdatedObjects(updatedSynonyms);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+            if (includeRelatedTaxa){
+                monitor.subTask("Update Related Taxa");
+                Set<UUID> relationTypes = getRelationTypesForSubtree(config);
+                if (config.isIncludeMisapplications()){
+                    relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+                }
+                if (config.isIncludeProParteSynonyms()){
+                    relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+                }
+                @SuppressWarnings("rawtypes")
+                Set<TaxonBase> updatedTaxa = dao.setPublishForSubtreeRelatedTaxa(subTreeIndex, publish,
+                        relationTypes, includeSharedTaxa, includeHybrids, subMonitor);
+                result.addUpdatedObjects(updatedTaxa);
+                if (monitor.isCanceled()){
+                    return result;
+                }
+            }
+        } catch (Exception e) {
+            result.setError();
+            result.addException(e);
         }
 
         monitor.done();
         return result;
+    }
+
+    private Set<UUID> getRelationTypesForSubtree(ForSubtreeConfiguratorBase config) {
+        Set<UUID> relationTypes = new HashSet<>();
+        if (config.isIncludeMisapplications()){
+            relationTypes.addAll(TaxonRelationshipType.misappliedNameUuids());
+        }
+        if (config.isIncludeProParteSynonyms()){
+            relationTypes.addAll(TaxonRelationshipType.proParteOrPartialSynonymUuids());
+        }
+        return relationTypes;
     }
 
     @Override

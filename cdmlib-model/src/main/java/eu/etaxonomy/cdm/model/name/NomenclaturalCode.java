@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.term.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.term.IEnumTerm;
 
 /**
- * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
+ * The class for the five nomenclature codes (ICNP, ICBN, ICNCP, ICZN and ICVCN)
  * ruling {@link TaxonName taxon names}.
  * <P>
  * The standard set of nomenclature code instances will be automatically created
@@ -58,13 +58,11 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 
     //1
 	/**
-	 * International Code of Nomenclature of Bacteria
-	 * => now International Code of Nomenclature of Prokaryotes
-	 * TODO rename to ICNP
+	 * International Code of Nomenclature of Prokaryotes
+	 * (former International Code of Nomenclature of Bacteria)
 	*/
-	@XmlEnumValue("ICNB")
-	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB","BacterialName","Q743780", NonViral),
-
+	@XmlEnumValue("ICNP")
+	ICNP(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNP","BacterialName","Q743780", NonViral),
 
 	//2
 	/**
@@ -140,7 +138,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
         return this == NomenclaturalCode.ICNCP;
     }
     public boolean isBacterial() {
-        return this == NomenclaturalCode.ICNB;
+        return this == NomenclaturalCode.ICNP;
      }
      public boolean isViral() {
          return this == NomenclaturalCode.ICVCN;
@@ -193,7 +191,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode> {
 		TaxonName result;
 
 		switch (this){
-		case ICNAFP: case ICZN: case ICNCP: case ICNB:
+		case ICNAFP: case ICZN: case ICNCP: case ICNP:
 		case ICVCN: case NonViral: case Fungi:
 			result = TaxonNameFactory.NewNameInstance(this, rank);
 			break;

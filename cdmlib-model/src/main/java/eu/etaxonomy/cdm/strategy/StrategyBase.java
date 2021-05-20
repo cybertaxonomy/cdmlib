@@ -86,7 +86,6 @@ public abstract class StrategyBase
 		}
 	}
 
-
 	/**
 	 * Null safe string. Returns the given string if it is not <code>null</code>.
 	 * Empty string otherwise.
@@ -109,7 +108,11 @@ public abstract class StrategyBase
 	 * Checks if a string is blank.
 	 * @see StringUtils#isNotBlank(String)
 	 */
-	protected boolean isBlank(String str){
+	protected static boolean isBlank(String str){
 		return StringUtils.isBlank(str);
+	}
+
+	protected String removeTrailingDots(String str){
+	    return CdmUtils.removeTrailingDots(str);
 	}
 }

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -63,8 +64,8 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
-    protected void preAggregate() {
-        subTask("preAccumulate - nothing to do");
+    protected void preAggregate(IProgressMonitor monitor) {
+        monitor.subTask("preAccumulate - nothing to do");
 
         // take start time for performance testing
         double start = System.currentTimeMillis();
@@ -152,7 +153,7 @@ public class StructuredDescriptionAggregation
         for (DescriptionBase<?> descriptionBase : sourceDescriptions) {
             DescriptionBase<?> sourceDescription = null;
             if(descriptionBase.isInstanceOf(SpecimenDescription.class)){
-                DescriptionBase<?> clone = (DescriptionBase<?>)descriptionBase.clone();
+                DescriptionBase<?> clone = descriptionBase.clone();
                 clone.removeDescriptiveDataSet(dataSet);
                 clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
                 SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(descriptionBase, SpecimenDescription.class).getDescribedSpecimenOrObservation();
@@ -260,7 +261,7 @@ public class StructuredDescriptionAggregation
         CategoricalData aggregatedCategoricalData = resultHolder.categoricalMap.get(cd.getFeature());
         if(aggregatedCategoricalData==null){
             // no CategoricalData with this feature in aggregation
-            aggregatedCategoricalData = (CategoricalData) cd.clone();
+            aggregatedCategoricalData = cd.clone();
             // set count to 1 if not set
             aggregatedCategoricalData.getStateData().stream().filter(sd->sd.getCount()==null).forEach(sd->sd.incrementCount());
             resultHolder.categoricalMap.put(aggregatedCategoricalData.getFeature(), aggregatedCategoricalData);
@@ -272,7 +273,7 @@ public class StructuredDescriptionAggregation
             List<StateData> sdWithNoExistingStateInAggregation = cd.getStateData().stream().filter(sd->!statesOnly.contains(sd.getState())).collect(Collectors.toList());
 
             for (StateData sd : sdWithNoExistingStateInAggregation) {
-                StateData clone = (StateData) sd.clone();
+                StateData clone = sd.clone();
                 // set count to 1 if not set
                 if(clone.getCount()==null){
                     clone.incrementCount();
@@ -361,7 +362,7 @@ public class StructuredDescriptionAggregation
         }
         else{
             // qd has only min, max, ... but no exact values
-            aggQD = (QuantitativeData) sourceQd.clone();
+            aggQD = sourceQd.clone();
             aggQD = handleMissingValues(aggQD);
         }
         return aggQD;

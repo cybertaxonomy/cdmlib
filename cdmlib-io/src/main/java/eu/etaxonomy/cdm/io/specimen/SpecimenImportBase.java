@@ -289,7 +289,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	            }
 	        }
 	        else if (state.getDataHolder().getNomenclatureCode() != null && (state.getDataHolder().getNomenclatureCode().toString().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().toString().contains("ICBN"))) {
-	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNB, rank);
+	            taxonName = (TaxonName)nvnpi.parseFullName(scientificName, NomenclaturalCode.ICNP, rank);
 	            if (taxonName.hasProblem()) {
 	                problem = true;
 	            }
@@ -448,7 +448,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                return taxonName;
 	            }
 	        }
-	        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNB.getUuid())) {
+	        else if (state.getDataHolder().getNomenclatureCode().equals("Bacterial") || state.getDataHolder().getNomenclatureCode().equals(NomenclaturalCode.ICNP.getUuid())) {
 	            TaxonName taxonName = TaxonNameFactory.NewBacterialInstance(null);
 	            taxonName.setFullTitleCache(fullName, true);
 	            taxonName.setGenusOrUninomial(getFromMap(atomisedMap, "Genus"));
@@ -480,7 +480,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 	                taxonName.setBasionymAuthorship(team);
 	            }
 	            if (taxonName.hasProblem()) {
-	                logger.info("pb ICNB");
+	                logger.info("pb ICNP");
 	                problem = true;
 	            }
 	            else {

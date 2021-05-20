@@ -408,17 +408,17 @@ public class DeduplicationHelper {
 		}
 
 		//identifiers
-		List<Identifier<?>> removeListIdentifier = new ArrayList<>();
-		for (Identifier<?> changeObject : identifiableEntity2.getIdentifiers()){
+		List<Identifier> removeListIdentifier = new ArrayList<>();
+		for (Identifier changeObject : identifiableEntity2.getIdentifiers()){
 			try {
-				Identifier<?> clone = changeObject.clone();
+				Identifier clone = changeObject.clone();
 				identifiableEntity1.addIdentifier(clone);
 				removeListIdentifier.add(changeObject);
 			} catch (CloneNotSupportedException e) {
 			    throw new RuntimeException(e);
 			}
 		}
-		for (Identifier<?> removeObject : removeListIdentifier){
+		for (Identifier removeObject : removeListIdentifier){
 			identifiableEntity2.removeIdentifier(removeObject);
 			session.delete(removeObject);
 		}

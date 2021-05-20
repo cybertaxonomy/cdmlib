@@ -13,11 +13,13 @@ import java.util.List;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
@@ -53,49 +55,67 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 
         List<TaggedText> tags = new ArrayList<>();
 
-        if (taxonBase.isDoubtful()){
-            tags.add(new TaggedText(TagEnum.separator, "?"));
-        }
         if (taxonBase.isProtectedTitleCache()){
             //protected title cache
             tags.add(new TaggedText(TagEnum.name, taxonBase.getTitleCache()));
+            return tags;
+        }
+
+        if (taxonBase.isDoubtful()){
+            tags.add(new TaggedText(TagEnum.separator, "?"));
+        }
+
+        boolean isMisapplication = isMisapplication(taxonBase);
+        //name
+        List<TaggedText> nameTags = getNameTags(taxonBase, isMisapplication);
+
+        if (nameTags.size() > 0){
+            tags.addAll(nameTags);
         }else{
-            //name
-            List<TaggedText> nameTags = getNameTags(taxonBase);
+            tags.add(new TaggedText(TagEnum.fullName, "???"));
+        }
 
-            if (nameTags.size() > 0){
-                tags.addAll(nameTags);
-            }else{
-                tags.add(new TaggedText(TagEnum.fullName, "???"));
-            }
-
-            boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
-            String secSeparator =  (isSynonym? " syn." : "") + " sec. ";
-            //not used: we currently use a post-separator in the name tags
+        boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
+        String secSeparator =  isMisapplication ? " sensu " : (isSynonym? " syn." : "") + " sec. ";
+        //not used: we currently use a post-separator in the name tags
 //                if (nameTags.get(nameTags.size() - 1).getType().equals(TagEnum.nomStatus)){
 //                    secSeparator = "," + secSeparator;
 //                }
 
-            //ref.
-            List<TaggedText> secTags = getSecundumTags(taxonBase);
-
-            //sec.
-            if (!secTags.isEmpty()){
-                tags.add(new TaggedText(TagEnum.separator, secSeparator));
-                tags.addAll(secTags);
-            }
-
+        //sec.
+        List<TaggedText> secTags = getSecundumTags(taxonBase);
+        if (!secTags.isEmpty()){
+            tags.add(new TaggedText(TagEnum.separator, secSeparator));
+            tags.addAll(secTags);
         }
+
+        if (isMisapplication){
+            TaxonName name = CdmBase.deproxy(taxonBase.getName());
+            if (name != null && isNotBlank(name.getAuthorshipCache())){
+                tags.add(new TaggedText(TagEnum.separator, ", non "));
+                tags.add(new TaggedText(TagEnum.authors, name.getAuthorshipCache()));
+            }
+        }
+
         return tags;
     }
 
-    private List<TaggedText> getNameTags(T taxonBase) {
+    private boolean isMisapplication(T taxonBase) {
+        if (! taxonBase.isInstanceOf(Taxon.class)){
+            return false;
+        }else{
+            return CdmBase.deproxy(taxonBase, Taxon.class).isMisapplicationOnly();
+        }
+    }
+
+    private List<TaggedText> getNameTags(T taxonBase, boolean useNameCache) {
         List<TaggedText> tags = new ArrayList<>();
         TaxonName name = CdmBase.deproxy(taxonBase.getName());
 
         if (name != null){
             INameCacheStrategy nameCacheStrategy = name.getCacheStrategy();
-            if (taxonBase.isUseNameCache() && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy){
+            useNameCache = (useNameCache || taxonBase.isUseNameCache()) && name.isNonViral() && nameCacheStrategy instanceof INonViralNameCacheStrategy;
+            if (useNameCache){
                 INonViralNameCacheStrategy nvnCacheStrategy = (INonViralNameCacheStrategy)nameCacheStrategy;
                 List<TaggedText> nameCacheTags = nvnCacheStrategy.getTaggedName(name);
                 tags.addAll(nameCacheTags);
@@ -134,7 +154,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                     sec.getAuthorship() != null &&
                     isNotBlank(sec.getAuthorship().getTitleCache()) &&
                     isNotBlank(sec.getYear())){
-                secRef = sec.getCacheStrategy().getCitation(sec, null);  //microRef is handled later
+                secRef = OriginalSourceFormatter.INSTANCE.format(sec, null);  //microRef is handled later
             }else if ((sec.isWebPage() || sec.isDatabase() || sec.isMap())
                     && titleExists(sec)){  //maybe we should also test protected caches (but which one, the abbrev cache or the titleCache?
                 secRef = isNotBlank(sec.getAbbrevTitle())? sec.getAbbrevTitle() : sec.getTitle();
@@ -145,6 +165,10 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
                 secRef = CdmUtils.concat(" ", secRef, secDate);
             }else{
                 secRef = sec.getTitleCache();
+                //TODO maybe not always correct
+                if (secTitleTrailingDotShouldBeRemoved(sec)){
+                    secRef = CdmUtils.removeTrailingDots(secRef);
+                }
             }
         }
         if (secRef != null){
@@ -156,6 +180,18 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
             tags.add(new TaggedText(TagEnum.secMicroReference, taxonBase.getSecMicroReference()));
         }
         return tags;
+    }
+
+
+    private boolean secTitleTrailingDotShouldBeRemoved(Reference sec) {
+        if (sec.isProtectedTitleCache()){
+            return false;
+        }else if (sec.getAbbrevTitle()!= null && sec.getTitleCache().endsWith(sec.getAbbrevTitle())){
+            return false;
+        }else if (sec.getTitle() != null && sec.getTitle().endsWith(".") && sec.getTitleCache().endsWith(sec.getTitle())){
+            return false;
+        }
+        return true;
     }
 
     private boolean titleExists(Reference ref) {

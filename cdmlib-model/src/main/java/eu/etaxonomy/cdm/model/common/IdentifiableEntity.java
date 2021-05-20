@@ -6,9 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
-
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -248,10 +246,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return getTitleCache();
     }
 
-    /**
-     * @param cache
-     * @return
-     */
     @Transient
     protected String getTruncatedCache(String cache) {
         int maxLength = 800;
@@ -261,7 +255,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return cache;
     }
-
 
     @Override
     public boolean isProtectedTitleCache() {
@@ -274,7 +267,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
     /**
-     *
      * @return true, if the current state of the titleCache (without generating it new)
      * is <code>null</code> or the empty string. This is primarily meant for internal use.
      */
@@ -436,7 +428,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     public Set<String> getIdentifiers(UUID identifierTypeUuid){
         Set<String> result = new HashSet<>();
-        for (Identifier<?> identifier : getIdentifiers()){
+        for (Identifier identifier : getIdentifiers()){
             if ( (identifier.getType()== null && identifierTypeUuid == null)
                 || (identifier.getType().getUuid().equals(identifierTypeUuid))){
                 result.add(identifier.getIdentifier());
@@ -444,10 +436,31 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return result;
     }
+    /**
+     * Returns the first identifier value of the given type.
+     * <code>null</code> if no such identifier exists.
+     * @param identifierTypeUuid
+     */
+    public String getIdentifier(UUID identifierTypeUuid){
+        Set<Identifier> set = getIdentifiers_(identifierTypeUuid);
+        return set.isEmpty()? null : set.iterator().next().getIdentifier();
+    }
+
+
+    public Set<Identifier> getIdentifiers_(UUID identifierTypeUuid){
+        Set<Identifier> result = new HashSet<>();
+        for (Identifier identifier : getIdentifiers()){
+            if ( (identifier.getType()== null && identifierTypeUuid == null)
+                || (identifier.getType().getUuid().equals(identifierTypeUuid))){
+                result.add(identifier);
+            }
+        }
+        return result;
+    }
 
     @Override
     public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
-    	Identifier<?> result = Identifier.NewInstance(identifier, identifierType);
+    	Identifier result = Identifier.NewInstance(identifier, identifierType);
     	addIdentifier(result);
     	return result;
     }
@@ -692,8 +705,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
         //Identifier
         result.identifiers = new ArrayList<>();
-        for (Identifier<?> identifier : getIdentifiers() ){
-        	Identifier<?> newIdentifier = identifier.clone();
+        for (Identifier identifier : getIdentifiers() ){
+        	Identifier newIdentifier = identifier.clone();
             result.addIdentifier(newIdentifier);
         }
 

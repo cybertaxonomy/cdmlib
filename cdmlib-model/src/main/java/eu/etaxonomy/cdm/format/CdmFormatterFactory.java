@@ -53,6 +53,7 @@ public class CdmFormatterFactory {
 				return new SingleReadFormatter(object, formatKeys);
 			}
 			else if (cdmBase.isInstanceOf(MediaSpecimen.class)) {
+			    //see also MediaSpecimenCacheStrategy
 				return new MediaSpecimenFormatter(object, formatKeys);
 			}
 			else if (cdmBase.isInstanceOf(DerivedUnit.class)) {

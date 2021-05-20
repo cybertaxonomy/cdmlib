@@ -124,11 +124,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private static final boolean noMisapplied = false;
     private static final boolean doCommonNames = true;
     private static final boolean noCommonNames = false;
+    private static final boolean doAuthors = true;
+    private static final boolean noAuthors = false;
 
-    @SuppressWarnings("unused")
-    private static final String[] TABLE_NAMES = new String[] {
-        "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
-        , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
+//    @SuppressWarnings("unused")
+//    private static final String[] TABLE_NAMES = new String[] {
+//        "HOMOTYPICALGROUP", "HOMOTYPICALGROUP_AUD", "REFERENCE", "REFERENCE_AUD", "TAXONBASE", "TAXONBASE_AUD"
+//        , "TAXONNAME", "TAXONNAME_AUD", "TAXONRELATIONSHIP", "TAXONRELATIONSHIP_AUD" };
 
     @Before
     public void setUp() {
@@ -157,8 +159,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet
     public void testInit() {
         logger.warn("testInit()");
-        assertNotNull("Instance of ITaxonDao expected",taxonDao);
-        assertNotNull("Instance of IReferenceDao expected",referenceDao);
+        assertNotNull("Instance of ITaxonDao expected", taxonDao);
+        assertNotNull("Instance of IReferenceDao expected", referenceDao);
     }
 
     @Test
@@ -331,34 +333,42 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<UuidAndTitleCache<? extends IdentifiableEntity>> results;
 
         results = taxonDao.getTaxaByNameForEditor(
-                doTaxa, doSynonyms, noMisapplied, noCommonNames, false, includeUnpublished, "Acher", null, subtree, MatchMode.BEGINNING, null, null);
+                doTaxa, doSynonyms, noMisapplied, noCommonNames, false, includeUnpublished, noAuthors, "Acher", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertFalse("The list should not be empty", results.isEmpty());
         assertEquals(4, results.size());
 
-        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,includeUnpublished, noAuthors,"A", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(7, results.size());
 
-        results = taxonDao.getTaxaByNameForEditor(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, noSynonyms, noMisapplied, noCommonNames, false, includeUnpublished,noAuthors, "A", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(5, results.size());
         assertEquals(results.get(0).getType(), Taxon.class);
 
-        results = taxonDao.getTaxaByNameForEditor(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(noTaxa, doSynonyms, noMisapplied, noCommonNames, false, includeUnpublished, noAuthors, "A", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals(2, results.size());
         assertEquals(results.get(0).getType(), Synonym.class);
 
-        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,includeUnpublished, "Aus", null, subtree, MatchMode.EXACT, null, null);
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, noMisapplied, noCommonNames, false,includeUnpublished, noAuthors, "Aus", null, subtree, MatchMode.EXACT, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity",1,results.size());
 
-        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, "A", null, subtree, MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, noAuthors, "A", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain 8 entities", 8, results.size());
 
-        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, "Orphaned", null, subtree, MatchMode.BEGINNING, null, null);
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, doAuthors, "Brachyglossa Boisduval", null, subtree, MatchMode.BEGINNING, null, null);
+        assertNotNull("getTaxaByName should return a List", results);
+        assertEquals("Results list should contain 1 entity", 1, results.size());
+
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, noAuthors, "Brachyglossa Boisduval", null, subtree, MatchMode.BEGINNING, null, null);
+        assertNotNull("getTaxaByName should return a List", results);
+        assertEquals("Results list should contain no entities", 0, results.size());
+
+        results = taxonDao.getTaxaByNameForEditor(doTaxa, doSynonyms, doMisapplied, noCommonNames, false, includeUnpublished, noAuthors, "Orphaned", null, subtree, MatchMode.BEGINNING, null, null);
         assertNotNull("getTaxaByName should return a List", results);
         assertEquals("Results list should contain one entity, the orphaned synonym", 1, results.size());
 

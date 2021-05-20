@@ -838,11 +838,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         if (attributes.containsKey("Context")) {
             LanguageString description = LanguageString.NewInstance(attributes.get("Context"), Language.ENGLISH());
-            media.addDescription(description);
+            media.putDescription(description);
         }
         if (attributes.containsKey("Comment")) {
             LanguageString description = LanguageString.NewInstance(attributes.get("Comment"), Language.ENGLISH());
-            media.addDescription(description);
+            media.putDescription(description);
         }
         if (attributes.containsKey("Creators")) {
             String creators = attributes.get("Creators");

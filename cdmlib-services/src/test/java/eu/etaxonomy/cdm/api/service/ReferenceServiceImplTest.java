@@ -38,8 +38,6 @@ public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
     private static final UUID REFERENCE3_UUID = UUID.fromString("2821f503-5dd1-49b1-8a1c-8ed623e89e10");
     private static final UUID REFERENCE4_UUID = UUID.fromString("f2d2614c-f652-437b-8b4f-f5f7242df5af");
 
-
-
     @SpringBeanByType
     private IReferenceService service;
 
@@ -72,21 +70,18 @@ public class ReferenceServiceImplTest extends CdmTransactionalIntegrationTest {
 
         service.updateCaches();
 
-        assertEquals("Expecting titleCache to be updated", "Species plantarum", titleCacheField.get(ref1));
+        assertEquals("Expecting titleCache to be updated", "Species plantarum.", titleCacheField.get(ref1));
         assertEquals("Expecting nameCache to be updated", "Sp. Pl.", abbrevCacheField.get(ref1));
 
         assertEquals("Expecting titleCache to be updated", "Reference2", titleCacheField.get(ref2));
-        assertEquals("Expecting nameCache to not be updated", "ref. 2", abbrevCacheField.get(ref2));
+        assertEquals("Expecting nameCache to not be updated", "ref. 2.", abbrevCacheField.get(ref2));
 
-        assertEquals("Expecting titleCache to be updated", "Reference three", titleCacheField.get(ref3));
+        assertEquals("Expecting titleCache to be updated", "Reference three.", titleCacheField.get(ref3));
         assertEquals("Expecting nameCache to be updated", "Protec. ref.", abbrevCacheField.get(ref3));
 
         assertEquals("Expecting error message for self-referencing in-refererence", "-- invalid inreference (self-referencing) --", titleCacheField.get(ref4));
     }
 
-
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
-
-
 }

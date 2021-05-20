@@ -133,7 +133,6 @@ public class SpecimenTypeDesignation
 			String originalNameString, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeSpecimen(specimen);
-
 		this.setTypeStatus(status);
 	}
 

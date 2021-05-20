@@ -173,6 +173,8 @@ public enum NomenclaturalStanding
     public static NomenclaturalStanding getByKey(String key){return delegateVoc.getByKey(key);}
     public static NomenclaturalStanding getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
+//*************************** END DELEGATE *********************************************/
+
     /**
      * Returns the nomenclatural standing with the highest priority.
      */

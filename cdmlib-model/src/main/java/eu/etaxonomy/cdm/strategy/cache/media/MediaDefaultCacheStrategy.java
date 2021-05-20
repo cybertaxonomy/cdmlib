@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
@@ -23,9 +23,11 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
-public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<Media> {
+public class MediaDefaultCacheStrategy
+        extends StrategyBase
+        implements IMediaCacheStrategy {
+
     private static final long serialVersionUID = 7246846028810250751L;
 
     protected static final  Logger logger = Logger.getLogger(MediaDefaultCacheStrategy.class);
@@ -42,10 +44,9 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 		return uuid;
 	}
 
-
 	@Override
     public String getTitleCache(Media media) {
-		media = HibernateProxyHelper.deproxy(media, Media.class);
+		media = CdmBase.deproxy(media);
 		return getTitleCacheByLanguage(media, Language.DEFAULT());
 	}
 
@@ -55,6 +56,10 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 		LanguageString languageString = MultilanguageTextHelper.getPreferredLanguageString(media.getAllTitles(), languages);
 		result = (languageString != null ? languageString.getText() : "");
 
+		if (isBlank(result) && media.getArtist() != null){
+		    result = media.getArtist().getTitleCache();
+		}
+
 		//get first image uri
 		if (isBlank(result)){
 			for (MediaRepresentation mediaRepresentation : media.getRepresentations()){
@@ -63,7 +68,8 @@ public class MediaDefaultCacheStrategy extends StrategyBase implements IIdentifi
 					if (isBlank(result)){
 						continue;
 					}
-					int lastSlashPos = result.lastIndexOf("/");
+					@SuppressWarnings("null")
+                    int lastSlashPos = result.lastIndexOf("/");
 					if (lastSlashPos != -1 && lastSlashPos + 1 < result.length()){
 						result = result.substring(lastSlashPos + 1);
 					}

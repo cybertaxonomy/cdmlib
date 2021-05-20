@@ -124,7 +124,7 @@ public class TaxonNameFactory {
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
     public static TaxonName NewBacterialInstance(Rank rank){
-        return TaxonName.NewInstance(NomenclaturalCode.ICNB, rank, null);
+        return TaxonName.NewInstance(NomenclaturalCode.ICNP, rank, null);
     }
 
     /**
@@ -144,7 +144,7 @@ public class TaxonNameFactory {
      * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
      */
     public static IBacterialName NewBacterialInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-        return TaxonName.NewInstance(NomenclaturalCode.ICNB, rank, homotypicalGroup);
+        return TaxonName.NewInstance(NomenclaturalCode.ICNP, rank, homotypicalGroup);
     }
 
 

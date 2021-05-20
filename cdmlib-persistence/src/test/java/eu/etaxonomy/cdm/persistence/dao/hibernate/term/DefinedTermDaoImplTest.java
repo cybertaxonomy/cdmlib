@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -269,56 +271,75 @@ public class DefinedTermDaoImplTest extends CdmTransactionalIntegrationTest {
          Assert.assertEquals("German Label should be the new title cache again as English representation is not there anymore", "Deutscher Modifier", newModifier.getTitleCache());
     }
 
-	 @Test
-	 @DataSets({
+	@Test
+	@DataSets({
 	        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
 	        @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
-	    )
-	 public void testListByTermType(){
+	)
+	public void testListByTermType(){
 
-	     TermType termType = TermType.Modifier;
+	    TermType termType = TermType.Modifier;
 
-	     List<DefinedTermBase> existingList = this.dao.listByTermType(termType, null, null, null, null);
-	     int nExisting = existingList.size();
-	     int nExistingTerms = this.dao.list(DefinedTerm.class, null, null, null, null).size();
+	    List<DefinedTermBase> existingList = this.dao.listByTermType(termType, null, null, null, null);
+	    int nExisting = existingList.size();
+	    int nExistingTerms = this.dao.list(DefinedTerm.class, null, null, null, null).size();
 
+	    //prepare
+        @SuppressWarnings("unchecked")
+        TermVocabulary<DefinedTerm> newVoc = TermVocabulary.NewInstance(termType);
+        UUID vocUuid = UUID.fromString("6ced4c45-9c1b-4053-9dc3-6b8c51d286ed");
+        newVoc.setUuid(vocUuid);
+        UUID termUuid = UUID.fromString("2ab69720-c06c-4cfc-8928-d2ae6f1e4a48");
+        DefinedTerm newModifier = DefinedTerm.NewModifierInstance("Test Modifier Description", "English Modifier", "TM");
+        newModifier.setUuid(termUuid);
+        newVoc.addTerm(newModifier);
+        vocabularyDao.save(newVoc);
+        this.commitAndStartNewTransaction(null);
 
-	     //prepare
-         @SuppressWarnings("unchecked")
-         TermVocabulary<DefinedTerm> newVoc = TermVocabulary.NewInstance(termType);
-         UUID vocUuid = UUID.fromString("6ced4c45-9c1b-4053-9dc3-6b8c51d286ed");
-         newVoc.setUuid(vocUuid);
-         UUID termUuid = UUID.fromString("2ab69720-c06c-4cfc-8928-d2ae6f1e4a48");
-         DefinedTerm newModifier = DefinedTerm.NewModifierInstance("Test Modifier Description", "English Modifier", "TM");
-         newModifier.setUuid(termUuid);
-         newVoc.addTerm(newModifier);
-         vocabularyDao.save(newVoc);
-         this.commitAndStartNewTransaction(null);
+        //assert 1 more
+        int nNow = this.dao.listByTermType(termType, null, null, null, null).size();
+        Assert.assertEquals("There should be exactly 1 more term now", nExisting + 1 , nNow);
+        int nTermsNow = this.dao.list(DefinedTerm.class, null, null, null, null).size();
+        Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
+        this.commitAndStartNewTransaction(null);
 
-         //assert 1 more
-         int nNow = this.dao.listByTermType(termType, null, null, null, null).size();
-         Assert.assertEquals("There should be exactly 1 more term now", nExisting + 1 , nNow);
-         int nTermsNow = this.dao.list(DefinedTerm.class, null, null, null, null).size();
-         Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
-         this.commitAndStartNewTransaction(null);
+        //Add German representation
+        Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutscher Modifier", "Abk.", Language.GERMAN());
+        newModifier.addRepresentation(newRepresentation);
+        dao.saveOrUpdate(newModifier);
+        this.commitAndStartNewTransaction(null);
 
-         //Add German representation
-         Representation newRepresentation = Representation.NewInstance("Beschreibung", "Deutscher Modifier", "Abk.", Language.GERMAN());
-         newModifier.addRepresentation(newRepresentation);
-         dao.saveOrUpdate(newModifier);
-         this.commitAndStartNewTransaction(null);
+        nNow = this.dao.listByTermType(termType, null, null, null, null).size();
+        Assert.assertEquals("There should still be only one more term (but with 2 representations)", nExisting + 1 , nNow);
+        nTermsNow = this.dao.list(DefinedTerm.class, null, null, null, null).size();
+        Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
 
-         nNow = this.dao.listByTermType(termType, null, null, null, null).size();
-         Assert.assertEquals("There should still be only one more term (but with 2 representations)", nExisting + 1 , nNow);
-         nTermsNow = this.dao.list(DefinedTerm.class, null, null, null, null).size();
-         Assert.assertEquals("There should be exactly 1 more term now", nExistingTerms + 1 , nTermsNow);
-
-
-         List<DefinedTerm> languages = this.dao.listByTermType(TermType.Language, null, null, null, null);
-         Assert.assertNotNull(languages);
-         Assert.assertEquals(485, languages.size());
+        List<DefinedTerm> languages = this.dao.listByTermType(TermType.Language, null, null, null, null);
+        Assert.assertNotNull(languages);
+        Assert.assertEquals(485, languages.size());
 	 }
 
+     @Test
+     @DataSets({
+            @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+            @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
+     )
+	 public void testListByVoc(){
+         TermVocabulary<?> voc = this.vocabularyDao.findByUuid(NamedArea.uuidTdwgAreaVocabulary);
+         List<NamedArea> namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+         Assert.assertEquals("Expected no area", 0, namedAreas.size());
+
+         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Ger", MatchMode.BEGINNING);
+         Assert.assertEquals("Expected GER-OO, GER", 2, namedAreas.size());
+         namedAreas.get(0).addRepresentation(Representation.NewInstance("Deutschland", "Deutschland", "DE", Language.GERMAN()));
+
+         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+         Assert.assertEquals("Expected 1 area for 'Deu'", 1, namedAreas.size());
+
+         voc = this.vocabularyDao.findByUuid(NamedArea.uuidContinentVocabulary);
+         namedAreas = this.dao.list(NamedArea.class, Arrays.asList(new TermVocabulary[]{voc}), null, null, "Deu", MatchMode.BEGINNING);
+         Assert.assertEquals("Expected no area", 0, namedAreas.size());
+	 }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

@@ -160,4 +160,16 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType> {
 	public static OriginalSourceType getByKey(String key){return delegateVoc.getByKey(key);}
 	public static OriginalSourceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
+    public boolean isPrimaryMediaSource() {
+        return this == PrimaryMediaSource;
+    }
+
+    public boolean isPrimaryTaxonomicSource() {
+        return this == PrimaryTaxonomicSource;
+    }
+
+    public boolean isPrimarySource() {
+        return isPrimaryMediaSource() || isPrimaryTaxonomicSource();
+    }
+
 }

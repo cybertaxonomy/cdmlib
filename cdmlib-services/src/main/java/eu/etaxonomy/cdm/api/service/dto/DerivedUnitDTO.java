@@ -50,7 +50,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     private static final long serialVersionUID = 2345864166579381295L;
 
     private String accessionNumber;
-    private String specimenIdentifier;
+    private String specimenShortTitle;
     private TypedEntityReference<TaxonName> storedUnder;
     private URI preferredStableUri;
 
@@ -79,7 +79,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      * @return <code>null</code> or the new DerivedUnitDTO
      */
     public static DerivedUnitDTO fromEntity(DerivedUnit entity){
-        return fromEntity(entity, null, null, null);
+        return fromEntity(entity, null, null);
     }
 
     /**
@@ -93,14 +93,11 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
      *   <code>NULL</code> means infinitely.
      * @param specimenOrObservationTypeFilter
      *     Set of SpecimenOrObservationType to be included into the collection of {@link #getDerivatives() derivative DTOs}
-     * @param unitLabelsByCollection
-     *   see {@link #assembleDerivatives(SpecimenOrObservationBase, java.util.EnumSet, Map).
      * @return
      *  The DTO
      */
     public static DerivedUnitDTO fromEntity(DerivedUnit entity, Integer maxDepth,
-            EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter,
-            Map<eu.etaxonomy.cdm.model.occurrence.Collection, List<String>> unitLabelsByCollection){
+            EnumSet<SpecimenOrObservationType> specimenOrObservationTypeFilter){
 
         if(entity == null) {
             return null;
@@ -109,10 +106,11 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
         // ---- assemble derivation tree summary
         //      this data should be sufficient in clients for showing the unit in a list view
-        dto.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(entity, dto.getSpecimenIdentifier()));
+        dto.setDerivationTreeSummary(DerivationTreeSummaryDTO.fromEntity(entity, dto.getSpecimenShortTitle()));
+
         // ---- assemble derivatives
         //      this data is is often only required for clients in order to show the details of the derivation tree
-        dto.assembleDerivatives(entity, maxDepth, specimenOrObservationTypeFilter, unitLabelsByCollection);
+        dto.addAllDerivatives(dto.assembleDerivatives(entity, maxDepth, specimenOrObservationTypeFilter));
 
         return dto;
     }
@@ -148,8 +146,8 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
         mostSignificantIdentifier = derivedUnit.getMostSignificantIdentifier();
 
-        //specimen identifier
-        setSpecimenIdentifier(composeSpecimenIdentifier(derivedUnit));
+        //specimenShortTitle
+        setSpecimenShortTitle(composeSpecimenShortTitle(derivedUnit));
 
 
         //preferred stable URI
@@ -205,24 +203,34 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
 
     }
 
-    protected String composeSpecimenIdentifier(DerivedUnit derivedUnit) {
+    protected String composeSpecimenShortTitle(DerivedUnit derivedUnit) {
         FormatKey collectionKey = FormatKey.COLLECTION_CODE;
-        String specimenIdentifier = CdmFormatterFactory.format(derivedUnit, collectionKey);
-        if (CdmUtils.isBlank(specimenIdentifier)) {
+        String specimenShortTitle = CdmFormatterFactory.format(derivedUnit, collectionKey);
+        if (CdmUtils.isBlank(specimenShortTitle)) {
             collectionKey = FormatKey.COLLECTION_NAME;
         }
         if(CdmUtils.isNotBlank(derivedUnit.getMostSignificantIdentifier())){
-            specimenIdentifier = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
-                    collectionKey, FormatKey.SPACE, FormatKey.OPEN_BRACKET,
-                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER, FormatKey.CLOSE_BRACKET });
+            specimenShortTitle = CdmFormatterFactory.format(derivedUnit, new FormatKey[] {
+                    collectionKey,
+                    FormatKey.SPACE,
+                    FormatKey.MOST_SIGNIFICANT_IDENTIFIER
+                    });
+            if(!specimenShortTitle.isEmpty() && derivedUnit instanceof MediaSpecimen) {
+                Media media = ((MediaSpecimen)derivedUnit).getMediaSpecimen();
+                if(media != null && !CdmUtils.isBlank(media.getTitleCache()) ) {
+                    if(media.getTitle() != null && !media.getTitle().getText().isEmpty()) {
+                        specimenShortTitle += " (" + media.getTitle().getText() + ")";
+                    }
+                }
+            }
         }
-        if(CdmUtils.isBlank(specimenIdentifier)){
-            specimenIdentifier = derivedUnit.getTitleCache();
+        if(CdmUtils.isBlank(specimenShortTitle)){
+            specimenShortTitle = derivedUnit.getTitleCache();
         }
-        if(CdmUtils.isBlank(specimenIdentifier)){
-            specimenIdentifier = derivedUnit.getUuid().toString();
+        if(CdmUtils.isBlank(specimenShortTitle)){  //should not be necessary as titleCache should never be empty
+            specimenShortTitle = derivedUnit.getUuid().toString();
         }
-        return specimenIdentifier;
+        return specimenShortTitle;
     }
 
     @Override
@@ -249,7 +257,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     }
     public void addTypes(String typeStatus, List<String> typedTaxa){
         if(types==null){
-            types = new HashMap<String, List<String>>();
+            types = new HashMap<>();
         }
         types.put(typeStatus, typedTaxa);
     }
@@ -267,22 +275,24 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public void setPreferredStableUri(URI preferredStableUri) {
         this.preferredStableUri = preferredStableUri;
     }
-
     public URI getPreferredStableUri() {
         return preferredStableUri;
     }
-    public String getSpecimenIdentifier() {
-        return specimenIdentifier;
+
+    public String getSpecimenShortTitle() {
+        return specimenShortTitle;
     }
-    public void setSpecimenIdentifier(String specimenIdentifier) {
-        this.specimenIdentifier = specimenIdentifier;
+    public void setSpecimenShortTitle(String specimenIdentifier) {
+        this.specimenShortTitle = specimenIdentifier;
     }
+
     public String getMostSignificantIdentifier() {
         return mostSignificantIdentifier;
     }
     public void setMostSignificantIdentifier(String mostSignificantIdentifier) {
         this.mostSignificantIdentifier = mostSignificantIdentifier;
     }
+
     public TypedEntityReference<TaxonName> getStoredUnder() {
         return storedUnder;
     }
@@ -296,6 +306,7 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public void setOriginalLabelInfo(String originalLabelInfo) {
         this.originalLabelInfo = originalLabelInfo;
     }
+
     public String getExsiccatum() {
         return exsiccatum;
     }
@@ -303,14 +314,9 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         this.exsiccatum = exsiccatum;
     }
 
-    public void setCollection(CollectionDTO collection) {
-        this.collection = collection;
-    }
-
     public String getCatalogNumber() {
         return catalogNumber;
     }
-
     public void setCatalogNumber(String catalogNumber) {
         this.catalogNumber = catalogNumber;
     }
@@ -318,7 +324,6 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public String getBarcode() {
         return barcode;
     }
-
     public void setBarcode(String barcode) {
         this.barcode = barcode;
     }
@@ -326,37 +331,19 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
     public String getPreservationMethod() {
         return preservationMethod;
     }
-
     public void setPreservationMethod(String preservationMethod) {
         this.preservationMethod = preservationMethod;
     }
 
-    /**
-     * @return the collection
-     *
-     * @deprecated TODO remove as it only duplicates the information contained in the collectionDTO
-     */
-    @Deprecated
-    public String getCollectionCode() {
-        if (collection != null){
-            return collection.getCode();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @return the collection
-     */
     public CollectionDTO getCollection() {
         return collection;
     }
-
-    /**
-     * @param collection the collection to set
-     */
     public void setCollectioDTO(CollectionDTO collection) {
         this.collection = collection;
     }
 
+    @Override
+    protected void updateTreeDependantData() {
+        // TODO DerivationTreeSummaryDTO should be updated here once it is refactored so that it can operate on dtos
+    }
 }

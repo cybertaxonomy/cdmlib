@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.cache.reference.DefaultReferenceCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -181,7 +181,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 
 			if(referenceTitle != null){
 				String teamTitle = (String) object[3];
-				referenceTitle = DefaultReferenceCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
+				referenceTitle = ReferenceDefaultCacheStrategy.putAuthorToEndOfString(referenceTitle, teamTitle);
 
 				list.add(new UuidAndTitleCache<Reference>(Reference.class, (UUID) object[0],(Integer)object[1], referenceTitle));
 			}else{

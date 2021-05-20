@@ -84,7 +84,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase {
 
 	private SimpleSchemaUpdaterStep(List<ISchemaUpdaterStep> stepList, String stepName, String defaultQuery,
 	        boolean includeAudit, String tableName, String defaultQueryForAuditedTables){
-		super(stepList, stepName);
+
+	    super(stepList, stepName);
 		this.includeAudit = includeAudit;
 		queryMap.put(null, defaultQuery);
 

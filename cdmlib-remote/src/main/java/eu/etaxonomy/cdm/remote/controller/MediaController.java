@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
-import eu.etaxonomy.cdm.api.service.MediaServiceImpl;
+import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -49,6 +49,10 @@ import io.swagger.annotations.Api;
 public class MediaController extends AbstractIdentifiableController<Media, IMediaService>{
 
     private static final Logger logger = Logger.getLogger(MediaController.class);
+
+
+    @Autowired
+    private MediaInfoFactory mediaInfoFactory;
 
     @Autowired
     @Override
@@ -85,7 +89,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
 
                 } else {
                     uri = mediaRepresentation.getParts().get(0).getUri();
-                    CdmImageInfo cdmImageInfo = CdmImageInfo.NewInstanceWithMetaData(uri, MediaServiceImpl.IMAGE_READ_TIMEOUT);
+                    CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(uri);
                     result = cdmImageInfo.getMetaData();
                 }
             } catch (IOException | HttpException e) {

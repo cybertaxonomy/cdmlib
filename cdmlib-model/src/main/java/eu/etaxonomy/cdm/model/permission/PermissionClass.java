@@ -76,6 +76,7 @@ public enum PermissionClass implements IEnumTerm<PermissionClass>{
     REGISTRATION("Registration"),
     REPRESENTATION("Representation"),
     SECUNDUMSOURCE("SecundumSource"),
+    SEQUENCE("Sequence"),
     SPECIMENOROBSERVATIONBASE("SpecimenOrObservation"),
     SPECIMENTYPEDESIGNATION("SpecimenTypeDesignation"),
     STATEDATA("StateData"),

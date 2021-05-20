@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.longrunningService.ILongRunningTasksService;
+import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
@@ -194,6 +195,8 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 	private IEntityConstraintViolationService entityConstraintViolationService;
 	@Autowired
 	private ICdmPermissionEvaluator permissionEvaluator;
+    @Autowired
+    private MediaInfoFactory mediaInfoFactory; // FIXME define and use interface
 	@Autowired
     private SessionFactory factory;
 
@@ -438,6 +441,10 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
 		return permissionEvaluator;
 	}
 
+    public MediaInfoFactory getMediaInfoFactory() { // FIXME define and use interface
+        return mediaInfoFactory;
+    }
+
 	@Override
 	public TransactionStatus startTransaction(){
 		return startTransaction(false);
@@ -530,4 +537,5 @@ public class CdmRepository implements ICdmRepository, ApplicationContextAware {
             // no current session: nothing to clear!
         }
     }
+
 }

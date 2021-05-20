@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.metadata;
 /**
  * @author k.luther
  * @since 19.11.2018
- *
  */
 public enum PublishEnum implements IKeyLabel{
 
@@ -19,9 +18,8 @@ public enum PublishEnum implements IKeyLabel{
     NotPublish("NotPublish", "Don't publish"),
     InheritFromParent("InheritFromParent", "Inherit from parent");
 
-
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private PublishEnum(String key, String label){
         this.label = label;

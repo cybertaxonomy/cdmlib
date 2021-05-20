@@ -68,27 +68,30 @@ public class RegistrationTest {
         Assert.assertTrue(name1.getRegistrations().size() == 2);
         Assert.assertTrue(name1.getRegistrations().contains(registration));
         Assert.assertTrue(name1.getRegistrations().contains(registration2));
-
     }
 
     /**
      * see https://dev.e-taxonomy.eu/redmine/issues/7995
+     * @throws InterruptedException
      */
     @Test
-    public void testUpdateStatusAndDate() {
+    public void testUpdateStatusAndDate() throws InterruptedException {
         Registration registration = Registration.NewInstance();
 
         registration.setStatus(RegistrationStatus.CURATION);
         assertNull(registration.getRegistrationDate());
 
         DateTime before = DateTime.now();
+        Thread.sleep(10);
+        // The Registration.registrationDate should be set to now when the status is set to PUBLISHED.
         registration.updateStatusAndDate(RegistrationStatus.PUBLISHED);
         assertNotNull(registration.getRegistrationDate());
-        assertTrue(registration.getRegistrationDate().isAfter(registration.getRegistrationDate()) || registration.getRegistrationDate().isEqual(before) );
-        assertTrue(registration.getRegistrationDate().isBeforeNow() || registration.getRegistrationDate().isEqual(before));
+        assertTrue(registration.getRegistrationDate().isAfter(before));
+        Thread.sleep(10);
+        assertTrue(registration.getRegistrationDate().isBeforeNow());
 
+        // When status changes from PUBLISHED to something else the registrationDate should be resetted to null.
         registration.updateStatusAndDate(RegistrationStatus.CURATION);
         assertNull(registration.getRegistrationDate());
     }
-
 }

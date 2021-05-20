@@ -72,6 +72,10 @@ public class ProgressMonitorServiceImpl implements IProgressMonitorService {
         return null;
     }
 
+    public void releaseRemotingMonitor(UUID uuid){
+        progressMonitorManager.releaseMonitor(uuid);
+    }
+
     @Override
     public void interrupt(UUID uuid) {
         IRemotingProgressMonitor remotingMonitor = getRemotingMonitor(uuid);

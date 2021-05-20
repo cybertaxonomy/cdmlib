@@ -50,7 +50,6 @@ public class MediaServiceImplTest extends CdmTransactionalIntegrationTest {
         repr1.addRepresentationPart(part1);
     }
 
-
     @Test
     public void testReadResourceMetadataFiltered() throws IOException, HttpException {
          //Logger.getLogger(IdentifiableServiceBase.class).setLevel(Level.DEBUG);
@@ -67,5 +66,4 @@ public class MediaServiceImplTest extends CdmTransactionalIntegrationTest {
     public void createTestDataSet() throws FileNotFoundException {
         // no test data needed so far
     }
-
 }

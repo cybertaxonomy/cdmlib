@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
  * @author a.babadshanjan
  * @since 16.11.2008
  */
-public abstract class IoConfiguratorBase extends ObservableBase implements IIoConfigurator, IIoObservable{
+public abstract class IoConfiguratorBase extends ObservableBase implements IIoConfigurator{
 
     private static final long serialVersionUID = -2254648962451309933L;
 

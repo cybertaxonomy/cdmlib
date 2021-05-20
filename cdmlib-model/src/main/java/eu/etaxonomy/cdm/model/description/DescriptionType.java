@@ -70,7 +70,7 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
      * Kind of a marker to define that data comes from a secondary source. E.g. if
      * taxon descriptions are computed mostly on primary data (e.g. specimen descriptions)
      * some data might come from literature though to complete the description.
-     * This literature data then should be marked as "Secondary data"
+     * This literature data then should be marked as "secondary data"
      */
     @XmlEnumValue("SEC")
     SECONDARY_DATA(UUID.fromString("382e6b00-9725-4877-bd50-18ee263fe90e"), "Secondary Data", "SEC", null),
@@ -175,10 +175,6 @@ public enum DescriptionType implements IEnumTerm<DescriptionType>{
         return includesType(set, DescriptionType.INDIVIDUALS_ASSOCIATION);
     }
 
-    /**
-     * @param set
-     * @return
-     */
     protected static boolean includesType(EnumSet<DescriptionType> set, DescriptionType state) {
         EnumSet<DescriptionType> all;
         if (state.getGeneralizationOf(true).isEmpty()){

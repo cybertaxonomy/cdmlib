@@ -242,7 +242,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull(dnaSample.getPreservation());
         assertEquals("DNeasy Plant Mini Spin Kit Qiagen", derivedFrom.getDescription());
         //sample designation
-        Set<String> identifiers = dnaSample.getIdentifiers((DefinedTerm) termService.find(UUID.fromString("fadeba12-1be3-4bc7-9ff5-361b088d86fc")));
+        Set<String> identifiers = dnaSample.getIdentifiers((DefinedTerm) termService.find(DefinedTerm.uuidSampleDesignation));
         assertNotNull(identifiers);
         assertEquals(1, identifiers.size());
         assertEquals("CAM010", identifiers.iterator().next());
@@ -397,7 +397,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet( value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
 //	@Ignore
-	public void testImportAssociatedSpecimenSamePopulation() throws ParseException {
+	public void testImportAssociatedSpecimenSamePopulation() {
 	    String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/db6_sibling_association.xml";
 	    URL url = this.getClass().getResource(inputFile);
 	    assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);

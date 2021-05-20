@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.MediaDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
+import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.media.CdmImageInfo;
@@ -60,8 +61,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Transactional(readOnly=true)
 public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
 
-    public static final Integer IMAGE_READ_TIMEOUT = 3000;
-
     @Override
     @Autowired
 	protected void setDao(IMediaDao dao) {
@@ -76,6 +75,8 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
     private INameService nameService;
 	@Autowired
 	private IPreferenceService prefsService;
+    @Autowired
+    private MediaInfoFactory mediaInfoFactory; // FIXME define and use interface
 
 
 	@Override
@@ -294,12 +295,11 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
         Map<String, String> metadata = new HashMap<>();
 
         for(MediaRepresentationPart part : representation.getParts()) {
-            CdmImageInfo iInfo = CdmImageInfo.NewInstanceWithMetaData(part.getUri(), IMAGE_READ_TIMEOUT);
+            CdmImageInfo iInfo =  mediaInfoFactory.cdmImageInfoWithMetaData(part.getUri());
             if(iInfo.getMetaData() != null) {
                 metadata.putAll(iInfo.getMetaData());
             }
         }
-
         if(logger.isDebugEnabled()) {
             logger.debug("meta data as read from all parts: " + metadata.entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ", "{", "}")));
         }

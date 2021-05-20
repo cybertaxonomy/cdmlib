@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
-import eu.etaxonomy.cdm.model.metadata.NamedAreaSearchField;
+import eu.etaxonomy.cdm.model.metadata.TermSearchField;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -83,7 +83,8 @@ public class DefinedTermDaoImpl
 
     private static final Logger logger = Logger.getLogger(DefinedTermDaoImpl.class);
 
-	public DefinedTermDaoImpl() {
+	@SuppressWarnings("unchecked")
+    public DefinedTermDaoImpl() {
 		super(DefinedTermBase.class);
 		indexedClasses = new Class[25];
 		indexedClasses[0] = Rank.class;
@@ -134,9 +135,8 @@ public class DefinedTermDaoImpl
 		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
 		query.setParameter("label", queryString);
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		List<DefinedTermBase> result = query.list();
+		List<DefinedTermBase> result = deduplicateResult(query.list());
 		return result;
-
 	}
 
 	@Override
@@ -148,7 +148,8 @@ public class DefinedTermDaoImpl
 		crit.setMaxResults(pagesize);
 		int firstItem = (page - 1) * pagesize + 1;
 		crit.setFirstResult(firstItem);
-		List<DefinedTermBase> results = crit.list();
+		@SuppressWarnings("unchecked")
+        List<DefinedTermBase> results = deduplicateResult(crit.list());
 		return results;
 	}
 
@@ -185,7 +186,7 @@ public class DefinedTermDaoImpl
 		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 		@SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        List<T> result = deduplicateResult(criteria.list());
 		return result;
 	}
 
@@ -214,7 +215,7 @@ public class DefinedTermDaoImpl
 		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 		@SuppressWarnings("unchecked")
-        List<T> result = criteria.list();
+        List<T> result = deduplicateResult(criteria.list());
 		return result;
 	}
 
@@ -229,7 +230,7 @@ public class DefinedTermDaoImpl
 		addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 		@SuppressWarnings("unchecked")
-		List<T> result = criteria.list();
+		List<T> result = deduplicateResult(criteria.list());
 		return result;
 	}
 
@@ -254,9 +255,9 @@ public class DefinedTermDaoImpl
 
 		String queryStr;
 		if (isIso639_1){
-			queryStr = "from Language where iso639_1 = :isoCode";
+			queryStr = "FROM Language WHERE iso639_1 = :isoCode";
 		}else{
-			queryStr = "from Language where idInVocabulary = :isoCode and vocabulary.uuid = :vocUuid";
+			queryStr = "FROM Language WHERE idInVocabulary = :isoCode AND vocabulary.uuid = :vocUuid";
 		}
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -285,7 +286,7 @@ public class DefinedTermDaoImpl
 	 */
 	@Override
     public List<Language> getLanguagesByIso(List<String> iso639List) {
-		List<Language> languages = new ArrayList<Language>(iso639List.size());
+		List<Language> languages = new ArrayList<>(iso639List.size());
 		for (String iso639 : iso639List) {
 			languages.add(getLanguageByIso(iso639));
 		}
@@ -294,7 +295,7 @@ public class DefinedTermDaoImpl
 
 	@Override
     public List<Language> getLanguagesByLocale(Enumeration<Locale> locales) {
-		List<Language> languages = new ArrayList<Language>();
+		List<Language> languages = new ArrayList<>();
 		while(locales.hasMoreElements()) {
 			Locale locale = locales.nextElement();
 			languages.add(getLanguageByIso(locale.getLanguage()));
@@ -346,7 +347,11 @@ public class DefinedTermDaoImpl
 	@Override
     public List<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber)");
-		Query query = getSession().createQuery("select media from DefinedTermBase definedTerm join definedTerm.media media where definedTerm = :definedTerm");
+		Query query = getSession().createQuery(
+		           "SELECT media "
+		        + " FROM DefinedTermBase definedTerm "
+		        + " JOIN definedTerm.media media "
+		        + " WHERE definedTerm = :definedTerm");
 		query.setParameter("definedTerm", definedTerm);
 
 		addPageSizeAndNumber(query, pageSize, pageNumber);
@@ -373,7 +378,7 @@ public class DefinedTermDaoImpl
 		    addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
 	        @SuppressWarnings("unchecked")
-	        List<NamedArea> result = criteria.list();
+	        List<NamedArea> result = deduplicateResult(criteria.list());
 	        return result;
 		} else {
             AuditQuery query = makeAuditQuery(NamedArea.class, auditEvent);
@@ -387,7 +392,7 @@ public class DefinedTermDaoImpl
 		    }
 
 		    @SuppressWarnings("unchecked")
-            List<NamedArea> result = query.getResultList();
+            List<NamedArea> result = deduplicateResult(query.getResultList());
 		    return result;
 		}
 	}
@@ -411,7 +416,7 @@ public class DefinedTermDaoImpl
 			addOrder(criteria,orderHints);
 			addPageSizeAndNumber(criteria, pageSize, pageNumber);
 
-			result = criteria.list();
+			result = deduplicateResult(criteria.list());
 
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,
@@ -422,7 +427,7 @@ public class DefinedTermDaoImpl
 			if (type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));
 			}
-			result = query.getResultList();
+			result = deduplicateResult(query.getResultList());
 		}
 
 		defaultBeanInitializer.initializeAll(result, propertyPaths);
@@ -478,7 +483,7 @@ public class DefinedTermDaoImpl
 		    addPageSizeAndNumber(query, pageSize, pageNumber);
 
 		    @SuppressWarnings("unchecked")
-            List<T> result = query.list();
+            List<T> result = deduplicateResult(query.list());
 		    return result;
 		} else {
 			 AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
@@ -487,7 +492,7 @@ public class DefinedTermDaoImpl
 			 addPageSizeAndNumber(query, pageSize, pageNumber);
 
              @SuppressWarnings("unchecked")
-             List<T> result = query.getResultList();
+             List<T> result = deduplicateResult(query.getResultList());
              return result;
 		}
 	}
@@ -505,17 +510,17 @@ public class DefinedTermDaoImpl
     		addPageSizeAndNumber(query, pageSize, pageNumber);
 
 		    @SuppressWarnings("unchecked")
-            List<T> results = query.list();
+            List<T> results = deduplicateResult(query.list());
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		    return results;
 		} else {
-			List<T> result = new ArrayList<T>();
+			List<T> result = new ArrayList<>();
 			for(T t : partOf) {
 				AuditQuery query = makeAuditQuery(DefinedTermBase.class, auditEvent);
 				query.add(AuditEntity.relatedId("partOf").eq(t.getId()));
 				addPageSizeAndNumber(query, pageSize, pageNumber);
 
-			    result.addAll(query.getResultList());
+			    result.addAll(deduplicateResult(query.getResultList()));
 			}
 			defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
@@ -580,7 +585,7 @@ public class DefinedTermDaoImpl
 	    query.setParameter("termType", termType);
 
 	    @SuppressWarnings("unchecked")
-        List<T> result = query.list();
+        List<T> result = deduplicateResult(query.list());
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
@@ -593,7 +598,7 @@ public class DefinedTermDaoImpl
 		Query query = getSession().createQuery("FROM " + clazz.getSimpleName());
 
 	    @SuppressWarnings("unchecked")
-        List<TERM> result = query.list();
+        List<TERM> result = deduplicateResult(query.list());
 
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
 
@@ -616,7 +621,7 @@ public class DefinedTermDaoImpl
      * @param orginals
      * @return
      */
-    private <S extends DefinedTermBase<?>> List<S> deduplicateResult(List<S> orginals) {
+    protected static <S extends CdmBase> List<S> deduplicateResult(List<S> orginals) {
         List<S> result = new ArrayList<>();
         Iterator<S> it = orginals.iterator();
         S last = null;
@@ -633,7 +638,12 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern) {
+        return list(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING);
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
         Session session = getSession();
 //        Query query = null;
 //        if (pattern != null){
@@ -656,21 +666,29 @@ public class DefinedTermDaoImpl
 //           query.setMaxResults(limit);
 //        }
 
-        Criteria crit = getSession().createCriteria(type, "namedArea");
-        if (!StringUtils.isBlank(pattern)){
-            if (matchmode == MatchMode.EXACT) {
-                crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(pattern)));
-            } else {
-    //          crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
-                crit.add(Restrictions.like("titleCache", matchmode.queryStringFrom(pattern)));
-            }
+        if (clazz == null){
+            clazz = (Class)type;
         }
+        Criteria crit = getSession().createCriteria(clazz, "term");
+        if (!StringUtils.isBlank(pattern)){
+            crit.createAlias("term.representations", "reps");
+            Disjunction or = Restrictions.disjunction();
+            if (matchmode == MatchMode.EXACT) {
+                or.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.eq("reps.label", matchmode.queryStringFrom(pattern)));
+            } else {
+                or.add(Restrictions.like("titleCache", matchmode.queryStringFrom(pattern)));
+                or.add(Restrictions.like("reps.label", matchmode.queryStringFrom(pattern)));
+            }
+            crit.add(or);
+        }
+
         if (limit != null && limit >= 0) {
             crit.setMaxResults(limit);
         }
 
         if (vocs != null &&!vocs.isEmpty()){
-            crit.createAlias("namedArea.vocabulary", "voc");
+            crit.createAlias("term.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
             for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());
@@ -687,20 +705,26 @@ public class DefinedTermDaoImpl
 
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
-        List<NamedArea> results = crit.list();
+        List<S> results = deduplicateResult(crit.list());
         return results;
     }
 
+    @Override
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer limit, String pattern, TermSearchField type) {
+        return listByAbbrev(clazz, vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
+    }
 
     @Override
-    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, NamedAreaSearchField abbrevType){
+    public <S extends DefinedTermBase> List<S> listByAbbrev(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode, TermSearchField abbrevType){
 
-        Criteria crit = getSession().createCriteria(type, "namedArea");
+        if (clazz == null){
+            clazz = (Class)type;
+        }
+        Criteria crit = getSession().createCriteria(clazz, "type");
         if (!StringUtils.isBlank(pattern)){
             if (matchmode == MatchMode.EXACT) {
                 crit.add(Restrictions.eq(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
             } else {
-    //          crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
                 crit.add(Restrictions.like(abbrevType.getKey(), matchmode.queryStringFrom(pattern)));
             }
         }
@@ -709,7 +733,7 @@ public class DefinedTermDaoImpl
         }
 
         if (vocs != null &&!vocs.isEmpty()){
-            crit.createAlias("namedArea.vocabulary", "voc");
+            crit.createAlias("type.vocabulary", "voc");
             Disjunction or = Restrictions.disjunction();
             for (TermVocabulary<?> voc: vocs){
                 Criterion criterion = Restrictions.eq("voc.id", voc.getId());
@@ -726,10 +750,11 @@ public class DefinedTermDaoImpl
 
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
-        List<NamedArea> results = crit.list();
+        List<S> results = deduplicateResult(crit.list());
         return results;
     }
 
+    //FIXME AM: this returns only NamedArea counts though not mentioned in method name, fortunately it is currently not in use
     @Override
     public long count(List<TermVocabulary> vocs, String pattern){
         Session session = getSession();
@@ -777,8 +802,8 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> getKindOfsAsDto(
-            TermDto parentTerm) {
+    public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm) {
+
         String queryString;
         if (parentTerm.getTermType().equals(TermType.NamedArea)){
             queryString = TermDto.getTermDtoSelectNamedArea();
@@ -825,9 +850,7 @@ public class DefinedTermDaoImpl
                 + " where a.termType = :termType ";
         Query query =  getSession().createQuery(queryString);
 
-        if(termType!=null){
-            query.setParameter("termType", termType);
-        }
+        query.setParameter("termType", termType);
 
         @SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -857,18 +880,6 @@ public class DefinedTermDaoImpl
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
         return list;
-    }
-
-    @Override
-    public List<NamedArea> listNamedArea(List<TermVocabulary> vocs, Integer limit, String pattern) {
-
-        return listNamedArea(vocs, 0, limit, pattern, MatchMode.BEGINNING);
-    }
-
-    @Override
-    public List<NamedArea> listNamedAreaByAbbrev(List<TermVocabulary> vocs, Integer limit, String pattern, NamedAreaSearchField type) {
-
-        return listNamedAreaByAbbrev(vocs, 0, limit, pattern, MatchMode.BEGINNING, type);
     }
 
     @Override
@@ -957,5 +968,4 @@ public class DefinedTermDaoImpl
         List<TermDto> list = FeatureDto.termDtoListFrom(result);
         return list;
     }
-
 }

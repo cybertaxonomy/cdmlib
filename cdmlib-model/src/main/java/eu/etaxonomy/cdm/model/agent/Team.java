@@ -115,8 +115,12 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	static public Team NewTitledInstance(String title, String nomTitle){
 		Team result = new Team();
-		result.setTitleCache(title, true);
-		result.setNomenclaturalTitle(nomTitle, true);
+		if (isNotBlank(title)){
+		    result.setTitleCache(title, true);
+		}
+		if (isNotBlank(nomTitle)){
+		    result.setNomenclaturalTitle(nomTitle, true);
+		}
 		return result;
 	}
 

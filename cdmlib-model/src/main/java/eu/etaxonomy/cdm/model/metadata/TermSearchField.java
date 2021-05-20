@@ -12,21 +12,20 @@ package eu.etaxonomy.cdm.model.metadata;
  * @author k.luther
  * @since 12.09.2019
  */
-public enum NamedAreaSearchField implements IKeyLabel{
+public enum TermSearchField implements IKeyLabel{
+
     IDInVocabulary("idInVocabulary", "ID in vocabulary"),
     Symbol1("symbol1", "First symbol"),
     Symbol2("symbol2", "Second symbol"),
     NoAbbrev("titleCache", "Title cache");
 
+    private String label;
+    private String key;
 
-    String label;
-    String key;
-
-    private NamedAreaSearchField(String key, String label){
+    private TermSearchField(String key, String label){
         this.label = label;
         this.key = key;
     }
-
 
     @Override
     public String getLabel() {
@@ -38,13 +37,12 @@ public enum NamedAreaSearchField implements IKeyLabel{
         return key;
     }
 
-    public static NamedAreaSearchField byKey(String key){
-        for (NamedAreaSearchField searchField : values()){
+    public static TermSearchField byKey(String key){
+        for (TermSearchField searchField : values()){
             if (searchField.key.equals(key)){
                 return searchField;
             }
         }
         throw new IllegalArgumentException();
     }
-
 }

@@ -15,13 +15,13 @@ package eu.etaxonomy.cdm.model.metadata;
  *
  */
 public enum NodeOrderEnum implements IKeyLabel{
+
     AlphabeticalOrder("AlphabeticalOrder", "Alphabetical"), //$NON-NLS-1$
     NaturalOrder("NaturalOrder", "Natural"), //$NON-NLS-1$
     RankAndNameOrder("RankAndNameOrder", "Rank and Name"); //$NON-NLS-1$
 
-
-    String label;
-    String key;
+    private String label;
+    private String key;
 
     private NodeOrderEnum(String key, String label){
         this.label = label;

@@ -18,6 +18,11 @@ import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonName;
+import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
@@ -544,5 +549,39 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         parsedArticle = getDefaultParsedArticle();
         ((Team)fullArticle.getAuthorship()).getTeamMembers().get(0).setFamilyName("Changed");
         Assert.assertTrue("Full book family name author changed should still match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
+    }
+
+    /**
+     * Article with {@link #getDefaultFullTeam() full team},
+     * {@link #getDefaultFullJournal() full journal} and date published
+     */
+    private TaxonName getDefaultFullName() {
+        TaxonName name = getDefaultParsedName();
+        name.setNameApprobation("approbation");
+        TaxonNameDescription description = TaxonNameDescription.NewInstance(name);
+        description.addElement(Distribution.NewInstance());
+
+        //TODO continue
+        return name;
+    }
+
+    private TaxonName getDefaultParsedName() {
+        TaxonName name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setBasionymAuthorship(getDefaultFullTeam());
+        name.setGenusOrUninomial("Abies");
+        name.setSpecificEpithet("alba");
+        return name;
+    }
+
+    @Test
+    public void testParsedOriginalSpelling() throws MatchException {
+        IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedOriginalSpellingInstance();
+        Assert.assertNotNull(matchStrategy);
+
+        TaxonName fullName = getDefaultFullName();
+        TaxonName parsedName = getDefaultParsedName();
+        Assert.assertTrue("Only ... should match", matchStrategy.invoke(parsedName, fullName).isSuccessful() );
+
+        //TODO
     }
 }

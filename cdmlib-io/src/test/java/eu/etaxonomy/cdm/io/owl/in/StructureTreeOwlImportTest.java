@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.owl.in;
 
 import static org.junit.Assert.assertEquals;
@@ -28,8 +27,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
@@ -54,10 +53,8 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
- *
  * @author pplitzner
  * @since Apr 24, 2019
- *
  */
 public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest {
 
@@ -68,7 +65,7 @@ public class StructureTreeOwlImportTest extends CdmTransactionalIntegrationTest 
     private ITermService termService;
 
     @SpringBeanByType
-    private IFeatureTreeService featureTreeService;
+    private ITermTreeService featureTreeService;
 
     @SpringBeanByType
     private IVocabularyService vocabularyService;
