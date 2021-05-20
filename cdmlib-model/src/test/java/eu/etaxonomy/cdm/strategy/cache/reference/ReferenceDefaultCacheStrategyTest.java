@@ -132,10 +132,11 @@ public class ReferenceDefaultCacheStrategyTest {
 	public void testArticleGetTitleCache(){
 		journal1.setTitle("My journal");
 		((Reference)journal1).setAuthorship(articleTeam2);  //incorrect use anyway
-		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+	    Assert.assertEquals("Team1 1975: "+UTF8.EN_DASH+" My journal.", article1.getTitleCache());
+	    article1.setTitle("My article");
 		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal.", article1.getTitleCache());
 
 		article1.setInJournal(null);
@@ -375,7 +376,7 @@ public class ReferenceDefaultCacheStrategyTest {
         article.setAuthorship(articleTeam);
         article.setInJournal(journal);
         article.setVolume("452(1)");
-        article.setVolume("83-91");
+        article.setPages("83-91");
         article.setDatePublished(TimePeriodParser.parseStringVerbatim("8 Jul 2020"));
         article.setDoi(DOI.fromString("10.11646/phytotaxa.452.1.8"));
         Reference section = ReferenceFactory.newSection();
@@ -384,8 +385,37 @@ public class ReferenceDefaultCacheStrategyTest {
         section.setInReference(article);
 
         Assert.assertEquals("Unexpected title cache.",
-                "Chudaev, D.A., Glushchenko, A., Kulikovskiy, M. & Kociolek, J.P. 2020 – In: "
-                + "Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P., New diatom species Navicula davidovichii from Vietnam (Southeast Asia). – Phytotaxa 83-91.", section.getTitleCache());
+                "Chudaev, D.A., Glushchenko, A., Kulikovskiy, M. & Kociolek, J.P. 2020 "+UTF8.EN_DASH+" In: "
+                + "Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P., "
+                + "New diatom species Navicula davidovichii from Vietnam (Southeast Asia). "+UTF8.EN_DASH+" Phytotaxa 452(1).",
+                section.getTitleCache());
+    }
+
+    @Test
+    public void testSectionInBookSection(){
+        //#9326, #3764
+        Reference book = ReferenceFactory.newBook();
+        book.setTitle("Species Plantarum");
+        Team bookAuthor = Team.NewTitledInstance("Linne", null);
+        book.setAuthorship(bookAuthor);
+        book.setVolume("3");
+        Reference bookSection = ReferenceFactory.newBookSection();
+        String bookSectionTitle = "Trees";
+        bookSection.setTitle(bookSectionTitle);
+        Team bookSectionTeam = Team.NewTitledInstance("Chapter author", null);
+        bookSection.setAuthorship(bookSectionTeam);
+        bookSection.setInBook(book);
+        bookSection.setPages("83-91");
+        bookSection.setDatePublished(TimePeriodParser.parseStringVerbatim("1752"));
+        bookSection.setDoi(DOI.fromString("10.12345/speciesplantarum.3"));
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Section author", null);
+        section.setAuthorship(sectionTeam);
+        section.setInReference(bookSection);
+
+        Assert.assertEquals("Unexpected title cache.",
+                "Section author 1752 "+UTF8.EN_DASH+" In: Chapter author, Trees, pp. 83-91. "+UTF8.EN_DASH+" In: Linne, Species Plantarum 3.",
+                section.getTitleCache());
     }
 
     @Test

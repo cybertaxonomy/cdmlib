@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -381,5 +382,66 @@ public class NomenclaturalSourceFormatterTest {
         //only inref has volume
         generic1.setVolume(null);
         Assert.assertEquals("in InRefAuthor, My InRef 9: 55. 1883"+SEP+"1884", formatter.format(generic1, detail1));
-   }
+    }
+
+    @Test  //see also the corresponging method in ReferenceDefaultCacheStrategy
+    public void testSectionInArticle(){
+        //#9326, #3764
+        Reference journal = ReferenceFactory.newJournal();
+        journal.setTitle("Phytotaxa");
+        Reference article = ReferenceFactory.newArticle();
+        String articleTitle = "New diatom species Navicula davidovichii from Vietnam (Southeast Asia)";
+        article.setTitle(articleTitle);
+        Team articleTeam = Team.NewTitledInstance("Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P.", null);
+        article.setAuthorship(articleTeam);
+        article.setInJournal(journal);
+        article.setVolume("452(1)");
+        article.setPages("83-91");
+        article.setDatePublished(TimePeriodParser.parseStringVerbatim("8 Jul 2020"));
+        article.setDoi(DOI.fromString("10.11646/phytotaxa.452.1.8"));
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Chudaev, D.A., Glushchenko, A., Kulikovskiy, M. & Kociolek, J.P.", null);
+        section.setAuthorship(sectionTeam);
+        section.setInReference(article);
+
+        Assert.assertEquals("Unexpected title cache.",
+                "in Phytotaxa 452(1): 55. 8 Jul 2020",
+                formatter.format(section, detail1));
+    }
+
+    @Test  //see also the corresponging method in ReferenceDefaultCacheStrategy
+    public void testSectionInBookSection(){
+        //#9326, #3764
+        Reference book = ReferenceFactory.newBook();
+        book.setTitle("Species Plantarum");
+        Person person = Person.NewInstance("L.", "Linne", "C.G.", "Carl-Gustav");
+        Team bookAuthor = Team.NewInstance(person); // Team.NewTitledInstance("Linne", null);
+
+        book.setAuthorship(bookAuthor);
+        book.setVolume("3");
+        Reference bookSection = ReferenceFactory.newBookSection();
+        String bookSectionTitle = "Trees";
+        bookSection.setTitle(bookSectionTitle);
+        Team bookSectionTeam = Team.NewTitledInstance("Chapter author", "Chap. Aut.");
+        bookSection.setAuthorship(bookSectionTeam);
+        bookSection.setInBook(book);
+        bookSection.setPages("83-91");
+        bookSection.setDatePublished(TimePeriodParser.parseStringVerbatim("1752"));
+        bookSection.setDoi(DOI.fromString("10.12345/speciesplantarum.3"));
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Section author", null);
+        section.setAuthorship(sectionTeam);
+        section.setInReference(bookSection);
+
+        Assert.assertEquals("Unexpected title cache.",
+                "in Linne, Species Plantarum 3: 55. 1752",
+                formatter.format(section, detail1));
+        bookAuthor = Team.NewTitledInstance("Linneus", null);
+        book.setAuthorship(bookAuthor);
+        Assert.assertEquals("Unexpected title cache.",
+                "in Linneus, Species Plantarum 3: 55. 1752",
+                formatter.format(section, detail1));
+
+
+    }
 }
