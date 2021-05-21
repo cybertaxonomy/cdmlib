@@ -111,7 +111,6 @@ public class MediaSpecimen extends DerivedUnit {
 	 */
 	public void setMediaSpecimen(Media mediaSpecimen) {
 		this.mediaSpecimen = mediaSpecimen;
-		resetTitleCache();
 	}
 
 // ************* Convenience Getter / Setter ************/
