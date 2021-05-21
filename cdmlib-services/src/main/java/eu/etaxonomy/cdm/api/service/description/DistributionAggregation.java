@@ -223,7 +223,7 @@ public class DistributionAggregation
         if (getConfig().isDoClearExistingDescription()){
             clearDescription(targetDescription);
         }else{
-            toDelete = new HashSet<>(getDistributions(targetDescription));
+            toDelete = new HashSet<>();
         }
         for (NamedArea area : accumulatedStatusMap.keySet()) {
             PresenceAbsenceTerm status = accumulatedStatusMap.get(area).status;
@@ -245,16 +245,6 @@ public class DistributionAggregation
         for(Distribution toDelteDist: toDelete){
             targetDescription.removeElement(toDelteDist);
         }
-    }
-
-    private Set<Distribution> getDistributions(TaxonDescription aggregationDescription) {
-        Set<Distribution> result = new HashSet<>();
-        for (DescriptionElementBase deb: aggregationDescription.getElements()){
-            if (deb.isInstanceOf(Distribution.class)){
-                result.add(CdmBase.deproxy(deb,Distribution.class));
-            }
-        }
-        return result;
     }
 
     /**
