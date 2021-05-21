@@ -166,8 +166,8 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         initTransaction();
 
         // visit all accepted taxa
-        subMonitor.beginTask("Work on taxa.", taxonNodeIdList.size());
-//      subMonitor.subTask("Accumulating bottom up " + taxonNodeIdList.size() + " taxa.");
+//        subMonitor.beginTask("Work on taxa.", taxonNodeIdList.size());
+        subMonitor.subTask("Accumulating bottom up " + taxonNodeIdList.size() + " taxa.");
 
         //TODO FIXME this was a Taxon not a TaxonNode id list
         Iterator<Integer> taxonIdIterator = taxonNodeIdList.iterator();
@@ -233,7 +233,6 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
         } // next batch of taxa
 
-        subMonitor.done();
     }
 
     protected interface ResultHolder{
