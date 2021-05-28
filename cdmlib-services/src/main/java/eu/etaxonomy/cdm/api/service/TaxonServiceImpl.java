@@ -1308,6 +1308,7 @@ public class TaxonServiceImpl
                     if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
                     	result.addExceptions(nameDeleteResult.getExceptions());
                     	result.addRelatedObject(name);
+                    	result.addUpdatedObject(name);
                     }else{
                         result.addDeletedObject(name);
                     }
@@ -3100,6 +3101,7 @@ public class TaxonServiceImpl
                 DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
                 if (!nameResult.isOk()){
                     result.addExceptions(nameResult.getExceptions());
+
                 }
             }
         }
