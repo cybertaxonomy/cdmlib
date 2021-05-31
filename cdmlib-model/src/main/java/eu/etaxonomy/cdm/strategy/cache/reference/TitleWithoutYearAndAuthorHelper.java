@@ -380,7 +380,7 @@ public class TitleWithoutYearAndAuthorHelper {
         }
     }
 
-    private static String getSeriesAndVolPartArticle(String series, String volume,
+    public static String getSeriesAndVolPartArticle(String series, String volume,
             boolean needsComma, String nomRefCache) {
         //inSeries
         String seriesPart = "";

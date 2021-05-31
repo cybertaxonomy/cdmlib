@@ -392,6 +392,25 @@ public class ReferenceDefaultCacheStrategyTest {
     }
 
     @Test
+    public void testSectionInJournal(){
+        //#9326, #3764
+        Reference journal = ReferenceFactory.newJournal();
+        journal.setTitle("Phytotaxa");
+        Reference section = ReferenceFactory.newSection();
+        Team sectionTeam = Team.NewTitledInstance("Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P.", null);
+        section.setAuthorship(sectionTeam);
+
+        section.setInReference(journal);
+        section.setVolume("452(1)");
+        section.setDatePublished(TimePeriodParser.parseStringVerbatim("8 Jul 2020"));
+
+        Assert.assertEquals("Unexpected title cache.",
+                "Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P. 2020 "+UTF8.EN_DASH+" In: "
+                + "Phytotaxa 452(1).",
+                section.getTitleCache());
+    }
+
+    @Test
     public void testSectionInBookSection(){
         //#9326, #3764
         Reference book = ReferenceFactory.newBook();

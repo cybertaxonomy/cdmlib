@@ -216,6 +216,9 @@ public class ReferenceDefaultCacheStrategy
         String inRefPart = getInRefAuthorAndTitle(inRef, reference.getType(), isAbbrev);
         if (inRef != null && !inRef.isArticle()){
             inRefPart = addInRefPages(inRef, inRefPart);
+            if (inRef.isJournal()){
+                inRefPart = addSeriesAndVolume(reference, inRefPart, isAbbrev);  //usually only needed for journals
+            }
         }
         inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
         inRefPart = biblioInSeparator + inRefPart;
@@ -266,6 +269,33 @@ public class ReferenceDefaultCacheStrategy
         result = CdmUtils.concat(sep, authorAndYear, result);
 
         return result;
+    }
+
+    //copied from TitleWithoutYearAndAuthor.getTitleWithoutYearAndAuthorArticle
+    //may be somehow merged in future
+    private String addSeriesAndVolume(Reference ref, String inRefPart, boolean isAbbrev) {
+        String series = Nz(ref.getSeriesPart()).trim();
+        String volume = Nz(ref.getVolume()).trim();
+
+        String inRefTitle = ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL;
+        boolean needsComma = false;
+        Reference inRef = ref.getInReference();
+        if (inRef != null){
+            inRefTitle = CdmUtils.getPreferredNonEmptyString(inRef.getTitle(), inRef.getAbbrevTitle(), isAbbrev, true);
+            if (isNotBlank(inRefTitle)){
+                needsComma = TitleWithoutYearAndAuthorHelper.computeNeedsCommaArticle(inRefPart, volume, series);
+                if (! needsComma && (isNotBlank(volume)||isNotBlank(series))){
+                    inRefPart += blank;
+                }
+            }
+        }
+        inRefPart = TitleWithoutYearAndAuthorHelper.getSeriesAndVolPartArticle(series, volume, needsComma, inRefPart);
+
+        //delete "."
+        while (inRefPart.endsWith(".")){
+            inRefPart = CdmUtils.removeTrailingDots(inRefPart);
+        }
+        return inRefPart;
     }
 
     private String addInRefPages(Reference reference, String title) {
