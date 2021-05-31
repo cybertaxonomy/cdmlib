@@ -385,7 +385,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
             pagerParams.normalizeAndValidate(response);
 
-            return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
+            return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);
         }else{
             // FIXME proper HTTP code response
             return null;
