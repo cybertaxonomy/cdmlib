@@ -100,7 +100,7 @@ public class TitleWithoutYearAndAuthorHelper {
         //titelAbbrev
         if (isNotBlank(journalTitel)){
             result = result + journalTitel;
-            needsComma = makeNeedsCommaArticle(needsComma, result, volume, series);
+            needsComma = computeNeedsCommaArticle(result, volume, series);
             if (! needsComma){
                 result = result + blank;
             }
@@ -122,7 +122,6 @@ public class TitleWithoutYearAndAuthorHelper {
         return result.trim();
     }
 
-
     private static String getTitleWithoutYearAndAuthorBook(Reference ref, boolean isAbbrev){
         if (ref == null){
             return null;
@@ -135,7 +134,6 @@ public class TitleWithoutYearAndAuthorHelper {
         String volume = CdmUtils.Nz(ref.getVolume()).trim();
         String refYear = "";  //TODO nomenclaturalReference.getYear();
 
-
         String nomRefCache = "";
         Integer len;
         String lastChar = "";
@@ -147,7 +145,7 @@ public class TitleWithoutYearAndAuthorHelper {
         //lastCharIsDouble = f_core_CompareStrings(RIGHT(@TitelAbbrev,1),character);
         boolean lastCharIsDouble = title.equals(character);
 
-        if(lastCharIsDouble  && edition.length() == 0 && refSeriesPart.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
+        if(lastCharIsDouble && edition.length() == 0 && refSeriesPart.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
             title =  title.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
         }
 
@@ -181,7 +179,6 @@ public class TitleWithoutYearAndAuthorHelper {
             needsComma = true;
         }
         nomRefCache += seriesPart;
-
 
         //volume Part
         String volumePart = "";
@@ -366,23 +363,20 @@ public class TitleWithoutYearAndAuthorHelper {
 
 //**************************** HELPER ********************************/
 
-    private static boolean makeNeedsCommaArticle(boolean needsComma, String nomRefCache, String volume, String series) {
-        if (needsComma){
+    public static boolean computeNeedsCommaArticle(String nomRefCache, String volume, String series) {
+
+        nomRefCache = nomRefCache.toLowerCase();
+        int serIndex = nomRefCache.indexOf(" ser. ");
+        int sectIndex = nomRefCache.indexOf(" sect. ");
+        int abtIndex = nomRefCache.indexOf(" abt. ");
+        int index = Math.max(Math.max(serIndex, sectIndex), abtIndex);
+        int commaIndex = nomRefCache.indexOf(",", index);
+        if (index > -1 && commaIndex == -1 && isNotBlank(volume)){
+            return true;
+        }else if (isNotBlank(series)){
             return true;
         }else{
-            nomRefCache = nomRefCache.toLowerCase();
-            int serIndex = nomRefCache.indexOf(" ser. ");
-            int sectIndex = nomRefCache.indexOf(" sect. ");
-            int abtIndex = nomRefCache.indexOf(" abt. ");
-            int index = Math.max(Math.max(serIndex, sectIndex), abtIndex);
-            int commaIndex = nomRefCache.indexOf(",", index);
-            if (index > -1 && commaIndex == -1 && isNotBlank(volume)){
-                return true;
-            }else if (isNotBlank(series)){
-                return true;
-            }else{
-                return false;
-            }
+            return false;
         }
     }
 
@@ -401,7 +395,6 @@ public class TitleWithoutYearAndAuthorHelper {
             needsComma = true;
         }
         nomRefCache += seriesPart;
-
 
         //volume Part
         String volumePart = "";
