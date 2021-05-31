@@ -135,12 +135,12 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-	    Assert.assertEquals("Team1 1975: "+UTF8.EN_DASH+" My journal.", article1.getTitleCache());
+	    Assert.assertEquals("Team1 1975: "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
 	    article1.setTitle("My article");
-		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal.", article1.getTitleCache());
+		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
 
 		article1.setInJournal(null);
-		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ".", article1.getTitleCache());
+		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
 	}
 
 	@Test
@@ -152,12 +152,12 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setInJournal(journal1);
 		article1.setAuthorship(articleTeam1);
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal.", article1.getTitleCache());
+		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
 
 		article1.setInJournal(null);
-		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ".", article1.getTitleCache());
+		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
         article1.setDatePublished(null);
-        Assert.assertEquals("Team1: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + ".", article1.getTitleCache());
+        Assert.assertEquals("Team1: My article. "+UTF8.EN_DASH+" " + ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL, article1.getTitleCache());
 	}
 
 	//#6496
@@ -169,16 +169,16 @@ public class ReferenceDefaultCacheStrategyTest {
         article1.setInJournal(journal1);
         article1.setAuthorship(articleTeam1);
         article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal.", article1.getTitleCache());
+        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal", article1.getTitleCache());
         article1.setPages("12-22");
-        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal: 12-22.", article1.getTitleCache());
+        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal: 12-22", article1.getTitleCache());
 
         article1.setVolume("7");
-        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal 7: 12-22.", article1.getTitleCache());
+        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal 7: 12-22", article1.getTitleCache());
 
         article1.setSeriesPart("II");
         //TODO unclear if punctuation is correct
-        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal, II, 7: 12-22.", article1.getTitleCache());
+        Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal, II, 7: 12-22", article1.getTitleCache());
    }
 
 	@Test
@@ -194,11 +194,11 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setAbbrevTitle("M. Art.");
 		Assert.assertEquals("T. 1975: M. Art. "+UTF8.EN_DASH+" M. Journ.", article1.getAbbrevTitleCache());
 		article1.setVolume("7");
-        Assert.assertEquals("T. 1975: M. Art. "+UTF8.EN_DASH+" M. Journ. 7.", article1.getAbbrevTitleCache());
+        Assert.assertEquals("T. 1975: M. Art. "+UTF8.EN_DASH+" M. Journ. 7", article1.getAbbrevTitleCache());
 
 		article1.setInJournal(null);
 		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH + " " +ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + " 7.", article1.getTitleCache());
+		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH + " " +ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + " 7", article1.getTitleCache());
 	}
 
 	@Test
@@ -232,7 +232,7 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setAuthorship(articleAuthor);
 		article1.setVolume("18");
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1943));
-		Assert.assertEquals("Babc. & Stebbins 1943: "+UTF8.EN_DASH+" Univ. Calif. Publ. Bot. 18.", defaultStrategy.getTitleCache((Reference)article1));
+		Assert.assertEquals("Babc. & Stebbins 1943: "+UTF8.EN_DASH+" Univ. Calif. Publ. Bot. 18", defaultStrategy.getTitleCache((Reference)article1));
 	}
 
 // ******************* Book ****************************/
@@ -242,21 +242,20 @@ public class ReferenceDefaultCacheStrategyTest {
         book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book.", book1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book", book1.getTitleCache());
 
         book1.setTitleCache(null, false);
         book1.setEdition("ed. 3");
-        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3.", book1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Book Author 1975: My book, ed. 3", book1.getTitleCache());
 
         VerbatimTimePeriod newDatePublished = TimePeriodParser.parseStringVerbatim("1975 (after Aug.)");
         book1.setDatePublished(newDatePublished);
         book1.setTitleCache(null, false);
         //TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.
-        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3.", book1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3", book1.getTitleCache());
 
         book1.setPages("1-405");
-        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3: 1-405.", book1.getTitleCache());
-
+        Assert.assertEquals("Unexpected title cache.", "Book Author: My book, ed. 3: 1-405", book1.getTitleCache());
     }
 
     @Test
@@ -267,10 +266,10 @@ public class ReferenceDefaultCacheStrategyTest {
         book1.setVolume("Fasc. 11");
         book1.setDatePublished(TimePeriodParser.parseStringVerbatim("1955"));
         //TODO needs to be discussed
-        Assert.assertEquals("Unexpected abbrev title cache", "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11.", book1.getTitleCache());
+        Assert.assertEquals("Unexpected abbrev title cache", "1955: Acta Inst. Bot. Acad. Sci. URSS Fasc. 11", book1.getTitleCache());
         book1.setSeriesPart("1");
         //TODO needs to be discussed
-        Assert.assertEquals("Unexpected abbrev title cache", "1955: Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11.", book1.getTitleCache());
+        Assert.assertEquals("Unexpected abbrev title cache", "1955: Acta Inst. Bot. Acad. Sci. URSS, ser. 1, Fasc. 11", book1.getTitleCache());
     }
 
 // ***************************** Book Section ************************/
@@ -285,42 +284,42 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1975: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1975: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.getTitleCache());
 
         book1.setDatePublished((VerbatimTimePeriod)null);
         bookSection1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1976));
         bookSection1.setTitleCache(null, false);
         book1.setTitleCache(null, false);
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.getTitleCache());
         //with in-ref year (ignore if there is ref year)
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1977));
         bookSection1.setTitleCache(null, false);
         book1.setTitleCache(null, false);
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.getTitleCache());
         //with series part
         bookSection1.setTitleCache(null, false);
         book1.setTitleCache(null, false);
         book1.setSeriesPart("2");
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2", bookSection1.getTitleCache());
         //without section title
         bookSection1.setTitle(null);
         bookSection1.setTitleCache(null, false);
         book1.setTitleCache(null, false);
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976 "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976 "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2", bookSection1.getTitleCache());
         bookSection1.setTitle(bookSetionTitle);
 
         //#6496, 9529, 9530
         bookSection1.setPages("33-38");
         bookSection1.setTitleCache(null, false);
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter, pp. 33-38. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter, pp. 33-38. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2", bookSection1.getTitleCache());
         bookSection1.setPages("v");
         bookSection1.setTitleCache(null, false);
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter, p. v. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter, p. v. "+UTF8.EN_DASH+" In: Book Author, My book, ser. 2", bookSection1.getTitleCache());
         bookSection1.setPages(null);
 
         bookSection1.setInBook(null);
         bookSection1.setTitleCache(null, false);
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: - undefined book -.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: - undefined book -", bookSection1.getTitleCache());
     }
 
     @Test
@@ -332,15 +331,15 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1975: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1975: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.getTitleCache());
         book1.setDatePublished((VerbatimTimePeriod)null);
         bookSection1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1976));
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.getTitleCache());
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1977));
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: Book Author, My book", bookSection1.getTitleCache());
 
         bookSection1.setInBook(null);
-        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: - undefined book -.", bookSection1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Section Author 1976: My chapter. "+UTF8.EN_DASH+" In: - undefined book -", bookSection1.getTitleCache());
     }
 
     @Test
@@ -360,8 +359,7 @@ public class ReferenceDefaultCacheStrategyTest {
         bookSection.setInBook(book);
         bookSection.setAuthorship(sectionTeam);
         bookSection.setPages("222-251");
-        Assert.assertEquals("Chaudhary S. A. 2000: 73. Hedypnois - 87. Crepis, pp. 222-251. "+UTF8.EN_DASH+" In: Chaudhary S. A.(ed.), Flora of the Kingdom of Saudi Arabia 2(3).", bookSection.getTitleCache());
-
+        Assert.assertEquals("Chaudhary S. A. 2000: 73. Hedypnois - 87. Crepis, pp. 222-251. "+UTF8.EN_DASH+" In: Chaudhary S. A.(ed.), Flora of the Kingdom of Saudi Arabia 2(3)", bookSection.getTitleCache());
     }
 
     @Test
@@ -387,7 +385,7 @@ public class ReferenceDefaultCacheStrategyTest {
         Assert.assertEquals("Unexpected title cache.",
                 "Chudaev, D.A., Glushchenko, A., Kulikovskiy, M. & Kociolek, J.P. 2020 "+UTF8.EN_DASH+" In: "
                 + "Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P., "
-                + "New diatom species Navicula davidovichii from Vietnam (Southeast Asia). "+UTF8.EN_DASH+" Phytotaxa 452(1).",
+                + "New diatom species Navicula davidovichii from Vietnam (Southeast Asia). "+UTF8.EN_DASH+" Phytotaxa 452(1)",
                 section.getTitleCache());
     }
 
@@ -406,7 +404,7 @@ public class ReferenceDefaultCacheStrategyTest {
 
         Assert.assertEquals("Unexpected title cache.",
                 "Kulikovskiy, M., Chudaev, D.A., Glushchenko, A., Kuznetsova, I. & Kociolek, J.P. 2020 "+UTF8.EN_DASH+" In: "
-                + "Phytotaxa 452(1).",
+                + "Phytotaxa 452(1)",
                 section.getTitleCache());
     }
 
@@ -433,7 +431,7 @@ public class ReferenceDefaultCacheStrategyTest {
         section.setInReference(bookSection);
 
         Assert.assertEquals("Unexpected title cache.",
-                "Section author 1752 "+UTF8.EN_DASH+" In: Chapter author, Trees, pp. 83-91. "+UTF8.EN_DASH+" In: Linne, Species Plantarum 3.",
+                "Section author 1752 "+UTF8.EN_DASH+" In: Chapter author, Trees, pp. 83-91. "+UTF8.EN_DASH+" In: Linne, Species Plantarum 3",
                 section.getTitleCache());
     }
 
@@ -448,7 +446,7 @@ public class ReferenceDefaultCacheStrategyTest {
     public void testCdDvdGetTitleCache() {
         String result = defaultStrategy.getTitleCache(cdDvd);
         //TODO position of year needs to be discussed
-        assertEquals("1999"+SEP+"2001: " + cdDvdTitle + ".", result);
+        assertEquals("1999"+SEP+"2001: " + cdDvdTitle, result);
     }
 
 // *************************** GENERIC *****************************************/
@@ -468,7 +466,7 @@ public class ReferenceDefaultCacheStrategyTest {
         Reference inRef = (Reference)book1;
         generic1.setInReference(inRef);
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title.", generic1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title", generic1.getTitleCache());
     }
 
     @Test
@@ -486,12 +484,12 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setAbbrevTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         //TODO needs discussion
         Assert.assertEquals("Unexpected abbrev title cache.", "1987: Pt. Tit. "+UTF8.EN_DASH+" In: AT., My bk. tit.", generic1.getAbbrevTitleCache());
-        Assert.assertEquals("Title cache must still be the same", "1987: Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title.", generic1.getTitleCache());
+        Assert.assertEquals("Title cache must still be the same", "1987: Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title", generic1.getTitleCache());
 
         //protected
         generic1.setAbbrevTitleCache("My prot. abb. tit. in a bk.", true);
         Assert.assertEquals("Unexpected abbrev title cache.", "My prot. abb. tit. in a bk.", generic1.getAbbrevTitleCache());
-        Assert.assertEquals("Unexpected title cache.", "1987: Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title.", generic1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "1987: Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title", generic1.getTitleCache());
     }
 
     @Test
@@ -499,14 +497,14 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setTitle("My generic title");
         generic1.setAuthorship(genericTeam1);
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Authorteam: My generic title.", generic1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Authorteam: My generic title", generic1.getTitleCache());
     }
 
     @Test
     public void testGenericAuthorOnly(){
         generic1.setAuthorship(genericTeam1);
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Authorteam.", generic1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Authorteam", generic1.getTitleCache());
     }
 
     @Test
@@ -514,7 +512,7 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setAuthorship(genericTeam1);
         generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1792"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
-        Assert.assertEquals("Unexpected title cache.", "Authorteam 1792.", generic1.getTitleCache());
+        Assert.assertEquals("Unexpected title cache.", "Authorteam 1792", generic1.getTitleCache());
     }
 
     //#4338
@@ -525,8 +523,8 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1883-1884"));
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         generic1.setVolume("7");
-        Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic 7.", generic1.getTitleCache());
-        Assert.assertEquals("AT. 1883"+SEP+"1884: My generic 7.", generic1.getAbbrevTitleCache());
+        Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic 7", generic1.getTitleCache());
+        Assert.assertEquals("AT. 1883"+SEP+"1884: My generic 7", generic1.getAbbrevTitleCache());
 
         //inRef
         Reference generic2 = ReferenceFactory.newGeneric();
@@ -548,8 +546,8 @@ public class ReferenceDefaultCacheStrategyTest {
 
         //only inref has volume
         generic1.setVolume(null);
-        Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9.", generic1.getTitleCache());
-        Assert.assertEquals("AT. 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9.", generic1.getAbbrevTitleCache());
+        Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9", generic1.getTitleCache());
+        Assert.assertEquals("AT. 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9", generic1.getAbbrevTitleCache());
    }
 
 // ********************************** WEB PAGE ********************************************/

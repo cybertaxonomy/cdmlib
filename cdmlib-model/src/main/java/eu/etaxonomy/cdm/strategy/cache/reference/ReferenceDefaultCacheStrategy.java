@@ -113,9 +113,6 @@ public class ReferenceDefaultCacheStrategy
                 authorAndYear += authorSeparator;
             }
             result = authorAndYear + result;
-            if (!type.isWebPage()){
-                result = CdmUtils.addTrailingDotIfNotExists(result);
-            }
         }else if (type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isNotAbbrev);
         }else{
@@ -180,7 +177,6 @@ public class ReferenceDefaultCacheStrategy
                 authorAndYear += authorSeparator;
             }
             result = authorAndYear + result;
-            result = CdmUtils.addTrailingDotIfNotExists(result);
         }else if (isRealInRef(reference)){
             result = titleCacheRealInRef(reference, isAbbrev);
         }else if (isNomRef(type)){
@@ -193,10 +189,6 @@ public class ReferenceDefaultCacheStrategy
                 authorAndYear += authorSeparator;
             }
             result = authorAndYear + result;
-
-            if (!type.isWebPage()){
-                result = CdmUtils.addTrailingDotIfNotExists(result);
-            }
         }else if(type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isAbbrev);
         }else{
@@ -220,11 +212,10 @@ public class ReferenceDefaultCacheStrategy
                 inRefPart = addSeriesAndVolume(reference, inRefPart, isAbbrev);  //usually only needed for journals
             }
         }
-        inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
         inRefPart = biblioInSeparator + inRefPart;
         if (inRef != null && inRef.isBookSection()){
+            inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
             String inInRefPart = getInRefAuthorAndTitle(inRef.getInReference(), inRef.getType(), isAbbrev);
-            inInRefPart = CdmUtils.addTrailingDotIfNotExists(inInRefPart);
             inInRefPart = biblioInSeparator + inInRefPart;
             inRefPart += inInRefPart;
         }
