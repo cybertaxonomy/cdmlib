@@ -128,4 +128,15 @@ public class TermTreeDto extends TermCollectionDto {
         }
         return dtos;
     }
+
+    public boolean containsSubtrees(){
+        boolean result = false;
+        for (TermNodeDto child: root.getChildren()){
+            if (child.getChildren() != null && !child.getChildren().isEmpty()){
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 }
