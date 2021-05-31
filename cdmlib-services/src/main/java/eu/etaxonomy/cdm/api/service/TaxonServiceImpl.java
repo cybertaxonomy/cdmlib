@@ -1304,14 +1304,14 @@ public class TaxonServiceImpl
             //remove name if possible (and required)
             if (name != null && config.isDeleteNameIfPossible()){
 
-                    DeleteResult nameDeleteResult = nameService.delete(name, config.getNameDeletionConfig());
-                    if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
-                    	result.addExceptions(nameDeleteResult.getExceptions());
-                    	result.addRelatedObject(name);
-                    	result.addUpdatedObject(name);
-                    }else{
-                        result.addDeletedObject(name);
-                    }
+                DeleteResult nameDeleteResult = nameService.delete(name, config.getNameDeletionConfig());
+                if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
+                	result.addExceptions(nameDeleteResult.getExceptions());
+                	result.addRelatedObject(name);
+                	result.addUpdatedObject(name);
+                }else{
+                    result.addDeletedObject(name);
+                }
             }
         }
         return result;

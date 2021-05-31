@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.parser;
 
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 /**
  * @author a.mueller
  * @since 04.09.2009
- * @version 1.0
  */
 public enum ParserProblem {
 	CheckRank(WARNING()),
@@ -36,8 +34,8 @@ public enum ParserProblem {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ParserProblem.class);
 
-	private final static int WARNING(){return 0;};
-	private final static int ERROR() {return 1;};
+	private final static int WARNING(){return 0;}
+	private final static int ERROR() {return 1;}
 
 	int type;
 
@@ -74,7 +72,6 @@ public enum ParserProblem {
 		}
 	}
 
-
 	public boolean isError(){
 		return type == ERROR();
 	}
@@ -83,9 +80,8 @@ public enum ParserProblem {
 		return type == WARNING();
 	}
 
-
 	public static List<ParserProblem> warningList(int problem){
-		List<ParserProblem> result = new ArrayList<ParserProblem>();
+		List<ParserProblem> result = new ArrayList<>();
 		ParserProblem[] values = ParserProblem.values();
 		for (ParserProblem warning: values){
 			if (testBit(problem, warning.ordinal())){
@@ -105,20 +101,10 @@ public enum ParserProblem {
 		return false;
 	}
 
-
-	/**
-	 * @param number
-	 * @param pos
-	 * @return
-	 */
 	private static boolean testBit(int number, int pos) {
 		return  (number & 1<<pos)!=0;
 	}
-	/**
-	 * @param hasProblem
-	 * @param warning
-	 * @return
-	 */
+
 	public static int addProblem(int originalProblems, ParserProblem newProblem) {
 		if (newProblem == null){
 			return originalProblems;
@@ -131,11 +117,6 @@ public enum ParserProblem {
 		return hasProblem | newProblems;
 	}
 
-	/**
-	 * @param parsingProblem
-	 * @param problemToRemove
-	 * @return
-	 */
 	public static int removeProblem(int originalProblems, ParserProblem problemToRemove) {
 		if (problemToRemove == null){
 			return originalProblems;
@@ -143,7 +124,4 @@ public enum ParserProblem {
 			return originalProblems & ~(1 << problemToRemove.ordinal());
 		}
 	}
-
-
-
 }

@@ -94,8 +94,6 @@ public class CacheUpdater implements Serializable {
     @Autowired
     protected IProgressMonitorService progressMonitorService;
 
-
-
 	public UpdateResult doInvoke(CacheUpdaterConfigurator config) {
 	    UpdateResult result = new UpdateResult();
 	    IProgressMonitor monitor = config.getMonitor();
