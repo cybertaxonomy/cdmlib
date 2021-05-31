@@ -92,7 +92,9 @@ public class LongRunningTasksService implements ILongRunningTasksService{
                         monitor.addReport(e.getMessage());
                     }
                 } catch (JvmLimitsException e) {
-                    monitor.warning("Memory problem. Java Virtual Machine limits exceeded. Task was interrupted", e);
+                    String warning = "Memory problem. Java Virtual Machine limits exceeded. Task was interrupted";
+                    monitor.warning(warning, e);
+                    monitor.addReport(warning);
                 }
                 monitor.setResult(updateResult);
                 return updateResult;
