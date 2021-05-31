@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -892,12 +893,10 @@ public class DescriptionServiceImpl
 
     @Override
     public Pager<TermDto> pageNamedAreasInUse(boolean includeAllParents, Integer pageSize,
-            Integer pageNumber){
+            Integer pageIndex){
         List<TermDto> results = dao.listNamedAreasInUse(includeAllParents, null, null);
-        int startIndex= pageNumber * pageSize;
-        int toIndex = Math.min(startIndex + pageSize, results.size());
-        List<TermDto> page = results.subList(startIndex, toIndex);
-        return new DefaultPagerImpl<TermDto>(pageNumber, results.size(), pageSize, page);
+        List<TermDto> subList = PagerUtils.pageList(results, pageIndex, pageSize);
+        return new DefaultPagerImpl<TermDto>(pageIndex, results.size(), pageSize, subList);
     }
 
 

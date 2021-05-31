@@ -89,7 +89,7 @@ public class PagerUtils {
      * @param pageSize page size
      * @return a synchronized list holding the page items
      */
-    public  static  <T extends Object> List<T> pageList(List<T> fullList, Integer pageIndex, Integer pageSize ){
+    public static <T extends Object> List<T> pageList(List<T> fullList, Integer pageIndex, Integer pageSize){
         Integer start = startFor(pageSize, pageIndex);
         if (start == null){
             return fullList;
