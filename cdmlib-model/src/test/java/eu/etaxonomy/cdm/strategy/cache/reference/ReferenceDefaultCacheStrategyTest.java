@@ -179,7 +179,7 @@ public class ReferenceDefaultCacheStrategyTest {
         article1.setSeriesPart("II");
         //TODO unclear if punctuation is correct
         Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH+" My journal, II, 7: 12-22", article1.getTitleCache());
-   }
+    }
 
 	@Test
 	public void testArticleGetAbbrevTitleCache(){
@@ -192,14 +192,25 @@ public class ReferenceDefaultCacheStrategyTest {
 		article1.setAuthorship(articleTeam1);
 		article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
 		article1.setAbbrevTitle("M. Art.");
-		Assert.assertEquals("T. 1975: M. Art. "+UTF8.EN_DASH+" M. Journ.", article1.getAbbrevTitleCache());
+		Assert.assertEquals("T. 1975: M. Art. "+UTF8.EN_DASH+" M. Journ.", defaultStrategy.getFullAbbrevTitleString((Reference)article1));
 		article1.setVolume("7");
-        Assert.assertEquals("T. 1975: M. Art. "+UTF8.EN_DASH+" M. Journ. 7", article1.getAbbrevTitleCache());
-
-		article1.setInJournal(null);
-		article1.setTitleCache(null, false);
-		Assert.assertEquals("Team1 1975: My article. "+UTF8.EN_DASH + " " +ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL + " 7", article1.getTitleCache());
+        Assert.assertEquals("T. 1975: M. Art. "+UTF8.EN_DASH+" M. Journ. 7", defaultStrategy.getFullAbbrevTitleString((Reference)article1));
 	}
+
+    @Test
+    public void testNomenclaturalTitle(){
+
+        journal1.setTitle("My journal");
+        journal1.setTitle("M. Journ.");
+        ((Reference)journal1).setAuthorship(articleTeam2);
+        article1.setTitle("My article");
+        article1.setInJournal(journal1);
+        article1.setAuthorship(articleTeam1);
+        article1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        article1.setAbbrevTitle("M. Art.");
+        article1.setVolume("7");
+        Assert.assertEquals("T. in M. Journ. 7. 1975", article1.getAbbrevTitleCache());
+    }
 
 	@Test
 	public void testArticleGetTitleWithoutYearAndAuthor() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
@@ -483,7 +494,27 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         generic1.setAbbrevTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         //TODO needs discussion
-        Assert.assertEquals("Unexpected abbrev title cache.", "1987: Pt. Tit. "+UTF8.EN_DASH+" In: AT., My bk. tit.", generic1.getAbbrevTitleCache());
+        Assert.assertEquals("Unexpected abbrev title cache.", "1987: Pt. Tit. "+UTF8.EN_DASH+" In: AT., My bk. tit.", defaultStrategy.getFullAbbrevTitleString((Reference)generic1));
+
+        //protected
+        generic1.setAbbrevTitleCache("My prot. abb. tit. in a bk.", true);
+        Assert.assertEquals("Unexpected abbrev title cache.", "My prot. abb. tit. in a bk.", defaultStrategy.getFullAbbrevTitleString((Reference)generic1));
+    }
+
+    @Test
+    public void testGenericNomenclaturalTitle(){
+        generic1.setTitle("Part Title");
+        generic1.setAbbrevTitle("Pt. Tit.");
+        generic1.setDatePublished(TimePeriodParser.parseStringVerbatim("1987"));
+        IBook book1 = ReferenceFactory.newBook();
+        book1.setTitle("My book title");
+        book1.setAbbrevTitle("My bk. tit.");
+        book1.setAuthorship(genericTeam1);  //TODO handling not yet defined
+        Reference inRef = (Reference)book1;
+        generic1.setInReference(inRef);
+        generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
+        generic1.setAbbrevTitleCache(null, false);  //reset cache in case aspectJ is not enabled
+        Assert.assertEquals("Unexpected abbrev title cache.", "in AT., My bk. tit. 1987", generic1.getAbbrevTitleCache());
         Assert.assertEquals("Title cache must still be the same", "1987: Part Title. "+UTF8.EN_DASH+" In: Authorteam, My book title", generic1.getTitleCache());
 
         //protected
@@ -524,7 +555,7 @@ public class ReferenceDefaultCacheStrategyTest {
         generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
         generic1.setVolume("7");
         Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic 7", generic1.getTitleCache());
-        Assert.assertEquals("AT. 1883"+SEP+"1884: My generic 7", generic1.getAbbrevTitleCache());
+        Assert.assertEquals("AT., My generic 7. 1883"+UTF8.EN_DASH+"1884", generic1.getAbbrevTitleCache());
 
         //inRef
         Reference generic2 = ReferenceFactory.newGeneric();
@@ -547,7 +578,7 @@ public class ReferenceDefaultCacheStrategyTest {
         //only inref has volume
         generic1.setVolume(null);
         Assert.assertEquals("Authorteam 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9", generic1.getTitleCache());
-        Assert.assertEquals("AT. 1883"+SEP+"1884: My generic. "+UTF8.EN_DASH+" In: InRefAuthor, My InRef 9", generic1.getAbbrevTitleCache());
+        Assert.assertEquals("AT. in InRefAuthor, My InRef 9. 1883"+UTF8.EN_DASH+"1884", generic1.getAbbrevTitleCache());
    }
 
 // ********************************** WEB PAGE ********************************************/

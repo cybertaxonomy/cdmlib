@@ -73,6 +73,8 @@ public class ReferenceDefaultCacheStrategy
 
     private static final boolean trim = true;
 
+    private final NomenclaturalSourceFormatter nomSourceFormatter = NomenclaturalSourceFormatter.INSTANCE();
+
 // ************************ FACTORY ****************************/
 
     public static ReferenceDefaultCacheStrategy NewInstance(){
@@ -152,6 +154,19 @@ public class ReferenceDefaultCacheStrategy
             result = removeTrailingDots(result).trim() + ": " + reference.getPages();
         }
         return result;
+    }
+
+    @Override
+    public String getNomenclaturalTitleCache(Reference reference) {
+        if (reference == null){
+            return null;
+        }else{
+            String refStr = nomSourceFormatter.format(reference, null);
+            TeamOrPersonBase<?> authorTeam = reference.getAuthorship();
+            String authorStr = authorTeam == null? null : authorTeam.getNomenclaturalTitle();
+            String sep = refStr.startsWith("in ")? " ": ", ";
+            return CdmUtils.concat(sep, authorStr, refStr);
+        }
     }
 
     @Override

@@ -828,7 +828,7 @@ public class Reference
 	}
 
     public String generateAbbrevTitle() {
-		return getCacheStrategy().getFullAbbrevTitleString(this);
+		return getCacheStrategy().getNomenclaturalTitleCache(this);
 	}
 
 	/**
@@ -1199,7 +1199,7 @@ public class Reference
        if (this.protectedAbbrevTitleCache == false){
            String oldAbbrevTitleCache = this.abbrevTitleCache;
 
-           String newAbbrevTitleCache = getTruncatedCache(getCacheStrategy().getFullAbbrevTitleString(this));
+           String newAbbrevTitleCache = getTruncatedCache(getCacheStrategy().getNomenclaturalTitleCache(this));
            if (newAbbrevTitleCache.equals("")){
                newAbbrevTitleCache = getCacheStrategy().getTitleCache(this);
            }
