@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.http.HttpException;
@@ -142,12 +144,15 @@ public class ManifestComposer {
         List<Canvas> canvases = null;
         try {
         canvases = entityMediaContext.getMedia().parallelStream().map(m -> {
-            try {
-                return createCanvas(onEntitiyType, onEntityUuid, m);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList());
+                try {
+                    return createCanvas(onEntitiyType, onEntityUuid, m);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
         } catch(RuntimeException re) {
             // re-throw  IOException from lambda expression
             throw new IOException(re.getCause());
@@ -175,8 +180,9 @@ public class ManifestComposer {
         return manifest;
     }
 
-    public Canvas createCanvas(String onEntitiyType, String onEntityUuid, Media media) throws IOException {
+    public Optional<Canvas> createCanvas(String onEntitiyType, String onEntityUuid, Media media) throws IOException {
         Canvas canvas;
+
         MediaRepresentation thumbnailRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, 100, 100, thumbnailMimetypes, MediaUtils.MissingValueStrategy.MAX);
         MediaRepresentation fullSizeRepresentation = mediaTools.processAndFindBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
         // MediaRepresentation fullSizeRepresentation = MediaUtils.findBestMatchingRepresentation(media, null, null, Integer.MAX_VALUE, Integer.MAX_VALUE, null, MediaUtils.MissingValueStrategy.MAX);
@@ -186,14 +192,23 @@ public class ManifestComposer {
             logger.debug("thumbnailRepresentation: " + thumbnailRepresentation.getParts().get(0).getUri());
         }
 
-        // FIXME the below only makes sense if the media is an Image!!!!!
-        List<ImageContent> fullSizeImageContents = representationPartsToImageContent(fullSizeRepresentation);
-
         List<ImageContent> thumbnailImageContents;
-        if(fullSizeRepresentation.equals(thumbnailRepresentation)){
+        List<ImageContent> fullSizeImageContents;
+        // FIXME the below only makes sense if the media is an Image!!!!!
+        if(fullSizeRepresentation != null) {
+            fullSizeImageContents = representationPartsToImageContent(fullSizeRepresentation);
+        } else {
+            fullSizeImageContents = new ArrayList<>(0);
+        }
+
+        if(Objects.equals(fullSizeRepresentation, thumbnailRepresentation)){
             thumbnailImageContents = fullSizeImageContents;
         } else {
             thumbnailImageContents = representationPartsToImageContent(thumbnailRepresentation);
+        }
+
+        if(fullSizeRepresentation == null) {
+            return Optional.empty();
         }
 
         canvas = new Canvas(iiifID(onEntitiyType, onEntityUuid, Canvas.class, "media-" + media.getUuid()));
@@ -244,7 +259,7 @@ public class ManifestComposer {
         canvas = addAttributionAndLicense(media, canvas, mediaMetadata);
         orderMedatadaItems(canvas);
         canvas.addMetadata(mediaMetadata.toArray(new MetadataEntry[mediaMetadata.size()]));
-        return canvas;
+        return Optional.of(canvas);
     }
 
     /**
