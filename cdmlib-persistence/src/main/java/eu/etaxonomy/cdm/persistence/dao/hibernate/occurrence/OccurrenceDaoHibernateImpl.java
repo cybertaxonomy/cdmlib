@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -132,11 +133,55 @@ public class OccurrenceDaoHibernateImpl
 
     @Override
     public long countMedia(SpecimenOrObservationBase occurence) {
-        checkNotInPriorView("OccurrenceDaoHibernateImpl.countMedia(SpecimenOrObservationBase occurence)");
-        Query query = getSession().createQuery("SELECT count(media) FROM SpecimenOrObservationBase occurence JOIN occurence.media media WHERE occurence = :occurence");
-        query.setParameter("occurence", occurence);
+        return this.getMediaIds(occurence).size();
+    }
 
-        return (Long)query.uniqueResult();
+    @Override
+    public List<Media> getMedia(SpecimenOrObservationBase occurence,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+        checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
+        List<Integer> ids = this.getMediaIds(occurence);
+        Query query = getSession().createQuery(
+                "   SELECT m "
+                + " FROM Media m "
+                + " WHERE m.id in (:mediaIds)");
+        query.setParameterList("mediaIds", ids);
+
+        addPageSizeAndNumber(query, pageSize, pageNumber);
+
+        @SuppressWarnings("unchecked")
+        List<Media> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+        return results;
+    }
+
+    private List<Integer> getMediaIds(SpecimenOrObservationBase occurence) {
+        Query query = getSession().createQuery(
+                "   SELECT DISTINCT m.id "
+                + " FROM SpecimenOrObservationBase occ JOIN occ.descriptions d "
+                + " JOIN d.descriptionElements el JOIN el.media m "
+                + " WHERE occ = :occurence AND d.imageGallery = true "
+                + " ORDER BY m.id ");
+        query.setParameter("occurence", occurence);
+        @SuppressWarnings("unchecked")
+        List<Integer> list = query.list();
+
+        if (occurence.isInstanceOf(MediaSpecimen.class)){
+            String q2Str = " SELECT DISTINCT m.id "
+                    + " FROM MediaSpecimen spec "
+                    + " JOIN spec.mediaSpecimen m "
+                    + " WHERE spec = :occurence "
+                    + " ORDER BY m.id ";
+            Query q2 = getSession().createQuery(q2Str);
+            q2.setParameter("occurence", occurence);
+            List<Integer> list2 = q2.list();
+            list.addAll(list2);
+            Set<Integer> dedupSet = new HashSet<>(list);
+            list = new ArrayList<>(dedupSet);
+            Collections.sort(list);
+        }
+
+        return list;
     }
 
     @Override
@@ -189,25 +234,6 @@ public class OccurrenceDaoHibernateImpl
             defaultBeanInitializer.initializeAll(result, propertyPaths);
             return result;
         }
-    }
-
-    @Override
-    public List<Media> getMedia(SpecimenOrObservationBase occurence,
-            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-        Query query = getSession().createQuery(
-                "   SELECT media "
-                + " FROM SpecimenOrObservationBase occurence "
-                + " JOIN occurence.media media "
-                + " WHERE occurence = :occurence");
-        query.setParameter("occurence", occurence);
-
-        addPageSizeAndNumber(query, pageSize, pageNumber);
-
-        @SuppressWarnings("unchecked")
-        List<Media> results = query.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-        return results;
     }
 
     @Override
