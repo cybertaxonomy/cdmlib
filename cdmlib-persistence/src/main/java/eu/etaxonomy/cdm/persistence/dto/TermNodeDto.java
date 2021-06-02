@@ -44,6 +44,9 @@ public class TermNodeDto implements Serializable{
     public static TermNodeDto fromNode(TermNode node, TermTreeDto treeDto){
         Assert.notNull(node, "Node should not be null");
         TermDto term = node.getTerm() != null?TermDto.fromTerm(node.getTerm()): null;
+        if (treeDto != null){
+            treeDto.addTerm(term);
+        }
         TermNodeDto dto = new TermNodeDto(term, node.getParent() != null? node.getParent().getIndex(node): 0, treeDto != null? treeDto: TermTreeDto.fromTree((TermTree)node.getGraph()), node.getUuid(), node.treeIndex(), node.getPath());
         if (node.getParent() != null){
             dto.setParentUuid(node.getParent().getUuid());
@@ -216,6 +219,7 @@ public class TermNodeDto implements Serializable{
        int index = this.getIndex(nodeDto);
        if (index > -1){
            this.getChildren().remove(index);
+           this.tree.removeTerm(nodeDto.term);
            return true;
        }else if (doRecursive && this.getChildren() != null && !this.getChildren().isEmpty()){
            for (TermNodeDto child: children){

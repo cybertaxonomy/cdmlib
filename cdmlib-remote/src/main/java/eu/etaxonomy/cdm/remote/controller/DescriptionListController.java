@@ -230,7 +230,7 @@ public class DescriptionListController
     public Pager<TermDto> doPageNamedAreasInUse(
             @RequestParam(value = "includeAllParents", required = false) boolean includeAllParents,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+            @RequestParam(value = "pageIndex", required = false) Integer pageNumber, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doPageNamedAreasInUse : " + requestPathAndQuery(request));

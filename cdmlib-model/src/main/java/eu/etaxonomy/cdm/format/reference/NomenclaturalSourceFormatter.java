@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.format.reference;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -29,7 +31,9 @@ import eu.etaxonomy.cdm.strategy.cache.reference.TitleWithoutYearAndAuthorHelper
  * @author a.mueller
  * @since 03.05.2021
  */
-public class NomenclaturalSourceFormatter extends CdmFormatterBase<NomenclaturalSource>{
+public class NomenclaturalSourceFormatter
+        extends CdmFormatterBase<NomenclaturalSource>
+        implements Serializable {   //only required because used in ReferenceDefaultCacheStrategy
 
     private static final Logger logger = Logger.getLogger(NomenclaturalSourceFormatter.class);
 

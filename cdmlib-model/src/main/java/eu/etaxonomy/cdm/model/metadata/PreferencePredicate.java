@@ -126,6 +126,8 @@ public enum PreferencePredicate
     DefaultBehaviourForSecundum(UUID.fromString("b62bfebd-2633-46da-828c-5dcc181a137f"), "Default behaviour for secundum reference when moving synonym to accepted taxon", "defaultBehaviourSecMovSyn", SecReferenceHandlingEnum.KeepWhenSame),
     ConceptRelationshipType(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationship Types", "conceptRelationshipTypes", null),
 
+    SecundumForSubtreeConfigurator(UUID.fromString("aa43a7de-4098-4b2e-9d76-5caceda70a39"), "Default configurator for set secundum for subtree", "defaultSetSecForSubtreeConfig", null),
+
     ShowExperimentalFeatures(UUID.fromString("ba617c58-1801-4feb-9819-859aea5869a2"), "Show Experimental Features", "editor.experimentalFeatures", Boolean.TRUE),
 
     //External Services
@@ -142,6 +144,9 @@ public enum PreferencePredicate
     ShowModifier(UUID.fromString("a3367065-d580-4d30-8d28-ce06fdc6a033"),"Show Modifiers", "facts.modifier.show", Boolean.TRUE),
     ShowModifierFreeText(UUID.fromString("53d8e5eb-b659-45a1-b093-5f4b285028e3"),"Show Modifier Freetext", "facts.modifier.showFreeText", Boolean.TRUE),
     NamedAreaWithIdInVoc(UUID.fromString("edb0d2df-474b-4fac-b32b-8a0416ed39f8"),"Show Id In Vocabulary in Textfield", "facts.namedArea.showIdInVocabulary", Boolean.FALSE),
+    EnableComputedDescription(UUID.fromString("eee33ea4-eb85-41fd-8b9d-787420a16463"),"Disable Computed Descriptions", "facts.computedDescriptions", EnabledComputedDescription.Disabled),
+
+
     //Names
     AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),
     AvailableNomenclaturalStatus(UUID.fromString("fd36dc63-fd98-4d86-9a11-edced6773bd3"), "Available Nomenclatural Status", "name.nomenclaturalStatus", null),

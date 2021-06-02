@@ -1304,13 +1304,14 @@ public class TaxonServiceImpl
             //remove name if possible (and required)
             if (name != null && config.isDeleteNameIfPossible()){
 
-                    DeleteResult nameDeleteResult = nameService.delete(name, config.getNameDeletionConfig());
-                    if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
-                    	result.addExceptions(nameDeleteResult.getExceptions());
-                    	result.addRelatedObject(name);
-                    }else{
-                        result.addDeletedObject(name);
-                    }
+                DeleteResult nameDeleteResult = nameService.delete(name, config.getNameDeletionConfig());
+                if (nameDeleteResult.isAbort() || nameDeleteResult.isError()){
+                	result.addExceptions(nameDeleteResult.getExceptions());
+                	result.addRelatedObject(name);
+                	result.addUpdatedObject(name);
+                }else{
+                    result.addDeletedObject(name);
+                }
             }
         }
         return result;
@@ -3100,6 +3101,7 @@ public class TaxonServiceImpl
                 DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
                 if (!nameResult.isOk()){
                     result.addExceptions(nameResult.getExceptions());
+
                 }
             }
         }

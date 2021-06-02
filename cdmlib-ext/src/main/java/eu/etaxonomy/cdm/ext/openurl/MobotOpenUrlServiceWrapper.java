@@ -161,16 +161,16 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
     }
 
     private Integer parsePageNumber(String startPage) {
-        String pageNumbers = startPage.replaceAll("(?i)page|pages|p|p\\.|pp\\.|pp", "");
-        String[] pageNumbersTokens = pageNumbers.split("[,-]", 1);
+        String pageIndices = startPage.replaceAll("(?i)page|pages|p|p\\.|pp\\.|pp", "");
+        String[] pageIndexTokens = pageIndices.split("[,-]", 1);
         Integer page = null;
         try {
-            if(pageNumbersTokens[0] != null){
-                pageNumbersTokens[0] = pageNumbersTokens[0].trim();
+            if(pageIndexTokens[0] != null){
+                pageIndexTokens[0] = pageIndexTokens[0].trim();
             } else {
                 throw new NumberFormatException();
             }
-            page = Integer.valueOf(pageNumbersTokens[0]);
+            page = Integer.valueOf(pageIndexTokens[0]);
         } catch (NumberFormatException e) {
             logger.warn("First page number token of " + startPage + " is not a Number", e);
             throw e;
@@ -192,11 +192,11 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
      */
     public List<OpenUrlReference> doPage(OpenUrlReference reference, int forward) throws IllegalArgumentException{
 
-        Integer pageNumber = null;
+        Integer pageIndex = null;
         try{
             if(reference.getPages() != null){
-                pageNumber = parsePageNumber(reference.getPages());
-                pageNumber += forward;
+                pageIndex = parsePageNumber(reference.getPages());
+                pageIndex += forward;
             }
         }catch(NumberFormatException e){
             String errorMessage = "Reference has no page number or the field 'pages' is not parsable";
@@ -206,8 +206,8 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
 
         MobotOpenUrlQuery query = new MobotOpenUrlQuery();
         query.bhlTitleURI = reference.getTitleUri();
-        if(pageNumber != null){
-            query.startPage = pageNumber.toString();
+        if(pageIndex != null){
+            query.startPage = pageIndex.toString();
         }
         query.refType = reference.getReferenceType();
         return doResolve(query);

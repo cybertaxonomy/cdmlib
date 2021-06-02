@@ -132,7 +132,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("No problems should exist", name.hasProblem());
         Assert.assertEquals("Name should not include reference part", "Abies alba Mess., L. & Mill.", name.getTitleCache());
         Assert.assertEquals("Name should have authorship with 2 authors", 3, ((Team)name.getCombinationAuthorship()).getTeamMembers().size());
-        Assert.assertEquals("Mess., L. & Mill. 1987: Sp. Pl., ed. 3.", name.getNomenclaturalReference().getTitleCache());
+        Assert.assertEquals("Mess., L. & Mill. 1987: Sp. Pl., ed. 3", name.getNomenclaturalReference().getTitleCache());
     }
 
     @Test
@@ -1222,7 +1222,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertNotNull(inBook);
         assertNotNull(inBook.getAuthorship());
         assertEquals("Otto", inBook.getAuthorship().getTitleCache());
-        assertEquals("Otto: Sp. Pl. 4(6).", inBook.getTitleCache());
+        assertEquals("Otto: Sp. Pl. 4(6)", inBook.getTitleCache());
         assertEquals("Sp. Pl.", inBook.getAbbrevTitle());
         assertEquals("4(6)", inBook.getVolume());
         assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorship() == name2.getNomenclaturalReference().getAuthorship());

@@ -30,4 +30,12 @@ public interface IReferenceCacheStrategy extends IIdentifiableEntityCacheStrateg
 	 */
 	public String getFullAbbrevTitleString(Reference reference);
 
+    /**
+     * Returns the nomenclatural title cache which equals the nomenclatural citation
+     * string without detail (page) information.
+     * @return
+     *      the nomenclatural title cache
+     */
+    public String getNomenclaturalTitleCache(Reference reference);
+
 }

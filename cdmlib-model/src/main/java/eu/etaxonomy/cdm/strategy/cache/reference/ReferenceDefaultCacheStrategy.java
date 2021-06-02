@@ -73,6 +73,8 @@ public class ReferenceDefaultCacheStrategy
 
     private static final boolean trim = true;
 
+    private final NomenclaturalSourceFormatter nomSourceFormatter = NomenclaturalSourceFormatter.INSTANCE();
+
 // ************************ FACTORY ****************************/
 
     public static ReferenceDefaultCacheStrategy NewInstance(){
@@ -113,9 +115,6 @@ public class ReferenceDefaultCacheStrategy
                 authorAndYear += authorSeparator;
             }
             result = authorAndYear + result;
-            if (!type.isWebPage()){
-                result = CdmUtils.addTrailingDotIfNotExists(result);
-            }
         }else if (type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isNotAbbrev);
         }else{
@@ -158,6 +157,19 @@ public class ReferenceDefaultCacheStrategy
     }
 
     @Override
+    public String getNomenclaturalTitleCache(Reference reference) {
+        if (reference == null){
+            return null;
+        }else{
+            String refStr = nomSourceFormatter.format(reference, null);
+            TeamOrPersonBase<?> authorTeam = reference.getAuthorship();
+            String authorStr = authorTeam == null? null : authorTeam.getNomenclaturalTitle();
+            String sep = refStr.startsWith("in ")? " ": ", ";
+            return CdmUtils.concat(sep, authorStr, refStr);
+        }
+    }
+
+    @Override
     public String getFullAbbrevTitleString(Reference reference) {
         if (reference == null){
             return null;
@@ -180,7 +192,6 @@ public class ReferenceDefaultCacheStrategy
                 authorAndYear += authorSeparator;
             }
             result = authorAndYear + result;
-            result = CdmUtils.addTrailingDotIfNotExists(result);
         }else if (isRealInRef(reference)){
             result = titleCacheRealInRef(reference, isAbbrev);
         }else if (isNomRef(type)){
@@ -193,10 +204,6 @@ public class ReferenceDefaultCacheStrategy
                 authorAndYear += authorSeparator;
             }
             result = authorAndYear + result;
-
-            if (!type.isWebPage()){
-                result = CdmUtils.addTrailingDotIfNotExists(result);
-            }
         }else if(type == ReferenceType.Journal){
             result = titleCacheJournal(reference, isAbbrev);
         }else{
@@ -216,12 +223,14 @@ public class ReferenceDefaultCacheStrategy
         String inRefPart = getInRefAuthorAndTitle(inRef, reference.getType(), isAbbrev);
         if (inRef != null && !inRef.isArticle()){
             inRefPart = addInRefPages(inRef, inRefPart);
+            if (inRef.isJournal()){
+                inRefPart = addSeriesAndVolume(reference, inRefPart, isAbbrev);  //usually only needed for journals
+            }
         }
-        inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
         inRefPart = biblioInSeparator + inRefPart;
         if (inRef != null && inRef.isBookSection()){
+            inRefPart = CdmUtils.addTrailingDotIfNotExists(inRefPart);
             String inInRefPart = getInRefAuthorAndTitle(inRef.getInReference(), inRef.getType(), isAbbrev);
-            inInRefPart = CdmUtils.addTrailingDotIfNotExists(inInRefPart);
             inInRefPart = biblioInSeparator + inInRefPart;
             inRefPart += inInRefPart;
         }
@@ -266,6 +275,33 @@ public class ReferenceDefaultCacheStrategy
         result = CdmUtils.concat(sep, authorAndYear, result);
 
         return result;
+    }
+
+    //copied from TitleWithoutYearAndAuthor.getTitleWithoutYearAndAuthorArticle
+    //may be somehow merged in future
+    private String addSeriesAndVolume(Reference ref, String inRefPart, boolean isAbbrev) {
+        String series = Nz(ref.getSeriesPart()).trim();
+        String volume = Nz(ref.getVolume()).trim();
+
+        String inRefTitle = ReferenceDefaultCacheStrategy.UNDEFINED_JOURNAL;
+        boolean needsComma = false;
+        Reference inRef = ref.getInReference();
+        if (inRef != null){
+            inRefTitle = CdmUtils.getPreferredNonEmptyString(inRef.getTitle(), inRef.getAbbrevTitle(), isAbbrev, true);
+            if (isNotBlank(inRefTitle)){
+                needsComma = TitleWithoutYearAndAuthorHelper.computeNeedsCommaArticle(inRefPart, volume, series);
+                if (! needsComma && (isNotBlank(volume)||isNotBlank(series))){
+                    inRefPart += blank;
+                }
+            }
+        }
+        inRefPart = TitleWithoutYearAndAuthorHelper.getSeriesAndVolPartArticle(series, volume, needsComma, inRefPart);
+
+        //delete "."
+        while (inRefPart.endsWith(".")){
+            inRefPart = CdmUtils.removeTrailingDots(inRefPart);
+        }
+        return inRefPart;
     }
 
     private String addInRefPages(Reference reference, String title) {

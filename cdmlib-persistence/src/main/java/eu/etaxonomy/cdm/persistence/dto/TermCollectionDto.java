@@ -9,7 +9,9 @@
 */
 package eu.etaxonomy.cdm.persistence.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,7 +27,7 @@ public class TermCollectionDto extends AbstractTermDto {
 
     private static final long serialVersionUID = 6053392236860675874L;
 
-    private Set<TermDto> terms;
+    private List<TermDto> terms;
 
     private boolean isAllowDuplicate;
     private boolean containsDuplicates = false;
@@ -34,14 +36,14 @@ public class TermCollectionDto extends AbstractTermDto {
 
     public TermCollectionDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, titleCache);
-        terms = new HashSet<>();
+        terms = new ArrayList<>();
         setTermType(termType);
         this.isAllowDuplicate = isAllowDuplicate;
         this.isOrderRelevant = isOrderRelevant;
         this.isFlat = isFlat;
     }
 
-    public Set<TermDto> getTerms() {
+    public List<TermDto> getTerms() {
         if (terms.isEmpty()){
 
         }
@@ -49,8 +51,11 @@ public class TermCollectionDto extends AbstractTermDto {
     }
 
     public void addTerm(TermDto term){
+        if (term == null){
+            return;
+        }
         if (terms == null){
-            terms = new HashSet<>();
+            terms = new ArrayList<>();
         }
         if (terms.contains(term)){
             containsDuplicates = true;
@@ -79,6 +84,11 @@ public class TermCollectionDto extends AbstractTermDto {
     }
 
     public boolean isContainsDuplicates() {
+        Set<TermDto> dtoSet = new HashSet<>(terms);
+        if (dtoSet.size() == terms.size()){
+            containsDuplicates = false;
+        }
+
         return containsDuplicates;
     }
 

@@ -179,7 +179,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
 //        System.out.println(coreStr);
         Assert.assertTrue(coreStr.contains(expected));
 
-        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\",\"Genus species Mill. sec. My sec ref\",,\"My sec ref.\",\"Mill. 1804: The book of botany 3.\",,\"Genus\",,\"species\",\"subspec\",\"subsp.\",,\"ICNAFP\",,,,,,,,,,\"DwcaExportTest Classification\",";
+        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"3483cc5e-4c77-4c80-8cb0-73d43df31ee3\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",\"Genus species subsp. subspec Mill.\",\"Subspecies\",\"accepted\",,\"4b6acca1-959b-4790-b76e-e474a0882990\",\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",\"Genus species subsp. subspec Mill.\",\"Genus species Mill. sec. My sec ref\",,\"My sec ref\",\"Mill. 1804: The book of botany 3\",,\"Genus\",,\"species\",\"subspec\",\"subsp.\",,\"ICNAFP\",,,,,,,,,,\"DwcaExportTest Classification\",";
         Assert.assertTrue(coreStr.contains(expected));
 
         //distribution
@@ -191,14 +191,13 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull("Reference must not be null", ref);
         String refStr = new String(ref);
 //        System.out.println(refStr);
-        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"My sec ref.\",\"My sec ref\",,,,,,,,,";
+        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
         Assert.assertTrue(refStr.contains(expected));
-        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"Mill. 1804: The book of botany 3.\",,\"Mill.\",\"1804\",,,,,,,";
+        expected = "\"b2c86698-500e-4efb-b9ae-6bb6e701d4bc\",,,,,\"Mill. 1804: The book of botany 3\",,\"Mill.\",\"1804\",,,,,,,";
         Assert.assertTrue(refStr.contains(expected));
         //header
         expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
         Assert.assertTrue(refStr.contains(expected));
-
     }
 
     @Test
@@ -263,10 +262,10 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         Assert.assertNotNull("Reference must not be null", ref);
         String refStr = new String(ref);
 
-        expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref.\",\"My sec ref\",,,,,,,,,";
+        expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
 //        System.out.println(refStr);
         Assert.assertTrue(refStr.contains(expected));
-        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",,,,,\"Mill. 1804: The book of botany 3.\",,\"Mill.\",\"1804\",,,,,,,";
+        expected = "\"9182e136-f2e2-4f9a-9010-3f35908fb5e0\",,,,,\"Mill. 1804: The book of botany 3\",,\"Mill.\",\"1804\",,,,,,,";
         Assert.assertTrue(refStr.contains(expected));
 
         //distribution
@@ -346,7 +345,7 @@ public class DwcaExportTest  extends CdmTransactionalIntegrationTest{
         byte[] ref = data.get(DwcaTaxExportFile.REFERENCE.getTableName());
         Assert.assertNotNull("Reference must not be null", ref);
         String refStr = new String(ref);
-        expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref.\",\"My sec ref\",,,,,,,,,";
+        expected = "\"3162e136-f2e2-4f9a-9010-3f35908fbae1\",,,,,\"My sec ref\",\"My sec ref\",,,,,,,,,";
 //        System.out.println(refStr);
         Assert.assertTrue(refStr.contains(expected));
         expected = "coreid,identifier,identifier,identifier,identifier,bibliographicCitation,title,creator,date,source,description,subject,language,rights,taxonRemarks,type";
