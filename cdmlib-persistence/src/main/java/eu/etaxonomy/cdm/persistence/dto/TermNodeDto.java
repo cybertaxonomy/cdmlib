@@ -219,6 +219,7 @@ public class TermNodeDto implements Serializable{
        int index = this.getIndex(nodeDto);
        if (index > -1){
            this.getChildren().remove(index);
+           this.tree.removeTerm(nodeDto.term);
            return true;
        }else if (doRecursive && this.getChildren() != null && !this.getChildren().isEmpty()){
            for (TermNodeDto child: children){

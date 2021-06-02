@@ -111,6 +111,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
         this.representation_L10n_text = representation_L10n_text;
     }
 
+
     public UUID getUuid() {
         return uuid;
     }
@@ -153,6 +154,7 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
         }
         return null;
     }
+
 
     public String getTitleCache() {
         return titleCache;

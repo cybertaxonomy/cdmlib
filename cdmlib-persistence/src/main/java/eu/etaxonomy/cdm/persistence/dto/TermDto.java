@@ -271,7 +271,7 @@ public class TermDto extends AbstractTermDto{
                 + "a.uri,  "
                 + "m,  "
                 + "a.titleCache ";
-        String sqlFromString =   " from "+fromTable+" as a ";
+        String sqlFromString =   " FROM "+fromTable+" as a ";
 
         String sqlJoinString =  "LEFT JOIN a.partOf as p "
                 + "LEFT JOIN a.kindOf as k "
