@@ -170,8 +170,7 @@ public class OccurrenceDaoHibernateImpl
             String q2Str = " SELECT DISTINCT m.id "
                     + " FROM MediaSpecimen spec "
                     + " JOIN spec.mediaSpecimen m "
-                    + " WHERE spec = :occurence "
-                    + " ORDER BY m.id ";
+                    + " WHERE spec = :occurence ";
             Query q2 = getSession().createQuery(q2Str);
             q2.setParameter("occurence", occurence);
             List<Integer> list2 = q2.list();
