@@ -86,6 +86,7 @@ import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -1700,7 +1701,7 @@ public class CdmLightClassificationExport
                 synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(HibernateProxyHelper.deproxy(synonym.getName(), TaxonName.class)));
             }
 
-//            group.getTypifiedNames().stream().forEach(name -> typifiedNames.add(HibernateProxyHelper.deproxy(name, TaxonName.class)));
+
             TaxonName firstname = null;
             for (TaxonName name: typifiedNames){
                 Iterator<Taxon> taxa = name.getTaxa().iterator();
@@ -1734,6 +1735,62 @@ public class CdmLightClassificationExport
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
                 }
 
+                Set<NameRelationship> relatedNames = name.getNameRelations();
+
+                List<NameRelationship> nonNames = new ArrayList<>();
+                List<NameRelationship> otherRelationships = new ArrayList<>();
+
+                for (NameRelationship rel: relatedNames){
+                    // alle Homonyme und inverse blocking names
+                    if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM()) || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM()) || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()) && rel.getToName().equals(name))){
+                        nonNames.add(rel);
+                    }else if (!rel.getType().isBasionymRelation()){
+                        otherRelationships.add(rel);
+                    }
+                }
+
+                String nonRelNames = "";
+                String relNames = "";
+
+                if (nonNames.size() > 0){
+                    nonRelNames += " [";
+                }
+                for (NameRelationship relName: nonNames){
+                    String label = "non ";
+                    TaxonName relatedName = null;
+                    if (relName.getFromName().equals(name)){
+                        label = relName.getType().getLabel() + " ";
+                        relatedName = relName.getToName();
+                    }else{
+                        relatedName = relName.getFromName();
+                    }
+                    nonRelNames += label + relatedName.getTitleCache() + " ";
+                }
+                relNames.trim();
+                if (nonNames.size() > 0){
+                    nonRelNames += "] ";
+                }
+
+                if (otherRelationships.size() > 0){
+                    relNames += " [";
+                }
+                for (NameRelationship rel: otherRelationships){
+                    String label = "";
+                    TaxonName relatedName = null;
+                    if (rel.getFromName().equals(name)){
+                        label = rel.getType().getLabel() + " ";
+                        relatedName = rel.getToName();
+                    }else {
+                        label = rel.getType().getInverseLabel() + " ";
+                        relatedName = rel.getFromName();
+                    }
+                    relNames += label + relatedName.getTitleCache() + " ";
+                }
+                relNames.trim();
+                if (otherRelationships.size() > 0){
+                    relNames += "] ";
+                }
+
                 String synonymSign = "";
                 if (index > 0){
                     if (name.isInvalid()){
@@ -1761,8 +1818,8 @@ public class CdmLightClassificationExport
                              sec = "";
                          }
 
-                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString ;
-                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec ;
+                         typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames;
+                         typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
                      }else{
                          sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
@@ -1803,8 +1860,8 @@ public class CdmLightClassificationExport
                         typifiedNamesWithoutAcceptedWithSec = typifiedNamesWithoutAcceptedWithSec.trim() + "; ";
                     }
                 }
-                typifiedNamesString += synonymSign + doubtful + nameString ;
-                typifiedNamesWithSecString += synonymSign + doubtful + nameString + sec;
+                typifiedNamesString += synonymSign + doubtful + nameString + nonRelNames + relNames;
+                typifiedNamesWithSecString += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
 
 
                 csvLine[table.getIndex(CdmLightExportTable.HOMOTYPIC_GROUP_STRING)] = typifiedNamesString.trim();
@@ -1840,7 +1897,27 @@ public class CdmLightClassificationExport
             for (TypeDesignationBase<?> typeDes: designationList) {
             	if (typeDes instanceof TextualTypeDesignation) {
             		typeTextDesignations = typeTextDesignations + ((TextualTypeDesignation)typeDes).getText(Language.getDefaultLanguage());
-            		typeTextDesignations =  typeTextDesignations + "; ";
+            		String typeDesStateRefs = "";
+                    if (typeDes.getDesignationSource() != null ){
+                        typeDesStateRefs = "[";
+                        NamedSource source = typeDes.getDesignationSource();
+                        if (source.getCitation() != null){
+                            typeDesStateRefs += "fide " + OriginalSourceFormatter.INSTANCE.format(source.getCitation(), null);
+                        }
+                        typeDesStateRefs += "]";
+                    }else if (typeDes.getSources() != null && !typeDes.getSources().isEmpty()){
+                        typeDesStateRefs = "[";
+                        for (IdentifiableSource source: typeDes.getSources()) {
+                            if (source.getCitation() != null){
+                                typeDesStateRefs += "fide " +OriginalSourceFormatter.INSTANCE.format(source.getCitation(), null);
+                            }
+                        }
+
+                        typeDesStateRefs += "]";
+                    }
+
+            		typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
+
             	}
             }
             if (typeTextDesignations.equals("; ")) {
