@@ -3098,10 +3098,12 @@ public class TaxonServiceImpl
             SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
             result = isDeletableForSynonym(references, synonymConfig);
             if (synonymConfig.isDeleteNameIfPossible()){
-                DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
-                if (!nameResult.isOk()){
-                    result.addExceptions(nameResult.getExceptions());
+                if (taxonBase.getName() != null){
+                    DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
+                    if (!nameResult.isOk()){
+                        result.addExceptions(nameResult.getExceptions());
 
+                    }
                 }
             }
         }
