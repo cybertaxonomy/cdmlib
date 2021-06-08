@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
-import io.swagger.annotations.Api;
-
 import java.io.IOException;
 import java.util.UUID;
 
@@ -29,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import io.swagger.annotations.Api;
 
 /**
  * @author a.kohlbecker
@@ -60,14 +59,14 @@ public class PolytomousKeyListController extends AbstractIdentifiableListControl
             method = RequestMethod.GET)
     public Pager<PolytomousKey> doFindByTaxonomicScope(
             @RequestParam(value = "findByTaxonomicScope") UUID taxonUuid,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
 
         logger.info("doFindByTaxonomicScope: " + request.getRequestURI() + request.getQueryString());
 
-        PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
 

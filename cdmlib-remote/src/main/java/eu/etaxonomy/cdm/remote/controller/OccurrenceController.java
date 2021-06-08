@@ -132,7 +132,7 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
     public Object doGetExtensions(
             @PathVariable("uuid") UUID uuid, HttpServletRequest request,
             // doPage request parameters
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             // doList request parameters
             @RequestParam(value = "start", required = false) Integer start,
@@ -143,6 +143,6 @@ public class OccurrenceController extends AbstractIdentifiableController<Specime
         SpecimenOrObservationBase<?> sob = getCdmBaseInstance(uuid, response, EXTENSIONS_INIT_STRATEGY);
         sob = checkExistsAndAccess(sob, NO_UNPUBLISHED, response);
 
-        return pageFromCollection(sob.getExtensions(), pageNumber, pageSize, start, limit, response) ;
+        return pageFromCollection(sob.getExtensions(), pageIndex, pageSize, start, limit, response) ;
     }
 }

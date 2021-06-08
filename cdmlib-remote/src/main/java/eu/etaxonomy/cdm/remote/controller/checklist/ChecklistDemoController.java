@@ -179,7 +179,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * It takes advantage of pagination.
      *
      * @param classification uuid of the classification to export
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param response
      * @param request
@@ -189,7 +189,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
     @RequestMapping(value = { "export" }, method = { RequestMethod.GET })
     public ModelAndView doGeneralExport(
             @RequestParam(value = "classification", required = false) String classificationUUID,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletResponse response,
             HttpServletRequest request) throws IOException {
@@ -198,11 +198,11 @@ public class ChecklistDemoController extends AbstractController implements Resou
             if(pageSize == null) {
                 pageSize = 20;
             }
-            if(pageNumber == null) {
-                pageNumber = 0;
+            if(pageIndex == null) {
+                pageIndex = 0;
             }
 
-            PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+            PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
             pagerParams.normalizeAndValidate(response);
 
             List<CsvDemoRecord> recordList = new ArrayList<>();

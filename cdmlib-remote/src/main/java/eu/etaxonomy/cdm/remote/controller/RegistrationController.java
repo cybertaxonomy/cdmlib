@@ -146,7 +146,7 @@ public class RegistrationController extends BaseController<Registration, IRegist
     public Pager<Registration> doPageByIdentifier(
             @RequestParam(value = "identifier", required = true) String identifier,
             @RequestParam(value = "validateUniqueness") boolean validateUniqueness,
-            @RequestParam(value = "pageNumber", required = true) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {

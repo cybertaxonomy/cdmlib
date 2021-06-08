@@ -248,7 +248,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
     public Object doGetNameRelations(
             @PathVariable("uuid") UUID uuid,
             // doPage request parameters
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             // doList request parameters
             @RequestParam(value = "start", required = false) Integer start,
@@ -264,7 +264,7 @@ public class NamePortalController extends BaseController<TaxonName, INameService
         if(nameRelations != null && nameRelations.size() > 0){
             Set<NameRelationship> nameRelationsFiltered = RegistrableEntityFilter.
                     newInstance(userHelper).filterPublishedOnly(tnb, nameRelations);
-            return pageFromCollection(nameRelationsFiltered, pageNumber, pageSize, start, limit, response);
+            return pageFromCollection(nameRelationsFiltered, pageIndex, pageSize, start, limit, response);
         }
         return null;
     }

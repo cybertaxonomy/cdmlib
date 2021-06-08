@@ -118,7 +118,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
     public Object doGetMethod(
             @PathVariable("uuid") UUID uuid,
             // doPage request parameters
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             // doList request parameters
             @RequestParam(value = "start", required = false) Integer start,
@@ -139,7 +139,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
         if(objectFromProperty != null){
             if( Collection.class.isAssignableFrom(objectFromProperty.getClass())){
                 // Map types cannot be returned as list or in a pager!
-                return pageFromCollection((Collection<CdmBase>)objectFromProperty, pageNumber, pageSize, start, limit, response);
+                return pageFromCollection((Collection<CdmBase>)objectFromProperty, pageIndex, pageSize, start, limit, response);
             } else {
                 return objectFromProperty;
             }

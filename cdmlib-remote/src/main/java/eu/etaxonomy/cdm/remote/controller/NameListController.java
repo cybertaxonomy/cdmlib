@@ -59,7 +59,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
     @RequestMapping(method = RequestMethod.GET, value={"findTitleCache"})
     public Pager<String> doFindTitleCache(
             @RequestParam(value = "query", required = true) String query,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             HttpServletRequest request,
@@ -69,7 +69,7 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
 
         logger.info("doFindTitleCache() " + requestPathAndQuery(request));
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
         return service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
     }
@@ -77,17 +77,17 @@ public class NameListController extends AbstractIdentifiableListController<Taxon
     @RequestMapping(value = "findByName", method = RequestMethod.GET)
     public Pager<TaxonName> doFindByName(
             @RequestParam(value = "query", required = true) String query,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
         logger.info("doFindByName() " + requestPathAndQuery(request));
 
-        PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.findByTitleWithRestrictions(TaxonName.class, query, matchMode, null, pageSize, pageNumber, null, getInitializationStrategy());
+        return service.findByTitleWithRestrictions(TaxonName.class, query, matchMode, null, pageSize, pageIndex, null, getInitializationStrategy());
     }
 
     @RequestMapping(

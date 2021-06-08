@@ -110,7 +110,7 @@ public class DescriptionElementListController {
      * @param descriptionType
      * @param type
      * @param pageSize
-     * @param pageNumber
+     * @param pageIndex
      * @param request
      * @param response
      * @return
@@ -122,12 +122,12 @@ public class DescriptionElementListController {
             @RequestParam(value = "descriptionType", required = true) Class<? extends DescriptionBase> descriptionType,
             @RequestParam(value = "type", required = false) Class<? extends DescriptionElementBase> type,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doPageDescriptionElementsByFeature : " + requestPathAndQuery(request));
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         if(features == null){
@@ -147,7 +147,7 @@ public class DescriptionElementListController {
      * @param features
      * @param type
      * @param pageSize
-     * @param pageNumber
+     * @param pageIndex
      * @param request
      * @param response
      * @return
@@ -159,12 +159,12 @@ public class DescriptionElementListController {
             @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
             @RequestParam(value = "type", required = false) Class<T> type,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("getDescriptionElementsForTaxon : " + requestPathAndQuery(request));
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         Taxon taxon = null;
@@ -177,7 +177,7 @@ public class DescriptionElementListController {
         }
 
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features != null ? features.asSet() : null, type, pageSize,
-                pageNumber, getInitializationStrategy());
+                pageIndex, getInitializationStrategy());
         return pager;
     }
 
@@ -186,7 +186,7 @@ public class DescriptionElementListController {
     * @param queryString
     * @param type
     * @param pageSize
-    * @param pageNumber
+    * @param pageIndex
     * @param matchMode
     * @param request
     * @param response
@@ -198,7 +198,7 @@ public class DescriptionElementListController {
            @RequestParam(value = "query", required = true) String queryString,
            @RequestParam(value = "type", required = false) Class<? extends DescriptionElementBase> type,
            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-           @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+           @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
            HttpServletRequest request,
            HttpServletResponse response
@@ -207,10 +207,10 @@ public class DescriptionElementListController {
 
        logger.info("doFindDescriptionElements : " + request.getRequestURI() + "?" + request.getQueryString() );
 
-       PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+       PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
        pagerParams.normalizeAndValidate(response);
 
-       Pager<? extends DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageNumber, null, getInitializationStrategy());
+       Pager<? extends DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageIndex, null, getInitializationStrategy());
 
        return pager;
    }

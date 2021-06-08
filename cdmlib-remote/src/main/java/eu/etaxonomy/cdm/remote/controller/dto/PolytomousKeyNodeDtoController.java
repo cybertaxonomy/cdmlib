@@ -135,7 +135,7 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
     @RequestMapping(value = {"linkedStyle"}, method = RequestMethod.GET)
     public ModelAndView doLinkedStyleByTaxonomicScope(
             @RequestParam(value = "findByTaxonomicScope") UUID taxonUuid,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -164,7 +164,7 @@ public class PolytomousKeyNodeDtoController extends AbstractController<Polytomou
         //Pager<PolytomousKey> pager = service.findByTaxonomicScope(taxon, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null);
 
         //not getting a result when I use the method findByTaxonomicScope. Maybe I'm giving it the wrong taxonUUID. Ask andreas for a taxon that works
-      PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
+      PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
       pagerParameters.normalizeAndValidate(response);
 
 

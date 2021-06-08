@@ -140,7 +140,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      *            restrict the search to a set of geographic {@link NamedArea}s.
      *            The parameter currently takes a list of TDWG area labels.
      *            - <i>optional parameter</i>
-     * @param pageNumber
+     * @param pageIndex
      *            the number of the page to be returned, the first page has the
      *            pageNumber = 1 - <i>optional parameter</i>
      * @param pageSize
@@ -165,7 +165,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
             @RequestParam(value = "status", required = false) PresenceAbsenceTerm[] status,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
             @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
@@ -187,7 +187,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             TaxonListController.includeAllSubAreas(areaSet, termService);
         }
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         // TODO change type of do* parameters  to TaxaAndNamesSearchMode
@@ -239,7 +239,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      *            restrict the search to a set of geographic {@link NamedArea}s.
      *            The parameter currently takes a list of TDWG area labels.
      *            - <i>optional parameter</i>
-     * @param pageNumber
+     * @param pageIndex
      *            the number of the page to be returned, the first page has the
      *            pageNumber = 1 - <i>optional parameter</i>
      * @param pageSize
@@ -263,7 +263,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "tree", required = false) UUID classificationUuid,
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "area", required = false) Set<NamedArea> areas,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
             @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
@@ -281,7 +281,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         logger.info("doFind() " + requestPathAndQuery(request));
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
 
@@ -318,7 +318,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      * @param queryString
      * @param treeUuid TODO unimplemented in TaxonServiceImpl !!!!
      * @param languages
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param request
      * @param response
@@ -335,7 +335,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "features", required = false) UuidList featureUuids,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response
@@ -344,7 +344,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
          logger.info("findByDescriptionElementFullText : " + requestPathAndQuery(request) );
 
-         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
          pagerParams.normalizeAndValidate(response);
 
          if(highlighting == null){
@@ -379,7 +379,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response
@@ -390,7 +390,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         logger.info("doFindByFullText() " + requestPathAndQuery(request)  );
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         if(highlighting == null){
@@ -422,7 +422,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "subtree", required = false) UUID subtreeUuid,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response
@@ -433,7 +433,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
          boolean includeUnpublished = NO_UNPUBLISHED;
 
-         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
          pagerParams.normalizeAndValidate(response);
 
          if(highlighting == null){
@@ -490,7 +490,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      * @param type
      * @param identifierType
      * @param identifier
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param matchMode
      * @param request
@@ -504,7 +504,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "class", required = false) Class<T> type,
             @RequestParam(value = "identifierType", required = false) UUID identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
@@ -530,7 +530,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         logger.info("doFindByIdentifier [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );
 
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
         return service.findByIdentifier(type, identifier, definedTerm , subTree, matchMode, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
@@ -542,7 +542,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
      * @param type
      * @param markerType
      * @param value
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param request
      * @param response
@@ -557,7 +557,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "class", required = false) Class<T> type,
             @RequestParam(value = "markerType", required = true) UUID markerTypeUuid,
             @RequestParam(value = "value", required = false) Boolean value,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
             @RequestParam(value = "subtree", required = true) UUID subtreeUuid,
@@ -585,7 +585,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
 
         if (logger.isDebugEnabled()){logger.info("doFindByMarker [subtreeUuid]  : " + request.getRequestURI() + "?" + request.getQueryString() );}
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
         return service.findByMarker(type, markerType, value, subTree, includeEntity, titleType, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
     }
 
@@ -597,7 +597,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
             @RequestParam(value = "infraspecificEpithet", required = false) String infraspecificEpithet,
             @RequestParam(value = "authorshipCache", required = false) String authorshipCache,
             @RequestParam(value = "rankUuid", required = false) UUID rankUuid,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
@@ -615,7 +615,7 @@ public class TaxonListController extends AbstractIdentifiableListController<Taxo
         }
 
         Pager<TaxonBase> result = service.findTaxaByName(null, genusOrUninomial, infragenericEpithet, specificEpithet, infraspecificEpithet,
-                authorshipCache, rank, pageSize, pageNumber, initializationStrategy);
+                authorshipCache, rank, pageSize, pageIndex, initializationStrategy);
 
         return result;
     }

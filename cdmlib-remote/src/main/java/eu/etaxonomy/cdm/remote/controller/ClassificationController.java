@@ -158,7 +158,7 @@ public class ClassificationController extends AbstractIdentifiableController<Cla
    public Pager<TaxonNodeDto> doPageChildNodesByTaxon(
            @PathVariable("uuid") UUID classificationUuid,
            @PathVariable("taxonUuid") UUID taxonUuid,
-           @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
+           @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
            @RequestParam(value = "pageSize", required = false) Integer pageSize,
            @RequestParam(value = "sortMode", defaultValue = DEFAULT_TAXONNODEDTO_SORT_MODE) TaxonNodeSortMode sortMode,
            @RequestParam(value = "doSynonyms", defaultValue = "false") Boolean doSynonyms,

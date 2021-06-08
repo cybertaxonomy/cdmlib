@@ -107,7 +107,7 @@ public class AgentController extends AbstractIdentifiableController<AgentBase, I
      *
      * @param uuid
      * @param classificationUuid
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param request
      * @param response
@@ -122,14 +122,14 @@ public class AgentController extends AbstractIdentifiableController<AgentBase, I
             @RequestParam(value = "taxon_uuid" , required = false) UUID taxonUuid,
             @RequestParam(value = "relType_uuid" , required = false) UUID relTypeUuid,
             @RequestParam(value = "rank" , required = false) Rank rank,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
         logger.info("doGetTaxonNodeAgentRelations" + requestPathAndQuery(request));
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         UUID rankUuid = null;
