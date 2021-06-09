@@ -468,7 +468,7 @@ public class CdmLightClassificationExport
                 }
             }
         } catch (Exception e) {
-            state.getResult().addException(e, "An unexpected error occurred when handling description of"
+            state.getResult().addException(e, "An unexpected error occurred when handling description of "
                     + cdmBaseStr(cdmBase) + (titleCache != null? (" " +titleCache) : "")+": " + e.getMessage());
         }
     }
@@ -1735,14 +1735,23 @@ public class CdmLightClassificationExport
                     nameString = createNameWithItalics(name.getTaggedFullTitle()) ;
                 }
 
-                Set<NameRelationship> relatedNames = name.getNameRelations();
+                Set<NameRelationship> related = name.getNameRelations();
+                List<NameRelationship> relatedList = new ArrayList<>(related);
+
+                Collections.sort(relatedList, new Comparator<NameRelationship>() {
+                    @Override
+                    public int compare(NameRelationship nr1, NameRelationship nr2) {
+                        return nr1.getType().compareTo(nr2.getType());
+                    }
+
+                });
 
                 List<NameRelationship> nonNames = new ArrayList<>();
                 List<NameRelationship> otherRelationships = new ArrayList<>();
 
-                for (NameRelationship rel: relatedNames){
+                for (NameRelationship rel: relatedList){
                     // alle Homonyme und inverse blocking names
-                    if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM()) || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM()) || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()) && rel.getToName().equals(name))){
+                    if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM()) || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM()) || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))){
                         nonNames.add(rel);
                     }else if (!rel.getType().isBasionymRelation()){
                         otherRelationships.add(rel);
@@ -1759,12 +1768,15 @@ public class CdmLightClassificationExport
                     String label = "non ";
                     TaxonName relatedName = null;
                     if (relName.getFromName().equals(name)){
-                        label = relName.getType().getLabel() + " ";
                         relatedName = relName.getToName();
+                        nonRelNames += label + relatedName.getTitleCache() + " ";
                     }else{
+                        label = relName.getType().getInverseLabel() + " ";
                         relatedName = relName.getFromName();
+                        nonRelNames += label + relatedName.getTitleCache() + " ";
                     }
-                    nonRelNames += label + relatedName.getTitleCache() + " ";
+
+
                 }
                 relNames.trim();
                 if (nonNames.size() > 0){
