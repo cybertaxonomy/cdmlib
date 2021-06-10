@@ -6,7 +6,6 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-
 package eu.etaxonomy.cdm.common;
 
 import static org.junit.Assert.assertNotNull;
@@ -17,27 +16,16 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author a.mueller
  * @since 22.01.2008
- *
  */
 public class CdmUtilsTest {
+
 	private static final Logger logger = Logger.getLogger(CdmUtilsTest.class);
-
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
 
 /************************** TESTS ****************************************/
 
@@ -83,7 +71,6 @@ public class CdmUtilsTest {
         str1 = "An y eer";
         str2 = "A nyfffe er";
         Assert.assertFalse(CdmUtils.equalsIgnoreWS(str1, str2));
-
     }
 
     @Test
@@ -102,7 +89,6 @@ public class CdmUtilsTest {
         Assert.assertEquals(".*\\Qabc\\E.*", regEx);
         Assert.assertTrue("abc".matches(regEx));
         Assert.assertTrue("a80/(--e*wabc?äe".matches(regEx));
-
     }
 
     /**
@@ -145,5 +131,4 @@ public class CdmUtilsTest {
         Assert.assertEquals("Str1;Str3", CdmUtils.concat(";", str1, "", str3));
         Assert.assertEquals("Str1; ;Str3", CdmUtils.concat(";", str1, " ", str3));
     }
-
 }

@@ -114,7 +114,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         return result;
     }
 
-   @Transient
+    @Transient
     public String getFullTitle() {
         @SuppressWarnings("unchecked")
         T agent = (T)this;
@@ -136,9 +136,8 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     }
 
     @Override
-    public TeamOrPersonBase clone() throws CloneNotSupportedException {
-        @SuppressWarnings("rawtypes")
-        TeamOrPersonBase<?> result = (TeamOrPersonBase)super.clone();
+    public TeamOrPersonBase<T> clone() throws CloneNotSupportedException {
+        TeamOrPersonBase<T> result = (TeamOrPersonBase<T>)super.clone();
 
         //nothing to do: collectorTitle, nomenclaturalTitle;
         return result;

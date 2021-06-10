@@ -302,7 +302,6 @@ public class Team extends TeamOrPersonBase<Team> {
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
 
-
 	@Override
 	//@Transient //TODO a.kohlbecker remove??
 	public String getTitleCache() {
@@ -348,7 +347,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	public boolean isHasMoreMembers() {
 		return hasMoreMembers;
 	}
-
 	public void setHasMoreMembers(boolean hasMoreMembers) {
 		this.hasMoreMembers = hasMoreMembers;
 	}
