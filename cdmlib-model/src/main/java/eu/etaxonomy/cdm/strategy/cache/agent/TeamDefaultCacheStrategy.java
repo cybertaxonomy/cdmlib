@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @author AM
  */
 public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclaturalAuthorCacheStrategy<Team> {
+
     private static final long serialVersionUID = 8375295443642690479L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
@@ -212,4 +213,5 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     public static String addHasMoreMembers(String str) {
         return str + ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
     }
+
 }

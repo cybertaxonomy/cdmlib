@@ -272,7 +272,6 @@ public class FullCoverageDataGenerator {
 		team.addTeamMember(person);
 		handleIdentifiableEntity(team);
 
-
 		//Institution
 		Institution institution = Institution.NewInstance();
 		institution.setCode("institution code");
