@@ -93,7 +93,7 @@ public class MediaInfoFactoryTest extends CdmIntegrationTest {
             assertEquals("JPEG", cdmImageInfo.getFormatName());
             assertEquals(24, cdmImageInfo.getBitPerPixel());
             assertEquals("image/jpeg", cdmImageInfo.getMimeType());
-            assertEquals(3429785, cdmImageInfo.getLength());
+            assertEquals(3780263, cdmImageInfo.getLength());
             // generic metadata
             assertFalse(cdmImageInfo.getMetaData().isEmpty());
             assertEquals(56, cdmImageInfo.getMetaData().size());
