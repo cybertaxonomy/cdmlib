@@ -30,6 +30,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -67,6 +68,7 @@ import javassist.compiler.ast.Keyword;
 	    "givenName",
 	    "initials",
 	    "suffix",
+	    "collectorTitle",
 	    "lifespan",
 	    "orcid",
 	    "institutionalMemberships"
@@ -80,6 +82,12 @@ import javassist.compiler.ast.Keyword;
 public class Person extends TeamOrPersonBase<Person>{
 	private static final long serialVersionUID = 4153566493065539763L;
 	public static final Logger logger = Logger.getLogger(Person.class);
+
+    //under construction #4311
+    @XmlElement(name="CollectorTitle")
+    @Field(index=Index.YES)
+    @Column(length=255)
+    private String collectorTitle;
 
     @XmlElement(name = "Prefix")
     @Field
@@ -300,6 +308,14 @@ public class Person extends TeamOrPersonBase<Person>{
 	public void setGivenName(String givenName){
 		this.givenName = isBlank(givenName) ? null : givenName;
 	}
+
+	//#4311
+    public String getCollectorTitle() {
+        return collectorTitle;
+    }
+    public void setCollectorTitle(String collectorTitle) {
+        this.collectorTitle = collectorTitle;
+    }
 
     /**
      * Returns the initials of this person as used in bibliographic

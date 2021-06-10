@@ -38,5 +38,8 @@ public interface INomenclaturalAuthorCacheStrategy<T extends TeamOrPersonBase>
 
     public String getFamilyTitle(T agent);
 
+    public String getCollectorTitleCache(T agent);
+
+
 
 }

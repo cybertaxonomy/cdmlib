@@ -143,6 +143,7 @@ public class CdmPreDataChangeListener
         }
     }
 
+    //TODO shouldn't we use the "updateCaches" method instead?
     public static void generateCaches(Object entity){
         if (entity != null){
             entity = CdmBase.deproxy(entity);
@@ -165,6 +166,10 @@ public class CdmPreDataChangeListener
                         Team team = (Team)teamOrPerson;
                         //nomTitle is not necessarily cached when it is created
                         team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
+                        String collectorCache = team.getCollectorTitleCache();
+                        if (! team.isProtectedCollectorTitleCache()){
+                            team.setCollectorTitleCache(collectorCache, false);
+                        }
                     }else{
                         teamOrPerson.setNomenclaturalTitle(nomTitle);
                     }
@@ -173,7 +178,7 @@ public class CdmPreDataChangeListener
                         teamOrPerson.setTitleCache(titleCache, false);
                     }
                     //if this is changed in future, change also in ImportDeduplicationHelper
-
+                    teamOrPerson.getCollectorTitleCache();
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
                     //reference caches
                     Reference ref = (Reference)entity;

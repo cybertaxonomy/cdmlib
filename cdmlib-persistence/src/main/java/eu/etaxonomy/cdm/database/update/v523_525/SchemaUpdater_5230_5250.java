@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -50,7 +51,13 @@ public class SchemaUpdater_5230_5250 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+		stepName = "Add collectorTitleCache to AgentBase";
+		tableName = "AgentBase";
+		newColumnName = "collectorTitleCache";
+		int length = 255; //TODO
+		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
+		CollectorTitleUpdater.NewInstance(stepList);
 
         return stepList;
     }

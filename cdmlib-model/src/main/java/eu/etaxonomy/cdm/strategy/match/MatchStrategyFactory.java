@@ -66,11 +66,10 @@ public class MatchStrategyFactory {
 
             parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
 
-            //TODO is this correct?
             parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL_OR_FIRST_NULL);
             parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.EQUAL);
 
-            String[] equalOrNullParams = new String[]{"collectorTitle"};
+            String[] equalOrNullParams = new String[]{};
             for(String param : equalOrNullParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
@@ -286,7 +285,7 @@ public class MatchStrategyFactory {
 
         //TODO contact does not yet works, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
         //better should be even handled with MATCH.Equal_OR_ONE_NULL
-        String[] equalOrNullParams = new String[]{"collectorTitle"};
+        String[] equalOrNullParams = new String[]{};
         for(String param : equalOrNullParams){
             matchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
         }

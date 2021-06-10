@@ -247,6 +247,7 @@ public class FullCoverageDataGenerator {
 		Person person = Person.NewTitledInstance("Person Title");
 		person.setGivenName("first name");
 		person.setFamilyName("last name");
+		person.setCollectorTitle("C. collector");
 		person.setLifespan(TimePeriodParser.parseString("1905-1995"));
 		person.setPrefix("prefix");
 		person.setSuffix("suffix");

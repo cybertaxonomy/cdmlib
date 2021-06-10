@@ -79,9 +79,8 @@ public class Team extends TeamOrPersonBase<Team> {
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache = false;
 
-    //under construction #4311
     @XmlElement(name = "ProtectedCollectorTitleCache")
-	private final boolean protectedCollectorTitleCache = false;
+	private boolean protectedCollectorTitleCache = false;
 
 	//An abbreviated name for the team (e. g. in case of nomenclatural authorteams).
     //A non abbreviated name for the team (e. g.
@@ -142,9 +141,31 @@ public class Team extends TeamOrPersonBase<Team> {
 		addListenersToMembers();
 	}
 
+// ******************************************************************/
+
     @Override
     protected void initDefaultCacheStrategy() {
         this.cacheStrategy = TeamDefaultCacheStrategy.NewInstance();
+    }
+
+    @Override
+    public void initListener(){
+        PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent ev) {
+                if (!ev.getPropertyName().equals("titleCache") &&
+                        !ev.getPropertyName().equals("collectorTitleCache") &&
+                        !ev.getPropertyName().equals("cacheStrategy")){
+                    if (! isProtectedTitleCache()){
+                        titleCache = null;
+                    }
+                    if (! isProtectedCollectorTitleCache()){
+                        collectorTitleCache = null;
+                    }
+                }
+            }
+        };
+        addPropertyChangeListener(listener);
     }
 
 	/**
@@ -163,16 +184,28 @@ public class Team extends TeamOrPersonBase<Team> {
             public void propertyChange(PropertyChangeEvent e) {
 
 // 			   ---- code with no effect below -----
-//				if (! isProtectedTitleCache()){
-//					titleCache = titleCache;
-//				}
+				if (! isProtectedTitleCache()){
+					titleCache = null;
+				}
 //				if (! isProtectedNomenclaturalTitleCache()){
 //					nomenclaturalTitle = nomenclaturalTitle;
 //				}
+              if (! isProtectedCollectorTitleCache()){
+                  collectorTitleCache = null;
+              }
 			}
 		};
 		member.addPropertyChangeListener(listener);
 	}
+
+    public void resetCaches() {
+        if(!protectedTitleCache){
+            titleCache = null;
+        }
+        if (!protectedCollectorTitleCache){
+            collectorTitleCache = null;
+        }
+    }
 
 	/**
 	 * Returns the list of {@link Person members} belonging to <i>this</i> team.
@@ -319,6 +352,16 @@ public class Team extends TeamOrPersonBase<Team> {
 		return result;
 	}
 
+    //#4311
+    @Override
+    public String getCollectorTitleCache() {
+        if (protectedCollectorTitleCache){
+            return this.collectorTitleCache;
+        }else{
+            return super.getCollectorTitleCache();
+        }
+    }
+
 	/**
 	 * Protected nomenclatural title cache flag should be set to true, if
 	 * the title cache is to be preferred against the atomized data.
@@ -329,14 +372,24 @@ public class Team extends TeamOrPersonBase<Team> {
 	public boolean isProtectedNomenclaturalTitleCache() {
 		return protectedNomenclaturalTitleCache;
 	}
-
-	public void setProtectedNomenclaturalTitleCache(
-			boolean protectedNomenclaturalTitleCache) {
+	public void setProtectedNomenclaturalTitleCache(boolean protectedNomenclaturalTitleCache) {
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
 
 
-	/**
+	public boolean isProtectedCollectorTitleCache() {
+        return protectedCollectorTitleCache;
+    }
+    public void setProtectedCollectorTitleCache(boolean protectedCollectorTitleCache) {
+        this.protectedCollectorTitleCache = protectedCollectorTitleCache;
+    }
+
+    public void setCollectorTitleCache(String collectorTitleCache, boolean protectedCache) {
+        this.collectorTitleCache = collectorTitleCache;
+        this.protectedCollectorTitleCache = protectedCache;
+    }
+
+    /**
 	 * The hasMoreMembers flag is true if this team has more members than
 	 * mentioned in the {@link #teamMembers} list. This is usually the case
 	 * when "et al." is used in the team representation. Formatters should add
@@ -356,19 +409,35 @@ public class Team extends TeamOrPersonBase<Team> {
         boolean result = super.updateCaches();
         if (this.protectedNomenclaturalTitleCache == false){
             String oldNomTitleCache = this.nomenclaturalTitle;
-            this.protectedNomenclaturalTitleCache = false;
 
             String newNomTitleCache = getCacheStrategy().getNomenclaturalTitle(this);
 
             if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newNomTitleCache) ){
-                 this.setNomenclaturalTitle(null, false);
-                 String newCache = this.getNomenclaturalTitle();
+                this.setNomenclaturalTitle(null, false);
+                String newCache = this.getNomenclaturalTitle();
+
+                if (newCache == null){
+                    logger.warn("New nomTitleCache should never be null");
+                }
+                if (oldNomTitleCache == null){
+                    logger.info("Old nomTitleCache should never be null");
+                }
+                result = true;
+            }
+        }
+        if (this.protectedCollectorTitleCache == false){
+            String oldCollTitleCache = this.collectorTitleCache;
+            String newCollTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+
+            if ( oldCollTitleCache == null || ! oldCollTitleCache.equals(newCollTitleCache) ){
+                 this.setCollectorTitleCache(null, false);
+                 String newCache = this.getCollectorTitleCache();
 
                  if (newCache == null){
-                     logger.warn("New nomTitleCache should never be null");
+                     logger.warn("New collectorTitleCache should never be null");
                  }
-                 if (oldNomTitleCache == null){
-                     logger.info("Old nomTitleCache should never be null");
+                 if (oldCollTitleCache == null){
+                     logger.info("Old collectorTitleCache should never be null");
                  }
                  result = true;
              }

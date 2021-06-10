@@ -49,6 +49,7 @@ public class TeamDefaultCacheStrategyTest {
 		person1.setFamilyName("P1FN");
 		person1.setPrefix("Dr1.");
 		person1.setSuffix("Suff1");
+		person1.setCollectorTitle("P1CT");
 
 		person2 = Person.NewInstance();
 		person2.setNomenclaturalTitle("P2NomT");
@@ -187,6 +188,46 @@ public class TeamDefaultCacheStrategyTest {
         //don't take to serious, may be also something different, but not empty
         Assert.assertEquals("team3 full title should should be empty team replacement string",
                 TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getFullTitle());
+    }
+
+    @Test
+    public final void testGetCollectorTitleCache(){
+        Assert.assertNotNull("team1 collector title cache must not to be null",
+                team1.getCollectorTitleCache());
+        Assert.assertEquals("team1 collector title cache title should be created by elements",
+                "P1CT", team1.getCollectorTitleCache());
+        person1.setSuffix(null);
+        Assert.assertEquals("team1 collector title cache should be P1FN, P.",
+                "P1CT", team1.getCollectorTitleCache());
+
+        //team2
+        Assert.assertEquals("team2 collector title cache should be 'P2FN, P., P1CT, P3NomT & P4FN'",
+                "P2FN, P., P1CT, P3NomT & P4FN", team2.getCollectorTitleCache());
+        //more
+        team2.setHasMoreMembers(true);
+        Assert.assertEquals("team2 collector title cache should be 'P2FN, P., P1CT, P3NomT, P4FN & al.'",
+                "P2FN, P., P1CT, P3NomT, P4FN & al.", team2.getCollectorTitleCache());
+        team2.setHasMoreMembers(false);
+        //3 members
+        team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstance(3));
+        team2.resetCaches();
+        Assert.assertEquals("team2 collector title cache should still be 'P2FN, P., P1CT & al.' now.",
+                "P2FN, P., P1CT & al.", team2.getCollectorTitleCache());
+        //4 members
+        team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstance(4));
+        team2.resetCaches();
+        Assert.assertEquals("team2 collector title cache should still be 'P2FN, P., P1CT, P3NomT & P4FN' now.",
+                "P2FN, P., P1CT, P3NomT & P4FN", team2.getCollectorTitleCache());
+
+
+        //team3/empty team
+        Assert.assertNotNull("team3 collector title cache must not to be null",
+                team3.getCollectorTitleCache());
+        Assert.assertTrue("team3 collector title cache must not be empty",
+                StringUtils.isNotBlank(team3.getCollectorTitleCache()));
+
+        //don't take next test to serious, may be also something different, but not empty
+        Assert.assertEquals("team3 collector title cache should be empty team replacement string", TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getCollectorTitleCache());
     }
 
 	@Test

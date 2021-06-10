@@ -45,6 +45,7 @@ public class PersonDefaultCacheStrategyTest {
 		person2.setFamilyName("P2FN");
 		person2.setGivenName("P2GN");
 		person2.setSuffix("P2Suff");
+		person2.setCollectorTitle("P2CT");
 
 		person3 = Person.NewInstance(); //empty person
 	}
@@ -71,6 +72,21 @@ public class PersonDefaultCacheStrategyTest {
 		//don't take to serious, may be also something different, but not empty
 		Assert.assertEquals("Person3 title should start with Person#0", "Person#0", person3.getNomenclaturalTitle().substring(0, 8));
 	}
+
+   @Test
+    public final void testGetCollectorTitleCache(){
+        Assert.assertNotNull("person1 collector title cache must not to be null", person1.getCollectorTitleCache());
+        Assert.assertEquals("Person1 collector title cache should be taken from titleCache", "P1FN, P.", person1.getCollectorTitleCache());
+        person1.setSuffix(null);
+        Assert.assertEquals("Person1 collector title cache should be taken from titleCache", "P1FN, P.", person1.getCollectorTitleCache());
+        //peson2
+        Assert.assertEquals("Person2 collector title cache should be P2CT", "P2CT", person2.getCollectorTitleCache());
+        //person3
+        Assert.assertNotNull("person3 collector title cache must not to be null", person3.getCollectorTitleCache());
+        Assert.assertTrue("Person3 collector title cache must not be empty", StringUtils.isNotBlank(person3.getCollectorTitleCache()));
+        //don't take to serious, may be also something different, but not empty
+        Assert.assertEquals("Person3 title should start with Person#0", "Person#0", person3.getCollectorTitleCache().substring(0, 8));
+    }
 
 	@Test
 	public final void testGetTitleCacheAdaptedFromOldVersion(){

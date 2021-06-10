@@ -196,6 +196,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // that the teamMembers are not initialized, so no exception is thrown
 
         team.setProtectedTitleCache(true);
+        team.setProtectedCollectorTitleCache(true);
         taxonService.update(taxon);
 
     }

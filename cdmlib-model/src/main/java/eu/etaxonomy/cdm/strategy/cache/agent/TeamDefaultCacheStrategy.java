@@ -122,8 +122,8 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
                 return member.getFullTitle();
             }else if (this == FAMILY){
                 return member.getCacheStrategy().getFamilyTitle(member);
-//          }else if (this == COLLECTOR){
-//              return member.getCollectroCache();
+            }else if (this == COLLECTOR){
+              return member.getCollectorTitleCache();
             }
             throw new IllegalStateException("CacheType not supported: " + this);
         }
@@ -160,6 +160,11 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     @Override
     public String getFamilyTitle(Team team) {
         return getCache(team, CacheType.FAMILY, etAlPositionFamilyTitle);
+    }
+
+    @Override
+    public String getCollectorTitleCache(Team team) {
+        return getCache(team, CacheType.COLLECTOR, etAlPositionCollectorTitle);
     }
 
     private String getCache(Team team, CacheType cacheType, int etAlPosition) {

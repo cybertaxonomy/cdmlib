@@ -438,6 +438,10 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
             Team team = (Team)author;
             //nomTitle is not necessarily cached when it is created
             team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
+            String collectorCache = author.getCollectorTitleCache();
+            if (! team.isProtectedCollectorTitleCache()){
+                team.setCollectorTitleCache(collectorCache, false);
+            }
         }else{
             author.setNomenclaturalTitle(nomTitle);
         }

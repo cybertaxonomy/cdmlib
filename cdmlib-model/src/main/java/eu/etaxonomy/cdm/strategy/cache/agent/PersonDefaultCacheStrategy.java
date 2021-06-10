@@ -88,6 +88,15 @@ public class PersonDefaultCacheStrategy
         return person.toString();
     }
 
+    @Override
+    public String getCollectorTitleCache(Person person){
+        if (isNotBlank(person.getCollectorTitle())){
+            return person.getCollectorTitle();
+        }else{
+            return getTitleCache(person);
+        }
+    }
+
     private String addInitials(String existing, Person person) {
         String result = existing;
         String initials = person.getInitials();
