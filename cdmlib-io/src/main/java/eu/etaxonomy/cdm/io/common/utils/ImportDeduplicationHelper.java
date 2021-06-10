@@ -404,11 +404,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    /**
-     * @param state
-     * @param combAuthor
-     * @return
-     */
     public <T extends TeamOrPersonBase<?>> T getExistingAuthor(STATE state,
             T author) {
         if (author == null){
@@ -432,7 +427,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
      * @param author
      */
     private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T author) {
-        //more or less copy from CdmPreDataChangeListener
+        //NOTE: this is more or less redundant copy from CdmPreDataChangeListener
         String nomTitle = author.getNomenclaturalTitle();
         if (author instanceof Team){
             Team team = (Team)author;

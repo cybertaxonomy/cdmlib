@@ -80,7 +80,8 @@ import javassist.compiler.ast.Keyword;
 @Audited
 @Configurable
 public class Person extends TeamOrPersonBase<Person>{
-	private static final long serialVersionUID = 4153566493065539763L;
+
+    private static final long serialVersionUID = 4153566493065539763L;
 	public static final Logger logger = Logger.getLogger(Person.class);
 
     //under construction #4311

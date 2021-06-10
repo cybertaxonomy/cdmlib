@@ -447,7 +447,7 @@ public class Team extends TeamOrPersonBase<Team> {
 
 //*********************** CLONE ********************************************************/
 
-	/**
+    /**
 	 * Clones <i>this</i> Team. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> Team.
 	 * The corresponding person is cloned.
@@ -470,5 +470,4 @@ public class Team extends TeamOrPersonBase<Team> {
 			return null;
 		}
 	}
-
 }

@@ -117,7 +117,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	@Test
 	@Ignore //FIXME disabled since getMultilanguageText() fails when session is closed !!!!
 	public void testInitializeMapProperty() {
-		List<String> propertyPaths = new ArrayList<String>();
+		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("multilanguageText");
 		propertyPaths.add("multilanguageText.language");
 
@@ -142,7 +142,7 @@ public class BeanInitializerIntegrationTest extends CdmTransactionalIntegrationT
 	@Ignore //FIXME disabled since getMultilanguageText() fails when session is closed !!!!
 	public void testInitializeMapInPriorView() {
 		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-		List<String> propertyPaths = new ArrayList<String>();
+		List<String> propertyPaths = new ArrayList<>();
 		propertyPaths.add("multilanguageText");
 		propertyPaths.add("multilanguageText.language");
 
