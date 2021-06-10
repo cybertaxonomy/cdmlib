@@ -73,7 +73,7 @@ public class MediaDefaultCacheStrategy
 					if (lastSlashPos != -1 && lastSlashPos + 1 < result.length()){
 					    int lastDotPos = result.lastIndexOf(".");
 					    if (lastDotPos == -1 || lastDotPos < lastSlashPos){
-					        result.substring(lastSlashPos + 1);
+					        result = result.substring(lastSlashPos + 1);
 					    }else{
 					        result = result.substring(lastSlashPos + 1, lastDotPos);
 					    }

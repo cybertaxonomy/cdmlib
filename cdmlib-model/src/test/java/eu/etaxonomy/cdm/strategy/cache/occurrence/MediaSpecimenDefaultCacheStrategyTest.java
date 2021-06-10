@@ -55,6 +55,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         //#9632
         Assert.assertEquals("B 123 (Media Second Title)", strategy.getTitleCache(specimen));
 
+
         specimen.getMediaSpecimen().setArtist(Person.NewTitledInstance("Artist 2"));;
         Assert.assertEquals("B 123 (Media Second Title)", strategy.getTitleCache(specimen));
 
