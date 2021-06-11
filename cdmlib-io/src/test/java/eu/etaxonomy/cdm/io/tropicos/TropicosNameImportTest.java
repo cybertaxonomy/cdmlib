@@ -89,8 +89,6 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
         Assert.assertEquals(0,result.getErrors().size());
         String report = result.createReport().toString();
 
-
-
         Integer expected = 2;
         Assert.assertEquals(expected, result.getNewRecords(TaxonName.class));
 

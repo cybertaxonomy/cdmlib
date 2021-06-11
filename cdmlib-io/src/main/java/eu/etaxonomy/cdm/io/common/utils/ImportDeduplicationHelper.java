@@ -423,9 +423,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    /**
-     * @param author
-     */
     private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T author) {
         //NOTE: this is more or less redundant copy from CdmPreDataChangeListener
         String nomTitle = author.getNomenclaturalTitleCache();

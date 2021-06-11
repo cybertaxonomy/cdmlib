@@ -312,7 +312,7 @@ public class Team extends TeamOrPersonBase<Team> {
 		if (nomenclaturalTitleCache == null){
 			this.nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
 		}else{
-			//as long as team members to not inform the team about changes the cache must be created new each time
+			//as long as team members do not inform the team about changes the cache must be created new each time
 		    nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
 		}
 		return nomenclaturalTitleCache;
