@@ -45,26 +45,32 @@ public aspect PropertyChangeAspect {
 		if (property==null){
 			proceed( cb );
 		}else{			
-			property.setAccessible(true);
 			String propertyName = property.getName();
-			//logger.debug("execSetter: The property is ["+propertyName+"]");
-			try {
-				// use property attribute directly, not through get method.
-				// get method might modify things, like setting a UUID when called for the first time.
-				// Also get methods for booleans start with "is" or "has"
-				Object oldValue = property.get(cb);
-				proceed( cb );
-				Object newValue = property.get(cb);
-                //logger.debug ("Prop: " + propertyName);
-                //logger.debug("OLD:" + oldValue);
-                //logger.debug("New:" + newValue);
-				if (! isPersistentSet(newValue) && ! isPersistentSet(oldValue)  ){
-					cb.firePropertyChange( propertyName, oldValue, newValue);
-				}
-			} catch (NoSuchMethodException |IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-				e.printStackTrace();
-				proceed( cb );
-			}
+			if (logger.isDebugEnabled()){ logger.debug("execSetter: The property is ["+propertyName+"]");}
+			if ("updated".equals(propertyName) || "updatedBy".equals(propertyName) ||
+			    "created".equals(propertyName) || "createdBy".equals(propertyName) ||
+			    "cacheStrategy".equals(propertyName)){
+			    proceed (cb);
+			}else{
+    			property.setAccessible(true);
+    			try {
+    				// use property attribute directly, not through get method.
+    				// get method might modify things, like setting a UUID when called for the first time.
+    				// Also get methods for booleans start with "is" or "has"
+    				Object oldValue = property.get(cb);
+    				proceed( cb );
+    				Object newValue = property.get(cb);
+                    //logger.debug ("Prop: " + propertyName);
+                    //logger.debug("OLD:" + oldValue);
+                    //logger.debug("New:" + newValue);
+    				if (! isPersistentSet(newValue) && ! isPersistentSet(oldValue)  ){
+    					cb.firePropertyChange( propertyName, oldValue, newValue);
+    				}
+    			} catch (NoSuchMethodException |IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+    				e.printStackTrace();
+    				proceed( cb );
+    			}
+    	    }
 		}
 	}
 	
