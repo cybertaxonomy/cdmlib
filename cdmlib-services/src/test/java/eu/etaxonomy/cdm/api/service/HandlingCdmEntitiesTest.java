@@ -195,6 +195,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
         team.setProtectedTitleCache(true);
         team.setProtectedCollectorTitleCache(true);
+        team.setProtectedNomenclaturalTitleCache(true);
         taxonService.update(taxon);
 
     }

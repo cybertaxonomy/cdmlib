@@ -59,8 +59,12 @@ public class PersonDefaultCacheStrategy
 	}
 
 	@Override
-    public String getNomenclaturalTitle(Person person) {
-		return person.getNomenclaturalTitle();
+    public String getNomenclaturalTitleCache(Person person) {
+		if (isNotBlank(person.getNomenclaturalTitle())){
+            return person.getNomenclaturalTitle();
+        }else{
+            return getTitleCache(person);
+        }
 	}
 
     @Override

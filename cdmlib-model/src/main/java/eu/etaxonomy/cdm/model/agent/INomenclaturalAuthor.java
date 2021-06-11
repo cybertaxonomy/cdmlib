@@ -18,13 +18,14 @@ package eu.etaxonomy.cdm.model.agent;
 public interface INomenclaturalAuthor {
 
 	/**
-	 * @see TeamOrPersonBase#getNomenclaturalTitle()
+	 * @see TeamOrPersonBase#getNomenclaturalTitleCache()
 	 */
-	public String getNomenclaturalTitle();
+	public String getNomenclaturalTitleCache();
+
 
 	
 	/**
-	 * @see getNomenclaturalTitle()
+	 * @see getNomenclaturalTitleCache()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle);
 

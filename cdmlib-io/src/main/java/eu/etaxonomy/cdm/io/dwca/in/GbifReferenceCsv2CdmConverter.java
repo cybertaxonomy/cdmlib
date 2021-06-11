@@ -140,7 +140,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 				if (taxon.getName() != null && reference != null && taxon.getName().isNonViral()){
 					INonViralName nvn = taxon.getName();
 					String taxonAuthor = nvn.getAuthorshipCache();
-					String refAuthor = reference.getAuthorship().getNomenclaturalTitle();
+					String refAuthor = reference.getAuthorship().getNomenclaturalTitleCache();
 					Integer combYear = null;
 					Integer origYear = null;
 					if (nvn.isZoological()){

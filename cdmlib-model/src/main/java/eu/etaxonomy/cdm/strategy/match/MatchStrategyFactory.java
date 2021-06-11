@@ -36,6 +36,9 @@ public class MatchStrategyFactory {
 
             addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
 
+            //FIXME adapt for  for inRef authors
+            parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL);
+
             //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("familyName", MatchMode.EQUAL_OR_FIRST_NULL);
 
@@ -276,10 +279,6 @@ public class MatchStrategyFactory {
     }
 
     private static void addParsedAgentBaseMatchModes(IParsedMatchStrategy matchStrategy) throws MatchException {
-
-        //FIXME adapt for inRef authors
-        //TODO how to initialize this cache field in a generic way
-        matchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL_REQUIRED);
 
         addParsedIdentifiableEntityModes(matchStrategy);
 

@@ -15,7 +15,6 @@
  */
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.DoubleResult;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -297,7 +297,7 @@ public class EndnoteRecordsImport
 							String author_style =  elStyle.getTextNormalize();
 
 							reference.setAuthorship(authorship);
-						    authorship.setNomenclaturalTitle(author_style);
+						    authorship.setNomenclaturalTitleCache(author_style, true);
 					}
 				}
 			}

@@ -1578,7 +1578,7 @@ public class TaxonName
         if (author == null){
             return null;
         }else{
-            return author.getNomenclaturalTitle();
+            return author.getNomenclaturalTitleCache();
         }
     }
 

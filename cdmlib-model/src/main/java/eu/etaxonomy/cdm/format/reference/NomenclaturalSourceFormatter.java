@@ -263,7 +263,7 @@ public class NomenclaturalSourceFormatter
             Team team = CdmBase.deproxy(author, Team.class);
             if (team.isProtectedNomenclaturalTitleCache()){
                 //not yet finally discussed may change in future
-                result = team.getNomenclaturalTitle();
+                result = team.getNomenclaturalTitleCache();
             }else if (team.isProtectedTitleCache()){
                 //not yet finally discussed may change in future
                 result = team.getTitleCache();
@@ -286,8 +286,8 @@ public class NomenclaturalSourceFormatter
         String result;
         if (isNotBlank(person.getFamilyName())){
             result = person.getFamilyName();
-        }else if (isNotBlank(person.getNomenclaturalTitle())){
-            result = person.getNomenclaturalTitle();  //TODO discuss if nomTitle is really better here then titleCache
+        }else if (isNotBlank(person.getNomenclaturalTitleCache())){
+            result = person.getNomenclaturalTitleCache();  //TODO discuss if nomTitle is really better here then titleCache
         }else{
             result = person.getTitleCache();  //maybe remove everything behind a ","
         }

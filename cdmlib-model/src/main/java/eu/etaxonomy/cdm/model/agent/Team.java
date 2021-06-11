@@ -34,6 +34,7 @@ import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.envers.Audited;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter;
 import eu.etaxonomy.cdm.model.EntityCollectionSetterAdapter.SetterAdapterException;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
@@ -118,10 +119,28 @@ public class Team extends TeamOrPersonBase<Team> {
 		    result.setTitleCache(title, true);
 		}
 		if (isNotBlank(nomTitle)){
-		    result.setNomenclaturalTitle(nomTitle, true);
+		    result.setNomenclaturalTitleCache(nomTitle, true);
 		}
 		return result;
 	}
+
+	/**
+     * Creates a new team instance with a bibliographic, nomenclatural and collector title
+     * but without any {@link Person members}. The caches are set to protected if not blank.
+     */
+    static public Team NewTitledInstance(String title, String nomTitle, String collectorTitle){
+        Team result = new Team();
+        if (isNotBlank(title)){
+            result.setTitleCache(title, true);
+        }
+        if (isNotBlank(nomTitle)){
+            result.setNomenclaturalTitleCache(nomTitle, true);
+        }
+        if (isNotBlank(collectorTitle)){
+            result.setCollectorTitleCache(collectorTitle, true);
+        }
+        return result;
+    }
 
     public static Team NewInstance(Person... members) {
         Team team = new Team();
@@ -155,13 +174,9 @@ public class Team extends TeamOrPersonBase<Team> {
             public void propertyChange(PropertyChangeEvent ev) {
                 if (!ev.getPropertyName().equals("titleCache") &&
                         !ev.getPropertyName().equals("collectorTitleCache") &&
+                        !ev.getPropertyName().equals("nomenclaturalTitleCache") &&
                         !ev.getPropertyName().equals("cacheStrategy")){
-                    if (! isProtectedTitleCache()){
-                        titleCache = null;
-                    }
-                    if (! isProtectedCollectorTitleCache()){
-                        collectorTitleCache = null;
-                    }
+                    resetCaches();
                 }
             }
         };
@@ -182,17 +197,7 @@ public class Team extends TeamOrPersonBase<Team> {
 		PropertyChangeListener listener = new PropertyChangeListener() {
 			@Override
             public void propertyChange(PropertyChangeEvent e) {
-
-// 			   ---- code with no effect below -----
-				if (! isProtectedTitleCache()){
-					titleCache = null;
-				}
-//				if (! isProtectedNomenclaturalTitleCache()){
-//					nomenclaturalTitle = nomenclaturalTitle;
-//				}
-              if (! isProtectedCollectorTitleCache()){
-                  collectorTitleCache = null;
-              }
+				resetCaches();
 			}
 		};
 		member.addPropertyChangeListener(listener);
@@ -201,6 +206,9 @@ public class Team extends TeamOrPersonBase<Team> {
     public void resetCaches() {
         if(!protectedTitleCache){
             titleCache = null;
+        }
+        if (! protectedNomenclaturalTitleCache){
+            nomenclaturalTitleCache = null;
         }
         if (!protectedCollectorTitleCache){
             collectorTitleCache = null;
@@ -297,17 +305,17 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	@Override
 	@Transient
-	public String getNomenclaturalTitle() {
+	public String getNomenclaturalTitleCache() {
 		if (protectedNomenclaturalTitleCache == PROTECTED){
-			return this.nomenclaturalTitle;
+			return this.nomenclaturalTitleCache;
 		}
-		if (nomenclaturalTitle == null){
-			this.nomenclaturalTitle = getCacheStrategy().getNomenclaturalTitle(this);
+		if (nomenclaturalTitleCache == null){
+			this.nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
 		}else{
 			//as long as team members to not inform the team about changes the cache must be created new each time
-			nomenclaturalTitle = getCacheStrategy().getNomenclaturalTitle(this);
+		    nomenclaturalTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
 		}
-		return nomenclaturalTitle;
+		return nomenclaturalTitleCache;
 	}
 
 	/**
@@ -320,7 +328,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	@Override
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
-		this.setNomenclaturalTitle(nomenclaturalTitle, PROTECTED);
+		this.setNomenclaturalTitleCache(nomenclaturalTitle, PROTECTED);
 	}
 
 	/**
@@ -329,9 +337,9 @@ public class Team extends TeamOrPersonBase<Team> {
 	 *
 	 * @see  #getNomenclaturalTitle()
 	 */
-	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
-		firePropertyChange("nomenclaturalTitle", this.nomenclaturalTitle, nomenclaturalTitle);
-		this.nomenclaturalTitle = nomenclaturalTitle == "" ? null: nomenclaturalTitle;
+	public void setNomenclaturalTitleCache(String nomenclaturalTitleCache, boolean protectedNomenclaturalTitleCache) {
+		firePropertyChange("nomenclaturalTitleCache", this.nomenclaturalTitleCache, nomenclaturalTitleCache);
+		this.nomenclaturalTitleCache = CdmUtils.Nb(nomenclaturalTitleCache);
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
 
@@ -385,7 +393,7 @@ public class Team extends TeamOrPersonBase<Team> {
     }
 
     public void setCollectorTitleCache(String collectorTitleCache, boolean protectedCache) {
-        this.collectorTitleCache = collectorTitleCache;
+        this.collectorTitleCache = CdmUtils.Nb(collectorTitleCache);
         this.protectedCollectorTitleCache = protectedCache;
     }
 
@@ -408,13 +416,13 @@ public class Team extends TeamOrPersonBase<Team> {
     public boolean updateCaches(){
         boolean result = super.updateCaches();
         if (this.protectedNomenclaturalTitleCache == false){
-            String oldNomTitleCache = this.nomenclaturalTitle;
+            String oldNomTitleCache = this.nomenclaturalTitleCache;
 
-            String newNomTitleCache = getCacheStrategy().getNomenclaturalTitle(this);
+            String newNomTitleCache = getCacheStrategy().getNomenclaturalTitleCache(this);
 
             if ( oldNomTitleCache == null   || ! oldNomTitleCache.equals(newNomTitleCache) ){
-                this.setNomenclaturalTitle(null, false);
-                String newCache = this.getNomenclaturalTitle();
+                this.setNomenclaturalTitleCache(null, false);
+                String newCache = this.getNomenclaturalTitleCache();
 
                 if (newCache == null){
                     logger.warn("New nomTitleCache should never be null");

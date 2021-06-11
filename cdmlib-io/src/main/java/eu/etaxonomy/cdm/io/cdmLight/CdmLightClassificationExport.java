@@ -1182,7 +1182,7 @@ public class CdmLightClassificationExport
                     if (author != null
                             && (nomRef.isOfType(ReferenceType.BookSection) || nomRef.isOfType(ReferenceType.Section))) {
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = author.isProtectedTitleCache()
-                                ? author.getTitleCache() : CdmUtils.Nz(author.getNomenclaturalTitle());
+                                ? author.getTitleCache() : CdmUtils.Nz(author.getNomenclaturalTitleCache());
                         csvLine[table.getIndex(CdmLightExportTable.FULL_REF_AUTHOR)] = CdmUtils
                                 .Nz(author.getTitleCache());
                     } else {
@@ -1206,7 +1206,7 @@ public class CdmLightClassificationExport
                     TeamOrPersonBase<?> author = nomRef.getAuthorship();
                     if (author != null) {
                         csvLine[table.getIndex(CdmLightExportTable.ABBREV_REF_AUTHOR)] = author.isProtectedTitleCache()
-                                ? author.getTitleCache() : CdmUtils.Nz(author.getNomenclaturalTitle());
+                                ? author.getTitleCache() : CdmUtils.Nz(author.getNomenclaturalTitleCache());
                         csvLine[table.getIndex(CdmLightExportTable.FULL_REF_AUTHOR)] = CdmUtils
                                 .Nz(author.getTitleCache());
                     } else {
@@ -1594,7 +1594,7 @@ public class CdmLightClassificationExport
             String[] csvLineMember = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, author);
             csvLine[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = author.isProtectedTitleCache()
-                    ? author.getTitleCache() : author.getNomenclaturalTitle();
+                    ? author.getTitleCache() : author.getNomenclaturalTitleCache();
             csvLine[table.getIndex(CdmLightExportTable.AUTHOR_TITLE)] = author.getTitleCache();
             author = HibernateProxyHelper.deproxy(author);
             if (author instanceof Person) {
@@ -1622,7 +1622,7 @@ public class CdmLightClassificationExport
                         csvLineMember = new String[table.getSize()];
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_ID)] = getId(state, member);
                         csvLineMember[table.getIndex(CdmLightExportTable.ABBREV_AUTHOR)] = member
-                                .isProtectedTitleCache() ? member.getTitleCache() : member.getNomenclaturalTitle();
+                                .isProtectedTitleCache() ? member.getTitleCache() : member.getNomenclaturalTitleCache();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_TITLE)] = member.getTitleCache();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_GIVEN_NAME)] = member.getGivenName();
                         csvLineMember[table.getIndex(CdmLightExportTable.AUTHOR_FAMILY_NAME)] = member.getFamilyName();

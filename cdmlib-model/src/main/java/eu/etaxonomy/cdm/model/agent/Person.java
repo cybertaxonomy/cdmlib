@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,6 +70,7 @@ import javassist.compiler.ast.Keyword;
 	    "givenName",
 	    "initials",
 	    "suffix",
+	    "nomenclaturalTitle",
 	    "collectorTitle",
 	    "lifespan",
 	    "orcid",
@@ -84,9 +87,15 @@ public class Person extends TeamOrPersonBase<Person>{
     private static final long serialVersionUID = 4153566493065539763L;
 	public static final Logger logger = Logger.getLogger(Person.class);
 
-    //under construction #4311
+    @XmlElement(name="NomenclaturalTitle")
+    @Field(index=Index.YES)
+    @NullOrNotEmpty
+    @Column(length=255)
+    protected String nomenclaturalTitle;
+
     @XmlElement(name="CollectorTitle")
     @Field(index=Index.YES)
+    @NullOrNotEmpty
     @Column(length=255)
     private String collectorTitle;
 
@@ -216,6 +225,26 @@ public class Person extends TeamOrPersonBase<Person>{
         this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
     }
 
+    @Override
+    public void initListener(){
+        PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent ev) {
+                if (!ev.getPropertyName().equals("titleCache")
+                        && !ev.getPropertyName().equals("nomenclaturalTitleCache") //not sure if called at all
+                        && !ev.getPropertyName().equals("collectorTitleCache") //not sure if called at all
+                        && !ev.getPropertyName().equals("cacheStrategy")){
+                    if (! isProtectedTitleCache()){
+                        titleCache = null;
+                    }
+                    nomenclaturalTitleCache = null;
+                    collectorTitleCache = null;
+                }
+            }
+        };
+        addPropertyChangeListener(listener);
+    }
+
 // *********************** GETTER SETTER ADDER **********************************/
 
 
@@ -316,6 +345,14 @@ public class Person extends TeamOrPersonBase<Person>{
     }
     public void setCollectorTitle(String collectorTitle) {
         this.collectorTitle = collectorTitle;
+    }
+
+    public String getNomenclaturalTitle() {
+        return nomenclaturalTitle;
+    }
+    @Override
+    public void setNomenclaturalTitle(String nomenclaturalTitle) {
+        this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
 
     /**

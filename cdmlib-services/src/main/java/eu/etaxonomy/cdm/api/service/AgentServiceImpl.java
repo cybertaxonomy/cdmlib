@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -231,7 +232,9 @@ public class AgentServiceImpl
         }
         strategy.setMergeMode("protectedTitleCache", MergeMode.FIRST); //as we do not add team members, the titleCache of the new team should be always protected
         strategy.setDeleteSecondObject(true);
-        team.setNomenclaturalTitle(person.getNomenclaturalTitle(), true);  //sets the protected flag always to true, this is necessary as long as person does not have a nomenclatural title cache; maybe setting the protected title itself is not necessary but does no harm
+        if (StringUtils.isNotBlank(person.getNomenclaturalTitle())){
+            team.setNomenclaturalTitleCache(person.getNomenclaturalTitle(), true);  //sets the protected flag always to true, this is necessary as long as person does not have a nomenclatural title cache; maybe setting the protected title itself is not necessary but does no harm
+        }
 
         if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");

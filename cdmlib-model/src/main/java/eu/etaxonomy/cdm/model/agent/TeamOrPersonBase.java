@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TeamOrPersonBase", propOrder = {
-    "nomenclaturalTitle",
+    "nomenclaturalTitleCache",
     "collectorTitleCache"
 })
 @Entity
@@ -46,18 +46,17 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     private static final long serialVersionUID = 5216821307314001961L;
     public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
-    @XmlElement(name="NomenclaturalTitle")
-    @Field(index=Index.YES)
-  //TODO Val #3379
-//    @NullOrNotEmpty
-    @Column(length=255)
-    protected String nomenclaturalTitle;
-
     //under construction #4311
     @XmlElement(name="CollectorTitleCache")
     @Field(index=Index.YES)
     @Column(length=800)//see #1592
     protected String collectorTitleCache;
+
+    //under construction #9664
+    @XmlElement(name="NomenclaturalTitleCache")
+    @Field(index=Index.YES)
+    @Column(length=800)//see #1592
+    protected String nomenclaturalTitleCache;
 
 //  from E+M import (still needed?)
 //    @Column(length=255)
@@ -69,6 +68,17 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     @XmlTransient
     protected boolean isGeneratingTitleCache = false;  //state variable to avoid recursions when generating title cache and nomenclatural title
 
+
+    //#9664
+    @Override
+    public String getNomenclaturalTitleCache() {
+        // is title dirty, i.e. equal NULL?
+        if (nomenclaturalTitleCache == null){
+            this.nomenclaturalTitleCache = generateNomenclaturalTitleCache();
+            this.nomenclaturalTitleCache = getTruncatedCache(this.nomenclaturalTitleCache) ;
+        }
+        return nomenclaturalTitleCache;
+    }
 
     //#4311
     public String getCollectorTitleCache() {
@@ -85,36 +95,21 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     }
 
     @SuppressWarnings("unchecked")
+    private String generateNomenclaturalTitleCache() {
+        if (getCacheStrategy() == null){
+            return this.getClass() + ": " + this.getUuid();
+        }else{
+            return getCacheStrategy().getNomenclaturalTitleCache((T)this);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private String generateCollectorTitleCache() {
         if (getCacheStrategy() == null){
             return this.getClass() + ": " + this.getUuid();
         }else{
             return getCacheStrategy().getCollectorTitleCache((T)this);
         }
-    }
-
-    /**
-     * Returns the identification string (nomenclatural abbreviation) used in
-     * nomenclature for this {@link Person person} or this {@link Team team}.
-     *
-     * @see  INomenclaturalAuthor#getNomenclaturalTitle()
-     */
-    @Override
-    @Transient
-    public String getNomenclaturalTitle() {
-        String result = nomenclaturalTitle;
-        if (isBlank(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
-            result = getTitleCache();
-        }
-        return result;
-    }
-
-    /**
-     * @see     #getNomenclaturalTitle()
-     */
-    @Override
-    public void setNomenclaturalTitle(String nomenclaturalTitle) {
-        this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
 
 
@@ -151,7 +146,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
 
     protected String replaceEmptyTitleByNomTitle(String result) {
         if (isBlank(result)){
-            result = nomenclaturalTitle;
+            result = nomenclaturalTitleCache;
         }
         if (isBlank(result)){
             result = super.getTitleCache();

@@ -164,7 +164,7 @@ public class BasionymRelationCreatorTest extends TermTestBase {
         Assert.assertNotEquals("Accepted and synonym1 should NOT have same homotypic group", accName1.getHomotypicalGroup(), synName1.getHomotypicalGroup());
         Assert.assertEquals(SynonymType.SYNONYM_OF(), synonym1.getType());
 
-        person2.setNomenclaturalTitle(person1.getNomenclaturalTitle());
+        person2.setNomenclaturalTitle(person1.getNomenclaturalTitleCache());
         guesser.invoke(taxon1);
         Assert.assertEquals("Accepted and synonym1 should have same homotypic group", accName1.getHomotypicalGroup(), synName1.getHomotypicalGroup());
         Assert.assertEquals(SynonymType.HOMOTYPIC_SYNONYM_OF(), synonym1.getType());

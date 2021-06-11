@@ -246,7 +246,7 @@ public class TaxonNameDefaultCacheStrategy
     }
 
     private String getNomAuthorTitle(INomenclaturalAuthor author) {
-        return CdmUtils.Nz(author.getNomenclaturalTitle());
+        return CdmUtils.Nz(author.getNomenclaturalTitleCache());
     }
 
     /**

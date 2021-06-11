@@ -124,10 +124,10 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
                 if(entity.getAuthorship() != null){
                     if(entity.getAuthorship() instanceof Team){
                         team = (Team)entity.getAuthorship();
-                        authorTeamCaches = team.getTeamMembers().stream().map(topb -> topb.getNomenclaturalTitle()).collect(Collectors.toList());
+                        authorTeamCaches = team.getTeamMembers().stream().map(topb -> topb.getNomenclaturalTitleCache()).collect(Collectors.toList());
                         isProtectedAuthorsCache = team.isProtectedNomenclaturalTitleCache();
                     }
-                    authorsCache = entity.getAuthorship().getNomenclaturalTitle();
+                    authorsCache = entity.getAuthorship().getNomenclaturalTitleCache();
                 }
                 break;
             case BIBLIOGRAPHIC:

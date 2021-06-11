@@ -117,7 +117,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
             if (this == TITLECACHE){
                 return member.getTitleCache();
             }else if (this == ABBREV){
-                return member.getNomenclaturalTitle();
+                return member.getNomenclaturalTitleCache();
             }else if (this == FULL){
                 return member.getFullTitle();
             }else if (this == FAMILY){
@@ -148,7 +148,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     }
 
     @Override
-    public String getNomenclaturalTitle(Team team) {
+    public String getNomenclaturalTitleCache(Team team) {
         return getCache(team, CacheType.ABBREV, etAlPositionNomTitleCache);
     }
 

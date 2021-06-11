@@ -32,7 +32,7 @@ public class TeamOrPersonBaseBeanProcessor extends AbstractBeanProcessor<TeamOrP
     public JSONObject processBeanSecondStep(TeamOrPersonBase bean, JSONObject json,
             JsonConfig jsonConfig) {
             json.element("titleCache", bean.getTitleCache());
-            json.element("nomenclaturalTitle", bean.getNomenclaturalTitle());
+            json.element("nomenclaturalTitleCache", bean.getNomenclaturalTitleCache());
         return json;
     }
 

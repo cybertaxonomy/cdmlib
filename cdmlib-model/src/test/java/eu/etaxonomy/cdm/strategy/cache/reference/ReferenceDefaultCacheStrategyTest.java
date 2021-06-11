@@ -94,9 +94,9 @@ public class ReferenceDefaultCacheStrategyTest {
         articleTeam1 = Team.NewInstance();
 		articleTeam2 = Team.NewInstance();
 		articleTeam1.setTitleCache("Team1", true);
-		articleTeam1.setNomenclaturalTitle("T.", true);
+		articleTeam1.setNomenclaturalTitle("T.");
 		articleTeam2.setTitleCache("Team2", true);
-		articleTeam2.setNomenclaturalTitle("TT.", true);
+		articleTeam2.setNomenclaturalTitle("TT.");
 
 		//book / section
 		book1 = ReferenceFactory.newBook();

@@ -20,7 +20,7 @@ public interface INomenclaturalAuthorCacheStrategy<T extends TeamOrPersonBase>
 	 * @param agent person or team
 	 * @return the nomenclatural title
 	 */
-	public String getNomenclaturalTitle(T agent);
+	public String getNomenclaturalTitleCache(T agent);
 
 	/**
      * Returns full name of a person or a team as used in written language.

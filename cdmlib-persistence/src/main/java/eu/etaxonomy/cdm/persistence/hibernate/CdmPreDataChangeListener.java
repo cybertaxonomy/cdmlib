@@ -161,11 +161,11 @@ public class CdmPreDataChangeListener
                 }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
                     //team-or-person caches
                     TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
-                    String nomTitle = teamOrPerson.getNomenclaturalTitle();
+                    String nomTitle = teamOrPerson.getNomenclaturalTitleCache();
                     if (teamOrPerson instanceof Team){
                         Team team = (Team)teamOrPerson;
                         //nomTitle is not necessarily cached when it is created
-                        team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
+                        team.setNomenclaturalTitleCache(nomTitle, team.isProtectedNomenclaturalTitleCache());
                         String collectorCache = team.getCollectorTitleCache();
                         if (! team.isProtectedCollectorTitleCache()){
                             team.setCollectorTitleCache(collectorCache, false);
@@ -177,8 +177,8 @@ public class CdmPreDataChangeListener
                     if (! teamOrPerson.isProtectedTitleCache()){
                         teamOrPerson.setTitleCache(titleCache, false);
                     }
-                    //if this is changed in future, change also in ImportDeduplicationHelper
                     teamOrPerson.getCollectorTitleCache();
+                    //if this is changed in future, change also in ImportDeduplicationHelper
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
                     //reference caches
                     Reference ref = (Reference)entity;

@@ -109,7 +109,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
          }
          try {
              referenceMatcher.setMatchMode("title", MatchMode.EQUAL);
-             teamMatcher.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL_OR_SECOND_NULL);
+             teamMatcher.setMatchMode("nomenclaturalTitleCache", MatchMode.EQUAL_OR_SECOND_NULL);
          } catch (MatchException e) {
              throw new RuntimeException(e);  //should not happen
          }
@@ -428,11 +428,11 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
      */
     private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T author) {
         //NOTE: this is more or less redundant copy from CdmPreDataChangeListener
-        String nomTitle = author.getNomenclaturalTitle();
+        String nomTitle = author.getNomenclaturalTitleCache();
         if (author instanceof Team){
             Team team = (Team)author;
             //nomTitle is not necessarily cached when it is created
-            team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
+            team.setNomenclaturalTitleCache(nomTitle, team.isProtectedNomenclaturalTitleCache());
             String collectorCache = author.getCollectorTitleCache();
             if (! team.isProtectedCollectorTitleCache()){
                 team.setCollectorTitleCache(collectorCache, false);

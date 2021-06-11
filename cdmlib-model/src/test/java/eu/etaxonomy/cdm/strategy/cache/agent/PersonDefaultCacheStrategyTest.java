@@ -60,17 +60,17 @@ public class PersonDefaultCacheStrategyTest {
 
 	@Test
 	public final void testGetNomenclaturalTitleCache(){
-		Assert.assertNotNull("person1 nomenclatural title must not to be null", person1.getNomenclaturalTitle());
-		Assert.assertEquals("Person1 nomenclatural title should be taken from titleCache", "P1FN, P.", person1.getNomenclaturalTitle());
+		Assert.assertNotNull("person1 nomenclatural title must not to be null", person1.getNomenclaturalTitleCache());
+		Assert.assertEquals("Person1 nomenclatural title should be taken from titleCache", "P1FN, P.", person1.getNomenclaturalTitleCache());
 		person1.setSuffix(null);
-		Assert.assertEquals("Person1 title should be taken from titleCache", "P1FN, P.", person1.getNomenclaturalTitle());
+		Assert.assertEquals("Person1 title should be taken from titleCache", "P1FN, P.", person1.getNomenclaturalTitleCache());
 		//peson2
-		Assert.assertEquals("Person2 title should be P2NomT", "P2NomT", person2.getNomenclaturalTitle());
+		Assert.assertEquals("Person2 title should be P2NomT", "P2NomT", person2.getNomenclaturalTitleCache());
 		//person3
-		Assert.assertNotNull("person3 nomenclatural title must not to be null", person3.getNomenclaturalTitle());
-		Assert.assertTrue("Person3 nomenclatural title must not be empty", StringUtils.isNotBlank(person3.getNomenclaturalTitle()));
+		Assert.assertNotNull("person3 nomenclatural title must not to be null", person3.getNomenclaturalTitleCache());
+		Assert.assertTrue("Person3 nomenclatural title must not be empty", StringUtils.isNotBlank(person3.getNomenclaturalTitleCache()));
 		//don't take to serious, may be also something different, but not empty
-		Assert.assertEquals("Person3 title should start with Person#0", "Person#0", person3.getNomenclaturalTitle().substring(0, 8));
+		Assert.assertEquals("Person3 title should start with Person#0", "Person#0", person3.getNomenclaturalTitleCache().substring(0, 8));
 	}
 
    @Test
