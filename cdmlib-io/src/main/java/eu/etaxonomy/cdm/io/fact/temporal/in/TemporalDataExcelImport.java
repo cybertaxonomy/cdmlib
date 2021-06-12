@@ -101,17 +101,24 @@ public class TemporalDataExcelImport<STATE extends TemporalDataExcelImportState<
         if(StringUtils.isBlank(monthStr)){
             return null;
         }else {
+            int extremeIndex = 2;
+            int normalIndex = 1;
             Matcher matcher = getPattern().matcher(monthStr);
+            if (!matcher.matches()){
+                matcher = getReversePattern().matcher(monthStr);
+                extremeIndex = 1;
+                normalIndex = 2;
+            }
             if (matcher.matches()){
                 if(isExtreme){
-                    if (matcher.group(2) != null){
-                        String extreme = matcher.group(2);
+                    if (matcher.group(extremeIndex) != null){
+                        String extreme = matcher.group(extremeIndex);
                         return Integer.valueOf(extreme);
                     }else{
                         return null; //extreme value does not exist
                     }
                 }else{
-                    String normal = matcher.group(1);
+                    String normal = matcher.group(normalIndex);
                     return Integer.valueOf(normal);
                 }
             }else{
@@ -125,12 +132,21 @@ public class TemporalDataExcelImport<STATE extends TemporalDataExcelImportState<
     }
 
     private Pattern monthPattern;
+    private String nr = "(0?[1-9]|1[0-2])";
+
     private Pattern getPattern() {
         if (monthPattern == null){
-            String nr = "(0?[1-9]|1[0-2])";
             monthPattern = Pattern.compile(nr + "\\s*(?:\\(" + nr + "\\))?");
         }
         return monthPattern;
+    }
+
+    private Pattern reverseMonthPattern;
+    private Pattern getReversePattern(){
+        if (reverseMonthPattern == null){
+            reverseMonthPattern = Pattern.compile("(?:\\(" + nr + "\\))?\\s*" + nr);
+        }
+        return reverseMonthPattern;
     }
 
     @Override
