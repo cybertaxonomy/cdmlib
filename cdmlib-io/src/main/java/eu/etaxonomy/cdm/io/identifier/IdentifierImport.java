@@ -64,8 +64,6 @@ public class IdentifierImport
                 return;
             }
 
-            @SuppressWarnings("rawtypes")
-            Set<IdentifiableEntity> entitiesToSave = new HashSet<>();
             Set<UUID> entityUuidsHandled = new HashSet<>();
 
             UUID identifierTypeUuid = config.getIdentifierTypeUuid();

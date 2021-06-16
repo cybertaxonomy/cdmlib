@@ -10,9 +10,9 @@ package eu.etaxonomy.cdm.io.wfo.in;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.csv.in.CsvImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -34,11 +34,6 @@ public class WfoAccessImportConfigurator extends CsvImportConfiguratorBase {
 
     private boolean addAuthorsToReference = true;
 
-    /**
-     * @param inputStream
-     * @param object
-     * @return
-     */
     public static WfoAccessImportConfigurator NewInstance(InputStreamReader inputStream, ICdmDataSource cdmDestination) {
         return new WfoAccessImportConfigurator(inputStream, cdmDestination);
     }
@@ -48,29 +43,16 @@ public class WfoAccessImportConfigurator extends CsvImportConfiguratorBase {
         return new WfoAccessImportConfigurator(uri, cdmDestination);
     }
 
-    /**
-     * @param inputStream
-     * @param cdmDestination
-     */
     private WfoAccessImportConfigurator(InputStreamReader inputStream, ICdmDataSource cdmDestination) {
         super(inputStream, cdmDestination);
     }
 
-    /**
-     * @param uri
-     * @param cdmDestination
-     * @param transformer
-     * @throws IOException
-     */
     private WfoAccessImportConfigurator(URI uri, ICdmDataSource cdmDestination)
             throws IOException {
         super(uri, cdmDestination, null);
         this.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
