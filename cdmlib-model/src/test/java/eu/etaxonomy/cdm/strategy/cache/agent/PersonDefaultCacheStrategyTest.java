@@ -150,10 +150,10 @@ public class PersonDefaultCacheStrategyTest {
         Assert.assertNull(formatter.getInitialsFromGivenName(givenname, force));
 
         givenname = "";
-        Assert.assertEquals("", formatter.getInitialsFromGivenName(givenname, force));
+        Assert.assertNull(formatter.getInitialsFromGivenName(givenname, force));
 
         givenname = "  ";
-        Assert.assertEquals("We expect blanks to be trimmed", "", formatter.getInitialsFromGivenName(givenname, force));
+        Assert.assertNull("We expect blanks to be trimmed", formatter.getInitialsFromGivenName(givenname, force));
 
 	    givenname = "John Michael ";
 	    Assert.assertEquals("J.M.", formatter.getInitialsFromGivenName(givenname, force));
@@ -259,9 +259,5 @@ public class PersonDefaultCacheStrategyTest {
 
         givenname = "(Brother)"; //example from Salvador DB
         Assert.assertNull("Non-parsable string should not be empty but null", formatter.getInitialsFromGivenName(givenname, force));
-
-        givenname = " ";
-        Assert.assertNull("Empty string should not result in empty string but null", formatter.getInitialsFromGivenName(givenname, force));
-
 	}
 }

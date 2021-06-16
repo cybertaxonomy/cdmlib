@@ -136,7 +136,7 @@ public class PersonDefaultCacheStrategy
         if (givenname == null){
             return null;
         }else if (isBlank(givenname)){
-            return "";
+            return null;
         }
         //remove brackets
         final String regex = "\\([^)]*\\)";
