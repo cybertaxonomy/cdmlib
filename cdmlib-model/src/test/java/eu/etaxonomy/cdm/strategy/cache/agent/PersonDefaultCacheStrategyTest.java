@@ -256,5 +256,12 @@ public class PersonDefaultCacheStrategyTest {
         Assert.assertEquals("W.-H.-", formatter.getInitialsFromGivenName(givenname, force));
         givenname = "W.-Hennin-";
         Assert.assertEquals("W.-H.-", formatter.getInitialsFromGivenName(givenname, force));
+
+        givenname = "(Brother)"; //example from Salvador DB
+        Assert.assertNull("Non-parsable string should not be empty but null", formatter.getInitialsFromGivenName(givenname, force));
+
+        givenname = " ";
+        Assert.assertNull("Empty string should not result in empty string but null", formatter.getInitialsFromGivenName(givenname, force));
+
 	}
 }

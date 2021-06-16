@@ -169,7 +169,7 @@ public class PersonDefaultCacheStrategy
                 result = CdmUtils.concat(initialsSeparator, result, split.substring(0, 1) + ".");
             }
         }
-        return result;
+        return CdmUtils.Ne(result);
     }
 
 }
