@@ -76,17 +76,18 @@ public class PersonDefaultCacheStrategy
     public String getTitleCache(Person person) {
         String result = "";
         if (isNotBlank(person.getFamilyName() ) ){
-            result = person.getFamilyName();
+            result = person.getFamilyName().trim();
             result = addInitials(result, person);
             return result;
         }else{
             result = person.getNomenclaturalTitle();
             if (isNotBlank(result)){
-                return result;
-            }
-            result = addInitials("", person);
-            if (isNotBlank(result)){
-                return result;
+                return result.trim();
+            }else{
+                result = addInitials("", person);
+                if (isNotBlank(result)){
+                    return result.trim();
+                }
             }
         }
         return person.toString();

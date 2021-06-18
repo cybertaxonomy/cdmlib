@@ -108,7 +108,7 @@ public class PersonDefaultCacheStrategyTest {
 	@Test
     public final void testGetTitleCache(){
         Person pers = Person.NewInstance();
-        pers.setFamilyName("Last");
+        pers.setFamilyName("Last ");  //family should be trimmed during titleCache generation
         pers.setInitials("E.M.");
 
         String expected = "Last, E.M.";
