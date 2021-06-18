@@ -59,6 +59,15 @@ public class SchemaUpdater_5230_5250 extends SchemaUpdaterBase {
 
 		CollectorTitleUpdater.NewInstance(stepList);
 
+		//#9664 #4311
+		stepName = "Add nomenclaturalTitleCache to AgentBase";
+		tableName = "AgentBase";
+		newColumnName = "nomenclaturalTitleCache";
+		length = 800;
+		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+
+		NomenclaturalTitleUpdater.NewInstance(stepList);
+
         return stepList;
     }
 
