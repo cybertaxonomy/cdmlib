@@ -25,8 +25,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @since 03.06.2010
  */
 public class DerivedUnitFacadeCacheStrategy
-        extends StrategyBase implements
-        IIdentifiableEntityCacheStrategy<DerivedUnit> {
+        extends StrategyBase
+        implements IIdentifiableEntityCacheStrategy<DerivedUnit> {
 
     private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")
