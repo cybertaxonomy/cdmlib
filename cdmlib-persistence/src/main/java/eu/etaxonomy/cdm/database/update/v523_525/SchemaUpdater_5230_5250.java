@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -67,6 +68,19 @@ public class SchemaUpdater_5230_5250 extends SchemaUpdaterBase {
 		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
 
 		NomenclaturalTitleUpdater.NewInstance(stepList);
+
+        //#9634
+		stepName = "Increase size for AgentBase.titleCache to 800";
+		tableName = "AgentBase";
+		String columnName = "titleCache";
+		length = 800;
+		ColumnTypeChanger.NewInt2StringInstance(stepList, stepName, tableName, columnName, length, INCLUDE_AUDIT, null, !NOT_NULL);
+
+		stepName = "Increase size for DescriptiveDataSet.titleCache to 800";
+		tableName = "DescriptiveDataSet";
+		columnName = "titleCache";
+		length = 800;
+		ColumnTypeChanger.NewInt2StringInstance(stepList, stepName, tableName, columnName, length, INCLUDE_AUDIT, null, !NOT_NULL);
 
         return stepList;
     }
