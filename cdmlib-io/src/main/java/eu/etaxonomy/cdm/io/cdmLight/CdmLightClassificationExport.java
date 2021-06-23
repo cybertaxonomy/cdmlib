@@ -1750,11 +1750,16 @@ public class CdmLightClassificationExport
                 List<NameRelationship> otherRelationships = new ArrayList<>();
 
                 for (NameRelationship rel: relatedList){
-                    // alle Homonyme und inverse blocking names
-                    if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM()) || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM()) || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))){
-                        nonNames.add(rel);
-                    }else if (!rel.getType().isBasionymRelation()){
-                        otherRelationships.add(rel);
+                    //no inverse relations
+                    if (rel.getFromName().equals(name)){
+                     // alle Homonyme und inverse blocking names
+                        if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM())
+                                || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())
+                                || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))){
+                            nonNames.add(rel);
+                        }else if (!rel.getType().isBasionymRelation()){
+                            otherRelationships.add(rel);
+                        }
                     }
                 }
 
@@ -1770,11 +1775,12 @@ public class CdmLightClassificationExport
                     if (relName.getFromName().equals(name)){
                         relatedName = relName.getToName();
                         nonRelNames += label + relatedName.getTitleCache() + " ";
-                    }else{
-                        label = relName.getType().getInverseLabel() + " ";
-                        relatedName = relName.getFromName();
-                        nonRelNames += label + relatedName.getTitleCache() + " ";
                     }
+//                    else{
+//                        label = relName.getType().getInverseLabel() + " ";
+//                        relatedName = relName.getFromName();
+//                        nonRelNames += label + relatedName.getTitleCache() + " ";
+//                    }
 
 
                 }
@@ -1792,11 +1798,13 @@ public class CdmLightClassificationExport
                     if (rel.getFromName().equals(name)){
                         label = rel.getType().getLabel() + " ";
                         relatedName = rel.getToName();
-                    }else {
-                        label = rel.getType().getInverseLabel() + " ";
-                        relatedName = rel.getFromName();
+                        relNames += label + relatedName.getTitleCache() + " ";
                     }
-                    relNames += label + relatedName.getTitleCache() + " ";
+//                    else {
+//                        label = rel.getType().getInverseLabel() + " ";
+//                        relatedName = rel.getFromName();
+//                    }
+
                 }
                 relNames.trim();
                 if (otherRelationships.size() > 0){
@@ -2154,7 +2162,7 @@ public class CdmLightClassificationExport
             String[] csvLine = new String[table.getSize()];
             csvLine[table.getIndex(CdmLightExportTable.REFERENCE_ID)] = getId(state, reference);
             // TODO short citations correctly
-            String shortCitation = OriginalSourceFormatter.INSTANCE.format(reference, null); // Should be Author(year) like in Taxon.sec
+            String shortCitation = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(reference, null); // Should be Author(year) like in Taxon.sec
             csvLine[table.getIndex(CdmLightExportTable.BIBLIO_SHORT_CITATION)] = shortCitation;
             // TODO get preferred title
             csvLine[table.getIndex(CdmLightExportTable.REF_TITLE)] = reference.isProtectedTitleCache()
