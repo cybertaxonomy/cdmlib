@@ -111,7 +111,10 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
                 for(int i=0;i<supportedSchemasList.getLength();i++){
                     Node supportedSchema = supportedSchemasList.item(i);
                     if(supportedSchema instanceof Element){
-                        schemaVersion = ((Element) supportedSchema).getAttribute("namespace");
+                        String temp = ((Element) supportedSchema).getAttribute("namespace");
+                        if (temp.contains("abcd")){
+                            schemaVersion = temp;
+                        }
                     }
                 }
             }
