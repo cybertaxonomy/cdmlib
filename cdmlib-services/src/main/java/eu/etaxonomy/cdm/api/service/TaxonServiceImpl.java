@@ -3031,7 +3031,6 @@ public class TaxonServiceImpl
         Taxon toTaxon = (Taxon) dao.load(toTaxonUuid);
         result = changeRelatedTaxonToSynonym(fromTaxon, toTaxon, oldRelationshipType, synonymType);
 
-//        result.addUpdatedObject(fromTaxon);
         result.addUpdatedObject(toTaxon);
         result.addUpdatedObject(result.getCdmEntity());
 
@@ -3097,13 +3096,11 @@ public class TaxonServiceImpl
         }else{
             SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
             result = isDeletableForSynonym(references, synonymConfig);
-            if (synonymConfig.isDeleteNameIfPossible()){
-                if (taxonBase.getName() != null){
-                    DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
-                    if (!nameResult.isOk()){
-                        result.addExceptions(nameResult.getExceptions());
+            if (synonymConfig.isDeleteNameIfPossible() && taxonBase.getName() != null){
+                DeleteResult nameResult = nameService.isDeletable(taxonBase.getName().getUuid(), synonymConfig.getNameDeletionConfig(), taxonBase.getUuid());
+                if (!nameResult.isOk()){
+                    result.addExceptions(nameResult.getExceptions());
 
-                    }
                 }
             }
         }
