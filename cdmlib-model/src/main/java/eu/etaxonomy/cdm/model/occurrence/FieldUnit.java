@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.FieldUnitDefaultCacheStrategy;
 
 /**
  *
@@ -118,34 +118,26 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 
 //****************************** CACHE STRATEGY **************************************/
 
-    private static final String facadeStrategyClassName =
-            "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldUnitCacheStrategy";
-
     /**
      * Sets the default cache strategy
      */
     @Override
     protected void initDefaultCacheStrategy() {
-        try {
-            String facadeClassName = facadeStrategyClassName;
-            Class<?> facadeClass = Class.forName(facadeClassName);
-            try {
-                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException("Cache strategy for FieldUnit could not be instantiated", e);
-
-            }
-        } catch (ClassNotFoundException e) {
-            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
-        }
+        this.cacheStrategy = FieldUnitDefaultCacheStrategy.NewInstance();
     }
-
-
-
 
 // ************************ GETTER / SETTER *******************************************
 
-	public GatheringEvent getGatheringEvent() {
+	@Override
+    public String getTitleCache() {
+	    //most changes in fieldUnits take place in gathering events, therefore we compute titleCache each time from scratch
+        if (!this.protectedTitleCache){
+            this.titleCache = null;
+        }
+        return super.getTitleCache();
+    }
+
+    public GatheringEvent getGatheringEvent() {
     	return gatheringEvent;
 	}
 

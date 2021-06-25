@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -34,13 +33,16 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  * @author a.mueller
  * @since 03.06.2010
+ *
+ *  * @deprecated with #9678 a similar cache strategy (FieldUnitCacheStrategy)
+ *      was implemented in cdmlib-model. This class may be removed in future.
  */
+@Deprecated
 public class DerivedUnitFacadeFieldUnitCacheStrategy
         extends StrategyBase
         implements IIdentifiableEntityCacheStrategy<FieldUnit> {
 
     private static final long serialVersionUID = 1578628591216605619L;
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldUnitCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 
@@ -185,18 +187,6 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 			return result;
 		}else{
 			return member.getTitleCache();
-		}
-	}
-
-	private boolean testPrimaryCollectorInCollectorTeam(AgentBase collector, Person primaryCollector) {
-		if (collector.isInstanceOf(Person.class)){
-			return collector.equals(primaryCollector);
-		}else if (collector.isInstanceOf(Team.class)){
-			Team collectorTeam = CdmBase.deproxy(collector, Team.class);
-			return collectorTeam.getTeamMembers().contains(primaryCollector);
-		}else{
-			logger.warn("Collector is not of type person or team");
-			return false;
 		}
 	}
 

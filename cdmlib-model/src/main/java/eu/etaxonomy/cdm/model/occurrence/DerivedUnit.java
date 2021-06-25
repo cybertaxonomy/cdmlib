@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.occurrence.DerivedUnitDefaultCacheStrategy;
 
 /**
  * A derived unit is regarded as derived from a field unit,
@@ -231,23 +231,21 @@ public class DerivedUnit
 		field.setGatheringEvent(gatheringEvent);
 	}
 
-    private static final String facadeStrategyClassName = "eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy";
     /**
      * Sets the default cache strategy
      */
 	@Override
     protected void initDefaultCacheStrategy() {
-        try {
-            String facadeClassName = facadeStrategyClassName;
-            Class<?> facadeClass = Class.forName(facadeClassName);
-            try {
-                this.cacheStrategy = (IIdentifiableEntityCacheStrategy)facadeClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException("Cache strategy for DerivedUnit could not be instantiated", e);
-            }
-        } catch (ClassNotFoundException e) {
-            this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<>();
+        this.cacheStrategy = new DerivedUnitDefaultCacheStrategy();
+    }
+
+    @Override
+    public String getTitleCache() {
+        //specimen are complex and changes in other objects often, therefore we compute titleCache each time from scratch
+        if (!this.protectedTitleCache){
+            this.titleCache = null;
         }
+        return super.getTitleCache();
     }
 
 // ******************** GETTER / SETTER *************************************/

@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.api.facade;
+package eu.etaxonomy.cdm.strategy.cache.occurrence;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -18,40 +18,33 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameFactory;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
- * @author a.mueller
- * @since 03.06.2010
+ * Note: this class is mostly a copy from the orignal class DerivedUnitFacadeFieldUnitCacheStrategyTest
+ *       in cdmlib-service. (#9678)
  *
- * @deprecated with #9678 a similar cache strategy (DerivedUnitCacheStrategy)
- *      was implemented in cdmlib-model. This class may be removed in future.
+ * @author a.mueller
+ * @since 21.06.2021
  */
-@Deprecated
-public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
+public class FieldUnitDefaultCacheStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(FieldUnitDefaultCacheStrategyTest.class);
 
-	private DerivedUnit specimen;
-	private DerivationEvent derivationEvent;
 	private FieldUnit fieldUnit;
 	private GatheringEvent gatheringEvent;
 	private Integer absoluteElevation = 40;
@@ -77,34 +70,18 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 	private LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
 	private NamedArea country = Country.GERMANY();
 
-	private String exsiccatum = "Greuter, Pl. Dahlem. 456";
-	private String accessionNumber = "8909756";
-	private String catalogNumber = "UU879873590";
-	private String barcode = "B12345678";
-	private TaxonName taxonName = TaxonNameFactory.NewBotanicalInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
-	private String collectorsNumber = "234589913A34";
-	private Collection collection = Collection.NewInstance();
-
-	private PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
-
-	private DerivedUnitFacade specimenFacade;
-
 	private DerivedUnit collectionSpecimen;
 	private GatheringEvent existingGatheringEvent;
 	private DerivationEvent firstDerivationEvent;
 	private FieldUnit firstFieldObject;
-	private Media media1 = Media.NewInstance();
 
 //****************************** SET UP *****************************************/
 
 	@Before
 	public void setUp() throws Exception {
-		specimen = DerivedUnit.NewPreservedSpecimenInstance();
-
-		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
-		specimen.setDerivedFrom(derivationEvent);
 		fieldUnit = FieldUnit.NewInstance();
-		fieldUnit.addDerivationEvent(derivationEvent);
+
+		fieldUnit = FieldUnit.NewInstance();
 		gatheringEvent = GatheringEvent.NewInstance();
 		fieldUnit.setGatheringEvent(gatheringEvent);
 		gatheringEvent.setAbsoluteElevation(absoluteElevation);
@@ -135,16 +112,6 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		collector.addTeamMember(thirdCollector);
 		fieldUnit.setPrimaryCollector(primaryCollector);
 
-		specimen.setAccessionNumber(accessionNumber);
-		specimen.setCatalogNumber(catalogNumber);
-		specimen.setBarcode(barcode);
-		specimen.setStoredUnder(taxonName);
-		specimen.setCollection(collection);
-		specimen.setPreservation(preservationMethod);
-		specimen.setExsiccatum(exsiccatum);
-
-		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
-
 		//existing specimen with 2 derivation events in line
 		collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
@@ -164,41 +131,36 @@ public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 		firstFieldObject.setGatheringEvent(existingGatheringEvent);
 	}
 
-	@Test
-	public void testGetTitleCache() {
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
-		specimenFacade.setEcology(ecology);
-		specimenFacade.setPlantDescription(plantDescription);
-		collection.setCode("B");
-		Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
-        collection.setCode(null);
-        collection.setName("Herbarium Berolinense");
-        Assert.assertEquals(correctCache.replace("B 8909756", "Herbarium Berolinense 8909756"), specimenFacade.getTitleCache());
-	}
 
     @Test
-    public void testGetTitleCacheWithEtAl() {
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
-        collector.setHasMoreMembers(true);
-        specimenFacade.setEcology(ecology);
-        specimenFacade.setPlantDescription(plantDescription);
-        collection.setCode("B");
-        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+    public void testGetTitleCache() {
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue.";
+        addEcology(fieldUnit, ecology);
+        addPlantDescription(fieldUnit, plantDescription);
+        Assert.assertEquals(correctCache, fieldUnit.getTitleCache());
+
+        //freetext without unit
+        String altitudeText = "approx. 40";
+        fieldUnit.getGatheringEvent().setAbsoluteElevationText(altitudeText);
+        String expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeText);
+        Assert.assertEquals(expected, fieldUnit.getTitleCache());
+
+        //freetext with unit
+        String altitudeTextM = "approx. 40 m";
+        fieldUnit.getGatheringEvent().setAbsoluteElevationText(altitudeTextM);
+        expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeTextM);
+        Assert.assertEquals(expected, fieldUnit.getTitleCache());
     }
 
-    //#6381
-    @Test
-    public void testGetTitleCacheAccessionBarcodeCatalogNumber() {
-        //Note: Collection Code B might be deduplicated in future
-        specimenFacade.setPlantDescription(plantDescription);
-        collection.setCode("B");
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
-        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
-        specimenFacade.setAccessionNumber(null);
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B B12345678); flowers blue.";
-        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
-        specimenFacade.setBarcode(null);
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B UU879873590); flowers blue.";
-        Assert.assertEquals(correctCache, specimenFacade.getTitleCache());
+    private void addEcology(FieldUnit fieldUnit, String ecology) {
+        SpecimenDescription description = SpecimenDescription.NewInstance(fieldUnit);
+        TextData textData = TextData.NewInstance(Feature.ECOLOGY(), ecology, Language.DEFAULT(), null);
+        description.addElement(textData);
+    }
+
+    private void addPlantDescription(FieldUnit fieldUnit, String plantDescription) {
+        SpecimenDescription description = SpecimenDescription.NewInstance(fieldUnit);
+        TextData textData = TextData.NewInstance(Feature.DESCRIPTION(), plantDescription, Language.DEFAULT(), null);
+        description.addElement(textData);
     }
 }
