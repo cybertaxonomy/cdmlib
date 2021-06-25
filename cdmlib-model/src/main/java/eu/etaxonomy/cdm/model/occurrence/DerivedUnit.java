@@ -271,7 +271,7 @@ public class DerivedUnit
 		if(getDerivedFrom() != null){
 			return getDerivedFrom().getOriginals();
 		}
-		return null;
+		return new HashSet<>();
 	}
 
 	public Collection getCollection(){

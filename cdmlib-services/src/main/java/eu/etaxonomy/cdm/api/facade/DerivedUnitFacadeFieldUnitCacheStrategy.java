@@ -16,14 +16,12 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.Representation;
@@ -200,29 +198,6 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy
 			logger.warn("Collector is not of type person or team");
 			return false;
 		}
-	}
-
-	/**
-	 * @param facade
-	 */
-	private String getCode(DerivedUnitFacade facade) {
-		String code = "";
-		if(facade.getCollection() != null){
-			code = facade.getCollection().getCode();
-			if (isBlank(code)){
-				Institution institution = facade.getCollection().getInstitute();
-				if (institution != null){
-					code = institution.getCode();
-				}
-				if (isBlank(code)){
-					Collection superCollection = facade.getCollection().getSuperCollection();
-					if (superCollection != null){
-						code = superCollection.getCode();
-					}
-				}
-			}
-		}
-		return code;
 	}
 
 // ************************** GETTER / SETTER ******************************************************

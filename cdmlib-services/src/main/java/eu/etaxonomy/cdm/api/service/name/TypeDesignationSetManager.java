@@ -370,19 +370,18 @@ public class TypeDesignationSetManager {
 
     private FieldUnit findFieldUnit(DerivedUnit du) {
 
-        if(du == null || du.getOriginals() == null){
+        if(du == null || du.getOriginals() == null || du.getOriginals().isEmpty()){
             return null;
         }
         @SuppressWarnings("rawtypes")
-        Set<SpecimenOrObservationBase> originals = du.getDerivedFrom().getOriginals();
+        Set<SpecimenOrObservationBase> originals = du.getOriginals();
         @SuppressWarnings("rawtypes")
         Optional<SpecimenOrObservationBase> fieldUnit = originals.stream()
                 .filter(original -> original instanceof FieldUnit).findFirst();
         if (fieldUnit.isPresent()) {
             return (FieldUnit) fieldUnit.get();
         } else {
-            for (@SuppressWarnings("rawtypes")
-            SpecimenOrObservationBase sob : originals) {
+            for (@SuppressWarnings("rawtypes") SpecimenOrObservationBase sob : originals) {
                 if (sob instanceof DerivedUnit) {
                     FieldUnit fu = findFieldUnit((DerivedUnit) sob);
                     if (fu != null) {

@@ -101,7 +101,6 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
 
 	/**
 	 * Factory method.
-	 * @return
 	 */
 	public static FieldUnit NewInstance(){
 		return new FieldUnit();
@@ -140,6 +139,8 @@ public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCach
             this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
         }
     }
+
+
 
 
 // ************************ GETTER / SETTER *******************************************
