@@ -83,10 +83,12 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
 //                }
 
         //sec.
-        List<TaggedText> secTags = getSecundumTags(taxonBase);
+        List<TaggedText> secTags = getSecundumTags(taxonBase, isMisapplication);
         if (!secTags.isEmpty()){
             tags.add(new TaggedText(TagEnum.separator, secSeparator));
             tags.addAll(secTags);
+        }else if (isMisapplication && isBlank(taxonBase.getAppendedPhrase())){
+            tags.add(new TaggedText(TagEnum.appendedPhrase, "auct."));
         }
 
         if (isMisapplication){
@@ -133,7 +135,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         return tags;
     }
 
-    private List<TaggedText> getSecundumTags(T taxonBase) {
+    private List<TaggedText> getSecundumTags(T taxonBase, boolean isMisapplication) {
         List<TaggedText> tags = new ArrayList<>();
 
         Reference sec = taxonBase.getSec();
@@ -141,7 +143,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase>
         String secRef;
         if (sec == null){
             //missing sec
-            if (isBlank(taxonBase.getAppendedPhrase())){
+            if (isBlank(taxonBase.getAppendedPhrase()) && !isMisapplication ){
                 secRef = "???";
             }else{
                 secRef = null;

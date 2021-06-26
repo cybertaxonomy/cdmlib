@@ -232,6 +232,13 @@ public class TaxonBaseDefaultCacheStrategyTest extends TermTestBase {
         Taxon mainTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
         mainTaxon.addMisappliedName(man, null, null);
         assertEquals("Taxon titlecache must use sensu", expectedNameCache + " sensu Sp.Pl., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        man.setSec(null);
+        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " auct., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        man.setAppendedPhrase("aucts.");
+        assertEquals("Taxon titlecache must use sensu", expectedNameCache + " aucts., non (L.) Mill.", cacheStrategy.getTitleCache(man));
+        //reset sec + appendedPhrase
+        man.setSec(sec);
+        man.setAppendedPhrase(null);
 
         //add another from relation
         Taxon relatedTaxon = Taxon.NewInstance(TaxonNameFactory.NewBacterialInstance(Rank.SPECIES()), ReferenceFactory.newBook() );
