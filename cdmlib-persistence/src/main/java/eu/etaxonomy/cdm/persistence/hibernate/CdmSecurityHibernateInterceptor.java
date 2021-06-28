@@ -61,7 +61,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     /**
      * The exculdeMap must map every property to the CdmBase type !!!
      */
-    public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<Class<? extends CdmBase>, Set<String>>();
+    public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<>();
 
     static{
 //        disabled since no longer needed, see https://dev.e-taxonomy.eu/redmine/issues/4111#comment:8

@@ -66,7 +66,7 @@ public enum CdmBaseType {
 
     private void updateBaseTypeMap(){
         if(CdmBaseType.subTypeToBaseTypeMap == null){
-            CdmBaseType.subTypeToBaseTypeMap = new HashMap<Class<? extends CdmBase>,  Class<? extends CdmBase>>();
+            CdmBaseType.subTypeToBaseTypeMap = new HashMap<>();
         }
         for(Class<? extends CdmBase> subClass : subClasses){
             CdmBaseType.subTypeToBaseTypeMap.put(subClass, baseClass);
