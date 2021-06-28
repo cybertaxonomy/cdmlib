@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 /**
  * @author a.kohlbecker
  * @since 25.03.2009
- *
  */
 //@Component("defaultBeanInitializer")
 public class HibernateBeanInitializer<CDM extends CdmBase> extends AbstractBeanInitializer<CDM>{
@@ -49,7 +48,4 @@ public class HibernateBeanInitializer<CDM extends CdmBase> extends AbstractBeanI
             ( ( MapProxy<?,?> ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
         }
     }
-
-
-
 }

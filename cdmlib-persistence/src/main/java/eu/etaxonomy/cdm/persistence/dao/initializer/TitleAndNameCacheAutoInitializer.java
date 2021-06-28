@@ -27,10 +27,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  * @author a.kohlbecker
  * @since 30.07.2010
- *
  */
 public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<IdentifiableEntity<?>> {
-
 
     @Override
     public void initialize(IdentifiableEntity<?> bean) {
@@ -111,6 +109,4 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
         return Optional.empty();
 
     }
-
-
 }

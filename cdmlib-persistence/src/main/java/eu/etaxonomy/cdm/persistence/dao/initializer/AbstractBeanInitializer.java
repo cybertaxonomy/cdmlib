@@ -393,7 +393,8 @@ public abstract class AbstractBeanInitializer<CDM extends CdmBase> implements IB
             // only read methods & skip transient getters
             if( prop.getReadMethod() != null ){
                   try{
-                     Class<Transient> transientClass = (Class<Transient>)Class.forName( "javax.persistence.Transient" );
+                     @SuppressWarnings("unchecked")
+                    Class<Transient> transientClass = (Class<Transient>)Class.forName( "javax.persistence.Transient" );
                      if( prop.getReadMethod().getAnnotation( transientClass ) != null ){
                         continue;
                      }
