@@ -121,7 +121,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         }
         Assert.assertEquals("If person was completely empty we don't expect the title cache to be taken from person.nomenclaturalTitle", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getTitleCache());
         Assert.assertFalse("If person was completely empty we don't expect the title cache to be protected", team.isProtectedTitleCache());
-        Assert.assertEquals("Nom. title must be equal", person2.getNomenclaturalTitleCache(), team.getNomenclaturalTitleCache());
+        Assert.assertEquals("If person was completely empty we expect nom. title to be the empty team constant", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getNomenclaturalTitleCache());
 
         try{
             service.convertPerson2Team(person2.getUuid());
