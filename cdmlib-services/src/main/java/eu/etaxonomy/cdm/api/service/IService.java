@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.PostMergeEntityListener;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import javassist.tools.rmi.ObjectNotFoundException;
 
 /**
  * @author a.kohlbecker
@@ -223,6 +224,16 @@ public interface IService<T extends ICdmBase>{
      * @return
      */
     public T load(int id, List<String> propertyPaths);
+
+    /**
+     * Returns a proxy object for the given id.
+     * This methods wraps {@link Session#load(Class, java.io.Serializable)}.
+     * It does not check, if the object really exists but throws an {@link ObjectNotFoundException}
+     * exception when no record with given id exists in the database.
+     * @return
+     *         the proxy object
+     */
+    public T loadProxy(int id);
 
     /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and

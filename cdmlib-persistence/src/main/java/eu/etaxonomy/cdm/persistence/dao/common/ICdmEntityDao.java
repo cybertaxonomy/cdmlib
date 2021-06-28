@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import javassist.tools.rmi.ObjectNotFoundException;
 
 /**
  * An data access interface that all data access classes implement
@@ -306,6 +307,16 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      */
     public T load(int id, List<String> propertyPaths);
+
+    /**
+     * Returns a proxy object for the given id.
+     * This methods wraps {@link Session#load(Class, java.io.Serializable)}.
+     * It does not check, if the object really exists but throws an {@link ObjectNotFoundException}
+     * exception when no record with given id exists in the database.
+     * @return
+     *         the proxy object
+     */
+    public T loadProxy(int id);
 
     /**
      * @param ids

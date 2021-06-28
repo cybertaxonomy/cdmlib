@@ -776,6 +776,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
+    public T loadProxy(int id){
+        return this.getSession().load(type, id);
+    }
+
+    @Override
     public T load(UUID uuid, List<String> propertyPaths) {
         return this.load(uuid, INCLUDE_UNPUBLISHED, propertyPaths);
     }

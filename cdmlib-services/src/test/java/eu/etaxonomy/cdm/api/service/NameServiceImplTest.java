@@ -77,8 +77,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = Logger.getLogger(NameServiceImplTest.class);
 
     private static final UUID NAME1_UUID = UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384");
+    private static final int NAME1_ID = 10;
     private static final UUID NAME2_UUID = UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e");
+    private static final int NAME2_ID = 11;
     private static final UUID NAME3_UUID = UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28");
+    private static final int NAME3_ID = 12;
 
     @SpringBeanByType
     private INameService nameService;
@@ -1021,20 +1024,23 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Field fullTitleCacheField = TaxonName.class.getDeclaredField("fullTitleCache");
         fullTitleCacheField.setAccessible(true);
 
-        TaxonName name1 = nameService.load(NAME1_UUID);
-        TaxonName name2 = nameService.load(NAME2_UUID);
-        TaxonName name3 = nameService.load(NAME3_UUID);
+        TaxonName name1 = nameService.loadProxy(NAME1_ID);
+        TaxonName name2 = nameService.loadProxy(NAME2_ID);
+        TaxonName name3 = nameService.loadProxy(NAME3_ID);
 
+        name1 = CdmBase.deproxy(name1);
         assertEquals("TitleCache should be the persisted one", "Name1", titleCacheField.get(name1));
         assertEquals("NameCache should be the persisted one", "", nameCacheField.get(name1));
         assertEquals("AuthorCache should be the persisted one", "", authorCacheField.get(name1));
         assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name1));
 
+        name2 = CdmBase.deproxy(name2);
         assertEquals("TitleCache should be the persisted one", "Name2", titleCacheField.get(name2));
         assertEquals("NameCache should be the persisted one", "Protected name", nameCacheField.get(name2));
         assertEquals("AuthorCache should be the persisted one", null, authorCacheField.get(name2));
         assertEquals("FullTitleCache should be the persisted one", "", fullTitleCacheField.get(name2));
 
+        name3 = CdmBase.deproxy(name3);
         assertEquals("TitleCache should be the persisted one", "Name3", titleCacheField.get(name3));
         assertEquals("NameCache should be the persisted one", "", nameCacheField.get(name3));
         assertEquals("AuthorCache should be the persisted one", "No-author", authorCacheField.get(name3));
