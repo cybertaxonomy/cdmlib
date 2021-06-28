@@ -36,6 +36,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.OrcidBridge;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
@@ -455,14 +456,34 @@ public class Person extends TeamOrPersonBase<Person>{
     public boolean updateCaches(){
         boolean result = false;
         result |= super.updateCaches();
-        if (this.nomenclaturalTitle == null){
-            this.nomenclaturalTitleCache = this.getTitleCache();
-            if ( this.nomenclaturalTitleCache != null ){
-                 result = true;
-            }
-         }
+        result |= updateNomenclaturalCache();
+        result |= updateCollectorCache();
 
          return result;
+    }
+
+    private boolean updateNomenclaturalCache() {
+        //updates the nomenclaturalTitleCache if necessary
+        String oldCache = this.nomenclaturalTitleCache;
+        String newCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+        if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+//            this.setNomenclaturalTitleCache(null, false);
+            this.getNomenclaturalTitleCache();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateCollectorCache() {
+        //updates the collectorTitleCache if necessary
+        String oldCache = this.collectorTitleCache;
+        String newCache = getCacheStrategy().getCollectorTitleCache(this);
+        if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+//            this.setNomenclaturalTitleCache(null, false);
+            this.getCollectorTitleCache();
+            return true;
+        }
+        return false;
      }
 
 //*********************** CLONE ********************************************************/

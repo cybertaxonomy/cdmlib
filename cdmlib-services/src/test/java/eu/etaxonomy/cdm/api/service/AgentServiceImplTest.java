@@ -268,10 +268,12 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
         ehrenberg = (Person)service.load(UUID_EHRENBERG);
 
-        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleField.get(turland));
-        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Ehrenb.", nomenclaturalTitleField.get(ehrenberg));
+        assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(turland));
+        assertEquals("Expecting nomenclaturalTitleCache to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleCacheField.get(turland));
+        assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(ehrenberg));
+        assertEquals("Expecting nomenclaturalTitleCache to be set since it was NULL", "Ehrenb.", nomenclaturalTitleCacheField.get(ehrenberg));
         assertEquals("Expecting titleChache to be unchaged since it was protecetd", "Ehrenb.", ehrenberg.getTitleCache());
-        assertEquals("Expecting nomenclaturalTitle to be unchanged", "A.M. Monro", nomenclaturalTitleField.get(monro).toString());
+        assertEquals("Expecting nomenclaturalTitleCache to be unchanged", "A.M. Monro", nomenclaturalTitleCacheField.get(monro).toString());
 
         assertEquals("Turland, Monro", nomenclaturalTitleCacheField.get(turland_monro_protected));
         assertEquals("Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro).toString());

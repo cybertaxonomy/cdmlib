@@ -74,7 +74,11 @@ public class PersonDefaultCacheStrategy
 
     @Override
     public String getTitleCache(Person person) {
+        if (person.isProtectedTitleCache()){
+            return person.getTitleCache();
+        }
         String result = "";
+
         if (isNotBlank(person.getFamilyName() ) ){
             result = person.getFamilyName().trim();
             result = addInitials(result, person);
