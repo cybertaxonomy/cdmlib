@@ -361,11 +361,16 @@ public class Team extends TeamOrPersonBase<Team> {
     //#4311
     @Override
     public String getCollectorTitleCache() {
-        if (protectedCollectorTitleCache){
+        if (protectedCollectorTitleCache == PROTECTED){
             return this.collectorTitleCache;
-        }else{
-            return super.getCollectorTitleCache();
         }
+        if (collectorTitleCache == null){
+            this.collectorTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+        }else{
+            //as long as team members do not inform the team about changes the cache must be created new each time
+            collectorTitleCache = getCacheStrategy().getCollectorTitleCache(this);
+        }
+        return collectorTitleCache;
     }
 
 	/**

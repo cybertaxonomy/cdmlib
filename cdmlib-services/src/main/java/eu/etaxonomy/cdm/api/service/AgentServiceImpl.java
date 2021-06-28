@@ -235,6 +235,9 @@ public class AgentServiceImpl
         if (StringUtils.isNotBlank(person.getNomenclaturalTitle())){
             team.setNomenclaturalTitleCache(person.getNomenclaturalTitle(), true);  //sets the protected flag always to true, this is necessary as long as person does not have a nomenclatural title cache; maybe setting the protected title itself is not necessary but does no harm
         }
+        if (StringUtils.isNotBlank(person.getCollectorTitle())){
+            team.setCollectorTitleCache(person.getCollectorTitle(), true);  //sets the protected flag always to true, this is necessary as long as person does not have a collector title cache; maybe setting the protected title itself is not necessary but does no harm
+        }
 
         if (! genericDao.isMergeable(team, person, strategy)){
 			throw new MergeException("Person can not be transformed into team.");
