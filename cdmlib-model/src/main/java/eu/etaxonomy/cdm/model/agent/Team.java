@@ -346,7 +346,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	@Override
 	//@Transient //TODO a.kohlbecker remove??
 	public String getTitleCache() {
-		isGeneratingTitleCache = true;
 		String result = "";
 		if (isProtectedTitleCache()){
 			result = this.titleCache;
@@ -356,7 +355,6 @@ public class Team extends TeamOrPersonBase<Team> {
 			result = getTruncatedCache(result);
 			this.titleCache = result;
 		}
-		isGeneratingTitleCache = false;
 		return result;
 	}
 

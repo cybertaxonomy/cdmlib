@@ -14,7 +14,6 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -64,11 +63,6 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
 //    public String getOriginalNomenclaturalTitle() {return originalNomenclaturalTitle;}
 //    public void setOriginalNomenclaturalTitle(String originalNomenclaturalTitle) {this.originalNomenclaturalTitle = originalNomenclaturalTitle;}
 
-    @Transient
-    @XmlTransient
-    protected boolean isGeneratingTitleCache = false;  //state variable to avoid recursions when generating title cache and nomenclatural title
-
-
     //#9664
     @Override
     public String getNomenclaturalTitleCache() {
@@ -112,7 +106,6 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         }
     }
 
-
     @Override
     @Transient
     /*
@@ -126,10 +119,8 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         [a.kohlbecker May 2011]
     */
     public String getTitleCache() {
-        isGeneratingTitleCache = true;
         String result = super.getTitleCache();
         result = replaceEmptyTitleByNomTitle(result);
-        isGeneratingTitleCache = false;
         return result;
     }
 
