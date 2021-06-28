@@ -456,8 +456,8 @@ public class Person extends TeamOrPersonBase<Person>{
         boolean result = false;
         result |= super.updateCaches();
         if (this.nomenclaturalTitle == null){
-            this.nomenclaturalTitle = this.getTitleCache();
-            if ( this.nomenclaturalTitle != null ){
+            this.nomenclaturalTitleCache = this.getTitleCache();
+            if ( this.nomenclaturalTitleCache != null ){
                  result = true;
             }
          }
