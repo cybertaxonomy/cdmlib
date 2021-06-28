@@ -107,6 +107,8 @@ public abstract class AbstractBeanInitializer<CDM extends CdmBase> implements IB
                 logger.info("Property " + propertyDescriptor.getName() + " not found");
             }
         }
+        //auto-initialize root bean
+        invokePropertyAutoInitializers(bean);
         if(logger.isDebugEnabled()){
             logger.debug("  completed initializeBean() of " + bean);
         }
