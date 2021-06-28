@@ -18,7 +18,6 @@ import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -161,23 +160,13 @@ public class CdmPreDataChangeListener
                 }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
                     //team-or-person caches
                     TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
-                    String nomTitle = teamOrPerson.getNomenclaturalTitleCache();
-                    if (teamOrPerson instanceof Team){
-                        Team team = (Team)teamOrPerson;
-                        //nomTitle is not necessarily cached when it is created
-                        team.setNomenclaturalTitleCache(nomTitle, team.isProtectedNomenclaturalTitleCache());
-                        String collectorCache = team.getCollectorTitleCache();
-                        if (! team.isProtectedCollectorTitleCache()){
-                            team.setCollectorTitleCache(collectorCache, false);
-                        }
-                    }else{
-                        teamOrPerson.setNomenclaturalTitle(nomTitle);
-                    }
+                    teamOrPerson.getNomenclaturalTitleCache();
+                    teamOrPerson.getCollectorTitleCache();
                     String titleCache = teamOrPerson.getTitleCache();
+                    //not sure if this is really needed
                     if (! teamOrPerson.isProtectedTitleCache()){
                         teamOrPerson.setTitleCache(titleCache, false);
                     }
-                    teamOrPerson.getCollectorTitleCache();
                     //if this is changed in future, change also in ImportDeduplicationHelper
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
                     //reference caches

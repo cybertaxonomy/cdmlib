@@ -425,19 +425,10 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
 
     private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T author) {
         //NOTE: this is more or less redundant copy from CdmPreDataChangeListener
-        String nomTitle = author.getNomenclaturalTitleCache();
-        if (author instanceof Team){
-            Team team = (Team)author;
-            //nomTitle is not necessarily cached when it is created
-            team.setNomenclaturalTitleCache(nomTitle, team.isProtectedNomenclaturalTitleCache());
-            String collectorCache = author.getCollectorTitleCache();
-            if (! team.isProtectedCollectorTitleCache()){
-                team.setCollectorTitleCache(collectorCache, false);
-            }
-        }else{
-            author.setNomenclaturalTitle(nomTitle);
-        }
+        author.getNomenclaturalTitleCache();
+        author.getCollectorTitleCache();
         String titleCache = author.getTitleCache();
+      //not sure if this is really needed
         if (! author.isProtectedTitleCache()){
             author.setTitleCache(titleCache, false);
         }
