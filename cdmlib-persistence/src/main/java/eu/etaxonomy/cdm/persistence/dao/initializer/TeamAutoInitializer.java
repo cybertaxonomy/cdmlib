@@ -47,6 +47,4 @@ public class TeamAutoInitializer extends AutoPropertyInitializer<TeamOrPersonBas
 
         return Optional.of(result);
     }
-
-
 }
