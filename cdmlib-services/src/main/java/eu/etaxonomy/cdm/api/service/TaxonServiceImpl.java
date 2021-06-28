@@ -1576,7 +1576,7 @@ public class TaxonServiceImpl
         }
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<>();
-        idFieldMap.put(CdmBaseType.TAXON, "id");
+        idFieldMap.put(CdmBaseType.TAXON_BASE, "id");
 
         // ---  initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
@@ -1644,7 +1644,7 @@ public class TaxonServiceImpl
         }
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<>();
-        idFieldMap.put(CdmBaseType.TAXON, "id");
+        idFieldMap.put(CdmBaseType.TAXON_BASE, "id");
 
         // ---  initialize taxa, thighlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
@@ -1913,7 +1913,7 @@ public class TaxonServiceImpl
             luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass,
                     queryString, classification, subtree, className,
                     includeUnpublished, languages, highlightFragments, sortFields));
-            idFieldMap.put(CdmBaseType.TAXON, "id");
+            idFieldMap.put(CdmBaseType.TAXON_BASE, "id");
             /* A) does not work!!!!
             if(addDistributionFilter){
                 // in this case we need a filter which uses a join query
@@ -1965,7 +1965,7 @@ public class TaxonServiceImpl
             byCommonNameSearch.setQuery(builder.build());
             byCommonNameSearch.setSortFields(sortFields);
 
-            idFieldMap.put(CdmBaseType.TAXON, "id");
+            idFieldMap.put(CdmBaseType.TAXON_BASE, "id");
 
             luceneSearches.add(byCommonNameSearch);
 
@@ -2008,7 +2008,7 @@ public class TaxonServiceImpl
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(relTypes, Direction.relatedTo),
                     queryString, classification, subtree, includeUnpublished, languages, highlightFragments, sortFields));
-            idFieldMap.put(CdmBaseType.TAXON, "id");
+            idFieldMap.put(CdmBaseType.TAXON_BASE, "id");
 
             if(addDistributionFilter){
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
@@ -2063,7 +2063,7 @@ public class TaxonServiceImpl
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(relTypes, Direction.relatedTo),
                     queryString, classification, subtree, includeUnpublished, languages, highlightFragments, sortFields));
-            idFieldMap.put(CdmBaseType.TAXON, "id");
+            idFieldMap.put(CdmBaseType.TAXON_BASE, "id");
 
             if(addDistributionFilter){
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
@@ -2271,7 +2271,7 @@ public class TaxonServiceImpl
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<>();
-        idFieldMap.put(CdmBaseType.TAXON, "id");
+        idFieldMap.put(CdmBaseType.TAXON_BASE, "id");
         idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
 
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(

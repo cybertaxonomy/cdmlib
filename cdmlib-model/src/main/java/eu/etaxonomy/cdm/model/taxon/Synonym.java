@@ -102,7 +102,7 @@ public class Synonym extends TaxonBase<ITaxonCacheStrategy<Synonym>> {
      * the {@link eu.etaxonomy.cdm.model.name.TaxonName taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
      * using it as a synonym and not as an ("accepted/correct") {@link Taxon taxon}.
      *
-     * @param  TaxonName    the taxon name used
+     * @param  TAXON_NAME    the taxon name used
      * @param  sec          the reference using the taxon name
      * @see  #Synonym(TaxonName, Reference)
      */

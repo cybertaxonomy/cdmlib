@@ -772,7 +772,7 @@ public class NameServiceImpl
 
 
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
-        idFieldMap.put(CdmBaseType.NONVIRALNAME, "id");
+        idFieldMap.put(CdmBaseType.TAXON_NAME, "id");
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());

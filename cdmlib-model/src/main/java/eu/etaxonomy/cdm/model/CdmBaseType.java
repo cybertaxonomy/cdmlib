@@ -39,8 +39,8 @@ public enum CdmBaseType {
     /**
      * refers to the baseClass {@link TaxonBase}
      */
-    TAXON(TaxonBase.class),
-    NONVIRALNAME(TaxonName.class),
+    TAXON_BASE(TaxonBase.class),
+    TAXON_NAME(TaxonName.class),
     DESCRIPTION_ELEMENT(DescriptionElementBase.class),
     DESCRIPTION(DescriptionBase.class),
     SPECIMEN_OR_OBSERVATIONBASE(SpecimenOrObservationBase.class),
