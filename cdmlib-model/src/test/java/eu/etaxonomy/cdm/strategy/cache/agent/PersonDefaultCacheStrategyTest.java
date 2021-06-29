@@ -201,19 +201,14 @@ public class PersonDefaultCacheStrategyTest {
         givenname = "Wolf\u2013 Henning";
         Assert.assertEquals("W.\u2013H.", formatter.getInitialsFromGivenName(givenname, force));
 
-
         givenname = "W";
         Assert.assertEquals("W.", formatter.getInitialsFromGivenName(givenname, force));
-
         givenname = "W K";
         Assert.assertEquals("W.K.", formatter.getInitialsFromGivenName(givenname, force));
-
         givenname = "WK";
         Assert.assertEquals("W.K.", formatter.getInitialsFromGivenName(givenname, force));
-
         givenname = "WKH";
         Assert.assertEquals("W.K.H.", formatter.getInitialsFromGivenName(givenname, force));
-
 
         //force
         force = true;
@@ -228,16 +223,12 @@ public class PersonDefaultCacheStrategyTest {
 
         givenname = "W";
         Assert.assertEquals("W.", formatter.getInitialsFromGivenName(givenname, force));
-
         givenname = "W K";
         Assert.assertEquals("W.K.", formatter.getInitialsFromGivenName(givenname, force));
-
         givenname = "WK";
         Assert.assertEquals("W.K.", formatter.getInitialsFromGivenName(givenname, force));
-
         givenname = "WKH";
         Assert.assertEquals("W.K.H.", formatter.getInitialsFromGivenName(givenname, force));
-
         force = false;
         givenname = "Pe. Y.";
         Assert.assertEquals("Pe.Y.", formatter.getInitialsFromGivenName(givenname, force));

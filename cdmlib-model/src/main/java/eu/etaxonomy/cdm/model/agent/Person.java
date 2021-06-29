@@ -314,7 +314,6 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.prefix = isBlank(prefix) ? null : prefix;
 	}
 
-
 	/**
 	 * Returns the string representing the given name or forename
 	 * (for instance "John") of <i>this</i> person.
@@ -372,7 +371,6 @@ public class Person extends TeamOrPersonBase<Person>{
         this.initials = isBlank(initials) ? null : initials;
     }
 
-
 	/**
 	 * Returns the string representing the hereditary name (surname or family name)
 	 * (for instance "Smith") of <i>this</i> person.
@@ -395,7 +393,6 @@ public class Person extends TeamOrPersonBase<Person>{
 	public void setFamilyName(String familyName){
 		this.familyName = isBlank(familyName) ? null : familyName;
 	}
-
 
 	/**
 	 * Returns the string representing the suffix (for instance "Junior")
@@ -434,7 +431,6 @@ public class Person extends TeamOrPersonBase<Person>{
 	public void setLifespan(TimePeriod lifespan){
 		this.lifespan = lifespan != null? lifespan : TimePeriod.NewInstance();
 	}
-
 
     /**
      * The {@link ORCID ORCiD} of this person.<BR>
