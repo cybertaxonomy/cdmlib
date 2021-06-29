@@ -103,6 +103,13 @@ public class PersonDefaultCacheStrategy
     public String getCollectorTitleCache(Person person){
         if (isNotBlank(person.getCollectorTitle())){
             return person.getCollectorTitle();
+        }else if (!person.isProtectedTitleCache() &&  isNotBlank(person.getFamilyName()) &&
+                (isNotBlank(person.getInitials()) || isNotBlank(person.getGivenName()))){
+            if (isNotBlank(person.getInitials())){
+                return CdmUtils.concat(" ", person.getInitials(), person.getFamilyName());
+            }else{
+                return CdmUtils.concat(" ", getInitialsFromGivenName(person.getGivenName(), false), person.getFamilyName());
+            }
         }else{
             return getTitleCache(person);
         }

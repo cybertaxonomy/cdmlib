@@ -201,23 +201,23 @@ public class TeamDefaultCacheStrategyTest {
                 "P1CT", team1.getCollectorTitleCache());
 
         //team2
-        Assert.assertEquals("team2 collector title cache should be 'P2FN, P., P1CT, P3NomT & P4FN'",
-                "P2FN, P., P1CT, P3NomT & P4FN", team2.getCollectorTitleCache());
+        Assert.assertEquals("team2 collector title cache should be 'P. P2FN, P1CT, P3NomT & P4FN'",
+                "P. P2FN, P1CT, P3NomT & P4FN", team2.getCollectorTitleCache());
         //more
         team2.setHasMoreMembers(true);
-        Assert.assertEquals("team2 collector title cache should be 'P2FN, P., P1CT, P3NomT, P4FN & al.'",
-                "P2FN, P., P1CT, P3NomT, P4FN & al.", team2.getCollectorTitleCache());
+        Assert.assertEquals("team2 collector title cache should be 'P. P2FN, P1CT, P3NomT, P4FN & al.'",
+                "P. P2FN, P1CT, P3NomT, P4FN & al.", team2.getCollectorTitleCache());
         team2.setHasMoreMembers(false);
         //3 members
         team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstance(3));
         team2.resetCaches();
-        Assert.assertEquals("team2 collector title cache should still be 'P2FN, P., P1CT & al.' now.",
-                "P2FN, P., P1CT & al.", team2.getCollectorTitleCache());
+        Assert.assertEquals("team2 collector title cache should still be 'P. P2FN, P1CT & al.' now.",
+                "P. P2FN, P1CT & al.", team2.getCollectorTitleCache());
         //4 members
         team2.setCacheStrategy(TeamDefaultCacheStrategy.NewInstance(4));
         team2.resetCaches();
-        Assert.assertEquals("team2 collector title cache should still be 'P2FN, P., P1CT, P3NomT & P4FN' now.",
-                "P2FN, P., P1CT, P3NomT & P4FN", team2.getCollectorTitleCache());
+        Assert.assertEquals("team2 collector title cache should still be 'P. P2FN, P1CT, P3NomT & P4FN' now.",
+                "P. P2FN, P1CT, P3NomT & P4FN", team2.getCollectorTitleCache());
 
 
         //team3/empty team

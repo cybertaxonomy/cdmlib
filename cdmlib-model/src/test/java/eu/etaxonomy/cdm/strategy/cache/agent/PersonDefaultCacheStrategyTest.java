@@ -76,9 +76,9 @@ public class PersonDefaultCacheStrategyTest {
    @Test
     public final void testGetCollectorTitleCache(){
         Assert.assertNotNull("person1 collector title cache must not to be null", person1.getCollectorTitleCache());
-        Assert.assertEquals("Person1 collector title cache should be taken from titleCache", "P1FN, P.", person1.getCollectorTitleCache());
+        Assert.assertEquals("Person1 collector title cache should be taken from titleCache", "P. P1FN", person1.getCollectorTitleCache());
         person1.setSuffix(null);
-        Assert.assertEquals("Person1 collector title cache should be taken from titleCache", "P1FN, P.", person1.getCollectorTitleCache());
+        Assert.assertEquals("Person1 collector title cache should be taken from titleCache", "P. P1FN", person1.getCollectorTitleCache());
         //peson2
         Assert.assertEquals("Person2 collector title cache should be P2CT", "P2CT", person2.getCollectorTitleCache());
         //person3
@@ -272,7 +272,7 @@ public class PersonDefaultCacheStrategyTest {
     public final void testUpdateCaches(){
 	    Assert.assertEquals("P1FN, P.", person1.getTitleCache());
 	    Assert.assertEquals("P1FN, P.", person1.getNomenclaturalTitleCache());
-	    Assert.assertEquals("P1FN, P.", person1.getCollectorTitleCache());
+	    Assert.assertEquals("P. P1FN", person1.getCollectorTitleCache());
         person1.setTitleCache("protected cache", true);
         Assert.assertEquals("protected cache", person1.getTitleCache());
         Assert.assertEquals("protected cache", person1.getNomenclaturalTitleCache());
