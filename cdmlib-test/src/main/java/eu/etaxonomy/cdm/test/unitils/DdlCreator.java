@@ -57,21 +57,16 @@ public class DdlCreator {
     public void execute(Class<?> dialect, String lowerCaseDialectName){
 
         try {
-            String outputFileName = String.format("%s.%s.%s", new Object[] {"001-cdm", lowerCaseDialectName, "sql" });
-            String outputFileClassPath = "dbscripts/" + outputFileName;
-//            String templateFileName = outputFileName + "-template";
-//            String templateFileClassPath = "dbscripts/" + templateFileName;
+            String fileName = String.format("%s.%s.%s", new Object[] {"001-cdm", lowerCaseDialectName, "sql" });
+            String outputFileClassPath = "dbscripts/" + fileName;
 
             ClassPathResource resource = new ClassPathResource(outputFileClassPath);
             File folder = resource.getFile().getParentFile();
-            String outputPath = folder.getCanonicalPath()+File.separator + outputFileName;
-//            String templatePath = folder.getCanonicalPath()+File.separator + templateFileName;
-            System.out.println(outputPath);
-//            System.out.println(templatePath);
+            String outputPath = folder.getCanonicalPath()+File.separator + fileName;
 
             StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder()
                 .applySetting(AvailableSettings.DIALECT, dialect.getCanonicalName())  // dialect
-//                .applySetting(AvailableSettings.HBM2DDL_CREATE_SCRIPT_SOURCE, resource.getURL())
+//                .applySetting(AvailableSettings.HBM2DDL_CREATE_SCRIPT_SOURCE, resource.getURL())  //does not have the expected effect
                 ;
 
             StandardServiceRegistry serviceRegistry = registryBuilder.build();
@@ -92,11 +87,11 @@ public class DdlCreator {
                     .build();
 
             //export
-            EnumSet<TargetType> targetTypes = EnumSet.of(/*TargetType.STDOUT, */TargetType.SCRIPT);
+            EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.SCRIPT);
             new SchemaExport()
                 .setFormat(true)
                 .setDelimiter(";")
-//                .setImportFiles(templatePath)
+//                .setImportFiles(templatePath)  //does not have the expected effect
                 .setOutputFile(outputPath)
                 .createOnly(targetTypes, metadata);
 
