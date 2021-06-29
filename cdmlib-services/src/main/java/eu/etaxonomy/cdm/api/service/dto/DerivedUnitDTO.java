@@ -126,14 +126,13 @@ public class DerivedUnitDTO extends SpecimenOrObservationBaseDTO{
         accessionNumber = derivedUnit.getAccessionNumber();
         preferredStableUri = derivedUnit.getPreferredStableUri();
         if (derivedUnit.getCollection() != null){
-            setCollectioDTO(new CollectionDTO(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
+            setCollectioDTO(CollectionDTO.fromCollection(HibernateProxyHelper.deproxy(derivedUnit.getCollection())));
             if(cleanAccessionNumber && getCollection().getCode() != null) {
                 accessionNumber = accessionNumber.replaceFirst("^" + Pattern.quote(getCollection().getCode()) + "-", "");
             }
         }
         setBarcode(derivedUnit.getBarcode());
         setCatalogNumber(derivedUnit.getCatalogNumber());
-        setCollectorsNumber(derivedUnit.getCollectorsNumber());
         setDerivationEvent(DerivationEventDTO.fromEntity(derivedUnit.getDerivedFrom()));
         if (derivedUnit.getPreservation()!= null){
             setPreservationMethod(derivedUnit.getPreservation().getMaterialMethodText());

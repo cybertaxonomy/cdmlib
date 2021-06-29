@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
 /**
  * @author k.luther
  * @since 21.06.2018
- *
  */
 public class CollectionDTO extends TypedEntityReference<Collection> {
 

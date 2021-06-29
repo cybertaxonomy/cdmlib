@@ -54,7 +54,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             if(!n.isProtectedFullTitleCache() || !bean.isProtectedTitleCache() || !n.isProtectedNameCache()){
                 /* getTaggedName special case
                  *
-                 * if the name cache already is non null the generateNameCache()
+                 * if the name cache already is not null the generateNameCache()
                  * method will not be executed and no initialization of the name cache
                  * cascade will happen, therefore me must call the getTaggedName()
                  * explicitly in order to trigger the cascade. Otherwise a

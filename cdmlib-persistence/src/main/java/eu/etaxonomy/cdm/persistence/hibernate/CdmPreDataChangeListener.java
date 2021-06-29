@@ -167,7 +167,7 @@ public class CdmPreDataChangeListener
                     if (! teamOrPerson.isProtectedTitleCache()){
                         teamOrPerson.setTitleCache(titleCache, false);
                     }
-                    //if this is changed in future, change also in ImportDeduplicationHelper
+                    //if the above is changed in future, change also in ImportDeduplicationHelper
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
                     //reference caches
                     Reference ref = (Reference)entity;

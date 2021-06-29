@@ -242,7 +242,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         // TODO Add Assertion Person "Ehrenberg" must not be member of a team.
         Person ehrenberg = (Person) service.load(UUID_EHRENBERG);
 
-
         Team turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
         Team turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
         Team turland_monro_null = (Team) service.load(UUID.fromString("a4ca0d37-d78b-4bcc-875e-d4ea5a031089"));
@@ -263,7 +262,6 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
         service.updateCaches();
 
-
         turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
         turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
         ehrenberg = (Person)service.load(UUID_EHRENBERG);
@@ -278,9 +276,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         assertEquals("Turland, Monro", nomenclaturalTitleCacheField.get(turland_monro_protected));
         assertEquals("Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro).toString());
         assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro_null).toString());
-
     }
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}
