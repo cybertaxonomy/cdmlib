@@ -276,4 +276,26 @@ public class PersonDefaultCacheStrategyTest {
         givenname = "(Brother)"; //example from Salvador DB
         Assert.assertNull("Non-parsable string should not be empty but null", formatter.getInitialsFromGivenName(givenname, force));
 	}
+
+	@Test
+    public final void testUpdateCaches(){
+	    Assert.assertEquals("P1FN, P.", person1.getTitleCache());
+	    Assert.assertEquals("P1FN, P.", person1.getNomenclaturalTitleCache());
+	    Assert.assertEquals("P1FN, P.", person1.getCollectorTitleCache());
+        person1.setTitleCache("protected cache", true);
+        Assert.assertEquals("protected cache", person1.getTitleCache());
+        Assert.assertEquals("protected cache", person1.getNomenclaturalTitleCache());
+        Assert.assertEquals("protected cache", person1.getCollectorTitleCache());
+
+        person3.setNomenclaturalTitle("nom title");
+        Assert.assertEquals("nom title", person3.getTitleCache());
+        Assert.assertEquals("nom title", person3.getNomenclaturalTitleCache());
+        Assert.assertEquals("nom title", person3.getCollectorTitleCache());
+
+        Person person4 = Person.NewInstance();
+        person4.setCollectorTitle("collector title");
+        Assert.assertEquals("collector title", person4.getTitleCache());
+        Assert.assertEquals("collector title", person4.getNomenclaturalTitleCache());
+        Assert.assertEquals("collector title", person4.getCollectorTitleCache());
+	}
 }

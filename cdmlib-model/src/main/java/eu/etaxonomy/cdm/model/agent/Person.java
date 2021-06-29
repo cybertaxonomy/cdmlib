@@ -231,11 +231,10 @@ public class Person extends TeamOrPersonBase<Person>{
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent ev) {
-                if (!ev.getPropertyName().equals("titleCache")
-                        && !ev.getPropertyName().equals("nomenclaturalTitleCache") //not sure if called at all
+                if (!ev.getPropertyName().equals("nomenclaturalTitleCache") //not sure if called at all
                         && !ev.getPropertyName().equals("collectorTitleCache") //not sure if called at all
                         && !ev.getPropertyName().equals("cacheStrategy")){
-                    if (! isProtectedTitleCache()){
+                    if (!ev.getPropertyName().equals("titleCache") && ! isProtectedTitleCache()){
                         titleCache = null;
                     }
                     nomenclaturalTitleCache = null;
