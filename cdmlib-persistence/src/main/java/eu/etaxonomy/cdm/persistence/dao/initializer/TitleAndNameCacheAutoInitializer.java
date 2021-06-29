@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.util.Optional;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -70,16 +71,21 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
                  */
                 n.getTaggedName();
             }
-        } else if(bean instanceof TaxonName) {
-             // ---> TaxonName
-            TaxonName n = (TaxonName)bean;
-            if(!n.isProtectedFullTitleCache())  {
-                n.getFullTitleCache();
-            } else if(!bean.isProtectedTitleCache()){
-                n.getTitleCache();
-            }
         } else if(bean instanceof TaxonBase)  {
-            ((TaxonBase)bean).getTaggedTitle();
+            if (!bean.isProtectedTitleCache()){
+                ((TaxonBase<?>)bean).getTaggedTitle();
+            }
+        } else if(bean instanceof Team)  {
+            Team team = (Team)bean;
+            if (!bean.isProtectedTitleCache()){
+                bean.getTitleCache();
+            }
+            if (!team.isProtectedCollectorTitleCache()){
+                team.getCollectorTitleCache();
+            }
+            if (!team.isProtectedNomenclaturalTitleCache()){
+                team.getNomenclaturalTitleCache();
+            }
         } else if(!bean.isProtectedTitleCache()){
             // ---> all other IdentifiableEntity
             bean.getTitleCache();
