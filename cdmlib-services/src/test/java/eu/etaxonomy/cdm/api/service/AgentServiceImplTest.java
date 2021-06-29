@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -242,9 +243,9 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         // TODO Add Assertion Person "Ehrenberg" must not be member of a team.
         Person ehrenberg = (Person) service.load(UUID_EHRENBERG);
 
-        Team turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
-        Team turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
-        Team turland_monro_null = (Team) service.load(UUID.fromString("a4ca0d37-d78b-4bcc-875e-d4ea5a031089"));
+        Team turland_monro_protected = CdmBase.deproxy(service.loadProxy(3), Team.class);
+        Team turland_monro = CdmBase.deproxy(service.loadProxy(4), Team.class);
+        Team turland_monro_null = CdmBase.deproxy(service.loadProxy(5), Team.class);
 
         // Person has no flag for protecting the nomenclaturalTitle
         assertNull(nomenclaturalTitleField.get(turland));
@@ -262,8 +263,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 
         service.updateCaches();
 
-        turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
-        turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
+        turland_monro_protected = CdmBase.deproxy(service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8")), Team.class);
+        turland_monro = CdmBase.deproxy(service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7")), Team.class);
         ehrenberg = (Person)service.load(UUID_EHRENBERG);
 
         assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(turland));
