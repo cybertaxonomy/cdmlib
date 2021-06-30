@@ -143,7 +143,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		List<UuidAndTitleCache<Team>> list = new ArrayList<>();
 		Session session = getSession();
 
-		Query query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Team'");
+		Query query = session.createQuery("select uuid, id, nomenclaturalTitleCache from " + type.getSimpleName() + " where dtype = 'Team'");
 
 		@SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -167,10 +167,41 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		return getUuidAndTitleCache(query);
 	}
 
+
+
 	@Override
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
 		Query query = getSession().createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where dtype = 'Institution'");
 		return getUuidAndTitleCache(query);
+	}
+
+	@Override
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern){
+	    Session session = getSession();
+
+        clazz = clazz == null? (Class)type : clazz;
+        String clazzString = " FROM " + clazz.getSimpleName();
+
+        Query query = null;
+
+        if (pattern != null){
+            String whereClause = " WHERE nomenclaturalTitleCache LIKE :pattern";
+            whereClause += " OR titleCache LIKE :pattern";
+            whereClause += " OR collectorTitleCache like :pattern";
+
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString  + whereClause);
+            pattern = pattern + "%";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString);
+        }
+        if (limit != null){
+            query.setMaxResults(limit);
+        }
+
+        return getUuidAndAbbrevTitleCache(query);
 	}
 
 	@Override
@@ -183,18 +214,18 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         Query query = null;
 
         if (pattern != null){
-            String whereClause = " WHERE nomenclaturalTitle LIKE :pattern";
+            String whereClause = " WHERE nomenclaturalTitleCache LIKE :pattern";
             if (pattern.startsWith("*")){
                 whereClause += " OR titleCache LIKE :pattern";
             }
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString  + whereClause);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -207,7 +238,8 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<String> params = new HashSet<>();
         params.add("titleCache");
-        params.add("nomenclaturalTitle");
+        params.add("nomenclaturalTitleCache");
+        params.add("collectorTitleCache");
 
 	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
