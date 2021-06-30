@@ -217,6 +217,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
             String whereClause = " WHERE nomenclaturalTitleCache LIKE :pattern";
             if (pattern.startsWith("*")){
                 whereClause += " OR titleCache LIKE :pattern";
+                whereClause += " OR collectorTitleCache LIKE :pattern";
             }
 
             query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString  + whereClause);
