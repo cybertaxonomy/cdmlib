@@ -1786,6 +1786,7 @@ public class CdmLightClassificationExport
                 }
                 relNames.trim();
                 if (nonNames.size() > 0){
+                    nonRelNames = StringUtils.strip(nonRelNames, null);
                     nonRelNames += "] ";
                 }
 
@@ -1808,6 +1809,7 @@ public class CdmLightClassificationExport
                 }
                 relNames.trim();
                 if (otherRelationships.size() > 0){
+                    relNames = StringUtils.stripEnd(relNames, null);
                     relNames += "] ";
                 }
 
