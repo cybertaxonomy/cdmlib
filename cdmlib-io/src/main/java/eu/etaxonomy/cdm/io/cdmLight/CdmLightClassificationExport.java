@@ -1074,6 +1074,8 @@ public class CdmLightClassificationExport
                 csvLine[table.getIndex(CdmLightExportTable.FULL_NAME_WITH_REF)] = name.getFullTitleCache();
             } else {
                 List<TaggedText> taggedFullTitleCache = name.getTaggedFullTitle();
+                List<TaggedText> taggedName = name.getTaggedName();
+
                 String fullTitleWithHtml = createNameWithItalics(taggedFullTitleCache);
                 // TODO: adapt the tropicos titlecache creation
                 csvLine[table.getIndex(CdmLightExportTable.FULL_NAME_WITH_REF)] = fullTitleWithHtml.trim();
@@ -1799,7 +1801,11 @@ public class CdmLightClassificationExport
                     if (rel.getFromName().equals(name)){
                         label = rel.getType().getLabel() + " ";
                         relatedName = rel.getToName();
-                        relNames += label + relatedName.getTitleCache() + " ";
+                        if (state.getConfig().isAddHTML()){
+                            relNames += label + createNameWithItalics(relatedName.getTaggedName())+ " ";
+                        }else{
+                            relNames += label + relatedName.getTitleCache();
+                        }
                     }
 //                    else {
 //                        label = rel.getType().getInverseLabel() + " ";
@@ -1825,6 +1831,7 @@ public class CdmLightClassificationExport
 
                 if (taxonBases.size() == 1){
                      taxonBase = HibernateProxyHelper.deproxy(taxonBases.iterator().next());
+
                      if (taxonBase.getSec() != null){
                          sec = OriginalSourceFormatter.INSTANCE_WITH_YEAR_BRACKETS.format(taxonBase.getSecSource());
                      }
@@ -1843,9 +1850,17 @@ public class CdmLightClassificationExport
                          typifiedNamesWithoutAccepted += synonymSign + doubtful + nameString + nonRelNames + relNames;
                          typifiedNamesWithoutAcceptedWithSec += synonymSign + doubtful + nameString + sec + nonRelNames + relNames;
                      }else{
-                         sec = "";
+//                         sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
                              isAccepted = true;
+                         }
+                     }
+                     if (taxonBase.getAppendedPhrase() != null){
+                         if (state.getConfig().isAddHTML()){
+                             String taxonString = createNameWithItalics(taxonBase.getTaggedTitle()) ;
+                             taxonString = taxonString.replace("sec "+sec, "");
+                             String nameCacheWithItalics = createNameWithItalics(name.getTaggedName());
+                             nameString = nameString.replace(nameCacheWithItalics, taxonString);
                          }
                      }
                 }else{
