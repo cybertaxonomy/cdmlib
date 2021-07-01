@@ -254,7 +254,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         List<Object[]> result = query.list();
 
         for(Object[] object : result){
-            list.add(new TeamOrPersonUuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2], (String) object[3]));
+            list.add(new TeamOrPersonUuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2], (String) object[4]));
         }
         return list;
     }
