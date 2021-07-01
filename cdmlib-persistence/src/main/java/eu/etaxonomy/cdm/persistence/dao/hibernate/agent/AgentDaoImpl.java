@@ -31,9 +31,11 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -189,13 +191,13 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
             whereClause += " OR titleCache LIKE :pattern";
             whereClause += " OR collectorTitleCache like :pattern";
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString  + whereClause);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -220,13 +222,13 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
                 whereClause += " OR collectorTitleCache LIKE :pattern";
             }
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString  + whereClause);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
         }
         if (limit != null){
             query.setMaxResults(limit);
@@ -243,5 +245,32 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
         params.add("collectorTitleCache");
 
 	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    }
+
+	@Override
+    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
+        List<UuidAndTitleCache<E>> list = new ArrayList<>();
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            list.add(new TeamOrPersonUuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2], (String) object[3]));
+        }
+        return list;
+    }
+
+	@Override
+    protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
+        List<UuidAndTitleCache<E>> list = new ArrayList<>();
+
+
+        List<Object> result = query.list();
+
+        for(Object obj : result){
+          Object[] object = (Object[])obj;
+          list.add(new TeamOrPersonUuidAndTitleCache((UUID) object[0],(Integer) object[1], (String) object[2], (String) object[3], (String) object[4]));
+
+        }
+        return list;
     }
 }
