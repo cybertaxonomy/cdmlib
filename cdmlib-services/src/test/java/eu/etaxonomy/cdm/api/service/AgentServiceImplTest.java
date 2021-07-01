@@ -243,9 +243,9 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         // TODO Add Assertion Person "Ehrenberg" must not be member of a team.
         Person ehrenberg = (Person) service.load(UUID_EHRENBERG);
 
-        Team turland_monro_protected = CdmBase.deproxy(service.loadProxy(3), Team.class);
-        Team turland_monro = CdmBase.deproxy(service.loadProxy(4), Team.class);
-        Team turland_monro_null = CdmBase.deproxy(service.loadProxy(5), Team.class);
+        Team turland_monro_protected = CdmBase.deproxy(service.loadWithoutInitializing(3), Team.class);
+        Team turland_monro = CdmBase.deproxy(service.loadWithoutInitializing(4), Team.class);
+        Team turland_monro_null = CdmBase.deproxy(service.loadWithoutInitializing(5), Team.class);
 
         // Person has no flag for protecting the nomenclaturalTitle
         assertNull(nomenclaturalTitleField.get(turland));

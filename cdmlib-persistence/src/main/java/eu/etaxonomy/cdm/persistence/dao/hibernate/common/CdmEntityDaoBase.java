@@ -776,7 +776,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
     }
 
     @Override
-    public T loadProxy(int id){
+    public T loadWithoutInitializing(int id){
         return this.getSession().load(type, id);
     }
 

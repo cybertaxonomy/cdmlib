@@ -1024,9 +1024,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Field fullTitleCacheField = TaxonName.class.getDeclaredField("fullTitleCache");
         fullTitleCacheField.setAccessible(true);
 
-        TaxonName name1 = nameService.loadProxy(NAME1_ID);
-        TaxonName name2 = nameService.loadProxy(NAME2_ID);
-        TaxonName name3 = nameService.loadProxy(NAME3_ID);
+        TaxonName name1 = nameService.loadWithoutInitializing(NAME1_ID);
+        TaxonName name2 = nameService.loadWithoutInitializing(NAME2_ID);
+        TaxonName name3 = nameService.loadWithoutInitializing(NAME3_ID);
 
         name1 = CdmBase.deproxy(name1);
         assertEquals("TitleCache should be the persisted one", "Name1", titleCacheField.get(name1));

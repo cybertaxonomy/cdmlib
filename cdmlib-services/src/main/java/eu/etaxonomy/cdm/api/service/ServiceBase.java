@@ -204,8 +204,8 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
-    public T loadProxy(int id){
-        return dao.loadProxy(id);
+    public T loadWithoutInitializing(int id){
+        return dao.loadWithoutInitializing(id);
     }
 
     @Override
