@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * <b>Intended usage</b>: To allow maximum flexibility the property
  * {@link #setSubstitutionRules(Map)} should be set in the spring application
  * context.
- * 
+ *
  * @author a.kohlbecker
  * @since 24.06.2009
  */
@@ -32,15 +32,12 @@ public abstract class AbstractStringComparator<T extends Object> implements Comp
 	/**
 	 * Set the private field substitutionRules. The substitutionRules consist of
 	 * a regular expression as key and a string to be prepended as value.
-	 * 
-	 * @param rules
 	 */
 	public void setSubstitutionRules(Map<String, String> substitutionRules) {
 		this.substitutionRules = new HashMap<Pattern, String>(substitutionRules.size());
 		for (String regex : substitutionRules.keySet()) {
 			this.substitutionRules.put(Pattern.compile(regex), substitutionRules.get(regex));
 		}
-
 	}
 
 	/**
@@ -49,7 +46,7 @@ public abstract class AbstractStringComparator<T extends Object> implements Comp
 	 * in the following way: If the regular expression matches the given string
 	 * <code>s</code> the String mapped by the regular expression is prepended
 	 * to <code>s</code>.
-	 * 
+	 *
 	 * @param s
 	 * @return
 	 */

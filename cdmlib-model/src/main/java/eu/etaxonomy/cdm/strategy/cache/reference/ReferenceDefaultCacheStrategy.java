@@ -398,7 +398,7 @@ public class ReferenceDefaultCacheStrategy
      * Adds the year or full date of a reference to a given string
      * @param currentStr the given string
      * @param reference the reference
-     * @param useFullDatePublished wether to add the year only or the full date
+     * @param useFullDatePublished weather to add the year only or the full date
      * @return the concatenated string
      */
     public static String addYear(String currentStr, Reference reference, boolean useFullDatePublished){
