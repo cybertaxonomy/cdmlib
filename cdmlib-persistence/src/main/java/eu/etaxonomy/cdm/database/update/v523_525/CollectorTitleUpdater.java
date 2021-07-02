@@ -55,6 +55,10 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
         String sql = "UPDATE @@AgentBase@@ SET collectorTitleCache = titleCache WHERE DTYPE = 'Person' OR DTYPE = 'Team'";
         datasource.executeUpdate(caseType.replaceTableNames(sql));
 
+        //to remove changes previously made in SchemaUpdater_5230_5250 before handlePerson() was adapted
+        sql = "UPDATE @@AgentBase@@ SET collectorTitle = NULL WHERE DTYPE = 'Person'";
+        datasource.executeUpdate(caseType.replaceTableNames(sql));
+
         //for teams being part of gathering event
         sql = " SELECT ab.* FROM @@AgentBase@@ ab WHERE id IN (SELECT actor_id FROM @@GatheringEvent@@) ";
         ResultSet rs = datasource.executeQuery(caseType.replaceTableNames(sql));
