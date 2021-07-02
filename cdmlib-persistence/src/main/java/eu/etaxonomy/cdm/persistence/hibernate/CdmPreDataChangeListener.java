@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -160,14 +161,21 @@ public class CdmPreDataChangeListener
                 }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
                     //team-or-person caches
                     TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
+                    if (teamOrPerson.isInstanceOf(Team.class)){
+                        Team team = CdmBase.deproxy(teamOrPerson, Team.class);
+                        if (!team.isProtectedNomenclaturalTitleCache()){
+                            team.setNomenclaturalTitleCache(null, false);
+                        }
+                        if (!team.isProtectedCollectorTitleCache()){
+                            team.setCollectorTitleCache(null, false);
+                        }
+                    }
                     teamOrPerson.getNomenclaturalTitleCache();
                     teamOrPerson.getCollectorTitleCache();
-                    String titleCache = teamOrPerson.getTitleCache();
-                    //not sure if this is really needed
                     if (! teamOrPerson.isProtectedTitleCache()){
-                        teamOrPerson.setTitleCache(titleCache, false);
+                        teamOrPerson.setTitleCache(teamOrPerson.generateTitle(), false);
                     }
-                    //if the above is changed in future, change also in ImportDeduplicationHelper
+                    //if the above is changed in future, change also in ImportDeduplicationHelper.initAuthorTitleCaches
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
                     //reference caches
                     Reference ref = (Reference)entity;
