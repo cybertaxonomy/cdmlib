@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -752,30 +751,6 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonName> im
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
         return (Long) criteria.uniqueResult();
     }
-
-
-    /**
-     * TODO not yet in interface
-     * @param clazz
-     * @return
-     */
-    public int countAllRelationships(Class<? extends RelationshipBase> clazz) {
-        if (clazz != null && ! NameRelationship.class.isAssignableFrom(clazz) && ! HybridRelationship.class.isAssignableFrom(clazz) ){
-            throw new RuntimeException("Class must be assignable by a taxon or snonym relation");
-        }
-        int size = 0;
-
-        if (clazz == null || NameRelationship.class.isAssignableFrom(clazz)){
-            String hql = " SELECT count(rel) FROM NameRelationship rel";
-            size += (Long)getSession().createQuery(hql).list().get(0);
-        }
-        if (clazz == null || HybridRelationship.class.isAssignableFrom(clazz)){
-            String hql = " SELECT count(rel) FROM HybridRelationship rel";
-            size += (Long)getSession().createQuery(hql).list().get(0);
-        }
-        return size;
-    }
-
 
     @Override
     public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
