@@ -19,6 +19,10 @@ import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdateResult;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
 /**
  * #4311
@@ -65,24 +69,41 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
                     datasource.executeUpdate(caseType.replaceTableNames(sql));
                 }else{
                     //for each team member handle like persons below
-                    sql = "SELECT p.* FROM @@AgentBase_AgentBase@@ MN INNER JOIN @@AgentBase@@ p ON p.id = MN.teamMembers_id WHERE MN.team_ID = " + id;
+                    sql = "SELECT p.* FROM @@AgentBase_AgentBase@@ MN INNER JOIN @@AgentBase@@ p ON p.id = MN.teamMembers_id WHERE MN.team_ID = " + id + " ORDER BY sortIndex ";
                     ResultSet rs2 = datasource.executeQuery(caseType.replaceTableNames(sql));
+                    Team team = Team.NewInstance();
                     while (rs2.next()){
-                        handlePerson(rs2, datasource, caseType, result);
+                        Person member = handlePerson(rs2, datasource, caseType);
+                        team.addTeamMember(member);
                     }
                     rs2.close();
+                    String collectorTitleCache = TeamDefaultCacheStrategy.INSTANCE().getCollectorTitleCache(team);
+                    sql = " UPDATE @@AgentBase@@ SET collectorTitleCache = '" + collectorTitleCache + "' WHERE id = " + id;
+                    datasource.executeUpdate(caseType.replaceTableNames(sql));
                 }
             }else if ("Person".equalsIgnoreCase(dtype)){
                 //for each person in gathering event
-                handlePerson(rs, datasource, caseType, result);
+                handlePerson(rs, datasource, caseType);
             }
         }
     }
 
-    private void handlePerson(ResultSet rs, ICdmDataSource datasource, CaseType caseType, SchemaUpdateResult result) throws SQLException {
-        //set collectorTitle = titleCache
+    private Person handlePerson(ResultSet rs, ICdmDataSource datasource, CaseType caseType) throws SQLException {
+        //set collectorTitle
         int id = rs.getInt("id");
-        String sql = "UPDATE @@AgentBase@@ SET collectorTitle = titleCache WHERE id = " + id;
+        String familyName = rs.getString("familyName");
+        String initials = rs.getString("initials");
+        String givenName = rs.getString("givenName");
+        String titleCache = rs.getString("titleCache");
+        String nomenclaturalTitle = rs.getString("nomenclaturalTitle");
+        boolean protectedTitleCache = rs.getBoolean("protectedTitleCache");
+
+        Person person = Person.NewInstance(nomenclaturalTitle, familyName, initials, givenName);
+        person.setTitleCache(titleCache, protectedTitleCache);
+        String collectorTitle =  PersonDefaultCacheStrategy.INSTANCE().getCollectorTitleCache(person);
+
+        String sql = "UPDATE @@AgentBase@@ SET collectorTitleCache = '"+collectorTitle+"', collectorTitle = '"+collectorTitle+"' WHERE id = " + id;
         datasource.executeUpdate(caseType.replaceTableNames(sql));
+        return person;
     }
 }
