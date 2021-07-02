@@ -242,7 +242,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	}
 
 	@Test
-//	@DataSet(value="NormalExplicitImportTest.testUuid.xml")
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
@@ -251,7 +250,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	public void testUUID(){
 		UUID taxonUuid = UUID.fromString("aafce7fe-0c5f-42ed-814b-4c7c2c715660");
 		UUID synonymUuid = UUID.fromString("fc4a995b-37a9-4984-afe6-e352c6c04d92");
-
 
 		//test data set
 		assertEquals("Number of taxon bases should be 2", 2, taxonService.count(null));
@@ -323,8 +321,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 
 	/**
 	 * Returns description element for record id 1
-	 * @param description
-	 * @return
 	 */
 	private TextData getTextElement(TaxonDescription description, String descriptionText) {
 		for (DescriptionElementBase element : description.getElements()){
@@ -339,9 +335,6 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		}
 		return null;
 	}
-
-    @Override
-    public void createTestDataSet() throws FileNotFoundException {}
 
     @Test
     @DataSets({
@@ -359,5 +352,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
         int countTaxa = taxonService.count(Taxon.class);
         assertEquals("Number of Taxa should be 18", 18, countTaxa);
     }
+
+    @Override
+    public void createTestDataSet() throws FileNotFoundException {}
 
 }

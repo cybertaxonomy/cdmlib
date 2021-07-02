@@ -56,7 +56,6 @@ public class VocabularyServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     @Test
-//    @Ignore  //not yet correctly implemented
     public void testGetTypeDesignationVocabulary() {
         List<TermVocabulary<SpecimenTypeDesignationStatus>> typeDesignationVocabularyList =
         		vocabularyService.findByTermType(TermType.SpecimenTypeDesignationStatus, null);

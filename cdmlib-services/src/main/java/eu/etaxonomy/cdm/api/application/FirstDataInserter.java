@@ -135,7 +135,6 @@ public class FirstDataInserter extends AbstractDataInserter {
     @Autowired
     private IGroupService groupService;
 
-
     @Autowired
     private IGrantedAuthorityService grantedAuthorityService;
 
@@ -199,7 +198,6 @@ public class FirstDataInserter extends AbstractDataInserter {
             logger.debug("insertFirstData() already executed before, skipping this time");
         }
     }
-
 
     private void checkMetadata() {
         int metaDataCount = commonService.getCdmMetaData().size();
@@ -359,5 +357,4 @@ public class FirstDataInserter extends AbstractDataInserter {
         commonService.saveAllMetaData(metaData);
         logger.info("Metadata created.");
     }
-
 }
