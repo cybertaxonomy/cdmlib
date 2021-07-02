@@ -40,12 +40,20 @@ public abstract class OccurrenceCacheStrategyBase<T extends SpecimenOrObservatio
 
     @Override
     public String getTitleCache(T specimen) {
+        return getTitleCache(specimen, false);
+    }
+
+    public String getTitleCache(T specimen, boolean emptyIfBlank) {
         if (specimen == null){
             return null;
         }
         String result = doGetTitleCache(specimen);
         if (isBlank(result)){
-            result = specimen.toString();
+            if (emptyIfBlank){
+                result = "";
+            }else{
+                result = specimen.toString();
+            }
         }
         return result;
     }

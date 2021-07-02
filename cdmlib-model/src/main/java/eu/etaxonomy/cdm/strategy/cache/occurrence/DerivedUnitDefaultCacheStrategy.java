@@ -57,7 +57,7 @@ public class DerivedUnitDefaultCacheStrategy
         SortedSet<FieldUnit> fieldUnits = getFieldUnits(specimen);
         if(!skipFieldUnit){
             for (FieldUnit fieldUnit : fieldUnits){
-                result = CdmUtils.concat("; ", fieldUnitCacheStrategy.getTitleCache(fieldUnit));
+                result = CdmUtils.concat("; ", fieldUnitCacheStrategy.getTitleCache(fieldUnit, true));
             }
         }
 

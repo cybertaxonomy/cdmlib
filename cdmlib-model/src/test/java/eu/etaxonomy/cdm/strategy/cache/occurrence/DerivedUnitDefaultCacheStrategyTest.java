@@ -200,6 +200,22 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         Assert.assertEquals(correctCache, specimen.getTitleCache());
     }
 
+    @Test
+    public void testDerivedUnitWithEmptyFieldUnit() {
+        specimen = DerivedUnit.NewPreservedSpecimenInstance();
+        derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
+        specimen.setDerivedFrom(derivationEvent);
+        fieldUnit = FieldUnit.NewInstance();
+        fieldUnit.addDerivationEvent(derivationEvent);
+        gatheringEvent = GatheringEvent.NewInstance();
+        fieldUnit.setGatheringEvent(gatheringEvent);
+        Assert.assertEquals("DerivedUnit#0<"+specimen.getUuid()+">", specimen.getTitleCache());
+
+        specimen.setBarcode("B996633");
+        Assert.assertEquals("(B996633).", specimen.getTitleCache());  //maybe brackets and/or the full stop will be removed in future
+
+    }
+
     private void addEcology(FieldUnit fieldUnit, String ecology) {
         SpecimenDescription description = SpecimenDescription.NewInstance(fieldUnit);
         TextData textData = TextData.NewInstance(Feature.ECOLOGY(), ecology, Language.DEFAULT(), null);
