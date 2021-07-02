@@ -114,7 +114,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         subSpeciesName.setNomenclaturalReference(citationRef);
         Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
         subSpeciesName.setNomenclaturalMicroReference("25");
-        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
         //TODO not yet completed
     }
 
