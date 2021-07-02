@@ -145,6 +145,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicOperation;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicOperationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -688,6 +690,7 @@ public class FullCoverageDataGenerator {
 		Taxon concept = Taxon.NewInstance(name, getReference());
 		TaxonRelationship taxRel = taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(),
 				sec, "444");
+		taxRel.setOperation(TaxonomicOperation.NewInstance(TaxonomicOperationType.SPLIT));
 		taxon.setTaxonStatusUnknown(true);
 		handleAnnotatableEntity(taxRel);
 		concept.setConcept(true);
@@ -723,12 +726,7 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(childTaxon);
 		cdmBases.add(classification);
 		cdmBases.add(agentRelationType);
-
-
 	}
-
-
-
 
 	private void createReference(List<CdmBase> cdmBases) {
 		Reference reference = ReferenceFactory.newArticle();

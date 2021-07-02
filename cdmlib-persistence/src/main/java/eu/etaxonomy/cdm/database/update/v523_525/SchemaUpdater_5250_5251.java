@@ -13,10 +13,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
-import eu.etaxonomy.cdm.database.update.v522_523.SchemaUpdater_5220_5230;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
 /**
@@ -50,13 +51,29 @@ public class SchemaUpdater_5250_5251 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
-		CollectorTitleUpdater.NewInstance(stepList);
+        //#4311
+        CollectorTitleUpdater.NewInstance(stepList);
+
+        //#9692 add TaxonomicOperation table
+        stepName = "Add TaxonomicOperation table";
+        tableName = "TaxonomicOperation";
+        String[] columnNames = new String[]{"type","timeperiod_start", "timeperiod_end", "timeperiod_freetext"};
+        String[] columnTypes = new String[]{"string_20","string_255","string_255","string_255"};
+        String[] referencedTables = new String[]{null, null, null, null};
+        TableCreator.NewVersionableInstance(stepList, stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT);
+
+        //#9692 add operation to taxon relationship
+        stepName = "Add operation to taxon relationship";
+        tableName = "TaxonRelationship";
+        newColumnName = "operation_id";
+        String referencedTable = "TaxonomicOperation";
+        ColumnAdder.NewIntegerInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT, !NOT_NULL, referencedTable);
 
         return stepList;
     }
 
     @Override
     public ISchemaUpdater getPreviousUpdater() {
-        return SchemaUpdater_5220_5230.NewInstance();
+        return SchemaUpdater_5230_5250.NewInstance();
     }
 }

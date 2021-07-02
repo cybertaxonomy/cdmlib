@@ -695,7 +695,7 @@ public class Reference
     }
 
 	public boolean hasDatePublished(){
-		boolean result =  ! ( (this.datePublished == null) || isBlank(datePublished.toString()));
+		boolean result = !((this.datePublished == null) || isBlank(datePublished.toString()));
 		return result;
 	}
 
