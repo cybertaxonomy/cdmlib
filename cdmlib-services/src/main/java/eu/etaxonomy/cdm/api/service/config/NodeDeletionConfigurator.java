@@ -11,39 +11,30 @@ package eu.etaxonomy.cdm.api.service.config;
 /**
  * @author k.luther
  * @since 03.11.2015
- *
  */
 public class NodeDeletionConfigurator extends DeleteConfiguratorBase {
 
-        public enum ChildHandling{
-            DELETE,
-            MOVE_TO_PARENT
-        }
+    private static final long serialVersionUID = 2171213260336308399L;
 
+    public enum ChildHandling{
+        DELETE,
+        MOVE_TO_PARENT
+    }
 
-        private ChildHandling childHandling = ChildHandling.DELETE;
+    private ChildHandling childHandling = ChildHandling.DELETE;
+    protected boolean deleteElement = true;
 
+    public ChildHandling getChildHandling() {
+        return childHandling;
+    }
+    public void setChildHandling(ChildHandling childHandling) {
+        this.childHandling = childHandling;
+    }
 
-        public void setChildHandling(ChildHandling childHandling) {
-            this.childHandling = childHandling;
-        }
-
-
-        public ChildHandling getChildHandling() {
-            return childHandling;
-        }
-
-        public boolean deleteElement = true;
-
-
-        public boolean isDeleteElement() {
-            return deleteElement;
-        }
-
-
-        public void setDeleteElement(boolean deleteElement) {
-            this.deleteElement = deleteElement;
-        }
-
-
+    public boolean isDeleteElement() {
+        return deleteElement;
+    }
+    public void setDeleteElement(boolean deleteElement) {
+        this.deleteElement = deleteElement;
+    }
 }

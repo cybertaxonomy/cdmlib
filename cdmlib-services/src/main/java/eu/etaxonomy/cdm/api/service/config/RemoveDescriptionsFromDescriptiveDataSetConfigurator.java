@@ -22,14 +22,7 @@ public class RemoveDescriptionsFromDescriptiveDataSetConfigurator extends Delete
     public boolean isOnlyRemoveDescriptionsFromDataSet() {
         return onlyRemoveDescriptionsFromDataSet;
     }
-
-
     public void setOnlyRemoveDescriptionsFromDataSet(boolean onlyRemoveDescriptionsFromDataSet) {
         this.onlyRemoveDescriptionsFromDataSet = onlyRemoveDescriptionsFromDataSet;
     }
-
-
-
-
-
 }

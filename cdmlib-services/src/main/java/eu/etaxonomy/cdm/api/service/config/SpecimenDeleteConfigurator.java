@@ -11,11 +11,9 @@ package eu.etaxonomy.cdm.api.service.config;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 
-
 /**
  * @author pplitzner
  * @since Nov 10, 2014
- *
  */
 public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
 
@@ -25,12 +23,13 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
      * If <code>true</code> all sub derivates of the specimen are deleted.
      */
     private boolean deleteChildren;
-    /**
-     * TODO: is this needed? For which use case?
-     * Shifts the sub derivates of the deleted specimen to the parents of the
-     * deleted specimen i.e. adds the sub derivates to the derivation event of
-     * the parent
-     */
+
+//    /**
+//     * TODO: is this needed? For which use case?
+//     * Shifts the sub derivates of the deleted specimen to the parents of the
+//     * deleted specimen i.e. adds the sub derivates to the derivation event of
+//     * the parent
+//     */
 //    private boolean shiftHierarchyUp;
     /**
      * If <code>true</code> the {@link SpecimenTypeDesignation} which
@@ -56,7 +55,6 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
     public boolean isDeleteChildren() {
         return deleteChildren;
     }
-
     public void setDeleteChildren(boolean deleteChildren) {
         this.deleteChildren = deleteChildren;
     }
@@ -64,7 +62,6 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
 //    public boolean isShiftHierarchyUp() {
 //        return shiftHierarchyUp;
 //    }
-//
 //    public void setShiftHierarchyUp(boolean shiftHierarchyUp) {
 //        this.shiftHierarchyUp = shiftHierarchyUp;
 //    }
@@ -72,7 +69,6 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
     public boolean isDeleteFromTypeDesignation() {
         return deleteFromTypeDesignation;
     }
-
     public void setDeleteFromTypeDesignation(boolean deleteFromTypeDesignation) {
         this.deleteFromTypeDesignation = deleteFromTypeDesignation;
     }
@@ -80,7 +76,6 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
     public boolean isDeleteFromIndividualsAssociation() {
         return deleteFromIndividualsAssociation;
     }
-
     public void setDeleteFromIndividualsAssociation(boolean deleteFromIndividualsAssociation) {
         this.deleteFromIndividualsAssociation = deleteFromIndividualsAssociation;
     }
@@ -88,7 +83,6 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
     public boolean isDeleteFromDescription() {
         return deleteFromDescription;
     }
-
     public void setDeleteFromDescription(boolean deleteFromDescription) {
         this.deleteFromDescription = deleteFromDescription;
     }
@@ -96,9 +90,7 @@ public class SpecimenDeleteConfigurator extends DeleteConfiguratorBase {
     public boolean isDeleteMolecularData() {
         return isDeleteMolecularData;
     }
-
     public void setDeleteMolecularData(boolean isDeleteMolecularData) {
         this.isDeleteMolecularData = isDeleteMolecularData;
     }
-
 }

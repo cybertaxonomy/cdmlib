@@ -17,7 +17,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
  *
  * @author k.luther
  * @since 09.11.2011
- *
  */
 public class TaxonBaseDeletionConfigurator extends DeleteConfiguratorBase{
 
@@ -38,7 +37,6 @@ public class TaxonBaseDeletionConfigurator extends DeleteConfiguratorBase{
 	public boolean isDeleteNameIfPossible() {
 		return deleteNameIfPossible;
 	}
-
 	public void setDeleteNameIfPossible(boolean deleteNameIfPossible) {
 		this.deleteNameIfPossible = deleteNameIfPossible;
 	}
@@ -54,7 +52,6 @@ public class TaxonBaseDeletionConfigurator extends DeleteConfiguratorBase{
 	public NameDeletionConfigurator getNameDeletionConfig() {
 		return nameDeletionConfig;
 	}
-
 	public void setNameDeletionConfig(NameDeletionConfigurator nameDeletionConfig) {
 		this.nameDeletionConfig = nameDeletionConfig;
 	}
@@ -69,7 +66,6 @@ public class TaxonBaseDeletionConfigurator extends DeleteConfiguratorBase{
     public boolean isDeleteSynonymRelations() {
         return deleteSynonymRelations;
     }
-
     /**
      * @param deleteSynonymRelations the deleteSynonymRelations to set
      */
