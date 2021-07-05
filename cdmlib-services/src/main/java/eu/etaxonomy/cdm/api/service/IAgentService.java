@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -113,7 +114,24 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
      *
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
-    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
+
+    /**
+     * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
+     * with their respectiveCollectorTitleCache
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
+     */
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndTitleCacheWithCollectorTitleCache(Class<T> clazz, Integer limit, String pattern);
+
+    /**
+     * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
+     * with their respectiveCollectorTitleCache
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
+     */
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern);
+
 
     /**
      * @param teamUuid

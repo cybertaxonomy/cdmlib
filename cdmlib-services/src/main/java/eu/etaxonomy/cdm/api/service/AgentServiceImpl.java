@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.merge.ConvertMergeStrategy;
@@ -135,7 +136,7 @@ public class AgentServiceImpl
 
 	@Override
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
-		return dao.getUuidAndAbbrevTitleCache(Institution.class, limit, pattern);
+		return dao.getUuidAndTitleCache(Institution.class, limit, pattern);
 	}
 
 	@Override
@@ -258,8 +259,18 @@ public class AgentServiceImpl
 	}
 
     @Override
-    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern) {
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern) {
         return dao.getUuidAndAbbrevTitleCache(clazz, null, pattern);
+    }
+
+    @Override
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndTitleCacheWithCollectorTitleCache(Class<T> clazz, Integer limit, String pattern) {
+        return dao.getUuidAndTitleCacheWithCollector(clazz, null, pattern);
+    }
+
+    @Override
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern) {
+        return dao.getTeamOrPersonUuidAndTitleCache(clazz, null, pattern);
     }
 
     @Override
