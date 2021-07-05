@@ -60,11 +60,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Criteria crit = getSession().createCriteria(Institution.class);
     		crit.add(Restrictions.eq("code", code));
- 	    	return crit.list();
+ 	    	@SuppressWarnings("unchecked")
+            List<Institution> result = crit.list();
+ 	    	return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Institution.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("code").eq(code));
-			return query.getResultList();
+			@SuppressWarnings("unchecked")
+            List<Institution> result = query.getResultList();
+			return result;
 		}
 	}
 
@@ -172,7 +176,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
 	@Override
 	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
-		Query query = getSession().createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where dtype = 'Institution'");
+		Query query = getSession().createQuery("SELECT uuid, id, titleCache FROM " + Institution.class.getSimpleName());
 		return getUuidAndTitleCache(query);
 	}
 
@@ -180,15 +184,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndTitleCacheWithCollector(Class<T> clazz, Integer limit, String pattern){
 	    Session session = getSession();
 
-        clazz = clazz == null? (Class)type : clazz;
+        clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
         Query query = null;
 
         if (pattern != null){
-            String whereClause = " WHERE collectorTitleCache LIKE :pattern";
-            whereClause += " OR titleCache LIKE :pattern";
-            whereClause += " OR nomenclaturalTitleCache like :pattern";
+            String whereClause = " WHERE collectorTitleCache LIKE :pattern "
+                     + " OR titleCache LIKE :pattern "
+                     + " OR nomenclaturalTitleCache like :pattern ";
 
             query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
@@ -209,14 +213,13 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern){
         Session session = getSession();
 
-        clazz = clazz == null? (Class)type : clazz;
+        clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
         Query query = null;
 
         if (pattern != null){
             String whereClause = " WHERE titleCache LIKE :pattern";
-
 
             query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
@@ -238,7 +241,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
     public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern){
         Session session = getSession();
 
-        clazz = clazz == null? (Class)type : clazz;
+        clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
         Query query = null;
@@ -275,19 +278,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
     }
 
-
-
-
     protected <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Query query){
         List<TeamOrPersonUuidAndTitleCache<T>> list = new ArrayList<>();
 
-
+        @SuppressWarnings("unchecked")
         List<Object> result = query.list();
 
         for(Object obj : result){
           Object[] object = (Object[])obj;
           list.add(new TeamOrPersonUuidAndTitleCache((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2], (String) object[4]));
-
         }
         return list;
     }
