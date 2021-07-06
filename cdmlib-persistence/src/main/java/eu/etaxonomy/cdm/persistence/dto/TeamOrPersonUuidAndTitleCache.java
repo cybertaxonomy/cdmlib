@@ -22,12 +22,6 @@ public class TeamOrPersonUuidAndTitleCache<T extends ICdmBase> extends UuidAndTi
 
     private String collectorTitleCache;
 
-    /**
-     * @param uuid
-     * @param id
-     * @param titleCache
-     * @param abbrevTitleCache
-     */
     public TeamOrPersonUuidAndTitleCache(UUID uuid, Integer id, String titleCache, String abbrevTitleCache, String collectorTitleCache) {
         super(uuid, id, titleCache, abbrevTitleCache);
         this.setCollectorTitleCache(collectorTitleCache);
@@ -40,8 +34,4 @@ public class TeamOrPersonUuidAndTitleCache<T extends ICdmBase> extends UuidAndTi
     public void setCollectorTitleCache(String collectorTitleCache) {
         this.collectorTitleCache = collectorTitleCache;
     }
-
-
-
-
 }
