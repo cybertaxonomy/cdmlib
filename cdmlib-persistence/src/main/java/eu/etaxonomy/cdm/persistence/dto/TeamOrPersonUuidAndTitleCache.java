@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
  * @author k.luther
  * @since Jun 30, 2021
  */
-public class TeamOrPersonUuidAndTitleCache<T extends AgentBase<?>> extends UuidAndTitleCache<T> {
+public class TeamOrPersonUuidAndTitleCache<T extends AgentBase> extends UuidAndTitleCache<T> {
 
     private static final long serialVersionUID = 3083330169541901724L;
 
