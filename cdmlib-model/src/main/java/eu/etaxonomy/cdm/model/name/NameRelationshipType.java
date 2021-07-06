@@ -85,6 +85,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
 	private static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
+	private static final UUID uuidNonUnspecific = UUID.fromString("78360e2a-159d-4e2f-893e-8666805840fa");
 
 
 	public static NameRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
@@ -544,6 +545,27 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType BLOCKING_NAME_FOR(){
 	  return  findTermByUuid(uuidBlockingNameFor);
 	}
+
+	/**
+     * Returns the unspecific 'non' name relationship type. Name A in this
+     * relationship is unspecificly marked as not being name B.
+     * This relationship should only be used if in the given
+     * context no further information exists to more specifically
+     * define what kind of non-relationship is meant.
+     * <BR>
+     * When cleaning data this relationship type should be replaced
+     * by one of the below mentioned more specific relationship types.
+     *
+     * This type is neither symmetric nor transitive.
+     *
+     * @see     #LATER_HOMONYM()
+     * @see     #TREATED_AS_LATER_HOMONYM()
+     * @see     #BLOCKING_NAME_FOR()
+     */
+	//#5655, #5640
+    public static final NameRelationshipType UNSPECIFIC_NON(){
+      return findTermByUuid(uuidNonUnspecific);
+    }
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NameRelationshipType> termVocabulary) {

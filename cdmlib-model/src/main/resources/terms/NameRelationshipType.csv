@@ -13,3 +13,4 @@
 "a176c9ad-b4c2-4c57-addd-90373f8270eb",,"is validated by","is validated by","","is validating","is validating","",FALSE,FALSE,"NO","NO"
 "a25ee4c1-863a-4dab-9499-290bf9b89639",,"is later validated by","is later validated by","","is later validating","is later validating","",FALSE,FALSE,"NO","NO"
 "1dab357f-2e12-4511-97a4-e5153589e6a6",,"is blocking name for","is blocking name for","","is new combination blocked by","is new combination blocked by","",FALSE,FALSE,"NO","NO"
+"78360e2a-159d-4e2f-893e-8666805840fa",,"'non' (has no relation with)","a not further defined 'non' relationship between name A and name B","","has an unilateral 'non' relation from","has an unilateral 'non' relation from","","FALSE","FALSE","NO","NO"
