@@ -252,8 +252,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		T newInstance = super.readCsvLine(termClass, csvLine, termType, terms, abbrevAsId);
 
-		String inverseText = CdmUtils.Ne(csvLine.get(6).trim());
 		String inverseLabel = csvLine.get(5).trim();
+		String inverseText = CdmUtils.Ne(csvLine.get(6).trim());
 		String inverseLabelAbbrev = CdmUtils.Ne(csvLine.get(7).trim());
 		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
 		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(8)));
@@ -283,7 +283,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase<T>>
 
 		result.inverseRepresentations = new HashSet<>();
 		for (Representation rep: this.inverseRepresentations){
-			result.addInverseRepresentation((Representation)rep.clone());
+			result.addInverseRepresentation(rep.clone());
 		}
 
 		//no changes to: symmetric, transitiv

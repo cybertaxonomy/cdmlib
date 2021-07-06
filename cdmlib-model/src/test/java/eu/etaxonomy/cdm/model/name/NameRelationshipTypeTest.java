@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 /**
  * Testclass for {@link NameRelationshipType}.
  *
- * @author a.muelelr
+ * @author a.mueller
  * @since 20.11.2011
  */
 public class NameRelationshipTypeTest extends EntityTestBase {
