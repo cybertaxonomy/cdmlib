@@ -126,12 +126,12 @@ public class AgentServiceImpl
 
 	@Override
 	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache() {
-		return dao.getPersonUuidAndTitleCache();
+		return dao.getUuidAndTitleCache(Person.class);
 	}
 
 	@Override
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache() {
-		return dao.getTeamUuidAndTitleCache();
+		return dao.getUuidAndTitleCache(Team.class);
 	}
 
 	@Override

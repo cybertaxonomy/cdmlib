@@ -716,10 +716,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
+
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
-
-
-		List<Object> result = query.list();
+		@SuppressWarnings("unchecked")
+        List<Object> result = query.list();
 
         for(Object obj : result){
             if (obj instanceof SortableTaxonNodeQueryResult) {

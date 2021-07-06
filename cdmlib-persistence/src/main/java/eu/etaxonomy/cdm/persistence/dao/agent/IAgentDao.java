@@ -84,13 +84,6 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	public List<Address> getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber);
 
 	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>Person</code>s
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache();
-
-	/**
 	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
 	 * with their respective nomenclaturalTitle instead of regular titleCache
 	 *
@@ -98,15 +91,7 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
 
-	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
-	 * with their respective titleCache
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
-
-	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
+    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndTitleCache(Class<T> clazz);
 
     public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
 
