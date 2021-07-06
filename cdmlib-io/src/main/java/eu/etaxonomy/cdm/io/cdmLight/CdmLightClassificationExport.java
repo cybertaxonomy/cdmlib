@@ -1757,7 +1757,8 @@ public class CdmLightClassificationExport
                      // alle Homonyme und inverse blocking names
                         if (rel.getType().equals(NameRelationshipType.LATER_HOMONYM())
                                 || rel.getType().equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())
-                                || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))){
+                                || (rel.getType().equals(NameRelationshipType.BLOCKING_NAME_FOR()))
+                                || (rel.getType().equals(NameRelationshipType.UNSPECIFIC_NON()))){
                             nonNames.add(rel);
                         }else if (!rel.getType().isBasionymRelation()){
                             otherRelationships.add(rel);
