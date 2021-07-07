@@ -39,9 +39,6 @@ public class TestAgentService {
 
 	static CdmApplicationController appController;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 //		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "", "");
@@ -69,5 +66,4 @@ public class TestAgentService {
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.size() > 0);
 	}
-
 }

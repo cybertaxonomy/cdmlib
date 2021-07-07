@@ -112,7 +112,6 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
         } catch (Exception e) {
             Assert.fail("Missing monitor throws exception");
         }
-
     }
 
 //    @Test

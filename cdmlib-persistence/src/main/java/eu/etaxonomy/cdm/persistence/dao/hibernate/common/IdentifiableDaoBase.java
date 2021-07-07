@@ -686,7 +686,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 + " uuid, id, titleCache "
                 + ") "
                 + " FROM " + clazz.getSimpleName()
-                + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
+                + (pattern!=null ? " WHERE titleCache LIKE :pattern" : ""));
         if(pattern!=null){
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");

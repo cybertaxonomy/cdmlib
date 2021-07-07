@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -28,6 +27,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.ExcelUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;

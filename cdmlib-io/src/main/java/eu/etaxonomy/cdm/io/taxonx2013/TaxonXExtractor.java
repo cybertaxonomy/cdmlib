@@ -535,12 +535,12 @@ public class TaxonXExtractor {
             }
         }
 
-        Map<String,UUID> personMap = new HashMap<String, UUID>();
+        Map<String,UUID> personMap = new HashMap<>();
         for (UuidAndTitleCache<Person> person:hiberPersons){
             personMap.put(person.getTitleCache(), person.getUuid());
         }
 
-        java.util.Collection<AgentBase> personToadd = new ArrayList<AgentBase>();
+        java.util.Collection<AgentBase> personToadd = new ArrayList<>();
 
         for (String collector:collectorsU){
             Person p = Person.NewInstance();
@@ -560,10 +560,6 @@ public class TaxonXExtractor {
         state.getConfig().setPersons(titleCachePerson);
     }
 
-    /**
-     * @param name
-     * @return
-     */
     protected String getFullReference(String name, List<ParserProblem> problems) {
         //        logger.info("getFullReference for "+ name);
         JTextArea textArea = new JTextArea("Complete the reference or the name '"+name+"'.\nThe current problem is "+StringUtils.join(problems,"--"));
