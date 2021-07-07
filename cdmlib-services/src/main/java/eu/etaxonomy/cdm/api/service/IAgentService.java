@@ -78,35 +78,12 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
     public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>Person</code>s
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache();
-
-	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> objects
-	 * with their respective titleCache
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
-
-	/**
 	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> objects
 	 * with their respective nomenclaturalTitle instead of regular titleCache
 	 *
 	 * @return a list of <code>UuidAndTitleCache</code> instances
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
-
-	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
-	 * with their respective titleCache
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
 
 	/**
      * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
@@ -133,11 +110,6 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
     public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern);
 
 
-    /**
-     * @param teamUuid
-     * @return
-     * @throws MergeException
-     */
     public UpdateResult convertTeam2Person(UUID teamUuid) throws MergeException;
 
 	/**

@@ -91,8 +91,6 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
 
-    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndTitleCache(Class<T> clazz);
-
     public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
 
     public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode,

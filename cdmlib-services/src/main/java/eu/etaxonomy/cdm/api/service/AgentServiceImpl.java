@@ -125,21 +125,6 @@ public class AgentServiceImpl
 	}
 
 	@Override
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache() {
-		return dao.getUuidAndTitleCache(Person.class);
-	}
-
-	@Override
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache() {
-		return dao.getUuidAndTitleCache(Team.class);
-	}
-
-	@Override
-	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
-		return dao.getUuidAndTitleCache(Institution.class, limit, pattern);
-	}
-
-	@Override
 	@Transactional(readOnly = false)
     public DeleteResult delete(UUID agentUUID){
 	    DeleteResult result = new DeleteResult();
