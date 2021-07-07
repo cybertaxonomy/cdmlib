@@ -11,11 +11,12 @@ package eu.etaxonomy.cdm.api.service.longrunningService;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -35,7 +36,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 18.12.2019
  */
-@Ignore  //ignore ignored because it currently sometimes influences other tests due to test data
 public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest {
 
     private static final UUID uuidTermTree = UUID.fromString("dd24b972-3364-4902-a345-310b8c771e00");
@@ -73,14 +73,16 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
             TermTree<Feature> termTree = termTreeService.find(uuidTermTree);
             Assert.assertNotNull(termTree);
             TermNode<Feature> rootNode = termTree.getRoot();
-            testTreeRecursive(sortIndexField, rootNode);
+            ListIterator<Integer> expectedIdOrder = Arrays.asList(new Integer[]{5000,5002,5003,5004,5005,5006,5001}).listIterator();
+            testTreeRecursive(sortIndexField, rootNode,expectedIdOrder);
 
         } catch (NoSuchFieldException | SecurityException e1) {
             Assert.fail("sortIndex field not found");
         }
     }
 
-    private <T extends ITreeNode<T>> void testTreeRecursive(Field sortIndexField, ITreeNode<T> rootNode) {
+    private <T extends ITreeNode<T>> void testTreeRecursive(Field sortIndexField, ITreeNode<T> rootNode, ListIterator<Integer> expectedIdOrder) {
+        Assert.assertEquals(expectedIdOrder.next(), (Integer)rootNode.getId());
         @SuppressWarnings("deprecation")
         List<T> children = rootNode.getChildNodes();
         for (int i = 0 ; i < children.size(); i++){
@@ -88,7 +90,7 @@ public class SortIndexUpdaterWrapperTest extends CdmTransactionalIntegrationTest
                 T child = children.get(i);
                 Integer sortIndex = (Integer)sortIndexField.get(child);
                 Assert.assertEquals((Integer)i, sortIndex);
-                testTreeRecursive(sortIndexField, child);
+                testTreeRecursive(sortIndexField, child, expectedIdOrder);
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 Assert.fail("sortIndex field not accessible");
             }

@@ -66,16 +66,16 @@ public class SortIndexUpdaterWrapper implements Serializable {
         }
 
         if (config.isDoTaxonNode()){
-            updater = SortIndexUpdater.NewInstance(null, "Update taxon node sortindex", TAXON_NODE, "parent_id", "sortIndex", true);
+            updater = SortIndexUpdater.NewUpdateExistingSortindexInstance(null, "Update taxon node sortindex", TAXON_NODE, "parent_id", "sortIndex", true);
 
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoTermNode()){
-            updater = SortIndexUpdater.NewInstance(null, "Update term node sortindex", TERM_NODE, "parent_id", "sortIndex", true);
+            updater = SortIndexUpdater.NewUpdateExistingSortindexInstance(null, "Update term node sortindex", TERM_NODE, "parent_id", "sortIndex", true);
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoPolytomousKeyNode()){
-            updater = SortIndexUpdater.NewInstance(null, "Update polytomous key node sortindex", POLYTOMOUS_KEY_NODE, "parent_id", "sortindex", true);
+            updater = SortIndexUpdater.NewUpdateExistingSortindexInstance(null, "Update polytomous key node sortindex", POLYTOMOUS_KEY_NODE, "parent_id", "sortindex", true);
             result.includeResult(update(updater, monitor));
         }
         return result;
