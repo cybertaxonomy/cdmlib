@@ -966,8 +966,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
 
         //existing teams in DB
-        Map<String,Team> titleCacheTeam = new HashMap<String, Team>();
-        List<UuidAndTitleCache<Team>> hiberTeam = getAgentService().getTeamUuidAndTitleCache();
+        Map<String,Team> titleCacheTeam = new HashMap<>();
+        List<UuidAndTitleCache<Team>> hiberTeam = getAgentService().getUuidAndTitleCache(Team.class, null, null);
 
         Set<UUID> uuids = new HashSet<>();
         for (UuidAndTitleCache<Team> hibernateT:hiberTeam){
@@ -987,7 +987,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
 
         //existing persons in DB
-        List<UuidAndTitleCache<Person>> hiberPersons = getAgentService().getPersonUuidAndTitleCache();
+        List<UuidAndTitleCache<Person>> hiberPersons = getAgentService().getUuidAndTitleCache(Person.class, null, null);
         Map<String,Person> titleCachePerson = new HashMap<>();
         uuids = new HashSet<UUID>();
         for (UuidAndTitleCache<Person> hibernateP:hiberPersons){

@@ -4462,7 +4462,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         @SuppressWarnings("rawtypes")
         private Person findOrCreateAuthor(String author2) {
             //logger.info("findOrCreateAuthor");
-            List<UuidAndTitleCache<Person>> hiberPersons = importer.getAgentService().getPersonUuidAndTitleCache();
+            List<UuidAndTitleCache<Person>> hiberPersons = importer.getAgentService().getUuidAndTitleCache(Person.class, null, null);
             for (UuidAndTitleCache<Person> hibernateP:hiberPersons){
                 if(hibernateP.getTitleCache().equals(author2)) {
                     AgentBase existing = importer.getAgentService().find(hibernateP.getUuid());

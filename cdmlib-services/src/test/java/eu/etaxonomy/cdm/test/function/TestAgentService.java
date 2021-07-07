@@ -64,7 +64,7 @@ public class TestAgentService {
 
 	@Test
 	public void testGetPersonUuidAndNomenclaturalTitle(){
-		List<UuidAndTitleCache<Person>> result = appController.getAgentService().getPersonUuidAndTitleCache();
+		List<UuidAndTitleCache<Person>> result = appController.getAgentService().getUuidAndTitleCache(Person.class, null, null);
 
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result.size() > 0);

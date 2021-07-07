@@ -521,7 +521,7 @@ public class TaxonXExtractor {
         Set<UUID> uuids = new HashSet<UUID>();
 
         //existing persons in DB
-        List<UuidAndTitleCache<Person>> hiberPersons = agentService.getPersonUuidAndTitleCache();
+        List<UuidAndTitleCache<Person>> hiberPersons = agentService.getUuidAndTitleCache(Person.class, null, null);
         Map<String,Person> titleCachePerson = new HashMap<>();
         uuids = new HashSet<UUID>();
         for (UuidAndTitleCache<Person> hibernateP:hiberPersons){
