@@ -159,7 +159,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "TaxonNode";
 		String parentIdColumn = "parent_id";
 		String sortIndexColumn = "sortIndex";
-		SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(
+		SortIndexUpdater.NewInstance(
 		        stepList, stepName, tableName, parentIdColumn, sortIndexColumn,
 				INCLUDE_AUDIT);
 
@@ -172,7 +172,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update sort index on classification child nodes";
 		parentIdColumn = "Classification_id";
 		String idColumn = "rootnodes_id";
-		updateSortIndex = SortIndexUpdater.NewInstance(stepList, stepName, tableName,
+		SortIndexUpdater.NewInstance(stepList, stepName, tableName,
 				parentIdColumn, sortIndexColumn, idColumn, INCLUDE_AUDIT);
 
 		// create feature node tree index
