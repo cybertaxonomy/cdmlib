@@ -162,6 +162,7 @@ public class TypeDesignationSetManager {
     private void mapTypeDesignation(Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus,
             TypeDesignationBase<?> td){
 
+        td = HibernateProxyHelper.deproxy(td);
         TypeDesignationStatusBase<?> status = td.getTypeStatus();
 
         try {
@@ -175,9 +176,10 @@ public class TypeDesignationSetManager {
             @SuppressWarnings({ "unchecked", "rawtypes" })
             TypeDesignationDTO<?> typeDesignationDTO
                 = new TypeDesignationDTO(
-                    HibernateProxyHelper.deproxy((TypeDesignationBase<?>)td).getClass(),
+                    td.getClass(),
                     td.getUuid(),
-                    workingsetBuilder.getTaggedText());
+                    workingsetBuilder.getTaggedText(),
+                    getTypeUuid(td));
 
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
                 byBaseEntityByTypeStatus.put(baseEntityReference, new TypeDesignationWorkingSet(baseEntity, baseEntityReference));
@@ -187,6 +189,23 @@ public class TypeDesignationSetManager {
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
         }
+    }
+
+
+    /**
+     * Returns the uuid of the type designated by this {@link TypeDesignationDTO#}.
+     * This is either a TaxonName or a {@link SpecimenOrObservationBase}.
+     */
+    private UUID getTypeUuid(TypeDesignationBase<?> td) {
+        IdentifiableEntity<?> type;
+        if (td instanceof SpecimenTypeDesignation){
+            type = ((SpecimenTypeDesignation) td).getTypeSpecimen();
+        }else if (td instanceof NameTypeDesignation){
+            type = ((NameTypeDesignation) td).getTypeName();
+        }else{
+            type = null;
+        }
+        return type == null? null : type.getUuid();
     }
 
     protected VersionableEntity baseEntity(TypeDesignationBase<?> td) throws DataIntegrityException {

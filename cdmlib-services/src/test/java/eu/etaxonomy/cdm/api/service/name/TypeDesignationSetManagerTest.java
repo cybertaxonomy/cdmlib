@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
- * @author a.kohlbecker, k.luther
+ * @author a.kohlbecker, k.luther, a.mueller
  * @since 03.09.2018
  */
 public class TypeDesignationSetManagerTest extends TermTestBase{
@@ -326,7 +326,33 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                         with2Sources.equals("Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
                         || with2Sources.equals("Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
                         ;
-
             }
+        }
+
+        @Test
+        public void test_withoutFieldUnit(){
+            TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            typifiedName.setTitleCache("Prionus coriatius L.", true);
+            DerivedUnit protectedSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+            protectedSpecimen.setTitleCache("Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206)", true);
+            Reference citation = ReferenceFactory.newBook();
+            citation.setTitle("The book of types");
+            SpecimenTypeDesignation protectedDesignation = typifiedName.addSpecimenTypeDesignation(protectedSpecimen, SpecimenTypeDesignationStatus.NEOTYPE(), citation, "55", null, false, false);
+
+            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            typeDesignationManager.addTypeDesigations(protectedDesignation);
+
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FNeotype: Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55"
+                    , typeDesignationManager.print(true, false, true)
+                    );
+
+            DerivedUnit withoutFieldUnit = DerivedUnit.NewPreservedSpecimenInstance();
+            withoutFieldUnit.setAccessionNumber("280207");
+            withoutFieldUnit.setCollection(Collection.NewInstance("B", "Herbarium Berolinense"));
+            SpecimenTypeDesignation withoutFieldUnitDesignation = typifiedName.addSpecimenTypeDesignation(withoutFieldUnit, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            typeDesignationManager.addTypeDesigations(withoutFieldUnitDesignation);
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FHolotype: B 280207; neotype: Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55"
+                    , typeDesignationManager.print(true, false, true)
+                    );
         }
 }
