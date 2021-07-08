@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.TypeDesignationWorkingSetType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.format.reference.OriginalSourceFormatter;
@@ -31,7 +32,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.ref.TypedEntityReference;
@@ -94,11 +94,14 @@ public class TypeDesignationSetFormatter {
         }
 
         int typeSetCount = 0;
-        LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
-        if(orderedByTypesByBaseEntity != null){
+        LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> orderedByTypesByBaseEntity
+                    = manager.getOrderedTypeDesignationWorkingSets();
+        TypeDesignationWorkingSetType lastWsType = null;
+        if (orderedByTypesByBaseEntity != null){
             for(TypedEntityReference<?> baseEntityRef : orderedByTypesByBaseEntity.keySet()) {
                 buildTaggedTextForSingleTypeSet(manager, withBrackets, finalBuilder,
-                        typeSetCount, baseEntityRef);
+                        typeSetCount, baseEntityRef, lastWsType);
+                lastWsType = orderedByTypesByBaseEntity.get(baseEntityRef).getWorkingsetType();
                 typeSetCount++;
             }
         }
@@ -106,13 +109,13 @@ public class TypeDesignationSetFormatter {
     }
 
     private void buildTaggedTextForSingleTypeSet(TypeDesignationSetManager manager, boolean withBrackets,
-            TaggedTextBuilder finalBuilder, int typeSetCount, TypedEntityReference<?> baseEntityRef) {
+            TaggedTextBuilder finalBuilder, int typeSetCount, TypedEntityReference<?> baseEntityRef, TypeDesignationWorkingSetType lastWsType) {
 
         LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>
                 orderedByTypesByBaseEntity = manager.getOrderedTypeDesignationWorkingSets();
+        TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
 
         TaggedTextBuilder workingsetBuilder = new TaggedTextBuilder();
-        boolean isSpecimenTypeDesignation = SpecimenOrObservationBase.class.isAssignableFrom(baseEntityRef.getType());
         if(typeSetCount > 0){
             workingsetBuilder.add(TagEnum.separator, TYPE_SEPARATOR);
         }else if (withStartingTypeLabel){
@@ -120,27 +123,27 @@ public class TypeDesignationSetFormatter {
             //name types separately, but this is such a rare case (if at all) and
             //increases complexity so it is not yet implemented
             boolean isPlural = hasMultipleTypes(orderedByTypesByBaseEntity);
-            if(isSpecimenTypeDesignation){
+            if(typeDesignationWorkingSet.getWorkingsetType().isSpecimenType()){
                 workingsetBuilder.add(TagEnum.label, (isPlural? "Types:": "Type:"));
-            } else if (NameTypeDesignation.class.isAssignableFrom(baseEntityRef.getType())){
+            } else if (typeDesignationWorkingSet.getWorkingsetType().isNameType()){
                 workingsetBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
             } else {
                 //do nothing for now
             }
         }
 
-        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntityRef, orderedByTypesByBaseEntity.get(baseEntityRef), isSpecimenTypeDesignation);
+        boolean hasExplicitBaseEntity = hasExplicitBaseEntity(baseEntityRef, typeDesignationWorkingSet);
         if(hasExplicitBaseEntity && !baseEntityRef.getLabel().isEmpty()){
             workingsetBuilder.add(TagEnum.specimenOrObservation, baseEntityRef.getLabel(), baseEntityRef);
         }
-        TypeDesignationWorkingSet typeDesignationWorkingSet = orderedByTypesByBaseEntity.get(baseEntityRef);
         int typeStatusCount = 0;
         if (withBrackets && hasExplicitBaseEntity){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_LEFT);
         }
         for(TypeDesignationStatusBase<?> typeStatus : typeDesignationWorkingSet.keySet()) {
             typeStatusCount = buildTaggedTextForSingleTypeStatus(manager, workingsetBuilder,
-                    typeDesignationWorkingSet, typeStatusCount, typeStatus, typeSetCount);
+                    typeDesignationWorkingSet, typeStatusCount, typeStatus,
+                    lastWsType, typeSetCount);
         }
         if (withBrackets && hasExplicitBaseEntity){
             workingsetBuilder.add(TagEnum.separator, TYPE_STATUS_PARENTHESIS_RIGHT);
@@ -155,8 +158,8 @@ public class TypeDesignationSetFormatter {
      * Checks if the baseType is the same as the (only?) type in the type designation workingset.
      */
     private boolean hasExplicitBaseEntity(TypedEntityReference<?> baseEntityRef,
-            TypeDesignationWorkingSet typeDesignationWorkingSet, boolean isSpecimenTypeDesignation) {
-        if (!isSpecimenTypeDesignation){
+            TypeDesignationWorkingSet typeDesignationWorkingSet) {
+        if (!typeDesignationWorkingSet.isSpecimenWorkingSet()){
             return false;   //name type designations are not handled here
         }else{
             UUID baseUuid = baseEntityRef.getUuid();
@@ -171,7 +174,8 @@ public class TypeDesignationSetFormatter {
 
     private int buildTaggedTextForSingleTypeStatus(TypeDesignationSetManager manager,
             TaggedTextBuilder workingsetBuilder, TypeDesignationWorkingSet typeDesignationWorkingSet,
-            int typeStatusCount, TypeDesignationStatusBase<?> typeStatus, int typeSetCount) {
+            int typeStatusCount, TypeDesignationStatusBase<?> typeStatus,
+            TypeDesignationWorkingSetType lastWsType, int typeSetCount) {
 
         //starting separator
         if(typeStatusCount++ > 0){
@@ -179,15 +183,25 @@ public class TypeDesignationSetFormatter {
         }
 
         boolean isPlural = typeDesignationWorkingSet.get(typeStatus).size() > 1;
+        String label = null;
         if(typeStatus != TypeDesignationWorkingSet.NULL_STATUS){
-            String label = typeStatus.getLabel() + (isPlural ? "s" : "");
+            label = typeStatus.getLabel();
+        }else if (typeDesignationWorkingSet.getWorkingsetType() != lastWsType
+                && (workingsetBuilder.size() > 0 && typeSetCount > 0)){
+            //only for the first name type (coming after a specimen type add the label (extremely rare case, if at all existing)
+            if (typeDesignationWorkingSet.getWorkingsetType().isNameType()) {
+                label = "nametype";
+            }else if (typeDesignationWorkingSet.getWorkingsetType().isSpecimenType()) {
+                label = "type";
+            }
+        }
+        if (label != null){
+            label = (isPlural ? label + "s" : label);
             if (workingsetBuilder.size() == 0){
                 label = StringUtils.capitalize(label);
             }
             workingsetBuilder.add(TagEnum.label, label);
             workingsetBuilder.add(TagEnum.postSeparator, POST_STATUS_SEPARATOR);
-        }else if (workingsetBuilder.size() > 0 && typeSetCount > 0){
-            workingsetBuilder.add(TagEnum.label, (isPlural? "Nametypes:": "Nametype:"));
         }
 
         //designation + sources

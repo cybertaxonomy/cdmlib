@@ -104,7 +104,14 @@ public class TypeDesignationWorkingSet
         return baseEntityReference;
     }
 
-    public boolean isSpecimenTypeDesigationWorkingSet() {
+    public boolean isSpecimenWorkingSet() {
+        return getWorkingsetType().isSpecimenType();
+    }
+    public boolean isNameWorkingSet() {
+        return getWorkingsetType().isNameType();
+    }
+
+    private boolean isSpecimenTypeDesigationWorkingSet() {
         return SpecimenOrObservationBase.class.isAssignableFrom(baseEntity.getClass());
     }
 
@@ -115,7 +122,9 @@ public class TypeDesignationWorkingSet
 
     public enum TypeDesignationWorkingSetType {
         SPECIMEN_TYPE_DESIGNATION_WORKINGSET,
-        NAME_TYPE_DESIGNATION_WORKINGSET,
+        NAME_TYPE_DESIGNATION_WORKINGSET;
+        boolean isSpecimenType(){return this == SPECIMEN_TYPE_DESIGNATION_WORKINGSET;}
+        boolean isNameType(){return this == NAME_TYPE_DESIGNATION_WORKINGSET;}
     }
 
     @Override
