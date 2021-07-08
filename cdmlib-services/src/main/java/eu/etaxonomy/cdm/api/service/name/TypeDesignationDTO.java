@@ -25,6 +25,12 @@ public class TypeDesignationDTO<T extends TypeDesignationBase> extends TaggedEnt
 
     private UUID typeUuid;
 
+    /**
+     * @param type the typeDesignations subclass
+     * @param uuid the typeDesignations uuid
+     * @param taggedText
+     * @param typeUuid the uuid of the type (may it be specimen or name)
+     */
     public TypeDesignationDTO(Class<T> type, UUID uuid, List<TaggedText> taggedText, UUID typeUuid) {
         super(type, uuid, taggedText);
         this.typeUuid = typeUuid;
@@ -33,4 +39,5 @@ public class TypeDesignationDTO<T extends TypeDesignationBase> extends TaggedEnt
     public UUID getTypeUuid() {
         return typeUuid;
     }
+
 }

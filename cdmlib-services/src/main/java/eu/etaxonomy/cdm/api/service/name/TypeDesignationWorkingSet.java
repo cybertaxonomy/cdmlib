@@ -45,7 +45,7 @@ public class TypeDesignationWorkingSet
 
     private String label = null;
 
-    //maybe remove in future as redundant with baseEntity
+    //maybe removed in future as redundant with baseEntity
     private TypedEntityReference<? extends VersionableEntity> baseEntityReference;
 
     private VersionableEntity baseEntity;
@@ -67,12 +67,6 @@ public class TypeDesignationWorkingSet
     public VersionableEntity getBaseEntity() {
         return baseEntity;
     }
-
-//    @Override
-//    public Collection<TypedEntityReference<TypeDesignationBase>> put(TypeDesignationStatusBase<?> key, Collection<TypedEntityReference<TypeDesignationBase>> collection) {
-//        return super.put(key, collection);
-//        //return internalMap.put(key, collection);
-//    }
 
     public List<TypeDesignationDTO> getTypeDesignations() {
         List<TypeDesignationDTO> typeDesignations = new ArrayList<>();
