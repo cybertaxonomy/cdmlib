@@ -161,9 +161,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
             if (config.isAddHTML()){
-                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
+                expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
             }else{
-                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
+                expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
             }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
@@ -251,9 +251,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
             if (config.isAddHTML()){
-                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
+                expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
             }else{
-                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
+                expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
             }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
