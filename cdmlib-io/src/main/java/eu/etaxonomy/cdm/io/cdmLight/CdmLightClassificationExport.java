@@ -1827,6 +1827,12 @@ public class CdmLightClassificationExport
                     }else{
                         synonymSign = "\u2261 ";
                     }
+                }else{
+                    if (name.isInvalid() ){
+                        synonymSign = "\u2212 ";
+                    }else{
+                        synonymSign = "\u003D ";
+                    }
                 }
                 boolean isAccepted = false;
 
@@ -1854,7 +1860,10 @@ public class CdmLightClassificationExport
 //                         sec = "";
                          if (!(((Taxon)taxonBase).isProparteSynonym() || ((Taxon)taxonBase).isMisapplication())){
                              isAccepted = true;
+                         }else {
+                             synonymSign = "\u003D ";
                          }
+
                      }
                      if (taxonBase.getAppendedPhrase() != null){
                          if (state.getConfig().isAddHTML()){
@@ -1888,6 +1897,8 @@ public class CdmLightClassificationExport
                             if (!(((Taxon)tb).isProparteSynonym() || ((Taxon)tb).isMisapplication())){
                                 isAccepted = true;
                                 break;
+                            }else {
+                                synonymSign = "\u003D ";
                             }
 
                         }
@@ -1928,7 +1939,7 @@ public class CdmLightClassificationExport
             List<TaggedText> list = new ArrayList<>();
             if (!designationList.isEmpty()) {
                 TypeDesignationSetManager manager = new TypeDesignationSetManager(group);
-                list.addAll(new TypeDesignationSetFormatter(false, false, false).toTaggedText(manager));
+                list.addAll(new TypeDesignationSetFormatter(true, false, false).toTaggedText(manager));
             }
             String typeTextDesignations = "";
             //The typeDesignationManager does not handle the textual typeDesignations
@@ -1996,9 +2007,13 @@ public class CdmLightClassificationExport
 
         for (TaggedText text : list) {
             if (text != null && text.getText() != null
-                    && (text.getText().equals("Type:") || text.getText().equals("NameType:") || (text.getType().equals(TagEnum.name) && !isHomotypicGroup))) {
+                    && (text.getText().equals("Type:") || (text.getType().equals(TagEnum.name) && !isHomotypicGroup))) {
                 // do nothing
-            } else if (text.getType().equals(TagEnum.reference)) {
+            }else if (text.getText().equalsIgnoreCase("Nametype:") && isHomotypicGroup && !isSpecimenTypeDesignation){
+                homotypicalGroupTypeDesignationString.append("\u2261");
+            }else if (text.getText().equalsIgnoreCase("Nametype:")){
+                // do nothing
+            }else if (text.getType().equals(TagEnum.reference)) {
                 homotypicalGroupTypeDesignationString.append(text.getText());
             }else if (text.getType().equals(TagEnum.name)){
                 if (!isSpecimenTypeDesignation){
@@ -2028,6 +2043,7 @@ public class CdmLightClassificationExport
         typeDesignations += ".";
         typeDesignations = typeDesignations.replace("..", ".");
         typeDesignations = typeDesignations.replace(". .", ".");
+        typeDesignations = typeDesignations.replace("; \u2261", " \u2261 ");
 
         if (typeDesignations.trim().equals(".")) {
             typeDesignations = null;
