@@ -378,7 +378,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             assertEquals("Prionus coriatius L.\u202F\u2013\u202FTestland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)",
                     typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
             assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)",
-                    typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
+                    typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME));
 
             //name types
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
