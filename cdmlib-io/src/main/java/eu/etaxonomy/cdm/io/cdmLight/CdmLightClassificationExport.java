@@ -2004,7 +2004,7 @@ public class CdmLightClassificationExport
         StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
 
         for (TaggedText text : list) {
-            if (text == null || text.getText() != null){
+            if (text == null || text.getText() == null){
                 continue;  //just in case
             }
             if ((text.getText().equalsIgnoreCase("Type:")  //should not happen anymore
