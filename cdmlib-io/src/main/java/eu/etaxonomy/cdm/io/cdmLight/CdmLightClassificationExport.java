@@ -113,8 +113,6 @@ public class CdmLightClassificationExport
         extends CdmExportBase<CdmLightExportConfigurator, CdmLightExportState, IExportTransformer, File>{
 
     private static final long serialVersionUID = 2518643632756927053L;
-    private static final String STD_TEAM_CONCATINATION = ", ";
-    private static final String FINAL_TEAM_CONCATINATION = " & ";
 
     private static final String IPNI_NAME_IDENTIFIER = "Ipni Name Identifier";
     private static final String TROPICOS_NAME_IDENTIFIER = "Tropicos Name Identifier";
@@ -2006,19 +2004,19 @@ public class CdmLightClassificationExport
         StringBuffer homotypicalGroupTypeDesignationString = new StringBuffer();
 
         for (TaggedText text : list) {
-            if (text != null && text.getText() != null
-                    && (text.getText().equals("Type:") || (text.getType().equals(TagEnum.name) && !isHomotypicGroup))) {
-                // do nothing
-            }else if (text.getText().equalsIgnoreCase("Nametype:") && isHomotypicGroup && !isSpecimenTypeDesignation){
-                homotypicalGroupTypeDesignationString.append("\u2261");
-            }else if (text.getText().equalsIgnoreCase("Nametype:")){
+            if (text == null || text.getText() != null){
+                continue;  //just in case
+            }
+            if ((text.getText().equalsIgnoreCase("Type:")  //should not happen anymore
+                    || text.getText().equalsIgnoreCase("Nametype:")  //should not happen anymore
+                    || (text.getType().equals(TagEnum.name) && !isHomotypicGroup))) {
                 // do nothing
             }else if (text.getType().equals(TagEnum.reference)) {
                 homotypicalGroupTypeDesignationString.append(text.getText());
             }else if (text.getType().equals(TagEnum.name)){
                 if (!isSpecimenTypeDesignation){
                     homotypicalGroupTypeDesignationString
-                    .append("<i>"+text.getText()+"</i> ");
+                        .append("<i>"+text.getText()+"</i> ");
                 }
             }else if (text.getType().equals(TagEnum.typeDesignation) ) {
                 if(isSpecimenTypeDesignation){
