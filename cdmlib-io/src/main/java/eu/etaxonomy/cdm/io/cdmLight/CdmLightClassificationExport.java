@@ -302,7 +302,7 @@ public class CdmLightClassificationExport
                         "handleTaxon");
                 state.getResult().setState(ExportResultState.INCOMPLETE_WITH_ERROR);
             } else {
-                Taxon taxon = HibernateProxyHelper.deproxy(taxonNode.getTaxon(), Taxon.class);
+                Taxon taxon = CdmBase.deproxy(taxonNode.getTaxon());
 
                 try {
                     TaxonName name = taxon.getName();
@@ -825,7 +825,7 @@ public class CdmLightClassificationExport
 
              CondensedDistribution conDis = geoService.getCondensedDistribution(
                      //TODO add CondensedDistributionConfiguration to export configuration
-                     distributions, true, null, state.getConfig().getCondensedDistributionRecipe().toConfiguration(), langs);
+                     distributions, true, null, state.getConfig().getCondensedDistributionConfiguration(), langs);
              CdmLightExportTable tableCondensed =
                      CdmLightExportTable.SIMPLE_FACT;
              String[] csvLine = new String[tableCondensed.getSize()];
@@ -940,11 +940,8 @@ public class CdmLightClassificationExport
     }
 
     /**
-     * Handles Misapplied names (including pro parte and partial as well as pro
+     * Handles misapplied names (including pro parte and partial as well as pro
      * parte and partial synonyms
-     *
-     * @param state
-     * @param rel
      */
     private void handleProPartePartialMisapplied(CdmLightExportState state, Taxon taxon, Taxon accepted, boolean isProParte, boolean isMisapplied, int index) {
         try {
@@ -1698,7 +1695,7 @@ public class CdmLightClassificationExport
                 if (group.equals(acceptedTaxon.getHomotypicGroup())){
                     typifiedNames.add(acceptedTaxon.getName());
                 }
-                synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(HibernateProxyHelper.deproxy(synonym.getName(), TaxonName.class)));
+                synonymsInGroup.stream().forEach(synonym -> typifiedNames.add(CdmBase.deproxy(synonym.getName())));
             }
 
 
