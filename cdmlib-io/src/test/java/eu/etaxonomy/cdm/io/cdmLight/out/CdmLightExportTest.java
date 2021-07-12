@@ -106,7 +106,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         })
         public void testSubTree(){
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
 //            config.setCreateCondensedDistributionString(false);
             config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
 
@@ -175,7 +175,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         })
         public void testFullTreeWithUnpublished(){
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
             config.setTarget(TARGET.EXPORT_DATA);
             config.getTaxonNodeFilter().setIncludeUnpublished(true);
 
@@ -265,7 +265,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         })
         public void testFullData(){
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
             config.setTarget(TARGET.EXPORT_DATA);
 
             ExportResult result = defaultExport.invoke(config);
@@ -321,7 +321,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             commitAndStartNewTransaction();
 
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
             config.setTarget(TARGET.EXPORT_DATA);
 
             ExportResult result = defaultExport.invoke(config);
