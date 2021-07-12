@@ -271,7 +271,7 @@ public class CdmLightExportConfigurator
     public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
         return this.condensedDistributionConfiguration;
     }
-    public void setCondensedDistributionRecipe(CondensedDistributionConfiguration condensedDistributionConfiguration) {
+    public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistributionConfiguration) {
         this.condensedDistributionConfiguration = condensedDistributionConfiguration;
     }
 }
