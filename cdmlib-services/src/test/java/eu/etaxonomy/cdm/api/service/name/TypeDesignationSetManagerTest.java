@@ -368,7 +368,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
         public void test_withoutStatus(){
             //for another important test without status see also test_withoutFieldUnit()
 
-            TaxonName typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
+            TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
             typifiedName.setTitleCache("Prionus coriatius L.", true);
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
             std_LT.setTypeStatus(null);
