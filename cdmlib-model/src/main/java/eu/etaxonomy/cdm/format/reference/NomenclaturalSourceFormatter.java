@@ -95,11 +95,11 @@ public class NomenclaturalSourceFormatter
             return handleDetailAndYearForProtected(reference, cache, microReference);
         }
 
-        String result = getTokenizedNomenclaturalTitel(reference, microReference);
+        String result = getTitelDetailAndYear(reference, microReference);
         //if no data is available and only titleCache is protected take the protected title
         //this is to avoid empty cache if someone forgets to set also the abbrevTitleCache
         //we need to think about handling protected not separate for abbrevTitleCache and titleCache
-        if (result.equals(microReference) && reference.isProtectedTitleCache() ){
+        if (result.equals(getDetailOnly(microReference)) && reference.isProtectedTitleCache() ){
             String cache = reference.getTitleCache();
             return handleDetailAndYearForProtected(reference, cache, microReference);
         }
@@ -124,17 +124,23 @@ public class NomenclaturalSourceFormatter
      * Returns the nomenclatural title with micro reference represented as token
      * which can later be replaced by the real data.
      * @param microReference
-     *
-     * @see INomenclaturalReference#MICRO_REFERENCE_TOKEN
      */
-    private String getTokenizedNomenclaturalTitel(Reference ref, String microReference) {
+    private String getTitelDetailAndYear(Reference ref, String microReference) {
         if (ReferenceDefaultCacheStrategy.isRealInRef(ref)){
             return getTokenizedNomenclaturalTitelInRef(ref, microReference);
         }else{
             String result = getTitleWithoutYearAndAuthor(ref, true, true);
-            result = isNotBlank(microReference)? (isBlank(result)? EMPTY_TITLE: result) + microReference : result;
+            result = isBlank(result) ? getDetailOnly(microReference): isBlank(microReference)? result : isBlank(microReference)? result : result + microReference;
             result = addYear(result, ref, true);
             return result;
+        }
+    }
+
+    private String getDetailOnly(String microReference) {
+        if (isBlank(microReference)){
+            return "";
+        }else{
+            return EMPTY_TITLE + microReference;
         }
     }
 

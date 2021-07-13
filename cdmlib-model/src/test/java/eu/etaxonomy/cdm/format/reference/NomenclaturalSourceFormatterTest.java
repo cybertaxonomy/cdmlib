@@ -447,13 +447,18 @@ public class NomenclaturalSourceFormatterTest {
                 formatter.format(section, detail1));
     }
 
-    //#9705
     @Test
     public void testShortSources(){
+        //#9705
         book1.setAuthorship(bookTeam1);
         bookSection1.setInBook(book1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1972));
-
         Assert.assertEquals("in TT., -: 44. 1972", formatter.format((Reference)bookSection1, "44"));
+
+        //#9705  (better use titlecache then completely empty reference; this handles the case when the abbreviated titleCache was forgotten to set to protected)
+        Reference book = ReferenceFactory.newBook();
+        book.setTitleCache("Only titlecache", true);
+        Assert.assertEquals("Only titlecache: 36", formatter.format(book, "36"));
+
     }
 }
