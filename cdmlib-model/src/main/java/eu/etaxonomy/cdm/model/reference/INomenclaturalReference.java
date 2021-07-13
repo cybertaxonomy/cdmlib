@@ -21,9 +21,6 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
  */
 public interface INomenclaturalReference  extends IReference, IWithAuthorAndDate{
 
-	public final String MICRO_REFERENCE_TOKEN = "@@MicroReference";
-
-
 	/**
      * Returns the citation string including the details (micro reference) information
      * from {@link TaxonName taxon name}.
@@ -62,7 +59,8 @@ public interface INomenclaturalReference  extends IReference, IWithAuthorAndDate
 	 * @param abbrevTitleCache
 	 * @deprecated this method exists only for compliance with the java bean standard.
 	 * It usually has little effect as it will not protect the cache.
-	 * Use {@link #setAbbrevTitleCache(String, boolean)} instead to protect the cache.
+	 * Use {@link #setAbbrevTitleCache(String, boolean)} instead use
+	 * {@link #setAbbrevTitleCache(String, boolean)} to protect the cache.
 	 */
 	@Deprecated
     public void setAbbrevTitleCache(String abbrevTitleCache);

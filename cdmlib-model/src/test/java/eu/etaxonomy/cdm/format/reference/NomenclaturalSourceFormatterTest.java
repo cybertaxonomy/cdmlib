@@ -257,12 +257,16 @@ public class NomenclaturalSourceFormatterTest {
 
     @Test
     public void testBookSectionGetNomenclaturalCitation(){
-        book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
-        bookSection1.setTitle("My chapter");
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        //#9705
+        Assert.assertEquals("in TT., 1975", formatter.format((Reference)bookSection1, null));
+        Assert.assertEquals("in TT., -: 55. 1975", formatter.format((Reference)bookSection1, detail1));
+
+        book1.setTitle("My book");
+        bookSection1.setTitle("My chapter");
         //TODO still unclear which is correct
 //      Assert.assertEquals("in Book Author, My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
         Assert.assertEquals("in TT., My book: 55. 1975", formatter.format((Reference)bookSection1, detail1));
@@ -441,7 +445,15 @@ public class NomenclaturalSourceFormatterTest {
         Assert.assertEquals("Unexpected title cache.",
                 "in Linneus, Species Plantarum 3: 55. 1752",
                 formatter.format(section, detail1));
+    }
 
+    //#9705
+    @Test
+    public void testShortSources(){
+        book1.setAuthorship(bookTeam1);
+        bookSection1.setInBook(book1);
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1972));
 
+        Assert.assertEquals("in TT., -: 44. 1972", formatter.format((Reference)bookSection1, "44"));
     }
 }
