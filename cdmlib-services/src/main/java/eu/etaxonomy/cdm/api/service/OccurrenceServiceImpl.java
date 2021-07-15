@@ -34,6 +34,7 @@ import org.apache.lucene.search.grouping.TopGroups;
 import org.apache.lucene.util.BytesRef;
 import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
+import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Service;
@@ -574,15 +575,16 @@ public class OccurrenceServiceImpl
                 if(o1 instanceof FieldUnitDTO && o2 instanceof FieldUnitDTO) {
                     FieldUnitDTO fu1 = (FieldUnitDTO)o1;
                     FieldUnitDTO fu2 = (FieldUnitDTO)o2;
-                    if(fu1.getDate() == null && fu2.getDate() == null) {
+                    if(isEmpty(fu1.getDate()) && isEmpty(fu2.getDate())) {
                         return 0;
                     }
-                    if(fu1.getDate() != null && fu2.getDate() == null) {
+                    if(fu1.getDate() != null && isEmpty(fu2.getDate())) {
                         return 1;
                     }
-                    if(fu1.getDate() == null && fu2.getDate() != null) {
+                    if(isEmpty(fu1.getDate()) && fu2.getDate() != null) {
                         return -1;
                     }
+                    //TODO implement improved Partial compare starting with year, then month, then day, to avoid exception for data without e.g. year
                     return fu1.getDate().compareTo(fu2.getDate());
                 }
                 if(o1 instanceof DerivedUnitDTO && o2 instanceof DerivedUnitDTO) {
@@ -595,6 +597,10 @@ public class OccurrenceServiceImpl
                 } else {
                     return 1;
                 }
+            }
+
+            private boolean isEmpty(Partial date) {
+                return (date == null || date.size()==0);
             }
         });
 
