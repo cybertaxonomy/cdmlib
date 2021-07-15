@@ -92,10 +92,6 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
         }
     }
 
-    protected String escapeSingleQuote(String str) {
-        return str == null? null : str.replace("'", "''");
-    }
-
     private Person handlePerson(ResultSet rs, ICdmDataSource datasource, CaseType caseType) throws SQLException {
         //set collectorTitle
         int id = rs.getInt("id");

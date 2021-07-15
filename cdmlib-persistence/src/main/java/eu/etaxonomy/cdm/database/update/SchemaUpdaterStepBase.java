@@ -191,6 +191,10 @@ public abstract class SchemaUpdaterStepBase implements ISchemaUpdaterStep {
         }
     }
 
+    protected String escapeSingleQuote(String str) {
+        return str == null? null : str.replace("'", "''");
+    }
+
     protected boolean isNotBlank(String str) {
         return StringUtils.isNotBlank(str);
     }
