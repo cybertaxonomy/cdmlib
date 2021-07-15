@@ -27,7 +27,7 @@ public class PartialComparatorTest {
 
     @Before
     public void setUp() throws Exception {
-        comparator = new PartialComparator();
+        comparator = PartialComparator.INSTANCE();
 
         year1978 = new Partial(DateTimeFieldType.year(), 1978);
         monthMay = new Partial(DateTimeFieldType.monthOfYear(), 4);
@@ -38,6 +38,18 @@ public class PartialComparatorTest {
         Assert.assertEquals(-1, comparator.compare(year1978, monthMay));
         monthMay = monthMay.with(DateTimeFieldType.year(), 1978);
         Assert.assertEquals(1, comparator.compare(year1978, monthMay));
+        monthMay = monthMay.with(DateTimeFieldType.year(), 1979);
+        Assert.assertEquals(-1, comparator.compare(year1978, monthMay));
+        Partial may1979 = new Partial(DateTimeFieldType.year(), 1979).with(DateTimeFieldType.monthOfYear(), 4);
+        Assert.assertEquals(0, comparator.compare(may1979, monthMay));
+    }
+
+    @Test
+    public void testNullSmallest() {
+        comparator = PartialComparator.INSTANCE_NULL_SMALLEST();
+        Assert.assertEquals(1, comparator.compare(year1978, monthMay));
+        monthMay = monthMay.with(DateTimeFieldType.year(), 1978);
+        Assert.assertEquals(-1, comparator.compare(year1978, monthMay));
         monthMay = monthMay.with(DateTimeFieldType.year(), 1979);
         Assert.assertEquals(-1, comparator.compare(year1978, monthMay));
         Partial may1979 = new Partial(DateTimeFieldType.year(), 1979).with(DateTimeFieldType.monthOfYear(), 4);

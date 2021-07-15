@@ -23,10 +23,21 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
  */
 public class PartialComparator implements Comparator<Partial> {
 
-    private static final PartialComparator instance = new PartialComparator();
+    private static final PartialComparator instance = new PartialComparator(false);
+    private static final PartialComparator instanceNullInverse = new PartialComparator(true);
+
+    final int nullInverse;
+
+    private PartialComparator(boolean nullInverse) {
+        this.nullInverse = nullInverse ? -1 : 1;
+    }
 
     public static PartialComparator INSTANCE(){
         return instance;
+    }
+
+    public static PartialComparator INSTANCE_NULL_SMALLEST(){
+        return instanceNullInverse;
     }
 
     @Override
@@ -34,9 +45,9 @@ public class PartialComparator implements Comparator<Partial> {
         if (p1 == p2) {
             return 0;
         }else if (p1 == null){
-            return 1;
+            return 1 * nullInverse;
         }else if (p2 == null){
-            return -1;
+            return -1 * nullInverse;
         }
 
         int result = 0;
@@ -48,9 +59,9 @@ public class PartialComparator implements Comparator<Partial> {
             if (v1 == null && v2 == null){
                 continue;
             }else if (v1 == null){
-                return 1;
+                return 1 * nullInverse;
             }else if (v2 == null){
-                return -1;
+                return -1 * nullInverse;
             }else{
                 result = v1.compareTo(v2);
                 if (result != 0){
