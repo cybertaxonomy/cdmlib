@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.compare.common.PartialComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -575,17 +576,16 @@ public class OccurrenceServiceImpl
                 if(o1 instanceof FieldUnitDTO && o2 instanceof FieldUnitDTO) {
                     FieldUnitDTO fu1 = (FieldUnitDTO)o1;
                     FieldUnitDTO fu2 = (FieldUnitDTO)o2;
-                    if(isEmpty(fu1.getDate()) && isEmpty(fu2.getDate())) {
-                        return 0;
-                    }
-                    if(fu1.getDate() != null && isEmpty(fu2.getDate())) {
-                        return 1;
-                    }
-                    if(isEmpty(fu1.getDate()) && fu2.getDate() != null) {
-                        return -1;
-                    }
-                    //TODO implement improved Partial compare starting with year, then month, then day, to avoid exception for data without e.g. year
-                    return fu1.getDate().compareTo(fu2.getDate());
+//                    if(isEmpty(fu1.getDate()) && isEmpty(fu2.getDate())) {
+//                        return 0;
+//                    }
+//                    if(fu1.getDate() != null && isEmpty(fu2.getDate())) {
+//                        return 1;
+//                    }
+//                    if(isEmpty(fu1.getDate()) && fu2.getDate() != null) {
+//                        return -1;
+//                    }
+                    return PartialComparator.INSTANCE().compare(fu1.getDate(), fu2.getDate());
                 }
                 if(o1 instanceof DerivedUnitDTO && o2 instanceof DerivedUnitDTO) {
                     SpecimenOrObservationBaseDTO du1 = o1;
