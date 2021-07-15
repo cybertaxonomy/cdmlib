@@ -82,7 +82,7 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
                     }
                     rs2.close();
                     String collectorTitleCache = TeamDefaultCacheStrategy.INSTANCE().getCollectorTitleCache(team);
-                    sql = " UPDATE @@AgentBase@@ SET collectorTitleCache = '" + collectorTitleCache + "' WHERE id = " + id;
+                    sql = " UPDATE @@AgentBase@@ SET collectorTitleCache = '" + escapeSingleQuote(collectorTitleCache) + "' WHERE id = " + id;
                     datasource.executeUpdate(caseType.replaceTableNames(sql));
                 }
             }else if ("Person".equalsIgnoreCase(dtype)){
@@ -90,6 +90,10 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
                 handlePerson(rs, datasource, caseType);
             }
         }
+    }
+
+    protected String escapeSingleQuote(String str) {
+        return str == null? null : str.replace("'", "''");
     }
 
     private Person handlePerson(ResultSet rs, ICdmDataSource datasource, CaseType caseType) throws SQLException {
@@ -106,7 +110,7 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
         person.setTitleCache(titleCache, protectedTitleCache);
         String collectorTitle =  PersonDefaultCacheStrategy.INSTANCE().getCollectorTitleCache(person);
 
-        String sql = "UPDATE @@AgentBase@@ SET collectorTitleCache = '"+collectorTitle+"', collectorTitle = '"+collectorTitle+"' WHERE id = " + id;
+        String sql = "UPDATE @@AgentBase@@ SET collectorTitleCache = '"+escapeSingleQuote(collectorTitle)+"', collectorTitle = '"+escapeSingleQuote(collectorTitle)+"' WHERE id = " + id;
         datasource.executeUpdate(caseType.replaceTableNames(sql));
         return person;
     }
