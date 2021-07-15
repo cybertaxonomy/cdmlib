@@ -82,6 +82,7 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
                     }
                     rs2.close();
                     String collectorTitleCache = TeamDefaultCacheStrategy.INSTANCE().getCollectorTitleCache(team);
+                    collectorTitleCache = escapeSingleQuote(collectorTitleCache);
                     sql = " UPDATE @@AgentBase@@ SET collectorTitleCache = '" + collectorTitleCache + "' WHERE id = " + id;
                     datasource.executeUpdate(caseType.replaceTableNames(sql));
                 }
@@ -90,6 +91,10 @@ public class CollectorTitleUpdater extends SchemaUpdaterStepBase {
                 handlePerson(rs, datasource, caseType);
             }
         }
+    }
+
+    protected String escapeSingleQuote(String str) {
+        return str == null? null : str.replace("'", "''");
     }
 
     private Person handlePerson(ResultSet rs, ICdmDataSource datasource, CaseType caseType) throws SQLException {
