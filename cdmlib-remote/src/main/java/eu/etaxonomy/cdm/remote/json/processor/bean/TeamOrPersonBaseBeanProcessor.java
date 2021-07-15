@@ -17,7 +17,6 @@ import net.sf.json.JsonConfig;
 /**
  * @author a.kohlbecker
  * @since 20.10.2010
- *
  */
 public class TeamOrPersonBaseBeanProcessor extends AbstractBeanProcessor<TeamOrPersonBase> {
 
@@ -27,13 +26,11 @@ public class TeamOrPersonBaseBeanProcessor extends AbstractBeanProcessor<TeamOrP
         return null;
     }
 
-
     @Override
     public JSONObject processBeanSecondStep(TeamOrPersonBase bean, JSONObject json,
             JsonConfig jsonConfig) {
             json.element("titleCache", bean.getTitleCache());
-            json.element("nomenclaturalTitle", bean.getNomenclaturalTitle());
+            json.element("nomenclaturalTitleCache", bean.getNomenclaturalTitleCache());
         return json;
     }
-
 }

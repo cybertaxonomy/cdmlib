@@ -165,9 +165,12 @@ public enum CdmLightExportTable {
     protected static final String HOMOTYPIC_GROUP_WITH_SEC_STRING = "HomotypicGroupStringWithSec";
     protected static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTED = "HomotypicGroupStringWithoutAccepted";
     protected static final String HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC = "HomotypicGroupStringWithoutAcceptedWithSec";
+    protected static final String HOMOTYPIC_GROUP_TYPE_STATEMENT_REFERENCE = "HomotypicGroupTypeStatementReference";
 
     protected static final String TYPE_STRING = "TypeSpecimenString";
     protected static final String TYPE_CACHE = "TypeStatementsString";
+    protected static final String TYPE_STRING_WITH_REF = "TypeSpecimenStringWithRef";
+    protected static final String TYPE_CACHE_WITH_REF = "TypeStatementsStringWithRef";
 
     //NomenclaturalAuthor
     protected static final String AUTHOR_ID = "PersonOrTeam_ID";
@@ -251,7 +254,7 @@ public enum CdmLightExportTable {
     protected static final String REF_TABLE = "ReferencedTable";
 
     final static String[] homotypicGroupColumns(){
-        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE, HOMOTYPIC_GROUP_WITH_SEC_STRING, HOMOTYPIC_GROUP_WITHOUT_ACCEPTED, HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC, SORT_INDEX};
+        return new String[]{HOMOTYPIC_GROUP_ID, HOMOTYPIC_GROUP_STRING, TYPE_STRING, TYPE_CACHE, HOMOTYPIC_GROUP_WITH_SEC_STRING, HOMOTYPIC_GROUP_WITHOUT_ACCEPTED, HOMOTYPIC_GROUP_WITHOUT_ACCEPTEDWITHSEC, SORT_INDEX, HOMOTYPIC_GROUP_TYPE_STATEMENT_REFERENCE};
 
     }
 

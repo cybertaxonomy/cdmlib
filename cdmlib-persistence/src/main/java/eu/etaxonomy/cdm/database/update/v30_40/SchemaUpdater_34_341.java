@@ -217,7 +217,7 @@ public class SchemaUpdater_34_341 extends SchemaUpdaterBase {
 		stepName ="Update AbsenceTerm vocabulary";
 		tableName = "DefinedTermBase";
 		query = " UPDATE @@DefinedTermBase@@ " +
-                " SET absenceterm = @@TRUE@@, "
+                " SET absenceterm = @TRUE@, "
                 	+ " vocabulary_id = "
                 			+ "(SELECT id FROM @@TermVocabulary@@ "
                 			+ " WHERE uuid = 'adbbbe15-c4d3-47b7-80a8-c7d104e53a05'),"

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../database/schema/dataset.xsd">
-  <AGENTBASE ID="1" UUID="4de9d002-d68c-49af-84f1-7f9eddaa1227" DTYPE="Person" PROTECTEDNOMENCLATURALTITLECACHE="false" PROTECTEDTITLECACHE="false"/>
-  <AGENTBASE ID="2" UUID="4de9d002-d68c-49af-84f1-7f9eddaa1228" DTYPE="Person" PROTECTEDNOMENCLATURALTITLECACHE="false" PROTECTEDTITLECACHE="false"/>
+  <AGENTBASE ID="1" UUID="4de9d002-d68c-49af-84f1-7f9eddaa1227" DTYPE="Person" PROTECTEDTITLECACHE="false"/>
+  <AGENTBASE ID="2" UUID="4de9d002-d68c-49af-84f1-7f9eddaa1228" DTYPE="Person" PROTECTEDTITLECACHE="false"/>
   <HOMOTYPICALGROUP ID="1"/>
   <HOMOTYPICALGROUP ID="2"/>
   <HOMOTYPICALGROUP ID="3"/>

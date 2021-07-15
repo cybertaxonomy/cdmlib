@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.validation.constraint;
 
 import javax.validation.ConstraintValidator;
@@ -10,7 +18,6 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
 /**
  * @author k.luther
  * @since 2011
- *
  */
 public class ReferenceCheckValidator implements ConstraintValidator<ReferenceCheck, Reference>{
 
@@ -38,8 +45,6 @@ public class ReferenceCheckValidator implements ConstraintValidator<ReferenceChe
 
 		return isValid;
 	}
-
-
 
 	private boolean validIsbn(Reference value, ConstraintValidatorContext constraintValidatorContext){
 		boolean isValid = true;

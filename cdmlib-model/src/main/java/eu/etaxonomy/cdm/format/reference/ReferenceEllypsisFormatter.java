@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.format.AbstractEllypsisFormatter;
-import eu.etaxonomy.cdm.format.AbstractEllypsisFormatter.EllipsisData;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -54,7 +53,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
  * </table>
  * @author a.kohlbecker
  * @since Dec 12, 2018
- *
  */
 public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Reference> {
 
@@ -93,11 +91,6 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
         this.labelType = labelType;
     }
 
-    /**
-     * @param entity
-     * @param filterString
-     * @return
-     */
     @Override
     protected EllipsisData entityEllypsis(Reference entity, String preserveString) {
 
@@ -124,10 +117,10 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
                 if(entity.getAuthorship() != null){
                     if(entity.getAuthorship() instanceof Team){
                         team = (Team)entity.getAuthorship();
-                        authorTeamCaches = team.getTeamMembers().stream().map(topb -> topb.getNomenclaturalTitle()).collect(Collectors.toList());
+                        authorTeamCaches = team.getTeamMembers().stream().map(topb -> topb.getNomenclaturalTitleCache()).collect(Collectors.toList());
                         isProtectedAuthorsCache = team.isProtectedNomenclaturalTitleCache();
                     }
-                    authorsCache = entity.getAuthorship().getNomenclaturalTitle();
+                    authorsCache = entity.getAuthorship().getNomenclaturalTitleCache();
                 }
                 break;
             case BIBLIOGRAPHIC:
@@ -256,6 +249,4 @@ public class ReferenceEllypsisFormatter extends AbstractEllypsisFormatter<Refere
     public void setMaxAutorsVisibleInSection(int maxAutorsVisibleInSection) {
         this.maxAutorsVisibleInSection = maxAutorsVisibleInSection;
     }
-
-
 }

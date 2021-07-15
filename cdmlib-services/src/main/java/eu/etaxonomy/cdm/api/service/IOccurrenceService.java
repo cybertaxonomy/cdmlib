@@ -681,11 +681,11 @@ public interface IOccurrenceService
      * derivative has more than one original. (see https://dev.e-taxonomy.eu/redmine/issues/9253)
      *
      * @param derivedUnitDTO
-     *  The DerivedUnitDTO to start the search from.
+     *      The DerivedUnitDTO to start the search from.
      * @param alreadyCollectedSpecimen
-     *  A map to hold all originals that have been sees during the recursive walk.
+     *      A map to hold all originals that have been sees during the recursive walk.
      * @return
-     *  The collection of all Field Units that are accessible from the derivative from where the search was started.
+     *      The collection of all Field Units that are accessible from the derivative from where the search was started.
      */
     public Collection<SpecimenOrObservationBaseDTO> findRootUnitDTOs(UUID unitUUID);
 

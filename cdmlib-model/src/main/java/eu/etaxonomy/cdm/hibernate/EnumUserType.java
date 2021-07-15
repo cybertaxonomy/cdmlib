@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.ConceptDefinition;
 import eu.etaxonomy.cdm.model.taxon.ConceptStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicOperationType;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 import eu.etaxonomy.cdm.model.term.TermType;
 
@@ -159,15 +160,18 @@ public class EnumUserType<E extends Enum<E>>
         //CdmClass
         }else if (clazz.equals(CdmClass.class)){
             return CdmClass.getByKey(val);
-        //CdmClass
+        //ConceptDefinition
         }else if (clazz.equals(ConceptDefinition.class)){
             return ConceptDefinition.getByKey(val);
-        //CdmClass
+        //ConceptStatus
         }else if (clazz.equals(ConceptStatus.class)){
             return ConceptStatus.getByKey(val);
-        //CdmClass
+        //TaxonType
         }else if (clazz.equals(TaxonType.class)){
             return TaxonType.getByKey(val);
+        //TaxonomicOperation
+        }else if (clazz.equals(TaxonomicOperationType.class)){
+            return TaxonomicOperationType.getByKey(val);
         }else{
         	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
         }

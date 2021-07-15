@@ -17,11 +17,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.exception.RegistrationValidationException;
+import eu.etaxonomy.cdm.api.service.name.TypeDesignationWorkingSet.TypeDesignationWorkingSetType;
+import eu.etaxonomy.cdm.compare.name.NullTypeDesignationStatus;
 import eu.etaxonomy.cdm.compare.name.TypeDesignationStatusComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -72,6 +75,53 @@ public class TypeDesignationSetManager {
     private Map<UUID,TypeDesignationBase<?>> typeDesignations = new HashMap<>();
 
     private TaxonName typifiedName;
+
+    private Comparator<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> entryComparator = new Comparator<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>>(){
+
+        /**
+          * Sorts the base entities (TypedEntityReference) in the following order:
+          *
+          * 1. FieldUnits
+          * 2. DerivedUnit (in case of missing FieldUnit we expect the base type to be DerivedUnit)
+          * 3. NameType
+          *
+          * {@inheritDoc}
+          */
+         @Override
+         public int compare(Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> o1, Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> o2) {
+
+             TypeDesignationWorkingSet ws1 = o1.getValue();
+             TypeDesignationWorkingSet ws2 = o2.getValue();
+
+             if (ws1.getWorkingsetType() != ws2.getWorkingsetType()){
+                 //first specimen types, then name types (very rare case anyway)
+                 return ws1.getWorkingsetType() == TypeDesignationWorkingSetType.NAME_TYPE_DESIGNATION_WORKINGSET? 1:-1;
+             }
+
+             boolean hasStatus1 = !ws1.keySet().contains(null) && !ws1.keySet().contains(NullTypeDesignationStatus.SINGLETON());
+             boolean hasStatus2 = !ws2.keySet().contains(null) && !ws2.keySet().contains(NullTypeDesignationStatus.SINGLETON());
+             if (hasStatus1 != hasStatus2){
+                 //first without status as it is difficult to distinguish a non status from a "same" status record if the first record has a status and second has no status
+                 return hasStatus1? 1:-1;
+             }
+
+             //                boolean hasStatus1 = ws1.getTypeDesignations(); //.stream().filter(td -> td.getSt);
+
+             Class<?> type1 = o1.getKey().getType();
+             Class<?> type2 = o2.getKey().getType();
+
+             if(!type1.equals(type2)) {
+                 if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
+                     // FieldUnits first
+                     return type1.equals(FieldUnit.class) ? -1 : 1;
+                 } else {
+                     // name types last (in case of missing FieldUnit we expect the base type to be DerivedUnit which comes into the middle)
+                     return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
+                 }
+             } else {
+                 return o1.getKey().getLabel().compareTo(o2.getKey().getLabel());
+             }
+         }};
 
     /**
      * Groups the EntityReferences for each of the TypeDesignations by the according TypeDesignationStatus.
@@ -154,7 +204,6 @@ public class TypeDesignationSetManager {
     protected void mapAndSort() {
 
         Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus = new HashMap<>();
-
         this.typeDesignations.values().forEach(td -> mapTypeDesignation(byBaseEntityByTypeStatus, td));
         orderedByTypesByBaseEntity = orderByTypeByBaseEntity(byBaseEntityByTypeStatus);
     }
@@ -162,6 +211,7 @@ public class TypeDesignationSetManager {
     private void mapTypeDesignation(Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> byBaseEntityByTypeStatus,
             TypeDesignationBase<?> td){
 
+        td = HibernateProxyHelper.deproxy(td);
         TypeDesignationStatusBase<?> status = td.getTypeStatus();
 
         try {
@@ -175,9 +225,10 @@ public class TypeDesignationSetManager {
             @SuppressWarnings({ "unchecked", "rawtypes" })
             TypeDesignationDTO<?> typeDesignationDTO
                 = new TypeDesignationDTO(
-                    HibernateProxyHelper.deproxy((TypeDesignationBase<?>)td).getClass(),
+                    td.getClass(),
                     td.getUuid(),
-                    workingsetBuilder.getTaggedText());
+                    workingsetBuilder.getTaggedText(),
+                    getTypeUuid(td));
 
             if(!byBaseEntityByTypeStatus.containsKey(baseEntityReference)){
                 byBaseEntityByTypeStatus.put(baseEntityReference, new TypeDesignationWorkingSet(baseEntity, baseEntityReference));
@@ -187,6 +238,23 @@ public class TypeDesignationSetManager {
         } catch (DataIntegrityException e){
             problems.add(e.getMessage());
         }
+    }
+
+
+    /**
+     * Returns the uuid of the type designated by this {@link TypeDesignationDTO#}.
+     * This is either a TaxonName or a {@link SpecimenOrObservationBase}.
+     */
+    private UUID getTypeUuid(TypeDesignationBase<?> td) {
+        IdentifiableEntity<?> type;
+        if (td instanceof SpecimenTypeDesignation){
+            type = ((SpecimenTypeDesignation) td).getTypeSpecimen();
+        }else if (td instanceof NameTypeDesignation){
+            type = ((NameTypeDesignation) td).getTypeName();
+        }else{
+            type = null;
+        }
+        return type == null? null : type.getUuid();
     }
 
     protected VersionableEntity baseEntity(TypeDesignationBase<?> td) throws DataIntegrityException {
@@ -238,44 +306,16 @@ public class TypeDesignationSetManager {
             Map<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> stringsByTypeByBaseEntity){
 
        // order the FieldUnit TypeName keys
-       List<TypedEntityReference<? extends VersionableEntity>> baseEntityKeyList = new LinkedList<>(stringsByTypeByBaseEntity.keySet());
-       Collections.sort(baseEntityKeyList, new Comparator<TypedEntityReference<?>>(){
-
-           /**
-             * Sorts the base entities (TypedEntityReference) in the following order:
-             *
-             * 1. FieldUnits
-             * 2. DerivedUnit (in case of missing FieldUnit we expect the base type to be DerivedUnit)
-             * 3. NameType
-             *
-             * {@inheritDoc}
-             */
-            @Override
-            public int compare(TypedEntityReference<?> o1, TypedEntityReference<?> o2) {
-
-                Class<?> type1 = o1.getType();
-                Class<?> type2 = o2.getType();
-
-                if(!type1.equals(type2)) {
-                    if(type1.equals(FieldUnit.class) || type2.equals(FieldUnit.class)){
-                        // FieldUnits first
-                        return type1.equals(FieldUnit.class) ? -1 : 1;
-                    } else {
-                        // name types last (in case of missing FieldUnit we expect the base type to be DerivedUnit which comes into the middle)
-                        return type2.equals(TaxonName.class) || type2.equals(NameTypeDesignation.class) ? -1 : 1;
-                    }
-                } else {
-                    return o1.getLabel().compareTo(o2.getLabel());
-                }
-            }}
-       );
+       Set<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> entrySet = stringsByTypeByBaseEntity.entrySet();
+       LinkedList<Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet>> baseEntityKeyList = new LinkedList<>(entrySet);
+       Collections.sort(baseEntityKeyList, entryComparator);
 
        // new LinkedHashMap for the ordered FieldUnitOrTypeName keys
        LinkedHashMap<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> stringsOrderedbyBaseEntityOrderdByType
            = new LinkedHashMap<>(stringsByTypeByBaseEntity.size());
 
-       for(TypedEntityReference<? extends VersionableEntity> baseEntityRef : baseEntityKeyList){
-
+       for(Entry<TypedEntityReference<? extends VersionableEntity>, TypeDesignationWorkingSet> entry : baseEntityKeyList){
+           TypedEntityReference<? extends VersionableEntity> baseEntityRef = entry.getKey();
            TypeDesignationWorkingSet typeDesignationWorkingSet = stringsByTypeByBaseEntity.get(baseEntityRef);
            // order the TypeDesignationStatusBase keys
             List<TypeDesignationStatusBase<?>> keyList = new LinkedList<>(typeDesignationWorkingSet.keySet());
@@ -370,19 +410,18 @@ public class TypeDesignationSetManager {
 
     private FieldUnit findFieldUnit(DerivedUnit du) {
 
-        if(du == null || du.getOriginals() == null){
+        if(du == null || du.getOriginals() == null || du.getOriginals().isEmpty()){
             return null;
         }
         @SuppressWarnings("rawtypes")
-        Set<SpecimenOrObservationBase> originals = du.getDerivedFrom().getOriginals();
+        Set<SpecimenOrObservationBase> originals = du.getOriginals();
         @SuppressWarnings("rawtypes")
         Optional<SpecimenOrObservationBase> fieldUnit = originals.stream()
                 .filter(original -> original instanceof FieldUnit).findFirst();
         if (fieldUnit.isPresent()) {
             return (FieldUnit) fieldUnit.get();
         } else {
-            for (@SuppressWarnings("rawtypes")
-            SpecimenOrObservationBase sob : originals) {
+            for (@SuppressWarnings("rawtypes") SpecimenOrObservationBase sob : originals) {
                 if (sob instanceof DerivedUnit) {
                     FieldUnit fu = findFieldUnit((DerivedUnit) sob);
                     if (fu != null) {

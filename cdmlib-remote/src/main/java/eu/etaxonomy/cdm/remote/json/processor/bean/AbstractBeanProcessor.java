@@ -33,7 +33,6 @@ import net.sf.json.util.PropertyFilter;
 /**
  * @author a.kohlbecker
  * @since 30.03.2009
- *
  */
 public abstract class AbstractBeanProcessor<T extends Object> implements JsonBeanProcessor{
 
@@ -88,24 +87,12 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
         return mergedExcludes;
     }
 
-    /**
-     *
-     * @param json
-     * @param jsonConfig
-     * @param fieldName
-     * @param fieldObject
-     */
     protected void addJsonElement(JSONObject json, JsonConfig jsonConfig, String fieldName,	Object fieldObject) {
         if(Hibernate.isInitialized(fieldObject)){
             json.element(fieldName, fieldObject, jsonConfig);
         }
     }
 
-
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final JSONObject processBean(Object bean, JsonConfig jsonConfig) {
 
@@ -174,13 +161,6 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
      * By overriding this method it is possible to do further processing.
      * <p>
      * <b>See also {@link #getIgnorePropNames()}!</b>
-     *
-     * @param bean
-     * @param json
-     * @param jsonConfig
-     * @return
      */
     public abstract JSONObject processBeanSecondStep(T bean, JSONObject json, JsonConfig jsonConfig) ;
-
-
 }

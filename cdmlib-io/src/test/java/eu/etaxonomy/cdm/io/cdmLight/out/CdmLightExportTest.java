@@ -106,7 +106,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         })
         public void testSubTree(){
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
 //            config.setCreateCondensedDistributionString(false);
             config.setTaxonNodeFilter(TaxonNodeFilter.NewSubtreeInstance(UUID.fromString("f8c9933a-fe3a-42ce-8a92-000e27bfdfac")));
 
@@ -129,7 +129,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
             String referenceString = new String(reference);
             Assert.assertNotNull("Reference table must not be null", reference);
-            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. 1804\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
+            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
             Assert.assertTrue(referenceString.contains(expected));
 
             byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
@@ -161,9 +161,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
             if (config.isAddHTML()){
-                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
+                expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\"";
             }else{
-                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
+                expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\"";
             }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
@@ -175,7 +175,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         })
         public void testFullTreeWithUnpublished(){
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
             config.setTarget(TARGET.EXPORT_DATA);
             config.getTaxonNodeFilter().setIncludeUnpublished(true);
 
@@ -224,7 +224,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             byte[] reference = data.get(CdmLightExportTable.REFERENCE.getTableName());
             String referenceString = new String(reference);
             Assert.assertNotNull("Reference table must not be null", reference);
-            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. 1804\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
+            expected ="\"b8dd7f4a-0c7f-4372-bc5d-3b676363bc0f\",\"Mill. (1804)\",\"\",\"The book of botany\",\"1804\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"3\",\"1804\",\"Mill.\"";
             Assert.assertTrue(referenceString.contains(expected));
 
             byte[] geographicAreaFact = data.get(CdmLightExportTable.GEOGRAPHIC_AREA_FACT.getTableName());
@@ -251,9 +251,9 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             String homotypicGroupString = new String(homotypicGroup);
             Assert.assertNotNull("Reference table must not be null", homotypicGroup);
             if (config.isAddHTML()){
-                expected ="\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"<i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\"";
+                expected ="\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"= <i>Genus</i> <i>species</i> subsp. <i>subspec</i> Mill., The book of botany 3: 22. 1804 My sec ref\",\"\",\"\"";
             }else{
-                expected ="\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\",\"\",\"Genus species subsp. subspec Mill., The book of botany 3: 22. 1804\",\"\",\"\"";
+                expected ="\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804)\",\"\",\"\",\"= Genus species subsp. subspec Mill., The book of botany 3: 22. (1804) My sec ref\",\"\",\"\"";
             }
             Assert.assertTrue(homotypicGroupString.contains(expected));
         }
@@ -265,7 +265,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
         })
         public void testFullData(){
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
             config.setTarget(TARGET.EXPORT_DATA);
 
             ExportResult result = defaultExport.invoke(config);
@@ -321,7 +321,7 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
             commitAndStartNewTransaction();
 
 
-            CdmLightExportConfigurator config = new CdmLightExportConfigurator(null);
+            CdmLightExportConfigurator config = CdmLightExportConfigurator.NewInstance();
             config.setTarget(TARGET.EXPORT_DATA);
 
             ExportResult result = defaultExport.invoke(config);

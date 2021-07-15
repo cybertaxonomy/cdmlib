@@ -132,11 +132,11 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
         return dtb.getAnnotations();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="annotations", params = {"pageNumber", "pageSize"})
+    @RequestMapping(method = RequestMethod.GET, value="annotations", params = {"pageIndex", "pageSize"})
     public Pager<Annotation> doGetAnnotations(
             @PathVariable("uuid") UUID uuid,
             // doPage request parameters
-            @RequestParam(value = "pageNumber", required = true) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
             @RequestParam(value = "pageSize", required = true) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -150,7 +150,7 @@ public class TypeDesignationController extends AbstractController<TaxonName, INa
         if(dtb == null){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
-        Pager<Annotation> p = pagerForSubCollectionOf(dtb.getAnnotations(), pageNumber, pageSize, response);
+        Pager<Annotation> p = pagerForSubCollectionOf(dtb.getAnnotations(), pageIndex, pageSize, response);
         return p;
     }
 

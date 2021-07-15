@@ -216,34 +216,34 @@ public class NonViralNameParserImplTest extends TermTestBase {
         INonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1Unicode, null, Rank.SPECIES());
         assertEquals("Abies", nameAuthor.getGenusOrUninomial());
         assertEquals("alba", nameAuthor.getSpecificEpithet());
-        assertEquals("M\u00FCller", nameAuthor.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("M\u00FCller", nameAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         INonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1Unicode, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
-        assertEquals("D'M\u00FCller", nameBasionymAuthor.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("D'M\u00FCller", nameBasionymAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
         INomenclaturalAuthor basionymTeam = nameBasionymAuthor.getBasionymAuthorship();
-        assertEquals("Ciardelli", basionymTeam.getNomenclaturalTitle());
+        assertEquals("Ciardelli", basionymTeam.getNomenclaturalTitleCache());
 
         INonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-        assertEquals("D'M\u00FCller", nameBasionymExAuthor.getExCombinationAuthorship().getNomenclaturalTitle());
-        assertEquals("de Greuther", nameBasionymExAuthor.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("D'M\u00FCller", nameBasionymExAuthor.getExCombinationAuthorship().getNomenclaturalTitleCache());
+        assertEquals("de Greuther", nameBasionymExAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
         INomenclaturalAuthor basionymTeam2 = nameBasionymExAuthor.getExBasionymAuthorship();
-        assertEquals("Ciardelli", basionymTeam2.getNomenclaturalTitle());
+        assertEquals("Ciardelli", basionymTeam2.getNomenclaturalTitleCache());
         INomenclaturalAuthor exBasionymTeam2 = nameBasionymExAuthor.getBasionymAuthorship();
-        assertEquals("D\u00F6ring", exBasionymTeam2.getNomenclaturalTitle());
+        assertEquals("D\u00F6ring", exBasionymTeam2.getNomenclaturalTitleCache());
 
         IBotanicalName nameBasionymExAuthor2 = (IBotanicalName)parser.parseFullName("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", null, Rank.SPECIES());
         assertEquals("Washingtonia", nameBasionymExAuthor2.getGenusOrUninomial());
         assertEquals("filifera", nameBasionymExAuthor2.getSpecificEpithet());
-        assertEquals("H.Wendl.", nameBasionymExAuthor2.getExCombinationAuthorship().getNomenclaturalTitle());
-        assertEquals("de Bary", nameBasionymExAuthor2.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("H.Wendl.", nameBasionymExAuthor2.getExCombinationAuthorship().getNomenclaturalTitleCache());
+        assertEquals("de Bary", nameBasionymExAuthor2.getCombinationAuthorship().getNomenclaturalTitleCache());
         INomenclaturalAuthor basionymTeam3 = nameBasionymExAuthor2.getBasionymAuthorship();
-        assertEquals("Andre", basionymTeam3.getNomenclaturalTitle());
+        assertEquals("Andre", basionymTeam3.getNomenclaturalTitleCache());
         INomenclaturalAuthor exBasionymTeam3 = nameBasionymExAuthor2.getExBasionymAuthorship();
-        assertEquals("Linden", exBasionymTeam3.getNomenclaturalTitle());
+        assertEquals("Linden", exBasionymTeam3.getNomenclaturalTitleCache());
         String title = nameBasionymExAuthor2.getTitleCache();
         assertEquals("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", title);
     }
@@ -262,43 +262,43 @@ public class NonViralNameParserImplTest extends TermTestBase {
         INonViralName nameTeam1 = parser.parseFullName(strNameTeam1);
         assertEquals( "Abies", nameTeam1.getGenusOrUninomial());
         assertEquals( "alba", nameTeam1.getSpecificEpithet());
-        assertEquals("Mueller & L.",  nameTeam1.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("Mueller & L.",  nameTeam1.getCombinationAuthorship().getNomenclaturalTitleCache());
         assertTrue(nameTeam1.getCombinationAuthorship() instanceof Team);
         Team team = (Team)nameTeam1.getCombinationAuthorship();
-        assertEquals("Mueller", team.getTeamMembers().get(0).getNomenclaturalTitle());
-        assertEquals("L.", team.getTeamMembers().get(1).getNomenclaturalTitle());
+        assertEquals("Mueller", team.getTeamMembers().get(0).getNomenclaturalTitleCache());
+        assertEquals("L.", team.getTeamMembers().get(1).getNomenclaturalTitleCache());
 
         //ZooName
         IZoologicalName nameZoo1 = (IZoologicalName)parser.parseFullName(strNameZoo1);
         assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
         assertEquals( "alba", nameZoo1.getSpecificEpithet());
-        assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorship().getNomenclaturalTitleCache());
         assertEquals(NomenclaturalCode.ICZN, nameZoo1.getNameType() );
         assertEquals(Integer.valueOf(1822), nameZoo1.getPublicationYear());
         assertTrue(nameZoo1.getCombinationAuthorship() instanceof Team);
         Team teamZoo = (Team)nameZoo1.getCombinationAuthorship();
-        assertEquals("Mueller", teamZoo.getTeamMembers().get(0).getNomenclaturalTitle());
-        assertEquals("L.", teamZoo.getTeamMembers().get(1).getNomenclaturalTitle());
+        assertEquals("Mueller", teamZoo.getTeamMembers().get(0).getNomenclaturalTitleCache());
+        assertEquals("L.", teamZoo.getTeamMembers().get(1).getNomenclaturalTitleCache());
 
         IZoologicalName nameZoo2 = (IZoologicalName)parser.parseFullName(strNameZoo2);
         assertEquals(Integer.valueOf(2002), nameZoo2.getPublicationYear());
         assertEquals(Integer.valueOf(1822), nameZoo2.getOriginalPublicationYear());
-        assertEquals("Mueller",  nameZoo2.getBasionymAuthorship().getNomenclaturalTitle());
-        assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("Mueller",  nameZoo2.getBasionymAuthorship().getNomenclaturalTitleCache());
+        assertEquals("Ciardelli",  nameZoo2.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         //subsp
         IZoologicalName nameZoo3 = (IZoologicalName)parser.parseFullName(strNameZoo3);
-        assertEquals("Ciardelli",  nameZoo3.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("Ciardelli",  nameZoo3.getCombinationAuthorship().getNomenclaturalTitleCache());
         assertFalse("Subsp. without marker should be parsable", nameZoo3.hasProblem());
         assertEquals("Variety should be recognized", Rank.SUBSPECIES(), nameZoo3.getRank());
 
         IZoologicalName nameZoo4 = (IZoologicalName)parser.parseFullName(strNameZoo4);
-        assertEquals("Ciardelli",  nameZoo4.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("Ciardelli",  nameZoo4.getCombinationAuthorship().getNomenclaturalTitleCache());
         assertFalse("Subsp. without marker should be parsable", nameZoo4.hasProblem());
         assertEquals("Variety should be recognized", Rank.SUBSPECIES(), nameZoo4.getRank());
 
         IZoologicalName nameZoo5 = (IZoologicalName)parser.parseFullName(strNameZoo5);
-        assertEquals("Ciardelli",  nameZoo5.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("Ciardelli",  nameZoo5.getCombinationAuthorship().getNomenclaturalTitleCache());
         assertFalse("Subsp. without marker should be parsable", nameZoo5.hasProblem());
         assertEquals("Variety should be recognized", Rank.VARIETY(), nameZoo5.getRank());
 
@@ -328,7 +328,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         name = parser.parseFullName(fullNameString);
         assertFalse(name.hasProblem());
         assertNotNull(name.getCombinationAuthorship());
-        assertEquals("H. Keng", name.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("H. Keng", name.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         //name without combination  author  , only to check if above fix for #5618 works correctly
         fullNameString = "Gordonia moaensis (Vict.)";
@@ -336,7 +336,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertFalse(name.hasProblem());
         assertNull(name.getCombinationAuthorship());
         assertNotNull(name.getBasionymAuthorship());
-        assertEquals("Vict.", name.getBasionymAuthorship().getNomenclaturalTitle());
+        assertEquals("Vict.", name.getBasionymAuthorship().getNomenclaturalTitleCache());
 
     }
 
@@ -383,7 +383,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         INonViralName multipleAuthorRefName = parser.parseReferencedName(fullTitleString, NomenclaturalCode.ICNAFP, Rank.SPECIES());
         assertFalse(multipleAuthorRefName.hasProblem());
         assertTrue("Combination author should be a person", multipleAuthorRefName.getCombinationAuthorship() instanceof Person);
-        assertEquals("Combination author should be L.", "L.", ((Person)multipleAuthorRefName.getCombinationAuthorship()).getNomenclaturalTitle());
+        assertEquals("Combination author should be L.", "L.", ((Person)multipleAuthorRefName.getCombinationAuthorship()).getNomenclaturalTitleCache());
         Reference nomRef = multipleAuthorRefName.getNomenclaturalReference();
         Assert.assertNotNull("nomRef must have inRef", nomRef.getInReference());
         Reference inRef = nomRef.getInReference();
@@ -417,7 +417,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("InRef title should be Sp. Pl.", "Sp. Pl.", abbrevTitle);
         assertTrue(inRef.getAuthorship() instanceof Person);
         Person person = (Person)inRef.getAuthorship();
-        assertEquals("Book author should be L.", "L.", person.getNomenclaturalTitle());
+        assertEquals("Book author should be L.", "L.", person.getNomenclaturalTitleCache());
 
 
         fullTitleString = "Abies alba Mill., Aber & Schwedt, Sp. Pl. 173: 384. 1982.";
@@ -915,21 +915,21 @@ public class NonViralNameParserImplTest extends TermTestBase {
         INonViralName nameAuthor = (INonViralName)parseMethod.invoke(parser, strNameAbiesAuthor1, null, Rank.SPECIES());
         assertEquals("Abies", nameAuthor.getGenusOrUninomial());
         assertEquals("alba", nameAuthor.getSpecificEpithet());
-        assertEquals("Mueller", nameAuthor.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals("Mueller", nameAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         INonViralName nameBasionymAuthor = (INonViralName)parseMethod.invoke(parser, strNameAbiesBasionymAuthor1, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
-        assertEquals("D'Mueller", nameBasionymAuthor.getCombinationAuthorship().getNomenclaturalTitle());
-        assertEquals("Ciardelli", nameBasionymAuthor.getBasionymAuthorship().getNomenclaturalTitle());
+        assertEquals("D'Mueller", nameBasionymAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
+        assertEquals("Ciardelli", nameBasionymAuthor.getBasionymAuthorship().getNomenclaturalTitleCache());
 
         INonViralName nameBasionymExAuthor = (INonViralName)parseMethod.invoke(parser, strNameAbiesBasionymExAuthor1, null, Rank.SPECIES());
         assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-        assertEquals("D'Mueller", nameBasionymExAuthor.getExCombinationAuthorship().getNomenclaturalTitle());
-        assertEquals("de Greuther", nameBasionymExAuthor.getCombinationAuthorship().getNomenclaturalTitle());
-        assertEquals("Ciardelli", nameBasionymExAuthor.getExBasionymAuthorship().getNomenclaturalTitle());
-        assertEquals("Doering", nameBasionymExAuthor.getBasionymAuthorship().getNomenclaturalTitle());
+        assertEquals("D'Mueller", nameBasionymExAuthor.getExCombinationAuthorship().getNomenclaturalTitleCache());
+        assertEquals("de Greuther", nameBasionymExAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
+        assertEquals("Ciardelli", nameBasionymExAuthor.getExBasionymAuthorship().getNomenclaturalTitleCache());
+        assertEquals("Doering", nameBasionymExAuthor.getBasionymAuthorship().getNomenclaturalTitleCache());
 
         INonViralName name2 = (INonViralName)parseMethod.invoke(parser, strNameAbiesSub1, null, Rank.SPECIES());
         assertEquals("Abies", name2.getGenusOrUninomial());
@@ -2348,9 +2348,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         INonViralName name = parser.parseFullName("Psidium longipes var. orbiculare (O.Berg) McVaugh");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "McVaugh", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "McVaugh", combinationAuthor.getNomenclaturalTitleCache());
         TeamOrPersonBase<?> basionymAuthor = name.getBasionymAuthorship();
-        assertEquals( "O.Berg", basionymAuthor.getNomenclaturalTitle());
+        assertEquals( "O.Berg", basionymAuthor.getNomenclaturalTitleCache());
 
 //      Campanula rhodensis A. DC.
 
@@ -2368,39 +2368,39 @@ public class NonViralNameParserImplTest extends TermTestBase {
         name = parser.parseReferencedName(str);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Asch. & Schweinf.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Asch. & Schweinf.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals( "Barbey-Boissier & Barbey", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "Barbey-Boissier & Barbey", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         title = nomRef.getInReference().getAbbrevTitle();
         assertEquals( "Herb. Levant", title);
 
         name = parser.parseReferencedName("Luzula multiflora subsp. pallescens (Sw.) Reichg. in Van Ooststroom & al., Fl. Neerl. 1: 208. 1964");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals( "Reichg.", name.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals( "Reichg.", name.getCombinationAuthorship().getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals( "Van Ooststroom & al.", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "Van Ooststroom & al.", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         title = nomRef.getInReference().getAbbrevTitle();
         assertEquals( "Fl. Neerl.", title);
 
         str = "Salvia pratensis var. albiflora T. Durand in De Wildeman & Durand, Prodr. Fl. Belg. 3: 663. 1899";
         name = parser.parseReferencedName(str);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals( "T. Durand", name.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals( "T. Durand", name.getCombinationAuthorship().getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals( "De Wildeman & Durand", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "De Wildeman & Durand", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         title = nomRef.getInReference().getAbbrevTitle();
         assertEquals( "Prodr. Fl. Belg.", title);
 
         str = "Bravoa Lex. in La Llave & Lexarza, Nov. Veg. Desc. 1: 6. 1824";
         name = parser.parseReferencedName(str);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals( "Lex.", name.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals( "Lex.", name.getCombinationAuthorship().getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals( "La Llave & Lexarza", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "La Llave & Lexarza", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         title = nomRef.getInReference().getAbbrevTitle();
         assertEquals( "Nov. Veg. Desc.", title);
 
@@ -2409,7 +2409,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals( "Dalla Torre & Sarnthein", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "Dalla Torre & Sarnthein", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         title = nomRef.getInReference().getAbbrevTitle();
         assertEquals( "Fl. Tirol", title);
 
@@ -2419,7 +2419,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 //        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
 //        nomRef = name.getNomenclaturalReference();
 //        assertEquals(ReferenceType.BookSection, nomRef.getType());
-//        assertEquals( "Amaral Franco & Rocha Afonso", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+//        assertEquals( "Amaral Franco & Rocha Afonso", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
 //        title = nomRef.getInReference().getAbbrevTitle();
 //        assertEquals( "Nova Fl. Portugal", title);
 //
@@ -2428,7 +2428,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 //        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
 //        nomRef = name.getNomenclaturalReference();
 //        assertEquals(ReferenceType.BookSection, nomRef.getType());
-//        assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+//        assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
 //        title = nomRef.getInReference().getAbbrevTitle();
 //        assertEquals( "Mount. Fl. Greece", title);
 
@@ -2471,7 +2471,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Acta Bot. Hung. 46 (1-2): 30. 2004");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         TeamOrPersonBase<?> combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitleCache());
         Reference nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("46 (1-2)", nomRef.getVolume());
@@ -2481,7 +2481,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Bol. Soc. Bot. Mex. 44: 72, fig. 1. 1983");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Rzed.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Rzed.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("44", nomRef.getVolume());
@@ -2492,7 +2492,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Allertonia 4: 428. fig 4a-c. 1988");  //
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Dwyer & Lorence", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Dwyer & Lorence", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("4", nomRef.getVolume());
@@ -2503,7 +2503,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
               + " in Acta Bot. Hung. 33 (3" + UTF8.EN_DASH + "4): 303. 1987");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Borhidi", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("33 (3" + UTF8.EN_DASH + "4)", nomRef.getVolume());
@@ -2514,7 +2514,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Sida 19(4): 901" + UTF8.EN_DASH + "911, f. 1" + UTF8.EN_DASH + "2. 2001");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Terrell", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Terrell", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("19(4)", nomRef.getVolume());
@@ -2525,7 +2525,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Contr. Dudley Herb. 3: 75, figs 4-6. 1940");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("3", nomRef.getVolume());
@@ -2536,7 +2536,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Contr. Dudley Herb. 3: 75, pl. 19, figs 4-6. 1940");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Wiggins", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("3", nomRef.getVolume());
@@ -2547,7 +2547,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Hist. Pl. Guiane 1: 167, pl. 64. 1775");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Aubl.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Aubl.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("1", nomRef.getVolume());
@@ -2558,7 +2558,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Novon 4: 121. fig. 2a, b. 1994");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("4", nomRef.getVolume());
@@ -2569,7 +2569,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Allertonia 4: 399. figs 1e, 2. 1988");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Lorence", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("4", nomRef.getVolume());
@@ -2580,7 +2580,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in J. Bot. 57(Suppl.): 38. 1919");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Wernham", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Wernham", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("57(Suppl.)", nomRef.getVolume());
@@ -2591,7 +2591,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Mem. NY. Bot. Gard. 22: 75. 1972");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "W.R. Anderson", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "W.R. Anderson", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("22", nomRef.getVolume());
@@ -2602,7 +2602,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Hooker's J. Bot. Kew Gard. Misc. 3: 219. 1841");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Benth.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Benth.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("3", nomRef.getVolume());
@@ -2613,7 +2613,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                   + " in Bonplandia (Hannover) 6 (1): 8. 1858");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Griseb.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Griseb.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("6 (1)", nomRef.getVolume());
@@ -2624,7 +2624,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Acta Bot. Hung. 29(1\u20134): 16, f. 1\u20132, t. 1-8. 1983 [1984]");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1\u20134)", nomRef.getVolume());
@@ -2637,7 +2637,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Acta Bot. Hung. 29(1-4): 16, f. 1-2. \u201e1983\u201f [1984]");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1-4)", nomRef.getVolume());
@@ -2650,7 +2650,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Acta Bot. Hung. 29(1-4): 16, f. 1-2. \"1983\" [1984]");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Borhidi & Jarai-Koml.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("29(1-4)", nomRef.getVolume());
@@ -2664,7 +2664,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Fl. Peruv. 2: 59, pl. 206, fig. a. 1799");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Ruiz & Pav.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Ruiz & Pav.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("2", nomRef.getVolume());
@@ -2675,7 +2675,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Fl. Serres Jard. Eur. 5: 442A. 1849");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Planch.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Planch.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("5", nomRef.getVolume());
@@ -2686,7 +2686,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Phytologia 26 (6): 488-489, f. 1973");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "L.O. Williams", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "L.O. Williams", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("26 (6)", nomRef.getVolume());
@@ -2697,7 +2697,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " in Nova Acta Phys.-Med. Acad. Caes.\u2013Leop. Nat. Cur. 12: 14. 1824");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Nees & Mart.", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Nees & Mart.", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.Article, nomRef.getType());
         assertEquals("Nova Acta Phys.-Med. Acad. Caes.\u2013Leop. Nat. Cur.", nomRef.getInReference().getAbbrevTitle());
@@ -2711,7 +2711,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 //                + ", Syst. Nat. ed. 10, 2: 930. 1759");
 //        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
 //        combinationAuthor = name.getCombinationAuthorship();
-//        assertEquals( "L.", combinationAuthor.getNomenclaturalTitle());
+//        assertEquals( "L.", combinationAuthor.getNomenclaturalTitleCache());
 //        nomRef = (Reference)name.getNomenclaturalReference();
 //        assertEquals(ReferenceType.Book, nomRef.getType());
 //        assertEquals("2", nomRef.getVolume());
@@ -2724,7 +2724,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
                 + " Nat. Pflanzenfam. 3(1a): 109. 1893");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         combinationAuthor = name.getCombinationAuthorship();
-        assertEquals( "Schinz", combinationAuthor.getNomenclaturalTitle());
+        assertEquals( "Schinz", combinationAuthor.getNomenclaturalTitleCache());
         nomRef = name.getNomenclaturalReference();
         Assert.assertFalse("Reference should be parsable", nomRef.isProtectedTitleCache());
         assertEquals(ReferenceType.Book, nomRef.getType());
@@ -2736,13 +2736,13 @@ public class NonViralNameParserImplTest extends TermTestBase {
         //Accent graph in author name #6057
         name = parser.parseReferencedName("Sedum plicatum O`Brian");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
-        assertEquals( "O`Brian", name.getCombinationAuthorship().getNomenclaturalTitle());
+        assertEquals( "O`Brian", name.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         //-e-  #6060
         name = parser.parseReferencedName("Thamniopsis stenodictyon (Sehnem) Oliveira-e-Silva & O.Yano");
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         Team team = (Team)name.getCombinationAuthorship();
-        assertEquals( "Oliveira-e-Silva", team.getTeamMembers().get(0).getNomenclaturalTitle());
+        assertEquals( "Oliveira-e-Silva", team.getTeamMembers().get(0).getNomenclaturalTitleCache());
 
         //Vorabdr.
         name = parser.parseReferencedName("Ophrys hystera  Kreutz & Ruedi Peter in J. Eur. Orchideen 30(Vorabdr.): 128. 1997");
@@ -2815,7 +2815,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters",
                 name.getCombinationAuthorship().getTitleCache());
         assertEquals("Ilieva, Man in 't Veld, Veenbaas-Rijks & Pieters",
-                name.getCombinationAuthorship().getNomenclaturalTitle());
+                name.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         nameStr = "Thymus \u00D7 herberoi De la Torre, Vicedo, Alonso & Paya";
         name = parser.parseFullName(nameStr);
@@ -2825,7 +2825,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("De la Torre, Vicedo, Alonso & Paya",
                 name.getCombinationAuthorship().getTitleCache());
         assertEquals("De la Torre, Vicedo, Alonso & Paya",
-                name.getCombinationAuthorship().getNomenclaturalTitle());
+                name.getCombinationAuthorship().getNomenclaturalTitleCache());
 
         //Sant'Anna
         nameStr = "Coelosphaerium evidenter-marginatum M.T.P.Azevedo & Sant'Anna";
@@ -3001,7 +3001,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         Reference nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals( "Amaral Franco & Rocha Afonso", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "Amaral Franco & Rocha Afonso", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         assertEquals( "Nova Fl. Portugal", nomRef.getInReference().getAbbrevTitle());
 
         //same
@@ -3010,8 +3010,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
         nomRef = name.getNomenclaturalReference();
         assertEquals(ReferenceType.BookSection, nomRef.getType());
-        assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitle());
+        assertEquals( "Strid & Kit Tan", nomRef.getInReference().getAuthorship().getNomenclaturalTitleCache());
         assertEquals( "Mount. Fl. Greece", nomRef.getInReference().getAbbrevTitle());
     }
-
 }

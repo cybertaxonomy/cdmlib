@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @author AM
  */
 public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclaturalAuthorCacheStrategy<Team> {
+
     private static final long serialVersionUID = 8375295443642690479L;
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
@@ -116,13 +117,13 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
             if (this == TITLECACHE){
                 return member.getTitleCache();
             }else if (this == ABBREV){
-                return member.getNomenclaturalTitle();
+                return member.getNomenclaturalTitleCache();
             }else if (this == FULL){
                 return member.getFullTitle();
             }else if (this == FAMILY){
                 return member.getCacheStrategy().getFamilyTitle(member);
-//          }else if (this == COLLECTOR){
-//              return member.getCollectroCache();
+            }else if (this == COLLECTOR){
+              return member.getCollectorTitleCache();
             }
             throw new IllegalStateException("CacheType not supported: " + this);
         }
@@ -147,7 +148,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     }
 
     @Override
-    public String getNomenclaturalTitle(Team team) {
+    public String getNomenclaturalTitleCache(Team team) {
         return getCache(team, CacheType.ABBREV, etAlPositionNomTitleCache);
     }
 
@@ -159,6 +160,11 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     @Override
     public String getFamilyTitle(Team team) {
         return getCache(team, CacheType.FAMILY, etAlPositionFamilyTitle);
+    }
+
+    @Override
+    public String getCollectorTitleCache(Team team) {
+        return getCache(team, CacheType.COLLECTOR, etAlPositionCollectorTitle);
     }
 
     private String getCache(Team team, CacheType cacheType, int etAlPosition) {
@@ -212,4 +218,5 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
     public static String addHasMoreMembers(String str) {
         return str + ET_AL_TEAM_CONCATINATION_ABBREV + "al.";
     }
+
 }

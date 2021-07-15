@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
 import java.util.UUID;
@@ -25,8 +24,8 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 public class PersonDefaultCacheStrategy
         extends StrategyBase
         implements INomenclaturalAuthorCacheStrategy<Person> {
-	private static final long serialVersionUID = -6184639515553953112L;
 
+	private static final long serialVersionUID = -6184639515553953112L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PersonDefaultCacheStrategy.class);
 
@@ -59,8 +58,12 @@ public class PersonDefaultCacheStrategy
 	}
 
 	@Override
-    public String getNomenclaturalTitle(Person person) {
-		return person.getNomenclaturalTitle();
+    public String getNomenclaturalTitleCache(Person person) {
+		if (isNotBlank(person.getNomenclaturalTitle())){
+            return person.getNomenclaturalTitle();
+        }else{
+            return getTitleCache(person);
+        }
 	}
 
     @Override
@@ -70,22 +73,46 @@ public class PersonDefaultCacheStrategy
 
     @Override
     public String getTitleCache(Person person) {
+        if (person.isProtectedTitleCache()){
+            return person.getTitleCache();
+        }
         String result = "";
+
         if (isNotBlank(person.getFamilyName() ) ){
-            result = person.getFamilyName();
+            result = person.getFamilyName().trim();
             result = addInitials(result, person);
             return result;
         }else{
             result = person.getNomenclaturalTitle();
             if (isNotBlank(result)){
-                return result;
+                return result.trim();
+            }
+            result = person.getCollectorTitle();
+            if (isNotBlank(result)){
+                return result.trim();
             }
             result = addInitials("", person);
             if (isNotBlank(result)){
-                return result;
+                return result.trim();
             }
         }
         return person.toString();
+    }
+
+    @Override
+    public String getCollectorTitleCache(Person person){
+        if (isNotBlank(person.getCollectorTitle())){
+            return person.getCollectorTitle();
+        }else if (!person.isProtectedTitleCache() &&  isNotBlank(person.getFamilyName()) &&
+                (isNotBlank(person.getInitials()) || isNotBlank(person.getGivenName()))){
+            if (isNotBlank(person.getInitials())){
+                return CdmUtils.concat(" ", person.getInitials(), person.getFamilyName());
+            }else{
+                return CdmUtils.concat(" ", getInitialsFromGivenName(person.getGivenName(), false), person.getFamilyName());
+            }
+        }else{
+            return getTitleCache(person);
+        }
     }
 
     private String addInitials(String existing, Person person) {
@@ -136,7 +163,7 @@ public class PersonDefaultCacheStrategy
         if (givenname == null){
             return null;
         }else if (isBlank(givenname)){
-            return "";
+            return null;
         }
         //remove brackets
         final String regex = "\\([^)]*\\)";
@@ -169,7 +196,7 @@ public class PersonDefaultCacheStrategy
                 result = CdmUtils.concat(initialsSeparator, result, split.substring(0, 1) + ".");
             }
         }
-        return result;
+        return CdmUtils.Ne(result);
     }
 
 }

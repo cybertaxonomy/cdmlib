@@ -133,7 +133,7 @@ public class ReferenceDefaultCacheStrategy
     private String getAuthorAndYear(Reference reference, boolean isAbbrev, boolean useFullDatePublished) {
         TeamOrPersonBase<?> author = reference.getAuthorship();
         String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
-                author.getNomenclaturalTitle(), isAbbrev, trim);
+                author.getNomenclaturalTitleCache(), isAbbrev, trim);
         String result = addAuthorYear(authorStr, reference, useFullDatePublished);
         return result;
     }
@@ -163,7 +163,7 @@ public class ReferenceDefaultCacheStrategy
         }else{
             String refStr = nomSourceFormatter.format(reference, null);
             TeamOrPersonBase<?> authorTeam = reference.getAuthorship();
-            String authorStr = authorTeam == null? null : authorTeam.getNomenclaturalTitle();
+            String authorStr = authorTeam == null? null : authorTeam.getNomenclaturalTitleCache();
             String sep = refStr.startsWith("in ")? " ": ", ";
             return CdmUtils.concat(sep, authorStr, refStr);
         }
@@ -254,7 +254,7 @@ public class ReferenceDefaultCacheStrategy
         //section author
         TeamOrPersonBase<?> author = reference.getAuthorship();
         String authorStr = (author == null)? "" : CdmUtils.getPreferredNonEmptyString(author.getTitleCache(),
-                author.getNomenclaturalTitle(), isAbbrev, trim);
+                author.getNomenclaturalTitleCache(), isAbbrev, trim);
 
         //date
         String dateStr = null;
@@ -318,7 +318,7 @@ public class ReferenceDefaultCacheStrategy
             String inRefTitle = TitleWithoutYearAndAuthorHelper.getTitleWithoutYearAndAuthor(inRef, isAbbrev, false);
             TeamOrPersonBase<?> inRefAuthor = inRef.getAuthorship();
             String authorStr = (inRefAuthor == null)? "" : CdmUtils.getPreferredNonEmptyString(inRefAuthor.getTitleCache(),
-                    inRefAuthor.getNomenclaturalTitle(), isAbbrev, trim);
+                    inRefAuthor.getNomenclaturalTitleCache(), isAbbrev, trim);
             inRefAuthorAndTitle = CdmUtils.concat(afterInRefAuthor, authorStr, inRefTitle);
         }else{
             inRefAuthorAndTitle = String.format("- undefined %s -", getUndefinedLabel(type));
@@ -358,7 +358,7 @@ public class ReferenceDefaultCacheStrategy
         TeamOrPersonBase<?> team = reference.getAuthorship();
         if (team != null){
             String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(),
-                    team.getNomenclaturalTitle(), isAbbrev, trim);
+                    team.getNomenclaturalTitleCache(), isAbbrev, trim);
             if (isNotBlank(author)){
                 result = author + afterAuthor + result;
             }
@@ -384,7 +384,7 @@ public class ReferenceDefaultCacheStrategy
         TeamOrPersonBase<?> team = reference.getAuthorship();
         if (team != null){
             String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(),
-                    team.getNomenclaturalTitle(), isAbbrev, trim);
+                    team.getNomenclaturalTitleCache(), isAbbrev, trim);
             if (isNotBlank(author)){
                 result = author + afterAuthor + result;
             }
@@ -398,7 +398,7 @@ public class ReferenceDefaultCacheStrategy
      * Adds the year or full date of a reference to a given string
      * @param currentStr the given string
      * @param reference the reference
-     * @param useFullDatePublished wether to add the year only or the full date
+     * @param useFullDatePublished weather to add the year only or the full date
      * @return the concatenated string
      */
     public static String addYear(String currentStr, Reference reference, boolean useFullDatePublished){

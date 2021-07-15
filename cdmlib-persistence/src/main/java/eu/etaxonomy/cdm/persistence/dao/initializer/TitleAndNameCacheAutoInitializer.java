@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 import java.util.Optional;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -27,10 +28,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  * @author a.kohlbecker
  * @since 30.07.2010
- *
  */
 public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<IdentifiableEntity<?>> {
-
 
     @Override
     public void initialize(IdentifiableEntity<?> bean) {
@@ -56,7 +55,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             if(!n.isProtectedFullTitleCache() || !bean.isProtectedTitleCache() || !n.isProtectedNameCache()){
                 /* getTaggedName special case
                  *
-                 * if the name cache already is non null the generateNameCache()
+                 * if the name cache already is not null the generateNameCache()
                  * method will not be executed and no initialization of the name cache
                  * cascade will happen, therefore me must call the getTaggedName()
                  * explicitly in order to trigger the cascade. Otherwise a
@@ -72,16 +71,21 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
                  */
                 n.getTaggedName();
             }
-        } else if(bean instanceof TaxonName) {
-             // ---> TaxonName
-            TaxonName n = (TaxonName)bean;
-            if(!n.isProtectedFullTitleCache())  {
-                n.getFullTitleCache();
-            } else if(!bean.isProtectedTitleCache()){
-                n.getTitleCache();
-            }
         } else if(bean instanceof TaxonBase)  {
-            ((TaxonBase)bean).getTaggedTitle();
+            if (!bean.isProtectedTitleCache()){
+                ((TaxonBase<?>)bean).getTaggedTitle();
+            }
+        } else if(bean instanceof Team)  {
+            Team team = (Team)bean;
+            if (!bean.isProtectedTitleCache()){
+                bean.getTitleCache();
+            }
+            if (!team.isProtectedCollectorTitleCache()){
+                team.getCollectorTitleCache();
+            }
+            if (!team.isProtectedNomenclaturalTitleCache()){
+                team.getNomenclaturalTitleCache();
+            }
         } else if(!bean.isProtectedTitleCache()){
             // ---> all other IdentifiableEntity
             bean.getTitleCache();
@@ -111,6 +115,4 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
         return Optional.empty();
 
     }
-
-
 }

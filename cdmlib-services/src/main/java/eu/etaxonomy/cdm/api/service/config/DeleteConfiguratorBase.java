@@ -24,12 +24,4 @@ public abstract class DeleteConfiguratorBase implements Serializable {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteConfiguratorBase.class);
 
-	private boolean isCheck = false;
-
-	public boolean isCheck() {
-		return isCheck;
-	}
-	public void setCheck(boolean isInternal) {
-		this.isCheck = isInternal;
-	}
 }

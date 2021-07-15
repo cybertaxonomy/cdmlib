@@ -80,7 +80,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
      * @param relationshipUuids a comma separated list of uuids e.g. CongruentTo;  "60974c98-64ab-4574-bb5c-c110f6db634d"
      * @param relationshipInversUuids a comma separated list of uuids
      * @param maxDepth null for unlimited
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param request
      * @param response
@@ -95,7 +95,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
                 @RequestParam(value = "relationships", required = false) UuidList relationshipUuids,
                 @RequestParam(value = "relationshipsInvers", required = false) UuidList relationshipInversUuids,
                 @RequestParam(value = "maxDepth", required = false) Integer maxDepth,
-                @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
                 @RequestParam(value = "pageSize", required = false) Integer pageSize,
                 HttpServletRequest request,
                 HttpServletResponse response) throws IOException {
@@ -105,7 +105,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
 
         Taxon associatedTaxon = (Taxon) taxonService.find(taxonUuid);
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         List<OrderHint> orderHints = null;
@@ -138,7 +138,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
      *            area
      * @param languages
      * @param highlighting
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param request
      * @param response
@@ -153,7 +153,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
             @RequestParam(value = "bbox", required = false) Rectangle boundingBox,
             @RequestParam(value = "languages", required = false) List<Language> languages,
             @RequestParam(value = "hl", required = false) Boolean highlighting,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response
@@ -162,7 +162,7 @@ public class OccurrenceListController extends AbstractIdentifiableListController
 
          logger.info("doFindByFullText() " + requestPathAndQuery(request) );
 
-         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
          pagerParams.normalizeAndValidate(response);
 
          if(highlighting == null){

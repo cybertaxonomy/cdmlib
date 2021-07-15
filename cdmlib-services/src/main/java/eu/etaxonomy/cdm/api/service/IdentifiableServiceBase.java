@@ -274,7 +274,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 		long countUpdated = 0;
 
 		int worked = 0;
-		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet();
+		Set<CdmEntityIdentifier> updatedCdmIds = new HashSet<>();
 		for(int i = 0 ; i < count ; i = i + stepSize){
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it
 			ArrayList<OrderHint> orderHints = new ArrayList<>();
@@ -310,7 +310,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	 */
 	protected void switchOnOldAutoInitializer(
 			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit) {
-		HibernateBeanInitializer initializer = (HibernateBeanInitializer)this.appContext.getBean("defaultBeanInitializer");
+		HibernateBeanInitializer initializer = (HibernateBeanInitializer<?>)this.appContext.getBean("defaultBeanInitializer");
 		initializer.setBeanAutoInitializers(oldAutoInit);
 	}
 
@@ -321,7 +321,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity, DAO 
 	 * @return
 	 */
 	protected Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> switchOfAutoinitializer() {
-		HibernateBeanInitializer initializer = (HibernateBeanInitializer)this.appContext.getBean("defaultBeanInitializer");
+		HibernateBeanInitializer initializer = (HibernateBeanInitializer<?>)this.appContext.getBean("defaultBeanInitializer");
 		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInitializers = initializer.getBeanAutoInitializers();
 		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> map = new HashMap<>();
 		initializer.setBeanAutoInitializers(map);

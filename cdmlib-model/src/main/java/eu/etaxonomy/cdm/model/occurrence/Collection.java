@@ -114,12 +114,16 @@ public class Collection
 
 // ************** FACTORY METHODS *************************/
 
-	/**
-	 * Factory method
-	 */
 	public static Collection NewInstance(){
 		return new Collection();
 	}
+
+    public static Collection NewInstance(String code, String name){
+        Collection result = new Collection();
+        result.setCode(code);
+        result.setName(name);
+        return result;
+    }
 
 // ******************** CONSTRUCTOR *************************/
 

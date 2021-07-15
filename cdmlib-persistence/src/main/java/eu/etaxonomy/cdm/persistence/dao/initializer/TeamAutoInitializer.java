@@ -21,10 +21,8 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
  *
  * @author a.kohlbecker
  * @since 30.07.2010
- *
  */
 public class TeamAutoInitializer extends AutoPropertyInitializer<TeamOrPersonBase> {
-
 
     @Override
     public void initialize(TeamOrPersonBase bean) {
@@ -49,6 +47,4 @@ public class TeamAutoInitializer extends AutoPropertyInitializer<TeamOrPersonBas
 
         return Optional.of(result);
     }
-
-
 }

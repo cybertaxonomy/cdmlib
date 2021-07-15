@@ -30,8 +30,8 @@ public enum ConceptDefinition
     HOMOTYPIC_GROUP_WITH_EDITOR(UUID.fromString("ee316a72-fd0c-48ac-9104-0fccff091b01"),"homotypic groups with editor decisions","HGWE"),
     DESCRIPTION(UUID.fromString("eaec1b7e-a9cd-432f-a684-9504f0e85337"),"descriptions","DES"),
     DESCRIPTION_WITH_EDITOR(UUID.fromString("5ab7fd6e-b7c3-42b7-9a75-d3cccb547a96"),"descriptions with editor decisions","DESWE"),
-
     ;
+
     @SuppressWarnings("unchecked")
     private ConceptDefinition(UUID uuid, String defaultString, String key){
         delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, null);

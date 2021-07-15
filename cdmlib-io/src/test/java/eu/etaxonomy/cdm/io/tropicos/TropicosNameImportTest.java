@@ -84,9 +84,10 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
     public void testShort() {
         configShort.setCreateTaxa(true);
         ImportResult result = defaultImport.invoke(configShort);
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals(0,result.getExceptions().size());
+        Assert.assertEquals(0,result.getErrors().size());
         String report = result.createReport().toString();
-
-
 
         Integer expected = 2;
         Assert.assertEquals(expected, result.getNewRecords(TaxonName.class));
@@ -110,6 +111,9 @@ public class TropicosNameImportTest extends CdmTransactionalIntegrationTest{
     public void testShortCreateTaxa() {
         configShort.setCreateTaxa(true);
         ImportResult result = defaultImport.invoke(configShort);
+        Assert.assertTrue(result.isSuccess());
+        Assert.assertEquals(0,result.getExceptions().size());
+        Assert.assertEquals(0,result.getErrors().size());
 
         Integer expected = 2;
         Assert.assertEquals(expected, result.getNewRecords(Taxon.class));

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,9 +32,11 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.search.OrcidBridge;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
@@ -67,6 +71,8 @@ import javassist.compiler.ast.Keyword;
 	    "givenName",
 	    "initials",
 	    "suffix",
+	    "nomenclaturalTitle",
+	    "collectorTitle",
 	    "lifespan",
 	    "orcid",
 	    "institutionalMemberships"
@@ -78,8 +84,21 @@ import javassist.compiler.ast.Keyword;
 @Audited
 @Configurable
 public class Person extends TeamOrPersonBase<Person>{
-	private static final long serialVersionUID = 4153566493065539763L;
+
+    private static final long serialVersionUID = 4153566493065539763L;
 	public static final Logger logger = Logger.getLogger(Person.class);
+
+    @XmlElement(name="NomenclaturalTitle")
+    @Field(index=Index.YES)
+    @NullOrNotEmpty
+    @Column(length=255)
+    protected String nomenclaturalTitle;
+
+    @XmlElement(name="CollectorTitle")
+    @Field(index=Index.YES)
+    @NullOrNotEmpty
+    @Column(length=255)
+    private String collectorTitle;
 
     @XmlElement(name = "Prefix")
     @Field
@@ -170,7 +189,6 @@ public class Person extends TeamOrPersonBase<Person>{
         return result;
     }
 
-
 // *********************** CONSTRUCTOR **********************************/
 
 	/**
@@ -207,8 +225,26 @@ public class Person extends TeamOrPersonBase<Person>{
         this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
     }
 
-// *********************** GETTER SETTER ADDER **********************************/
+    @Override
+    public void initListener(){
+        PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent ev) {
+                if (!ev.getPropertyName().equals("nomenclaturalTitleCache") //not sure if called at all
+                        && !ev.getPropertyName().equals("collectorTitleCache") //not sure if called at all
+                        && !ev.getPropertyName().equals("cacheStrategy")){
+                    if (!ev.getPropertyName().equals("titleCache") && ! isProtectedTitleCache()){
+                        titleCache = null;
+                    }
+                    nomenclaturalTitleCache = null;
+                    collectorTitleCache = null;
+                }
+            }
+        };
+        addPropertyChangeListener(listener);
+    }
 
+// *********************** GETTER SETTER ADDER **********************************/
 
     /**
 	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to <i>this</i> person.
@@ -276,7 +312,6 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.prefix = isBlank(prefix) ? null : prefix;
 	}
 
-
 	/**
 	 * Returns the string representing the given name or forename
 	 * (for instance "John") of <i>this</i> person.
@@ -301,6 +336,22 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.givenName = isBlank(givenName) ? null : givenName;
 	}
 
+	//#4311
+    public String getCollectorTitle() {
+        return collectorTitle;
+    }
+    public void setCollectorTitle(String collectorTitle) {
+        this.collectorTitle = collectorTitle;
+    }
+
+    public String getNomenclaturalTitle() {
+        return nomenclaturalTitle;
+    }
+    @Override
+    public void setNomenclaturalTitle(String nomenclaturalTitle) {
+        this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
+    }
+
     /**
      * Returns the initials of this person as used in bibliographic
      * references. Usually these are the first letters of each givenname
@@ -317,7 +368,6 @@ public class Person extends TeamOrPersonBase<Person>{
     public void setInitials(String initials){
         this.initials = isBlank(initials) ? null : initials;
     }
-
 
 	/**
 	 * Returns the string representing the hereditary name (surname or family name)
@@ -341,7 +391,6 @@ public class Person extends TeamOrPersonBase<Person>{
 	public void setFamilyName(String familyName){
 		this.familyName = isBlank(familyName) ? null : familyName;
 	}
-
 
 	/**
 	 * Returns the string representing the suffix (for instance "Junior")
@@ -381,7 +430,6 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.lifespan = lifespan != null? lifespan : TimePeriod.NewInstance();
 	}
 
-
     /**
      * The {@link ORCID ORCiD} of this person.<BR>
      * See https://orcid.org/ for information on ORCiD.
@@ -401,14 +449,34 @@ public class Person extends TeamOrPersonBase<Person>{
     public boolean updateCaches(){
         boolean result = false;
         result |= super.updateCaches();
-        if (this.nomenclaturalTitle == null){
-            this.nomenclaturalTitle = this.getTitleCache();
-            if ( this.nomenclaturalTitle != null ){
-                 result = true;
-            }
-         }
+        result |= updateNomenclaturalCache();
+        result |= updateCollectorCache();
 
          return result;
+    }
+
+    private boolean updateNomenclaturalCache() {
+        //updates the nomenclaturalTitleCache if necessary
+        String oldCache = this.nomenclaturalTitleCache;
+        String newCache = getCacheStrategy().getNomenclaturalTitleCache(this);
+        if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+//            this.setNomenclaturalTitleCache(null, false);
+            this.getNomenclaturalTitleCache();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean updateCollectorCache() {
+        //updates the collectorTitleCache if necessary
+        String oldCache = this.collectorTitleCache;
+        String newCache = getCacheStrategy().getCollectorTitleCache(this);
+        if (!CdmUtils.nullSafeEqual(oldCache, newCache)){
+//            this.setNomenclaturalTitleCache(null, false);
+            this.getCollectorTitleCache();
+            return true;
+        }
+        return false;
      }
 
 //*********************** CLONE ********************************************************/

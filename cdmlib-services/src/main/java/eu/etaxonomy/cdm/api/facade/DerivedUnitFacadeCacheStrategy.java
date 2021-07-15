@@ -23,10 +23,14 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * @author a.mueller
  * @since 03.06.2010
+ *
+ * @deprecated with #9678 a similar cache strategy (DerivedUnitCacheStrategy)
+ *      was implemented in cdmlib-model. This class may be removed in future.
  */
+@Deprecated
 public class DerivedUnitFacadeCacheStrategy
-        extends StrategyBase implements
-        IIdentifiableEntityCacheStrategy<DerivedUnit> {
+        extends StrategyBase
+        implements IIdentifiableEntityCacheStrategy<DerivedUnit> {
 
     private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")

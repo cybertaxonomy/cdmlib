@@ -68,9 +68,9 @@ public class NomenclaturalSourceFormatterTest {
         articleTeam1 = Team.NewInstance();
         articleTeam2 = Team.NewInstance();
         articleTeam1.setTitleCache("Team1", true);
-        articleTeam1.setNomenclaturalTitle("T.", true);
+        articleTeam1.setNomenclaturalTitle("T.");
         articleTeam2.setTitleCache("Team2", true);
-        articleTeam2.setNomenclaturalTitle("TT.", true);
+        articleTeam2.setNomenclaturalTitle("TT.");
 
         //book / section
         book1 = ReferenceFactory.newBook();
@@ -257,12 +257,16 @@ public class NomenclaturalSourceFormatterTest {
 
     @Test
     public void testBookSectionGetNomenclaturalCitation(){
-        book1.setTitle("My book");
         book1.setAuthorship(bookTeam1);
-        bookSection1.setTitle("My chapter");
         bookSection1.setInBook(book1);
         bookSection1.setAuthorship(sectionTeam1);
         book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1975));
+        //#9705
+        Assert.assertEquals("in TT., 1975", formatter.format((Reference)bookSection1, null));
+        Assert.assertEquals("in TT., -: 55. 1975", formatter.format((Reference)bookSection1, detail1));
+
+        book1.setTitle("My book");
+        bookSection1.setTitle("My chapter");
         //TODO still unclear which is correct
 //      Assert.assertEquals("in Book Author, My book: 55. 1975", bookSection1.getNomenclaturalCitation(detail1));
         Assert.assertEquals("in TT., My book: 55. 1975", formatter.format((Reference)bookSection1, detail1));
@@ -441,7 +445,20 @@ public class NomenclaturalSourceFormatterTest {
         Assert.assertEquals("Unexpected title cache.",
                 "in Linneus, Species Plantarum 3: 55. 1752",
                 formatter.format(section, detail1));
+    }
 
+    @Test
+    public void testShortSources(){
+        //#9705
+        book1.setAuthorship(bookTeam1);
+        bookSection1.setInBook(book1);
+        book1.setDatePublished(VerbatimTimePeriod.NewVerbatimInstance(1972));
+        Assert.assertEquals("in TT., -: 44. 1972", formatter.format((Reference)bookSection1, "44"));
+
+        //#9705  (better use titlecache then completely empty reference; this handles the case when the abbreviated titleCache was forgotten to set to protected)
+        Reference book = ReferenceFactory.newBook();
+        book.setTitleCache("Only titlecache", true);
+        Assert.assertEquals("Only titlecache: 36", formatter.format(book, "36"));
 
     }
 }

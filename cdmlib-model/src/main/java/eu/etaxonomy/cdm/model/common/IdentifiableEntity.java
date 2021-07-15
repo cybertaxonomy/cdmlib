@@ -679,7 +679,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
             return this.getClass() + ": " + this.getUuid();
         }else{
-            return getCacheStrategy().getTitleCache(this);
+            S cacheStrategy = getCacheStrategy();
+            return cacheStrategy.getTitleCache(this);
         }
     }
 

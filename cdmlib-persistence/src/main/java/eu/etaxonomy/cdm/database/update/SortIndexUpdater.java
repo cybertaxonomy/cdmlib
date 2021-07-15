@@ -43,14 +43,14 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase {
 	}
 
 	public static final SortIndexUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable){
-		return new SortIndexUpdater(stepList, stepName, tableName, parentColumn,sortIndexColumn, idColumn, idColumn, includeAudTable, 0);
+		return new SortIndexUpdater(stepList, stepName, tableName, parentColumn, sortIndexColumn, idColumn, idColumn, includeAudTable, 0);
 	}
 
     /**
      * Returns an SortIndexUpdater that updates an existing sort index which might have missing sortindex numbers in between.
      */
     public static final SortIndexUpdater NewUpdateExistingSortindexInstance(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
-        return new SortIndexUpdater(stepList, stepName, tableName, parentColumn,sortIndexColumn, "id", sortIndexColumn, includeAudTable, 0);
+        return new SortIndexUpdater(stepList, stepName, tableName, parentColumn, sortIndexColumn, "id", sortIndexColumn, includeAudTable, 0);
     }
 
 	protected SortIndexUpdater(List<ISchemaUpdaterStep> stepList, String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, String currentSortColumn, boolean includeAudTable, Integer baseValue) {

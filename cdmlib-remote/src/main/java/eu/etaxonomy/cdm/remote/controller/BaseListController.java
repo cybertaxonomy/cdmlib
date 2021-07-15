@@ -69,7 +69,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
     @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
     public Pager<T> doPage(
-            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class type,
             @RequestParam(name="orderBy", defaultValue="BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
@@ -90,7 +90,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
     @SuppressWarnings("unchecked")
     @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, params={"restriction"})
     public Pager<T> doPageByRestrictions(
-            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class type,
             @RequestParam(value = "restriction", required = true) List<Restriction<?>> restrictions,

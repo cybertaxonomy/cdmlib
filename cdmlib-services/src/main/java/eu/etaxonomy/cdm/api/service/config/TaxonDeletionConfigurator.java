@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  * @author a.mueller
  * @since 09.11.2011
- *
  */
 public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 
@@ -57,9 +56,7 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 
     //private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
 
-
     private TaxonNodeDeletionConfigurator taxonNodeConfig = new TaxonNodeDeletionConfigurator();
-
 
     private boolean deleteTaxonNodes = true;
 
@@ -79,7 +76,6 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
         this.deleteInAllClassifications = deleteInAllClassifications;
     }
 
-
     /**
      * If <code>true</code> related taxa with  {@link TaxonRelationshipType} misappliedName
      * will be removed if possible.<BR>
@@ -95,9 +91,6 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
         this.deleteMisappliedNames = deleteMisappliedNames;
     }
 
-
-
-
     /**
      * The configurator for node deletion. Only evaluated if {@link #isDeleteNode()}
      * is <code>true</code>.
@@ -110,13 +103,9 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     public TaxonNodeDeletionConfigurator getTaxonNodeConfig() {
         return taxonNodeConfig;
     }
-
     public void setTaxonNodeConfig(TaxonNodeDeletionConfigurator taxonNodeConfig) {
         this.taxonNodeConfig = taxonNodeConfig;
     }
-
-
-
 
     /**
      * If <code>true</code> synonyms will be removed if possible but only if {@link #isDeleteSynonymRelations()}
@@ -127,12 +116,9 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     public boolean isDeleteSynonymsIfPossible() {
         return deleteSynonymsIfPossible;
     }
-
     public void setDeleteSynonymsIfPossible(boolean deleteSynonymsIfPossible) {
         this.deleteSynonymsIfPossible = deleteSynonymsIfPossible;
     }
-
-
 
     /**
      * If <code>true</code> all {@link TaxonNode taxon nodes} this taxon belongs to
@@ -143,7 +129,6 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     public boolean isDeleteTaxonNodes() {
         return deleteTaxonNodes;
     }
-
     public void setDeleteTaxonNodes(boolean deleteTaxonNodes) {
         this.deleteTaxonNodes = deleteTaxonNodes;
     }
@@ -156,7 +141,6 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     public boolean isDeleteTaxonRelationships() {
         return deleteTaxonRelationships;
     }
-
     public void setDeleteTaxonRelationships(boolean deleteTaxonRelationships) {
         this.deleteTaxonRelationships = deleteTaxonRelationships;
     }
@@ -168,11 +152,9 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     public boolean isDeleteDescriptions() {
         return deleteDescriptions;
     }
-
     public void setDeleteDescriptions(boolean deleteDescriptions) {
         this.deleteDescriptions = deleteDescriptions;
     }
-
 
     /**
      * @return the deleteConceptRelationships
@@ -180,8 +162,6 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
     public boolean isDeleteConceptRelationships() {
         return deleteConceptRelationships;
     }
-
-
     /**
      * @param deleteConceptRelationships the deleteConceptRelationships to set
      */
@@ -189,17 +169,10 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
         this.deleteConceptRelationships = deleteConceptRelationships;
     }
 
-
     public UUID getClassificationUuid() {
         return classificationUuid;
     }
-
-
     public void setClassificationUuid(UUID classificationUuid) {
         this.classificationUuid = classificationUuid;
     }
-
-
-
-
 }

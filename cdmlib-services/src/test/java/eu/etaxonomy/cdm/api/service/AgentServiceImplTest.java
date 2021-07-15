@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -85,7 +86,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 	    }
 	    Assert.assertNotNull(team);
 	    Assert.assertEquals("Title cache must be equal", fullAuthor, team.getTitleCache());
-	    Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+	    Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
 	    Assert.assertTrue("Members must be empty", team.getTeamMembers().isEmpty());
 	    Assert.assertEquals("Annotations should be moved", 1, team.getAnnotations().size());
 	    Assert.assertNotNull("Contact must be copied too", team.getContact());
@@ -104,7 +105,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
             Assert.fail("No Merge exception should be thrown, but was: " + e.getMessage());
         }
 	    Assert.assertEquals("Title cache must be equal", person2.getTitleCache(), team.getTitleCache());
-        Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitle());
+        Assert.assertEquals("Nom. title must be equal", nomTitle, team.getNomenclaturalTitleCache());
         Assert.assertTrue("Nom. title must be protected", team.isProtectedNomenclaturalTitleCache());
 
         //test fully empty
@@ -121,7 +122,8 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         }
         Assert.assertEquals("If person was completely empty we don't expect the title cache to be taken from person.nomenclaturalTitle", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getTitleCache());
         Assert.assertFalse("If person was completely empty we don't expect the title cache to be protected", team.isProtectedTitleCache());
-        Assert.assertEquals("Nom. title must be equal", person2.getNomenclaturalTitle(), team.getNomenclaturalTitle());
+        Assert.assertEquals("If person was completely empty we expect nom. title to be the empty team constant", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getNomenclaturalTitleCache());
+        Assert.assertEquals("If person was completely empty we expect collector title to be the empty team constant", TeamDefaultCacheStrategy.EMPTY_TEAM, team.getCollectorTitleCache());
 
         try{
             service.convertPerson2Team(person2.getUuid());
@@ -170,7 +172,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
 		}
     	Assert.assertNotNull(person);
     	Assert.assertEquals("Title cache must be equal", fullAuthor, person.getTitleCache());
-    	Assert.assertEquals("Nom. title must be equal", nomTitle, person.getNomenclaturalTitle());
+    	Assert.assertEquals("Nom. title must be equal", nomTitle, person.getNomenclaturalTitleCache());
     	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
     	Assert.assertNotNull("Contact must be copied too", person.getContact());
     	Assert.assertEquals("person must be combination author now", person, name.getCombinationAuthorship());
@@ -216,7 +218,7 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertNotNull(person);
     	Assert.assertEquals("Convert result and 'member' must be equal'", member, person);
     	Assert.assertEquals("Title cache must be equal", "Member person", person.getTitleCache());
-    	Assert.assertEquals("Nom. title must be equal", "Memb. pers.", person.getNomenclaturalTitle());
+    	Assert.assertEquals("Nom. title must be equal", "Memb. pers.", person.getNomenclaturalTitleCache());
     	//FIXME should annotations be taken only from member ??
 //    	Assert.assertEquals("Annotations should be moved", 1, person.getAnnotations().size());
     	String annotationText = person.getAnnotations().iterator().next().getText();
@@ -231,18 +233,19 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
     @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="AgentServiceImplTest.testUpdateTitleCache.xml")
     public final void testUpdateNomTitle() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
-        Field nomenclaturalTitleField = TeamOrPersonBase.class.getDeclaredField("nomenclaturalTitle");
+        Field nomenclaturalTitleField = Person.class.getDeclaredField("nomenclaturalTitle");
         nomenclaturalTitleField.setAccessible(true);
+        Field nomenclaturalTitleCacheField = TeamOrPersonBase.class.getDeclaredField("nomenclaturalTitleCache");
+        nomenclaturalTitleCacheField.setAccessible(true);
 
         Person turland = (Person) service.load(UUID.fromString("a598ab3f-b33b-4b4b-b237-d616fcb6b5b1"));
         Person monro = (Person) service.load(UUID.fromString("e7206bc5-61ab-468e-a9f5-dec118b46b7f"));
         // TODO Add Assertion Person "Ehrenberg" must not be member of a team.
         Person ehrenberg = (Person) service.load(UUID_EHRENBERG);
 
-
-        Team turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
-        Team turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
-        Team turland_monro_null = (Team) service.load(UUID.fromString("a4ca0d37-d78b-4bcc-875e-d4ea5a031089"));
+        Team turland_monro_protected = CdmBase.deproxy(service.loadWithoutInitializing(3), Team.class);
+        Team turland_monro = CdmBase.deproxy(service.loadWithoutInitializing(4), Team.class);
+        Team turland_monro_null = CdmBase.deproxy(service.loadWithoutInitializing(5), Team.class);
 
         // Person has no flag for protecting the nomenclaturalTitle
         assertNull(nomenclaturalTitleField.get(turland));
@@ -251,30 +254,30 @@ public class AgentServiceImplTest extends CdmTransactionalIntegrationTest{
         assertEquals("A.M. Monro", nomenclaturalTitleField.get(monro).toString());
 
         // Team has a flag for protectedNomenclaturalTitle flag
-        assertEquals("Turland, Monro", nomenclaturalTitleField.get(turland_monro_protected));
+        assertEquals("Turland, Monro", nomenclaturalTitleCacheField.get(turland_monro_protected));
         assertTrue(turland_monro_protected.isProtectedNomenclaturalTitleCache());
-        assertEquals("--to be updated--", nomenclaturalTitleField.get(turland_monro).toString());
+        assertEquals("--to be updated--", nomenclaturalTitleCacheField.get(turland_monro).toString());
         assertFalse(turland_monro.isProtectedNomenclaturalTitleCache());
-        assertNull(nomenclaturalTitleField.get(turland_monro_null));
+        assertNull(nomenclaturalTitleCacheField.get(turland_monro_null));
         assertFalse(turland_monro_null.isProtectedNomenclaturalTitleCache());
 
         service.updateCaches();
 
-        turland_monro_protected = (Team) service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8"));
-        turland_monro = (Team) service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7"));
+        turland_monro_protected = CdmBase.deproxy(service.load(UUID.fromString("5bff55de-f7cc-44d9-baac-908f52ad0cb8")), Team.class);
+        turland_monro = CdmBase.deproxy(service.load(UUID.fromString("30ca93d6-b543-4bb9-b6ff-e9ededa65af7")), Team.class);
         ehrenberg = (Person)service.load(UUID_EHRENBERG);
 
-        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleField.get(turland));
-        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Ehrenb.", nomenclaturalTitleField.get(ehrenberg));
+        assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(turland));
+        assertEquals("Expecting nomenclaturalTitleCache to be set since it was NULL", "Turland, N.J.", nomenclaturalTitleCacheField.get(turland));
+        assertNull("Expecting nomenclaturalTitle to be still NULL", nomenclaturalTitleField.get(ehrenberg));
+        assertEquals("Expecting nomenclaturalTitleCache to be set since it was NULL", "Ehrenb.", nomenclaturalTitleCacheField.get(ehrenberg));
         assertEquals("Expecting titleChache to be unchaged since it was protecetd", "Ehrenb.", ehrenberg.getTitleCache());
-        assertEquals("Expecting nomenclaturalTitle to be unchanged", "A.M. Monro", nomenclaturalTitleField.get(monro).toString());
+        assertEquals("Expecting nomenclaturalTitleCache to be unchanged", "A.M. Monro", nomenclaturalTitleCacheField.get(monro).toString());
 
-        assertEquals("Turland, Monro", nomenclaturalTitleField.get(turland_monro_protected));
-        assertEquals("Turland, N.J. & A.M. Monro", nomenclaturalTitleField.get(turland_monro).toString());
-        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J. & A.M. Monro", nomenclaturalTitleField.get(turland_monro_null).toString());
-
+        assertEquals("Turland, Monro", nomenclaturalTitleCacheField.get(turland_monro_protected));
+        assertEquals("Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro).toString());
+        assertEquals("Expecting nomenclaturalTitle to be set since it was NULL", "Turland, N.J. & A.M. Monro", nomenclaturalTitleCacheField.get(turland_monro_null).toString());
     }
-
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {}

@@ -26,7 +26,6 @@ public class SynonymDeletionConfigurator extends TaxonBaseDeletionConfigurator{
 	public boolean isNewHomotypicGroupIfNeeded() {
 		return newHomotypicGroupIfNeeded;
 	}
-
 	public void setNewHomotypicGroupIfNeeded(boolean newHomotypicGroupIfNeeded) {
 		this.newHomotypicGroupIfNeeded = newHomotypicGroupIfNeeded;
 	}

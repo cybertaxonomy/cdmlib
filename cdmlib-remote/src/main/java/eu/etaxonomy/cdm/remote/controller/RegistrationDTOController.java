@@ -127,7 +127,7 @@ public class RegistrationDTOController
     public Pager<RegistrationDTO> doPageByIdentifier(
             @RequestParam(value = "identifier", required = true) String identifier,
             @RequestParam(value = "validateUniqueness") boolean validateUniqueness,
-            @RequestParam(value = "pageNumber", required=true) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required=true) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -164,7 +164,7 @@ public class RegistrationDTOController
             @RequestParam(value = "identifierFilterPattern", required=false) String identifierFilterPattern,
             @RequestParam(value = "taxonNameFilterPattern", required=false) String taxonNameFilterPattern,
             @RequestParam(value = "referenceFilterPattern", required=false) String referenceFilterPattern,
-            @RequestParam(value = "pageNumber", required=false) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             @SuppressWarnings("unused") HttpServletResponse response) {
@@ -200,7 +200,7 @@ public class RegistrationDTOController
     public Pager<RegistrationDTO> doPageByTaxomicInclusion(
             @RequestParam(value = "taxonNameFilter", required = true) String taxonNameFilterPattern,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
-            @RequestParam(value = "pageNumber", required = false, defaultValue="0") Integer pageIndex,
+            @RequestParam(value = "pageIndex", required = false, defaultValue="0") Integer pageIndex,
             @RequestParam(value = "pageSize", required = false, defaultValue="30" /*AbstractController.DEFAULT_PAGE_SIZE_VALUE*/ ) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -221,7 +221,7 @@ public class RegistrationDTOController
             @RequestParam(value = "submitterUuid", required=false) UUID submitterUuid,
             @RequestParam(value = "status", required=false) RegistrationStatusList status,
             @RequestParam(value = "nameUuid", required=true) Collection<UUID> nameUuids,
-            @RequestParam(value = "pageNumber", required=false) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required=false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws PermissionDeniedException, RegistrationValidationException {

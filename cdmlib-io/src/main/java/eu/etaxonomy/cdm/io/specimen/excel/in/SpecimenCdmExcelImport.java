@@ -694,7 +694,7 @@ public class SpecimenCdmExcelImport
 		}
 		TeamOrPersonBase<?> actor = getOrMakeAgent(state, authors);
 		TeamOrPersonBase<?> secAuthor = taxon.getSec() == null ? null : taxon.getSec().getAuthorship();
-		if (actor != null && secAuthor != null && secAuthor.getTitleCache().equals(actor.getTitleCache()) && secAuthor.getNomenclaturalTitle().equals(actor.getNomenclaturalTitle())) {
+		if (actor != null && secAuthor != null && secAuthor.getTitleCache().equals(actor.getTitleCache()) && secAuthor.getNomenclaturalTitleCache().equals(actor.getNomenclaturalTitleCache())) {
 			actor = secAuthor;
 		}
 
@@ -748,7 +748,7 @@ public class SpecimenCdmExcelImport
 			if (primaryCollector.equalsIgnoreCase(person.getTitleCache())){
 				return person;
 			}
-			if (primaryCollector.equalsIgnoreCase(person.getNomenclaturalTitle())){
+			if (primaryCollector.equalsIgnoreCase(person.getNomenclaturalTitleCache())){
 				return person;
 			}
 		}

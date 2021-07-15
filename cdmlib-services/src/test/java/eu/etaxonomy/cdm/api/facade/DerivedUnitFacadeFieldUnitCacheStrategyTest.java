@@ -40,7 +40,11 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 /**
  * @author a.mueller
  * @since 03.06.2010
+ *
+ * @deprecated with #9678 a similar cache strategy (FieldUnitCacheStrategy)
+ *      was implemented in cdmlib-model. This class may be removed in future.
  */
+@Deprecated
 public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")
@@ -144,9 +148,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends TermTestBase {
 		DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		firstFieldObject = FieldUnit.NewInstance();
 
-		//TODO maybe we should define concrete event types here
 		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance(null);
-		DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance(null);
 		firstDerivationEvent = DerivationEvent.NewInstance(null);
 
 		collectionSpecimen.setDerivedFrom(lastDerivationEvent);

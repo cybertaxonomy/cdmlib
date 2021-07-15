@@ -13,25 +13,19 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author k.luther
  * @since 10.03.2016
- *
  */
 public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
+
+    private static final long serialVersionUID = -7971683693512032369L;
 
     private boolean deleteFromDescription = false;
     private boolean deleteFromEveryWhere = false;
     private boolean onlyRemoveFromGallery = true;
     private CdmBase deleteFrom;
 
-
-    /**
-     * @return the onlyRemoveFromGallery
-     */
     public boolean isOnlyRemoveFromGallery() {
         return onlyRemoveFromGallery;
     }
-    /**
-     * @param onlyRemoveFromGallery the onlyRemoveFromGallery to set
-     */
     public void setOnlyRemoveFromGallery(boolean onlyRemoveFromGallery) {
         this.onlyRemoveFromGallery = onlyRemoveFromGallery;
     }
@@ -42,12 +36,14 @@ public class MediaDeletionConfigurator extends DeleteConfiguratorBase {
     public void setDeleteFrom(CdmBase deleteFrom) {
         this.deleteFrom = deleteFrom;
     }
+
     public boolean isDeleteFromEveryWhere() {
         return deleteFromEveryWhere;
     }
     public void setDeleteFromEveryWhere(boolean deleteFromEveryWhere) {
         this.deleteFromEveryWhere = deleteFromEveryWhere;
     }
+
     public boolean isDeleteFromDescription() {
         return deleteFromDescription;
     }

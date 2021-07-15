@@ -213,7 +213,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         Team team = Team.NewInstance();
         team.addTeamMember(getDefaultFullPerson());
         team.addTeamMember(getFullPerson2());
-        team.getNomenclaturalTitle();
+        team.getNomenclaturalTitleCache();
         return team;
     }
 
@@ -232,7 +232,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         team.addTeamMember(getDefaultParsedPerson());
         team.addTeamMember(getFullPerson2());
         //TODO should be done in cache strategy
-        team.getNomenclaturalTitle();
+        team.getNomenclaturalTitleCache();
         return team;
     }
 

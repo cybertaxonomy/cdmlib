@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.compare.common.PartialComparator;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -574,16 +575,9 @@ public class OccurrenceServiceImpl
                 if(o1 instanceof FieldUnitDTO && o2 instanceof FieldUnitDTO) {
                     FieldUnitDTO fu1 = (FieldUnitDTO)o1;
                     FieldUnitDTO fu2 = (FieldUnitDTO)o2;
-                    if(fu1.getDate() == null && fu2.getDate() == null) {
-                        return 0;
-                    }
-                    if(fu1.getDate() != null && fu2.getDate() == null) {
-                        return 1;
-                    }
-                    if(fu1.getDate() == null && fu2.getDate() != null) {
-                        return -1;
-                    }
-                    return fu1.getDate().compareTo(fu2.getDate());
+                    //TODO if we want null values and values with missing year as smallest we should use
+                    //PartialComparator.INSTANCE_NULL_SMALLEST() here
+                    return PartialComparator.INSTANCE().compare(fu1.getDate(), fu2.getDate());
                 }
                 if(o1 instanceof DerivedUnitDTO && o2 instanceof DerivedUnitDTO) {
                     SpecimenOrObservationBaseDTO du1 = o1;
@@ -596,6 +590,7 @@ public class OccurrenceServiceImpl
                     return 1;
                 }
             }
+
         });
 
         return orderdDTOs;

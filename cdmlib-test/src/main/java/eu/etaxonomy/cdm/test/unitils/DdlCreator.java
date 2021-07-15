@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.test.unitils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.EnumSet;
 
 import org.hibernate.boot.Metadata;
@@ -21,6 +23,7 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.H2CorrectedDialectTest;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 
@@ -45,59 +48,58 @@ public class DdlCreator {
 
 	public static void main(String[] args) {
 		try {
-			new DdlCreator().execute2(H2CorrectedDialectTest.class, "h2");
+			new DdlCreator().execute(H2CorrectedDialectTest.class, "h2");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-    public void execute2(Class<?> dialect, String lowerCaseDialectName){
+    public void execute(Class<?> dialect, String lowerCaseDialectName){
 
-        String outputFileName = String.format("%s.%s.%s ", new Object[] {"001-cdm", lowerCaseDialectName, "sql" });
-        String templateFile = "dbscripts/" + outputFileName + "-template";
-        String outputPath = "src/main/resources/dbscripts/" + outputFileName;
+        try {
+            String fileName = String.format("%s.%s.%s", new Object[] {"001-cdm", lowerCaseDialectName, "sql" });
+            String outputFileClassPath = "dbscripts/" + fileName;
 
-//      String classPath = "eu/etaxonomy/cdm/hibernate.cfg.xml";
-//      ClassPathResource resource = new ClassPathResource(classPath);
-//      File configurationFile = resource.getFile();
+            ClassPathResource resource = new ClassPathResource(outputFileClassPath);
+            File folder = resource.getFile().getParentFile();
+            String outputPath = folder.getCanonicalPath()+File.separator + fileName;
 
-        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder()
+            StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder()
                 .applySetting(AvailableSettings.DIALECT, dialect.getCanonicalName())  // dialect
-                //alternative: .loadProperties(propertiesFile)
-                //alternative2: .configure("hibernate.cfg.xml")
-                //alternative3: .configure(configurationFile)
-                //SCRIPT_THEN_METADATA does not work with SchemaExport:
-//                .applySetting(AvailableSettings.HBM2DDL_CREATE_SCRIPT_SOURCE, templateFile)
-//                .applySetting(AvailableSettings.HBM2DDL_CREATE_SOURCE, SourceType.SCRIPT_THEN_METADATA);
+//                .applySetting(AvailableSettings.HBM2DDL_CREATE_SCRIPT_SOURCE, resource.getURL())  //does not have the expected effect
                 ;
 
-        StandardServiceRegistry serviceRegistry = registryBuilder.build();
+            StandardServiceRegistry serviceRegistry = registryBuilder.build();
 
-        MetadataSources metadataSources = new MetadataSources(serviceRegistry);
+            MetadataSources metadataSources = new MetadataSources(serviceRegistry);
 
+            //model scan
+            PathMatchingResourcePatternResolver resourceLoader = new PathMatchingResourcePatternResolver();
+            new LocalSessionFactoryBuilder(null, resourceLoader, metadataSources).scanPackages("eu.etaxonomy.cdm.model");
 
-        PathMatchingResourcePatternResolver resourceLoader = new PathMatchingResourcePatternResolver();
-        new LocalSessionFactoryBuilder(null, resourceLoader, metadataSources).scanPackages("eu.etaxonomy.cdm.model");
+            //metadata
+            ImplicitNamingStrategyComponentPathImpl namingStrategy = new ImplicitNamingStrategyComponentPathImpl();
+            PhysicalNamingStrategy physicalNamingStrategy = new UpperCasePhysicalNamingStrategyStandardImpl();
+            Metadata metadata = metadataSources.getMetadataBuilder(serviceRegistry)
+                    .applyImplicitSchemaName("public")
+                    .applyImplicitNamingStrategy(namingStrategy)
+                    .applyPhysicalNamingStrategy(physicalNamingStrategy)
+                    .build();
 
-//        PhysicalNamingStrategy namingStrategy = new PhysicalNamingStrategyStandardImpl();
-        ImplicitNamingStrategyComponentPathImpl namingStrategy = new ImplicitNamingStrategyComponentPathImpl();
-        PhysicalNamingStrategy physicalNamingStrategy = new UpperCasePhysicalNamingStrategyStandardImpl();
+            //export
+            EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.SCRIPT);
+            new SchemaExport()
+                .setFormat(true)
+                .setDelimiter(";")
+//                .setImportFiles(templatePath)  //does not have the expected effect
+                .setOutputFile(outputPath)
+                .createOnly(targetTypes, metadata);
 
-        Metadata metadata = metadataSources.getMetadataBuilder(serviceRegistry)
-                .applyImplicitSchemaName("public")
-                .applyImplicitNamingStrategy(namingStrategy)
-                .applyPhysicalNamingStrategy(physicalNamingStrategy)
-                .build();
-
-        EnumSet<TargetType> targetTypes = EnumSet.of(/*TargetType.STDOUT, */TargetType.SCRIPT);
-        new SchemaExport()
-            .setFormat(true)
-            .setDelimiter(";")
-//            .setImportFiles(templateFile)
-            .setOutputFile(outputPath)
-            .createOnly(targetTypes, metadata);
-
-        ((StandardServiceRegistryImpl) serviceRegistry).destroy();
+            ((StandardServiceRegistryImpl) serviceRegistry).destroy();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
 
         //approaches for JPA and eclipselink can be found here: https://stackoverflow.com/questions/297438/auto-generate-data-schema-from-jpa-annotated-entity-classes;
     }

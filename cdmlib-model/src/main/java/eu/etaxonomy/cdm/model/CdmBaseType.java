@@ -18,10 +18,12 @@ import javax.persistence.Entity;
 
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -37,11 +39,13 @@ public enum CdmBaseType {
     /**
      * refers to the baseClass {@link TaxonBase}
      */
-    TAXON(TaxonBase.class),
-    NONVIRALNAME(TaxonName.class),
+    TAXON_BASE(TaxonBase.class),
+    TAXON_NAME(TaxonName.class),
     DESCRIPTION_ELEMENT(DescriptionElementBase.class),
     DESCRIPTION(DescriptionBase.class),
-    SPECIMEN_OR_OBSERVATIONBASE(SpecimenOrObservationBase.class);
+    SPECIMEN_OR_OBSERVATIONBASE(SpecimenOrObservationBase.class),
+    MEDIA(Media.class),
+    TEAM_OR_PERSONBASE(TeamOrPersonBase.class);
     // TODO add all others
 
     private Class<? extends CdmBase> baseClass;
@@ -62,7 +66,7 @@ public enum CdmBaseType {
 
     private void updateBaseTypeMap(){
         if(CdmBaseType.subTypeToBaseTypeMap == null){
-            CdmBaseType.subTypeToBaseTypeMap = new HashMap<Class<? extends CdmBase>,  Class<? extends CdmBase>>();
+            CdmBaseType.subTypeToBaseTypeMap = new HashMap<>();
         }
         for(Class<? extends CdmBase> subClass : subClasses){
             CdmBaseType.subTypeToBaseTypeMap.put(subClass, baseClass);

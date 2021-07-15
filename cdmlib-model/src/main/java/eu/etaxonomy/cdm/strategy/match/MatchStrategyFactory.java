@@ -36,6 +36,9 @@ public class MatchStrategyFactory {
 
             addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
 
+            //FIXME adapt for  for inRef authors
+            parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL);
+
             //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("familyName", MatchMode.EQUAL_OR_FIRST_NULL);
 
@@ -66,11 +69,10 @@ public class MatchStrategyFactory {
 
             parsedTeamMatchStrategy.setMatchMode("hasMoreMembers", MatchMode.EQUAL);
 
-            //TODO is this correct?
             parsedTeamMatchStrategy.setMatchMode("protectedCollectorTitleCache", MatchMode.EQUAL_OR_FIRST_NULL);
             parsedTeamMatchStrategy.setMatchMode("protectedNomenclaturalTitleCache", MatchMode.EQUAL);
 
-            String[] equalOrNullParams = new String[]{"collectorTitle"};
+            String[] equalOrNullParams = new String[]{};
             for(String param : equalOrNullParams){
                 parsedTeamMatchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
             }
@@ -278,15 +280,11 @@ public class MatchStrategyFactory {
 
     private static void addParsedAgentBaseMatchModes(IParsedMatchStrategy matchStrategy) throws MatchException {
 
-        //FIXME adapt for inRef authors
-        //TODO how to initialize this cache field in a generic way
-        matchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL_REQUIRED);
-
         addParsedIdentifiableEntityModes(matchStrategy);
 
         //TODO contact does not yet works, also not with EQUAL_OR_ONE_NULL, leads to agent.id=? or agent.id is null query
         //better should be even handled with MATCH.Equal_OR_ONE_NULL
-        String[] equalOrNullParams = new String[]{"collectorTitle"};
+        String[] equalOrNullParams = new String[]{};
         for(String param : equalOrNullParams){
             matchStrategy.setMatchMode(param, MatchMode.EQUAL_OR_FIRST_NULL);
         }

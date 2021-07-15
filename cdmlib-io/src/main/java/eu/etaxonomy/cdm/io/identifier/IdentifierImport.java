@@ -64,8 +64,6 @@ public class IdentifierImport
                 return;
             }
 
-            @SuppressWarnings("rawtypes")
-            Set<IdentifiableEntity> entitiesToSave = new HashSet<>();
             Set<UUID> entityUuidsHandled = new HashSet<>();
 
             UUID identifierTypeUuid = config.getIdentifierTypeUuid();
@@ -182,7 +180,7 @@ public class IdentifierImport
                 identifier = existingIdentifiers.iterator().next();
                 if (!CdmUtils.nullSafeEqual(identifier.getIdentifier(), value)){
                     String message = String.format(
-                            "Existing identifier in line %d differs: " + value + ". Line not imported", i);
+                            "Existing identifier in line %d differs: " + identifier.getIdentifier() + "(existing)<->" + value   + "(import). Line not imported", i);
                     logger.warn(message);
                     this.commitTransaction(tx);
                     return null;

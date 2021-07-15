@@ -17,6 +17,7 @@ import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.api.service.l10n.TermRepresentation_L10n;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermBase;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
@@ -88,6 +89,19 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
             if(!replaceRepresentations){
                 json.element("inverseRepresentations", relTerm.getInverseRepresentations(), jsonConfig);
             }
+        }
+
+        // add additional representation for RelationShipBase
+        if(Rank.class.isAssignableFrom(term.getClass())){
+            Rank rank = (Rank)term;
+            json.element("isSupraGeneric", rank.isSupraGeneric(), jsonConfig);
+            json.element("isFamily", rank.getUuid().equals(Rank.FAMILY().getUuid()), jsonConfig);
+            json.element("isGenus", rank.isGenus(), jsonConfig);
+            json.element("isInfraGeneric", rank.isInfraGeneric(), jsonConfig);
+            json.element("isSpeciesAggregate", rank.isSpeciesAggregate(), jsonConfig);
+            json.element("isSpecies", rank.isSpecies(), jsonConfig);
+            json.element("isInfraSpecific", rank.isInfraSpecific(), jsonConfig);
+
         }
         return json;
     }

@@ -118,11 +118,6 @@ public class KMLDocumentBuilder {
 		}
 	}
 
-	/**
-	 * @param documentFeatures
-	 * @param fieldUnit
-	 * @param gatherEvent
-	 */
 	private void createFieldUnitPlacemarks(List<Feature> documentFeatures, FieldUnit fieldUnit) {
 
 		GatheringEvent gatherEvent = fieldUnit.getGatheringEvent();
@@ -135,14 +130,6 @@ public class KMLDocumentBuilder {
 		}
 	}
 
-
-	/**
-	 * @param exactLocation
-	 * @param altitude
-	 * @param locationType
-	 * @param recordBases
-	 * @return
-	 */
 	private Placemark fieldUnitLocationMarker(Point exactLocation, Integer altitude, Set<SpecimenOrObservationType> recordBases) {
 
 		Placemark mapMarker = KmlFactory.createPlacemark();

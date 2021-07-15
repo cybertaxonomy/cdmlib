@@ -452,6 +452,7 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
                 if (logger.isTraceEnabled()){logger.trace(hql);}
                 Query query = genericDao.getHqlQuery(hql);
                 query.setParameterList("idSet", idSet);
+                @SuppressWarnings("unchecked")
                 List<Object> list = query.list();
 
                 if (logger.isTraceEnabled()){
@@ -680,12 +681,8 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
     private class AutoInit{
 
         String leftJoinFetch = "";
-        Set<AutoPropertyInitializer<CdmBase>> initlializers = new HashSet<AutoPropertyInitializer<CdmBase>>();
+        Set<AutoPropertyInitializer<CdmBase>> initlializers = new HashSet<>();
 
-        /**
-         * @param leftJoinFetch
-         * @param initlializers
-         */
         public AutoInit() {
         }
     }

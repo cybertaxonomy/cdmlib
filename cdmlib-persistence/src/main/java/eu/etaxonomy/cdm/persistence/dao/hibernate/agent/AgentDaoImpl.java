@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -59,11 +60,15 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Criteria crit = getSession().createCriteria(Institution.class);
     		crit.add(Restrictions.eq("code", code));
- 	    	return crit.list();
+ 	    	@SuppressWarnings("unchecked")
+            List<Institution> result = crit.list();
+ 	    	return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Institution.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("code").eq(code));
-			return query.getResultList();
+			@SuppressWarnings("unchecked")
+            List<Institution> result = query.getResultList();
+			return result;
 		}
 	}
 
@@ -143,7 +148,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		List<UuidAndTitleCache<Team>> list = new ArrayList<>();
 		Session session = getSession();
 
-		Query query = session.createQuery("select uuid, id, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Team'");
+		Query query = session.createQuery("select uuid, id, nomenclaturalTitleCache from " + type.getSimpleName() + " where dtype = 'Team'");
 
 		@SuppressWarnings("unchecked")
         List<Object[]> result = query.list();
@@ -156,59 +161,113 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	}
 
 	@Override
-    public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache() {
-		Query query = getSession().createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where dtype = 'Person'");
-		return getUuidAndTitleCache(query);
-	}
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndTitleCacheWithCollector(Class<T> clazz, Integer limit, String pattern){
+	    Session session = getSession();
 
-	@Override
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache() {
-		Query query = getSession().createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where dtype = 'Team'");
-		return getUuidAndTitleCache(query);
-	}
-
-	@Override
-	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern) {
-		Query query = getSession().createQuery("select uuid, id, titleCache from " + type.getSimpleName() + " where dtype = 'Institution'");
-		return getUuidAndTitleCache(query);
-	}
-
-	@Override
-    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern){
-        Session session = getSession();
-
-        clazz = clazz == null? (Class)type : clazz;
+        clazz = (clazz == null)? (Class)type : clazz;
         String clazzString = " FROM " + clazz.getSimpleName();
 
         Query query = null;
 
         if (pattern != null){
-            String whereClause = " WHERE nomenclaturalTitle LIKE :pattern";
-            if (pattern.startsWith("*")){
-                whereClause += " OR titleCache LIKE :pattern";
-            }
+            String whereClause = " WHERE collectorTitleCache LIKE :pattern "
+                     + " OR titleCache LIKE :pattern "
+                     + " OR nomenclaturalTitleCache like :pattern ";
 
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString  + whereClause);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
             pattern = pattern + "%";
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
             query.setParameter("pattern", pattern);
         } else {
-            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitle, titleCache " + clazzString);
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
         }
         if (limit != null){
             query.setMaxResults(limit);
         }
 
-        return getUuidAndAbbrevTitleCache(query);
+        return getTeamOrPersonUuidAndTitleCache(query);
+	}
+
+	@Override
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern){
+        Session session = getSession();
+
+        clazz = (clazz == null)? (Class)type : clazz;
+        String clazzString = " FROM " + clazz.getSimpleName();
+
+        Query query = null;
+
+        if (pattern != null){
+            String whereClause = " WHERE titleCache LIKE :pattern";
+
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
+            pattern = pattern + "%";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
+        }
+        if (limit != null){
+            query.setMaxResults(limit);
+        }
+
+        return getTeamOrPersonUuidAndTitleCache(query);
+    }
+
+
+	@Override
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern){
+        Session session = getSession();
+
+        clazz = (clazz == null)? (Class)type : clazz;
+        String clazzString = " FROM " + clazz.getSimpleName();
+
+        Query query = null;
+
+        if (pattern != null){
+            String whereClause = " WHERE nomenclaturalTitleCache LIKE :pattern";
+            if (pattern.startsWith("*")){
+                whereClause += " OR titleCache LIKE :pattern";
+                whereClause += " OR collectorTitleCache LIKE :pattern";
+            }
+
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString  + whereClause);
+            pattern = pattern + "%";
+            pattern = pattern.replace("*", "%");
+            pattern = pattern.replace("?", "_");
+            query.setParameter("pattern", pattern);
+        } else {
+            query = session.createQuery("SELECT DISTINCT uuid, id, nomenclaturalTitleCache, titleCache, collectorTitleCache " + clazzString);
+        }
+        if (limit != null){
+            query.setMaxResults(limit);
+        }
+
+        return getTeamOrPersonUuidAndTitleCache(query);
     }
 
 	@Override
     public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Set<String> params = new HashSet<>();
         params.add("titleCache");
-        params.add("nomenclaturalTitle");
+        params.add("nomenclaturalTitleCache");
+        params.add("collectorTitleCache");
 
 	    return findByParam(clazz, params, queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+    }
+
+    protected <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Query query){
+        List<TeamOrPersonUuidAndTitleCache<T>> list = new ArrayList<>();
+
+        @SuppressWarnings("unchecked")
+        List<Object> result = query.list();
+
+        for(Object obj : result){
+          Object[] object = (Object[])obj;
+          list.add(new TeamOrPersonUuidAndTitleCache((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2], (String) object[4]));
+        }
+        return list;
     }
 }

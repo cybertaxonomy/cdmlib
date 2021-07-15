@@ -133,7 +133,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		if (this.equals(LECTOTYPE()) ||
 				this.equals(ISOLECTOTYPE()) ||
 				this.equals(SECOND_STEP_LECTOTYPE()) ||
-				this.equals(PARALECTOTYPE()) ||
+//				this.equals(PARALECTOTYPE()) ||  //removed due to #8140#note-5
 				//with source but not "lecto"
 				this.equals(EPITYPE()) ||
 				this.equals(ISOEPITYPE()) ||

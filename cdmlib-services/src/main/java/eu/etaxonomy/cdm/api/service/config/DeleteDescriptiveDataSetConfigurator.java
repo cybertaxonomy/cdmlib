@@ -14,81 +14,46 @@ package eu.etaxonomy.cdm.api.service.config;
  */
 public class DeleteDescriptiveDataSetConfigurator extends DeleteConfiguratorBase {
 
+    private static final long serialVersionUID = -333679029042923881L;
+
     boolean ignoreIsUsedInCdmLinkSource = false;
     boolean deleteAllSpecimenDescriptions = false;
     boolean deleteAllLiteratureDescriptions = false;
     boolean deleteAllDefaultDescriptions = false;
     boolean deleteAllAggregatedDescriptions = true;
 
-    /**
-     * @return the ignoreIsUsedInCdmLinkSource
-     */
     public boolean isIgnoreIsUsedInCdmLinkSource() {
         return ignoreIsUsedInCdmLinkSource;
     }
-
-    /**
-     * @param ignoreIsUsedInCdmLinkSource the ignoreIsUsedInCdmLinkSource to set
-     */
     public void setIgnoreIsUsedInCdmLinkSource(boolean ignoreIsUsedInCdmLinkSource) {
         this.ignoreIsUsedInCdmLinkSource = ignoreIsUsedInCdmLinkSource;
     }
 
-    /**
-     * @return the deleteAllSpecimenDescriptions
-     */
     public boolean isDeleteAllSpecimenDescriptions() {
         return deleteAllSpecimenDescriptions;
     }
-
-    /**
-     * @param deleteAllSpecimenDescriptions the deleteAllSpecimenDescriptions to set
-     */
     public void setDeleteAllSpecimenDescriptions(boolean deleteAllSpecimenDescriptions) {
         this.deleteAllSpecimenDescriptions = deleteAllSpecimenDescriptions;
     }
 
-    /**
-     * @return the deleteAllLiteratureDescriptions
-     */
     public boolean isDeleteAllLiteratureDescriptions() {
         return deleteAllLiteratureDescriptions;
     }
-
-    /**
-     * @param deleteAllLiteratureDescriptions the deleteAllLiteratureDescriptions to set
-     */
     public void setDeleteAllLiteratureDescriptions(boolean deleteAllLiteratureDescriptions) {
         this.deleteAllLiteratureDescriptions = deleteAllLiteratureDescriptions;
     }
 
-    /**
-     * @return the deleteAllDefaultDescriptions
-     */
     public boolean isDeleteAllDefaultDescriptions() {
         return deleteAllDefaultDescriptions;
     }
-
-    /**
-     * @param deleteAllDefaultDescriptions the deleteAllDefaultDescriptions to set
-     */
     public void setDeleteAllDefaultDescriptions(boolean deleteAllDefaultDescriptions) {
         this.deleteAllDefaultDescriptions = deleteAllDefaultDescriptions;
     }
 
-    /**
-     * @return the deleteAllAggregatedDescriptions
-     */
     public boolean isDeleteAllAggregatedDescriptions() {
         return deleteAllAggregatedDescriptions;
     }
-
-    /**
-     * @param deleteAllAggregatedDescriptions the deleteAllAggregatedDescriptions to set
-     */
     public void setDeleteAllAggregatedDescriptions(boolean deleteAllAggregatedDescriptions) {
         this.deleteAllAggregatedDescriptions = deleteAllAggregatedDescriptions;
     }
-
-
 }

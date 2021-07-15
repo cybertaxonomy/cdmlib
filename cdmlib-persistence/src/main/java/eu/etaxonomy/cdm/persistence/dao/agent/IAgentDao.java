@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -83,13 +84,6 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	public List<Address> getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber);
 
 	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>Person</code>s
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache();
-
-	/**
 	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
 	 * with their respective nomenclaturalTitle instead of regular titleCache
 	 *
@@ -97,19 +91,13 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 */
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
 
-	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
-	 * with their respective titleCache
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
-
-	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
-
-    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
 
     public <T extends AgentBase<?>> List<T> findByTitleAndAbbrevTitle(Class<T> clazz, String queryString, MatchMode matchmode,
             List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
+
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndTitleCacheWithCollector(Class<T> clazz, Integer limit, String pattern);
+
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern);
 }

@@ -1298,8 +1298,6 @@ public class DerivedUnitFacade {
 	/**
 	 * convienience method for {@link #getLocality()}.
 	 * {@link LanguageString#getText() getText()}
-	 *
-	 * @return
 	 */
 	@Transient
 	public String getLocalityText() {

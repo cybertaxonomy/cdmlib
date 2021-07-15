@@ -109,7 +109,7 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
          }
          try {
              referenceMatcher.setMatchMode("title", MatchMode.EQUAL);
-             teamMatcher.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL_OR_SECOND_NULL);
+             teamMatcher.setMatchMode("nomenclaturalTitleCache", MatchMode.EQUAL_OR_SECOND_NULL);
          } catch (MatchException e) {
              throw new RuntimeException(e);  //should not happen
          }
@@ -404,11 +404,6 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    /**
-     * @param state
-     * @param combAuthor
-     * @return
-     */
     public <T extends TeamOrPersonBase<?>> T getExistingAuthor(STATE state,
             T author) {
         if (author == null){
@@ -428,22 +423,21 @@ public class ImportDeduplicationHelper<STATE extends ImportStateBase> {
         }
     }
 
-    /**
-     * @param author
-     */
-    private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T author) {
-        //more or less copy from CdmPreDataChangeListener
-        String nomTitle = author.getNomenclaturalTitle();
-        if (author instanceof Team){
-            Team team = (Team)author;
-            //nomTitle is not necessarily cached when it is created
-            team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
-        }else{
-            author.setNomenclaturalTitle(nomTitle);
+    private <T extends TeamOrPersonBase<?>> void initAuthorTitleCaches(T teamOrPerson) {
+        //NOTE: this is more or less redundant copy from CdmPreDataChangeListener
+        if (teamOrPerson.isInstanceOf(Team.class)){
+            Team team = CdmBase.deproxy(teamOrPerson, Team.class);
+            if (!team.isProtectedNomenclaturalTitleCache()){
+                team.setNomenclaturalTitleCache(null, false);
+            }
+            if (!team.isProtectedCollectorTitleCache()){
+                team.setCollectorTitleCache(null, false);
+            }
         }
-        String titleCache = author.getTitleCache();
-        if (! author.isProtectedTitleCache()){
-            author.setTitleCache(titleCache, false);
+        teamOrPerson.getNomenclaturalTitleCache();
+        teamOrPerson.getCollectorTitleCache();
+        if (! teamOrPerson.isProtectedTitleCache()){
+            teamOrPerson.setTitleCache(teamOrPerson.generateTitle(), false);
         }
     }
 

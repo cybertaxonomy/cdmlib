@@ -185,7 +185,7 @@ public class BasionymRelationCreator extends StrategyBase {
             return false;
         }else if (basAuthor == combinationAuthor || basAuthor.equals(combinationAuthor)){
             return true;
-        }else if (CdmUtils.nonEmptyEquals(basAuthor.getNomenclaturalTitle(), combinationAuthor.getNomenclaturalTitle())){
+        }else if (CdmUtils.nonEmptyEquals(basAuthor.getNomenclaturalTitleCache(), combinationAuthor.getNomenclaturalTitleCache())){
             return true;
         }else{
             return false;

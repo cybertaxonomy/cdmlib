@@ -6,7 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.database.update.v523_524;
+package eu.etaxonomy.cdm.database.update.v523_525;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

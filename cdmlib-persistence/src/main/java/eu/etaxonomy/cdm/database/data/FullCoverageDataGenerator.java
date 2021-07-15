@@ -145,6 +145,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 import eu.etaxonomy.cdm.model.taxon.TaxonNodeStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicOperation;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicOperationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermNode;
@@ -247,6 +249,7 @@ public class FullCoverageDataGenerator {
 		Person person = Person.NewTitledInstance("Person Title");
 		person.setGivenName("first name");
 		person.setFamilyName("last name");
+		person.setCollectorTitle("C. collector");
 		person.setLifespan(TimePeriodParser.parseString("1905-1995"));
 		person.setPrefix("prefix");
 		person.setSuffix("suffix");
@@ -271,7 +274,6 @@ public class FullCoverageDataGenerator {
 		Team team = Team.NewTitledInstance("Team title", "Team abbrev title");
 		team.addTeamMember(person);
 		handleIdentifiableEntity(team);
-
 
 		//Institution
 		Institution institution = Institution.NewInstance();
@@ -688,6 +690,7 @@ public class FullCoverageDataGenerator {
 		Taxon concept = Taxon.NewInstance(name, getReference());
 		TaxonRelationship taxRel = taxon.addTaxonRelation(concept, TaxonRelationshipType.CONGRUENT_TO(),
 				sec, "444");
+		taxRel.setOperation(TaxonomicOperation.NewInstance(TaxonomicOperationType.SPLIT));
 		taxon.setTaxonStatusUnknown(true);
 		handleAnnotatableEntity(taxRel);
 		concept.setConcept(true);
@@ -723,12 +726,7 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(childTaxon);
 		cdmBases.add(classification);
 		cdmBases.add(agentRelationType);
-
-
 	}
-
-
-
 
 	private void createReference(List<CdmBase> cdmBases) {
 		Reference reference = ReferenceFactory.newArticle();

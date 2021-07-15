@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
@@ -46,7 +47,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
     @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
     public Pager<TermTree> doPage(
-            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "class", required = false) Class type,
             @RequestParam(name="orderBy", defaultValue="BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
@@ -91,7 +92,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
     @RequestMapping(method = RequestMethod.GET, params={"termType"})
     public Pager<TermTree> doPageByTermType(
             @RequestParam(value = "termType", required = false) TermType termType,
-            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(name="orderBy", defaultValue="BY_TITLE_CACHE_ASC", required=true) OrderHintPreset orderBy,
             HttpServletRequest request,
@@ -113,7 +114,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
      *            internally always is appended to the query string, a search
      *            always compares the query string with the beginning of a name.
      *            - <i>required parameter</i>
-     * @param pageNumber
+     * @param pageIndex
      *            the number of the page to be returned, the first page has the
      *            pageNumber = 1 - <i>optional parameter</i>
      * @param pageSize
@@ -128,7 +129,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
     @RequestMapping(method = RequestMethod.GET, value={"findByTitle"})
     public Pager<TermTree> doFindByTitle(
             @RequestParam(value = "query", required = true) String query,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             HttpServletRequest request,
@@ -139,11 +140,11 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
         String requestPathAndQuery = requestPathAndQuery(request);
         if(requestPathAndQuery.contains("/featureTree")){
             logger.info(" Delegating usage of deprecated /featureTree service to /termTree");
-            return doFindByTitleByTermType(query, TermType.Feature, pageNumber, pageSize, matchMode, request, response);
+            return doFindByTitleByTermType(query, TermType.Feature, pageIndex, pageSize, matchMode, request, response);
         }
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
@@ -156,7 +157,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
     public Pager<TermTree> doFindByTitleByTermType(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "termType", required = false) TermType termType,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             HttpServletRequest request,
@@ -169,7 +170,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
 
         logger.info("doFindByTitleByTermType() : " + requestPathAndQuery );
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;

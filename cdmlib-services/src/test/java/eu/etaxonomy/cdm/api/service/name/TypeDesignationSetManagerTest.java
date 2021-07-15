@@ -50,10 +50,14 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.TermTestBase;
 
 /**
- * @author a.kohlbecker, k.luther
+ * @author a.kohlbecker, k.luther, a.mueller
  * @since 03.09.2018
  */
 public class TypeDesignationSetManagerTest extends TermTestBase{
+
+        private static final boolean WITH_CITATION = true;
+        private static final boolean WITH_NAME = true;
+        private static final boolean WITH_TYPE_LABEL = true;
 
         private NameTypeDesignation ntd;
         private NameTypeDesignation ntd_LT;
@@ -198,14 +202,14 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typifiedName.addTypeDesignation(std_IT_3, false);
 
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(tds);
-            String result = typeDesignationManager.print(true, true, true);
+            String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
 
 //            Logger.getLogger(this.getClass()).debug(result);
             assertNotNull(result);
             assertEquals(
                     "Prionus L.\u202F\u2013\u202FTypes: Dreamland, near Kissingen, A.Kohlbecker 66211, 2017 (isotype: M);"
                     + " Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA; isotypes: BER, KEW);"
-                    + " Nametype: Prionus coriatius L."
+                    + " nametype: Prionus coriatius L."
                     , result
                     );
 
@@ -226,7 +230,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typifiedName.setTitleCache("Prionus L.", true);
 
             TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
-            String result = typeDesignationManager.print(true, true, true);
+            String result = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
             assertEquals(
                     "Prionus L."
                     , result
@@ -237,15 +241,15 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 
             assertEquals(
                     "Prionus L.\u202F\u2013\u202FNametype: Prionus coriatius L."
-                    , typeDesignationManager.print(true, true, true)
+                    , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME)
                     );
 
             typifiedName.addTypeDesignation(std_HT, false);
             typeDesignationManager.addTypeDesigations(std_HT);
 
             assertEquals(
-                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); Nametype: Prionus coriatius L."
-                    , typeDesignationManager.print(true, true, true)
+                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: OHA); nametype: Prionus coriatius L."
+                    , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME)
                     );
 
             DerivedUnit specimen = std_HT.getTypeSpecimen();
@@ -255,8 +259,8 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             specimen.setCollection(collection);
 
             assertEquals(
-                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); Nametype: Prionus coriatius L."
-                    , typeDesignationManager.print(true, true, true)
+                    "Prionus L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: My collection); nametype: Prionus coriatius L."
+                    , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME)
                     );
         }
 
@@ -275,11 +279,11 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             inRef.setAuthorship(Team.NewTitledInstance("Miller", "Mill."));
             std_LT.addPrimaryTaxonomicSource(inRef, "55");
             assertEquals("Prionus coriatius L.\u202F\u2013\u202FTestland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC designated by Decandolle & al. 1962 [fide Miller 1989: 55])",
-                    typeDesignationManager.print(true, false, true));
+                    typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
             assertEquals("Prionus coriatius L.\u202F\u2013\u202FTestland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
-                    typeDesignationManager.print(false, false, true));
+                    typeDesignationManager.print(!WITH_CITATION,!WITH_TYPE_LABEL, WITH_NAME));
             assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (lectotype: LEC)",
-                    typeDesignationManager.print(false, false, false));
+                    typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME));
 
             //name types
             typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
@@ -288,10 +292,9 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
             typeDesignationManager.addTypeDesigations(ntd_LT);
             ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L. designated by Decandolle & al. 1962 [fide Miller 1989: 66]",
-                    typeDesignationManager.print(true, false, true));
+                    typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
             assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L.",
-                    typeDesignationManager.print(false, false, true));
-
+                    typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
         }
 
         @Test
@@ -311,7 +314,7 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
 
                 assertEquals("failed after repeating " + i + " times",
                         "Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)"
-                        , typeDesignationManager.print(true, true, true)
+                        , typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME)
                         );
 
                 Media media = ((MediaSpecimen)mtd_HT_published.getTypeSpecimen()).getMediaSpecimen();
@@ -320,13 +323,72 @@ public class TypeDesignationSetManagerTest extends TermTestBase{
                 ref2.setAuthorship(Person.NewInstance(null, "Mueller", "A.", null));
                 IdentifiableSource newSource = IdentifiableSource.NewPrimaryMediaSourceInstance(ref2, "tab. 4");
                 media.addSource(newSource);
-                String with2Sources = typeDesignationManager.print(true, true, true);
+                String with2Sources = typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME);
                 Assert.assertTrue("failed after repeating " + i + " times",
                         //the order of the sources is currently not yet defined (rare case), therefore 2 possibilities
                         with2Sources.equals("Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Mueller 2009: tab. 4, Kohlbecker & Kusber 2008: 33; isotype: [icon] B Slide A565656)")
                         || with2Sources.equals("Prionus coriatius L.\u202F\u2013\u202FTypes: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (holotype: [icon] in Kohlbecker & Kusber 2008: 33, Mueller 2009: tab. 4; isotype: [icon] B Slide A565656)"))
                         ;
-
             }
+        }
+
+        @Test
+        public void test_withoutFieldUnit(){
+            TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            typifiedName.setTitleCache("Prionus coriatius L.", true);
+            DerivedUnit protectedSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+            protectedSpecimen.setTitleCache("Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206)", true);
+            Reference citation = ReferenceFactory.newBook();
+            citation.setTitle("The book of types");
+            SpecimenTypeDesignation protectedDesignation = typifiedName.addSpecimenTypeDesignation(protectedSpecimen, SpecimenTypeDesignationStatus.NEOTYPE(), citation, "55", null, false, false);
+
+            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            typeDesignationManager.addTypeDesigations(protectedDesignation);
+
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FNeotype: Mexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55"
+                    , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME)
+                    );
+            protectedDesignation.setTypeStatus(null);
+            typeDesignationManager.addTypeDesigations(protectedDesignation);
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FMexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55"
+                    , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME)
+                    );
+
+            DerivedUnit withoutFieldUnit = DerivedUnit.NewPreservedSpecimenInstance();
+            withoutFieldUnit.setAccessionNumber("280207");
+            withoutFieldUnit.setCollection(Collection.NewInstance("B", "Herbarium Berolinense"));
+            SpecimenTypeDesignation withoutFieldUnitDesignation = typifiedName.addSpecimenTypeDesignation(withoutFieldUnit, SpecimenTypeDesignationStatus.HOLOTYPE(), null, null, null, false, false);
+            typeDesignationManager.addTypeDesigations(withoutFieldUnitDesignation);
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FMexico. Oaxaca: Coixtlahuaca, Tepelmeme Villa de Morelos, aproximadamente 1 km S del Río Santa Lucía, 1285 m, 27 March 1994, U. Guzmán Cruz 1065 (MEXU 280206) designated by The book of types: 55; holotype: B 280207"
+                    , typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME)
+                    );
+        }
+
+        @Test
+        public void test_withoutStatus(){
+            //for another important test without status see also test_withoutFieldUnit()
+
+            TaxonName typifiedName = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+            typifiedName.setTitleCache("Prionus coriatius L.", true);
+            TypeDesignationSetManager typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            std_LT.setTypeStatus(null);
+            typeDesignationManager.addTypeDesigations(std_LT);
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FType: Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC designated by Decandolle & al. 1962)",
+                    typeDesignationManager.print(WITH_CITATION, WITH_TYPE_LABEL, WITH_NAME));
+            assertEquals("Prionus coriatius L.\u202F\u2013\u202FTestland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)",
+                    typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
+            assertEquals("Testland, near Bughausen, A.Kohlbecker 81989, 2017 (LEC)",
+                    typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, !WITH_NAME));
+
+            //name types
+            typifiedName = TaxonNameFactory.NewBacterialInstance(Rank.GENUS());
+            typifiedName.setTitleCache("Prionus L.", true);
+            typeDesignationManager = new TypeDesignationSetManager(typifiedName);
+            typeDesignationManager.addTypeDesigations(ntd_LT);
+//            ntd_LT.addPrimaryTaxonomicSource(inRef, "66");
+            assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L. designated by Decandolle & al. 1962",
+                    typeDesignationManager.print(WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
+            assertEquals("Prionus L.\u202F\u2013\u202FLectotype: Prionus arealus L.",
+                    typeDesignationManager.print(!WITH_CITATION, !WITH_TYPE_LABEL, WITH_NAME));
         }
 }

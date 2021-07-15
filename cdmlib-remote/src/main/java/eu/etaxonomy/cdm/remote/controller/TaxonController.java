@@ -276,7 +276,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     *
     * @param uuid
     * @param classificationUuid
-    * @param pageNumber
+    * @param pageIndex
     * @param pageSize
     * @param request
     * @param response
@@ -289,12 +289,12 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
             @PathVariable("uuid") UUID uuid,
             @PathVariable("classification_uuid") UUID classificationUuid,
             @RequestParam(value = "relType_uuid" , required = false) UUID relTypeUuid,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         Pager<TaxonNodeAgentRelation> pager = nodeService.pageTaxonNodeAgentRelations(uuid, classificationUuid,
@@ -369,7 +369,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
     public Pager<SpecimenOrObservationBase> doGetAssociatedRootUnits(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "maxDepth", required = false) Integer maxDepth,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -382,7 +382,7 @@ public class TaxonController extends AbstractIdentifiableController<TaxonBase, I
         orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
 
         if(taxonBase instanceof Taxon){
-            PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+            PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
             pagerParams.normalizeAndValidate(response);
 
             return occurrenceService.pageRootUnitsByAssociatedTaxon(null, null, (Taxon) taxonBase, maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(), orderHints, null);

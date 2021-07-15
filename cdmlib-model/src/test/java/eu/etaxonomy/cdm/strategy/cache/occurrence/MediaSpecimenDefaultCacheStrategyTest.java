@@ -55,6 +55,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
         //#9632
         Assert.assertEquals("B 123 (Media Second Title)", strategy.getTitleCache(specimen));
 
+
         specimen.getMediaSpecimen().setArtist(Person.NewTitledInstance("Artist 2"));;
         Assert.assertEquals("B 123 (Media Second Title)", strategy.getTitleCache(specimen));
 
@@ -72,7 +73,7 @@ public class MediaSpecimenDefaultCacheStrategyTest extends TermTestBase {
 
         MediaRepresentation mediaRep = MediaRepresentation.NewInstance("jpg", null, URI.create("https://www.abc.de/test.jpg"), 20, ImageFile.class);
         media.addRepresentation(mediaRep);
-        Assert.assertEquals("test.jpg", strategy.getTitleCache(specimen));
+        Assert.assertEquals("test", strategy.getTitleCache(specimen));
 
         Assert.assertNull(strategy.getTitleCache(null));
     }

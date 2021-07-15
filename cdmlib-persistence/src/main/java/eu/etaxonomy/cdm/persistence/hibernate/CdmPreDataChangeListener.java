@@ -143,6 +143,7 @@ public class CdmPreDataChangeListener
         }
     }
 
+    //TODO shouldn't we use the "updateCaches" method instead?
     public static void generateCaches(Object entity){
         if (entity != null){
             entity = CdmBase.deproxy(entity);
@@ -160,20 +161,21 @@ public class CdmPreDataChangeListener
                 }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
                     //team-or-person caches
                     TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
-                    String nomTitle = teamOrPerson.getNomenclaturalTitle();
-                    if (teamOrPerson instanceof Team){
-                        Team team = (Team)teamOrPerson;
-                        //nomTitle is not necessarily cached when it is created
-                        team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache());
-                    }else{
-                        teamOrPerson.setNomenclaturalTitle(nomTitle);
+                    if (teamOrPerson.isInstanceOf(Team.class)){
+                        Team team = CdmBase.deproxy(teamOrPerson, Team.class);
+                        if (!team.isProtectedNomenclaturalTitleCache()){
+                            team.setNomenclaturalTitleCache(null, false);
+                        }
+                        if (!team.isProtectedCollectorTitleCache()){
+                            team.setCollectorTitleCache(null, false);
+                        }
                     }
-                    String titleCache = teamOrPerson.getTitleCache();
+                    teamOrPerson.getNomenclaturalTitleCache();
+                    teamOrPerson.getCollectorTitleCache();
                     if (! teamOrPerson.isProtectedTitleCache()){
-                        teamOrPerson.setTitleCache(titleCache, false);
+                        teamOrPerson.setTitleCache(teamOrPerson.generateTitle(), false);
                     }
-                    //if this is changed in future, change also in ImportDeduplicationHelper
-
+                    //if the above is changed in future, change also in ImportDeduplicationHelper.initAuthorTitleCaches
                 }else if(Reference.class.isAssignableFrom(entityClazz)){
                     //reference caches
                     Reference ref = (Reference)entity;

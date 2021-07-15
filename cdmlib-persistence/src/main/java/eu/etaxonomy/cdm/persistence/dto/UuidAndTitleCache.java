@@ -71,16 +71,28 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
         this( uuid, null, titleCache);
 	}
 
+//  ******************* GETTER / SETTER **********************/
 
 	public String getTitleCache() {
 		return titleCache;
 	}
-
+	public void setTitleCache(String titleCache) {
+        this.titleCache = titleCache;
+    }
 
     public String getAbbrevTitleCache() {
         return abbrevTitleCache;
     }
+    public void setAbbrevTitleCache(String abbrevTitleCache) {
+        this.abbrevTitleCache = abbrevTitleCache;
+    }
 
+    public boolean isProtectedTitleCache() {
+        return isProtectedTitleCache;
+    }
+    public void setProtectedTitleCache(boolean isProtectedTitleCache) {
+        this.isProtectedTitleCache = isProtectedTitleCache;
+    }
 
 	public UUID getUuid() {
 		return uuid;
@@ -98,30 +110,15 @@ public class UuidAndTitleCache<T extends ICdmBase> implements Serializable {
 		return this.isOrphaned;
 	}
 
-    public void setAbbrevTitleCache(String abbrevTitleCache) {
-        this.abbrevTitleCache = abbrevTitleCache;
-    }
-    public void setTitleCache(String titleCache) {
-        this.titleCache = titleCache;
-    }
-
     public void setType(Class<T> type) {
         this.type = type;
     }
 
 //************************** toString **********************************/
 
-    public boolean isProtectedTitleCache() {
-        return isProtectedTitleCache;
-    }
-    public void setProtectedTitleCache(boolean isProtectedTitleCache) {
-        this.isProtectedTitleCache = isProtectedTitleCache;
-    }
     @Override
     public String toString() {
         return "UuidAndTitleCache [type= " + type + ", uuid= " + uuid + ", id=" + id + ", titleCache= " + getTitleCache()
                 + ", isOrphaned=" + isOrphaned + ", abbrevTitleCache= " + abbrevTitleCache +"]";
     }
-
-
 }

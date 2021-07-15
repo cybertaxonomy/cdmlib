@@ -22,18 +22,15 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
  *
  */
 public class TaxonNodeDeletionConfigurator extends NodeDeletionConfigurator {
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = 1187266117499706532L;
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeDeletionConfigurator.class);
 
 	public boolean isDeleteTaxon() {
 		return isDeleteElement();
 	}
-
 	public void setDeleteTaxon(boolean deleteTaxon) {
 		this.deleteElement = deleteTaxon;
 	}
-
-
-
-
 }

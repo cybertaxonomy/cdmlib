@@ -130,6 +130,9 @@ public enum PreferencePredicate
 
     ShowExperimentalFeatures(UUID.fromString("ba617c58-1801-4feb-9819-859aea5869a2"), "Show Experimental Features", "editor.experimentalFeatures", Boolean.TRUE),
 
+    //Taxon Concepts
+    SupportsTaxonConcepts(UUID.fromString("e0c0aab5-9b39-4b42-965e-6c24ceb56ddd"),"Support taxonomic concepts workflow","taxonId.supports",Boolean.FALSE),
+
     //External Services
     MobotOpenUrlServiceAccessPoint(UUID.fromString("9b956f7c-03c4-47d6-b270-ba14dca8c6ef"), "Mobot Open Url Service Access Point", "externalService.mobotOpenUrlService.accessPoint", "http://www.biodiversitylibrary.org/openurl"),
     MobotOpenUrlServiceMaxHeight(UUID.fromString("cd905b7e-b719-4a0a-b13b-0763b7e279fd"), "Mobot Open Url Service Max Height", "externalService.mobotOpenUrlService.maxHeight", 1000),

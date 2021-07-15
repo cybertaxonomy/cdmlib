@@ -9,11 +9,11 @@
 package eu.etaxonomy.cdm.format;
 
 import eu.etaxonomy.cdm.format.ICdmFormatter.FormatKey;
+import eu.etaxonomy.cdm.format.molecular.SequenceFormatter;
+import eu.etaxonomy.cdm.format.molecular.SingleReadFormatter;
 import eu.etaxonomy.cdm.format.occurrences.DerivedUnitFormatter;
 import eu.etaxonomy.cdm.format.occurrences.FieldUnitFormatter;
 import eu.etaxonomy.cdm.format.occurrences.MediaSpecimenFormatter;
-import eu.etaxonomy.cdm.format.occurrences.SequenceFormatter;
-import eu.etaxonomy.cdm.format.occurrences.SingleReadFormatter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;

@@ -21,6 +21,7 @@ import org.junit.Test;
  * @since 31.05.2010
  */
 public class TeamTest {
+
 	public static final Logger logger = Logger.getLogger(TeamTest.class);
 
 	private Team teamProtected;
@@ -60,8 +61,8 @@ public class TeamTest {
 	}
 
 	@Test
-	public void testGetNomenclaturalTitle() {
-		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1'", "NomTeam1", teamProtected.getNomenclaturalTitle());
+	public void testGetNomenclaturalTitleCache() {
+		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1'", "NomTeam1", teamProtected.getNomenclaturalTitleCache());
 	}
 
 	@Test
@@ -69,13 +70,13 @@ public class TeamTest {
 		eventWasFired = false;
 		teamProtected.setNomenclaturalTitle("NomTeam1a");
 		Assert.assertTrue("setNomenclaturalTitle(String, boolean) needs to fire property change event", eventWasFired);
-		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1a'", "NomTeam1a", teamProtected.getNomenclaturalTitle());
+		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1a'", "NomTeam1a", teamProtected.getNomenclaturalTitleCache());
 	}
 
 	@Test
 	public void testSetNomenclaturalTitleStringBoolean() {
 		eventWasFired = false;
-		teamProtected.setNomenclaturalTitle("New Nom Title", false);
+		teamProtected.setNomenclaturalTitleCache("New Nom Title", false);
 		Assert.assertTrue("setNomenclaturalTitle(String, boolean) needs to fire property change event", eventWasFired);
 		Assert.assertFalse("Protected title cache must be false for 'team protected'", teamProtected.isProtectedNomenclaturalTitleCache() );
 		//Assert.assertEquals("Nom title Cache of team 1 must be 'New Nom Title'", "New Nom Title", teamProtected.getNomenclaturalTitle());

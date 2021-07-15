@@ -104,14 +104,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         }
     }
 
-    public String getCollectorsNumber() {
-        return collectorsNumber;
-    }
-
-    public void setCollectorsNumber(String collectorsNumber) {
-        this.collectorsNumber = collectorsNumber;
-    }
-
     public Set<SpecimenTypeDesignationDTO> getSpecimenTypeDesignations() {
         return specimenTypeDesignations;
     }
@@ -123,9 +115,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 this.specimenTypeDesignations.add(new SpecimenTypeDesignationDTO(typeDes));
             }
         }
-
     }
-
 
     public Set<IdentifiableSource> getSources() {
         return sources;
@@ -134,7 +124,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     public void setSources(Set<IdentifiableSource> sources) {
         this.sources = sources;
     }
-
 
     /**
      * @return the derivateDataDTO
@@ -164,7 +153,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     public void addCharacterData(String character, String state){
       if(characterData==null){
-          characterData = new TreeSet<AbstractMap.SimpleEntry<String,String>>(new PairComparator());
+          characterData = new TreeSet<>(new PairComparator());
       }
       characterData.add(new AbstractMap.SimpleEntry<>(character, state));
     }
@@ -202,44 +191,23 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.hasCharacterData = hasCharacterData;
     }
 
-    /**
-     * @return the hasDna
-     */
     public boolean isHasDna() {
         return hasDna;
     }
-
-    /**
-     * @param hasDna the hasDna to set
-     */
     public void setHasDna(boolean hasDna) {
         this.hasDna = hasDna;
     }
 
-    /**
-     * @return the hasDetailImage
-     */
     public boolean isHasDetailImage() {
         return hasDetailImage;
     }
-
-    /**
-     * @param hasDetailImage the hasDetailImage to set
-     */
     public void setHasDetailImage(boolean hasDetailImage) {
         this.hasDetailImage = hasDetailImage;
     }
 
-    /**
-     * @return the hasSpecimenScan
-     */
     public boolean isHasSpecimenScan() {
         return hasSpecimenScan;
     }
-
-    /**
-     * @param hasSpecimenScan the hasSpecimenScan to set
-     */
     public void setHasSpecimenScan(boolean hasSpecimenScan) {
         this.hasSpecimenScan = hasSpecimenScan;
     }
@@ -259,7 +227,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     public void setSummaryLabel(String summaryLabel) {
         this.summaryLabel = summaryLabel;
     }
-
 
     public SpecimenOrObservationType getRecordBase() {
         return recordBase;
@@ -323,31 +290,19 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         return dtos;
     }
 
-
-
     public EventDTO<DerivationEvent> getDerivationEvent() {
         return derivationEvent;
     }
-
     public void setDerivationEvent(EventDTO<DerivationEvent> derivationEvent) {
         this.derivationEvent = derivationEvent;
     }
 
-
-    /**
-     * @return the listOfMedia
-     */
     public List<MediaDTO> getListOfMedia() {
         return listOfMedia;
     }
-
-    /**
-     * @param listOfMedia the listOfMedia to set
-     */
     public void setListOfMedia(List<MediaDTO> listOfMedia) {
         this.listOfMedia = listOfMedia;
     }
-
 
     protected Set<Media> collectMedia(SpecimenOrObservationBase<?> specimenOrObservation){
         Set<Media> collectedMedia = new HashSet<>();
@@ -373,8 +328,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
             getListOfMedia().addAll(dtos);
         }
     }
-
-
 
     /**
      * @param sob
@@ -426,19 +379,20 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     public void setKindOfUnit(TermBase kindOfUnit) {
         this.kindOfUnit = HibernateProxyHelper.deproxy(kindOfUnit);
     }
+
     public DefinedTerm getSex() {
         return sex;
     }
     public void setSex(DefinedTerm sex) {
         this.sex = sex;
     }
+
     public DefinedTerm getLifeStage() {
         return lifeStage;
     }
     public void setLifeStage(DefinedTerm lifeStage) {
         this.lifeStage = lifeStage;
     }
-
 
     public int getId() {
         return id;
@@ -447,11 +401,9 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     public String getIndividualCount() {
         return individualCount;
     }
-
     public void setIndividualCount(String individualCount) {
         this.individualCount = individualCount;
     }
-
 
     @Deprecated
     public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
@@ -485,6 +437,4 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     public void setDeterminations(List<DeterminationEventDTO> determinations) {
         this.determinations = determinations;
     }
-
-
 }

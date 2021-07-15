@@ -113,6 +113,8 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     public void testGetFullTitleCache() {
         subSpeciesName.setNomenclaturalReference(citationRef);
         Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle, subSpeciesName.getFullTitleCache());
+        subSpeciesName.setNomenclaturalMicroReference("25");
+        Assert.assertEquals(subSpeciesNameString + ", " +  referenceTitle + ": 25", subSpeciesName.getFullTitleCache());
         //TODO not yet completed
     }
 
@@ -203,9 +205,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     @Test
     public void testGetAuthorshipCache() {
         this.speciesName.setCombinationAuthorship(author);
-        assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
+        assertEquals(author.getNomenclaturalTitleCache(), speciesName.getAuthorshipCache());
         this.speciesName.setBasionymAuthorship(basAuthor);
-        String expected = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+author.getNomenclaturalTitle();
+        String expected = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitleCache()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+author.getNomenclaturalTitleCache();
         assertEquals(expected, speciesName.getAuthorshipCache());
         String authorshipcache = "authorshipcache";
         speciesName.setAuthorshipCache(authorshipcache);
@@ -215,9 +217,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         assertEquals(speciesNameString + " " + authorshipcache, speciesName.getFullTitleCache());
         //unprotected
         speciesName.setProtectedAuthorshipCache(false);
-        String atomizedAuthorCache = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
+        String atomizedAuthorCache = strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitleCache()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitleCache();
         assertEquals(atomizedAuthorCache, speciesName.getAuthorshipCache());
-        String atomizedTitleCache = speciesNameString + " "+ strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
+        String atomizedTitleCache = speciesNameString + " "+ strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitleCache()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitleCache();
         //Note: This test may fail if aspectj doesn't work correctly
         assertEquals(atomizedTitleCache, speciesName.getTitleCache());
         speciesName.setFullTitleCache(null, false);
@@ -228,7 +230,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     public void testHybridNames() {
         //Note \u00D7 : hybrid sign (multiplication sign)
         this.speciesName.setCombinationAuthorship(author);
-        Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
+        Assert.assertEquals(author.getNomenclaturalTitleCache(), speciesName.getAuthorshipCache());
         Assert.assertEquals("Should be Abies alba L.", "Abies alba L.", speciesName.getTitleCache());
 
         speciesName.setBinomHybrid(true);
@@ -260,7 +262,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
     @Test
     public void testHybridFormula(){
         this.speciesName.setCombinationAuthorship(author);
-        Assert.assertEquals(author.getNomenclaturalTitle(), speciesName.getAuthorshipCache());
+        Assert.assertEquals(author.getNomenclaturalTitleCache(), speciesName.getAuthorshipCache());
         Assert.assertEquals("Should be 'Abies alba L.'", "Abies alba L.", speciesName.getTitleCache());
 
         INonViralName hybridName = TaxonNameFactory.NewNonViralInstance(Rank.SPECIES());

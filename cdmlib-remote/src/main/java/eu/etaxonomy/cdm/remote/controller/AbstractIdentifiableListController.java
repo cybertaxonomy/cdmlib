@@ -60,11 +60,11 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
      * <p>
      *
      * @param query
-     *            the string to query for. Since the wildcard character '*'
+     *            the string to query for. Since the wild-card character '*'
      *            internally always is appended to the query string, a search
      *            always compares the query string with the beginning of a name.
      *            - <i>required parameter</i>
-     * @param pageNumber
+     * @param pageIndex
      *            the number of the page to be returned, the first page has the
      *            pageNumber = 1 - <i>optional parameter</i>
      * @param pageSize
@@ -78,7 +78,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
     @RequestMapping(method = RequestMethod.GET, value={"findByTitle"})
     public Pager<T> doFindByTitle(
             @RequestParam(value = "query", required = true) String query,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             HttpServletRequest request,
@@ -88,7 +88,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
 
         logger.info("doFind() : " + requestPathAndQuery(request) );
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);
         pagerParams.normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
@@ -102,7 +102,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
      * @param type
      * @param identifierType
      * @param identifier
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param matchMode
      * @param request
@@ -116,7 +116,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
     		@RequestParam(value = "class", required = false) Class<T> type,
     		@RequestParam(value = "identifierType", required = false) String identifierType,
             @RequestParam(value = "identifier", required = false) String identifier,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             @RequestParam(value = "includeEntity", required = false) Boolean includeEntity,
@@ -134,7 +134,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
 
         logger.info("doFindByIdentifier() : " + requestPathAndQuery(request) );
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
 
         matchMode = matchMode != null ? matchMode : MatchMode.EXACT;
         boolean includeCdmEntity = includeEntity == null ||  includeEntity == true ? true : false;
@@ -147,7 +147,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
      * @param type
      * @param markerType
      * @param value
-     * @param pageNumber
+     * @param pageIndex
      * @param pageSize
      * @param request
      * @param response
@@ -160,7 +160,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
             @RequestParam(value = "class", required = false) Class<T> type,
             @RequestParam(value = "markerType", required = true) UUID markerTypeUuid,
             @RequestParam(value = "value", required = false) Boolean value,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageIndex", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "includeEntity", required = false, defaultValue="false") Boolean includeEntity,
             HttpServletRequest request,
@@ -178,7 +178,7 @@ public abstract class AbstractIdentifiableListController <T extends Identifiable
 
         logger.info("doFindByMarker() " + requestPathAndQuery(request));
 
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber).normalizeAndValidate(response);
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
 
         Pager<MarkedEntityDTO<T>> result = service.findByMarker(type, markerType, value, includeEntity, pagerParams.getPageSize(), pagerParams.getPageIndex(), initializationStrategy);
         return result;

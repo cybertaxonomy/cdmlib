@@ -149,7 +149,7 @@ public class TaxonNameDefaultCacheStrategy
     public String getAuthorshipCache(TaxonName taxonName) {
         if (taxonName == null){
             return null;
-        }else if (taxonName.getNameType().isViral()){
+        }else if (taxonName.isViral()){
             return null;
         }else if(taxonName.isProtectedAuthorshipCache() == true) {
             //cache protected
@@ -246,7 +246,7 @@ public class TaxonNameDefaultCacheStrategy
     }
 
     private String getNomAuthorTitle(INomenclaturalAuthor author) {
-        return CdmUtils.Nz(author.getNomenclaturalTitle());
+        return CdmUtils.Nz(author.getNomenclaturalTitleCache());
     }
 
     /**

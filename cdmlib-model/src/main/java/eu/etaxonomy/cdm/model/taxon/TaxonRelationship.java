@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -46,7 +48,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlType(name = "TaxonRelationship", propOrder = {
     "relatedFrom",
     "relatedTo",
-    "type"
+    "type",
+    "operation"
 })
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
@@ -80,6 +83,13 @@ public class TaxonRelationship
     @ManyToOne(fetch=FetchType.EAGER)
     @IndexedEmbedded(depth=1)
     private TaxonRelationshipType type;
+
+    @XmlElement(name = "Type")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    private TaxonomicOperation operation;
 
     /**
      * @deprecated for hibernate only, don't use
@@ -198,6 +208,13 @@ public class TaxonRelationship
     @Override
     public void setType(TaxonRelationshipType type) {
         this.type = type;
+    }
+
+    public TaxonomicOperation getOperation() {
+        return operation;
+    }
+    public void setOperation(TaxonomicOperation operation) {
+        this.operation = operation;
     }
 
     //*********************************** CLONE *****************************************/

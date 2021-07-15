@@ -40,7 +40,11 @@ import eu.etaxonomy.cdm.test.TermTestBase;
 /**
  * @author a.mueller
  * @since 03.06.2010
+ *
+ * @deprecated with #9678 a similar cache strategy (DerivedUnitCacheStrategy)
+ *      was implemented in cdmlib-model. This class may be removed in future.
  */
+@Deprecated
 public class DerivedUnitFacadeCacheStrategyTest extends TermTestBase {
 
     @SuppressWarnings("unused")

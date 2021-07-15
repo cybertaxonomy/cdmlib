@@ -79,9 +79,9 @@ public class Datasource {
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-//		String server = "160.45.63.171";
-//		String database = "cdm_production_xxx";
-//		String username = "edit";
+//		server = "160.45.63.171";
+//		database = "cdm_production_flora_malesiana_prospective";
+//		username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
@@ -118,59 +118,13 @@ public class Datasource {
 //       username = "edit";
 //       dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-
-// 		try {
-//			CdmUpdater updater = new CdmUpdater();
-//			if (schema == DbSchemaValidation.VALIDATE){
-//				updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
-////		TransactionStatus tx = appCtr.startTransaction(true);
-////
-////		DescriptiveDataSet dataset = appCtr.getDescriptiveDataSetService().find(10);
-////		PolytomousKeyGeneratorConfigurator config = new PolytomousKeyGeneratorConfigurator();
-////		config.setDataSet(dataset);
-////		config.setDebug(true);
-////		PolytomousKey key = new PolytomousKeyGenerator().invoke(config);
-//////		appCtr.getPolytomousKeyService().save(key);
-////		key.print(System.out);
-//		System.out.println(key.getUuid());
-//
-//		appCtr.commitTransaction(tx);
-
-//		testGroupedTaxa(appCtr);
+		appCtr.getOccurrenceService().findRootUnitDTOs(UUID.fromString("2debf5ee-cb57-40bc-af89-173d1d17cefe"));
 
 
-//		int n = appCtr.getAgentService().count(null);
-//		logger.warn("End adding " + n + " persons");
-
-//		appCtr.getCommonService().createFullSampleData();
-
-//		ValidationManager valMan = (ValidationManager)appCtr.getBean("validationManager");
-//		valMan.registerValidationListeners();
-
-//		State state = State.NewInstance();
-//		Taxon taxon = Taxon.NewInstance(null, null);
-//		TaxonDescription desc = TaxonDescription.NewInstance(taxon);
-////		CategoricalData catData = CategoricalData.NewInstance(state, Feature.HABITAT());
-//		QuantitativeData quantData = QuantitativeData.NewInstance(Feature.ANATOMY());
-//		StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.AVERAGE(), 2);
-//		quantData.addStatisticalValue(statisticalValue);
-//		desc.addElement(quantData);
-
-//		appCtr.getTermService().saveOrUpdate(state);
-//
-//		appCtr.getTaxonService().save(taxon);
-
-		//		insertSomeData(appCtr);
-//		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
 		appCtr.close();
 		System.exit(0);
 	}

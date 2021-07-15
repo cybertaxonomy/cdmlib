@@ -686,7 +686,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
                 + " uuid, id, titleCache "
                 + ") "
                 + " FROM " + clazz.getSimpleName()
-                + (pattern!=null?" WHERE titleCache LIKE :pattern":""));
+                + (pattern!=null ? " WHERE titleCache LIKE :pattern" : ""));
         if(pattern!=null){
             pattern = pattern.replace("*", "%");
             pattern = pattern.replace("?", "_");
@@ -716,10 +716,10 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     }
 
     protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndTitleCache(Query query){
+
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
-
-
-		List<Object> result = query.list();
+		@SuppressWarnings("unchecked")
+        List<Object> result = query.list();
 
         for(Object obj : result){
             if (obj instanceof SortableTaxonNodeQueryResult) {

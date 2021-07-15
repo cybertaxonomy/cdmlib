@@ -45,9 +45,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  * @author cmathew
  * @since 17 Sep 2014
- *
  */
-
 public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
 
     @SuppressWarnings("unused")
@@ -158,7 +156,7 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // objects in the object graph (including teamMembers) will have values of
         // initialized=false and session=null
 
-        INonViralName nvn = CdmBase.deproxy(taxon.getName(),TaxonName.class);
+        TaxonName nvn = CdmBase.deproxy(taxon.getName());
 
         // normally this call should throw a lazy loading exception since
         // the combinationAuthorship object is not initialized, but
@@ -196,6 +194,8 @@ public class HandlingCdmEntitiesTest extends CdmIntegrationTest {
         // that the teamMembers are not initialized, so no exception is thrown
 
         team.setProtectedTitleCache(true);
+        team.setProtectedCollectorTitleCache(true);
+        team.setProtectedNomenclaturalTitleCache(true);
         taxonService.update(taxon);
 
     }

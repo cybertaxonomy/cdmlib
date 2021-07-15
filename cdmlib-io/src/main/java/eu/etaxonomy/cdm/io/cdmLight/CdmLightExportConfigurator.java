@@ -11,7 +11,8 @@ package eu.etaxonomy.cdm.io.cdmLight;
 import java.io.File;
 import java.util.Comparator;
 
-import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.io.common.CsvIOConfigurator;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ExportResultType;
@@ -29,12 +30,6 @@ public class CdmLightExportConfigurator
 
     private static final long serialVersionUID = -1562074221435082060L;
 
-
-//    private Set<UUID> classificationUuids = new HashSet<>();
-//
-//    private Set<UUID> taxonNodeUuids = new HashSet<>();
-
-
     private CsvIOConfigurator csvIOConfig = CsvIOConfigurator.NewInstance();
     {
         csvIOConfig.setFieldsTerminatedBy(",");
@@ -46,7 +41,7 @@ public class CdmLightExportConfigurator
 
     private boolean isFilterIntextReferences = true;
     private boolean isCreateCondensedDistributionString = true;
-    private CondensedDistributionRecipe recipe = CondensedDistributionRecipe.EuroPlusMed;
+    private CondensedDistributionConfiguration condensedDistributionConfiguration = CondensedDistributionConfiguration.NewDefaultInstance();
     private boolean isFilterImportSources = true;
 
     private boolean isAddHTML = true;
@@ -67,10 +62,21 @@ public class CdmLightExportConfigurator
     private String keywords;
     private String licence;
 
-    /**
-     * @param transformer
-     */
-    public CdmLightExportConfigurator(IExportTransformer transformer) {
+
+    public static CdmLightExportConfigurator NewInstance(){
+        CdmLightExportConfigurator result = new CdmLightExportConfigurator(null);
+        return result;
+    }
+
+    public static CdmLightExportConfigurator NewInstance(ICdmDataSource source, File destination){
+        CdmLightExportConfigurator result = new CdmLightExportConfigurator(null);
+        result.setSource(source);
+        result.setDestination(destination);
+        return result;
+    }
+
+    //TODO AM: do we need the transformer parameter here?
+    private CdmLightExportConfigurator(IExportTransformer transformer) {
         super(transformer);
         this.resultType = ExportResultType.MAP_BYTE_ARRAY;
         this.setTarget(TARGET.EXPORT_DATA);
@@ -262,10 +268,10 @@ public class CdmLightExportConfigurator
          this.isCreateCondensedDistributionString = isCreateCondensedDistributionString;
     }
 
-    public CondensedDistributionRecipe getCondensedDistributionRecipe() {
-        return this.recipe;
+    public CondensedDistributionConfiguration getCondensedDistributionConfiguration() {
+        return this.condensedDistributionConfiguration;
     }
-    public void setCondensedDistributionRecipe(CondensedDistributionRecipe recipe) {
-        this.recipe = recipe;
+    public void setCondensedDistributionConfiguration(CondensedDistributionConfiguration condensedDistributionConfiguration) {
+        this.condensedDistributionConfiguration = condensedDistributionConfiguration;
     }
 }

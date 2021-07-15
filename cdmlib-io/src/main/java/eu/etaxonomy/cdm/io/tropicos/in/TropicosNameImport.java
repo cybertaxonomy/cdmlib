@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.tropicos.in;
 
-import eu.etaxonomy.cdm.common.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.dto.IdentifiedEntityDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.csv.in.CsvImportBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -115,7 +115,6 @@ public class TropicosNameImport<STATE extends TropicosNameImportState>
         state.getResult().addNewRecords(TaxonName.class.getSimpleName(), 1);
 
         makeTaxon(state, name);
-
     }
 
     private void makeNomStatus(STATE state, TaxonName name) {

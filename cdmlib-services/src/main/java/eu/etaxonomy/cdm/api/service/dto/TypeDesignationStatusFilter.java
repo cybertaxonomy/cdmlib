@@ -40,7 +40,7 @@ public class TypeDesignationStatusFilter {
         this.ignoreCase = ignoreCase;
 
         if(language == null){
-            language = Arrays.asList(Language.DEFAULT());
+            this.languages = Arrays.asList(Language.DEFAULT());
         }
     }
 

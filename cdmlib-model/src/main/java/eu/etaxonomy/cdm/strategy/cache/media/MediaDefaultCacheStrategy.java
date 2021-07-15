@@ -71,7 +71,12 @@ public class MediaDefaultCacheStrategy
 					@SuppressWarnings("null")
                     int lastSlashPos = result.lastIndexOf("/");
 					if (lastSlashPos != -1 && lastSlashPos + 1 < result.length()){
-						result = result.substring(lastSlashPos + 1);
+					    int lastDotPos = result.lastIndexOf(".");
+					    if (lastDotPos == -1 || lastDotPos < lastSlashPos){
+					        result = result.substring(lastSlashPos + 1);
+					    }else{
+					        result = result.substring(lastSlashPos + 1, lastDotPos);
+					    }
 					}
 					break;
 				}

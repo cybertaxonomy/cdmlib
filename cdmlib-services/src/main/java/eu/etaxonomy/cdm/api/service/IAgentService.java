@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.persistence.dto.TeamOrPersonUuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -77,21 +78,6 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
     public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>Person</code>s
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Person>> getPersonUuidAndTitleCache();
-
-	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> objects
-	 * with their respective titleCache
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Team>> getTeamUuidAndTitleCache();
-
-	/**
 	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> objects
 	 * with their respective nomenclaturalTitle instead of regular titleCache
 	 *
@@ -100,26 +86,30 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	public List<UuidAndTitleCache<Team>> getTeamUuidAndNomenclaturalTitle();
 
 	/**
-	 * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
-	 * with their respective titleCache
-	 *
-	 * @return a list of <code>UuidAndTitleCache</code> instances
-	 */
-	public List<UuidAndTitleCache<Institution>> getInstitutionUuidAndTitleCache(Integer limit, String pattern);
-
-	/**
      * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
      * with their respective NomenclaturalTitleCache
      *
      * @return a list of <code>UuidAndTitleCache</code> instances
      */
-    public <T extends AgentBase> List<UuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndAbbrevTitleCache(Class<T> clazz, Integer limit, String pattern);
 
     /**
-     * @param teamUuid
-     * @return
-     * @throws MergeException
+     * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
+     * with their respectiveCollectorTitleCache
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
      */
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getUuidAndTitleCacheWithCollectorTitleCache(Class<T> clazz, Integer limit, String pattern);
+
+    /**
+     * Returns a list of <code>UuidAndTitleCache</code> containing all {@link Institution} objects
+     * with their respectiveCollectorTitleCache
+     *
+     * @return a list of <code>UuidAndTitleCache</code> instances
+     */
+    public <T extends AgentBase> List<TeamOrPersonUuidAndTitleCache<T>> getTeamOrPersonUuidAndTitleCache(Class<T> clazz, Integer limit, String pattern);
+
+
     public UpdateResult convertTeam2Person(UUID teamUuid) throws MergeException;
 
 	/**

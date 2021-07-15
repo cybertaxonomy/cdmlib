@@ -58,6 +58,7 @@ public class SpecimenOrObservationBaseVoter extends CdmPermissionVoter {
                     SpecimenOrObservationBase original = originals.iterator().next();
                     return  propagateGrantsFromOriginal(targetUuid, original);
                 }
+                //TODO AM: what if original.size()> 1?
             }
         }
         return false;

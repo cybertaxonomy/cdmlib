@@ -199,13 +199,14 @@ Difference are to be found in
       <mapping class="eu.etaxonomy.cdm.model.reference.CdmLinkSource"/>
       
       <!-- Taxon Package -->
+      <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.SecundumSource"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymType"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.Taxon"/>
+      <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonomicOperation"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNode"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation"/>
-      <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
       

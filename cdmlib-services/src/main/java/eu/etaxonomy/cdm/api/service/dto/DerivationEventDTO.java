@@ -27,7 +27,9 @@ public class DerivationEventDTO extends EventDTO<DerivationEvent> {
     private DerivationEventDTO(DerivationEvent entity) {
         super(entity);
         eventType = entity.getType();
-        eventType.getRepresentations(); // force initialization
+        if(eventType != null) {
+            eventType.getRepresentations(); // force initialization
+        }
         if(entity.getActor() != null) {
             this.actor = entity.getActor().getTitleCache();
         }

@@ -19,26 +19,22 @@ import eu.etaxonomy.cdm.api.service.INameService;
  *
  * @author a.mueller
  * @since 19.09.2011
- *
  */
 public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
-	@SuppressWarnings("unused")
+
+    private static final long serialVersionUID = 76414245247942488L;
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameDeletionConfigurator.class);
 
-
 	private boolean removeAllNameRelationships = false;
-
 	private boolean ignoreIsBasionymFor = false;
-
 	private boolean ignoreIsReplacedSynonymFor = false;
-
 	private boolean ignoreHasBasionym = true;
-
 	private boolean ignoreHasReplacedSynonym = true;
-
 	private boolean ignoreIsOriginalSpellingFor = false;
-
 	private boolean removeAllNameTypeDesignations = true;
+
 	/**
 	 * If true, all name relationships will be deleted prior to deleting the name.
 	 * Exceptions will not be thrown due to existing name relationships.
@@ -47,10 +43,6 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public boolean isRemoveAllNameRelationships() {
 		return removeAllNameRelationships;
 	}
-
-	/**
-	 * @param removeAllNameRelationships the removeAllNameRelationships to set
-	 */
 	public void setRemoveAllNameRelationships(boolean removeAllNameRelationships) {
 		this.removeAllNameRelationships = removeAllNameRelationships;
 	}
@@ -65,10 +57,8 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public boolean isIgnoreIsBasionymFor() {
 		return ignoreIsBasionymFor;
 	}
-
 	/**
 	 * @see #isIgnoreIsBasionymFor()
-	 * @param ignoreIsBasionymFor the ignoreIsBasionymFor to set
 	 */
 	public void setIgnoreIsBasionymFor(boolean ignoreIsBasionymFor) {
 		this.ignoreIsBasionymFor = ignoreIsBasionymFor;
@@ -79,15 +69,12 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
      * Exceptions will not be thrown due to existing basionym relationships.
      * This value is neglected if {@link #isRemoveAllNameRelationships()} is true.
      * @see #setIgnoreIsBasionymFor(boolean)
-     * @return the ignoreIsBasionymFor
      */
     public boolean isIgnoreIsOriginalSpellingFor() {
         return ignoreIsOriginalSpellingFor;
     }
-
     /**
      * @see #isIgnoreIsBasionymFor()
-     * @param ignoreIsBasionymFor the ignoreIsBasionymFor to set
      */
     public void setIgnoreIsOriginalSpellingFor(boolean ignoreIsOriginalSpellingFor) {
         this.ignoreIsOriginalSpellingFor = ignoreIsOriginalSpellingFor;
@@ -103,10 +90,8 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public boolean isIgnoreIsReplacedSynonymFor() {
 		return ignoreIsReplacedSynonymFor;
 	}
-
 	/**
 	 * @see #isIgnoreIsReplacedSynonymFor()
-	 * @param ignoreIsReplacedSynonymFor the ignoreIsReplacedSynonymFor to set
 	 */
 	public void setIgnoreIsReplacedSynonymFor(boolean ignoreIsReplacedSynonymFor) {
 		this.ignoreIsReplacedSynonymFor = ignoreIsReplacedSynonymFor;
@@ -124,10 +109,8 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public boolean isIgnoreHasBasionym() {
 		return ignoreHasBasionym;
 	}
-
 	/**
 	 * @see #isIgnoreHasBasionym()
-	 * @param ignoreHasBasionym the ignoreHasBasionym to set
 	 */
 	public void setIgnoreHasBasionym(boolean ignoreHasBasionym) {
 		this.ignoreHasBasionym = ignoreHasBasionym;
@@ -145,10 +128,8 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public boolean isIgnoreHasReplacedSynonym() {
 		return ignoreHasReplacedSynonym;
 	}
-
 	/**
 	 * @see #isIgnoreHasReplacedSynonym()
-	 * @param ignoreHasReplacedSynonym the ignoreHasReplacedSynonym to set
 	 */
 	public void setIgnoreHasReplacedSynonym(boolean ignoreHasReplacedSynonym) {
 		this.ignoreHasReplacedSynonym = ignoreHasReplacedSynonym;
@@ -157,5 +138,4 @@ public class NameDeletionConfigurator  extends DeleteConfiguratorBase {
 	public boolean isRemoveAllNameTypeDesignations() {
 		return removeAllNameTypeDesignations;
 	}
-
 }

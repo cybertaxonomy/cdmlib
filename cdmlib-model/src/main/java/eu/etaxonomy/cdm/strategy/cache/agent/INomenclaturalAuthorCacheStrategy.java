@@ -20,7 +20,7 @@ public interface INomenclaturalAuthorCacheStrategy<T extends TeamOrPersonBase>
 	 * @param agent person or team
 	 * @return the nomenclatural title
 	 */
-	public String getNomenclaturalTitle(T agent);
+	public String getNomenclaturalTitleCache(T agent);
 
 	/**
      * Returns full name of a person or a team as used in written language.
@@ -31,12 +31,15 @@ public interface INomenclaturalAuthorCacheStrategy<T extends TeamOrPersonBase>
      * NOTE: This is formatting used for {@link #getTitleCache(eu.etaxonomy.cdm.model.common.IIdentifiableEntity)}
      * prior to CDM version 4.7
      *
-     * @param object
+     * @param agent
      * @return
      */
-    public String getFullTitle(T object);
+    public String getFullTitle(T agent);
 
     public String getFamilyTitle(T agent);
+
+    public String getCollectorTitleCache(T agent);
+
 
 
 }

@@ -132,7 +132,7 @@ public class FieldUnitDTO extends SpecimenOrObservationBaseDTO {
                     collectionString += " ";
                 }
                 collectionString += (fieldNumber != null ? fieldNumber : "");
-                collectionString.trim();
+                collectionString = collectionString.trim();
             }
             setCollectingString(collectionString);
             setDate(gatheringEvent.getGatheringDate());

@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.format.CdmFormatterBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -33,10 +32,13 @@ import eu.etaxonomy.cdm.strategy.cache.reference.TitleWithoutYearAndAuthorHelper
  */
 public class NomenclaturalSourceFormatter
         extends CdmFormatterBase<NomenclaturalSource>
-        implements Serializable {   //only required because used in ReferenceDefaultCacheStrategy
+        implements Serializable {
+
+    private static final long serialVersionUID = -6263443499465634548L;
 
     private static final Logger logger = Logger.getLogger(NomenclaturalSourceFormatter.class);
 
+    private static final String EMPTY_TITLE = "-";
     private static final String beforeMicroReference = ": ";
     private static final String afterInRefAuthor = ", ";
 
@@ -78,8 +80,14 @@ public class NomenclaturalSourceFormatter
     * @see                    TaxonName#getNomenclaturalReference()
     */
     public String format(Reference reference, String microReference){
+        if (isNotBlank(microReference)){
+            microReference = microReference.startsWith(":") ? microReference : getBeforeMicroReference() + microReference;
+        }else{
+            microReference = "";
+        }
+
         if (reference == null){
-            return CdmUtils.concat(beforeMicroReference, "-", microReference);
+            return EMPTY_TITLE + microReference;
         }
 
         if (reference.isProtectedAbbrevTitleCache()){
@@ -87,23 +95,21 @@ public class NomenclaturalSourceFormatter
             return handleDetailAndYearForProtected(reference, cache, microReference);
         }
 
-        String result = getTokenizedNomenclaturalTitel(reference);
+        String result = getTitelDetailAndYear(reference, microReference);
         //if no data is available and only titleCache is protected take the protected title
         //this is to avoid empty cache if someone forgets to set also the abbrevTitleCache
-        //we need to think about handling protected not separate for abbrevTitleCache  and titleCache
-        if (result.equals(INomenclaturalReference.MICRO_REFERENCE_TOKEN) && reference.isProtectedTitleCache() ){
+        //we need to think about handling protected not separate for abbrevTitleCache and titleCache
+        if (result.equals(getDetailOnly(microReference)) && reference.isProtectedTitleCache() ){
             String cache = reference.getTitleCache();
             return handleDetailAndYearForProtected(reference, cache, microReference);
         }
 
-        microReference = Nz(microReference);
         if (isNotBlank(microReference)){
             microReference = getBeforeMicroReference() + microReference;
-            if (microReference.endsWith(".")  && result.contains(INomenclaturalReference.MICRO_REFERENCE_TOKEN + ".") ){
+            if (microReference.endsWith(".")){
                 microReference = microReference.substring(0, microReference.length() - 1);
             }
         }
-        result = replaceMicroRefToken(microReference, result);
         if (result.startsWith(". ")){  //only year available, remove '. '
             result = result.substring(2);
         }
@@ -117,41 +123,28 @@ public class NomenclaturalSourceFormatter
     /**
      * Returns the nomenclatural title with micro reference represented as token
      * which can later be replaced by the real data.
-     *
-     * @see INomenclaturalReference#MICRO_REFERENCE_TOKEN
+     * @param microReference
      */
-    private String getTokenizedNomenclaturalTitel(Reference ref) {
+    private String getTitelDetailAndYear(Reference ref, String microReference) {
         if (ReferenceDefaultCacheStrategy.isRealInRef(ref)){
-            return getTokenizedNomenclaturalTitelInRef(ref);
+            return getTokenizedNomenclaturalTitelInRef(ref, microReference);
         }else{
             String result = getTitleWithoutYearAndAuthor(ref, true, true);
-            result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
+            result = isBlank(result) ? getDetailOnly(microReference): isBlank(microReference)? result : isBlank(microReference)? result : result + microReference;
             result = addYear(result, ref, true);
             return result;
         }
     }
 
-    private String replaceMicroRefToken(String microReference, String string) {
-        int index = string.indexOf(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
-
-        if (index > -1){
-            String before = string.substring(0, index);
-            String after = string.substring(index + INomenclaturalReference.MICRO_REFERENCE_TOKEN.length() );
-            String localMicroReference = microReference.trim();   //needed ?
-            if (after.length() > 0){
-                if (  ("".equals(localMicroReference) && before.endsWith(after.substring(0,1)) || localMicroReference.endsWith(after.substring(0,1)))){
-                    after = after.substring(1);
-                }
-            }
-            String result = before + localMicroReference + after;
-            return result;
+    private String getDetailOnly(String microReference) {
+        if (isBlank(microReference)){
+            return "";
         }else{
-            return string;
+            return EMPTY_TITLE + microReference;
         }
     }
 
-    private String handleDetailAndYearForProtected(Reference nomenclaturalReference, String cache, String microReference) {
-        String microRef = isNotBlank(microReference) ? getBeforeMicroReference() + microReference : "";
+    private String handleDetailAndYearForProtected(Reference nomenclaturalReference, String cache, String microRef) {
         if (cache == null){
             logger.warn("Cache is null. This should never be the case.");
             cache = "";
@@ -165,7 +158,7 @@ public class NomenclaturalSourceFormatter
         return result;
     }
 
-    private String getTokenizedNomenclaturalTitelInRef(Reference thisRef) {
+    private String getTokenizedNomenclaturalTitelInRef(Reference thisRef, String microReference) {
         if (thisRef == null){
             return null;
         }
@@ -174,12 +167,12 @@ public class NomenclaturalSourceFormatter
         if (inRef != null && inRef.getInReference() != null && thisRef.getType() == ReferenceType.Section){
             //this is a reference of type Section which has an in-in-Ref
             //TODO maybe we do not need to restrict to type=Section only
-            return this.getTokenizedNomenclaturalTitelInInRef(thisRef);
+            return this.getTokenizedNomenclaturalTitelInInRef(thisRef, microReference);
         }
 
         String result;
         //use generics's publication date if it exists
-        if (inRef == null ||  (thisRef.hasDatePublished() ) ){
+        if (inRef == null || (thisRef.hasDatePublished() ) ){
             result =  inRef == null ? "" : getTitleWithoutYearAndAuthorGeneric(inRef, true);
             //added //TODO unify with non-inRef references formatting
 
@@ -189,14 +182,14 @@ public class NomenclaturalSourceFormatter
             //TODO series / edition
 
             //end added
-            result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
+            result += microReference;
             result = addYear(result, thisRef, true);
         }else{
             //else use inRefs's publication date
-            result = inRef.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
-            if (result != null){
-                result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
-            }
+            result = format(inRef, microReference); // inRef.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+//            if (result != null){
+//                result = result.replace(beforeMicroReference + INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+//            }
         }
         //FIXME: vol. etc., https://dev.e-taxonomy.eu/redmine/issues/2862
 
@@ -212,7 +205,7 @@ public class NomenclaturalSourceFormatter
      * @param section
      * @return
      */
-    private String getTokenizedNomenclaturalTitelInInRef(Reference ref) {
+    private String getTokenizedNomenclaturalTitelInInRef(Reference ref, String microReference) {
         String result;
 
         Reference inRef = CdmBase.deproxy(ref.getInReference());
@@ -231,7 +224,7 @@ public class NomenclaturalSourceFormatter
         }else{
             result = getTitleWithoutYearAndAuthor(inInRef, true, true);
         }
-        result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
+        result += microReference;
 
         Reference dataReference = (ref.hasDatePublished() ? ref : inRef.hasDatePublished() ? inRef : inInRef);
 
@@ -263,7 +256,7 @@ public class NomenclaturalSourceFormatter
             Team team = CdmBase.deproxy(author, Team.class);
             if (team.isProtectedNomenclaturalTitleCache()){
                 //not yet finally discussed may change in future
-                result = team.getNomenclaturalTitle();
+                result = team.getNomenclaturalTitleCache();
             }else if (team.isProtectedTitleCache()){
                 //not yet finally discussed may change in future
                 result = team.getTitleCache();
@@ -286,8 +279,8 @@ public class NomenclaturalSourceFormatter
         String result;
         if (isNotBlank(person.getFamilyName())){
             result = person.getFamilyName();
-        }else if (isNotBlank(person.getNomenclaturalTitle())){
-            result = person.getNomenclaturalTitle();  //TODO discuss if nomTitle is really better here then titleCache
+        }else if (isNotBlank(person.getNomenclaturalTitleCache())){
+            result = person.getNomenclaturalTitleCache();  //TODO discuss if nomTitle is really better here then titleCache
         }else{
             result = person.getTitleCache();  //maybe remove everything behind a ","
         }
