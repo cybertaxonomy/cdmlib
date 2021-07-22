@@ -126,8 +126,10 @@ public class DerivationTreeSummaryDTO implements Serializable {
                     // specimen scan
                     if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
                         derivateDataDTO.addSpecimenScanUuid(media.getMediaSpecimen().getUuid());
-                        String imageLinkText = "scan";
-                        imageLinkText = specimenIdentifier;
+                        String imageLinkText = "scan of " + specimenIdentifier;
+                        if(CdmUtils.isNotBlank(media.getMediaSpecimen().getTitleCache())) {
+                            imageLinkText = media.getMediaSpecimen().getTitleCache();
+                        }
                         derivateDataDTO.addSpecimenScan(mediaUri, imageLinkText);
                     }
                     // detail image
