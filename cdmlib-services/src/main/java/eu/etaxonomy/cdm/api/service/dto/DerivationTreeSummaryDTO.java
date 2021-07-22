@@ -119,26 +119,29 @@ public class DerivationTreeSummaryDTO implements Serializable {
             }
             // assemble media data
             else if (childDerivate.isInstanceOf(MediaSpecimen.class)) {
-                MediaSpecimen media = HibernateProxyHelper.deproxy(childDerivate, MediaSpecimen.class);
+                MediaSpecimen mediaSpecimen = HibernateProxyHelper.deproxy(childDerivate, MediaSpecimen.class);
 
-                URI mediaUri = getMediaUri(media);
-                if (media.getKindOfUnit() != null) {
+                URI mediaUri = getMediaUri(mediaSpecimen);
+                if (mediaSpecimen.getKindOfUnit() != null) {
                     // specimen scan
-                    if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
-                        derivateDataDTO.addSpecimenScanUuid(media.getMediaSpecimen().getUuid());
+                    if (mediaSpecimen.getKindOfUnit().getUuid().equals(DefinedTerm.uuidSpecimenScan)) {
+                        derivateDataDTO.addSpecimenScanUuid(mediaSpecimen.getMediaSpecimen().getUuid());
                         String imageLinkText = "scan of " + specimenIdentifier;
-                        if(CdmUtils.isNotBlank(media.getMediaSpecimen().getTitleCache())) {
-                            imageLinkText = media.getMediaSpecimen().getTitleCache();
+                        if(CdmUtils.isNotBlank(mediaSpecimen.getMostSignificantIdentifier())) {
+                            imageLinkText = mediaSpecimen.getMostSignificantIdentifier();
                         }
-                        derivateDataDTO.addSpecimenScan(mediaUri, imageLinkText);
+                        if(CdmUtils.isNotBlank(mediaSpecimen.getMediaSpecimen().getTitleCache())) {
+                            imageLinkText += " (" + mediaSpecimen.getMediaSpecimen().getTitleCache() + ")";
+                        }
+                        derivateDataDTO.addSpecimenScan(mediaUri, imageLinkText.trim());
                     }
                     // detail image
-                    else if (media.getKindOfUnit().getUuid().equals(DefinedTerm.uuidDetailImage)) {
-                        derivateDataDTO.addDetailImageUuid(media.getMediaSpecimen().getUuid());
+                    else if (mediaSpecimen.getKindOfUnit().getUuid().equals(DefinedTerm.uuidDetailImage)) {
+                        derivateDataDTO.addDetailImageUuid(mediaSpecimen.getMediaSpecimen().getUuid());
                         String motif = "detail image";
-                        if (media.getMediaSpecimen()!=null){
-                            if(CdmUtils.isNotBlank(media.getMediaSpecimen().getTitleCache())) {
-                                motif = media.getMediaSpecimen().getTitleCache();
+                        if (mediaSpecimen.getMediaSpecimen()!=null){
+                            if(CdmUtils.isNotBlank(mediaSpecimen.getMediaSpecimen().getTitleCache())) {
+                                motif = mediaSpecimen.getMediaSpecimen().getTitleCache();
                             }
                         }
                         derivateDataDTO.addDetailImage(mediaUri, motif);
