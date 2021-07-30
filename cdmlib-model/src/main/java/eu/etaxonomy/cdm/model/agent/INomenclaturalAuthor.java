@@ -18,14 +18,24 @@ package eu.etaxonomy.cdm.model.agent;
 public interface INomenclaturalAuthor {
 
 	/**
-	 * @see TeamOrPersonBase#getNomenclaturalTitleCache()
+	 * @see {@link TeamOrPersonBase#getNomenclaturalTitleCache()}
+	 *
 	 */
-	public String getNomenclaturalTitleCache();
+    public String getNomenclaturalTitleCache();
 
 
 	/**
-	 * @see getNomenclaturalTitleCache()
+	 * @see {@link #getNomenclaturalTitleCache()}
+	 * @deprecated to be replaced by {@link #getNomenclaturalTitleCache()}
 	 */
+    @Deprecated
 	public void setNomenclaturalTitle(String nomenclaturalTitle);
+
+    /**
+     * fixes the missing setter method that corresponds to {@link #getNomenclaturalTitleCache()} see #9729
+     *
+     * @see {@link TeamOrPersonBase#getNomenclaturalTitleCache()}
+     */
+    public void setNomenclaturalTitleCache(String nomenclaturalTitle);
 
 }
