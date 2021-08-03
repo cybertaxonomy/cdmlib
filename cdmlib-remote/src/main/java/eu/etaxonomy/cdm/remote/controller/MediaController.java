@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
@@ -67,6 +68,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
 
 
     @RequestMapping(value = {"metadata"}, method = RequestMethod.GET)
+    @ResponseBody // = is REST service method with json response
     public Map<String, String> doGetMediaMetaData(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "applyFilterPreset", defaultValue = "true") Boolean applyFilterPreset,
@@ -85,8 +87,7 @@ public class MediaController extends AbstractIdentifiableController<Media, IMedi
             URI uri = null;
             try {
                 if(applyFilterPreset) {
-                        result = service.readResourceMetadataFiltered(mediaRepresentation);
-
+                   result = service.readResourceMetadataFiltered(mediaRepresentation);
                 } else {
                     uri = mediaRepresentation.getParts().get(0).getUri();
                     CdmImageInfo cdmImageInfo = mediaInfoFactory.cdmImageInfoWithMetaData(uri);
