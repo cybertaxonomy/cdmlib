@@ -351,6 +351,10 @@ public class Person extends TeamOrPersonBase<Person>{
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
         this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
+    @Override
+    public void setNomenclaturalTitleCache(String nomenclaturalTitle) {
+        this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
+    }
 
     /**
      * Returns the initials of this person as used in bibliographic

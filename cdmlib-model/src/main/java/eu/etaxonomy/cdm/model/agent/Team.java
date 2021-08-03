@@ -323,19 +323,24 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * and protects it from overwriting.
 	 * This method overrides {@link TeamOrPersonBase#setNomenclaturalTitle(String) setNomenclaturalTitle}.
 	 *
-	 * @see  #getNomenclaturalTitle()
-	 * @see  #setNomenclaturalTitle(String, boolean)
+	 * @see  {@link #getNomenclaturalTitleCache()}
+	 * @see  {@link #setNomenclaturalTitleCache(String, boolean)}
 	 */
 	@Override
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
 		this.setNomenclaturalTitleCache(nomenclaturalTitle, PROTECTED);
 	}
 
+   @Override
+    public void setNomenclaturalTitleCache(String nomenclaturalTitle) {
+        this.setNomenclaturalTitleCache(nomenclaturalTitle, PROTECTED);
+    }
+
 	/**
 	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to <i>this</i> team
 	 * and a protection flag status to this string.
 	 *
-	 * @see  #getNomenclaturalTitle()
+	 * @see  {@link #getNomenclaturalTitleCache()}
 	 */
 	public void setNomenclaturalTitleCache(String nomenclaturalTitleCache, boolean protectedNomenclaturalTitleCache) {
 		firePropertyChange("nomenclaturalTitleCache", this.nomenclaturalTitleCache, nomenclaturalTitleCache);

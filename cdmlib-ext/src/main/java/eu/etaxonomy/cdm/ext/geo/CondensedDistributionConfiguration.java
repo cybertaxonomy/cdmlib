@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.ext.geo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,7 +26,9 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
  * @author a.mueller
  * @since 17.02.2021
  */
-public class CondensedDistributionConfiguration{
+public class CondensedDistributionConfiguration implements Serializable {
+
+    private static final long serialVersionUID = -4753899114349109805L;
 
     //if true, all areas are shown in bold, no matter which status they have
     public boolean areasBold = false;  //true for Cuba

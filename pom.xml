@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.25.0</version>
+  <version>5.26.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -94,15 +94,10 @@
   </organization>
   <developers>
     <developer>
-      <!-- your SVN account id please! -->
       <id>a.kohlbecker</id>
-      <name>
-                Andreas Kohlbecker
-            </name>
+      <name>Andreas Kohlbecker</name>
       <email>a.kohlbecker [at] bgbm.org</email>
-      <organization>
-                Botanical Garden Botanical Museum Berlin
-            </organization>
+      <organization>Botanical Garden Botanical Museum Berlin</organization>
       <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
       <timezone>+1</timezone>
       <roles>
@@ -113,15 +108,10 @@
       <url />
     </developer>
     <developer>
-      <!-- your SVN account id please! -->
       <id>k.luther</id>
-      <name>
-                Katja Luther
-            </name>
+      <name>Katja Luther</name>
       <email>k.luther [at] bgbm.org</email>
-      <organization>
-                Botanical Garden Botanical Museum Berlin
-            </organization>
+      <organization>Botanical Garden Botanical Museum Berlin</organization>
       <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
       <timezone>+1</timezone>
       <roles>
@@ -130,38 +120,16 @@
       <url />
     </developer>
     <developer>
-      <!-- your SVN account id please! -->
       <id>a.mueller</id>
-      <name>
-                Andreas Müller
-            </name>
+      <name>Andreas Müller</name>
       <email>a.mueller [at] bgbm.org</email>
-      <organization>
-                Botanical Garden Botanical Museum Berlin
-            </organization>
+      <organization>Botanical Garden Botanical Museum Berlin</organization>
       <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
       <timezone>+1</timezone>
       <roles>
         <role>Architect</role>
         <role>Java Developer</role>
         <role>Release Manager</role>
-      </roles>
-      <url />
-    </developer>
-	   <developer>
-      <!-- your SVN account id please! -->
-      <id>p.plitzner</id>
-      <name>
-               Patrick Plitzner
-            </name>
-      <email>p.plitzner [at] bgbm.org</email>
-      <organization>
-                Botanical Garden Botanical Museum Berlin
-            </organization>
-      <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Java Developer</role>
       </roles>
       <url />
     </developer>
@@ -205,12 +173,12 @@
     <!-- the cdm internal repository -->
     <repository>
       <id>EditRepository</id>
-      <url>http://cybertaxonomy.eu/mavenrepo/</url>
+      <url>https://cybertaxonomy.eu/mavenrepo/</url>
     </repository>
     <!-- apache incubating repository -->
     <repository>
       <id>ApacheIncubating</id>
-      <url>http://people.apache.org/repo/m2-incubating-repository/</url>
+      <url>https://people.apache.org/repo/m2-incubating-repository/</url>
     </repository>
     <!-- Neccessary for hibernate-envers -->
     <repository>
