@@ -1251,8 +1251,15 @@ public class CdmLightClassificationExport
                         textualTypeDesignations.add((TextualTypeDesignation) typeDesignation);
                     }
                 } else if (typeDesignation.isInstanceOf(SpecimenTypeDesignation.class)) {
+                    SpecimenTypeDesignation specimenType = HibernateProxyHelper.deproxy(typeDesignation, SpecimenTypeDesignation.class);
+                    specimenTypeDesignations.add(specimenType);
+                    if (((SpecimenTypeDesignation)typeDesignation).getTypeSpecimen() != null){
+                        DerivedUnit specimen =  specimenType.getTypeSpecimen();
+                        if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
+                            handleSpecimen(state, specimen);
+                        }
 
-                    specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, SpecimenTypeDesignation.class));
+                    }
 
                 }else if (typeDesignation instanceof NameTypeDesignation){
                     specimenTypeDesignations.add(HibernateProxyHelper.deproxy(typeDesignation, NameTypeDesignation.class));
@@ -1962,6 +1969,11 @@ public class CdmLightClassificationExport
 
             		typeTextDesignations =  typeTextDesignations + typeDesStateRefs +"; ";
 
+            	}else if (typeDes instanceof SpecimenTypeDesignation){
+            	    DerivedUnit specimen =  ((SpecimenTypeDesignation)typeDes).getTypeSpecimen();
+            	    if(specimen != null && !state.getSpecimenStore().contains( specimen.getUuid())){
+            	        handleSpecimen(state, specimen);
+            	    }
             	}
             }
             if (typeTextDesignations.equals("; ")) {
@@ -2304,7 +2316,7 @@ public class CdmLightClassificationExport
             csvLine[table.getIndex(CdmLightExportTable.SPECIMEN_IMAGE_URIS)] = extractMediaURIs(state,
                     specimen.getDescriptions(), Feature.IMAGE());
             if (specimen instanceof DerivedUnit) {
-                DerivedUnit derivedUnit = (DerivedUnit) specimen;
+                DerivedUnit derivedUnit = HibernateProxyHelper.deproxy(specimen, DerivedUnit.class);
                 if (derivedUnit.getCollection() != null) {
                     csvLine[table.getIndex(CdmLightExportTable.HERBARIUM_ABBREV)] = derivedUnit.getCollection()
                             .getCode();
