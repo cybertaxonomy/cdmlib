@@ -244,6 +244,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
       if (classificationUuid != null){
           queryString = queryString + " node.classification.uuid like :classificationUuid " ;
       }
+      if (pattern == null){
+          pattern = "*";
+      }
       if (pattern != null){
           if (pattern.equals("?")){
               limit = null;
