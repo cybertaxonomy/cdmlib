@@ -1,5 +1,5 @@
 /**
-* Copyright (C) 2020 EDIT
+* Copyright (C) 2021 EDIT
 * European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 *
@@ -10,25 +10,18 @@ package eu.etaxonomy.cdm.model.metadata;
 
 /**
  * @author k.luther
- * @since Dec 1, 2020
+ * @since Aug 4, 2021
  */
-public enum SecReferenceHandlingEnum implements IKeyLabel {
-
-//    AlwaysDelete("AlwaysDelete", "Remove all related secundum references"),
-//    WarningSelect("WarningSelect", "If secs differ select new one"),
-//    WarnWhenDifferent("WarnWhenDifferent", "Warn if secs are different"),
-
+public enum SecReferenceHandlingSwapEnum implements IKeyLabel {
     AlwaysDelete("AlwaysDelete", "Always remove secundum references"),
     AlwaysSelect("AlwaysSelect", "Always select new secundum references"),
     KeepOrSelect("KeepOrSelect", "Keep if all related secs are the same, select otherwise"),
-    KeepOrWarn("KeepOrWarn", "Keep if all related secs are the same, warn otherwise"),
-    UseNewParentSec("UseNewParentSec", "Always use new parent sec");
-
+    KeepOrWarn("KeepOrWarn", "Keep if all related secs are the same, warn otherwise");
 
     private String label;
     private String key;
 
-    private SecReferenceHandlingEnum(String key, String label){
+    private SecReferenceHandlingSwapEnum(String key, String label){
         this.label = label;
         this.key = key;
     }

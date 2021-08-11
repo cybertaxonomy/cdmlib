@@ -123,7 +123,8 @@ public enum PreferencePredicate
     ShowSpecimenListEditor(UUID.fromString("298d0c47-a4dc-4ab1-a3ef-442df8c67bd0"), "Show Specimen List Editor", "specimen.editor.showListEditor", Boolean.TRUE),
     //Taxa
     DefaultBehaviourForPublishFlag(UUID.fromString("24e636fc-ef3b-4a2c-8c9e-018143e66949"), "Default behaviour for publish flag", "defaultBehaviourForPublishFlag", PublishEnum.InheritFromParent),
-    DefaultBehaviourForSecundum(UUID.fromString("b62bfebd-2633-46da-828c-5dcc181a137f"), "Default behaviour for secundum reference when moving synonym to accepted taxon", "defaultBehaviourSecMovSyn", SecReferenceHandlingEnum.KeepWhenSame),
+    DefaultBehaviourForSecundum(UUID.fromString("b62bfebd-2633-46da-828c-5dcc181a137f"), "Default behaviour for secundum reference when moving synonym to accepted taxon", "defaultBehaviourSecMovSyn", SecReferenceHandlingEnum.KeepOrWarn),
+    DefaultBehaviourForSecundumWhenSwap(UUID.fromString("8ae1a0e3-78aa-4284-9c34-10b23d52905b"), "Default behaviour for secundum reference when swapping synonym and accepted taxon", "defaultBehaviourSecSwap", SecReferenceHandlingSwapEnum.KeepOrWarn),
     ConceptRelationshipType(UUID.fromString("04e4c69c-6741-4224-81ef-8df0a03bb81e"), "Concept Relationship Types", "conceptRelationshipTypes", null),
 
     SecundumForSubtreeConfigurator(UUID.fromString("aa43a7de-4098-4b2e-9d76-5caceda70a39"), "Default configurator for set secundum for subtree", "defaultSetSecForSubtreeConfig", null),
@@ -153,7 +154,7 @@ public enum PreferencePredicate
     //Names
     AvailableRanks(UUID.fromString("d6559e49-9d05-43bb-b13a-4a70514100af"), "Available Ranks", "AvailableRanks", null),
     AvailableNomenclaturalStatus(UUID.fromString("fd36dc63-fd98-4d86-9a11-edced6773bd3"), "Available Nomenclatural Status", "name.nomenclaturalStatus", null),
-    NameRelationshipType(UUID.fromString("c1830d41-0101-480f-8444-f9c0b07a5f2f"), "Name Relationship Types", "name.nameRelationshipType", null),
+    AvailableNameRelationshipType(UUID.fromString("c1830d41-0101-480f-8444-f9c0b07a5f2f"), "Name Relationship Types", "name.nameRelationshipType", null),
     TypeDesignations(UUID.fromString("7b824a7e-49e1-4484-956f-6f6f14628956"), "Type Designations", "name.typeDesignations", null),
     SpecimenTypeDesignationStatus(UUID.fromString("8a155724-2667-42a7-b789-7d826d0cafc9"), "Specimen Type Designation Status", "name.specimenTypeDesignationStatus", null),
     NameTypeDesignationStatus(UUID.fromString("6091668a-9bcf-4c79-8c53-7e4b98de1ccb"), "Name Type Designation Status", "name.nameTypeDesignationStatus", null),
