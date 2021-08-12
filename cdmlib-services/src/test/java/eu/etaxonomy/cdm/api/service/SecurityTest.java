@@ -313,7 +313,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Exception exception = null;
         try {
-            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF(), book , "33", SecReferenceHandlingEnum.KeepWhenSame, true);
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymType.HETEROTYPIC_SYNONYM_OF(), book , "33", SecReferenceHandlingEnum.KeepOrWarn, true);
             commitAndStartNewTransaction(null);
         } catch (AccessDeniedException e){
             logger.error("Unexpected failure of evaluation.", e);
