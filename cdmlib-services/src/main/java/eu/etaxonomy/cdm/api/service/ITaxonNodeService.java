@@ -136,10 +136,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * Changes the taxa associated with the given taxon nodes into synonyms of the new accepted taxon node.
 	 * All data associated with the former taxa are moved to the newly accepted taxon.
 	 */
-	public UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
+	public DeleteResult makeTaxonNodeSynonymsOfAnotherTaxonNode(Set<UUID> oldTaxonNodeUuids, UUID newAcceptedTaxonNodeUUIDs,
 			SynonymType synonymType, UUID citationUuid, String microReference, SecReferenceHandlingEnum secHandling, boolean setNameInSource);
 
-	public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
+	public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
 	        UUID newAcceptedTaxonNodeUUID,
 	        SynonymType synonymType,
 	        UUID citationUuid,

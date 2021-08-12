@@ -467,7 +467,7 @@ public class TaxonNodeServiceImpl
     }
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult makeTaxonNodeSynonymsOfAnotherTaxonNode( Set<UUID> oldTaxonNodeUuids,
+    public DeleteResult makeTaxonNodeSynonymsOfAnotherTaxonNode( Set<UUID> oldTaxonNodeUuids,
             UUID newAcceptedTaxonNodeUUIDs,
             SynonymType synonymType,
             UUID citation,
@@ -483,7 +483,7 @@ public class TaxonNodeServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
+    public DeleteResult makeTaxonNodeASynonymOfAnotherTaxonNode(UUID oldTaxonNodeUuid,
             UUID newAcceptedTaxonNodeUUID,
             SynonymType synonymType,
             UUID citationUuid,
@@ -524,12 +524,11 @@ public class TaxonNodeServiceImpl
                 citation,
                 microReference,
                 secHandling, setNameInSource);
-        UpdateResult updateResult = new UpdateResult();
-        updateResult.includeResult(result);
-        updateResult.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));
-        updateResult.addUpdatedCdmId(new CdmEntityIdentifier(newTaxonNode.getId(), TaxonNode.class));
-        updateResult.setCdmEntity(oldTaxonParentNode);
-        return updateResult;
+
+        result.addUpdatedCdmId(new CdmEntityIdentifier(oldTaxonParentNode.getId(), TaxonNode.class));
+        result.addUpdatedCdmId(new CdmEntityIdentifier(newTaxonNode.getId(), TaxonNode.class));
+        result.setCdmEntity(oldTaxonParentNode);
+        return result;
     }
 
     @Override
