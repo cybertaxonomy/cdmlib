@@ -27,7 +27,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     private static final long serialVersionUID = 5198447592554976471L;
 
     private TaxonRowWrapperDTO defaultDescription;
-    private SpecimenOrObservationBaseDTO specimen;
+    private SpecimenOrObservationBaseDTO specimenDto;
     private UuidAndTitleCache<FieldUnit> fieldUnit;
     private SpecimenOrObservationType type;
     private String identifier;
@@ -41,7 +41,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
         }
         this.identifier = identifier;
         this.country = country;
-        this.specimen = description.getSpecimenDto();
+        this.specimenDto = description.getSpecimenDto();
         this.type = type;
     }
 
@@ -54,7 +54,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
         }
         this.identifier = identifier;
         this.country = country;
-        this.specimen = SpecimenOrObservationDTOFactory.fromEntity(specimen);
+        this.specimenDto = SpecimenOrObservationDTOFactory.fromEntity(specimen);
         this.type = specimen.getRecordBasis();
     }
 
@@ -66,12 +66,12 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     }
     this.identifier = identifier;
     this.country = country;
-    this.specimen = SpecimenOrObservationDTOFactory.fromEntity(specimen);
+    this.specimenDto = SpecimenOrObservationDTOFactory.fromEntity(specimen);
     this.type = specimen.getRecordBasis();
 
 }
-    public SpecimenOrObservationBaseDTO getSpecimen() {
-        return specimen;
+    public SpecimenOrObservationBaseDTO getSpecimenDto() {
+        return specimenDto;
     }
 
     public UuidAndTitleCache<FieldUnit> getFieldUnit() {
