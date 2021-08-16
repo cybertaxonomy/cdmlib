@@ -43,6 +43,35 @@ public class CdmLightExportConfigurator
     private boolean isCreateCondensedDistributionString = true;
     private CondensedDistributionConfiguration condensedDistributionConfiguration = CondensedDistributionConfiguration.NewDefaultInstance();
     private boolean isFilterImportSources = true;
+    private boolean isShowAllNameRelationsInHomotypicGroup = false;
+    /**
+     * @return the isShowAllNameRelationsInHomotypicGroup
+     */
+    public boolean isShowAllNameRelationsInHomotypicGroup() {
+        return isShowAllNameRelationsInHomotypicGroup;
+    }
+
+    /**
+     * @param isShowAllNameRelationsInHomotypicGroup the isShowAllNameRelationsInHomotypicGroup to set
+     */
+    public void setShowAllNameRelationsInHomotypicGroup(boolean isShowAllNameRelationsInHomotypicGroup) {
+        this.isShowAllNameRelationsInHomotypicGroup = isShowAllNameRelationsInHomotypicGroup;
+    }
+
+    /**
+     * @return the isShowInverseNameRelationsInHomotypicGroup
+     */
+    public boolean isShowInverseNameRelationsInHomotypicGroup() {
+        return isShowInverseNameRelationsInHomotypicGroup;
+    }
+
+    /**
+     * @param isShowInverseNameRelationsInHomotypicGroup the isShowInverseNameRelationsInHomotypicGroup to set
+     */
+    public void setShowInverseNameRelationsInHomotypicGroup(boolean isShowInverseNameRelationsInHomotypicGroup) {
+        this.isShowInverseNameRelationsInHomotypicGroup = isShowInverseNameRelationsInHomotypicGroup;
+    }
+    private boolean isShowInverseNameRelationsInHomotypicGroup = false;
 
     private boolean isAddHTML = true;
 
