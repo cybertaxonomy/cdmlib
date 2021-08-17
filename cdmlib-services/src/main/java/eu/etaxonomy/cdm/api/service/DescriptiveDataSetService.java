@@ -256,7 +256,7 @@ public class DescriptiveDataSetService
         for (SpecimenRowWrapperDTO wrapper : wrappers) {
             Optional<TaxonBase> findAny = taxa.stream().filter(taxon->taxon.getUuid().equals(wrapper.getTaxonNode().getTaxonUuid())).findAny();
             if(!findAny.isPresent()){
-                result.addException(new IllegalArgumentException("Could not create wrapper for "+ wrapper.getSpecimen().getLabel()));
+                result.addException(new IllegalArgumentException("Could not create wrapper for "+ wrapper.getSpecimenDto().getLabel()));
                 continue;
             }
             Taxon taxon = (Taxon) findAny.get();
@@ -265,7 +265,7 @@ public class DescriptiveDataSetService
 //            if(taxonDescriptionUuid!=null){
 //                taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
 //            }
-            SpecimenOrObservationBase<?> specimen = occurrenceService.load(wrapper.getSpecimen().getUuid());
+            SpecimenOrObservationBase<?> specimen = occurrenceService.load(wrapper.getSpecimenDto().getUuid());
             if(taxonDescription==null){
                 Optional<TaxonDescription> associationDescriptionOptional = taxon.getDescriptions().stream()
                         .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
