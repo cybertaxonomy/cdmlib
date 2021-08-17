@@ -195,6 +195,7 @@ public enum CdmLightExportTable {
     protected static final String TYPE_VERBATIM_CITATION = "TypeVerbatimCitation";
     protected static final String TYPE_STATUS = "TypeStatus";
     protected static final String TYPE_INFORMATION_REF_STRING = "TypeInformationSource";
+    protected static final String TYPE_INFORMATION_REF_FK = "TypeInfoSourcePreferred_Fk";
     protected static final String TYPE_DESIGNATED_BY_REF_FK = "TypeDesignatedBy_Fk";
 
     //Type_Name_Rel
@@ -355,8 +356,8 @@ public enum CdmLightExportTable {
     }
 
     final static String[] typeDesignationColumns(){
-        return new String[]{TYPE_ID, SPECIMEN_FK, //TYPIFIED_NAME_FK, TYPE_VERBATIM_CITATION,
-                TYPE_STATUS, TYPE_INFORMATION_REF_STRING, TYPE_DESIGNATED_BY_REF_FK};
+        return new String[]{TYPE_ID, TYPIFIED_NAME_FK, SPECIMEN_FK, //TYPE_VERBATIM_CITATION,
+                TYPE_STATUS, TYPE_DESIGNATED_BY_REF_FK, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
 
     }
 

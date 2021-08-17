@@ -1403,33 +1403,71 @@ public class CdmLightClassificationExport
         if (specimenType.getSources() != null && !specimenType.getSources().isEmpty()){
             String sourceString = "";
             int index = 0;
-            for (IdentifiableSource source: specimenType.getSources()){
+            List<IdentifiableSource> sources = new ArrayList<>(specimenType.getSources());
+            Comparator<IdentifiableSource> compareByYear = new Comparator<IdentifiableSource>() {
+                @Override
+                public int compare(IdentifiableSource o1, IdentifiableSource o2) {
+                    if (o1 == o2){
+                        return 0;
+                    }
+                    if (o1.getCitation() == null && o2.getCitation() != null){
+                        return -1;
+                    }
+                    if (o2.getCitation() == null && o1.getCitation() != null){
+                        return 1;
+                    }
+                    if (o1.getCitation().equals(o2.getCitation())){
+                        return 0;
+                    }
+                    if (o1.getCitation().getDatePublished() == null && o2.getCitation().getDatePublished() != null){
+                        return -1;
+                    }
+                    if (o1.getCitation().getDatePublished() != null && o2.getCitation().getDatePublished() == null){
+                        return 1;
+                    }
+                    if (o1.getCitation().getDatePublished().getYear() == null && o2.getCitation().getDatePublished().getYear() != null){
+                        return -1;
+                    }
+                    if (o1.getCitation().getDatePublished().getYear() != null && o2.getCitation().getDatePublished().getYear() == null){
+                        return 1;
+                    }
+                    return o1.getCitation().getDatePublished().getYear().compareTo(o2.getCitation().getDatePublished().getYear());
+                }
+            };
+            Collections.sort(sources, compareByYear);
+            for (IdentifiableSource source: sources){
                 if (source.getCitation()!= null){
                     sourceString = sourceString.concat(source.getCitation().getCitation());
+                    handleReference(state, source.getCitation());
                 }
                 index++;
-                if (index != specimenType.getSources().size()){
-                    sourceString.concat(", ");
+                if (index <= specimenType.getSources().size()){
+                    sourceString = sourceString.concat("; ");
                 }
             }
+
             csvLine[table.getIndex(CdmLightExportTable.TYPE_INFORMATION_REF_STRING)] = sourceString;
+            if (sources.get(0).getCitation() != null ){
+                csvLine[table.getIndex(CdmLightExportTable.TYPE_INFORMATION_REF_FK)] = getId(state, sources.get(0).getCitation());
+            }
         }
         if (specimenType.getDesignationSource() != null && specimenType.getDesignationSource().getCitation() != null && !state.getReferenceStore().contains(specimenType.getDesignationSource().getCitation().getUuid())){
             handleReference(state, specimenType.getDesignationSource().getCitation());
             csvLine[table.getIndex(CdmLightExportTable.TYPE_DESIGNATED_BY_REF_FK)] = specimenType.getDesignationSource() != null ? getId(state, specimenType.getDesignationSource().getCitation()): "";
         }
-        state.getProcessor().put(table, specimenType, csvLine);
 
-        //TYPE_ID, SPECIMEN_FK, TYPE_VERBATIM_CITATION, TYPE_STATUS, TYPE_DESIGNATED_BY_STRING, TYPE_DESIGNATED_BY_REF_FK};
-        //Specimen_Fk und den Typusangaben (Art des Typus [holo, lecto, etc.], Quelle, Designation-Quelle, +
+
         Set<TaxonName> typifiedNames = specimenType.getTypifiedNames();
-        table = CdmLightExportTable.TYPE_SPECIMEN_NAME;
-        for (TaxonName name: typifiedNames){
-            csvLine = new String[table.getSize()];
-            csvLine[table.getIndex(CdmLightExportTable.NAME_FK)] = getId(state, name);
-            csvLine[table.getIndex(CdmLightExportTable.TYPE_FK)] = getId(state, specimenType);
-            state.getProcessor().put(table, specimenType.getUuid().toString() + "-" + name.getUuid().toString(), csvLine);
+
+        if (typifiedNames.size() > 1){
+            state.getResult().addWarning("Please check the specimen type  "
+                    + cdmBaseStr(specimenType) + " there are more then one typified name.");
         }
+        if (typifiedNames.iterator().hasNext()){
+            TaxonName name = typifiedNames.iterator().next();
+            csvLine[table.getIndex(CdmLightExportTable.TYPIFIED_NAME_FK)] = getId(state, name);
+        }
+        state.getProcessor().put(table, specimenType, csvLine);
 
 
 
