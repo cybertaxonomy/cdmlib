@@ -239,14 +239,6 @@ public interface IDefinedTermDao
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
 
     /**
-     * Returns the number of terms in the vocabularies vocs filteres by the given pattern
-     * @param vocs
-     * @param pattern
-     * @return
-     */
-    public long count(List<TermVocabulary> vocs, String pattern);
-
-    /**
      * Returns all states for all supportedCategoricalEnumeration of this categorical feature
      * @param featureUuid the feature which has to support categorical data
      * @return list of all supported states
