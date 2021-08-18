@@ -13,8 +13,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.Session;
 import org.hibernate.event.spi.MergeEvent;
 import org.hibernate.event.spi.MergeEventListener;
@@ -34,7 +36,7 @@ public class PostMergeEntityListener implements MergeEventListener {
     private static final long serialVersionUID = 1565797119368313987L;
 
     private static Map<Session, Set<CdmBase>> newEntitiesMap = new ConcurrentHashMap<>();
-
+    private static final Logger logger = Logger.getLogger(PostMergeEntityListener.class);
 
     public static void addSession(Session session) {
         newEntitiesMap.put(session, new HashSet<>());
@@ -101,13 +103,17 @@ public class PostMergeEntityListener implements MergeEventListener {
 
                 TermTree<?> tree = (TermTree<?>)entity;
                 tree.removeNullValueFromChildren();
-                for (TermNode<?> node:tree.getRootChildren()){
-                    node.removeNullValueFromChildren();
-                    if (node.getChildNodes() != null){
-                        for (TermNode<?> childNode: node.getChildNodes()){
-                            removeNullFromCollections(childNode);
+                try{
+                    for (TermNode<?> node:tree.getRootChildren()){
+                        node.removeNullValueFromChildren();
+                        if (node.getChildNodes() != null){
+                            for (TermNode<?> childNode: node.getChildNodes()){
+                                removeNullFromCollections(childNode);
+                            }
                         }
                     }
+                } catch (LazyInitializationException e) {
+                    logger.warn("Cannot clean up uninitialized children without a session, skipping.");
                 }
             } else if (TermNode.class.isAssignableFrom(entityClazz)){
                 TermNode<?> node = (TermNode<?>)entity;

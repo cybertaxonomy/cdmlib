@@ -644,27 +644,6 @@ public class DefinedTermDaoImpl
     @Override
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
         Session session = getSession();
-//        Query query = null;
-//        if (pattern != null){
-//            if (vocs != null && !vocs.isEmpty()){
-//                query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs ORDER BY titleCache");
-//                query.setParameterList("vocs", vocs);
-//            }else{
-//                query = session.createQuery("from NamedArea where titleCache like :pattern ORDER BY titleCache");
-//            }
-//            pattern = pattern.replace("*", "%");
-//            pattern = pattern.replace("?", "_");
-//            pattern = pattern + "%";
-//            query.setParameter("pattern", pattern);
-//
-//        } else {
-//            query = session.createQuery("FROM NamedArea WHERE vocabulary IN :vocs ORDER BY titleCache");
-//            query.setParameterList("vocs", vocs);
-//        }
-//        if (limit != null && limit > 0){
-//           query.setMaxResults(limit);
-//        }
-
         if (clazz == null){
             clazz = (Class)type;
         }
@@ -700,8 +679,6 @@ public class DefinedTermDaoImpl
         if (limit == null){
             limit = 1;
         }
-//        int firstItem = (pageNumber - 1) * limit;
-
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
         List<S> results = deduplicateResult(crit.list());
@@ -753,31 +730,6 @@ public class DefinedTermDaoImpl
         return results;
     }
 
-    //FIXME AM: this returns only NamedArea counts though not mentioned in method name, fortunately it is currently not in use
-    @Override
-    public long count(List<TermVocabulary> vocs, String pattern){
-        Session session = getSession();
-        Query query = null;
-        if (pattern != null){
-            if (vocs != null && !vocs.isEmpty()){
-                query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE titleCache LIKE :pattern AND vocabulary IN :vocs");
-                query.setParameterList("vocs", vocs);
-            }else{
-                query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE titleCache LIKE :pattern ");
-            }
-            pattern = pattern.replace("*", "%");
-            pattern = pattern.replace("?", "_");
-            pattern = pattern + "%";
-            query.setParameter("pattern", pattern);
-
-        } else {
-            query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE vocabulary IN :vocs");
-            query.setParameterList("vocs", vocs);
-        }
-
-        Long result = (Long) query.uniqueResult();
-        return result;
-    }
 
     @Override
     public Collection<TermDto> getIncludesAsDto(
