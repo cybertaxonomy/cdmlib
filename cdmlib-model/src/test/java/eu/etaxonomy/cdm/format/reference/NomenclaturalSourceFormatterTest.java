@@ -459,6 +459,16 @@ public class NomenclaturalSourceFormatterTest {
         Reference book = ReferenceFactory.newBook();
         book.setTitleCache("Only titlecache", true);
         Assert.assertEquals("Only titlecache: 36", formatter.format(book, "36"));
+    }
 
+    @Test
+    public void testEmptyWithProtectedTitleCache(){
+        Reference ref = ReferenceFactory.newBook();
+        ref.setProtectedTitleCache(true);
+        String result = formatter.format(ref, null);
+        Assert.assertEquals("", result);
+        ref.setTitleCache("xxx", true);
+        result = formatter.format(ref, null);
+        Assert.assertEquals("xxx", result);
     }
 }
