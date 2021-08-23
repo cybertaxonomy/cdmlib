@@ -114,11 +114,12 @@ public class CdmLightExportResultProcessor {
                             data.add(lineString);
                         }
                     }
-                    if (table.equals(CdmLightExportTable.SIMPLE_FACT) && data.size() == 1){
+                    if (data.size() == 1){
                         String[] csvLine = new String[table.getSize()];
-                        csvLine[table.getIndex(CdmLightExportTable.FACT_ID)] = "<UUID>";
-                        csvLine[table.getIndex(CdmLightExportTable.TAXON_FK)]= state.getRootId() != null? state.getRootId().toString(): "UUID";
-                        csvLine[table.getIndex(CdmLightExportTable.FACT_TEXT)]= "Dummy";
+                        csvLine[0] = "DUMMY1";
+                        data.add(createCsvLine(config, csvLine));
+
+                        csvLine[0] = "DUMMY2";
                         data.add(createCsvLine(config, csvLine));
                     }
                     IOUtils.writeLines(data,
