@@ -298,13 +298,14 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                     reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
 
                     boolean dummyLine = true;
+                    count = 0;
                     while ((line = reader.readLine()) != null) {
                         if (!(line.startsWith("\"DUMMY") || line.startsWith("\"Synonym_ID"))){
                             dummyLine = dummyLine && false;
                         }
-
+                        count++;
                     }
-                    Assert.assertTrue("There should be 0 synomyms", dummyLine);
+                    Assert.assertTrue("There should be 0 synomyms", dummyLine && count == 3);
 //                    Assert.fail("There should not be a synonym table, because the only synonym is not public.");
                 }catch(NullPointerException e){
                     //OK, should be thrown
