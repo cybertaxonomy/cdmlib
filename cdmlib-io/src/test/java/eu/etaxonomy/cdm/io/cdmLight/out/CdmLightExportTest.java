@@ -296,11 +296,15 @@ public class CdmLightExportTest extends CdmTransactionalIntegrationTest{
                     stream = new ByteArrayInputStream(data.get(CdmLightExportTable.SYNONYM.getTableName()));
                     // now there are always all tables also if empty
                     reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
-                    count = 0;
+
+                    boolean dummyLine = true;
                     while ((line = reader.readLine()) != null) {
-                        count ++;
+                        if (!(line.startsWith("\"DUMMY") || line.startsWith("\"Synonym_ID"))){
+                            dummyLine = dummyLine && false;
+                        }
+
                     }
-                    Assert.assertTrue("There should be 0 synomyms", count == 1);
+                    Assert.assertTrue("There should be 0 synomyms", dummyLine);
 //                    Assert.fail("There should not be a synonym table, because the only synonym is not public.");
                 }catch(NullPointerException e){
                     //OK, should be thrown
