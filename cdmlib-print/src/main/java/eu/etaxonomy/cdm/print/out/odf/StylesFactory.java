@@ -1,12 +1,11 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.print.out.odf;
 
 import org.apache.log4j.Logger;
@@ -24,12 +23,11 @@ import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
 /**
  * @author n.hoffmann
  * @since Apr 29, 2010
- * @version 1.0
  */
 public class StylesFactory implements IStyleNames{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StylesFactory.class);
-	
+
 	OdfOfficeStyles officeStyles;
 	OdfDefaultStyle defaultStyle;
 	StyleParagraphPropertiesElement paragraphProperties;
@@ -42,12 +40,12 @@ public class StylesFactory implements IStyleNames{
 		this.officeStyles = outputDocument.getOrCreateDocumentStyles();
 		init();
 	}
-	
+
 	private void init() {
 		createDefaultStyles();
-		
+
 		createHeadings();
-		
+
 	}
 
 	public void createDefaultStyles(){
@@ -56,10 +54,10 @@ public class StylesFactory implements IStyleNames{
 			OdfStyleFamily.Paragraph);
 		setFontSize(defaultStyle, "10pt");
 	}
-	
+
 	private void createHeadings(){
 		OdfStyle style;
-		
+
 		style = officeStyles.newStyle(HEADING_ACCEPTED_TAXON,
 				OdfStyleFamily.Paragraph);
 		style.setStyleDisplayNameAttribute("Accepted Taxon Heading");
@@ -67,7 +65,7 @@ public class StylesFactory implements IStyleNames{
 		style.setProperty(StyleParagraphPropertiesElement.MarginBottom, "0.25cm");
 		setFontWeight(style, "bold");
 		setFontSize(style, "20pt");
-		
+
 		style = officeStyles.newStyle(HEADING_FEATURE,
 				OdfStyleFamily.Paragraph);
 		style.setStyleDisplayNameAttribute("Feature Heading");
@@ -76,7 +74,7 @@ public class StylesFactory implements IStyleNames{
 		setFontWeight(style, "bold");
 		setFontSize(style, "14pt");
 	}
-	
+
 //	@Deprecated // testing
 //	void addOfficeStyles() {
 //		OdfDefaultStyle defaultStyle;
@@ -150,7 +148,7 @@ public class StylesFactory implements IStyleNames{
 //		style.setProperty(OdfStyleParagraphProperties.MarginRight, "1cm");
 //		style.setProperty(OdfStyleParagraphProperties.TextIndent, "0.25cm");
 //	}
-	
+
 
 	private void setFontWeight(OdfStyleBase style, String value) {
 		style.setProperty(StyleTextPropertiesElement.FontWeight, value);
