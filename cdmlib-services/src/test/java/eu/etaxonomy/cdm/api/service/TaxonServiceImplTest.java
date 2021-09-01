@@ -1995,7 +1995,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies.setGenusOrUninomial("Hieracium");
         botSpecies.setSpecificEpithet("asturianum");
         botSpecies.setCombinationAuthorship(Person.NewInstance());
-        botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau");
+        botSpecies.getCombinationAuthorship().setNomenclaturalTitleCache("Pau", true);
         botSpecies.setUuid(SPECIES1_NAME_UUID);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
         childTaxon.setUuid(SPECIES1_UUID);
@@ -2025,7 +2025,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies2.setGenusOrUninomial("Hieracium");
         botSpecies2.setSpecificEpithet("wolffii");
         botSpecies2.setCombinationAuthorship(Person.NewInstance());
-        botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn");
+        botSpecies2.getCombinationAuthorship().setNomenclaturalTitleCache("Zahn", true);
         botSpecies2.setUuid(SPECIES2_NAME_UUID);
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
         childTaxon2.setUuid(SPECIES2_UUID);

@@ -77,13 +77,13 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 		subSpeciesName = TaxonNameFactory.PARSED_BOTANICAL(subSpeciesNameString);
 
 		author = Person.NewInstance();
-		author.setNomenclaturalTitle(authorString);
+		author.setNomenclaturalTitleCache(authorString, true);
 		exAuthor = Person.NewInstance();
-		exAuthor.setNomenclaturalTitle(exAuthorString);
+		exAuthor.setNomenclaturalTitleCache(exAuthorString, true);
 		basAuthor = Person.NewInstance();
-		basAuthor.setNomenclaturalTitle(basAuthorString);
+		basAuthor.setNomenclaturalTitleCache(basAuthorString, true);
 		exBasAuthor = Person.NewInstance();
-		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
+		exBasAuthor.setNomenclaturalTitleCache(exBasAuthorString, true);
 
 		citationRef = refFactory.newBook();
 		// Gard. Dict. ed. 8, no. 1. 1768.

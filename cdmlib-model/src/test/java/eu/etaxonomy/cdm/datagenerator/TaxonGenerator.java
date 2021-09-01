@@ -48,7 +48,7 @@ public class TaxonGenerator {
         botName.setTitleCache("Hieracium L.", true);
         botName.setGenusOrUninomial("Hieracium");
         botName.setCombinationAuthorship(Person.NewInstance());
-        botName.getCombinationAuthorship().setNomenclaturalTitle("L.");
+        botName.getCombinationAuthorship().setNomenclaturalTitleCache("L.", true);
         Taxon genusTaxon = Taxon.NewInstance(botName, sec);
 
         //a name that is the basionym of genusTaxon's name
@@ -64,7 +64,7 @@ public class TaxonGenerator {
         botSpecies.setGenusOrUninomial("Hieracium");
         botSpecies.setSpecificEpithet("asturianum");
         botSpecies.setCombinationAuthorship(Person.NewInstance());
-        botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau");
+        botSpecies.getCombinationAuthorship().setNomenclaturalTitleCache("Pau", true);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
 
         //homotypic synonym of childTaxon1
@@ -82,7 +82,7 @@ public class TaxonGenerator {
         botSpecies2.setGenusOrUninomial("Hieracium");
         botSpecies2.setSpecificEpithet("wolffii");
         botSpecies2.setCombinationAuthorship(Person.NewInstance());
-        botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn");
+        botSpecies2.getCombinationAuthorship().setNomenclaturalTitleCache("Zahn", true);
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
 
         //heterotypic synonym of childTaxon2

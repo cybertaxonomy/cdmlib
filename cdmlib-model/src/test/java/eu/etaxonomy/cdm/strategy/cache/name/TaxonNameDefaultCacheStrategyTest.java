@@ -89,13 +89,13 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         subSpeciesName = TaxonNameFactory.PARSED_BOTANICAL(subSpeciesNameString);
 
         author = Person.NewInstance();
-        author.setNomenclaturalTitle(authorString);
+        author.setNomenclaturalTitleCache(authorString, true);
         exAuthor = Person.NewInstance();
-        exAuthor.setNomenclaturalTitle(exAuthorString);
+        exAuthor.setNomenclaturalTitleCache(exAuthorString, true);
         basAuthor = Person.NewInstance();
-        basAuthor.setNomenclaturalTitle(basAuthorString);
+        basAuthor.setNomenclaturalTitleCache(basAuthorString, true);
         exBasAuthor = Person.NewInstance();
-        exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
+        exBasAuthor.setNomenclaturalTitleCache(exBasAuthorString, true);
 
         citationRef = ReferenceFactory.newGeneric();
         citationRef.setTitleCache(referenceTitle, true);
@@ -412,7 +412,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
 
         //author change
-        author.setNomenclaturalTitle("M.");
+        author.setNomenclaturalTitleCache("M.", true);
         Assert.assertEquals("Expected full title cache has error", "(Basio, A.) M.", subSpeciesName.getAuthorshipCache());
         Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
         Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache());
@@ -460,7 +460,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         subSpeciesName.setAuthorshipCache("Ciard.");
         Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta Ciard., GenericRef", subSpeciesName.getFullTitleCache());
 
-        author.setNomenclaturalTitle("X.");
+        author.setNomenclaturalTitleCache("X.", true);
         subSpeciesName.setProtectedAuthorshipCache(false);
         Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
 

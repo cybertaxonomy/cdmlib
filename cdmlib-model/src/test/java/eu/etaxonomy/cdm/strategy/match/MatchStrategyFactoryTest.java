@@ -161,7 +161,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
                 matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
 
         //differing nom. title.
-        parsedTeam.setNomenclaturalTitle("Wrong");
+        parsedTeam.setNomenclaturalTitleCache("Wrong", true);
         Assert.assertFalse("Differing nom.title. should not match",
                 matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
 
@@ -184,7 +184,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         //nom. title. (2)
         fullTeam = getDefaultFullTeam();
         parsedTeam = getDefaultParsedTeam();
-        fullTeam.setNomenclaturalTitle("Wro.");
+        fullTeam.setNomenclaturalTitleCache("Wro.", true);
         Assert.assertFalse("Differing nom. title should not match",
                 matchStrategy.invoke(parsedTeam, fullTeam).isSuccessful());
 
@@ -336,7 +336,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         //change author
         fullBookSection = getMatchingFullBookSection();
         parsedBookSection = getDefaultParsedBookSection();
-        fullBookSection.getAuthorship().setNomenclaturalTitle("Wrong");
+        fullBookSection.getAuthorship().setNomenclaturalTitleCache("Wrong", true);
         Assert.assertFalse("Differing author in nomencl. title should not match",
                 matchStrategy.invoke(parsedBookSection, fullBookSection).isSuccessful());
 
@@ -440,7 +440,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         //change author
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
-        fullArticle.getAuthorship().setNomenclaturalTitle("Wrong");
+        fullArticle.getAuthorship().setNomenclaturalTitleCache("Wrong", true);
         Assert.assertFalse("Differing author in nomencl. title should not match",
                 matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
 
@@ -541,7 +541,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         //change author
         fullArticle = getMatchingFullArticle();
         parsedArticle = getDefaultParsedArticle();
-        fullArticle.getAuthorship().setNomenclaturalTitle("Wrong");
+        fullArticle.getAuthorship().setNomenclaturalTitleCache("Wrong", true);
         Assert.assertFalse("Differing author in nomencl. title should not match", matchStrategy.invoke(parsedArticle, fullArticle).isSuccessful());
 
         //change author

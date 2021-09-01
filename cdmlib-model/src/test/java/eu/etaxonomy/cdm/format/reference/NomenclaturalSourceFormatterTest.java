@@ -68,9 +68,9 @@ public class NomenclaturalSourceFormatterTest {
         articleTeam1 = Team.NewInstance();
         articleTeam2 = Team.NewInstance();
         articleTeam1.setTitleCache("Team1", true);
-        articleTeam1.setNomenclaturalTitle("T.");
+        articleTeam1.setNomenclaturalTitleCache("T.", true);
         articleTeam2.setTitleCache("Team2", true);
-        articleTeam2.setNomenclaturalTitle("TT.");
+        articleTeam2.setNomenclaturalTitleCache("TT.", true);
 
         //book / section
         book1 = ReferenceFactory.newBook();
