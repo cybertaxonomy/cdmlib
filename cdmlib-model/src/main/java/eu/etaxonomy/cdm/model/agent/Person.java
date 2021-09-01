@@ -355,8 +355,11 @@ public class Person extends TeamOrPersonBase<Person>{
         this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
     @Override
-    public void setNomenclaturalTitleCache(String nomenclaturalTitle) {
-        this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
+    public void setNomenclaturalTitleCache(String nomenclaturalTitleCache, boolean protectCache){
+        this.nomenclaturalTitleCache = nomenclaturalTitleCache;
+        if (protectCache){
+            this.setNomenclaturalTitle(nomenclaturalTitleCache);
+        }
     }
 
     /**

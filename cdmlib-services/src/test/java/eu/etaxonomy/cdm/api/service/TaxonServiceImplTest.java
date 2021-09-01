@@ -1976,7 +1976,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botName.setTitleCache("Hieracium L.", true);
         botName.setGenusOrUninomial("Hieracium");
         botName.setCombinationAuthorship(Person.NewInstance());
-        botName.getCombinationAuthorship().setNomenclaturalTitle("L.");
+        botName.getCombinationAuthorship().setNomenclaturalTitleCache("L.", true);
         botName.setUuid(GENUS_NAME_UUID);
         Taxon genusTaxon = Taxon.NewInstance(botName, sec);
         genusTaxon.setUuid(GENUS_UUID);

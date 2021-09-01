@@ -73,6 +73,21 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         }
         return nomenclaturalTitleCache;
     }
+    /**
+     * Setter method for nomenclaturalTitleCache to be compliant with JavaBeans specification.
+     * As a cache is usually a computed field the value set will usually not be persisted
+     * but recomputed there this method should not be used for setting the cache field
+     * with a few exceptions.
+     * @deprecated Only exists for being compliant with JavaBeans, for setting the nomenclaturalTitleCache
+     *             persistently use {@link #setNomenclaturalTitleCache(String, boolean)} instead.
+     */
+    @Deprecated
+    public void setNomenclaturalTitleCache(String nomenclaturalTitleCache) {
+        this.nomenclaturalTitleCache = getTruncatedCache(nomenclaturalTitleCache);
+    }
+    @Override
+    public abstract void setNomenclaturalTitleCache(String nomenclaturalTitle, boolean protectCache);
+
 
     //#4311
     public String getCollectorTitleCache() {
