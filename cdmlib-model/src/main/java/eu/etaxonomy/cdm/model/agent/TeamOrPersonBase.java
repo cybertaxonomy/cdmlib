@@ -21,8 +21,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
-
 
 /**
  * The abstract class for such {@link AgentBase agents} ({@link Person persons} or {@link Team teams}) who might also be used
@@ -80,6 +80,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
      * with a few exceptions.
      * @deprecated Only exists for being compliant with JavaBeans, for setting the nomenclaturalTitleCache
      *             persistently use {@link #setNomenclaturalTitleCache(String, boolean)} instead.
+     * @see IdentifiableEntity#setTitleCache(String)
      */
     @Deprecated
     public void setNomenclaturalTitleCache(String nomenclaturalTitleCache) {

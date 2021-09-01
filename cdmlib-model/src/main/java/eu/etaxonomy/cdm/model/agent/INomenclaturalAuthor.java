@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.agent;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 
 /**
@@ -33,6 +34,7 @@ public interface INomenclaturalAuthor {
      * to be called with <code>protectCache = true</code>.
      *
      * @see TeamOrPersonBase#getNomenclaturalTitleCache()
+     * @see IdentifiableEntity#setTitleCache(String, boolean)
      */
     public void setNomenclaturalTitleCache(String nomenclaturalTitle, boolean protectCache);
 }
