@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 /**
  * @author a.mueller
  * @since 25.05.2016
- *
  */
 public class TitleWithoutYearAndAuthorHelper {
     private static final Logger logger = Logger.getLogger(TitleWithoutYearAndAuthorHelper.class);

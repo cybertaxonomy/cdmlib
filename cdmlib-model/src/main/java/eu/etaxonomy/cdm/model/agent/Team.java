@@ -276,7 +276,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * Removes one person from the list of members of <i>this</i> team.
 	 *
 	 * @param  person  the person who should be deleted from <i>this</i> team
-	 * @see            #getTeamMembers()
+	 * @see    #getTeamMembers()
 	 */
 	public void removeTeamMember(Person person){
 		boolean wasMember = getTeamMembers().remove(person);
@@ -340,7 +340,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to <i>this</i> team
 	 * and a protection flag status to this string.
 	 *
-	 * @see  {@link #getNomenclaturalTitleCache()}
+	 * @see  #getNomenclaturalTitleCache()
 	 */
 	public void setNomenclaturalTitleCache(String nomenclaturalTitleCache, boolean protectedNomenclaturalTitleCache) {
 		firePropertyChange("nomenclaturalTitleCache", this.nomenclaturalTitleCache, nomenclaturalTitleCache);

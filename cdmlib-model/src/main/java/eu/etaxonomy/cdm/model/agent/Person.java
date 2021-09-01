@@ -347,6 +347,9 @@ public class Person extends TeamOrPersonBase<Person>{
     public String getNomenclaturalTitle() {
         return nomenclaturalTitle;
     }
+    /**
+     * Sets the nomenclatural title.
+     */
     @Override
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
         this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
@@ -358,8 +361,8 @@ public class Person extends TeamOrPersonBase<Person>{
 
     /**
      * Returns the initials of this person as used in bibliographic
-     * references. Usually these are the first letters of each givenname
-     * followed by "." per givenname. For East Asian names it may
+     * references. Usually these are the first letters of each given name
+     * followed by "." per given name. For East Asian names it may
      * be the first 2 letters. Also dashes are kept.
      * @return the initials
      */

@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.agent;
 
 /**
@@ -18,23 +17,21 @@ package eu.etaxonomy.cdm.model.agent;
 public interface INomenclaturalAuthor {
 
 	/**
-	 * @see {@link TeamOrPersonBase#getNomenclaturalTitleCache()}
-	 *
+	 * @see TeamOrPersonBase#getNomenclaturalTitleCache()
 	 */
     public String getNomenclaturalTitleCache();
-
 
 	/**
 	 * @see {@link #getNomenclaturalTitleCache()}
 	 * @deprecated to be replaced by {@link #getNomenclaturalTitleCache()}
 	 */
-    @Deprecated
+	@Deprecated
 	public void setNomenclaturalTitle(String nomenclaturalTitle);
 
     /**
      * fixes the missing setter method that corresponds to {@link #getNomenclaturalTitleCache()} see #9729
      *
-     * @see {@link TeamOrPersonBase#getNomenclaturalTitleCache()}
+     * @see TeamOrPersonBase#getNomenclaturalTitleCache()
      */
     public void setNomenclaturalTitleCache(String nomenclaturalTitle);
 

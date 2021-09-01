@@ -227,7 +227,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Deprecated
     @Override
     public void setTitleCache(String titleCache){
-    	//TODO shouldn't we call setTitleCache(String, boolean),but is this conformant with Java Bean Specification?
+    	//TODO shouldn't we call setTitleCache(String, boolean), but is this conformant with JavaBean specification?
     	this.titleCache = getTruncatedCache(titleCache);
     }
 

@@ -29,7 +29,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UTF8;
-import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -222,7 +221,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
         assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
         assertEquals("D'M\u00FCller", nameBasionymAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
-        INomenclaturalAuthor basionymTeam = nameBasionymAuthor.getBasionymAuthorship();
+        TeamOrPersonBase<?> basionymTeam = nameBasionymAuthor.getBasionymAuthorship();
         assertEquals("Ciardelli", basionymTeam.getNomenclaturalTitleCache());
 
         INonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
@@ -230,9 +229,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
         assertEquals("D'M\u00FCller", nameBasionymExAuthor.getExCombinationAuthorship().getNomenclaturalTitleCache());
         assertEquals("de Greuther", nameBasionymExAuthor.getCombinationAuthorship().getNomenclaturalTitleCache());
-        INomenclaturalAuthor basionymTeam2 = nameBasionymExAuthor.getExBasionymAuthorship();
+        TeamOrPersonBase<?> basionymTeam2 = nameBasionymExAuthor.getExBasionymAuthorship();
         assertEquals("Ciardelli", basionymTeam2.getNomenclaturalTitleCache());
-        INomenclaturalAuthor exBasionymTeam2 = nameBasionymExAuthor.getBasionymAuthorship();
+        TeamOrPersonBase<?> exBasionymTeam2 = nameBasionymExAuthor.getBasionymAuthorship();
         assertEquals("D\u00F6ring", exBasionymTeam2.getNomenclaturalTitleCache());
 
         IBotanicalName nameBasionymExAuthor2 = (IBotanicalName)parser.parseFullName("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", null, Rank.SPECIES());
@@ -240,9 +239,9 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals("filifera", nameBasionymExAuthor2.getSpecificEpithet());
         assertEquals("H.Wendl.", nameBasionymExAuthor2.getExCombinationAuthorship().getNomenclaturalTitleCache());
         assertEquals("de Bary", nameBasionymExAuthor2.getCombinationAuthorship().getNomenclaturalTitleCache());
-        INomenclaturalAuthor basionymTeam3 = nameBasionymExAuthor2.getBasionymAuthorship();
+        TeamOrPersonBase<?> basionymTeam3 = nameBasionymExAuthor2.getBasionymAuthorship();
         assertEquals("Andre", basionymTeam3.getNomenclaturalTitleCache());
-        INomenclaturalAuthor exBasionymTeam3 = nameBasionymExAuthor2.getExBasionymAuthorship();
+        TeamOrPersonBase<?> exBasionymTeam3 = nameBasionymExAuthor2.getExBasionymAuthorship();
         assertEquals("Linden", exBasionymTeam3.getNomenclaturalTitleCache());
         String title = nameBasionymExAuthor2.getTitleCache();
         assertEquals("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", title);

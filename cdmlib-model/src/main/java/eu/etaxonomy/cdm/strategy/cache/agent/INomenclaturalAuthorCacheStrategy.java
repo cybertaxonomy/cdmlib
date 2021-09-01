@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
-
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -39,7 +38,4 @@ public interface INomenclaturalAuthorCacheStrategy<T extends TeamOrPersonBase>
     public String getFamilyTitle(T agent);
 
     public String getCollectorTitleCache(T agent);
-
-
-
 }

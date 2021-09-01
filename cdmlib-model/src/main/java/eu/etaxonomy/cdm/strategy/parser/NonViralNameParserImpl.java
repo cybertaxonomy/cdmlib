@@ -1514,7 +1514,6 @@ public class NonViralNameParserImpl
 		}else{
 			return parsedTeam(authorString);
 		}
-
 	}
 
 	/**
