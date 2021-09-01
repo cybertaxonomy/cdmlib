@@ -350,7 +350,6 @@ public class Person extends TeamOrPersonBase<Person>{
     /**
      * Sets the nomenclatural title.
      */
-    @Override
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
         this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }

@@ -318,12 +318,6 @@ public class Team extends TeamOrPersonBase<Team> {
 		return nomenclaturalTitleCache;
 	}
 
-	@Override
-	@Deprecated
-	public void setNomenclaturalTitle(String nomenclaturalTitle) {
-		this.setNomenclaturalTitleCache(nomenclaturalTitle, PROTECTED);
-	}
-
 	/**
 	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to <i>this</i> team
 	 * and a protection flag status to this string.

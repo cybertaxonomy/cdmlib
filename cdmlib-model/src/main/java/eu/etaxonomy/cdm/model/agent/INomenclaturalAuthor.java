@@ -27,19 +27,6 @@ public interface INomenclaturalAuthor {
     public String getNomenclaturalTitleCache();
 
 	/**
-	 * Shortcut method to set the nomenclaturalTitleCache, still used by {@link Person},
-	 * formerly used by all INomenclaturalAuthor and therefore still in this interface.
-	 * Should be replaced by {@link #setNomenclaturalTitleCache(String, boolean)} in
-	 * all cases where the object is not explicitly a {@link Person}.
-	 *
-	 * @deprecated Use {@link #setNomenclaturalTitleCache(String, boolean)} instead in context.<BR>
-	 *             See {@link https://dev.e-taxonomy.eu/redmine/issues/9664}
-	 * @see #getNomenclaturalTitleCache()
-	 */
-	@Deprecated
-	public void setNomenclaturalTitle(String nomenclaturalTitle);
-
-	/**
      * Sets the nomenclatural titlecache and the protectedNomenclaturalTitle flag.
      * If protected is set to <code>false</code> the nomenclaturalTitleCache may be
      * recomputed so this should be handled with care. Usually this method is expected
