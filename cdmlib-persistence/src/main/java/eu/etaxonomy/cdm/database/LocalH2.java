@@ -123,7 +123,6 @@ public class LocalH2 extends BasicDataSource {
 		this.stopH2Server();
 	}
 
-
 	//checks if h2-server is started, if not it will be started	(taken over from hsqldb, maybe not necessary for H2
 	private void startH2Server(){
 		try {
@@ -176,16 +175,10 @@ public class LocalH2 extends BasicDataSource {
 		return  path + subPath;
 	}
 
-	/**
-	 * @return the dbPath
-	 */
 	public String getDatabasePath() {
 		return databasePath;
 	}
 
-	/**
-	 * @param dbPath the dbPath to set
-	 */
 	public void setDatabasePath(String databasePath) {
 		if (databasePath.endsWith(sep)){
 			databasePath = databasePath + "localCdm";
@@ -193,16 +186,10 @@ public class LocalH2 extends BasicDataSource {
 		this.databasePath = databasePath;
 	}
 
-	/**
-	 * @return the isStartServer
-	 */
 	public boolean isStartServer() {
 		return isStartServer;
 	}
 
-	/**
-	 * @param isStartServer the isStartServer to set
-	 */
 	public void setStartServer(boolean isStartServer) {
 		this.isStartServer = isStartServer;
 	}
