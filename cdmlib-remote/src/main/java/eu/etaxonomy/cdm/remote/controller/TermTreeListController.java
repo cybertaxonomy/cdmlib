@@ -34,7 +34,7 @@ import io.swagger.annotations.Api;
 
 @Controller
 @Api("termTree")
-@RequestMapping(value = {"/featureTree", "/termTree"})
+@RequestMapping(value = {"/termTree"})
 public class TermTreeListController extends AbstractIdentifiableListController<TermTree, ITermTreeService> {
 
     @Override
@@ -54,11 +54,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
             HttpServletRequest request,
             HttpServletResponse response) throws IOException
             {
-        String requestPathAndQuery = requestPathAndQuery(request);
-        if(requestPathAndQuery.contains("/featureTree")){
-            logger.info(" Delegating usage of deprecated /featureTree service to /termTree");
-            return doPageByTermType(TermType.Feature, pageIndex, pageSize, orderBy, request, response);
-        }
+
         logger.info("doPage() " + requestPathAndQuery(request));
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex).normalizeAndValidate(response);
 
@@ -137,11 +133,7 @@ public class TermTreeListController extends AbstractIdentifiableListController<T
             )
              throws IOException {
 
-        String requestPathAndQuery = requestPathAndQuery(request);
-        if(requestPathAndQuery.contains("/featureTree")){
-            logger.info(" Delegating usage of deprecated /featureTree service to /termTree");
-            return doFindByTitleByTermType(query, TermType.Feature, pageIndex, pageSize, matchMode, request, response);
-        }
+
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageIndex);

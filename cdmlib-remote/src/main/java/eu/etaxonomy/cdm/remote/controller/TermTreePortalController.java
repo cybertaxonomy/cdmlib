@@ -33,7 +33,7 @@ import io.swagger.annotations.Api;
  */
 @Controller
 @Api("portal_termTree")
-@RequestMapping(value = {"/portal/featureTree/{uuid}", "/portal/termTree/{uuid}"})
+@RequestMapping(value = {"/portal/termTree/{uuid}"})
 public class TermTreePortalController extends TermTreeController {
 
     public static final Logger logger = Logger.getLogger(TermTreePortalController.class);
