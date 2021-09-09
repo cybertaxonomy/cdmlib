@@ -68,8 +68,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.IOriginalSource;
 import eu.etaxonomy.cdm.model.reference.ISourceable;
+import eu.etaxonomy.cdm.model.reference.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -977,6 +977,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
         return voc;
     }
 
+    public OriginalSourceBase addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation, String originalInformation)  {
+        OriginalSourceBase source = addOriginalSource(cdmBase, idAttributeValue, namespace, citation);
+        if (source != null && isNotBlank(originalInformation)){
+            source.setOriginalNameString(originalInformation);
+        }
+        return source;
+    }
+
 	/**
 	 * Adds an orginal source to a sourceable objects (implemented for Identifiable entity and description element.
 	 * If cdmBase is not sourceable nothing happens.
@@ -989,9 +997,9 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param citation
 	 * @throws SQLException
 	 */
-	public void addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
+	public OriginalSourceBase addOriginalSource(ICdmBase cdmBase, Object idAttributeValue, String namespace, Reference citation)  {
 		if (cdmBase instanceof ISourceable ){
-			IOriginalSource source;
+			OriginalSourceBase source;
 			ISourceable sourceable = (ISourceable<?>)cdmBase;
 			Object id = idAttributeValue;
 			String strId = String.valueOf(id);
@@ -1003,14 +1011,16 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				source = DescriptionElementSource.NewInstance(type, strId, namespace, citation, microCitation);
 			}else{
 				logger.warn("ISourceable not beeing identifiable entities or description element base are not yet supported. CdmBase is of type " + cdmBase.getClass().getName() + ". Original source not added.");
-				return;
+				return null;
 			}
 			sourceable.addSource(source);
+			return source;
 		}else if (cdmBase != null){
 			logger.warn("Sourced object does not implement ISourceable: " + cdmBase.getClass() + "," + cdmBase.getUuid());
 		}else{
 			logger.warn("Sourced object is null");
 		}
+		return null;
 	}
 
 	/**
