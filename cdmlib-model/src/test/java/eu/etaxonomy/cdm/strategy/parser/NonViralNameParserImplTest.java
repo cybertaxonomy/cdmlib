@@ -2971,6 +2971,16 @@ public class NonViralNameParserImplTest extends TermTestBase {
     }
 
     @Test
+    public final void testHort(){
+        String nameStr = "Epidendrum ciliare var. minor hort. ex Stein";
+        TaxonName name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        Assert.assertEquals("Epidendrum ciliare var. minor", name.getNameCache());
+        Assert.assertEquals("hort.", name.getExCombinationAuthorship().getNomenclaturalTitleCache());
+        Assert.assertEquals("Stein", name.getCombinationAuthorship().getNomenclaturalTitleCache());
+    }
+
+    @Test
     @Ignore
     public final void openIssues(){
         //#6100  jun.

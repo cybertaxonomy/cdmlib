@@ -57,7 +57,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
 
     //Words used in an epithet/name part for a TaxonName
-    protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\\-]+";   //a-z + diaeresis for ieo
+    protected static String nonCapitalEpiWord = "[a-z\u00EF\u00EB\u00F6\u00FC\\-]+";   //a-z + diaeresis for ieou
     protected static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
 
    //years
@@ -103,7 +103,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String author = "((" + authorPart + "(" + fWs + "|-)" + ")+" + "(f(il)?\\.|secundus|jun\\.|ter|bis)?|Man in "+qm+"t Veld|Sant"+qm+"Anna)" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
     protected static String notFinalTeamSplitter = "(?:" + fWs + "," + fWs + "|" + finalTeamSplitter + ")";
-    protected static String authorTeam = fWs + "((?>" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)" +  fWs;
+    protected static String authorTeam = fWs + "(((?>" + author + notFinalTeamSplitter + ")*" + author + finalTeamSplitter + ")?(?:"  + author + "|al\\.)|hort\\.)" +  fWs;
     protected static String exString = "(ex\\.?)";
     protected static String authorAndExTeam = "(" + authorTeam + oWs + exString + oWs + ")?" + authorTeam;
     protected static String basStart = "\\(";
