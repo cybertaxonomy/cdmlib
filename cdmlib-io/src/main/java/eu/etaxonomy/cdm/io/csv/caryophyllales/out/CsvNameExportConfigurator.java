@@ -67,10 +67,10 @@ public class CsvNameExportConfigurator extends XmlExportConfiguratorBase<CsvName
 	}
 
 	public boolean isHasHeaderLines() {
-		return  csvIOConfig.isHasHeaderLines();
+		return  csvIOConfig.isIncludeHeaderLines();
 	}
 	public void setHasHeaderLines(boolean hasHeaderLines) {
-		this.csvIOConfig.setHasHeaderLines(hasHeaderLines);
+		this.csvIOConfig.setIncludeHeaderLines(hasHeaderLines);
 	}
 
 	public String getFieldsTerminatedBy() {

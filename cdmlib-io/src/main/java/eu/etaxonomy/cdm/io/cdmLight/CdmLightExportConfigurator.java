@@ -42,7 +42,7 @@ public class CdmLightExportConfigurator
     private boolean isFilterIntextReferences = true;
     private boolean isCreateCondensedDistributionString = true;
     private CondensedDistributionConfiguration condensedDistributionConfiguration = CondensedDistributionConfiguration.NewDefaultInstance();
-    private boolean isFilterImportSources = true;
+    private boolean isExcludeImportSources = true;
     private boolean isShowAllNameRelationsInHomotypicGroup = false;
     /**
      * @return the isShowAllNameRelationsInHomotypicGroup
@@ -146,11 +146,11 @@ public class CdmLightExportConfigurator
         this.csvIOConfig.setFieldsEnclosedBy(fieldsEnclosedBy);
     }
 
-    public boolean isHasHeaderLines() {
-        return  csvIOConfig.isHasHeaderLines();
+    public boolean isIncludeHeaderLines() {
+        return  csvIOConfig.isIncludeHeaderLines();
     }
-    public void setHasHeaderLines(boolean hasHeaderLines) {
-        this.csvIOConfig.setHasHeaderLines(hasHeaderLines);
+    public void setIncludeHeaderLines(boolean hasHeaderLines) {
+        this.csvIOConfig.setIncludeHeaderLines(hasHeaderLines);
     }
 
     public String getFieldsTerminatedBy() {
@@ -276,11 +276,11 @@ public class CdmLightExportConfigurator
         this.comparator = comparator;
     }
 
-    public boolean isFilterImportSources() {
-        return isFilterImportSources;
+    public boolean isExcludeImportSources() {
+        return isExcludeImportSources;
     }
-    public void setFilterImportSources(boolean isFilterImportSources) {
-        this.isFilterImportSources = isFilterImportSources;
+    public void setExcludeImportSources(boolean isFilterImportSources) {
+        this.isExcludeImportSources = isFilterImportSources;
     }
 
     public boolean isAddHTML() {

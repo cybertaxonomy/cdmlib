@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -754,7 +755,7 @@ public class CdmLightClassificationExport
 
             for (DescriptionElementSource source : sources) {
                 if (!(source.getType().equals(OriginalSourceType.Import)
-                        && state.getConfig().isFilterImportSources())) {
+                        && state.getConfig().isExcludeImportSources())) {
                     String[] csvLine = new String[table.getSize()];
                     Reference ref = source.getCitation();
                     if ((ref == null) && (source.getNameUsedInSource() == null)) {
@@ -1561,36 +1562,63 @@ public class CdmLightClassificationExport
                 TaxonName name = (TaxonName)cdmBase;
 
                 try{
-                    Set<String> IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
-                    Set<String> tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
-                    Set<String> WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
-                    if (!IPNIidentifiers.isEmpty()) {
+                    List<Identifier> identifiers = name.getIdentifiers();
+
+                    //first check which kind of identifiers are available and then sort and create table entries
+                    Map<DefinedTerm, Set<Identifier>> identifierTypes = new HashMap<>();
+                    for (Identifier identifier: identifiers){
+                        DefinedTerm type = identifier.getType();
+                        if (identifierTypes.containsKey(type)){
+                            identifierTypes.get(type).add(identifier);
+                        }else{
+                            Set<Identifier> tempList = new HashSet<>();
+                            tempList.add(identifier);
+                            identifierTypes.put(type, tempList);
+                        }
+                    }
+
+                    for (DefinedTerm type:identifierTypes.keySet()){
+                        Set<Identifier> identifiersByType = identifierTypes.get(type);
                         csvLine = new String[table.getSize()];
                         csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
                         csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
+                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = type.getLabel();
                         csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                                IPNIidentifiers);
-                        state.getProcessor().put(table, name.getUuid() + ", " + IPNI_NAME_IDENTIFIER, csvLine);
+                                identifiersByType);
+                        state.getProcessor().put(table, name.getUuid() + ", " + type.getLabel(), csvLine);
                     }
-                    if (!tropicosIdentifiers.isEmpty()) {
-                        csvLine = new String[table.getSize()];
-                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
-                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = name.getUuid() + ", " + IPNI_NAME_IDENTIFIER;
-                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                                tropicosIdentifiers);
-                        state.getProcessor().put(table, name.getUuid() + ", " + IPNI_NAME_IDENTIFIER, csvLine);
-                    }
-                    if (!WFOIdentifiers.isEmpty()) {
-                        csvLine = new String[table.getSize()];
-                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
-                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
-                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
-                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
-                                WFOIdentifiers);
-                        state.getProcessor().put(table, name.getUuid() + ", " + WFO_NAME_IDENTIFIER, csvLine);
-                    }
+
+
+//                    Set<String> IPNIidentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_IPNI());
+//                    Set<String> tropicosIdentifiers = name.getIdentifiers(DefinedTerm.IDENTIFIER_NAME_TROPICOS());
+//                    Set<String> WFOIdentifiers = name.getIdentifiers(DefinedTerm.uuidWfoNameIdentifier);
+//                    if (!IPNIidentifiers.isEmpty()) {
+//                        csvLine = new String[table.getSize()];
+//                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+//                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+//                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = IPNI_NAME_IDENTIFIER;
+//                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+//                                IPNIidentifiers);
+//                        state.getProcessor().put(table, name.getUuid() + ", " + IPNI_NAME_IDENTIFIER, csvLine);
+//                    }
+//                    if (!tropicosIdentifiers.isEmpty()) {
+//                        csvLine = new String[table.getSize()];
+//                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+//                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+//                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = TROPICOS_NAME_IDENTIFIER;
+//                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+//                                tropicosIdentifiers);
+//                        state.getProcessor().put(table, name.getUuid() + ", " + IPNI_NAME_IDENTIFIER, csvLine);
+//                    }
+//                    if (!WFOIdentifiers.isEmpty()) {
+//                        csvLine = new String[table.getSize()];
+//                        csvLine[table.getIndex(CdmLightExportTable.FK)] = getId(state, name);
+//                        csvLine[table.getIndex(CdmLightExportTable.REF_TABLE)] = "ScientificName";
+//                        csvLine[table.getIndex(CdmLightExportTable.IDENTIFIER_TYPE)] = WFO_NAME_IDENTIFIER;
+//                        csvLine[table.getIndex(CdmLightExportTable.EXTERNAL_NAME_IDENTIFIER)] = extractIdentifier(
+//                                WFOIdentifiers);
+//                        state.getProcessor().put(table, name.getUuid() + ", " + WFO_NAME_IDENTIFIER, csvLine);
+//                    }
                 }catch(Exception e){
                     state.getResult().addWarning("Please check the identifiers for "
                             + cdmBaseStr(cdmBase) + " maybe there is an empty identifier");
@@ -1663,14 +1691,14 @@ public class CdmLightClassificationExport
         }
     }
 
-    private String extractIdentifier(Set<String> identifierSet) {
+    private String extractIdentifier(Set<Identifier> identifierSet) {
 
         String identifierString = "";
-        for (String identifier : identifierSet) {
+        for (Identifier identifier : identifierSet) {
             if (!StringUtils.isBlank(identifierString)) {
                 identifierString += ", ";
             }
-            identifierString += identifier;
+            identifierString += identifier.getIdentifier();
         }
         return identifierString;
     }
@@ -2516,8 +2544,8 @@ public class CdmLightClassificationExport
                         }
                     }
                 } else {
-                    state.getResult().addError("The specimen with uuid " + specimen.getUuid()
-                            + " is not an DerivedUnit. Could not be exported.");
+                    state.getResult().addWarning("The specimen with uuid " + specimen.getUuid()
+                            + " is not an DerivedUnit.");
                 }
             }
 

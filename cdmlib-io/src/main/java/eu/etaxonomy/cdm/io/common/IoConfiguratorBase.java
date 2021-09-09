@@ -110,7 +110,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 
 	@Override
 	public void authenticateAsDefaultAdmin() {
-		setAuthentication(Configuration.adminLogin, Configuration.adminPassword);
+		setAuthenticationToken(new UsernamePasswordAuthenticationToken(Configuration.adminLogin, Configuration.adminPassword));
 	}
 
     @Override
