@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.name;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -134,5 +135,18 @@ public class TypeDesignationWorkingSet
         } else {
             return super.toString();
         }
+    }
+
+    /**
+     * Uses the <code>comparator</code> to find the highest {@link TypeDesignationStatusBase} term and returns that.
+     */
+    public TypeDesignationStatusBase<?> highestTypeStatus(Comparator<TypeDesignationStatusBase<?>> comparator) {
+        TypeDesignationStatusBase<?> highestTypeStatus = null;
+        for(TypeDesignationStatusBase<?> status : keySet()) {
+            if(comparator.compare(status, highestTypeStatus) < 0){
+                highestTypeStatus = status;
+            }
+        }
+        return highestTypeStatus;
     }
 }
