@@ -329,7 +329,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern genusAutonymPattern = Pattern.compile(pStart + genusAutonym + fWs + end);
     protected static Pattern hybridFormulaPattern = Pattern.compile(pStart + hybridFullName + fWs + end);
 
-
     protected static Pattern botanicBasionymPattern = Pattern.compile(botanicBasionymAuthor);
     protected static Pattern zooBasionymPattern = Pattern.compile(zooBasionymAuthor);
     protected static Pattern basionymPattern = Pattern.compile(basionymAuthor);
@@ -347,6 +346,4 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
 
     protected static Pattern spNovPattern = Pattern.compile(spNov);
-
-
 }

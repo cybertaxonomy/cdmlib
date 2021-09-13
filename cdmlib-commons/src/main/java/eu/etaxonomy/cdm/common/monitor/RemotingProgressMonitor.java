@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author cmathew
  * @since 14 Oct 2015
@@ -28,7 +27,6 @@ public class RemotingProgressMonitor
     private boolean serviceDone;
 
     public RemotingProgressMonitor() {
-
     }
 
     @Override

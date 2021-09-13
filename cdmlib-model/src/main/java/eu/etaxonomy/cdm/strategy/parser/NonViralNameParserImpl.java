@@ -1151,7 +1151,7 @@ public class NonViralNameParserImpl
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.RankNotSupported);
 			nameToBeFilled.setTitleCache(fullNameString, true);
-			// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+			// FIXME Quick fix, otherwise search would not deliver results for unparsable names
 			nameToBeFilled.setNameCache(fullNameString,true);
 			// END
 			logger.info("unknown rank (" + (rank == null? "null":rank) + ") or abbreviation in string " +  fullNameString);
@@ -1539,11 +1539,6 @@ public class NonViralNameParserImpl
 		return result;
 	}
 
-
-/**
-     * @param author
-     * @return
-     */
     private String normalizeNomenclaturalPersonString(String author) {
         if (removeSpaceAfterDot){
             author = author.replaceAll("\\.\\s", ".");
