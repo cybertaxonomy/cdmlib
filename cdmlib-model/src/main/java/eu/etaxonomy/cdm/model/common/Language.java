@@ -564,7 +564,7 @@ public class Language extends DefinedTermBase<Language> {
     public static final UUID uuidLangVlaams = UUID.fromString("101e0f83-611c-4cae-bb11-355e6e90b426");    //vls
 
 
-    public static final List<UUID> getCdmVocabularyUuids(){
+    public static final List<UUID> cdmVocabularyUuids(){
         return Arrays.asList(new UUID[]{uuidLanguageVocabulary});
     }
 
