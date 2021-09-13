@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -562,6 +563,10 @@ public class Language extends DefinedTermBase<Language> {
     public static final UUID uuidLangKhanty = UUID.fromString("c73f0654-0d9b-4d60-9b2a-ac23cd19efef");    //kca
     public static final UUID uuidLangVlaams = UUID.fromString("101e0f83-611c-4cae-bb11-355e6e90b426");    //vls
 
+
+    public static final List<UUID> getCdmVocabularyUuids(){
+        return Arrays.asList(new UUID[]{uuidLanguageVocabulary});
+    }
 
     protected static Map<UUID, Language> termMap = null;
 
