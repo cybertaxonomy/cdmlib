@@ -29,8 +29,6 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.IBotanicalName;
-import eu.etaxonomy.cdm.model.name.ICultivarPlantName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -895,7 +893,7 @@ public class NonViralNameParserImpl
 		String[] epi = pattern.split(fullNameString);
 		try {
 	    	//cultivars //TODO 2 implement cultivars
-		    if ( fullNameString.matches(anyCultivar) ){ //funktioniert noch nicht, da es z.B. auch Namen gibt, wie 't Hart
+		    if ( anyCultivarPattern.matcher(fullNameString).matches() ){
 		    	parseCultivar(fullNameString, (TaxonName)nameToBeFilled);
 		    }
 
@@ -1534,86 +1532,30 @@ public class NonViralNameParserImpl
 
     //	// Parsing of the given full name that has been identified as a cultivar already somwhere else.
 //	// The ... cv. ... syntax is not covered here as it is not according the rules for naming cultivars.
-	public IBotanicalName parseCultivar(String fullNameStr, TaxonName nameToBeFilled){
-		ICultivarPlantName result = null;
+	public void parseCultivar(String fullNameStr, TaxonName nameToBeFilled){
 
-		Matcher cultivarMatcher = cultivarPattern.matcher(fullNameStr);
-		if (cultivarMatcher.matches()){
-		    String scientificName = cultivarMatcher.group(1);
+	    Matcher anyCultivarMatcher = anyCultivarPattern.matcher(fullNameStr);
+
+		if (anyCultivarMatcher.matches()){
+		    String scientificName = anyCultivarMatcher.group(1);
 		    parseSimpleName(nameToBeFilled, scientificName, null, false);
-            String cultivarName = cultivarMatcher.group("cultivar");
-            cultivarName = cultivarName.substring(1, cultivarName.length()-1);
-            nameToBeFilled.setCultivarName(cultivarName);
-            nameToBeFilled.setRank(Rank.CULTIVAR());
-		}else {
-	        Matcher groupMatcher = cultivarGroupPattern.matcher(fullNameStr);
+		    String cultivarName = anyCultivarMatcher.group("cultivar");
+		    String groupName = anyCultivarMatcher.group("cultivarGroup");
+		    String grexName = anyCultivarMatcher.group("cultivarGrex");
 
-		    if (groupMatcher.matches()){
-		        String scientificName = groupMatcher.group(1);
-		        parseSimpleName(nameToBeFilled, scientificName, null, false);
-		        String groupName = groupMatcher.group("cultivarGroup");
-		        nameToBeFilled.setCultivarName(groupName);  //TODO set to group field when it exists
-		        nameToBeFilled.setRank(Rank.CULTIVARGROUP());
-		    }
-        }
-
-
-//		    /* ---------------------------------------------------------------------------------
-//		     * cultivar
-//		     * ---------------------------------------------------------------------------------*/
-//			if (fullName.indexOf(" '") != 0){
-//				//TODO location of 'xx' is probably not arbitrary
-//				Matcher cultivarMatcher = cultivarPattern.matcher(fullName);
-//				if (cultivarMatcher.find()){
-//					String namePart = fullName.replaceFirst(cultivar, "");
-//
-//					String cultivarPart = cultivarMatcher.group(0).replace("'","").trim();
-//					//OLD: String cultivarPart = cultivarRE.getParen(0).replace("'","").trim();
-//
-//					result = (ICultivarPlantName)parseFullName(namePart);
-//					result.setCultivarName(cultivarPart);
-//				}
-//			}else if (fullName.indexOf(" cv.") != 0){
-//				// cv. is old form (not official)
-//				throw new StringNotParsableException("Cultivars with only cv. not yet implemented in name parser!");
-//			}
-//
-//		    /* ---------------------------------------------------------------------------------
-//		     * cultivar group
-//		     * ---------------------------------------------------------------------------------
-//		     */
-//			// TODO in work
-//			//Ann. this is not the official way of noting cultivar groups
-//		    String group = oWs + "Group" + oWs + capitalEpiWord + end;
-//			Pattern groupRE = Pattern.compile(group);
-//			Matcher groupMatcher = groupRE.matcher(fullName);
-//			if (groupMatcher.find()){
-//		    	if (! words[words.length - 2].equals("group")){
-//		            throw new StringNotParsableException ("fct ParseHybrid --> term before cultivar group name in " + fullName + " should be 'group'");
-//		        }else{
-//
-//		        	String namePart = fullName.substring(0, groupMatcher.start(0) - 0);
-//		        	//OLD: String namePart = fullName.substring(0, groupRE.getParenStart(0) - 0);
-//
-//		        	String cultivarPart = words[words.length -1];
-//		        	result = (ICultivarPlantName)parseFullName(namePart);
-//		        	if (result != null){
-//		        		result.setCultivarName(cultivarPart);
-//
-//		        		//OLD: result.setCultivarGroupName(cultivarPart);
-//		        	}
-//		        }
-//
-//		    }
-////		    // ---------------------------------------------------------------------------------
-////		    if ( result = "" ){
-////		        return "I: fct ParseCultivar: --> could not parse cultivar " + fullName;
-////		    }else{
-////		        return result;
-//	//	    }
-			return result; //TODO
+            if (StringUtils.isNotBlank(cultivarName)){
+                nameToBeFilled.setRank(Rank.CULTIVAR());
+                cultivarName = cultivarName.substring(1, cultivarName.length()-1);
+                nameToBeFilled.setCultivarName(cultivarName);
+            }else if (StringUtils.isNotBlank(groupName)){
+                nameToBeFilled.setRank(Rank.CULTIVARGROUP());
+                nameToBeFilled.setCultivarName(groupName);  //TODO
+            }else if (StringUtils.isNotBlank(grexName)){
+                nameToBeFilled.setRank(Rank.GREX());
+                nameToBeFilled.setCultivarName(grexName); //TODO
+            }
+		}
 	}
-
 
 	private void makeEmpty(INonViralName name){
 	    TaxonName nameToBeFilled = TaxonName.castAndDeproxy(name);

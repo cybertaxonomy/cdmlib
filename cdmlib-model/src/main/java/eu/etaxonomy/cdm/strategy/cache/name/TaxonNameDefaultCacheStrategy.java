@@ -381,15 +381,20 @@ public class TaxonNameDefaultCacheStrategy
         if (taxonName.getRank().getUuid().equals(Rank.uuidCultivar)){
             cultivarStr = surroundedCultivarEpithet(taxonName);
             builder.addAll(scientificNameTags);
-            builder.add(TagEnum.appendedPhrase, cultivarStr);
+            builder.add(TagEnum.cultivar, cultivarStr);
         }else if (taxonName.getRank().getUuid().equals(Rank.uuidCultivarGroup)){
             //TODO check if Group exists in Name already
             cultivarStr = taxonName.getCultivarName() + (checkHasGroupEpithet(taxonName.getCultivarName())? "": " Group");
             builder.addAll(scientificNameTags);
-            builder.add(TagEnum.appendedPhrase, cultivarStr);
+            builder.add(TagEnum.cultivar, cultivarStr);
+        }else if (taxonName.getRank().getUuid().equals(Rank.uuidGrex)){
+            cultivarStr = taxonName.getCultivarName() + (checkHasGrexEpithet(taxonName.getCultivarName())? "": " grex");
+            builder.addAll(scientificNameTags);
+            builder.add(TagEnum.cultivar, cultivarStr);
         }else if (taxonName.getRank().getUuid().equals(Rank.uuidGraftChimaera)){
+            //TODO not yet fully implemented
             cultivarStr = "+ " + taxonName.getGenusOrUninomial() + " " + surroundedCultivarEpithet(taxonName);
-            builder.add(TagEnum.appendedPhrase, cultivarStr);
+            builder.add(TagEnum.cultivar, cultivarStr);
         }else{
             throw new IllegalStateException("Unsupported rank " + taxonName.getRank().getTitleCache() + " for cultivar.");
         }
@@ -403,6 +408,17 @@ public class TaxonNameDefaultCacheStrategy
             return false;
         }else if (splits[0].matches(NonViralNameParserImplRegExBase.group)
                 || splits[splits.length-1].matches(NonViralNameParserImplRegExBase.group)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private boolean checkHasGrexEpithet(String cultivarName) {
+        String[] splits = cultivarName.split("\\s+");
+        if (splits.length <= 1){
+            return false;
+        }else if (splits[splits.length-1].matches(NonViralNameParserImplRegExBase.grex)){
             return true;
         }else{
             return false;

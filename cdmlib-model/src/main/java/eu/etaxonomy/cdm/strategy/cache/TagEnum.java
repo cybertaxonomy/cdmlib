@@ -30,6 +30,10 @@ public enum TagEnum {
 	 */
 	rank,
 	/**
+     * Cultivar part of cultivar taxon name ruled by the ICNCP (should not be in italics if name is in italics and vice versa)
+     */
+    cultivar,
+	/**
 	 * Non-atomised addition to a taxon name or a taxon not ruled by a nomenclatural code
 	 */
 	appendedPhrase,
