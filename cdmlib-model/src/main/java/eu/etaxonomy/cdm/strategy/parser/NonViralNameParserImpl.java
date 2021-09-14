@@ -422,7 +422,7 @@ public class NonViralNameParserImpl
             for (int i=0+off;i<n && i-off-off2 < originalNameSplit.length; i++){
                 String namePart = CdmUtils.Nz(nameSplit[i]);
                 String originalPart = originalNameSplit[i-off-off2];
-                if (StringUtils.isBlank(namePart)){
+                if (isBlank(namePart)){
                     originalPart = null;
                     off2++;
                 }
@@ -442,7 +442,7 @@ public class NonViralNameParserImpl
 
         String[] finalSplit = new String[n];
         for (int i = 0; i < n; i++){
-            if (StringUtils.isBlank(nameSplit[i])){
+            if (isBlank(nameSplit[i])){
                 if (bestOffset<i){
                     bestOffset++;
                 }
@@ -1132,7 +1132,7 @@ public class NonViralNameParserImpl
 		    }
 
 			//authors
-		    if (StringUtils.isNotBlank(authorString) ){
+		    if (isNotBlank(authorString) ){
 				handleAuthors(nameToBeFilled, fullNameString, authorString);
 			}
 		    handleOriginalSpelling(nameToBeFilled);
@@ -1159,7 +1159,7 @@ public class NonViralNameParserImpl
     private String extendSecondHybridPart(INonViralName givenName, String secondNameString) {
         //first letter of genus given
         if (secondNameString.matches("^" + abbrevHybridGenus + ".*")){
-            if (StringUtils.isNotBlank(givenName.getGenusOrUninomial())){
+            if (isNotBlank(givenName.getGenusOrUninomial())){
                 if (secondNameString.substring(0,1).equals(givenName.getGenusOrUninomial().substring(0, 1))){
                     secondNameString = secondNameString.replaceAll("^" + abbrevHybridGenus, givenName.getGenusOrUninomial() + " ");
                 }
@@ -1215,7 +1215,7 @@ public class NonViralNameParserImpl
 		String speciesEpi = CdmUtils.Nz(nameToBeFilled.getSpecificEpithet());
 		boolean isSpeciesHybrid = speciesEpi.startsWith(hybridSign);
 		if (isSpeciesHybrid){
-			if (StringUtils.isBlank(infrageneric)){
+			if (isBlank(infrageneric)){
 				nameToBeFilled.setBinomHybrid(true);
 			}else{
 				nameToBeFilled.setTrinomHybrid(true);
@@ -1614,5 +1614,13 @@ public class NonViralNameParserImpl
      */
     public void setRemoveSpaceAfterDot(boolean removeSpaceAfterDot) {
         this.removeSpaceAfterDot = removeSpaceAfterDot;
+    }
+
+    private boolean isNotBlank(String str){
+        return StringUtils.isNotBlank(str);
+    }
+
+    private boolean isBlank(String str){
+        return StringUtils.isBlank(str);
     }
 }
