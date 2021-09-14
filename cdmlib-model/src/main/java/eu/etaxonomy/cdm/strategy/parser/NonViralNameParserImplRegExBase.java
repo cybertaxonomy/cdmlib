@@ -34,6 +34,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 	public static final String hybridSign = UTF8.HYBRID.toString();  //  "\u00D7";
 
     //some useful non-terminals
+	protected static String or = "|";
     protected static String pStart = "^";
     protected static String end = "$";
     protected static String anyEnd = ".*" + end;
@@ -97,7 +98,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     public static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
     //AuthorString
-    protected static String qm = "[" + UTF8.QUOT_SINGLE_RIGHT + UTF8.ACUTE_ACCENT + "'`]";
+    protected static String qm = "[" + UTF8.QUOT_SINGLE_RIGHT + UTF8.ACUTE_ACCENT + UTF8.QUOT_SINGLE_LEFT_HIGH + "'`]";
     protected static String authorPart = "(" + "([OdDL]"+qm+"|"+ qm + "t\\s?|ten\\s||l[ae]\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC\\.)I?" + "(" + qm + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|-e|de(n|l|\\sla)?)" ;
     protected static String author = "((" + authorPart + "(" + fWs + "|-)" + ")+" + "(f(il)?\\.|secundus|jun\\.|ter|bis)?|Man in "+qm+"t Veld|Sant"+qm+"Anna)" ;
     protected static String finalTeamSplitter = "(" + fWs + "(&)" + fWs + "|" + oWs + "et" + oWs + ")";
@@ -266,8 +267,13 @@ public abstract class NonViralNameParserImplRegExBase  {
 //fossil name
 
     //cultivars and hybrids
-    protected static String cultivar = oWs + "'..+'"; //Careful with apostorph in author names
-    protected static String cultivarMarker = oWs + "(cv\\.|')";
+    protected static String cultivarWord = "[a-zA-Z0-9-,\u2019!/\\.\\\\]+";
+    protected static String cultivarStatus = qm + cultivarWord + "("+ oWs + cultivarWord + ")*" + "" + qm; //for stricter rules see Art. 21.xxx (but most of them are time dependend)
+    public static String group = "(Gr|Groupe?|Grupp[eo])";
+    protected static String cultivarGroupStatus = (word + oWs + group + or + group + oWs + word);
+
+    protected static String cultivarOld =  oWs + "'..+'"; //Careful with apostroph in author names
+    protected static String cultivarOldMarker = oWs + "(cv\\.|')";
     protected static String notho = "notho";
     protected static String hybridPart = "([xX]" + oWs + "|"+hybridSign+"|"+notho+")";
     protected static String noNothoHybridPart = "([xX]" + oWs + "|"+hybridSign+")";
@@ -295,8 +301,14 @@ public abstract class NonViralNameParserImplRegExBase  {
             +       fullBotanicAuthorString + oWs + InfraGenusMarker + oWs + "\\2"  //infrageneric autonym
             + ")";  //2-nd word and last word are the same
 
-    protected static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
+    protected static String anyPureBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym + "|" + genusAutonym + ")+";
+    protected static String anyBotanicName = anyPureBotanicName; //(anyPureBotanicName + or + cultivar + or + cultivarGroup);
+    protected static String cultivar = "("+ anyPureBotanicName + ")" + oWs + "(?<cultivar>" + cultivarStatus + ")";
+    protected static String cultivarGroup = "("+ anyPureBotanicName + ")" + oWs + "(?<cultivarGroup>" + cultivarGroupStatus + ")";
+    protected static String anyCultivar = "(" + cultivar + or + cultivarGroup + ")";
+
+
     protected static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" +zooInfraSpecies + "|" +  oldInfraSpecies + ")+";
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
@@ -314,7 +326,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern oWsPattern = Pattern.compile(oWs);
     protected static Pattern finalTeamSplitterPattern = Pattern.compile(finalTeamSplitter);
     protected static Pattern cultivarPattern = Pattern.compile(cultivar);
-    protected static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
+    protected static Pattern cultivarGroupPattern = Pattern.compile(cultivarGroup);
 
     protected static Pattern genusOrSupraGenusPattern = Pattern.compile(pStart + genusOrSupraGenus + facultFullAuthorString2 + end);
     protected static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);
