@@ -268,11 +268,12 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     //cultivars and hybrids
     protected static String cultivarWord = "[a-zA-Z0-9-,\u2019!/\\.\\\\]+";
-    protected static String cultivarStatus = qm + cultivarWord + "("+ oWs + cultivarWord + ")*" + "" + qm; //for stricter rules see Art. 21.xxx (but most of them are time dependend)
+    protected static String cultivarPhrase = cultivarWord + "("+ oWs + cultivarWord + ")*";   //TODO still unclear if groups and grex really may also contain special characters
+    protected static String cultivarStatus = qm + cultivarPhrase + qm; //for stricter rules see Art. 21.xxx (but most of them are time dependend)
     public static String group = "(Gp|Groupe?|Grupp(en?|o))";
     public static String grex = "g(re)?x";
-    protected static String cultivarGroupStatus = (cultivarWord + oWs + group + or + group + oWs + cultivarWord);
-    protected static String cultivarGrexStatus = (cultivarWord + oWs + grex );
+    protected static String cultivarGroupStatus = (cultivarPhrase + oWs + group + or + group + oWs + cultivarPhrase);
+    protected static String cultivarGrexStatus = (cultivarPhrase + oWs + grex );
 
     protected static String cultivarOld =  oWs + "'..+'"; //Careful with apostroph in author names
     protected static String cultivarOldMarker = oWs + "(cv\\.|')";
@@ -305,15 +306,12 @@ public abstract class NonViralNameParserImplRegExBase  {
 
     protected static String anyPureBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym + "|" + genusAutonym + ")+";
-    protected static String anyBotanicName = anyPureBotanicName; //(anyPureBotanicName + or + cultivar + or + cultivarGroup);
+    protected static String anyBotanicName = anyPureBotanicName; //no difference yet, cultivars are currently implemented differently. was: (anyPureBotanicName + or + cultivar + or + cultivarGroup);
     protected static String cultivarGr = "(\\s+(?<cultivar>" + cultivarStatus + "))?";
-    protected static String cultivarGroupGr = "(\\s+(?<cultivarGroup>" + cultivarGroupStatus + "))?";
-    protected static String cultivarGrexGr = "(\\s+(?<cultivarGrex>" + cultivarGrexStatus + "))?";
+    protected static String cultivarGroupGr = "(\\s+((?<cultivarGroup>" + cultivarGroupStatus + ")|\\((?<cultivarBrGroup>" + cultivarGroupStatus + ")\\)))?";
+    protected static String cultivarGroupGrx = "(\\s+\\((?<cultivarBrGroup>" + cultivarGroupStatus + ")\\))?";
+    protected static String cultivarGrexGr =  "(\\s+(?<cultivarGrex>"       + cultivarGrexStatus  +    "))?";
 
-    protected static String cultivar = "("+ anyPureBotanicName + ")" + cultivarGr;   //+ "(" + oWs + "\\("+fWs + cultivarGroupGr+fWs+"\\))?" +
-    protected static String cultivarGroup = "("+ anyPureBotanicName + ")" + cultivarGroupGr;
-    protected static String cultivarAndGroup = "("+ anyPureBotanicName + ")" + oWs + cultivarGroupGr + oWs + cultivarGr;
-    protected static String cultivarGrex = "("+ anyPureBotanicName + ")" + cultivarGrexGr;
     protected static String anyCultivar = "("+ anyPureBotanicName + ")(?!\\s*$)(" + cultivarGrexGr + cultivarGroupGr + cultivarGr + ")";
 
 

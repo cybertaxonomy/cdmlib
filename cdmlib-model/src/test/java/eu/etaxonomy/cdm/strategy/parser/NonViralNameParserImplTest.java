@@ -2325,9 +2325,11 @@ public class NonViralNameParserImplTest extends TermTestBase {
     @Test
     public final void testParseCultivar() {
 
+        TaxonName name;
+
         //cultivar
         String cultivar = "Abies 'Albus'";
-        TaxonName name = (TaxonName)parser.parseFullName(cultivar);
+        name = (TaxonName)parser.parseFullName(cultivar);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
         Assert.assertEquals("Albus", name.getCultivarName());
         Assert.assertEquals("Abies 'Albus'", name.getNameCache());
@@ -2424,7 +2426,57 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Abies Albus grex", name.getNameCache());
         Assert.assertEquals(Rank.uuidGrex, name.getRank().getUuid());
 
+        grex = "Abies Albus Second grex";
+        name = (TaxonName)parser.parseFullName(grex);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertEquals("Albus Second grex", name.getCultivarName());  //TODO should be cultivar group field
+        Assert.assertEquals("Abies Albus Second grex", name.getNameCache());
+        Assert.assertEquals(Rank.uuidGrex, name.getRank().getUuid());
 
+        //combined
+        String combined = "Abies (Albus Gruppo) 'Pretty'";
+        name = (TaxonName)parser.parseFullName(combined);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertEquals("Pretty", name.getCultivarName());  //TODO should be cultivar group field
+        Assert.assertEquals("Abies 'Pretty'", name.getNameCache());
+        Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
+
+        combined = "Abies White grex (Albus Gruppo) 'Pretty'";
+        name = (TaxonName)parser.parseFullName(combined);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertEquals("Pretty", name.getCultivarName());  //TODO should be cultivar group field
+        Assert.assertEquals("Abies 'Pretty'", name.getNameCache());
+        Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
+
+        combined = "Abies White grex Albus Gruppo";
+        name = (TaxonName)parser.parseFullName(combined);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertEquals("White grex Albus Gruppo", name.getCultivarName());  //TODO should be cultivar group field
+        Assert.assertEquals(combined, name.getNameCache());
+        Assert.assertEquals(Rank.uuidCultivarGroup, name.getRank().getUuid());
+
+        //incorrect combinations
+        combined = "Abies White grex (Albus Gruppo)";
+        name = (TaxonName)parser.parseFullName(combined);
+        Assert.assertTrue(name.isProtectedTitleCache());
+        Assert.assertNull(name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertNull(name.getCultivarName());
+        Assert.assertEquals(combined, name.getNameCache());
+        Assert.assertNull(name.getRank());
+
+        combined = "Abies Albus Gruppo 'Pretty'";
+        name = (TaxonName)parser.parseFullName(combined);
+        Assert.assertTrue(name.isProtectedTitleCache());
+        Assert.assertNull(name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertNull(name.getCultivarName());
+        Assert.assertEquals(combined, name.getNameCache());
+        Assert.assertNull(name.getRank());
     }
 
     @Test

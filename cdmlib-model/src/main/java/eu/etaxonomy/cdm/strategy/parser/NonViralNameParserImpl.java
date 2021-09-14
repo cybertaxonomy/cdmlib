@@ -893,8 +893,8 @@ public class NonViralNameParserImpl
 		String[] epi = pattern.split(fullNameString);
 		try {
 	    	//cultivars //TODO 2 implement cultivars
-		    if ( anyCultivarPattern.matcher(fullNameString).matches() ){
-		    	parseCultivar(fullNameString, (TaxonName)nameToBeFilled);
+		    if (  parseCultivar(fullNameString, (TaxonName)nameToBeFilled) ){
+		    	//nothing to do, already parsed in method
 		    }
 
 		    else if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
@@ -1532,28 +1532,44 @@ public class NonViralNameParserImpl
 
     //	// Parsing of the given full name that has been identified as a cultivar already somwhere else.
 //	// The ... cv. ... syntax is not covered here as it is not according the rules for naming cultivars.
-	public void parseCultivar(String fullNameStr, TaxonName nameToBeFilled){
+	public boolean parseCultivar(String fullNameStr, TaxonName nameToBeFilled){
 
 	    Matcher anyCultivarMatcher = anyCultivarPattern.matcher(fullNameStr);
 
 		if (anyCultivarMatcher.matches()){
 		    String scientificName = anyCultivarMatcher.group(1);
-		    parseSimpleName(nameToBeFilled, scientificName, null, false);
 		    String cultivarName = anyCultivarMatcher.group("cultivar");
 		    String groupName = anyCultivarMatcher.group("cultivarGroup");
+		    String brGroupName = anyCultivarMatcher.group("cultivarBrGroup");
 		    String grexName = anyCultivarMatcher.group("cultivarGrex");
 
-            if (StringUtils.isNotBlank(cultivarName)){
-                nameToBeFilled.setRank(Rank.CULTIVAR());
-                cultivarName = cultivarName.substring(1, cultivarName.length()-1);
-                nameToBeFilled.setCultivarName(cultivarName);
-            }else if (StringUtils.isNotBlank(groupName)){
-                nameToBeFilled.setRank(Rank.CULTIVARGROUP());
-                nameToBeFilled.setCultivarName(groupName);  //TODO
-            }else if (StringUtils.isNotBlank(grexName)){
+		    //handle not exact matches
+		    if (isNotBlank(groupName) && isNotBlank(cultivarName)){
+                return false;
+            }else if (isNotBlank(brGroupName) && isNotBlank(grexName) && isBlank(cultivarName)){
+                return false;
+            }
+		    parseSimpleName(nameToBeFilled, scientificName, null, false);
+
+            if (isNotBlank(grexName)){
                 nameToBeFilled.setRank(Rank.GREX());
                 nameToBeFilled.setCultivarName(grexName); //TODO
             }
+            if (isNotBlank(groupName) || isNotBlank(brGroupName)){
+                nameToBeFilled.setRank(Rank.CULTIVARGROUP());
+                if (isBlank(groupName)){
+                    groupName = brGroupName;
+                }
+                nameToBeFilled.setCultivarName(CdmUtils.concat(" ", grexName, groupName));  //TODO
+            }
+            if (isNotBlank(cultivarName)){
+                nameToBeFilled.setRank(Rank.CULTIVAR());
+                cultivarName = cultivarName.substring(1, cultivarName.length()-1);
+                nameToBeFilled.setCultivarName(cultivarName);
+            }
+            return true;
+		}else{
+		    return false;
 		}
 	}
 
