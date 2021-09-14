@@ -578,7 +578,6 @@ public class NonViralNameParserImpl
 			}
 		}
 
-
 		//detail
 		String pDetailPhrase = detailSeparator + fWs + detail + fWs + end;
 		Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, strReference);
@@ -603,11 +602,6 @@ public class NonViralNameParserImpl
 		ref.setProblemEnds(end);
 	}
 
-	/**
-	 * @param nameToBeFilled
-	 * @param strReference
-	 * @return
-	 */
 	private Reference makeDetailYearUnparsable(INonViralName nameToBeFilled, String strReference) {
 		Reference ref;
 
@@ -623,9 +617,6 @@ public class NonViralNameParserImpl
 
 	/**
 	 * Parses the referenceTitlePart, including the author volume and edition.
-	 * @param reference
-	 * @param year
-	 * @return
 	 */
 	public INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
 		IBook result = null;
@@ -1292,11 +1283,6 @@ public class NonViralNameParserImpl
 		}
 	}
 
-	/**
-	 * @param nameToBeFilled
-	 * @param fullNameString
-	 * @param authorString
-	 */
 	public void handleAuthors(INonViralName nameToBeFilled, String fullNameString, String authorString) {
 	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];

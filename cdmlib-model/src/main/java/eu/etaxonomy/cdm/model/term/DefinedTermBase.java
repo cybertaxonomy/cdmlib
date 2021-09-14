@@ -376,7 +376,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
     protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);
 
-
     @Override
     public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {

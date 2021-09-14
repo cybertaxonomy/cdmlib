@@ -96,7 +96,6 @@ public abstract class NonViralNameParserImplRegExBase  {
     public static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
     public static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|sublusus)";
 
-
     //AuthorString
     protected static String qm = "[" + UTF8.QUOT_SINGLE_RIGHT + UTF8.ACUTE_ACCENT + "'`]";
     protected static String authorPart = "(" + "([OdDL]"+qm+"|"+ qm + "t\\s?|ten\\s||l[ae]\\s|zur\\s)?" + "(" + capital2charDotWord + "|DC\\.)I?" + "(" + qm + nonCapitalDotWord + ")?" + "|[vV][ao]n(\\sder)?|da|du|-e|de(n|l|\\sla)?)" ;
