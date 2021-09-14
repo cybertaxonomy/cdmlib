@@ -280,8 +280,39 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         secondParent.setSpecificEpithet("parent");
         hybridName.setNameCache(null, false);
         Assert.assertEquals("", "Abies alba \u00D7 Second parent", hybridName.getNameCache());
+    }
+
+    //#9754
+    @Test
+    public void testCultivar(){
+        speciesName.setRank(Rank.CULTIVAR());
+        speciesName.setCultivarName("Cultus");
+        Assert.assertEquals("Abies alba 'Cultus'", strategy.getTitleCache(speciesName));
+
+        speciesName.setBinomHybrid(true);
+        Assert.assertEquals("Abies \u00D7alba 'Cultus'", strategy.getTitleCache(speciesName));
+
+        speciesName.setBinomHybrid(false);
+        speciesName.setSpecificEpithet(null);
+        Assert.assertEquals("Abies 'Cultus'", strategy.getTitleCache(speciesName));
+
+        speciesName.setRank(Rank.CULTIVARGROUP());
+        Assert.assertEquals("Abies Cultus Group", strategy.getTitleCache(speciesName));
+
+        //graft chimaera
+        //https://en.wikipedia.org/wiki/Graft-chimaera
+        //either formula (like hybrids) concatenated by ' + ' (Art. 24.2)
+
+        //
+        speciesName.setRank(Rank.GRAFTCHIMAERA());
+        speciesName.setGenusOrUninomial("Laburnocytisus");
+        speciesName.setCultivarName("Adamii");
+
+        Assert.assertEquals("+ Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
+
 
     }
+
 
     //3665
     @Test

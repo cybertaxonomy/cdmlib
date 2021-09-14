@@ -21,6 +21,10 @@ import eu.etaxonomy.cdm.ref.TypedEntityReference;
  */
 public class TaggedTextBuilder {
 
+    public static TaggedTextBuilder NewInstance(){
+        return new TaggedTextBuilder();
+    }
+
     private List<TaggedText> taggedText = new ArrayList<>();
 
     public void add(TagEnum type, String text){

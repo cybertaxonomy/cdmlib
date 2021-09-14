@@ -130,9 +130,9 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidCandidate = UUID.fromString("ead9a1f5-dfd4-4de2-9121-70a47accb10b");
     private static final UUID uuidDenominationClass = UUID.fromString("49bdf74a-2170-40ed-8be2-887a0db517bf");
     private static final UUID uuidGrex = UUID.fromString("08dcb4ff-ac58-48a3-93af-efb3d836ac84");
-    private static final UUID uuidGraftChimaera = UUID.fromString("6b4063bc-f934-4796-9bf3-0ef3aea5c1cb");
-    private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
-    private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
+    public static final UUID uuidGraftChimaera = UUID.fromString("6b4063bc-f934-4796-9bf3-0ef3aea5c1cb");
+    public static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
+    public static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
     private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
 
     //additional (not yet in csv files, but used in single databases)
@@ -557,6 +557,13 @@ public class Rank extends OrderedTermBase<Rank> {
     @Transient
     public boolean isInfraSpecific(){
         return this.rankClass.equals(RankClass.Infraspecific); // (this.isLower(Rank.SPECIES()));
+    }
+
+    @Transient
+    public boolean isCultivar(){
+        //TODO handle correctly as rankClass?
+        return this.uuid.equals(uuidCultivar) || this.uuid.equals(uuidCultivarGroup)
+                || this.uuid.equals(uuidGraftChimaera);
     }
 
 

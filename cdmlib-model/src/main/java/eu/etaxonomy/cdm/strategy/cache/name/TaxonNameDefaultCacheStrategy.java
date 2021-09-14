@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.TaggedTextBuilder;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 
@@ -53,6 +54,9 @@ public class TaxonNameDefaultCacheStrategy
     protected CharSequence basionymAuthorCombinationAuthorSeperator = " ";
 
     protected String zooAuthorYearSeperator = ", ";
+
+    private String cultivarStart = "'";
+    private String cultivarEnd = "'";
 
     @Override
     public UUID getUuid(){
@@ -322,6 +326,7 @@ public class TaxonNameDefaultCacheStrategy
             tags.add(new TaggedText(TagEnum.name, taxonName.getNameCache()));
         }else if (taxonName.isHybridFormula()){
             //hybrid formula
+            //TODO graft-chimera (see also cultivars)
             String hybridSeparator = NonViralNameParserImplRegExBase.hybridSign;
             boolean isFirst = true;
             List<HybridRelationship> rels = taxonName.getOrderedChildRelationships();
@@ -336,8 +341,8 @@ public class TaxonNameDefaultCacheStrategy
 
         }else if (rank == null){
             tags = getRanklessTaggedNameCache(taxonName);
-//		}else if (nonViralName.isInfragenericUnranked()){
-//			result = getUnrankedInfragenericNameCache(nonViralName);
+		}else if (rank.isCultivar()){
+			tags = getCultivarTaggedNameCache(taxonName);
         }else if (rank.isInfraSpecific()){
             tags = getInfraSpeciesTaggedNameCache(taxonName);
         }else if (rank.isSpecies() || isAggregateWithAuthorship(taxonName, rank) ){ //exception see #4288
@@ -359,6 +364,54 @@ public class TaxonNameDefaultCacheStrategy
     }
 
 //***************************** PRIVATES ***************************************/
+
+    private List<TaggedText> getCultivarTaggedNameCache(TaxonName taxonName) {
+        List<TaggedText> scientificNameTags;
+        TaggedTextBuilder builder = TaggedTextBuilder.NewInstance();
+        if (isNotBlank(taxonName.getInfraSpecificEpithet())){
+            scientificNameTags = getInfraSpeciesTaggedNameCache(taxonName);
+        } else if (isNotBlank(taxonName.getSpecificEpithet())){
+            scientificNameTags = getSpeciesTaggedNameCache(taxonName);
+        } else if (isNotBlank(taxonName.getInfraGenericEpithet())){
+            scientificNameTags = getInfraGenusTaggedNameCache(taxonName);
+        } else /*if (isNotBlank(taxonName.getGenusOrUninomial())) */{
+            scientificNameTags = getGenusOrUninomialTaggedNameCache(taxonName);
+        }
+        String cultivarStr;
+        if (taxonName.getRank().getUuid().equals(Rank.uuidCultivar)){
+            cultivarStr = surroundedCultivarEpithet(taxonName);
+            builder.addAll(scientificNameTags);
+            builder.add(TagEnum.appendedPhrase, cultivarStr);
+        }else if (taxonName.getRank().getUuid().equals(Rank.uuidCultivarGroup)){
+            //TODO check if Group exists in Name already
+            cultivarStr = taxonName.getCultivarName() + (checkHasGroupEpithet(taxonName.getCultivarName())? "": " Group");
+            builder.addAll(scientificNameTags);
+            builder.add(TagEnum.appendedPhrase, cultivarStr);
+        }else if (taxonName.getRank().getUuid().equals(Rank.uuidGraftChimaera)){
+            cultivarStr = "+ " + taxonName.getGenusOrUninomial() + " " + surroundedCultivarEpithet(taxonName);
+            builder.add(TagEnum.appendedPhrase, cultivarStr);
+        }else{
+            throw new IllegalStateException("Unsupported rank " + taxonName.getRank().getTitleCache() + " for cultivar.");
+        }
+
+        return builder.getTaggedText();
+    }
+
+    private boolean checkHasGroupEpithet(String cultivarName) {
+        String[] splits = cultivarName.split("\\s+");
+        if (splits.length <= 1){
+            return false;
+        }else if (splits[0].matches(NonViralNameParserImplRegExBase.group)
+                || splits[splits.length-1].matches(NonViralNameParserImplRegExBase.group)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private String surroundedCultivarEpithet(TaxonName taxonName) {
+        return cultivarStart + taxonName.getCultivarName() + cultivarEnd;
+    }
 
     private boolean isAggregateWithAuthorship(TaxonName nonViralName, Rank rank) {
 		if (rank == null){
