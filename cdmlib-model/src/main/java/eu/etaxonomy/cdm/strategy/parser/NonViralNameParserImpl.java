@@ -1553,14 +1553,14 @@ public class NonViralNameParserImpl
 
             if (isNotBlank(grexName)){
                 nameToBeFilled.setRank(Rank.GREX());
-                nameToBeFilled.setCultivarName(grexName); //TODO
+                nameToBeFilled.setCultivarGroup(grexName);
             }
             if (isNotBlank(groupName) || isNotBlank(brGroupName)){
                 nameToBeFilled.setRank(Rank.CULTIVARGROUP());
                 if (isBlank(groupName)){
                     groupName = brGroupName;
                 }
-                nameToBeFilled.setCultivarName(CdmUtils.concat(" ", grexName, groupName));  //TODO
+                nameToBeFilled.setCultivarGroup(CdmUtils.concat(" ", grexName, groupName));
             }
             if (isNotBlank(cultivarName)){
                 nameToBeFilled.setRank(Rank.CULTIVAR());

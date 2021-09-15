@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -377,33 +379,55 @@ public class TaxonNameDefaultCacheStrategy
         } else /*if (isNotBlank(taxonName.getGenusOrUninomial())) */{
             scientificNameTags = getGenusOrUninomialTaggedNameCache(taxonName);
         }
-        String cultivarStr;
-        if (taxonName.getRank().getUuid().equals(Rank.uuidCultivar)){
+
+        UUID rankUuid = taxonName.getRank().getUuid();
+        boolean rankIsHandled = true;
+        String cultivarStr = null;
+        String groupStr = taxonName.getCultivarGroup();
+        if (rankUuid.equals(Rank.uuidCultivar)){
             cultivarStr = surroundedCultivarEpithet(taxonName);
+            if (isNotBlank(cultivarStr) && isNotBlank(groupStr)){
+                groupStr = surroundGroupWithBracket(groupStr);
+            }
+            cultivarStr = CdmUtils.concat(" ", groupStr, cultivarStr);
+        }else if (rankUuid.equals(Rank.uuidCultivarGroup)){
+            cultivarStr = CdmUtils.concat(" ", groupStr, checkHasGroupEpithet(groupStr)? null: "Group");
+        }else if (rankUuid.equals(Rank.uuidGrex)){
+            cultivarStr = CdmUtils.concat(" ", groupStr, checkHasGrexEpithet(groupStr)? null: "grex");
+        }else{
+            rankIsHandled = false;
+        }
+        if (isNotBlank(cultivarStr)){
             builder.addAll(scientificNameTags);
             builder.add(TagEnum.cultivar, cultivarStr);
-        }else if (taxonName.getRank().getUuid().equals(Rank.uuidCultivarGroup)){
-            //TODO check if Group exists in Name already
-            cultivarStr = taxonName.getCultivarName() + (checkHasGroupEpithet(taxonName.getCultivarName())? "": " Group");
-            builder.addAll(scientificNameTags);
-            builder.add(TagEnum.cultivar, cultivarStr);
-        }else if (taxonName.getRank().getUuid().equals(Rank.uuidGrex)){
-            cultivarStr = taxonName.getCultivarName() + (checkHasGrexEpithet(taxonName.getCultivarName())? "": " grex");
-            builder.addAll(scientificNameTags);
-            builder.add(TagEnum.cultivar, cultivarStr);
-        }else if (taxonName.getRank().getUuid().equals(Rank.uuidGraftChimaera)){
+        }
+
+        if (rankUuid.equals(Rank.uuidGraftChimaera)){
             //TODO not yet fully implemented
             cultivarStr = "+ " + taxonName.getGenusOrUninomial() + " " + surroundedCultivarEpithet(taxonName);
             builder.add(TagEnum.cultivar, cultivarStr);
-        }else{
+        } else if (!rankIsHandled){
             throw new IllegalStateException("Unsupported rank " + taxonName.getRank().getTitleCache() + " for cultivar.");
         }
 
         return builder.getTaggedText();
     }
 
-    private boolean checkHasGroupEpithet(String cultivarName) {
-        String[] splits = cultivarName.split("\\s+");
+    private String surroundGroupWithBracket(String groupStr) {
+        if (groupStr.matches(NonViralNameParserImplRegExBase.grex + "$")){
+            return groupStr;
+        }else if (groupStr.matches(".*" + NonViralNameParserImplRegExBase.grex + ".+")){
+            Matcher matcher = Pattern.compile(NonViralNameParserImplRegExBase.grex + "\\s*" ).matcher(groupStr);
+            matcher.find();
+            return groupStr.substring(0, matcher.end()) + "("+ groupStr.substring(matcher.end())+ ")";
+        }else{
+            return "("+ groupStr + ")";
+        }
+    }
+
+    private boolean checkHasGroupEpithet(String group) {
+
+        String[] splits = group == null? new String[0]: group.split("\\s+");
         if (splits.length <= 1){
             return false;
         }else if (splits[0].matches(NonViralNameParserImplRegExBase.group)
@@ -414,8 +438,8 @@ public class TaxonNameDefaultCacheStrategy
         }
     }
 
-    private boolean checkHasGrexEpithet(String cultivarName) {
-        String[] splits = cultivarName.split("\\s+");
+    private boolean checkHasGrexEpithet(String grex) {
+        String[] splits = grex == null? new String[0]: grex.split("\\s+");
         if (splits.length <= 1){
             return false;
         }else if (splits[splits.length-1].matches(NonViralNameParserImplRegExBase.grex)){

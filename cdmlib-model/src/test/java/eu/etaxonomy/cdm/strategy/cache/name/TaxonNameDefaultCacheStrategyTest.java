@@ -300,24 +300,22 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         //cultivar group
         speciesName.setRank(Rank.CULTIVARGROUP());
+        Assert.assertEquals("Abies Group", strategy.getTitleCache(speciesName)); //not sure if this is correct for an empty group field
+        speciesName.setCultivarGroup("Cultus Group");
         Assert.assertEquals("Abies Cultus Group", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarName("Cultus Group");
 
-        speciesName.setRank(Rank.CULTIVARGROUP());
-        speciesName.setCultivarName("Cultus Group");
-        Assert.assertEquals("Abies Cultus Group", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarName("Cultus Gruppe");
+        speciesName.setCultivarGroup("Cultus Gruppe");
         Assert.assertEquals("Abies Cultus Gruppe", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarName("Cultus Gp");
+        speciesName.setCultivarGroup("Cultus Gp");
         Assert.assertEquals("Abies Cultus Gp", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarName("Gruppo Cultus");
+        speciesName.setCultivarGroup("Gruppo Cultus");
         Assert.assertEquals("Abies Gruppo Cultus", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarName("Druppo Cultus");
+        speciesName.setCultivarGroup("Druppo Cultus");
         Assert.assertEquals("Abies Druppo Cultus Group", strategy.getTitleCache(speciesName));
 
         //grex
         speciesName.setRank(Rank.GREX());
-        speciesName.setCultivarName("Lovely");
+        speciesName.setCultivarGroup("Lovely");
         Assert.assertEquals("Abies Lovely grex", strategy.getTitleCache(speciesName));
 
         //graft chimaera
@@ -328,10 +326,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCultivarName("Adamii");
 
         Assert.assertEquals("+ Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
-
-
     }
-
 
     //3665
     @Test

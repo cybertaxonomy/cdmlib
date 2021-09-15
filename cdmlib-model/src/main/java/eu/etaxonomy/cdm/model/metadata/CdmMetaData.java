@@ -70,7 +70,8 @@ public class CdmMetaData extends CdmBase{
         V_05_22_00("5.22.0.0.20210315"),
         V_05_23_00("5.23.0.0.20210422"),
         V_05_25_00("5.25.0.0.20210609"),
-        V_05_25_01("5.25.1.0.20210702")
+        V_05_25_01("5.25.1.0.20210702"),
+        V_05_27_00("5.25.1.0.20210913")
         ;
         private String versionString;
 	    private CdmVersion(String versionString){

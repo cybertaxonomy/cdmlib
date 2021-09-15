@@ -559,6 +559,12 @@ public class TaxonName
     @Column(length=255)
     private String cultivarName;
 
+    //#9761
+    @XmlElement(name = "CultivarName")
+    @NullOrNotEmpty
+    @Column(length=255)
+    private String cultivarGroup;
+
     // ************** FUNGUS name attributes
     //to indicate that the type of the name is asexual or not
     @XmlElement(name ="IsAnamorphic")
@@ -1288,6 +1294,19 @@ public class TaxonName
     @Override
     public void setCultivarName(String cultivarName){
         this.cultivarName = isBlank(cultivarName) ? null : cultivarName;
+    }
+
+    @Override
+    public String getCultivarGroup(){
+        return this.cultivarGroup;
+    }
+
+    /**
+     * @see  #getCultivarGroup()
+     */
+    @Override
+    public void setCultivarGroup(String cultivarGroup){
+        this.cultivarGroup = isBlank(cultivarGroup) ? null : cultivarGroup;
     }
 
     // **************** Fungus Name
