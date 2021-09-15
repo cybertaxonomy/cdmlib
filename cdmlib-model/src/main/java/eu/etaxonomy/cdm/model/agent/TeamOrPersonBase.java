@@ -23,6 +23,9 @@ import org.hibernate.search.annotations.Index;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * The abstract class for such {@link AgentBase agents} ({@link Person persons} or {@link Team teams}) who might also be used
@@ -49,12 +52,14 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     @XmlElement(name="CollectorTitleCache")
     @Field(index=Index.YES)
     @Column(length=800)//see #1592
+    @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.NONE)  //TODO: still needs to be checked if correct. ReplaceMode was chosen as it is not the only cache.
     protected String collectorTitleCache;
 
     //under construction #9664
     @XmlElement(name="NomenclaturalTitleCache")
     @Field(index=Index.YES)
     @Column(length=800)//see #1592
+    @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.NONE)  //TODO: still needs to be checked if correct. ReplaceMode was chosen as it is not the only cache.
     protected String nomenclaturalTitleCache;
 
 //  from E+M import (still needed?)

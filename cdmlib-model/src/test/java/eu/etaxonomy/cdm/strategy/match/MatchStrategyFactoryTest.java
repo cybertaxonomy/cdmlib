@@ -109,6 +109,15 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         Assert.assertFalse("Differing nom. title should not match",
                 matchStrategy.invoke(fullPerson, parsedPerson).isSuccessful());
 
+        //collector Title
+        fullPerson = getDefaultFullPerson();
+        parsedPerson = getDefaultParsedPerson();
+        parsedPerson.setCollectorTitle("Collector");
+        result = matchStrategy.invoke(fullPerson, parsedPerson, FAIL_ALL);
+//        System.out.println(result);
+        Assert.assertFalse("Differing collectorTitle should not match",
+                matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
+
         //fullPerson protected
         fullPerson = getDefaultFullPerson();
         parsedPerson = getDefaultParsedPerson();
@@ -134,15 +143,17 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         fullPerson.setGivenName("Full Given");
         fullPerson.setPrefix("Dr.");
         fullPerson.setSuffix("jr.");
-//        fullPerson.setCollectorTitle();
+        fullPerson.setCollectorTitle("Coll.");
         fullPerson.setLifespan(TimePeriodParser.parseString("1972-2015"));
         fullPerson.addInstitutionalMembership(institution1, TimePeriodParser.parseString("2002-2004"), "Dept. X", "Developer");
+        fullPerson.updateCaches();
         return fullPerson;
     }
 
     protected Person getDefaultParsedPerson() {
         Person parsedPerson = Person.NewInstance();
         parsedPerson.setNomenclaturalTitle("Nam.");
+        parsedPerson.updateCaches();
         return parsedPerson;
     }
 
@@ -215,7 +226,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         Team team = Team.NewInstance();
         team.addTeamMember(getDefaultFullPerson());
         team.addTeamMember(getFullPerson2());
-        team.getNomenclaturalTitleCache();
+        team.updateCaches();
         return team;
     }
 
@@ -226,6 +237,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         fullPerson.setFamilyName("Nice");
         fullPerson.setNomenclaturalTitle("Nice");
         fullPerson.setGivenName("John");
+        fullPerson.updateCaches();
         return fullPerson;
     }
 
@@ -233,14 +245,14 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         Team team = Team.NewInstance();
         team.addTeamMember(getDefaultParsedPerson());
         team.addTeamMember(getFullPerson2());
-        //TODO should be done in cache strategy
-        team.getNomenclaturalTitleCache();
+        team.updateCaches();
         return team;
     }
 
     protected Person getParsedPerson2() {
         Person parsedPerson = Person.NewInstance();
         parsedPerson.setNomenclaturalTitle("Nice");
+        parsedPerson.updateCaches();
         return parsedPerson;
     }
 
@@ -357,7 +369,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         book.setUri(URI.create("https://www.flora.hellenica.gr"));
         book.setIsbn("1234-222-222-333");  //format not yet correct
         book.setPublisher("Greek publisher", "Athens");
-        book.getTitleCache();
+        ((Reference)book).updateCaches();
         return book;
     }
 
@@ -369,7 +381,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         book.setEditor("editor");
         book.setAuthorship(getDefaultParsedTeam());
         book.setDatePublished(TimePeriodParser.parseStringVerbatim("1982-10-06"));
-        book.getAbbrevTitleCache();
+        ((Reference)book).updateCaches();
         return book;
     }
 
@@ -378,6 +390,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         bookSection.setTitle("Book section title");
         bookSection.setAbbrevTitle("Bk. sct. tit.");
         bookSection.setPages("22-33");
+        ((Reference)bookSection).updateCaches();
         return bookSection;
     }
 
@@ -386,6 +399,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         bookSection.setAuthorship(getDefaultFullPerson());
         bookSection.setInBook(getDefaultFullBook());
         bookSection.setDatePublished(TimePeriodParser.parseStringVerbatim("1892"));
+        ((Reference)bookSection).updateCaches();
         return bookSection;
     }
 
@@ -394,6 +408,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         bookSection.setAuthorship(getDefaultParsedPerson());
         bookSection.setInBook(getDefaultParsedBook());
         bookSection.setDatePublished(TimePeriodParser.parseStringVerbatim("1892"));
+        ((Reference)bookSection).updateCaches();
         return bookSection;
     }
 
@@ -463,6 +478,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         article.setTitle("Article title");
         article.setAbbrevTitle("Art. tit.");
         article.setPages("22-33");
+        ((Reference)article).updateCaches();
         return article;
     }
 
@@ -475,6 +491,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         article.setAuthorship(getDefaultFullTeam());
         article.setInJournal(getDefaultFullJournal());
         article.setDatePublished(TimePeriodParser.parseStringVerbatim("1950"));
+        ((Reference)article).updateCaches();
         return article;
     }
 
@@ -487,6 +504,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         article.setAuthorship(getDefaultParsedTeam());
         article.setInJournal(getDefaultParsedJournal());
         article.setDatePublished(TimePeriodParser.parseStringVerbatim("1950"));
+        ((Reference)article).updateCaches();
         return article;
     }
 
@@ -497,7 +515,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         journal.setUri(URI.create("https://www.journal-flowering-plants.gr"));
         journal.setIssn("1234-222-222-333");  //format not yet correct
         journal.setPublisher("Botanical publisher", "Paris");
-        journal.getTitleCache();
+        ((Reference)journal).updateCaches();
         return journal;
     }
 
@@ -506,7 +524,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         journal.setAbbrevTitle("Fl. Hell.");
 //        journal.setAuthorship(getDefaultParsedTeam());  //journals should not have authors
 //        ((Reference)journal).setDatePublished(TimePeriodParser.parseStringVerbatim("1992-04-03")); //journals should not have date published
-        journal.getTitleCache();  //not sure if enough
+        ((Reference)journal).updateCaches();
         return journal;
     }
 
@@ -562,8 +580,8 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         name.setNameApprobation("approbation");
         TaxonNameDescription description = TaxonNameDescription.NewInstance(name);
         description.addElement(Distribution.NewInstance());
-
         //TODO continue
+        name.updateCaches();
         return name;
     }
 
@@ -572,6 +590,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         name.setBasionymAuthorship(getDefaultFullTeam());
         name.setGenusOrUninomial("Abies");
         name.setSpecificEpithet("alba");
+        name.updateCaches();
         return name;
     }
 

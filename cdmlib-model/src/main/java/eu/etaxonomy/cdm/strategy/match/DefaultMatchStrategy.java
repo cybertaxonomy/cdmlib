@@ -209,9 +209,9 @@ public class DefaultMatchStrategy
             throws IllegalAccessException, MatchException {
 
         FieldMatcher protectedFieldMatcher = cacheMatcher.getProtectedFieldMatcher(matching);
-        Field protectedField = protectedFieldMatcher.getField();
-        boolean protected1 = protectedField.getBoolean(matchFirst);
-        boolean protected2 = protectedField.getBoolean(matchFirst);
+        Field protectedField = protectedFieldMatcher == null ? null : protectedFieldMatcher.getField();
+        boolean protected1 = protectedField == null? false : protectedField.getBoolean(matchFirst);
+        boolean protected2 = protectedField == null? false : protectedField.getBoolean(matchFirst);
         if (protected1 != protected2){
         	result.addNonMatching(protectedFieldMatcher, protected1, protected2);
             return;
