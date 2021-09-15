@@ -638,18 +638,17 @@ public class Country extends NamedArea {
 			String uriStr = CdmUtils.Ne(csvLine.get(1));
 	        newInstance.setUri(uriStr == null? null: URI.create(uriStr));
 			String label = csvLine.get(3).trim();
-			String text = csvLine.get(3).trim();
-			String abbreviatedLabel = csvLine.get(2);
+			String text = csvLine.get(4).trim();
+			String abbreviatedLabel = csvLine.get(5);
 			newInstance.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
 			newInstance.setLevel(NamedAreaLevel.COUNTRY());
 
 			// iso codes extra
-			newInstance.setIso3166_A2(CdmUtils.Ne(csvLine.get(4).trim()));
+			newInstance.setIso3166_A2(CdmUtils.Ne(abbreviatedLabel.trim()));
 			newInstance.setIdInVocabulary(abbreviatedLabel);
 
-
 			String[] continentList;
-			String tmp = csvLine.get(5).trim();
+			String tmp = csvLine.get(6).trim();
 			if (tmp.length()>2){
 				tmp=tmp.substring(1, tmp.length()-1);
 
@@ -657,6 +656,7 @@ public class Country extends NamedArea {
 				for (String continentStr : continentList){
 					logger.debug("continent: "+ continentStr);
 					UUID uuidContinent = UUID.fromString(continentStr);
+
 					NamedArea continent = NamedArea.getContinentByUuid(uuidContinent);
 					//old version: but this is null if you use the new termloading mechanism which does not hold
 					//ALL terms in the terms set:
@@ -666,13 +666,13 @@ public class Country extends NamedArea {
 					}
 					newInstance.addContinent(continent);
 				}
+			}else{
+			    throw new RuntimeException("Currently we except all countries to belong to a continent");
 			}
 			return newInstance;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 
 	public void writeCsvLine(CSVWriter writer) {
