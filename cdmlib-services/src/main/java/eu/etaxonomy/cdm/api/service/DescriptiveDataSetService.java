@@ -23,9 +23,15 @@ import eu.etaxonomy.cdm.api.service.UpdateResult.Status;
 import eu.etaxonomy.cdm.api.service.config.DeleteDescriptiveDataSetConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.RemoveDescriptionsFromDescriptiveDataSetConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.CategoricalDataDto;
 import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.api.service.dto.DescriptionElementDto;
+import eu.etaxonomy.cdm.api.service.dto.QuantitativeDataDto;
 import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.SpecimenOrObservationDTOFactory;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
+import eu.etaxonomy.cdm.api.service.dto.StateDataDto;
+import eu.etaxonomy.cdm.api.service.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonRowWrapperDTO;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -45,7 +51,9 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -57,8 +65,10 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
@@ -116,6 +126,12 @@ public class DescriptiveDataSetService
     public List<UuidAndTitleCache<DescriptiveDataSet>> getDescriptiveDataSetUuidAndTitleCache(Integer limitOfInitialElements, String pattern) {
         return dao.getDescriptiveDataSetUuidAndTitleCache( limitOfInitialElements, pattern);
     }
+
+	@Override
+    public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
+        return dao.getDescriptiveDataSetDtoByUuid(uuid);
+    }
+
 
 	@Override
 	public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
@@ -223,24 +239,29 @@ public class DescriptiveDataSetService
     public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid) {
         TaxonNode taxonNode = null;
         Classification classification = null;
-        TaxonDescription description = (TaxonDescription) descriptionService.load(taxonDescriptionUuid,
-                Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature"));
+//        TaxonDescription description = (TaxonDescription) descriptionService.loadDto(taxonDescriptionUuid,
+//                Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature"));
+        DescriptionBaseDto description = descriptionService.loadDto(taxonDescriptionUuid);
+
         DescriptiveDataSet descriptiveDataSet = dao.load(descriptiveDataSetUuid, null);
         Optional<TaxonNode> first = descriptiveDataSet.getTaxonSubtreeFilter().stream()
                 .filter(node->node.getClassification()!=null).findFirst();
         Optional<Classification> classificationOptional = first.map(node->node.getClassification());
         Set<DescriptionBaseDto> descriptions = new HashSet<>();
+        TaxonNodeDto nodeDto = null;
         if(classificationOptional.isPresent()){
             classification = classificationOptional.get();
-            Taxon taxon = (Taxon) taxonService.load(description.getTaxon().getId(), Arrays.asList("taxonNodes", "taxonNodes.classification"));
-            taxonNode = taxon.getTaxonNode(classification);
-            for (DescriptionBase desc: taxon.getDescriptions()){
-                descriptions.add(new DescriptionBaseDto(desc));
-            }
+//            Taxon taxon = (Taxon) taxonService.load(description.getTaxonDto().getId(), Arrays.asList("taxonNodes", "taxonNodes.classification"));
+            nodeDto = taxonNodeService.dto(description.getTaxonDto().getUuid(), classification.getUuid());
+//            taxonNode = taxon.getTaxonNode(classification);
+
+//            for (DescriptionBase desc: taxon.getDescriptions()){
+//                descriptions.add(DescriptionBaseDto.fromDescription(desc));
+//            }
         }
+        descriptions = new HashSet<>(descriptionService.loadDtosForTaxon(description.getTaxonDto().getUuid()));
 
-
-        return new TaxonRowWrapperDTO(new DescriptionBaseDto(description), new TaxonNodeDto(taxonNode), descriptions);
+        return new TaxonRowWrapperDTO(description, nodeDto, descriptions);
     }
 
     @Override
@@ -283,15 +304,60 @@ public class DescriptiveDataSetService
                 taxonService.saveOrUpdate(taxon);
                 result.addUpdatedObject(taxon);
             }
-            DescriptionBase<?> specimenDescription = wrapper.getDescription().getDescription();
-            if (specimenDescription.isPersited()){
-                specimenDescription = descriptionService.load(specimenDescription.getUuid());
+            UUID specimenDescriptionUuid = wrapper.getDescription().getDescriptionUuid();
+            DescriptionBaseDto descriptionDto = wrapper.getDescription();
+            DescriptionBase<?> specimenDescription =  descriptionService.load(specimenDescriptionUuid);
+            //if description already exist use the loaded one and add changed data otherwise create a new one and add to specimen
+            if (specimenDescription == null){
+                specimenDescription = SpecimenDescription.NewInstance(specimen);
+                List<DescriptionElementDto> elementDtos = descriptionDto.getElements();
+                List<DescriptionElementBase> elements = new ArrayList<>();
+                for (DescriptionElementDto elementDto: elementDtos){
+                    if (elementDto instanceof CategoricalDataDto){
+                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        CategoricalData data = CategoricalData.NewInstance(feature);
+                        for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
+                            State state = DefinedTermBase.getTermByClassAndUUID(State.class, stateDto.getState().getUuid());
+                            data.addStateData(state);
+                            specimenDescription.addElement(data);
+                        }
+                    }
+                    if (elementDto instanceof QuantitativeDataDto){
+                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        QuantitativeData data = QuantitativeData.NewInstance(feature);
+                        for (StatisticalMeasurementValueDto stateDto:((QuantitativeDataDto) elementDto).getValues()){
+                            StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, stateDto.getType().getUuid());
+                            StatisticalMeasurementValue value = StatisticalMeasurementValue.NewInstance(statMeasure, stateDto.getValue());
+                            data.addStatisticalValue(value);
+                            specimenDescription.addElement(data);
+                        }
+                    }
+                }
+
             }else {
-                specimen.addDescription(specimenDescription);
+                List<DescriptionElementDto> elementDtos = descriptionDto.getElements();
+                for (DescriptionElementDto elementDto: elementDtos){
+                    if (elementDto instanceof CategoricalDataDto){
+                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        List<DescriptionElementBase> uniqueElementList = specimenDescription.getElements().stream().filter(element -> element.getUuid().equals(elementDto.getElementUuid())).collect(Collectors.toList());
+                        List<State> allStates = new ArrayList<>();
+                        CategoricalData element = null;
+                        if (uniqueElementList.size() == 1){
+                            element = HibernateProxyHelper.deproxy(uniqueElementList.get(0), CategoricalData.class);
+                        }else{
+                            element = CategoricalData.NewInstance(feature);
+                        }
+                        for (StateDataDto stateDto:((CategoricalDataDto) elementDto).getStates()){
+                            State state = DefinedTermBase.getTermByClassAndUUID(State.class, stateDto.getState().getUuid());
+                            allStates.add(state);
+                        }
+                        element.setStateDataOnly(allStates);
+                    }
+                }
             }
 //            SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, wrapper.getTaxonNode().getUuid(), datasetUuid);
             if(wrapper==null){
-                result.addException(new IllegalArgumentException("Could not create wrapper for "+wrapper.getDescription().getDescription()));
+                result.addException(new IllegalArgumentException("Could not create wrapper for "+wrapper.getDescription()));
                 continue;
             }
             //add specimen description to data set
@@ -356,7 +422,7 @@ public class DescriptiveDataSetService
         TaxonRowWrapperDTO taxonRowWrapper = defaultTaxonDescription != null
                 ? createTaxonRowWrapper(defaultTaxonDescription.getUuid(), descriptiveDataSet.getUuid()) : null;
 //                use description not specimen for specimenRow
-        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(new DescriptionBaseDto(description), specimen.getRecordBasis(), new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
+        SpecimenRowWrapperDTO specimenRowWrapperDTO = new SpecimenRowWrapperDTO(DescriptionBaseDto.fromDescription(description), SpecimenOrObservationDTOFactory.fromEntity(specimen), specimen.getRecordBasis(), new TaxonNodeDto(taxonNode), fieldUnit, identifier, country);
         specimenRowWrapperDTO.setDefaultDescription(taxonRowWrapper);
         return specimenRowWrapperDTO;
     }
@@ -584,8 +650,8 @@ public class DescriptiveDataSetService
     }
 
     @Override
-    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid){
-        return termDao.getSupportedStatesForFeature(featureUuid);
+    public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids){
+        return termDao.getSupportedStatesForFeature(featureUuids);
     }
 
     @Override

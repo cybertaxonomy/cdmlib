@@ -33,7 +33,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
     private String identifier;
     private NamedArea country;
 
-    public SpecimenRowWrapperDTO(DescriptionBaseDto description, SpecimenOrObservationType type, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
+    public SpecimenRowWrapperDTO(DescriptionBaseDto description, SpecimenOrObservationBaseDTO specimen, SpecimenOrObservationType type, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
                 NamedArea country) {
         super(description, taxonNode);
         if (fieldUnit != null){
@@ -41,14 +41,14 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
         }
         this.identifier = identifier;
         this.country = country;
-        this.specimenDto = description.getSpecimenDto();
+        this.specimenDto = specimen;
         this.type = type;
     }
 
 
     public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, FieldUnit fieldUnit, String identifier,
             NamedArea country) {
-        super(new DescriptionBaseDto(specimen), taxonNode);
+        super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode);
         if (fieldUnit != null){
             this.fieldUnit = new UuidAndTitleCache<>(fieldUnit.getUuid(), fieldUnit.getId(), fieldUnit.getTitleCache());
         }
@@ -60,7 +60,7 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
     public SpecimenRowWrapperDTO(SpecimenOrObservationBase specimen, TaxonNodeDto taxonNode, UuidAndTitleCache<FieldUnit> fieldUnit, String identifier,
             NamedArea country) {
-    super(new DescriptionBaseDto(specimen), taxonNode);
+    super(new DescriptionBaseDto(new UuidAndTitleCache<SpecimenOrObservationBase>(specimen.getUuid(), specimen.getId(), specimen.getTitleCache())), taxonNode);
     if (fieldUnit != null){
         this.fieldUnit = fieldUnit;
     }

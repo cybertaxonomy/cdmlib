@@ -17,24 +17,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import eu.etaxonomy.cdm.api.service.description.MissingMaximumMode;
-import eu.etaxonomy.cdm.api.service.description.MissingMinimumMode;
-import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import org.apache.commons.lang3.StringUtils;
+
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
+import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
 
 /**
  * @author pplitzner
@@ -44,11 +40,11 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     private static final long serialVersionUID = -7817164423660563673L;
 
-    protected DescriptionBaseDto description;
+    private DescriptionBaseDto description;
 
     private TaxonNodeDto taxonNode;
-    private Map<Feature, DescriptionElementBase> featureToElementMap;
-    private Map<Feature, Collection<String>> featureToDisplayDataMap;
+    private Map<UUID, DescriptionElementDto> featureToElementMap;
+    private Map<UUID, Collection<String>> featureToDisplayDataMap;
 
     public RowWrapperDTO(DescriptionBaseDto specimenDescription, TaxonNodeDto taxonNode) {
         this.taxonNode = taxonNode;
@@ -56,30 +52,32 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         this.featureToDisplayDataMap = new HashMap<>();
         this.description = specimenDescription;
 
-        Set<DescriptionElementBase> elements = specimenDescription.getDescription().getElements();
-        for (DescriptionElementBase descriptionElementBase : elements) {
-            if(hasData(descriptionElementBase)){
-                Feature feature = descriptionElementBase.getFeature();
-                featureToElementMap.put(feature, descriptionElementBase);
+        List<DescriptionElementDto> elements = specimenDescription.getElements();
+        if (elements != null){
+            for (DescriptionElementDto descriptionElementBase : elements) {
+    //            if(hasData(descriptionElementBase)){
+                UUID featureUuid = descriptionElementBase.getFeatureUuid();
+                featureToElementMap.put(featureUuid, descriptionElementBase);
                 Collection<String> displayData = generateDisplayString(descriptionElementBase);
                 if(displayData!=null){
-                    featureToDisplayDataMap.put(feature, displayData);
+                    featureToDisplayDataMap.put(featureUuid, displayData);
                 }
+
             }
         }
     }
 
-    public QuantitativeData addQuantitativeData(Feature feature){
-        QuantitativeData data = QuantitativeData.NewInstance(feature);
-        description.getDescription().addElement(data);
-        featureToElementMap.put(feature, data);
+    public QuantitativeDataDto addQuantitativeData(FeatureDto feature){
+        QuantitativeDataDto data = new QuantitativeDataDto(feature);
+        description.addElement(data);
+        featureToElementMap.put(feature.getUuid(), data);
         return data;
     }
 
-    public CategoricalData addCategoricalData(Feature feature){
-        CategoricalData data = CategoricalData.NewInstance(feature);
-        description.getDescription().addElement(data);
-        featureToElementMap.put(feature, data);
+    public CategoricalDataDto addCategoricalData(FeatureDto feature){
+        CategoricalDataDto data = new CategoricalDataDto(feature);
+        description.addElement(data);
+        featureToElementMap.put(feature.getUuid(), data);
         return data;
     }
 
@@ -87,48 +85,70 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return description;
     }
 
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(DescriptionBaseDto description) {
+        this.description = description;
+    }
+
     public TaxonNodeDto getTaxonNode() {
         return taxonNode;
     }
 
-    public Collection<String> getDisplayDataForFeature(Feature feature){
-        return featureToDisplayDataMap.get(feature);
+    public Collection<String> getDisplayDataForFeature(UUID featureUuid){
+        return featureToDisplayDataMap.get(featureUuid);
     }
 
-    public DescriptionElementBase getDataValueForFeature(Feature feature){
-        DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
+    public DescriptionElementDto getDataValueForFeature(UUID featureUuid){
+        DescriptionElementDto descriptionElementBase = featureToElementMap.get(featureUuid);
         return descriptionElementBase;
     }
 
-    private Collection<String> generateDisplayString(DescriptionElementBase descriptionElementBase){
+//    private Collection<String> generateDisplayString(DescriptionElementBase descriptionElementBase){
+//        Collection<String> displayData = new ArrayList<>();
+//        if(descriptionElementBase instanceof CategoricalData){
+//            CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
+//            displayData = categoricalData.getStateData().stream()
+//                    .map(stateData->generateStateDataString(stateData))
+//                    .collect(Collectors.toList());
+//        }
+//        if(descriptionElementBase instanceof QuantitativeData){
+//            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
+//            displayData = Collections.singleton(generateQuantitativeDataString(quantitativeData));
+//        }
+//        return displayData;
+//    }
+
+    private Collection<String> generateDisplayString(DescriptionElementDto descriptionElementBase){
         Collection<String> displayData = new ArrayList<>();
-        if(descriptionElementBase instanceof CategoricalData){
-            CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
-            displayData = categoricalData.getStateData().stream()
+        if(descriptionElementBase instanceof CategoricalDataDto){
+            CategoricalDataDto categoricalData = (CategoricalDataDto)descriptionElementBase;
+            displayData = categoricalData.getStates().stream()
                     .map(stateData->generateStateDataString(stateData))
                     .collect(Collectors.toList());
         }
-        if(descriptionElementBase instanceof QuantitativeData){
-            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
+        if(descriptionElementBase instanceof QuantitativeDataDto){
+            QuantitativeDataDto quantitativeData = (QuantitativeDataDto)descriptionElementBase;
             displayData = Collections.singleton(generateQuantitativeDataString(quantitativeData));
         }
         return displayData;
     }
 
-    private String generateQuantitativeDataString(QuantitativeData quantitativeData) {
+    private String generateQuantitativeDataString(QuantitativeDataDto quantitativeData) {
         String displayData;
         displayData = "";
-        BigDecimal min = quantitativeData.getMin();
-        BigDecimal max = quantitativeData.getMax();
+        BigDecimal min = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.MIN().getUuid());
+        BigDecimal max = quantitativeData.getSpecificStatisticalValue(StatisticalMeasure.MAX().getUuid());
         if(min!=null||max!=null){
             displayData += "["+(min!=null?min.toString():"?")+"-"+(max!=null?max.toString():"?")+"] ";
         }
-        displayData += quantitativeData.getStatisticalValues().stream()
-                .filter(value->value.getType().equals(StatisticalMeasure.EXACT_VALUE()))
+        displayData += quantitativeData.getValues().stream()
+                .filter(value->value.getType().getUuid().equals(StatisticalMeasure.EXACT_VALUE().getUuid()))
                 .map(exact->exact.getValue().toString())
                 .collect(Collectors.joining(", "));
-        if (quantitativeData.getUnit() != null){
-            displayData += " "+ quantitativeData.getUnit().getIdInVocabulary();
+        if (quantitativeData.getMeasurementUnit() != null && StringUtils.isNotBlank(displayData)){
+            displayData += " "+ quantitativeData.getMeasurementIdInVocabulary();
         }
         return displayData;
     }
@@ -138,54 +158,67 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                 +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
     }
 
-    public void setDataValueForCategoricalData(Feature feature, List<State> states){
-        DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
+    private String generateStateDataString(StateDataDto stateData) {
+        return (stateData.getState()!=null?stateData.getState().getTitleCache():"[no state]")
+                +(stateData.getCount()!=null?" ("+stateData.getCount()+")":"");
+    }
+
+    public void setDataValueForCategoricalData(UUID featureUuid, List<TermDto> states){
+        DescriptionElementDto descriptionElementBase = featureToElementMap.get(featureUuid);
         if(states.isEmpty()){
-            removeFeature(feature, descriptionElementBase);
+            removeFeature(featureUuid, descriptionElementBase);
             return;
         }
-        if(descriptionElementBase!=null && descriptionElementBase.isInstanceOf(CategoricalData.class)){
-            CategoricalData categoricalData = HibernateProxyHelper.deproxy(descriptionElementBase, CategoricalData.class);
+        if(descriptionElementBase!=null && descriptionElementBase instanceof CategoricalDataDto){
+            CategoricalDataDto categoricalData = (CategoricalDataDto)descriptionElementBase;
             categoricalData.setStateDataOnly(states);
             // update display data cache
-            featureToDisplayDataMap.put(feature, generateDisplayString(categoricalData));
+            featureToDisplayDataMap.put(featureUuid, generateDisplayString(categoricalData));
         }
     }
 
-    private void removeFeature(Feature feature, DescriptionElementBase descriptionElementBase) {
-        featureToElementMap.remove(feature);
-        featureToDisplayDataMap.remove(feature);
+    private void removeFeature(UUID featureUuid, DescriptionElementDto descriptionElementBase) {
+        featureToElementMap.remove(featureUuid);
+        featureToDisplayDataMap.remove(featureUuid);
         if(descriptionElementBase!=null){
-            description.getDescription().removeElement(descriptionElementBase);
+            description.getElements().remove(descriptionElementBase);
         }
     }
 
-    public void setDataValueForQuantitativeData(Feature feature, Map<StatisticalMeasure, List<String>> textFields, MeasurementUnit unit){
-        DescriptionElementBase descriptionElementBase = featureToElementMap.get(feature);
+    public void setDataValueForQuantitativeData(UUID featureUuid, Map<TermDto, List<String>> textFields, TermDto unit){
+        DescriptionElementDto descriptionElementBase = featureToElementMap.get(featureUuid);
         if(textFields.values().stream().allMatch(listOfStrings->listOfStrings.isEmpty())){
-            removeFeature(feature, descriptionElementBase);
+            removeFeature(featureUuid, descriptionElementBase);
             return;
         }
-        if(descriptionElementBase.isInstanceOf(QuantitativeData.class)){
-            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
+        if(descriptionElementBase instanceof QuantitativeDataDto){
+            QuantitativeDataDto quantitativeData = (QuantitativeDataDto)descriptionElementBase;
             //clear values
-            quantitativeData.getStatisticalValues().clear();
+            quantitativeData.getValues().clear();
+            quantitativeData.setMeasurementUnit(unit);
             //add back all values from text fields
             textFields.forEach((measure, texts)->{
                 texts.forEach(text->{
                     String string = text;
                     try {
-                        BigDecimal exactValue = new BigDecimal(string);
-                        quantitativeData.addStatisticalValue(StatisticalMeasurementValue.NewInstance(measure, exactValue));
+                        if (StringUtils.isNotBlank(string)){
+                            BigDecimal exactValue = new BigDecimal(string);
+    //                        StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance(measure, exactValue);
+                            StatisticalMeasurementValueDto newValueDto = new StatisticalMeasurementValueDto(measure, exactValue);
+    //                                StatisticalMeasurementValueDto.fromStatisticalMeasurementValue(newValue);
+                            quantitativeData.getValues().add(newValueDto);
+                        }
                     } catch (NumberFormatException e) {
                     }
                 });
             });
-            QuantitativeData fixedQuantitativeData = StructuredDescriptionAggregation.handleMissingMinOrMax(quantitativeData,
-                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
+
+            //TODO: move to merge?
+//            QuantitativeData fixedQuantitativeData = StructuredDescriptionAggregation.handleMissingMinOrMax(quantitativeData,
+//                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
             // update display data cache
-            fixedQuantitativeData.setUnit(unit);
-            featureToDisplayDataMap.put(feature, generateDisplayString(fixedQuantitativeData));
+//            fixedQuantitativeData.setUnit(unit);
+            featureToDisplayDataMap.put(featureUuid, generateDisplayString(quantitativeData));
         }
     }
 
@@ -235,14 +268,22 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return true;
     }
 
-    public static boolean hasData(DescriptionElementBase element){
-        if(element.isInstanceOf(CategoricalData.class)){
-            CategoricalData categoricalData = HibernateProxyHelper.deproxy(element, CategoricalData.class);
-            return !categoricalData.getStatesOnly().isEmpty();
+    public static boolean hasData(DescriptionElementDto element){
+        if(element instanceof CategoricalDataDto){
+            return !((CategoricalDataDto)element).getStates().isEmpty();
         }
-        else if(element.isInstanceOf(QuantitativeData.class)){
-            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(element, QuantitativeData.class);
-            return !quantitativeData.getStatisticalValues().isEmpty();
+        else if(element instanceof QuantitativeDataDto){
+            return !((QuantitativeDataDto)element).getValues().isEmpty();
+        }
+        return false;
+    }
+
+    public static boolean hasData(DescriptionElementBase element){
+        if(element instanceof CategoricalData){
+            return !((CategoricalData)element).getStatesOnly().isEmpty();
+        }
+        else if(element instanceof QuantitativeData){
+            return !((QuantitativeData)element).getStatisticalValues().isEmpty();
         }
         return false;
     }

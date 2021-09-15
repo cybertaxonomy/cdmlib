@@ -153,9 +153,14 @@ public class TermNodeServiceImpl
 	     UpdateResult result = new UpdateResult();
 
 	     TermNode node = load(nodeUUID);
+	     if (node == null){
+	         result.setError();
+             result.addException(new Exception("The parent node does not exist."));
+             return result;
+	     }
 	     DefinedTermBase child = HibernateProxyHelper.deproxy(termService.load(termChildUuid), DefinedTermBase.class);
 
-	     if(!node.getGraph().isAllowDuplicates() && node.getGraph().getDistinctTerms().contains(child)){
+	     if(node != null && node.getGraph() != null && !node.getGraph().isAllowDuplicates() && node.getGraph().getDistinctTerms().contains(child)){
 	         result.setError();
 	         result.addException(new Exception("This term tree does not allow duplicate terms."));
 	         return result;

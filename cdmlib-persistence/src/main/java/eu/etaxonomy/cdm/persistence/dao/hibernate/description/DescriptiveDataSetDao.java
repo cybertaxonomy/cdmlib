@@ -13,6 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,13 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptiveDataSetDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
+import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 @Repository
@@ -33,6 +41,15 @@ public class DescriptiveDataSetDao
         extends IdentifiableDaoBase<DescriptiveDataSet>
         implements IDescriptiveDataSetDao {
 	private static final Logger logger = Logger.getLogger(DescriptiveDataSetDao.class);
+
+	 @Autowired
+	 private ITermTreeDao termTreeDao;
+
+	 @Autowired
+     private IDefinedTermDao termDao;
+
+	 @Autowired
+     private ITaxonNodeDao nodeDao;
 
 	public DescriptiveDataSetDao() {
 		super(DescriptiveDataSet.class);
@@ -200,5 +217,70 @@ public class DescriptiveDataSetDao
         }
 
         return list;
+    }
+
+    private List<UUID> getNodeUuidsForDescriptiveDataSet(UUID uuid) {
+        Session session = getSession();
+
+        String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.taxonSubtreeFilter as t WHERE a.uuid = :uuid";
+
+
+        Query query;
+        query = session.createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+
+        @SuppressWarnings("unchecked")
+        List<UUID> result = query.list();
+        List<UUID> list = new ArrayList<>();
+        for(UUID object : result){
+            list.add(object);
+        }
+
+        return list;
+    }
+
+
+
+    @Override
+    public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
+        String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
+                + " WHERE a.uuid = :uuid"
+                + " ORDER BY a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<DescriptiveDataSetBaseDto> list = DescriptiveDataSetBaseDto.descriptiveDataSetBaseDtoListFrom(result);
+        UUID descriptiveSystemUuid = null;
+        UUID minRankUuid = null;
+        UUID maxRankUuid = null;
+        if (result != null && !result.isEmpty()){
+            Object[] descriptiveDataSetResult = result.get(0);
+            descriptiveSystemUuid = (UUID)descriptiveDataSetResult[4];
+            minRankUuid = (UUID)descriptiveDataSetResult[5];
+            maxRankUuid = (UUID)descriptiveDataSetResult[6];
+        }else{
+            return null;
+        }
+        //get descriptiveSystem
+        DescriptiveDataSetBaseDto dto = list.get(0);
+        if (descriptiveSystemUuid != null){
+            TermTreeDto treeDto = termTreeDao.getTermTreeDtosByUuid(descriptiveSystemUuid);
+            dto.setDescriptiveSystem(treeDto);
+        }
+        //get taxon nodes
+        List<UUID> nodeUuids = getNodeUuidsForDescriptiveDataSet(uuid);
+        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtos(nodeUuids);
+        Set<TaxonNodeDto> nodeSet = new HashSet<>(nodeDtos);
+        dto.setSubTreeFilter(nodeSet);
+
+        TermDto minRank = termDao.getTermDto(minRankUuid);
+        TermDto maxRank = termDao.getTermDto(maxRankUuid);
+        dto.setMaxRank(maxRank);
+        dto.setMinRank(minRank);
+        return dto;
     }
 }

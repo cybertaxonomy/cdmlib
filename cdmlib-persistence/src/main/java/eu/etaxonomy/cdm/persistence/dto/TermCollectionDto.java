@@ -33,6 +33,7 @@ public class TermCollectionDto extends AbstractTermDto {
     private boolean containsDuplicates = false;
     private boolean isOrderRelevant;
     private boolean isFlat;
+    private boolean isAllowModifications = true;
 
     public TermCollectionDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, titleCache);
@@ -138,8 +139,10 @@ public class TermCollectionDto extends AbstractTermDto {
                 + "a.orderRelevant,"
                 + "a.isFlat "
 
+
                 + "FROM "+fromTable+" as a "
                 + "LEFT JOIN a.representations AS r ";
+
     }
 
 

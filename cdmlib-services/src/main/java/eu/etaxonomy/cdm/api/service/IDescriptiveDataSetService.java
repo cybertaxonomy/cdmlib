@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -142,7 +143,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param featureUuid the feature which has to support categorical data
      * @return list of all supported states
      */
-    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
+    public Map<UUID,List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids);
 
     /**
      * Creates a new taxon description with the features defined in the dataset for the
@@ -207,5 +208,11 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      */
     DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid,
             RemoveDescriptionsFromDescriptiveDataSetConfigurator config);
+
+    /**
+     * @param uuid
+     * @return
+     */
+    DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid);
 
 }

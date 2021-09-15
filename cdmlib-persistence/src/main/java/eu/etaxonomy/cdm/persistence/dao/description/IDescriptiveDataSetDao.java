@@ -12,6 +12,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 public interface IDescriptiveDataSetDao extends IIdentifiableDao<DescriptiveDataSet> {
@@ -30,4 +31,10 @@ public interface IDescriptiveDataSetDao extends IIdentifiableDao<DescriptiveData
 	@Deprecated
     public List<UuidAndTitleCache<DescriptiveDataSet>> getDescriptiveDataSetUuidAndTitleCache(Integer limitOfInitialElements,
             String pattern);
+
+    /**
+     * @param uuid
+     * @return
+     */
+    DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid);
 }

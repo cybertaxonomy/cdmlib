@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -708,9 +709,14 @@ public class TermNode <T extends DefinedTermBase>
 
 	void updateSortIndex(){
 	 // TODO workaround (see sortIndex doc)
-        for (int i = 0; i < children.size(); i++) {
-            children.get(i).setSortIndex(i);
+	    try{
+	        for (int i = 0; i < children.size(); i++) {
+	            children.get(i).setSortIndex(i);
+	        }
+	    } catch (LazyInitializationException e) {
+            logger.info("Cannot clean up uninitialized children without a session, skipping.");
         }
+
 	}
 
 	public void removeNullValueFromChildren(){

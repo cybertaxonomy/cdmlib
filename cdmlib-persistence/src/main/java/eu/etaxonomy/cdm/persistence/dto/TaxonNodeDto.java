@@ -87,6 +87,11 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(uuid, id, titleCache);
     }
 
+    public TaxonNodeDto(UUID uuid, Integer id, String titleCache, Integer rankOrderIndex) {
+        super(uuid, id, titleCache);
+        this.rankOrderIndex = rankOrderIndex;
+    }
+
     public TaxonNodeDto(Class type, ITaxonTreeNode taxonTreeNode) {
         super(type, taxonTreeNode.getUuid(), taxonTreeNode.getId(), null);
         Taxon taxon = null;

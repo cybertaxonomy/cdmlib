@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -220,6 +221,8 @@ public interface IDefinedTermDao
      */
     public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
 
+    public TermDto getTermDto(UUID uuid);
+
 
     /**
      * Returns a collection of {@link TermDto}s that match the given search parameters.
@@ -239,11 +242,11 @@ public interface IDefinedTermDao
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
 
     /**
-     * Returns all states for all supportedCategoricalEnumeration of this categorical feature
-     * @param featureUuid the feature which has to support categorical data
-     * @return list of all supported states
+     * Returns all states for all supportedCategoricalEnumeration of the categorical features
+     * @param set of featureUuids the feature which has to support categorical data
+     * @return map of lists of all supported states
      */
-    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
+    public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids);
 
     public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
 
@@ -252,5 +255,7 @@ public interface IDefinedTermDao
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);
 
     public Collection<TermDto> findFeatureByTitleAsDto(String pattern);
+
+    public TermDto findByUUIDAsDto(UUID uuid);
 
 }

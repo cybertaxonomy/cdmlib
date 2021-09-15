@@ -18,14 +18,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.description.MissingMaximumMode;
+import eu.etaxonomy.cdm.api.service.description.MissingMinimumMode;
+import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregation;
+import eu.etaxonomy.cdm.api.service.dto.CategoricalDataDto;
 import eu.etaxonomy.cdm.api.service.dto.DescriptionBaseDto;
+import eu.etaxonomy.cdm.api.service.dto.DescriptionElementDto;
+import eu.etaxonomy.cdm.api.service.dto.QuantitativeDataDto;
+import eu.etaxonomy.cdm.api.service.dto.StateDataDto;
+import eu.etaxonomy.cdm.api.service.dto.StatisticalMeasurementValueDto;
 import eu.etaxonomy.cdm.api.service.dto.TaxonDistributionDTO;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -41,6 +51,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -48,7 +59,12 @@ import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -60,6 +76,7 @@ import eu.etaxonomy.cdm.model.reference.CdmLinkSource;
 import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -434,7 +451,8 @@ public class DescriptionServiceImpl
         }
         MergeResult<DescriptionBase> mergeResult = null;
         for(DescriptionBaseDto descDto : descriptions) {
-            DescriptionBase description = descDto.getDescription();
+            UUID descriptionUUID = descDto.getDescriptionUuid();
+            DescriptionBase description = load(descriptionUUID);
             UUID describedObjectUuid = null;
             if (description instanceof SpecimenDescription){
                 describedObjectUuid = descDto.getSpecimenDto().getUuid();
@@ -443,16 +461,116 @@ public class DescriptionServiceImpl
             }else if (description instanceof TaxonNameDescription){
                 describedObjectUuid = descDto.getNameDto().getUuid();
             }
-            if (descriptionSpecimenMap.get(describedObjectUuid) != null && !descriptionSpecimenMap.get(describedObjectUuid).equals(description)){
-                Set<DescriptionElementBase> elements = new HashSet();
-                for (Object element: description.getElements()){
-                    elements.add((DescriptionElementBase)element);
+
+            DescriptionBase descSpecimen = descriptionSpecimenMap.get(describedObjectUuid);
+
+            if (descSpecimen != null ){
+
+//                TODO: elements are Dtos now, no cdm entities, needs to get the value and replace or create new description element
+                Set<DescriptionElementDto> elements = new HashSet<>();
+                for (Object element: descDto.getElements()){
+                    elements.add((DescriptionElementDto)element);
                 }
                 DescriptionBase desc = descriptionSpecimenMap.get(describedObjectUuid);
 //                description.setDescribedSpecimenOrObservation(null);
+                Set<DescriptionElementBase> descriptionElements = desc.getElements();
+                for (DescriptionElementDto descElement: elements){
+                    UUID descElementUuid = descElement.getElementUuid();
+                    List<DescriptionElementBase> equalUuidsElements = descriptionElements.stream().filter( e -> e.getUuid().equals(descElementUuid)).collect(Collectors.toList());
+                    eu.etaxonomy.cdm.model.description.Feature feature =  DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Feature.class, descElement.getFeatureUuid());
+                    if (feature == null){
+                        feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, descElement.getFeatureUuid());
+                    }
+                    if (equalUuidsElements.size() == 0){
+                        if (descElement instanceof CategoricalDataDto){
 
-                for (DescriptionElementBase element: elements){
-                    desc.addElement(element);
+                            CategoricalData elementBase = CategoricalData.NewInstance(feature);
+                            List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
+                            for (StateDataDto dataDto: stateDtos){
+                                //create new statedata
+                                State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
+                                StateData newStateData = StateData.NewInstance(newState);
+                                elementBase.addStateData(newStateData);
+                            }
+                            desc.addElement(elementBase);
+                        }
+                        if (descElement instanceof QuantitativeDataDto){
+
+                            QuantitativeData data = QuantitativeData.NewInstance(feature);
+
+                            Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
+                            Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
+                            data.getStatisticalValues().clear();
+                            for (StatisticalMeasurementValueDto dataDto: valueDtos){
+                                //create new statedata
+                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid()), dataDto.getValue());
+                                statisticalValues.add(newStatisticalMeasurement);
+                                data.addStatisticalValue(newStatisticalMeasurement);
+                            }
+
+//                            data.getStatisticalValues().addAll(statisticalValues);
+                            data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
+                                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
+                            desc.addElement(data);
+                        }
+
+                        //create new element
+                    }else{
+                        DescriptionElementBase elementBase = equalUuidsElements.get(0);
+                        if (elementBase.isInstanceOf(CategoricalData.class)){
+                            CategoricalData data = HibernateProxyHelper.deproxy(elementBase, CategoricalData.class);
+                            List<StateData> states = new ArrayList<>(data.getStateData());
+                            List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
+                            data.getStateData().clear();
+                            for (StateDataDto dataDto: stateDtos){
+                                List<StateData> equalUuidsStateData = states.stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
+//                                if (equalUuidsStateData.size() == 1){
+//                                    //do nothing because state already exist
+//                                }else if (equalUuidsStateData.isEmpty()){
+                                    //create new statedata
+                                    State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
+                                    StateData newStateData = StateData.NewInstance(newState);
+                                    data.addStateData(newStateData);
+//                                }
+
+
+                            }
+                          //delete removed state data
+//                            Set<StateData> toRemove = new HashSet<>();
+//                            for (StateData stateData:states){
+////                                List<StateDataDto> equalUuidsStateData = new ArrayList<>();
+////                                for (StateDataDto dto: stateDtos){
+////                                    if (dto.getUuid() == stateData.getUuid()){
+////                                        equalUuidsStateData.add(dto);
+////                                    }
+////                                }
+//                                List<StateDataDto> equalUuidsStateData = stateDtos.stream().filter( e -> e.getUuid() == stateData.getUuid()).collect(Collectors.toList());
+//                                if (equalUuidsStateData.size() == 0){
+//                                    toRemove.add(stateData);
+//                                }
+//                            }
+//                            for (StateData remove: toRemove){
+//                                data.removeStateData(remove);
+//                            }
+                        }else if (elementBase.isInstanceOf(QuantitativeData.class)){
+                            QuantitativeData data = HibernateProxyHelper.deproxy(elementBase, QuantitativeData.class);
+
+                            Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
+                            Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
+                            data.getStatisticalValues().clear();
+                            for (StatisticalMeasurementValueDto dataDto: valueDtos){
+                                //create new statedata
+                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid()), dataDto.getValue());
+                                statisticalValues.add(newStatisticalMeasurement);
+                                data.addStatisticalValue(newStatisticalMeasurement);
+                            }
+
+//                            data.getStatisticalValues().addAll(statisticalValues);
+                            data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
+                                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
+
+                        }
+                    }
                 }
                 descriptionSpecimenMap.put(describedObjectUuid, desc);
                 description = desc;
@@ -961,6 +1079,39 @@ public class DescriptionServiceImpl
 
         targetTaxon.addDescription(prepareDescriptionForMove(description, sourceTaxon, setNameInSource));
         return result;
+
+    }
+
+    @Override
+    public DescriptionBaseDto loadDto(UUID descriptionUuid) {
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoSelect();
+        Query query =  getSession().createQuery(sqlSelect);
+        query.setParameter("uuid", descriptionUuid);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
+
+        if (list.size()== 1){
+            return list.get(0);
+        }else{
+            return null;
+        }
+
+    }
+
+    @Override
+    public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid) {
+        String sqlSelect =  DescriptionBaseDto.getDescriptionBaseDtoForTaxonSelect(taxonUuid);
+        Query query =  getSession().createQuery(sqlSelect);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<DescriptionBaseDto> list = DescriptionBaseDto.descriptionBaseDtoListFrom(result);
+
+        return list;
 
     }
 

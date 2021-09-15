@@ -1181,6 +1181,101 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     }
 
     @Override
+    public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid) {
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + "tn.uuid, tn.id, t.titleCache, rank "
+                + ") "
+                + " FROM TaxonNode tn "
+                + "   INNER JOIN tn.taxon AS t "
+                + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN name.rank AS rank "
+                + " WHERE t.uuid LIKE :uuid ";
+
+
+        Query query =  getSession().createQuery(queryString);
+
+        query.setParameter("uuid", nodeUuid.toString());
+
+
+        @SuppressWarnings("unchecked")
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+
+        List<TaxonNodeDto> list = new ArrayList<>();
+        for(SortableTaxonNodeQueryResult queryDTO : result){
+            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache()));
+        }
+        return list.get(0);
+    }
+
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + "tn.uuid, tn.id, t.titleCache, rank "
+                + ") "
+                + " FROM TaxonNode tn "
+                + "   INNER JOIN tn.taxon AS t "
+                + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN name.rank AS rank "
+                + " WHERE t.uuid IN (:uuid) ";
+
+
+        Query query =  getSession().createQuery(queryString);
+//        List<String> uuidStrings = nodeUuids.stream().map(e -> e.toString()).collect(Collectors.toList());
+
+        query.setParameterList("uuid", nodeUuids);
+
+
+        @SuppressWarnings("unchecked")
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+
+        List<TaxonNodeDto> list = new ArrayList<>();
+        for(SortableTaxonNodeQueryResult queryDTO : result){
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex());
+
+            list.add(nodeDto);
+        }
+        return list;
+    }
+
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(UUID taxonUUID, UUID classificationUuid) {
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + "tn.uuid, tn.id, t.titleCache, rank "
+                + ") "
+                + " FROM TaxonNode tn "
+                + "   INNER JOIN tn.taxon AS t "
+                + "   INNER JOIN tn.classification AS cls "
+                + "   INNER JOIN tn.taxon AS t "
+                + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN name.rank AS rank "
+//                + "   LEFT OUTER JOIN tn.taxon.name.rank AS rank "
+                + " WHERE t.uuid = :uuid ";
+        if(classificationUuid != null){
+            queryString += "AND cls.uuid = :classificationUuid";
+        }
+
+        Query query =  getSession().createQuery(queryString);
+
+        query.setParameter("uuid", taxonUUID);
+        if(classificationUuid != null){
+            query.setParameter("classificationUuid", classificationUuid);
+        }
+
+        @SuppressWarnings("unchecked")
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+
+        List<TaxonNodeDto> list = new ArrayList<>();
+        for(SortableTaxonNodeQueryResult queryDTO : result){
+            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex()));
+        }
+        return list;
+    }
+
+
+    @Override
     public List<TaxonNodeDto> getUuidAndTitleCache(Integer limit, String pattern, UUID classificationUuid) {
         return getUuidAndTitleCache(limit, pattern, classificationUuid, false);
     }

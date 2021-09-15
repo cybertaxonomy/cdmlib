@@ -64,6 +64,12 @@ public class TermTreeDto extends TermCollectionDto {
         return result[0]+result[1]+result[2];
     }
 
+    public static String getTermTreeDtoSelectForDescriptiveDataSet(){
+        String[] result = createSqlPartsForDescriptiveDataSet();
+
+        return result[0]+result[1]+result[2];
+    }
+
     private static String[] createSqlParts() {
         String sqlSelectString = ""
                 + "select a.uuid, "
@@ -87,6 +93,33 @@ public class TermTreeDto extends TermCollectionDto {
         result[2] = sqlJoinString;
         return result;
     }
+
+
+    private static String[] createSqlPartsForDescriptiveDataSet() {
+        String sqlSelectString = ""
+                + "select a.uuid, "
+                + "r, "
+                + "a.termType,  "
+                + "a.uri,  "
+                + "root,  "
+                + "a.titleCache, "
+                + "a.allowDuplicates, "
+                + "a.orderRelevant, "
+                + "a.isFlat ";
+        String sqlFromString =   "from DescriptiveDataSet as d ";
+
+        String sqlJoinString =  "JOIN d.descriptiveSystem as a "
+               + "LEFT JOIN a.root as root "
+               + "LEFT JOIN a.representations AS r "
+                ;
+
+        String[] result = new String[3];
+        result[0] = sqlSelectString;
+        result[1] = sqlFromString;
+        result[2] = sqlJoinString;
+        return result;
+    }
+
 
     public static List<TermTreeDto> termTreeDtoListFrom(List<Object[]> results) {
         List<TermTreeDto> dtos = new ArrayList<>(); // list to ensure order

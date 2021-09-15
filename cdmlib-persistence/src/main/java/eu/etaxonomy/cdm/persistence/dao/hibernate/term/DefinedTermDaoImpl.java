@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -793,6 +795,29 @@ public class DefinedTermDaoImpl
     }
 
     @Override
+    public TermDto findByUUIDAsDto(UUID uuid) {
+        String queryString = TermDto.getTermDtoSelect()
+                + " where a.uuid like :uuid ";
+
+
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        if (list.size()== 1){
+            return list.get(0);
+        }else{
+            return null;
+        }
+
+    }
+
+
+    @Override
     public Collection<TermDto> findByTypeAsDto(TermType termType) {
         if (termType == null){
             return null;
@@ -834,31 +859,36 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid){
-        List<TermDto> list = new ArrayList<>();
-        String supportedCategoriesQueryString = "SELECT cat.uuid "
-                + "from DefinedTermBase t "
-                + "join t.supportedCategoricalEnumerations as cat "
-                + "where t.uuid = :featureUuid";
-        Query supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString);
-        supportedCategoriesQuery.setParameter("featureUuid", featureUuid);
-        @SuppressWarnings("unchecked")
-		List<UUID> supportedCategories = supportedCategoriesQuery.list();
-        if(supportedCategories.isEmpty()){
-            return list;
+    public  Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids){
+        Map<UUID, List<TermDto>> map = new HashMap<>();
+        for (UUID featureUuid: featureUuids){
+            List<TermDto> list = new ArrayList<>();
+            String supportedCategoriesQueryString = "SELECT cat.uuid "
+                    + "from DefinedTermBase t "
+                    + "join t.supportedCategoricalEnumerations as cat "
+                    + "where t.uuid = :featureUuid";
+            Query supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString);
+            supportedCategoriesQuery.setParameter("featureUuid", featureUuid);
+            @SuppressWarnings("unchecked")
+    		List<UUID> supportedCategories = supportedCategoriesQuery.list();
+            if(supportedCategories.isEmpty()){
+                map.put(featureUuid, list);
+                continue;
+            }
+
+            String queryString = TermDto.getTermDtoSelect()
+                    + "where v.uuid in (:supportedCategories) "
+                    + "order by a.titleCache";
+            Query query =  getSession().createQuery(queryString);
+            query.setParameterList("supportedCategories", supportedCategories);
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> result = query.list();
+
+            list = TermDto.termDtoListFrom(result);
+            map.put(featureUuid, list);
         }
-
-        String queryString = TermDto.getTermDtoSelect()
-                + "where v.uuid in (:supportedCategories) "
-                + "order by a.titleCache";
-        Query query =  getSession().createQuery(queryString);
-        query.setParameterList("supportedCategories", supportedCategories);
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
-
-        list = TermDto.termDtoListFrom(result);
-        return list;
+        return map;
     }
 
     @Override
@@ -918,5 +948,26 @@ public class DefinedTermDaoImpl
 
         List<TermDto> list = FeatureDto.termDtoListFrom(result);
         return list;
+    }
+
+    @Override
+    public TermDto getTermDto(UUID uuid) {
+        String queryString = TermDto.getTermDtoSelect()
+                + " where a.uuid = :uuid ";
+
+
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        TermDto dto = null;
+        List<TermDto> dtoList = TermDto.termDtoListFrom(result);
+        if (dtoList != null && !dtoList.isEmpty()){
+            dto = dtoList.get(0);
+        }
+        return dto;
     }
 }

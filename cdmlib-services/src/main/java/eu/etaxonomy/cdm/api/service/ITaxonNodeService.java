@@ -263,6 +263,8 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
     public TaxonNodeDto dto(UUID taxonNodeUuid);
 
+    public TaxonNodeDto dto(UUID taxonUuid, UUID classificationUuid);
+
     public <S extends TaxonNode> Pager<S> page(Class<S> clazz, List<Restriction<?>> restrictions, Integer pageSize, Integer pageIndex,
             List<OrderHint> orderHints, List<String> propertyPaths, boolean includeUnpublished);
 

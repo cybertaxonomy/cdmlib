@@ -120,7 +120,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param vocabularyUuid the id of the vocabulary
      * @return a collection of top level terms
      */
-    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type);
+    public List<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type);
 
     /**
      * Loads all terms for the given vocabulary

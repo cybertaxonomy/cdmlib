@@ -603,6 +603,14 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 
     public DeleteResult isDeletable(UUID descriptionUuid);
 
+    public DescriptionBaseDto loadDto(UUID descriptionUuid);
+
+    /**
+     * @param taxonUuid
+     * @return
+     */
+    List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid);
+
 
 
 }
