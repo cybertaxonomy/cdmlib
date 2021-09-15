@@ -36,7 +36,7 @@ public class MatchStrategyFactory {
 
             addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
 
-            //FIXME adapt for  for inRef authors
+            //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL);
 
             //FIXME adapt for inRef authors

@@ -461,7 +461,7 @@ public class Person extends TeamOrPersonBase<Person>{
         result |= updateNomenclaturalCache();
         result |= updateCollectorCache();
 
-         return result;
+        return result;
     }
 
     private boolean updateNomenclaturalCache() {

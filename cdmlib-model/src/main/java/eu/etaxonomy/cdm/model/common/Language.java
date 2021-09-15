@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 //@Indexed(index = "eu.etaxonomy.cdm.model.term.DefinedTermBase")
 @Audited
 public class Language extends DefinedTermBase<Language> {
+
     private static final long serialVersionUID = -5030610079904074217L;
     private static final Logger logger = Logger.getLogger(Language.class);
 

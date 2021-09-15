@@ -65,6 +65,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
     @Test
     public void testParsedPerson() throws MatchException {
+
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedPersonInstance();
         Assert.assertNotNull(matchStrategy);
         Person fullPerson;
@@ -72,18 +73,18 @@ public class MatchStrategyFactoryTest extends TermTestBase {
         MatchResult result;
 
         fullPerson = getDefaultFullPerson();
-
         //should match
         parsedPerson = getDefaultParsedPerson();
+
         result = matchStrategy.invoke(parsedPerson, fullPerson);
-        System.out.println(result);
+//        System.out.println(result);
         Assert.assertTrue("Same nom.title. should match", result.isSuccessful());
 
         //differing nom. title.
         parsedPerson.setNomenclaturalTitle("Wrong");
         result = matchStrategy.invoke(fullPerson, parsedPerson, FAIL_ALL);
-        System.out.println(result);
-        Assert.assertFalse("Differing nom.title. should not match",
+//        System.out.println(result);
+        Assert.assertFalse("Differing nom.title should not match",
                 matchStrategy.invoke(parsedPerson, fullPerson).isSuccessful());
 
         //differing family
@@ -147,6 +148,7 @@ public class MatchStrategyFactoryTest extends TermTestBase {
 
     @Test
     public void testParsedTeam() throws MatchException {
+
         IParsedMatchStrategy matchStrategy = MatchStrategyFactory.NewParsedTeamInstance();
         Assert.assertNotNull(matchStrategy);
         Team fullTeam;
