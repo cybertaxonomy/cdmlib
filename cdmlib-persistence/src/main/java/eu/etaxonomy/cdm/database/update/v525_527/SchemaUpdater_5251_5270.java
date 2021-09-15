@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.database.update.v525_527;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -17,6 +18,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v523_525.SchemaUpdater_5250_5251;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
 
@@ -64,6 +66,12 @@ public class SchemaUpdater_5251_5270 extends SchemaUpdaterBase {
 		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
 		//TODO update where rank = CultivarGroup
+
+		//#9755 Add Gp abbreviation to cultivar group rank
+		stepName = "Add abbrev to cultivar group rank";
+		UUID uuidTerm = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
+		UUID uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
+		TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm, null, null, "Gp", uuidLanguage, true);
 
         return stepList;
     }
