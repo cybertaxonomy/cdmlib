@@ -681,7 +681,8 @@ public class CdmGenericDaoImpl
 		boolean noMatch = false;
 		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
-			boolean cacheProtected = (Boolean)cacheMatcher.getProtectedField(matching).get(objectToMatch);
+		    Field protectedField = cacheMatcher.getProtectedField(matching);
+			boolean cacheProtected = protectedField == null ? false : (Boolean)protectedField.get(objectToMatch);
 			if (cacheProtected == true){
 				String cacheValue = (String)cacheMatcher.getField().get(objectToMatch);
 				if (StringUtils.isBlank(cacheValue)){
