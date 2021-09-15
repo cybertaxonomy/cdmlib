@@ -32,7 +32,6 @@ public class NamedAreaTest extends EntityTestBase {
 
 	private NamedArea namedArea1;
 	private NamedAreaLevel level1;
-	private NamedAreaType areaType1;
 
 	@Before
 	public void setUp() throws Exception {

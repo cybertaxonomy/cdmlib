@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @since 23.04.2008
  */
 public class MarkerTypeTest extends EntityTestBase {
+
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(MarkerTypeTest.class);
 
