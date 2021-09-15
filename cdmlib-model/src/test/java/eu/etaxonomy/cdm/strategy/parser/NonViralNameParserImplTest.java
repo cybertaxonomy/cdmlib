@@ -2342,11 +2342,11 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Abies 'Beryl, Viscountess Cowdray'", name.getNameCache());
         Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
 
-        cultivar = "Abies 'Jeanne d’Arc'";
+        cultivar = "Abies 'Jeanne d\u2019Arc'";
         name = (TaxonName)parser.parseFullName(cultivar);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
-        Assert.assertEquals("Jeanne d’Arc", name.getCultivarName());
-        Assert.assertEquals("Abies 'Jeanne d’Arc'", name.getNameCache());
+        Assert.assertEquals("Jeanne d\u2019Arc", name.getCultivarName());
+        Assert.assertEquals("Abies 'Jeanne d\u2019Arc'", name.getNameCache());
         Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
 
         cultivar = "Abies 'Oh Boy!'";
