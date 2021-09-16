@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TermRepresentationUpdater;
 import eu.etaxonomy.cdm.database.update.v523_525.SchemaUpdater_5250_5251;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.CdmVersion;
@@ -73,7 +74,11 @@ public class SchemaUpdater_5251_5270 extends SchemaUpdaterBase {
 		newColumnName = "cultivarGroupEpithet";
 		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
-		//TODO update where rank = CultivarGroup
+		//update where rank = CultivarGroup
+		String sql = "UPDATE @@TaxonName@@ "
+		        + " SET cultivarGroupEpithet = cultivarEpithet,  cultivarEpithet = null "
+		        + " WHERE rank_id IN (SELECT id FROM @@DefinedTermBase@@ r WHERE r.uuid = 'd763e7d3-e7de-4bb1-9d75-225ca6948659')";
+		SimpleSchemaUpdaterStep.NewAuditedInstance(stepList, stepName, sql, "TaxonName", -99);
 
 		//#9755 Add Gp abbreviation to cultivar group rank
 		stepName = "Add abbrev to cultivar group rank";
