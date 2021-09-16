@@ -288,7 +288,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
 
         //cultivar
         speciesName.setRank(Rank.CULTIVAR());
-        speciesName.setCultivarName("Cultus");
+        speciesName.setCultivarEpithet("Cultus");
         Assert.assertEquals("Abies alba 'Cultus'", strategy.getTitleCache(speciesName));
 
         speciesName.setBinomHybrid(true);
@@ -301,21 +301,21 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         //cultivar group
         speciesName.setRank(Rank.CULTIVARGROUP());
         Assert.assertEquals("Abies Group", strategy.getTitleCache(speciesName)); //not sure if this is correct for an empty group field
-        speciesName.setCultivarGroup("Cultus Group");
+        speciesName.setCultivarGroupEpithet("Cultus Group");
         Assert.assertEquals("Abies Cultus Group", strategy.getTitleCache(speciesName));
 
-        speciesName.setCultivarGroup("Cultus Gruppe");
+        speciesName.setCultivarGroupEpithet("Cultus Gruppe");
         Assert.assertEquals("Abies Cultus Gruppe", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarGroup("Cultus Gp");
+        speciesName.setCultivarGroupEpithet("Cultus Gp");
         Assert.assertEquals("Abies Cultus Gp", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarGroup("Gruppo Cultus");
+        speciesName.setCultivarGroupEpithet("Gruppo Cultus");
         Assert.assertEquals("Abies Gruppo Cultus", strategy.getTitleCache(speciesName));
-        speciesName.setCultivarGroup("Druppo Cultus");
+        speciesName.setCultivarGroupEpithet("Druppo Cultus");
         Assert.assertEquals("Abies Druppo Cultus Group", strategy.getTitleCache(speciesName));
 
         //grex
         speciesName.setRank(Rank.GREX());
-        speciesName.setCultivarGroup("Lovely");
+        speciesName.setCultivarGroupEpithet("Lovely");
         Assert.assertEquals("Abies Lovely grex", strategy.getTitleCache(speciesName));
 
         //graft chimaera
@@ -323,7 +323,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         //either formula (like hybrids) concatenated by ' + ' (Art. 24.2)
         speciesName.setRank(Rank.GRAFTCHIMAERA());
         speciesName.setGenusOrUninomial("Laburnocytisus");
-        speciesName.setCultivarName("Adamii");
+        speciesName.setCultivarEpithet("Adamii");
 
         Assert.assertEquals("+ Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
     }

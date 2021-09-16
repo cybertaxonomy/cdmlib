@@ -397,7 +397,7 @@ public class MatchStrategyFactory {
             //equal
             String[] equalParams = new String[]{"acronym","anamorphic","appendedPhrase",
                     "binomHybrid", "monomHybrid","trinomHybrid","hybridFormula",
-                    "breed","cultivarName","infraGenericEpithet","infraSpecificEpithet",
+                    "breed","cultivarEpithet","infraGenericEpithet","infraSpecificEpithet",
                     "publicationYear","originalPublicationYear","specificEpithet","subGenusAuthorship"};
             for(String param : equalParams){
                 originalSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL);

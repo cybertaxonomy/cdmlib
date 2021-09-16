@@ -48,7 +48,7 @@ public class NameMustFollowCodeTest extends ValidationTestBase {
 		viralName = TaxonNameFactory.NewViralInstance(Rank.SPECIES());
 		zoologicalName = TaxonNameFactory.NewZoologicalInstance(Rank.SPECIES());
 		bacterialName = TaxonNameFactory.NewBacterialInstance(Rank.SPECIES());
-	    cultivarName = TaxonNameFactory.NewCultivarInstance(Rank.SPECIES());
+	    cultivarName = TaxonNameFactory.NewCultivarInstance(Rank.CULTIVAR());
 	}
 
 /****************** TESTS *****************************/

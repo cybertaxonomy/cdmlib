@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -58,11 +59,18 @@ public class SchemaUpdater_5251_5270 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<>();
 
+		//cultivarEpi
+		stepName = "Change cultivar name column name";
+		tableName = "TaxonName";
+		String oldColumnName = "cultivarName";
+		newColumnName = "cultivarEpithet";
+		ColumnNameChanger.NewVarCharInstance(stepList, stepName, tableName, oldColumnName, newColumnName, 255, INCLUDE_AUDIT);
+
 		//add cultivarGroup
 		//#9761
 		stepName = "Add cultivarGroup";
 		tableName = "TaxonName";
-		newColumnName = "cultivarGroup";
+		newColumnName = "cultivarGroupEpithet";
 		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
 		//TODO update where rank = CultivarGroup

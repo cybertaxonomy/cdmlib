@@ -383,7 +383,7 @@ public class TaxonNameDefaultCacheStrategy
         UUID rankUuid = taxonName.getRank().getUuid();
         boolean rankIsHandled = true;
         String cultivarStr = null;
-        String groupStr = taxonName.getCultivarGroup();
+        String groupStr = taxonName.getCultivarGroupEpithet();
         if (rankUuid.equals(Rank.uuidCultivar)){
             cultivarStr = surroundedCultivarEpithet(taxonName);
             if (isNotBlank(cultivarStr) && isNotBlank(groupStr)){
@@ -450,7 +450,7 @@ public class TaxonNameDefaultCacheStrategy
     }
 
     private String surroundedCultivarEpithet(TaxonName taxonName) {
-        return cultivarStart + taxonName.getCultivarName() + cultivarEnd;
+        return cultivarStart + taxonName.getCultivarEpithet() + cultivarEnd;
     }
 
     private boolean isAggregateWithAuthorship(TaxonName nonViralName, Rank rank) {

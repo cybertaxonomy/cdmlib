@@ -173,7 +173,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     //fungi
     "anamorphic",
     //cultivar plant names
-    "cultivarName"
+    "cultivarGroupEpithet",
+    "cultivarEpithet"
 })
 @XmlRootElement(name = "TaxonName")
 @Entity
@@ -553,17 +554,17 @@ public class TaxonName
     //Cultivar attribute(s)
 
     //the characteristical name of the cultivar
-    @XmlElement(name = "CultivarName")
+    @XmlElement(name = "CultivarEpithet")
     //TODO Val #3379
     //@NullOrNotEmpty
     @Column(length=255)
-    private String cultivarName;
+    private String cultivarEpithet;
 
     //#9761
-    @XmlElement(name = "CultivarName")
+    @XmlElement(name = "CultivarGroupEpithet")
     @NullOrNotEmpty
     @Column(length=255)
-    private String cultivarGroup;
+    private String cultivarGroupEpithet;
 
     // ************** FUNGUS name attributes
     //to indicate that the type of the name is asexual or not
@@ -1284,29 +1285,29 @@ public class TaxonName
 
 
     @Override
-    public String getCultivarName(){
-        return this.cultivarName;
+    public String getCultivarEpithet(){
+        return this.cultivarEpithet;
     }
 
     /**
-     * @see  #getCultivarName()
+     * @see  #getCultivarEpithet()
      */
     @Override
-    public void setCultivarName(String cultivarName){
-        this.cultivarName = isBlank(cultivarName) ? null : cultivarName;
+    public void setCultivarEpithet(String cultivarEpithet){
+        this.cultivarEpithet = isBlank(cultivarEpithet) ? null : cultivarEpithet;
     }
 
     @Override
-    public String getCultivarGroup(){
-        return this.cultivarGroup;
+    public String getCultivarGroupEpithet(){
+        return this.cultivarGroupEpithet;
     }
 
     /**
-     * @see  #getCultivarGroup()
+     * @see  #getCultivarGroupEpithet()
      */
     @Override
-    public void setCultivarGroup(String cultivarGroup){
-        this.cultivarGroup = isBlank(cultivarGroup) ? null : cultivarGroup;
+    public void setCultivarGroupEpithet(String cultivarGroupEpithet){
+        this.cultivarGroupEpithet = isBlank(cultivarGroupEpithet) ? null : cultivarGroupEpithet;
     }
 
     // **************** Fungus Name
@@ -3757,7 +3758,7 @@ public class TaxonName
             //acronym
             //subGenusAuthorship, nameApprobation
             //anamorphic
-            //cultivarName
+            //cultivarEpithet,cultivarGroupEpithet
             return result;
         } catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");

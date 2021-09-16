@@ -1538,34 +1538,34 @@ public class NonViralNameParserImpl
 
 		if (anyCultivarMatcher.matches()){
 		    String scientificName = anyCultivarMatcher.group(1);
-		    String cultivarName = anyCultivarMatcher.group("cultivar");
-		    String groupName = anyCultivarMatcher.group("cultivarGroup");
+		    String cultivarEpi = anyCultivarMatcher.group("cultivar");
+		    String groupEpi = anyCultivarMatcher.group("cultivarGroup");
 		    String brGroupName = anyCultivarMatcher.group("cultivarBrGroup");
 		    String grexName = anyCultivarMatcher.group("cultivarGrex");
 
 		    //handle not exact matches
-		    if (isNotBlank(groupName) && isNotBlank(cultivarName)){
+		    if (isNotBlank(groupEpi) && isNotBlank(cultivarEpi)){
                 return false;
-            }else if (isNotBlank(brGroupName) && isNotBlank(grexName) && isBlank(cultivarName)){
+            }else if (isNotBlank(brGroupName) && isNotBlank(grexName) && isBlank(cultivarEpi)){
                 return false;
             }
 		    parseSimpleName(nameToBeFilled, scientificName, null, false);
 
             if (isNotBlank(grexName)){
                 nameToBeFilled.setRank(Rank.GREX());
-                nameToBeFilled.setCultivarGroup(grexName);
+                nameToBeFilled.setCultivarGroupEpithet(grexName);
             }
-            if (isNotBlank(groupName) || isNotBlank(brGroupName)){
+            if (isNotBlank(groupEpi) || isNotBlank(brGroupName)){
                 nameToBeFilled.setRank(Rank.CULTIVARGROUP());
-                if (isBlank(groupName)){
-                    groupName = brGroupName;
+                if (isBlank(groupEpi)){
+                    groupEpi = brGroupName;
                 }
-                nameToBeFilled.setCultivarGroup(CdmUtils.concat(" ", grexName, groupName));
+                nameToBeFilled.setCultivarGroupEpithet(CdmUtils.concat(" ", grexName, groupEpi));
             }
-            if (isNotBlank(cultivarName)){
+            if (isNotBlank(cultivarEpi)){
                 nameToBeFilled.setRank(Rank.CULTIVAR());
-                cultivarName = cultivarName.substring(1, cultivarName.length()-1);
-                nameToBeFilled.setCultivarName(cultivarName);
+                cultivarEpi = cultivarEpi.substring(1, cultivarEpi.length()-1);
+                nameToBeFilled.setCultivarEpithet(cultivarEpi);
             }
             return true;
 		}else{

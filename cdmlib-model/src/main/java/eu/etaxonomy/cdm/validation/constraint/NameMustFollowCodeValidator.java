@@ -43,7 +43,7 @@ public class NameMustFollowCodeValidator implements
 
         //CultivarPlantName
         if (! (name.isCultivar())){
-            if (name.getCultivarName() != null){
+            if (name.getCultivarEpithet() != null){
                 valid = false;
             }
         }

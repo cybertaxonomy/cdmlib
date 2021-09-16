@@ -371,7 +371,7 @@
             <name:IsBinomHybrid>false</name:IsBinomHybrid>
             <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
             <name:IsAnamorphic>false</name:IsAnamorphic>
-            <name:CultivarName>marmoratum</name:CultivarName>
+            <name:CultivarEpithet>marmoratum</name:CultivarEpithet>
         </name:TaxonName>
         <name:TaxonName id="5" uuid="urn-uuid-d399030c-906f-437c-90d2-3f5c89d87376" hasProblem="false" problemStarts="-1" problemEnds="-1">
             <name:nameType>ICZN</name:nameType>
