@@ -19,13 +19,16 @@ import org.springframework.context.annotation.PropertySources;
  * by {@code file:/${user.home}/.cdmLibrary/application-dev.properties} for development purposes.
  * For production environments it is recommended to use system properties instead.
  *
- * Mimics the spring boot auto-configuration capabilities to some very basic extend.
+ * Mimics the spring boot auto-configuration capabilities to some very basic extend. Can be replaced once we are using spring boot.
  *
- * Can be replaced once we are using spring boot.
+ * spring-boot features that are mimicked:
  *
- * The property source file <code>application.properties</code> may be placed in
- * <code>src/test/resources</code> and <code>src/main/resources</code>
- *
+ * <ul>
+ * <li><b>application.properties</b>: The property source file <code>application.properties</code> may be placed in
+ * <code>src/test/resources</code> and <code>src/main/resources</code></li>
+ * <li><code>${user.home}/.cdmLibrary/application.properties</code>: the default properties can be overwritten by providing
+ * this properties file. (this is not a spring boot feature, though!)</li>
+ * </ul>
  * @author a.kohlbecker
  * @since Sep 15, 2021
  */
@@ -33,8 +36,8 @@ import org.springframework.context.annotation.PropertySources;
 @PropertySources({
     // classpath:/application.properties as first
     @PropertySource("classpath:/application.properties"),
-    // allows application-dev.properties to override the default settings !!!
-    @PropertySource(value="file:${user.home}/.cdmLibrary/application-dev.properties", ignoreResourceNotFound = true)
+    // allows to use ${user.home}/.cdmLibrary/application.properties to override the default settings !!!
+    @PropertySource(value="file:${user.home}/.cdmLibrary/application.properties", ignoreResourceNotFound = true)
 })
 public class AppConfigurationPropertiesConfig {
 
