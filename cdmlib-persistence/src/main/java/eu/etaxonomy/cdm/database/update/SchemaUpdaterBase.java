@@ -110,4 +110,8 @@ public abstract class SchemaUpdaterBase
         }
 
 	}
+
+	protected String escape(String sql){
+	    return sql == null ? null : sql.replace("'", "''");
+	}
 }

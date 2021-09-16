@@ -346,7 +346,9 @@ public class SchemaUpdater_5251_5270 extends SchemaUpdaterBase {
         UUID uuidTerm = UUID.fromString(uuidStr);
         UUID uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
         abbrev = null; //not needed as 2letter code is neither used in abbreviation nor in idInVoc
-        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm, description, label, abbrev, uuidLanguage);
+
+        TermRepresentationUpdater.NewInstanceWithTitleCache(stepList, stepName, uuidTerm,
+                escape(description), escape(label), abbrev, uuidLanguage);
     }
 
 }
