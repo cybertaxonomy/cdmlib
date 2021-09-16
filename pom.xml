@@ -841,6 +841,13 @@
      <!--    <scope>test</scope>  -->
 		<version>${project.version}</version>
 	  </dependency>
+      <dependency>
+        <!-- used in cdmlib-services for the EmailSendTest -->
+        <groupId>org.subethamail</groupId>
+        <artifactId>subethasmtp</artifactId>
+        <version>3.1.7</version>
+        <scope>test</scope>
+      </dependency>    
       <!-- ******* aspect ******* -->
       <dependency>
         <!-- not really needed as long as aspectjweaver is on classpath which is a superset of aspectjrt -->
@@ -1647,6 +1654,12 @@
          <groupId>com.sun</groupId>
          <artifactId>tools</artifactId>
          <version>1.8.0</version>
+      </dependency>
+      <!-- Email functionality (used in cdmlib-services) -->
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mailapi</artifactId>
+        <version>1.4.3</version>
       </dependency>
    </dependencies>    
   </dependencyManagement>
