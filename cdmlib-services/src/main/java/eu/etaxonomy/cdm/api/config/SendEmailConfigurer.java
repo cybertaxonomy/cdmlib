@@ -56,6 +56,7 @@ public class SendEmailConfigurer {
 
     @Bean
     public JavaMailSenderImpl mailSender() {
+
         boolean disabled = false;
         try {
            disabled = Boolean.valueOf(env.getProperty(DISABLED));

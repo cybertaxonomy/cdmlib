@@ -44,6 +44,18 @@ public class EmailSendTest extends CdmIntegrationTest {
     @Test
     public void sendEmailTest() {
 
+        boolean disabled = false;
+        try {
+            disabled = Boolean.valueOf(env.getProperty(SendEmailConfigurer.DISABLED));
+        } catch (Exception e) {
+            // ignore all
+        }
+
+        if(disabled) {
+            logger.warn("sendEmailTest is disabled");
+            return;
+        }
+
         String from = env.getProperty(SendEmailConfigurer.FROM_ADDRESS);
 
         boolean useWiser = Objects.equals(env.getProperty(SendEmailConfigurer.INT_TEST_SERVER), "wiser");
@@ -55,12 +67,6 @@ public class EmailSendTest extends CdmIntegrationTest {
             wiser.start();
         }
 
-        boolean disabled = false;
-        try {
-           disabled = Boolean.valueOf(env.getProperty(SendEmailConfigurer.DISABLED));
-        } catch (Exception e) {
-            // ignore all
-        }
         if(!disabled) {
 
             SimpleMailMessage message = new SimpleMailMessage();
