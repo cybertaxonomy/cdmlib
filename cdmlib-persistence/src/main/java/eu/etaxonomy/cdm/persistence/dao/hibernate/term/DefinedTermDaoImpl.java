@@ -119,21 +119,23 @@ public class DefinedTermDaoImpl
 	 * Searches by Label
 	 */
 	@Override
-    public List<DefinedTermBase> findByTitle(String queryString) {
-		return findByTitle(queryString, null);
+    public List<DefinedTermBase> findByLabel(String queryString) {
+		return findByLabel(queryString, null);
 	}
 
 	/**
 	 * Searches by Label
 	 */
 	@Override
-    public List<DefinedTermBase> findByTitle(String queryString, CdmBase sessionObject) {
+    public List<DefinedTermBase> findByLabel(String queryString, CdmBase sessionObject) {
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, CdmBase sessionObject)");
 		Session session = getSession();
 		if ( sessionObject != null ) {//attache the object to the session, TODO needed?
 			session.update(sessionObject);
 		}
-		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
+		Query query = session.createQuery("SELECT term "
+		        + " FROM DefinedTermBase term JOIN FETCH term.representations representation "
+		        + " WHERE representation.label = :label");
 		query.setParameter("label", queryString);
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		List<DefinedTermBase> result = deduplicateResult(query.list());

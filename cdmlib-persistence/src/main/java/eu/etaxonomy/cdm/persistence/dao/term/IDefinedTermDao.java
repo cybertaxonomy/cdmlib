@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -174,6 +175,18 @@ public interface IDefinedTermDao
 	public <T extends DefinedTermBase> long countIncludes(Collection<T> definedTerms);
 
 	public DefinedTermBase findByUri(URI uri);
+
+
+    /**
+     * Searches by representation label
+     */
+	public List<DefinedTermBase> findByLabel(String queryString);
+
+	/**
+     * Searches by representation label
+     */
+    public List<DefinedTermBase> findByLabel(String queryString, CdmBase sessionObject);
+
 
 	/**
 	 * Retrieves all {@link DefinedTermBase}s with the given {@link TermType}
