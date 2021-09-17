@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
 /**
  * @author a.kohlbecker
  * @since Feb 16, 2018
- *
  */
 @Component
 public class ApplicationConfiguration {
@@ -41,12 +40,12 @@ public class ApplicationConfiguration {
     public static final String TEST_MODE = "testmode";
 
     @Autowired
-    Environment env;
+    private Environment env;
 
     @Autowired
-    ConfigFileUtil configFileUtil;
+    private ConfigFileUtil configFileUtil;
 
-    Map<String, Properties> configurations = new HashMap<>();
+    private Map<String, Properties> configurations = new HashMap<>();
 
     public String getProperty(ApplicationConfigurationFile configFile, String key){
         Properties props = loadPropertiesFile(configFile);

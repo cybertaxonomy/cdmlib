@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.config;
 /**
  * @author a.kohlbecker
  * @since Feb 15, 2018
- *
  */
 public class CdmConfigurationKeys {
 
@@ -19,5 +18,4 @@ public class CdmConfigurationKeys {
      * key for the spring environment to the datasource bean id aka instance name
      */
     public static final String CDM_DATA_SOURCE_ID = "cdm.dataSource.id";
-
 }
