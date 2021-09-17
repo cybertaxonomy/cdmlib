@@ -3025,7 +3025,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Ann. Sci. Nat., Bot.", ref.getInReference().getAbbrevTitle());
         Assert.assertEquals(ser+". 4", ref.getSeriesPart());
 
-        // Misc. 28: 35. 1838
+        // Misc. 89   #9014
         nameStr = "Bulbophyllum sordidum Lindl. in Edwards's Bot. Reg. 26: Misc. 89. 1840";
         name = parser.parseReferencedName(nameStr);
         Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
