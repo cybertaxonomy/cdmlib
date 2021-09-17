@@ -162,7 +162,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String pPages = "(" + pSinglePages +"|" + pMultiPages +")";
     protected static String pPagesTabFig = pPages +"([,\\.]" + fWs + pTabFigPl + "){1,2}";
 
-    protected static String pCouv = "couv\\." + fWs + "\\d{1,3}";
+    protected static String pAnyWordWithNumber = word + "(\\.|\\s)" + fWs + "\\d{1,3}";
 
     protected static String pTabSpecial = "tab\\." + fWs + "(ad" + fWs + "\\d{1,3}|alphab)";
     protected static String pPageSpecial = nr4 + fWs + "(in obs|, Expl\\. Tab)";
@@ -175,7 +175,7 @@ public abstract class NonViralNameParserImplRegExBase  {
 
 //    "(,\\s*" + pTabFigPl + ")?" +
     protected static String pDetailAlternatives = "(" + pPages + "|" + pPageSpecial + "|" + pStrNo + "|" + pBracketNr +
-    			"|" + pTabFigPl + "(,\\s*" + pTabFigPl + ")?" + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" +
+    			"|" + pTabFigPl + "(,\\s*" + pTabFigPl + ")?" + "|" + pTabSpecial + "|" + pFolBracket + "|" + pAnyWordWithNumber + "|" +
     			pSpecialGardDict + "|" + pSpecialDetail + "|" + pPagesTabFig + "|" + simpleRoman +  ")";
 
     protected static String detail = pDetailAlternatives;

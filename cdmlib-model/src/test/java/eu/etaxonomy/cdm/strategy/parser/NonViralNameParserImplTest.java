@@ -3024,6 +3024,19 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
         Assert.assertEquals("Ann. Sci. Nat., Bot.", ref.getInReference().getAbbrevTitle());
         Assert.assertEquals(ser+". 4", ref.getSeriesPart());
+
+        // Misc. 28: 35. 1838
+        nameStr = "Bulbophyllum sordidum Lindl. in Edwards's Bot. Reg. 26: Misc. 89. 1840";
+        name = parser.parseReferencedName(nameStr);
+        Assert.assertFalse("Name should be parsable", name.isProtectedTitleCache());
+        String detail = name.getNomenclaturalMicroReference();
+        Assert.assertEquals("Misc. 89", detail);
+        ref = name.getNomenclaturalReference();
+        Assert.assertEquals(ReferenceType.Article, ref.getType());
+        Assert.assertNotNull("Nomenclatural reference should be an article and therefore have an in reference", ref.getInReference());
+        Assert.assertEquals(ReferenceType.Journal, ref.getInReference().getType());
+        Assert.assertEquals("Edwards's Bot. Reg.", ref.getInReference().getAbbrevTitle());
+
     }
 
     @Test
