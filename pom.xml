@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>cdmlib-commons</module>
+    
     <module>cdmlib-model</module>
 	<module>cdmlib-db</module>
     <module>cdmlib-test</module>
@@ -847,7 +848,12 @@
         <artifactId>subethasmtp</artifactId>
         <version>3.1.7</version>
         <scope>test</scope>
-      </dependency>    
+      </dependency>
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>1.1.1</version>
+      </dependency>
       <!-- ******* aspect ******* -->
       <dependency>
         <!-- not really needed as long as aspectjweaver is on classpath which is a superset of aspectjrt -->
