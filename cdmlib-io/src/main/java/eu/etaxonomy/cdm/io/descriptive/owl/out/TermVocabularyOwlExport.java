@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 /**
  * @author pplitzner
  * @since Jul 3, 2017
- *
  */
 @Component("termVocabularyOwlExport")
 public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExportConfigurator, StructureTreeOwlExportState, IExportTransformer, File> {
@@ -50,7 +49,7 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
                 break;
             }
             progressMonitor.worked(1);
-            TermVocabulary vocabulary = getVocabularyService().load(uuid);
+            TermVocabulary<?> vocabulary = getVocabularyService().load(uuid);
             OwlExportUtil.createVocabularyResource(vocabulary, this, state);
         }
 
@@ -61,5 +60,4 @@ public class TermVocabularyOwlExport extends CdmExportBase<StructureTreeOwlExpor
     protected boolean isIgnore(StructureTreeOwlExportState state) {
         return false;
     }
-
 }

@@ -29,12 +29,12 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
  * NOT YET USED
  */
 @Component
-public class CdmCdmTermImport
+public class Cdm2CdmTermImport
         extends Cdm2CdmImportBase {
 
     private static final long serialVersionUID = 3995116783196060465L;
 
-    private static final Logger logger = Logger.getLogger(CdmCdmTermImport.class);
+    private static final Logger logger = Logger.getLogger(Cdm2CdmTermImport.class);
 
     //TODO move to state
     private Map<UUID, CdmBase> sessionCache = new HashMap<>();
@@ -56,7 +56,7 @@ public class CdmCdmTermImport
 
 
     private void doData(Cdm2CdmImportState state){
-      //term uuids laden
+        //term uuids laden
         //gegen existierende Terme abgleichen
         //fehlende Terme importieren
 
@@ -94,10 +94,6 @@ public class CdmCdmTermImport
         return result;
     }
 
-
-
-
-
     @Override
     protected boolean doCheck(Cdm2CdmImportState state) {
         return false;
@@ -107,5 +103,4 @@ public class CdmCdmTermImport
     protected boolean isIgnore(Cdm2CdmImportState state) {
         return false;
     }
-
 }

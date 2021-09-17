@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.term.TermTree;
 /**
  * @author pplitzner
  * @since Jul 3, 2017
- *
  */
 @Component("structureTreeOwlExport")
 public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExportConfigurator, StructureTreeOwlExportState, IExportTransformer, File> {
@@ -65,5 +64,4 @@ public class StructureTreeOwlExport extends CdmExportBase<StructureTreeOwlExport
     protected boolean isIgnore(StructureTreeOwlExportState state) {
         return false;
     }
-
 }

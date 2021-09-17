@@ -15,7 +15,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 /**
  * @author pplitzner
  * @since Apr 15, 2019
- *
  */
 public class OwlUtil {
 

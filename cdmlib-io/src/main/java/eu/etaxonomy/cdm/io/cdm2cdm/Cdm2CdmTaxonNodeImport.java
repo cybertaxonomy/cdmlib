@@ -118,5 +118,4 @@ public class Cdm2CdmTaxonNodeImport
     protected boolean isIgnore(Cdm2CdmImportState state) {
         return !state.getConfig().isDoTaxa();
     }
-
 }

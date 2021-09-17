@@ -53,6 +53,7 @@ public  class Cdm2CdmImportConfigurator
 
 // ****************************** METHODS *********************/
 
+    @SuppressWarnings("unchecked")
     @Override
     public Cdm2CdmImportState getNewState() {
         return new Cdm2CdmImportState(this);
