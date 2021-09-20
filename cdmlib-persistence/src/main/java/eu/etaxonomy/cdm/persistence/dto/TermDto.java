@@ -82,6 +82,9 @@ public class TermDto extends AbstractTermDto{
     }
 
     static public TermDto fromTerm(DefinedTermBase<?> term, Set<Representation> representations, boolean initializeToTop) {
+        if (term == null){
+            return null;
+        }
         DefinedTermBase<?> partOf = term.getPartOf();
         DefinedTermBase<?> kindOf = term.getKindOf();
         TermVocabulary<?> vocabulary = term.getVocabulary();

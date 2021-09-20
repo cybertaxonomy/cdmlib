@@ -42,7 +42,7 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
 
     private UuidAndTitleCache<TaxonName> nameUuidAndTitleCache;
 
-    private List<DescriptionElementDto> elements;
+    private List<DescriptionElementDto> elements = new ArrayList<>();
 
     private EnumSet<DescriptionType> types = EnumSet.noneOf(DescriptionType.class);
 
@@ -53,7 +53,9 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
         this.specimenDto = specimenDto;
         this.nameUuidAndTitleCache = nameUuidAndTitleCache;
         this.id = id;
-        this.elements = elements;
+        if (elements != null){
+            this.elements = elements;
+        }
         this.types = types;
 
 
