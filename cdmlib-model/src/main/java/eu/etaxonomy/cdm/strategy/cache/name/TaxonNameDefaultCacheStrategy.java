@@ -309,7 +309,7 @@ public class TaxonNameDefaultCacheStrategy
             //Autonym
             tags.addAll(handleTaggedAutonym(taxonName));
         }else{ //not Autonym
-             List<TaggedText> nameTags = getTaggedName(taxonName);
+            List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
             String authorCache = getAuthorshipCache(taxonName);
             if (isNotBlank(authorCache)){

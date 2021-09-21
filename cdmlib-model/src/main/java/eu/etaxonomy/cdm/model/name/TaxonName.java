@@ -1283,7 +1283,6 @@ public class TaxonName
 
     // **** Cultivar Name ************
 
-
     @Override
     public String getCultivarEpithet(){
         return this.cultivarEpithet;
