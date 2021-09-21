@@ -94,7 +94,7 @@ public class NonViralNameParserImpl
 
 	public INonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
 		INonViralName result = null;
-		if(code ==null) {
+		if(code == null) {
 			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
 			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();;
 			boolean isBacteriologicalName = false;
@@ -248,16 +248,16 @@ public class NonViralNameParserImpl
 
 		//separate name and reference part
 		String nameAndRefSeparatorRegEx = "(^" + localFullNameRegEx + ")("+ referenceSeperator + ")";
-		Matcher nameAndRefSeparatorMatcher = getMatcher (nameAndRefSeparatorRegEx, fullReferenceString);
+		Matcher nameAndRefSeparatorMatcher = getMatcher(nameAndRefSeparatorRegEx, fullReferenceString);
 
-		Matcher onlyNameMatcher = getMatcher (localFullNameRegEx, fullReferenceString);
+		Matcher onlyNameMatcher = getMatcher(localFullNameRegEx, fullReferenceString);
 		Matcher hybridMatcher = hybridFormulaPattern.matcher(fullReferenceString);
-		Matcher onlySimpleNameMatcher = getMatcher (localSimpleNameRegEx, fullReferenceString);
+		Matcher onlySimpleNameMatcher = getMatcher(localSimpleNameRegEx, fullReferenceString);
 
 		if (onlyNameMatcher.matches()){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
-		} else if (nameAndRefSeparatorMatcher.find()){
+		}else if (nameAndRefSeparatorMatcher.find()){
 			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
 		}else if (hybridMatcher.matches() ){
 		    //I do not remember why we need makeEmpty = false for onlyNameMatcher,
