@@ -1597,9 +1597,8 @@ public class NonViralNameParserImpl
 		nameToBeFilled.setFullTitleCache(null, false);
 		nameToBeFilled.setNameCache(null, false);
 
-		nameToBeFilled.setAppendedPhrase(null);
-		nameToBeFilled.setBasionymAuthorship(null);
 		nameToBeFilled.setCombinationAuthorship(null);
+		nameToBeFilled.setBasionymAuthorship(null);
 		nameToBeFilled.setExBasionymAuthorship(null);
 		nameToBeFilled.setExCombinationAuthorship(null);
 		nameToBeFilled.setAuthorshipCache(null, false);
@@ -1614,6 +1613,9 @@ public class NonViralNameParserImpl
 		nameToBeFilled.setInfraGenericEpithet(null);
 		nameToBeFilled.setSpecificEpithet(null);
 		nameToBeFilled.setInfraSpecificEpithet(null);
+		nameToBeFilled.setCultivarEpithet(null);
+		nameToBeFilled.setCultivarGroupEpithet(null);
+		nameToBeFilled.setAppendedPhrase(null);
 
 		nameToBeFilled.setNomenclaturalMicroReference(null);
 		nameToBeFilled.setNomenclaturalReference(null);
@@ -1627,11 +1629,11 @@ public class NonViralNameParserImpl
 
 		nameToBeFilled.setBreed(null);
 		nameToBeFilled.setOriginalPublicationYear(null);
+		nameToBeFilled.setPublicationYear(null);
 
 		//nom status handled in nom status parser, otherwise we loose additional information like reference etc.
 		//hybrid relationships handled in hybrid formula and at end of fullNameParser
 	}
-
 
     /**
      * If <code>true</code> author names are parsed such that spaces after the abbreviated
