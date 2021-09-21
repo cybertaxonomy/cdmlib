@@ -309,15 +309,17 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String anyBotanicName = anyPureBotanicName; //no difference yet, cultivars are currently implemented differently. was: (anyPureBotanicName + or + cultivar + or + cultivarGroup);
     protected static String cultivarGr = "(\\s+(?<cultivar>" + cultivarStatus + "))?";
     protected static String cultivarGroupGr = "(\\s+((?<cultivarGroup>" + cultivarGroupStatus + ")|\\((?<cultivarBrGroup>" + cultivarGroupStatus + ")\\)))?";
-    protected static String cultivarGroupGrx = "(\\s+\\((?<cultivarBrGroup>" + cultivarGroupStatus + ")\\))?";
+//    protected static String cultivarGroupGrx = "(\\s+\\((?<cultivarBrGroup>" + cultivarGroupStatus + ")\\))?";
     protected static String cultivarGrexGr =  "(\\s+(?<cultivarGrex>"       + cultivarGrexStatus  +    "))?";
 
-    protected static String anyCultivar = "("+ anyPureBotanicName + ")(?!\\s*$)(" + cultivarGrexGr + cultivarGroupGr + cultivarGr + ")";
-
+    //to be used in combination if cultivar name is not a pure name but contains additional information (e.g. author)
+    protected static String anyCultivarNameUnordered = anyPureBotanicName + oWs + "(" + cultivarStatus + or + cultivarGroupStatus + or + "\\(" + cultivarGroupStatus + "\\)" + or + cultivarGrexStatus + ")";
+    protected static String anyCultivarName = "("+ anyPureBotanicName + ")(?!\\s*$)(" + cultivarGrexGr + cultivarGroupGr + cultivarGr + ")";
 
     protected static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" +
                     speciesWithInfraGen + "|" +zooInfraSpecies + "|" +  oldInfraSpecies + ")+";
     protected static String anyBotanicFullName = "(" + autonym2 + "|" + anyBotanicName + oWs + fullBotanicAuthorString + ")"  ;
+    protected static String anyCultivarFullName = anyCultivarName + oWs + "(?<cultivarAuthor>" + authorTeam +")";
     protected static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
     protected static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
     protected static String abbrevHybridGenus = "([A-Z](\\.\\s*|\\s+))";
@@ -331,7 +333,8 @@ public abstract class NonViralNameParserImplRegExBase  {
     //Pattern
     protected static Pattern oWsPattern = Pattern.compile(oWs);
     protected static Pattern finalTeamSplitterPattern = Pattern.compile(finalTeamSplitter);
-    protected static Pattern anyCultivarPattern = Pattern.compile(anyCultivar);
+    protected static Pattern anyCultivarNamePattern = Pattern.compile(anyCultivarName);
+    protected static Pattern anyCultivarNameUnorderedPattern = Pattern.compile(anyCultivarNameUnordered);
 
     protected static Pattern genusOrSupraGenusPattern = Pattern.compile(pStart + genusOrSupraGenus + facultFullAuthorString2 + end);
     protected static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);
@@ -359,6 +362,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static Pattern fullAuthorStringPattern = Pattern.compile(fullAuthorString);
 
     protected static Pattern anyBotanicFullNamePattern = Pattern.compile(anyBotanicFullName);
+    protected static Pattern anyCultivarFullNamePattern = Pattern.compile(anyCultivarFullName);
     protected static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
 
     protected static Pattern spNovPattern = Pattern.compile(spNov);

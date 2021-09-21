@@ -2326,13 +2326,62 @@ public class NonViralNameParserImplTest extends TermTestBase {
     public final void testParseCultivar() {
 
         TaxonName name;
+        String cultivar;
 
         //cultivar
-        String cultivar = "Abies 'Albus'";
+        cultivar = "Abies 'Albus'";
         name = (TaxonName)parser.parseFullName(cultivar);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
         Assert.assertEquals("Albus", name.getCultivarEpithet());
         Assert.assertEquals("Abies 'Albus'", name.getNameCache());
+        Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
+
+        //same but using ...referencedName
+        cultivar = "Abies 'Albus'";
+        name = parser.parseReferencedName(cultivar);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertEquals("Albus", name.getCultivarEpithet());
+        Assert.assertEquals("Abies 'Albus'", name.getNameCache());
+        Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
+
+        //cultivar with author
+        cultivar = "Abies 'Albus' Mill.";
+        name = (TaxonName)parser.parseFullName(cultivar);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertEquals("Albus", name.getCultivarEpithet());
+        Assert.assertEquals("Abies 'Albus'", name.getNameCache());
+        Assert.assertNotNull(name.getCombinationAuthorship());
+        Assert.assertEquals("Mill.", name.getCombinationAuthorship().getTitleCache());
+        Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
+
+        //same with referenced name
+        cultivar = "Abies 'Albus' Mill.";
+        name = parser.parseReferencedName(cultivar);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertEquals("Albus", name.getCultivarEpithet());
+        Assert.assertEquals("Abies 'Albus'", name.getNameCache());
+        Assert.assertNotNull(name.getCombinationAuthorship());
+        Assert.assertEquals("Mill.", name.getCombinationAuthorship().getTitleCache());
+        Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
+
+        //cultivar with author and incorrect basionym or ex author
+        cultivar = "Abies 'Albus' (Basio) Mill.";
+        name = (TaxonName)parser.parseFullName(cultivar);
+        Assert.assertTrue("Cultivar name should not have a basionym author", name.isProtectedTitleCache());
+        cultivar = "Abies 'Albus' Mill. ex Meyer";
+        name = (TaxonName)parser.parseFullName(cultivar);
+        Assert.assertTrue("Cultivar name should not have an ex-author", name.isProtectedTitleCache());
+
+        //cultivar with author and nom. ref.
+        cultivar = "Abies 'Albus' Mill. in Willdenovia 2: 23. 1983";
+        name = parser.parseReferencedName(cultivar);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertEquals("Albus", name.getCultivarEpithet());
+        Assert.assertEquals("Abies 'Albus'", name.getNameCache());
+        Assert.assertNotNull(name.getCombinationAuthorship());
+        Assert.assertEquals("Mill.", name.getCombinationAuthorship().getTitleCache());
+        Assert.assertNotNull(name.getNomenclaturalReference());
+        Assert.assertEquals("Mill. 1983: – Willdenovia 2", name.getNomenclaturalReference().getTitleCache());
         Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
 
         cultivar = "Abies 'Beryl, Viscountess Cowdray'";
@@ -2401,6 +2450,15 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Abies Albus Group", name.getNameCache());
         Assert.assertEquals(Rank.uuidCultivarGroup, name.getRank().getUuid());
 
+        //same but using referenced name
+        group = "Abies Albus Group";
+        name = parser.parseReferencedName(group);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertEquals("Albus Group", name.getCultivarGroupEpithet());
+        Assert.assertEquals("Abies Albus Group", name.getNameCache());
+        Assert.assertEquals(Rank.uuidCultivarGroup, name.getRank().getUuid());
+
         group = "Abies Albus Gp";
         name = (TaxonName)parser.parseFullName(group);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
@@ -2426,8 +2484,17 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals("Abies Albus grex", name.getNameCache());
         Assert.assertEquals(Rank.uuidGrex, name.getRank().getUuid());
 
+        //same but using referenced name
+        grex = "Abies Albus grex";
+        name = parser.parseReferencedName(grex);
+        Assert.assertEquals("Abies", name.getGenusOrUninomial());
+        Assert.assertNull(name.getSpecificEpithet());
+        Assert.assertEquals("Albus grex", name.getCultivarGroupEpithet());
+        Assert.assertEquals("Abies Albus grex", name.getNameCache());
+        Assert.assertEquals(Rank.uuidGrex, name.getRank().getUuid());
+
         grex = "Abies Albus Second grex";
-        name = (TaxonName)parser.parseFullName(grex);
+        name = parser.parseReferencedName(grex);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
         Assert.assertNull(name.getSpecificEpithet());
         Assert.assertEquals("Albus Second grex", name.getCultivarGroupEpithet());
@@ -2436,7 +2503,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //combined
         String combined = "Abies (Albus Gruppo) 'Pretty'";
-        name = (TaxonName)parser.parseFullName(combined);
+        name = parser.parseReferencedName(combined);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
         Assert.assertNull(name.getSpecificEpithet());
         Assert.assertEquals("Pretty", name.getCultivarEpithet());
@@ -2445,7 +2512,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
 
         combined = "Abies White grex (Albus Gruppo) 'Pretty'";
-        name = (TaxonName)parser.parseFullName(combined);
+        name = parser.parseReferencedName(combined);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
         Assert.assertNull(name.getSpecificEpithet());
         Assert.assertEquals("Pretty", name.getCultivarEpithet());
@@ -2454,7 +2521,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
 
         combined = "Abies White grex Albus Gruppo";
-        name = (TaxonName)parser.parseFullName(combined);
+        name = parser.parseReferencedName(combined);
         Assert.assertEquals("Abies", name.getGenusOrUninomial());
         Assert.assertNull(name.getSpecificEpithet());
         Assert.assertEquals("White grex Albus Gruppo", name.getCultivarGroupEpithet());
@@ -2463,7 +2530,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         //incorrect combinations
         combined = "Abies White grex (Albus Gruppo)";
-        name = (TaxonName)parser.parseFullName(combined);
+        name = parser.parseReferencedName(combined);
         Assert.assertTrue(name.isProtectedTitleCache());
         Assert.assertNull(name.getGenusOrUninomial());
         Assert.assertNull(name.getSpecificEpithet());
@@ -2473,7 +2540,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNull(name.getRank());
 
         combined = "Abies Albus Gruppo 'Pretty'";
-        name = (TaxonName)parser.parseFullName(combined);
+        name = parser.parseReferencedName(combined);
         Assert.assertTrue(name.isProtectedTitleCache());
         Assert.assertNull(name.getGenusOrUninomial());
         Assert.assertNull(name.getSpecificEpithet());
