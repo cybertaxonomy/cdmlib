@@ -2381,7 +2381,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNotNull(name.getCombinationAuthorship());
         Assert.assertEquals("Mill.", name.getCombinationAuthorship().getTitleCache());
         Assert.assertNotNull(name.getNomenclaturalReference());
-        Assert.assertEquals("Mill. 1983: – Willdenovia 2", name.getNomenclaturalReference().getTitleCache());
+        Assert.assertEquals("Mill. 1983: \u2013 Willdenovia 2", name.getNomenclaturalReference().getTitleCache());
         Assert.assertEquals(Rank.uuidCultivar, name.getRank().getUuid());
 
         cultivar = "Abies 'Beryl, Viscountess Cowdray'";
