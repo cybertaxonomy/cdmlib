@@ -313,6 +313,9 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setExBasionymAuthorship(null);
         speciesName.setNomenclaturalReference(null);
 
+        speciesName.setCultivarEpithet(null);
+        Assert.assertEquals("Correct formatting for incorrect name needs to be discussed", "Abies ''", strategy.getTitleCache(speciesName));
+
         //cultivar group
         speciesName.setRank(Rank.CULTIVARGROUP());
         Assert.assertEquals("Abies Group", strategy.getTitleCache(speciesName)); //not sure if this is correct for an empty group field
@@ -327,11 +330,15 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Abies Gruppo Cultus", strategy.getTitleCache(speciesName));
         speciesName.setCultivarGroupEpithet("Druppo Cultus");
         Assert.assertEquals("Abies Druppo Cultus Group", strategy.getTitleCache(speciesName));
+        speciesName.setCultivarGroupEpithet(null);
+        Assert.assertEquals("Correct formatting for missing epithet needs to be discussed", "Abies Group", strategy.getTitleCache(speciesName));
 
         //grex
         speciesName.setRank(Rank.GREX());
         speciesName.setCultivarGroupEpithet("Lovely");
         Assert.assertEquals("Abies Lovely grex", strategy.getTitleCache(speciesName));
+        speciesName.setCultivarGroupEpithet(null);
+        Assert.assertEquals("Correct formatting for missing epithet needs to be discussed", "Abies grex", strategy.getTitleCache(speciesName));
 
         //graft chimaera
         //https://en.wikipedia.org/wiki/Graft-chimaera

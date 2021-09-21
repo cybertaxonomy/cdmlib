@@ -395,7 +395,7 @@ public class TaxonNameDefaultCacheStrategy
         String cultivarStr = null;
         String groupStr = taxonName.getCultivarGroupEpithet();
         if (rankUuid.equals(Rank.uuidCultivar)){
-            cultivarStr = surroundedCultivarEpithet(taxonName);
+            cultivarStr = surroundedCultivarEpithet(taxonName.getCultivarEpithet());
             if (isNotBlank(cultivarStr) && isNotBlank(groupStr)){
                 groupStr = surroundGroupWithBracket(groupStr);
             }
@@ -407,16 +407,16 @@ public class TaxonNameDefaultCacheStrategy
         }else{
             rankIsHandled = false;
         }
-        if (isNotBlank(cultivarStr)){
+        if (rankIsHandled){
             builder.addAll(scientificNameTags);
-            builder.add(TagEnum.cultivar, cultivarStr);
-        }
-
-        if (rankUuid.equals(Rank.uuidGraftChimaera)){
+            if (isNotBlank(cultivarStr)){
+                builder.add(TagEnum.cultivar, cultivarStr);
+            }
+        }else if (rankUuid.equals(Rank.uuidGraftChimaera)){
             //TODO not yet fully implemented
-            cultivarStr = "+ " + taxonName.getGenusOrUninomial() + " " + surroundedCultivarEpithet(taxonName);
+            cultivarStr = "+ " + CdmUtils.concat(" ", taxonName.getGenusOrUninomial(), surroundedCultivarEpithet(taxonName.getCultivarEpithet()));
             builder.add(TagEnum.cultivar, cultivarStr);
-        } else if (!rankIsHandled){
+        } else { //(!rankIsHandled)
             throw new IllegalStateException("Unsupported rank " + taxonName.getRank().getTitleCache() + " for cultivar.");
         }
 
@@ -459,8 +459,8 @@ public class TaxonNameDefaultCacheStrategy
         }
     }
 
-    private String surroundedCultivarEpithet(TaxonName taxonName) {
-        return cultivarStart + taxonName.getCultivarEpithet() + cultivarEnd;
+    private String surroundedCultivarEpithet(String cultivarEpi) {
+        return cultivarStart + CdmUtils.Nz(cultivarEpi) + cultivarEnd;
     }
 
     private boolean isAggregateWithAuthorship(TaxonName nonViralName, Rank rank) {
