@@ -180,6 +180,12 @@ public class TaxonNameDefaultCacheStrategy
             INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorship();
             INomenclaturalAuthor basionymAuthor = nonViralName.getBasionymAuthorship();
             INomenclaturalAuthor exBasionymAuthor = nonViralName.getExBasionymAuthorship();
+            if (isCultivar(nonViralName) ){
+                exCombinationAuthor = null;
+                basionymAuthor = null;
+                exBasionymAuthor = null;
+            }
+
             String basionymPart = "";
             String authorPart = "";
             //basionym
@@ -195,6 +201,10 @@ public class TaxonNameDefaultCacheStrategy
 //        }
             return result;
         }
+    }
+
+    private boolean isCultivar(TaxonName name) {
+        return name.isCultivar() || isNotBlank(name.getCultivarEpithet()) || isNotBlank(name.getCultivarGroupEpithet());
     }
 
     protected String getZoologicalNonCacheAuthorshipCache(TaxonName nonViralName) {

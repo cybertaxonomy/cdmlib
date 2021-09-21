@@ -298,6 +298,21 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setSpecificEpithet(null);
         Assert.assertEquals("Abies 'Cultus'", strategy.getTitleCache(speciesName));
 
+        speciesName.setCombinationAuthorship(author);
+        Assert.assertEquals("Abies 'Cultus' L.", strategy.getTitleCache(speciesName));
+        speciesName.setBasionymAuthorship(basAuthor);
+        speciesName.setExCombinationAuthorship(exAuthor);
+        speciesName.setExBasionymAuthorship(exBasAuthor);
+        Assert.assertEquals("Basionym and ex-authors should not be considered for cultivar names"
+                , "Abies 'Cultus' L.", strategy.getTitleCache(speciesName));
+        speciesName.setNomenclaturalReference(citationRef);
+        Assert.assertEquals("Abies 'Cultus' L., My Reference", strategy.getFullTitleCache(speciesName));
+        speciesName.setCombinationAuthorship(null);
+        speciesName.setBasionymAuthorship(null);
+        speciesName.setExCombinationAuthorship(null);
+        speciesName.setExBasionymAuthorship(null);
+        speciesName.setNomenclaturalReference(null);
+
         //cultivar group
         speciesName.setRank(Rank.CULTIVARGROUP());
         Assert.assertEquals("Abies Group", strategy.getTitleCache(speciesName)); //not sure if this is correct for an empty group field
