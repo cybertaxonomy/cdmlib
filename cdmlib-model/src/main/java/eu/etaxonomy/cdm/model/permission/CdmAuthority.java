@@ -31,7 +31,15 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
- * CDM authority class.<BR>
+ * Model class for representing a structured CDM Authority<BR>.
+ *
+ * It consists of 4 parts:<BR>
+ * <ul>
+ * <li>permission class: for defining a filter on a certain CDM class handled by this authority (obligatory)</li>
+ * <li>property: a certain property in the above permission class (optional)</li>
+ * <li>operations: the set of allowed operations from CRUD (obligatory)</li>
+ * <li>target: for defining a filter on a certain instance of the permission class (optional)</li>
+ * </ul>
  *
  * @see https://dev.e-taxonomy.eu/redmine/issues/7099
  *
@@ -56,7 +64,7 @@ public class CdmAuthority extends AuthorityBase {
      * and in it's {@link TermVocabulary vocabulary}.
      */
     @XmlAttribute(name ="PermissionClass")
-//    @NotNull
+//    @NotNull  //AM: why did we remove NotNull here? For now ther permission class should be obligatory IMO
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
     )
@@ -75,7 +83,6 @@ public class CdmAuthority extends AuthorityBase {
     @XmlJavaTypeAdapter(UUIDAdapter.class)
     @Type(type="uuidUserType")
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
-//    @NotNull
     private UUID targetUuid;
 
 // *************************** Factory Methods ********************************/
