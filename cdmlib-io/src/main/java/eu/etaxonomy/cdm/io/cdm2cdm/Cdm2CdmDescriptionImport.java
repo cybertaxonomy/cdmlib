@@ -33,7 +33,6 @@ public class Cdm2CdmDescriptionImport
     private static final long serialVersionUID = -2111102574346601573L;
     private static final Logger logger = Logger.getLogger(Cdm2CdmDescriptionImport.class);
 
-
     @Override
     protected void doInvoke(Cdm2CdmImportState state) {
         setState(state);

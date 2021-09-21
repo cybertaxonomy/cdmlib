@@ -202,10 +202,6 @@ public class DescriptionBaseDto extends EntityDTO<DescriptionBase>{
         this.id = id;
     }
 
-    /**
-     * @param desc
-     * @return
-     */
     public static DescriptionBaseDto fromDescription(DescriptionBase desc) {
         UuidAndTitleCache<Taxon> taxonUuidAndTitleCache = null;
         UuidAndTitleCache<SpecimenOrObservationBase> specimenDto = null;

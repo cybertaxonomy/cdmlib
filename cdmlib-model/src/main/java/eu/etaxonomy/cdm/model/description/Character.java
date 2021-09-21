@@ -58,7 +58,7 @@ public class Character extends Feature {
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private TermNode<?> structure;
+    private TermNode<DefinedTerm> structure;
 
     //#8120
     @XmlElement(name = "StructureModifier")
@@ -74,7 +74,7 @@ public class Character extends Feature {
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
 //    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
-    private TermNode<?> property;
+    private TermNode<DefinedTerm> property;
 
     //#9507
     @XmlElement(name = "RatioToStructure")

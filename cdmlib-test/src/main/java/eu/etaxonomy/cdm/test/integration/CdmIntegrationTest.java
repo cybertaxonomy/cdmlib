@@ -160,7 +160,7 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
                 // printing to System.out, so that developers get feedback always
                 System.out.println("####################################################");
                 System.out.println("  Starting h2 web server ...");
-                List<String> args = new ArrayList<String>();
+                List<String> args = new ArrayList<>();
                 Integer port = null;
                 try {
                     port = Integer.parseInt(System.getProperty(PROPERTY_H2_SERVER));
