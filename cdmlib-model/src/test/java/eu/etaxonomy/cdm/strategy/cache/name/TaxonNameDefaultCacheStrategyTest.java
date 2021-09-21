@@ -340,6 +340,14 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setCultivarGroupEpithet(null);
         Assert.assertEquals("Correct formatting for missing epithet needs to be discussed", "Abies grex", strategy.getTitleCache(speciesName));
 
+        //subspecies name
+        subSpeciesName.setRank(Rank.CULTIVAR());
+        subSpeciesName.setCultivarEpithet("Cultus");
+        Assert.assertEquals("Infraspecific epithet in cultivars can not be handled correctly yet", "Abies alba beta 'Cultus'", strategy.getTitleCache(subSpeciesName));
+        subSpeciesName.setInfraSpecificEpithet("var. beta");
+        Assert.assertEquals("Abies alba var. beta 'Cultus'", strategy.getTitleCache(subSpeciesName));
+
+
         //graft chimaera
         //https://en.wikipedia.org/wiki/Graft-chimaera
         //either formula (like hybrids) concatenated by ' + ' (Art. 24.2)

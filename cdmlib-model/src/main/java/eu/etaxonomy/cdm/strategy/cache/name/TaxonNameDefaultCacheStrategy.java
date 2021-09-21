@@ -718,8 +718,10 @@ public class TaxonNameDefaultCacheStrategy
 
     protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName name){
         if (name.getNameType().isZoological()){
-            boolean includeMarker =includeInfraSpecificMarkerForZooNames(name);
+            boolean includeMarker = includeInfraSpecificMarkerForZooNames(name);
             return getInfraSpeciesTaggedNameCache(name, includeMarker);
+        }else if (name.isCultivar() || name.getRank() != null && name.getRank().isCultivar()){
+            return getInfraSpeciesTaggedNameCache(name, false);
         }else{
             return getInfraSpeciesTaggedNameCache(name, true);
         }
