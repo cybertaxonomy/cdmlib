@@ -204,7 +204,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                         if (StringUtils.isNotBlank(string)){
                             BigDecimal exactValue = new BigDecimal(string);
     //                        StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance(measure, exactValue);
-                            StatisticalMeasurementValueDto newValueDto = new StatisticalMeasurementValueDto(measure, exactValue);
+                            StatisticalMeasurementValueDto newValueDto = new StatisticalMeasurementValueDto(measure, exactValue, null);
     //                                StatisticalMeasurementValueDto.fromStatisticalMeasurementValue(newValue);
                             quantitativeData.getValues().add(newValueDto);
                         }

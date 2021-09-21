@@ -521,9 +521,10 @@ public class DescriptionServiceImpl
                             CategoricalData data = HibernateProxyHelper.deproxy(elementBase, CategoricalData.class);
                             List<StateData> states = new ArrayList<>(data.getStateData());
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
+
                             data.getStateData().clear();
                             for (StateDataDto dataDto: stateDtos){
-                                List<StateData> equalUuidsStateData = states.stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
+//                                List<StateData> equalUuidsStateData = states.stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
 //                                if (equalUuidsStateData.size() == 1){
 //                                    //do nothing because state already exist
 //                                }else if (equalUuidsStateData.isEmpty()){
@@ -559,8 +560,15 @@ public class DescriptionServiceImpl
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
                             data.getStatisticalValues().clear();
                             for (StatisticalMeasurementValueDto dataDto: valueDtos){
+                                List<StatisticalMeasurementValue> equalUuidsStateData = data.getStatisticalValues().stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
                                 //create new statedata
-                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid()), dataDto.getValue());
+                                StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid());
+
+                                if (statMeasure == null){
+                                    System.err.println(dataDto.getType().getUuid());
+
+                                }
+                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(statMeasure, dataDto.getValue());
                                 statisticalValues.add(newStatisticalMeasurement);
                                 data.addStatisticalValue(newStatisticalMeasurement);
                             }

@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -24,14 +25,18 @@ public class StatisticalMeasurementValueDto implements Serializable {
 
     private TermDto type;
     private BigDecimal value;
+    private UUID uuid;
 
-    public StatisticalMeasurementValueDto(TermDto typeDto, BigDecimal value){
+
+    public StatisticalMeasurementValueDto(TermDto typeDto, BigDecimal value, UUID uuid){
         type = typeDto;
         this.value = value;
+        this.uuid = uuid;
     }
 
     public static StatisticalMeasurementValueDto fromStatisticalMeasurementValue(StatisticalMeasurementValue statValue){
-        StatisticalMeasurementValueDto result = new StatisticalMeasurementValueDto(TermDto.fromTerm(statValue.getType()), statValue.getValue());
+        StatisticalMeasurementValueDto result = new StatisticalMeasurementValueDto(TermDto.fromTerm(statValue.getType()), statValue.getValue(), statValue.getUuid());
+
         return result;
     }
 
@@ -46,6 +51,20 @@ public class StatisticalMeasurementValueDto implements Serializable {
     }
     public void setValue(BigDecimal value) {
         this.value = value;
+    }
+
+    /**
+     * @return the uuid
+     */
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    /**
+     * @param uuid the uuid to set
+     */
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
 }
