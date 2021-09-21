@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -32,6 +33,9 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
  * Model class for representing a structured CDM Authority<BR>.
+ *
+ * To be extended by implementations of {@link GrantedAuthority}.
+ * that will replace {@link GrantedAuthorityImpl} in future version.
  *
  * It consists of 4 parts:<BR>
  * <ul>
