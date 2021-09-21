@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
@@ -94,11 +95,11 @@ public class CdmAuthority extends AuthorityBase {
         super();
         this.permissionClass = permissionClass;
         this.property = property;
-        this.operations = operations;
+        setOperations(operations);
         this.targetUuid = targetUuid;
     }
 
-    // ********************** GETTER / SETTER **************************/
+// ********************** GETTER / SETTER **************************/
 
     public PermissionClass getPermissionClass() {
         return permissionClass;
@@ -122,9 +123,15 @@ public class CdmAuthority extends AuthorityBase {
     }
 
     public EnumSet<CRUD> getOperations() {
+        if (operations == null){  //just in case
+            operations = EnumSet.noneOf(CRUD.class);
+        }
         return operations;
     }
     public void setOperations(EnumSet<CRUD> operations) {
+        if (operations == null){
+            operations = EnumSet.noneOf(CRUD.class);
+        }
         this.operations = operations;
     }
     public void addOperation(CRUD operation){
@@ -134,7 +141,46 @@ public class CdmAuthority extends AuthorityBase {
         this.operations.remove(operation);
     }
 
+// *********************** STRING *****************************
+
+    @Override
+    public String toString() {
+        return (permissionClass != null ? permissionClass : "-NO CLASS-")
+             + (isNotBlank(property) ? "." + property : "")
+             + "" + operations + ""
+             + (targetUuid != null ? "{" + targetUuid + "}" : "");
+    }
+
+
+
 // ************************* CLONE *****************************/
+
+    public boolean isEqual(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        CdmAuthority other = (CdmAuthority) obj;
+        if (permissionClass != other.permissionClass) {
+            return false;
+        }
+        if (!operations.equals(other.operations)) {
+            return false;
+        }
+        if (!CdmUtils.Nz(property).equals(CdmUtils.Nz(other.property))){
+            return false;
+        }
+        if (targetUuid == null) {
+            if (other.targetUuid != null) {
+                return false;
+            }
+        } else if (!targetUuid.equals(other.targetUuid)) {
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public CdmAuthority clone() throws CloneNotSupportedException {
@@ -143,4 +189,5 @@ public class CdmAuthority extends AuthorityBase {
         result.operations = this.operations.clone();
         return result;
     }
+
 }
