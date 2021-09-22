@@ -2318,9 +2318,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
             e.printStackTrace();
             Assert.fail("Authors should be parsable");
         }
-
     }
-
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#AuthorshipAndEx(java.lang.String)}.
@@ -2343,6 +2341,15 @@ public class NonViralNameParserImplTest extends TermTestBase {
 
         TaxonName name;
         String cultivar;
+
+        //ICN name is not (yet?) converted to ICNCP name
+        name = TaxonNameFactory.NewBotanicalInstance(Rank.SPECIES());
+        name.setGenusOrUninomial("Pinus");
+        name.setSpecificEpithet("beta");
+        cultivar = "Abies alba 'Albus'";
+        parser.parseReferencedName(name, cultivar, null, true);
+        Assert.assertEquals("Changing the code automatically is not implemented needs discussion of wanted", NomenclaturalCode.ICNAFP, name.getNameType());
+        Assert.assertTrue(name.isProtectedTitleCache());
 
         //cultivar
         cultivar = "Abies 'Albus'";
