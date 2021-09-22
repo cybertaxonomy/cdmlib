@@ -58,6 +58,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -497,6 +498,8 @@ public class DescriptionServiceImpl
                         if (descElement instanceof QuantitativeDataDto){
 
                             QuantitativeData data = QuantitativeData.NewInstance(feature);
+                            MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) descElement).getMeasurementUnit().getUuid());
+                            data.setUnit(unit);
 
                             Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
@@ -564,10 +567,6 @@ public class DescriptionServiceImpl
                                 //create new statedata
                                 StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid());
 
-                                if (statMeasure == null){
-                                    System.err.println(dataDto.getType().getUuid());
-
-                                }
                                 StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(statMeasure, dataDto.getValue());
                                 statisticalValues.add(newStatisticalMeasurement);
                                 data.addStatisticalValue(newStatisticalMeasurement);
