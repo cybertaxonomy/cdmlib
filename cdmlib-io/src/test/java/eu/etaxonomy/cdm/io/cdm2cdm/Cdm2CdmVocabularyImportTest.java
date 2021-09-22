@@ -68,6 +68,7 @@ public class Cdm2CdmVocabularyImportTest extends CdmTransactionalIntegrationTest
     private static UUID uuidStructGraph = UUID.fromString("1fdf67c7-e267-44ca-8d35-be66e3746847");
 
     @BeforeClass
+    @Ignore
     public static void setUpClass() throws Exception {
     //      this.startH2Server();
           boolean omitTermLoading = true;
