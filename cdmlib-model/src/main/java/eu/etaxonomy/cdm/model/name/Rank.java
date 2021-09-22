@@ -132,7 +132,7 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidSubsubform = UUID.fromString("1c8ac389-4349-4ae0-87be-7239f6635068");
     public static final UUID uuidInfraspecificTaxon = UUID.fromString("eb75c27d-e154-4570-9d96-227b2df60474");
     private static final UUID uuidCandidate = UUID.fromString("ead9a1f5-dfd4-4de2-9121-70a47accb10b");
-    private static final UUID uuidDenominationClass = UUID.fromString("49bdf74a-2170-40ed-8be2-887a0db517bf");
+    public static final UUID uuidDenominationClass = UUID.fromString("49bdf74a-2170-40ed-8be2-887a0db517bf");
     public static final UUID uuidGrexICNCP = UUID.fromString("1abffd79-1a1e-4a00-bb48-08df756d73d3");
     public static final UUID uuidGraftChimaera = UUID.fromString("6b4063bc-f934-4796-9bf3-0ef3aea5c1cb");
     public static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
@@ -579,7 +579,8 @@ public class Rank extends OrderedTermBase<Rank> {
     public boolean isCultivar(){
         //TODO handle correctly as rankClass?
         return this.uuid.equals(uuidCultivar) || this.uuid.equals(uuidCultivarGroup)
-                || this.uuid.equals(uuidGraftChimaera) || this.uuid.equals(uuidGrexICNCP);
+                || this.uuid.equals(uuidGraftChimaera) || this.uuid.equals(uuidGrexICNCP)
+                || this.uuid.equals(uuidDenominationClass);
     }
 
 

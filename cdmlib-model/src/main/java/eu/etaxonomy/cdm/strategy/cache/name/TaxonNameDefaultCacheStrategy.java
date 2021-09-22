@@ -409,15 +409,17 @@ public class TaxonNameDefaultCacheStrategy
         }
         if (rankIsHandled){
             builder.addAll(scientificNameTags);
-            if (isNotBlank(cultivarStr)){
-                builder.add(TagEnum.cultivar, cultivarStr);
-            }
         }else if (rankUuid.equals(Rank.uuidGraftChimaera)){
             //TODO not yet fully implemented
             cultivarStr = "+ " + CdmUtils.concat(" ", taxonName.getGenusOrUninomial(), surroundedCultivarEpithet(taxonName.getCultivarEpithet()));
-            builder.add(TagEnum.cultivar, cultivarStr);
+        }else if (rankUuid.equals(Rank.uuidDenominationClass)){
+            //TODO not yet fully implemented
+            cultivarStr = "+ " + CdmUtils.concat(" ", taxonName.getGenusOrUninomial(), surroundedCultivarEpithet(taxonName.getCultivarEpithet()));
         } else { //(!rankIsHandled)
             throw new IllegalStateException("Unsupported rank " + taxonName.getRank().getTitleCache() + " for cultivar.");
+        }
+        if (isNotBlank(cultivarStr)){
+            builder.add(TagEnum.cultivar, cultivarStr);
         }
 
         return builder.getTaggedText();
