@@ -1569,7 +1569,7 @@ public class NonViralNameParserImpl
 		    parseFullName(nameToBeFilled, scientificFullName, null, false);
 
             if (isNotBlank(grexName)){
-                nameToBeFilled.setRank(Rank.GREX());
+                nameToBeFilled.setRank(Rank.GREX_ICNCP());
                 nameToBeFilled.setCultivarGroupEpithet(grexName);
             }
             if (isNotBlank(groupEpi) || isNotBlank(brGroupName)){

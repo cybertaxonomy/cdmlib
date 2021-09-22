@@ -402,7 +402,7 @@ public class TaxonNameDefaultCacheStrategy
             cultivarStr = CdmUtils.concat(" ", groupStr, cultivarStr);
         }else if (rankUuid.equals(Rank.uuidCultivarGroup)){
             cultivarStr = CdmUtils.concat(" ", groupStr, checkHasGroupEpithet(groupStr)? null: "Group");
-        }else if (rankUuid.equals(Rank.uuidGrex)){
+        }else if (rankUuid.equals(Rank.uuidGrexICNCP)){
             cultivarStr = CdmUtils.concat(" ", groupStr, checkHasGrexEpithet(groupStr)? null: "grex");
         }else{
             rankIsHandled = false;

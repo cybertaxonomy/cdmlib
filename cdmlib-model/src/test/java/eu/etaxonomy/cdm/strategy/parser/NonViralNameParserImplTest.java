@@ -831,6 +831,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals( "infraspecific", name.getInfraSpecificEpithet());
         assertEquals( "Proles should be parsed", Rank.PROLES(), name.getRank());
 
+        //lusus
+        infraspecificUnranked = "Genus species lusus infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Sublusus should be parsed", Rank.LUSUS(), name.getRank());
+
         //sublusus
         infraspecificUnranked = "Genus species sublusus infraspecific";
         name = parser.parseFullName(infraspecificUnranked);
@@ -846,6 +854,14 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals( "species", name.getSpecificEpithet());
         assertEquals( "infraspecific", name.getInfraSpecificEpithet());
         assertEquals( "Race should be parsed", Rank.RACE(), name.getRank());
+
+        //grex
+        infraspecificUnranked = "Genus species grex infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Race should be parsed", Rank.GREX_INFRASPEC(), name.getRank());
     }
 
     @Test
@@ -2482,7 +2498,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNull(name.getSpecificEpithet());
         Assert.assertEquals("Albus grex", name.getCultivarGroupEpithet());
         Assert.assertEquals("Abies Albus grex", name.getNameCache());
-        Assert.assertEquals(Rank.uuidGrex, name.getRank().getUuid());
+        Assert.assertEquals(Rank.uuidGrexICNCP, name.getRank().getUuid());
 
         //same but using referenced name
         grex = "Abies Albus grex";
@@ -2491,7 +2507,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNull(name.getSpecificEpithet());
         Assert.assertEquals("Albus grex", name.getCultivarGroupEpithet());
         Assert.assertEquals("Abies Albus grex", name.getNameCache());
-        Assert.assertEquals(Rank.uuidGrex, name.getRank().getUuid());
+        Assert.assertEquals(Rank.uuidGrexICNCP, name.getRank().getUuid());
 
         grex = "Abies Albus Second grex";
         name = parser.parseReferencedName(grex);
@@ -2499,7 +2515,7 @@ public class NonViralNameParserImplTest extends TermTestBase {
         Assert.assertNull(name.getSpecificEpithet());
         Assert.assertEquals("Albus Second grex", name.getCultivarGroupEpithet());
         Assert.assertEquals("Abies Albus Second grex", name.getNameCache());
-        Assert.assertEquals(Rank.uuidGrex, name.getRank().getUuid());
+        Assert.assertEquals(Rank.uuidGrexICNCP, name.getRank().getUuid());
 
         //combined
         String combined = "Abies (Albus Gruppo) 'Pretty'";

@@ -282,6 +282,30 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("", "Abies alba \u00D7 Second parent", hybridName.getNameCache());
     }
 
+    //#9778
+    @Test
+    public void testOldRanks(){
+
+        //grex
+        subSpeciesName.setRank(Rank.GREX_INFRASPEC());
+        Assert.assertEquals("Abies alba grex beta", strategy.getTitleCache(subSpeciesName));
+        //subgrex
+        subSpeciesName.setRank(Rank.SUBGREX());
+        Assert.assertEquals("Abies alba subgrex beta", strategy.getTitleCache(subSpeciesName));
+        //proles
+        subSpeciesName.setRank(Rank.PROLES());
+        Assert.assertEquals("Abies alba prol. beta", strategy.getTitleCache(subSpeciesName));
+        //proles
+        subSpeciesName.setRank(Rank.SUBPROLES());
+        Assert.assertEquals("Abies alba subprol. beta", strategy.getTitleCache(subSpeciesName));
+        //lusus
+        subSpeciesName.setRank(Rank.LUSUS());
+        Assert.assertEquals("Abies alba lusus beta", strategy.getTitleCache(subSpeciesName));
+        //sublusus
+        subSpeciesName.setRank(Rank.SUBLUSUS());
+        Assert.assertEquals("Abies alba sublusus beta", strategy.getTitleCache(subSpeciesName));
+    }
+
     //#9754
     @Test
     public void testCultivar(){
@@ -334,7 +358,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Correct formatting for missing epithet needs to be discussed", "Abies Group", strategy.getTitleCache(speciesName));
 
         //grex
-        speciesName.setRank(Rank.GREX());
+        speciesName.setRank(Rank.GREX_ICNCP());
         speciesName.setCultivarGroupEpithet("Lovely");
         Assert.assertEquals("Abies Lovely grex", strategy.getTitleCache(speciesName));
         speciesName.setCultivarGroupEpithet(null);
