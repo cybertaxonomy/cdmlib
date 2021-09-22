@@ -307,7 +307,7 @@ public class TaxonNameDefaultCacheStrategy
             return tags;
         }else if (taxonName.isAutonym()){
             //Autonym
-            tags.addAll(handleTaggedAutonym(taxonName));
+            tags.addAll(handleTaggedAutonym(taxonName, false));
         }else{ //not Autonym
             List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
@@ -352,21 +352,21 @@ public class TaxonNameDefaultCacheStrategy
             return tags;
 
         }else if (rank == null){
-            tags = getRanklessTaggedNameCache(taxonName);
+            tags = getRanklessTaggedNameCache(taxonName, true);
 		}else if (rank.isCultivar()){
 			tags = getCultivarTaggedNameCache(taxonName);
         }else if (rank.isInfraSpecific()){
             tags = getInfraSpeciesTaggedNameCache(taxonName);
         }else if (rank.isSpecies() || isAggregateWithAuthorship(taxonName, rank) ){ //exception see #4288
-            tags = getSpeciesTaggedNameCache(taxonName);
+            tags = getSpeciesTaggedNameCache(taxonName, true);
         }else if (rank.isInfraGeneric()){
-            tags = getInfraGenusTaggedNameCache(taxonName);
+            tags = getInfraGenusTaggedNameCache(taxonName, true);
         }else if (rank.isGenus()){
-            tags = getGenusOrUninomialTaggedNameCache(taxonName);
+            tags = getGenusOrUninomialTaggedNameCache(taxonName, true);
         }else if (rank.isSupraGeneric()){
-            tags = getGenusOrUninomialTaggedNameCache(taxonName);
+            tags = getGenusOrUninomialTaggedNameCache(taxonName, true);
         }else{
-            tags = getRanklessTaggedNameCache(taxonName);
+            tags = getRanklessTaggedNameCache(taxonName, true);
             logger.warn("Rank does not belong to a rank class: " + rank.getTitleCache() + ". Used rankless nameCache for name " + taxonName.getUuid());
         }
         //TODO handle appended phrase here instead of different places, check first if this is true for all
@@ -381,13 +381,13 @@ public class TaxonNameDefaultCacheStrategy
         List<TaggedText> scientificNameTags;
         TaggedTextBuilder builder = TaggedTextBuilder.NewInstance();
         if (isNotBlank(taxonName.getInfraSpecificEpithet())){
-            scientificNameTags = getInfraSpeciesTaggedNameCache(taxonName);
+            scientificNameTags = getInfraSpeciesTaggedNameCache(taxonName, false, false);
         } else if (isNotBlank(taxonName.getSpecificEpithet())){
-            scientificNameTags = getSpeciesTaggedNameCache(taxonName);
+            scientificNameTags = getSpeciesTaggedNameCache(taxonName, false);
         } else if (isNotBlank(taxonName.getInfraGenericEpithet())){
-            scientificNameTags = getInfraGenusTaggedNameCache(taxonName);
+            scientificNameTags = getInfraGenusTaggedNameCache(taxonName, false);
         } else /*if (isNotBlank(taxonName.getGenusOrUninomial())) */{
-            scientificNameTags = getGenusOrUninomialTaggedNameCache(taxonName);
+            scientificNameTags = getGenusOrUninomialTaggedNameCache(taxonName, false);
         }
 
         UUID rankUuid = taxonName.getRank().getUuid();
@@ -413,8 +413,8 @@ public class TaxonNameDefaultCacheStrategy
             //TODO not yet fully implemented
             cultivarStr = "+ " + CdmUtils.concat(" ", taxonName.getGenusOrUninomial(), surroundedCultivarEpithet(taxonName.getCultivarEpithet()));
         }else if (rankUuid.equals(Rank.uuidDenominationClass)){
-            //TODO not yet fully implemented
-            cultivarStr = "+ " + CdmUtils.concat(" ", taxonName.getGenusOrUninomial(), surroundedCultivarEpithet(taxonName.getCultivarEpithet()));
+            //TODO dummy implementation
+            cultivarStr = CdmUtils.concat(" ", taxonName.getGenusOrUninomial(), surroundedCultivarEpithet(taxonName.getCultivarEpithet()));
         } else { //(!rankIsHandled)
             throw new IllegalStateException("Unsupported rank " + taxonName.getRank().getTitleCache() + " for cultivar.");
         }
@@ -422,7 +422,9 @@ public class TaxonNameDefaultCacheStrategy
             builder.add(TagEnum.cultivar, cultivarStr);
         }
 
-        return builder.getTaggedText();
+        List<TaggedText> tags = builder.getTaggedText();
+        addAppendedTaggedPhrase(tags, taxonName, true);
+        return tags;
     }
 
     private String surroundGroupWithBracket(String groupStr) {
@@ -481,11 +483,11 @@ public class TaxonNameDefaultCacheStrategy
      * @param nonViralName
      * @return
      */
-    private List<TaggedText> handleTaggedAutonym(TaxonName nonViralName) {
+    private List<TaggedText> handleTaggedAutonym(TaxonName nonViralName, boolean addAppended) {
     	List<TaggedText> tags = null;
     	if (nonViralName.isInfraSpecific()){
 	        //species part
-	        tags = getSpeciesTaggedNameCache(nonViralName);
+	        tags = getSpeciesTaggedNameCache(nonViralName, addAppended);
 
 	        //author
 	        String authorCache = getAuthorshipCache(nonViralName);
@@ -515,7 +517,7 @@ public class TaxonNameDefaultCacheStrategy
 
         } else if (nonViralName.isInfraGeneric()){
         	//genus part
-	       tags =getGenusOrUninomialTaggedNameCache(nonViralName);
+	       tags =getGenusOrUninomialTaggedNameCache(nonViralName, addAppended);
 
 	       //author
            String authorCache = getAuthorshipCache(nonViralName);
@@ -555,7 +557,7 @@ public class TaxonNameDefaultCacheStrategy
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getRanklessTaggedNameCache(INonViralName nonViralName){
+    protected List<TaggedText> getRanklessTaggedNameCache(INonViralName nonViralName, boolean addAppended){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
         String speciesEpi = CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim();
         if (isNotBlank(speciesEpi)){
@@ -568,7 +570,7 @@ public class TaxonNameDefaultCacheStrategy
         }
 
         //result += " (rankless)";
-        addAppendedTaggedPhrase(tags, nonViralName);
+        addAppendedTaggedPhrase(tags, nonViralName, addAppended);
         return tags;
     }
 
@@ -598,9 +600,9 @@ public class TaxonNameDefaultCacheStrategy
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getGenusOrUninomialTaggedNameCache(INonViralName nonViralName){
+    protected List<TaggedText> getGenusOrUninomialTaggedNameCache(INonViralName nonViralName, boolean addAppended){
         List<TaggedText> tags = getUninomialTaggedPart(nonViralName);
-        addAppendedTaggedPhrase(tags, nonViralName);
+        addAppendedTaggedPhrase(tags, nonViralName, addAppended);
         return tags;
     }
 
@@ -611,10 +613,10 @@ public class TaxonNameDefaultCacheStrategy
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getInfraGenusTaggedNameCache(INonViralName nonViralName){
+    protected List<TaggedText> getInfraGenusTaggedNameCache(INonViralName nonViralName, boolean addAppended){
         Rank rank = nonViralName.getRank();
         if (rank != null && rank.isSpeciesAggregate() && isBlank(nonViralName.getAuthorshipCache())){
-            return getSpeciesAggregateTaggedCache(nonViralName);
+            return getSpeciesAggregateTaggedCache(nonViralName, addAppended);
         }
 
         //genus
@@ -641,7 +643,7 @@ public class TaxonNameDefaultCacheStrategy
 
         addInfraGenericPart(nonViralName, tags, infraGenericMarker, infraGenEpi);
 
-        addAppendedTaggedPhrase(tags, nonViralName);
+        addAppendedTaggedPhrase(tags, nonViralName, addAppended);
         return tags;
     }
 
@@ -675,24 +677,21 @@ public class TaxonNameDefaultCacheStrategy
      * @param nonViralName
      * @return
      */
-    protected List<TaggedText> getSpeciesAggregateTaggedCache(INonViralName nonViralName){
+    protected List<TaggedText> getSpeciesAggregateTaggedCache(INonViralName nonViralName, boolean addAppended){
         if (! isBlank(nonViralName.getAuthorshipCache())){
-        	List<TaggedText> result = getSpeciesTaggedNameCache(nonViralName);
+        	List<TaggedText> result = getSpeciesTaggedNameCache(nonViralName, addAppended);
         	return result;
         }
-
 
     	List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
 
         addSpeciesAggregateTaggedEpithet(tags, nonViralName);
-        addAppendedTaggedPhrase(tags, nonViralName);
+        addAppendedTaggedPhrase(tags, nonViralName, addAppended);
         return tags;
     }
 
     /**
      * Adds the aggregate tag to the tag list.
-     * @param tags
-     * @param nonViralName
      */
     private void addSpeciesAggregateTaggedEpithet(List<TaggedText> tags, INonViralName nonViralName) {
         String marker;
@@ -706,26 +705,21 @@ public class TaxonNameDefaultCacheStrategy
         }
     }
 
-
     /**
      * Returns the tag list for a species taxon.
-     * @param nonViralName
-     * @return
      */
-    protected List<TaggedText> getSpeciesTaggedNameCache(INonViralName nonViralName){
+    protected List<TaggedText> getSpeciesTaggedNameCache(INonViralName nonViralName, boolean addAppended){
         List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
-        addAppendedTaggedPhrase(tags, nonViralName);
+        addAppendedTaggedPhrase(tags, nonViralName, addAppended);
         return tags;
     }
 
     protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName name){
         if (name.getNameType().isZoological()){
             boolean includeMarker = includeInfraSpecificMarkerForZooNames(name);
-            return getInfraSpeciesTaggedNameCache(name, includeMarker);
-        }else if (name.isCultivar() || name.getRank() != null && name.getRank().isCultivar()){
-            return getInfraSpeciesTaggedNameCache(name, false);
+            return getInfraSpeciesTaggedNameCache(name, includeMarker, false);
         }else{
-            return getInfraSpeciesTaggedNameCache(name, true);
+            return getInfraSpeciesTaggedNameCache(name, true, false);
         }
     }
 
@@ -740,7 +734,8 @@ public class TaxonNameDefaultCacheStrategy
      * @param includeMarker
      * @return
      */
-    protected List<TaggedText> getInfraSpeciesTaggedNameCache(INonViralName nonViralName, boolean includeMarker){
+    protected List<TaggedText> getInfraSpeciesTaggedNameCache(INonViralName nonViralName,
+            boolean includeMarker, boolean addAppended){
         List<TaggedText> tags = getGenusAndSpeciesTaggedPart(nonViralName);
         if (includeMarker || nonViralName.isTrinomHybrid()){
             String marker = (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
@@ -760,7 +755,7 @@ public class TaxonNameDefaultCacheStrategy
             tags.add(new TaggedText(TagEnum.name, infrSpecEpi));
         }
 
-        addAppendedTaggedPhrase(tags, nonViralName);
+        addAppendedTaggedPhrase(tags, nonViralName, addAppended);
         return tags;
     }
 
@@ -811,8 +806,12 @@ public class TaxonNameDefaultCacheStrategy
      * Adds the tag for the appended phrase if an appended phrase exists
      * @param tags
      * @param nonViralName
+     * @param addAppended
      */
-    protected void addAppendedTaggedPhrase(List<TaggedText> tags, INonViralName nonViralName){
+    protected void addAppendedTaggedPhrase(List<TaggedText> tags, INonViralName nonViralName, boolean addAppended){
+        if (!addAppended){
+            return;
+        }
         String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
         if (isNotBlank(appendedPhrase)){
             tags.add(new TaggedText(TagEnum.name, appendedPhrase));

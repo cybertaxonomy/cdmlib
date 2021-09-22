@@ -378,8 +378,24 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         speciesName.setRank(Rank.GRAFTCHIMAERA());
         speciesName.setGenusOrUninomial("Laburnocytisus");
         speciesName.setCultivarEpithet("Adamii");
-
         Assert.assertEquals("+ Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
+        //tbc
+
+        //denomination class (only dummy implementation, may change in future)
+        speciesName.setRank(Rank.DENOMINATIONCLASS());
+        speciesName.setGenusOrUninomial("Laburnocytisus");
+        speciesName.setCultivarEpithet("Adamii");
+        Assert.assertEquals("Laburnocytisus 'Adamii'", strategy.getTitleCache(speciesName));
+
+
+        //appended phrase
+        speciesName.setRank(Rank.CULTIVAR());
+        speciesName.setGenusOrUninomial("Abies");
+        speciesName.setSpecificEpithet("alba");
+        speciesName.setCultivarEpithet("Cultus");
+        speciesName.setAppendedPhrase("appended");
+        Assert.assertEquals("Abies alba 'Cultus' appended", strategy.getTitleCache(speciesName));
+
     }
 
     //3665
@@ -668,7 +684,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         nonViralName.setAuthorshipCache(author);
 
         //test ordinary infrageneric
-        List<TaggedText> subGenusNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
+        List<TaggedText> subGenusNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
         String subGenusNameCache = TaggedCacheHelper.createString(subGenusNameCacheTagged);
         assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
         String subGenusTitle = strategy.getTitleCache(nonViralName);
@@ -680,7 +696,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         nonViralName.setInfraGenericEpithet(null);
         nonViralName.setAuthorshipCache(null);
 
-        List<TaggedText> aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
+        List<TaggedText> aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
 
         String aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus myspecies aggr.'.", "Genus myspecies aggr.", aggrNameCache);
@@ -697,7 +713,7 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         nonViralName.setSpecificEpithet("myspecies");
         nonViralName.setInfraGenericEpithet("Infragenus");
 
-        aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
+        aggrNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName, false);
         aggrNameCache = TaggedCacheHelper.createString(aggrNameCacheTagged);
         assertEquals("Species aggregate name should be 'Genus (Infragenus) myspecies aggr.'.", "Genus (Infragenus) myspecies aggr.", aggrNameCache);
 
