@@ -382,6 +382,7 @@ public class RankTest extends EntityTestBase {
 	@Test
 	public void testCONVAR() {
 		assertEquals(uuidConvar, Rank.CONVAR().getUuid());
+		assertFalse(Rank.CONVAR().isCultivar());  //#6387
 	}
 
 	@Test
