@@ -368,7 +368,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testRACE() {
-		assertEquals(uuidRace,  Rank.RACE().getUuid());
+		assertEquals(uuidRace, Rank.RACE().getUuid());
 	}
     @Test
     public void testLUSUS() {
@@ -376,27 +376,27 @@ public class RankTest extends EntityTestBase {
     }
 	@Test
 	public void testSUBLUSUS() {
-		assertEquals(uuidSublusus,  Rank.SUBLUSUS().getUuid());
+		assertEquals(uuidSublusus, Rank.SUBLUSUS().getUuid());
 	}
 
 	@Test
 	public void testCONVAR() {
-		assertEquals(uuidConvar,  Rank.CONVAR().getUuid());
+		assertEquals(uuidConvar, Rank.CONVAR().getUuid());
 	}
 
 	@Test
 	public void testFORM() {
-		assertEquals(uuidForm,  Rank.FORM().getUuid());
+		assertEquals(uuidForm, Rank.FORM().getUuid());
 	}
 
 	@Test
 	public void testSPECIALFORM() {
-		assertEquals(uuidSpecialForm,  Rank.SPECIALFORM().getUuid());
+		assertEquals(uuidSpecialForm, Rank.SPECIALFORM().getUuid());
 	}
 
 	@Test
 	public void testSUBFORM() {
-		assertEquals(uuidSubform,  Rank.SUBFORM().getUuid());
+		assertEquals(uuidSubform, Rank.SUBFORM().getUuid());
 	}
 
 	@Test
@@ -411,7 +411,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testCANDIDATE() {
-		assertEquals(uuidCandidate,  Rank.CANDIDATE().getUuid());
+		assertEquals(uuidCandidate, Rank.CANDIDATE().getUuid());
 	}
 
 	@Test
@@ -431,7 +431,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testCULTIVARGROUP() {
-		assertEquals(uuidCultivarGroup,  Rank.CULTIVARGROUP().getUuid());	}
+		assertEquals(uuidCultivarGroup, Rank.CULTIVARGROUP().getUuid());	}
 
 	@Test
 	public void testCULTIVAR() {
