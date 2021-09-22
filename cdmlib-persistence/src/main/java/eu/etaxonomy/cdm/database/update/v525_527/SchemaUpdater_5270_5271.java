@@ -64,6 +64,14 @@ public class SchemaUpdater_5270_5271 extends SchemaUpdaterBase {
         UUID uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
         TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm, description, label, abbrev, uuidLanguage, true);
 
+        //#9755 Adapt grex representation
+        stepName = "Adapt proles abbreviation";
+        uuidTerm = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+        abbrev = "proles";
+        uuidLanguage = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
+        TermRepresentationUpdater.NewInstance(stepList, stepName, uuidTerm, null, null, abbrev, uuidLanguage, true);
+
+
         return stepList;
     }
 }
