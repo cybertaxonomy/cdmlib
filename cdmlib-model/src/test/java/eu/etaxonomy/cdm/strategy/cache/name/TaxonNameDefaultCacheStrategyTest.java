@@ -294,10 +294,10 @@ public class TaxonNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase
         Assert.assertEquals("Abies alba subgrex beta", strategy.getTitleCache(subSpeciesName));
         //proles
         subSpeciesName.setRank(Rank.PROLES());
-        Assert.assertEquals("Abies alba prol. beta", strategy.getTitleCache(subSpeciesName));
+        Assert.assertEquals("Abies alba proles beta", strategy.getTitleCache(subSpeciesName));
         //proles
         subSpeciesName.setRank(Rank.SUBPROLES());
-        Assert.assertEquals("Abies alba subprol. beta", strategy.getTitleCache(subSpeciesName));
+        Assert.assertEquals("Abies alba subproles beta", strategy.getTitleCache(subSpeciesName));
         //lusus
         subSpeciesName.setRank(Rank.LUSUS());
         Assert.assertEquals("Abies alba lusus beta", strategy.getTitleCache(subSpeciesName));
