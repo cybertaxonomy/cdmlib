@@ -622,6 +622,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     public static Rank getRankByNameOrIdInVoc(String strRank, boolean useUnknown) throws UnknownCdmTypeException{
         try {
+            strRank = strRank.replace("prol.", "proles");
             return getRankByIdInVoc(strRank);
         } catch (UnknownCdmTypeException e) {
             return getRankByName(strRank, useUnknown);

@@ -95,7 +95,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String aggrOrGroupMarker = "(aggr\\.|agg\\.|group)";
     protected static String infraSpeciesMarkerNoNotho = "(subsp\\.|convar\\.|var\\.|subvar\\.|f\\.|forma|subf\\.|f\\.\\ssp\\.|f\\.spec\\.|f\\.sp\\.|\\[unranked\\]|\\[ranglos\\]|tax\\." + fWs + "infrasp\\.)";
     public static String infraSpeciesMarker = "(n|notho)?" + infraSpeciesMarkerNoNotho;
-    public static String oldInfraSpeciesMarker = "(prol\\.|proles|race|taxon|(sub)?lusus|(sub)?grex)";
+    public static String oldInfraSpeciesMarker = "((sub)?prol\\.|(sub)?proles|race|taxon|(sub)?lusus|(sub)?grex)";
 
     //AuthorString
     protected static String qm = "[" + UTF8.QUOT_SINGLE_RIGHT + UTF8.ACUTE_ACCENT + UTF8.QUOT_SINGLE_LEFT_HIGH + "'`]";

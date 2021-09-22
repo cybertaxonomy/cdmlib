@@ -831,6 +831,30 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals( "infraspecific", name.getInfraSpecificEpithet());
         assertEquals( "Proles should be parsed", Rank.PROLES(), name.getRank());
 
+        //subproles
+        infraspecificUnranked = "Genus species subproles infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Subproles should be parsed", Rank.SUBPROLES(), name.getRank());
+
+        //prol.
+        infraspecificUnranked = "Genus species prol. infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Prol. should be parsed", Rank.PROLES(), name.getRank());
+
+        //subproles
+        infraspecificUnranked = "Genus species subprol. infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Subprol. should be parsed", Rank.SUBPROLES(), name.getRank());
+
         //lusus
         infraspecificUnranked = "Genus species lusus infraspecific";
         name = parser.parseFullName(infraspecificUnranked);
@@ -861,7 +885,15 @@ public class NonViralNameParserImplTest extends TermTestBase {
         assertEquals( "Genus", name.getGenusOrUninomial());
         assertEquals( "species", name.getSpecificEpithet());
         assertEquals( "infraspecific", name.getInfraSpecificEpithet());
-        assertEquals( "Race should be parsed", Rank.GREX_INFRASPEC(), name.getRank());
+        assertEquals( "Grex should be parsed", Rank.GREX_INFRASPEC(), name.getRank());
+
+        //subgrex
+        infraspecificUnranked = "Genus species subgrex infraspecific";
+        name = parser.parseFullName(infraspecificUnranked);
+        assertEquals( "Genus", name.getGenusOrUninomial());
+        assertEquals( "species", name.getSpecificEpithet());
+        assertEquals( "infraspecific", name.getInfraSpecificEpithet());
+        assertEquals( "Subgrex should be parsed", Rank.SUBGREX(), name.getRank());
     }
 
     @Test
