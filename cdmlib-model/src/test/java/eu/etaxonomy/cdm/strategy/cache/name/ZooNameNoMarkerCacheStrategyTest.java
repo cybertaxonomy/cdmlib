@@ -158,7 +158,7 @@ public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase 
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class);
+		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class, boolean.class);
 
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus (InfraGenericPart)", strategy.getNameCache(subGenusName));

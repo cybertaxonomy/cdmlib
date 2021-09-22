@@ -200,7 +200,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class);
+		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class, boolean.class);
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
 	}
@@ -226,7 +226,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	}
 
 	@Override
-    protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
+    protected Method getMethod(Class clazz, String methodName, Class... paramClazzes){
 		Method method;
 		try {
 			method = clazz.getDeclaredMethod(methodName, paramClazzes);
