@@ -307,7 +307,7 @@ public class TaxonNameDefaultCacheStrategy
             return tags;
         }else if (taxonName.isAutonym()){
             //Autonym
-            tags.addAll(handleTaggedAutonym(taxonName, false));
+            tags.addAll(handleTaggedAutonym(taxonName, true));
         }else{ //not Autonym
             List<TaggedText> nameTags = getTaggedName(taxonName);
             tags.addAll(nameTags);
@@ -717,9 +717,9 @@ public class TaxonNameDefaultCacheStrategy
     protected List<TaggedText> getInfraSpeciesTaggedNameCache(TaxonName name){
         if (name.getNameType().isZoological()){
             boolean includeMarker = includeInfraSpecificMarkerForZooNames(name);
-            return getInfraSpeciesTaggedNameCache(name, includeMarker, false);
+            return getInfraSpeciesTaggedNameCache(name, includeMarker, true);
         }else{
-            return getInfraSpeciesTaggedNameCache(name, true, false);
+            return getInfraSpeciesTaggedNameCache(name, true, true);
         }
     }
 
