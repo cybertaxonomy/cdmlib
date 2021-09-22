@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.common.concurrent.ConcurrentQueue;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -40,7 +41,7 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
 
     private ICdmRepository repository;
 
-    private ICdmDataSource source;
+    private ICdmImportSource source;
 
     private ConcurrentQueue<TaxonNode> queue;
 
@@ -56,12 +57,10 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
     private List<String> propertyPaths;
     private TaxonNodeFilter filter;
 
-
-
 //************************* STATIC ***************************************************/
 
 	public static TaxonNodeOutStreamPartitionerConcurrent NewInstance(
-	        ICdmDataSource source, TaxonNodeFilter filter, Integer partitionSize,
+	        ICdmImportSource source, TaxonNodeFilter filter, Integer partitionSize,
             IProgressMonitor parentMonitor, Integer parentTicks){
 
 	    TaxonNodeOutStreamPartitionerConcurrent taxonNodePartitionerThread
@@ -70,7 +69,7 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
 		return taxonNodePartitionerThread;
 	}
 
-    public static ITaxonNodeOutStreamPartitioner NewInstance(ICdmDataSource source, TaxonNodeFilter filter,
+    public static ITaxonNodeOutStreamPartitioner NewInstance(ICdmImportSource source, TaxonNodeFilter filter,
             int partitionSize, IProgressMonitor parentMonitor, Integer parentTicks, List<String> fullpropertypaths) {
 
         TaxonNodeOutStreamPartitionerConcurrent taxonNodePartitionerThread
@@ -81,7 +80,7 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
 
 //*********************** CONSTRUCTOR *************************************************/
 
-	private TaxonNodeOutStreamPartitionerConcurrent(ICdmDataSource source,
+	private TaxonNodeOutStreamPartitionerConcurrent(ICdmImportSource source,
 	        TaxonNodeFilter filter, Integer partitionSize,
 	        IProgressMonitor parentMonitor, Integer parentTicks, List<String> propertyPaths){
 
@@ -147,11 +146,17 @@ public class TaxonNodeOutStreamPartitionerConcurrent implements ITaxonNodeOutStr
 
     private Callable<ICdmRepository> repoCall = ()->{
         if (repository == null){
-            System.out.println("start source repo");
-            boolean omitTermLoading = true;
-            repository = CdmApplicationController.NewInstance(source,
-                   DbSchemaValidation.VALIDATE, omitTermLoading);
-            System.out.println("end source repo");
+            if (source instanceof ICdmRepository){
+                repository = (ICdmRepository)source;
+            }else if (source instanceof ICdmDataSource){
+                System.out.println("start source repo");
+                boolean omitTermLoading = true;
+                repository = CdmApplicationController.NewInstance((ICdmDataSource)source,
+                        DbSchemaValidation.VALIDATE, omitTermLoading);
+                System.out.println("end source repo");
+            }else{
+                throw new IllegalStateException("Unsupported ICdmImportSource type");
+            }
         }
         return repository;
     };

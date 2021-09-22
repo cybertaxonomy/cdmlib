@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.api.service.media.MediaInfoFactory;
 import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.persistence.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 
@@ -61,7 +62,7 @@ import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
  * @author a.mueller
  * @since 21.05.2008
  */
-public interface ICdmRepository{
+public interface ICdmRepository extends ICdmImportSource {
 
     /**
      * Starts a read only transaction

@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.config.ICdmSource;
 import eu.etaxonomy.cdm.persistence.hibernate.HibernateConfiguration;
 
 public interface ICdmDataSource
-        extends DataSource, ICdmSource {
+        extends DataSource, ICdmSource, ICdmImportSource {
 
 	/**
 	 * Returns a BeanDefinition object of type  DataSource that contains

@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
@@ -28,6 +30,10 @@ public class Cdm2CdmImportState
     private ICdmRepository sourceRepository;
 
     private Map<UUID, CdmBase> permanentCache = new HashMap<>();
+
+    private Map<UUID, CdmBase> sessionCache = new HashMap<>();
+    private Map<Class,Set<UUID>> existingObjects = new HashMap<>();
+    private Set<CdmBase> toSave = new HashSet<>();
 
 //************************ CONSTRUCTOR **********************************/
 
@@ -49,5 +55,38 @@ public class Cdm2CdmImportState
     }
     public void putPermanent(UUID uuid, CdmBase cdmBase) {
         permanentCache.put(uuid, cdmBase);
+    }
+
+    //session cache
+    public CdmBase getFromSessionCache(UUID uuid) {
+        return sessionCache.get(uuid);
+    }
+    public void putToSessionCache(CdmBase cdmBase) {
+        this.sessionCache.put(cdmBase.getUuid(), cdmBase);
+    }
+    public void clearSessionCache(){
+        this.sessionCache.clear();
+    }
+
+    //existing objects
+    public Set<UUID> getExistingObjects(Class clazz) {
+        return existingObjects.get(clazz);
+    }
+    public void putExistingObjects(Class clazz, Set<UUID> uuids) {
+        this.existingObjects.put(clazz, uuids);
+    }
+
+    //to save
+    public Set<CdmBase> getToSave() {
+        return toSave;
+    }
+    public void addToSave(CdmBase toSave) {
+        this.toSave.add(toSave);
+    }
+    public void removeToSave(CdmBase toSave) {
+        this.toSave.add(toSave);
+    }
+    public void clearToSave() {
+        this.toSave.clear();
     }
 }

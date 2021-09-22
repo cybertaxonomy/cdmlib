@@ -17,8 +17,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitioner;
-import eu.etaxonomy.cdm.io.common.TaxonNodeOutStreamPartitionerConcurrent;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
@@ -35,12 +33,11 @@ public class Cdm2CdmDescriptionImport
 
     @Override
     protected void doInvoke(Cdm2CdmImportState state) {
-        setState(state);
         IProgressMonitor monitor = state.getConfig().getProgressMonitor();
 
         Cdm2CdmImportConfigurator config = state.getConfig();
 
-        ITaxonNodeOutStreamPartitioner partitioner = getPartitioner(state, monitor, config);
+        ITaxonNodeOutStreamPartitioner partitioner = getTaxonNodePartitioner(state, monitor, config);
         monitor.subTask("Start partitioning");
         doData(state, partitioner);
     }
@@ -54,7 +51,7 @@ public class Cdm2CdmDescriptionImport
             doSingleNode(state, node);
             count++;
             if (count>=partitionSize){
-                clearCache();
+                state.clearSessionCache();
                 try {
                     commitTransaction(tx);
                 } catch (Exception e) {
@@ -75,7 +72,7 @@ public class Cdm2CdmDescriptionImport
         logger.info(node.treeIndex());
         try {
             for (TaxonDescription desc : node.getTaxon().getDescriptions()){
-                result.add(detache(desc));
+                result.add(detache(desc, state));
             }
         } catch (Exception e) {
             logger.warn("Exception during detache node " + node.treeIndex());
@@ -84,8 +81,8 @@ public class Cdm2CdmDescriptionImport
         try {
             if (!result.isEmpty()){
                 getDescriptionService().saveOrUpdate((Set)result);
-                getCommonService().saveOrUpdate(toSave);
-                toSave.clear();
+                getCommonService().saveOrUpdate(state.getToSave());
+                state.clearToSave();
             }
         } catch (Exception e) {
             logger.warn("Exception during save node " + node.treeIndex());
@@ -93,23 +90,6 @@ public class Cdm2CdmDescriptionImport
         }
     }
 
-    private ITaxonNodeOutStreamPartitioner getPartitioner(Cdm2CdmImportState state, IProgressMonitor monitor,
-            Cdm2CdmImportConfigurator config) {
-        ITaxonNodeOutStreamPartitioner partitioner = config.getPartitioner();
-        if (partitioner == null){
-            if(!config.isConcurrent()){
-                partitioner = TaxonNodeOutStreamPartitioner.NewInstance(sourceRepo(state), state,
-                        state.getConfig().getTaxonNodeFilter(), 100,
-                        monitor, 1, TaxonNodeOutStreamPartitioner.fullPropertyPaths);
-                ((TaxonNodeOutStreamPartitioner)partitioner).setLastCommitManually(true);
-            }else{
-                partitioner = TaxonNodeOutStreamPartitionerConcurrent
-                        .NewInstance(state.getConfig().getSource(), state.getConfig().getTaxonNodeFilter(),
-                                1000, monitor, 1, TaxonNodeOutStreamPartitioner.fullPropertyPaths);
-            }
-        }
-        return partitioner;
-    }
 
 
     @Override
@@ -119,7 +99,7 @@ public class Cdm2CdmDescriptionImport
 
     @Override
     protected boolean doCheck(Cdm2CdmImportState state) {
-        return false;
+        return true;
     }
 
     @Override
