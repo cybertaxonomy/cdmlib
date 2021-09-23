@@ -22,6 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -89,6 +90,8 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeFilterDao;
 import eu.etaxonomy.cdm.persistence.dto.HomotypicGroupDto;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResult;
+import eu.etaxonomy.cdm.persistence.dto.SortableTaxonNodeQueryResultComparator;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.permission.ICdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -1442,5 +1445,64 @@ public class TaxonNodeServiceImpl
             return null;
         }
         return new HomotypicGroupDto(group, nodeUuid);
+    }
+
+    @Override
+    public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid) {
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + "tn.uuid, tn.id, t.titleCache, rank "
+                + ") "
+                + " FROM TaxonNode tn "
+                + "   INNER JOIN tn.taxon AS t "
+                + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN name.rank AS rank "
+                + " WHERE t.uuid LIKE :uuid ";
+
+
+        Query query =  getSession().createQuery(queryString);
+
+        query.setParameter("uuid", nodeUuid.toString());
+
+
+        @SuppressWarnings("unchecked")
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+
+        List<TaxonNodeDto> list = new ArrayList<>();
+        for(SortableTaxonNodeQueryResult queryDTO : result){
+            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache()));
+        }
+        return list.get(0);
+    }
+
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
+        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
+                + "tn.uuid, tn.id, t.titleCache, rank "
+                + ") "
+                + " FROM TaxonNode tn "
+                + "   INNER JOIN tn.taxon AS t "
+                + "   INNER JOIN t.name AS name "
+                + "   LEFT OUTER JOIN name.rank AS rank "
+                + " WHERE t.uuid IN (:uuid) ";
+
+
+        Query query =  getSession().createQuery(queryString);
+//        List<String> uuidStrings = nodeUuids.stream().map(e -> e.toString()).collect(Collectors.toList());
+
+        query.setParameterList("uuid", nodeUuids);
+
+
+        @SuppressWarnings("unchecked")
+        List<SortableTaxonNodeQueryResult> result = query.list();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+
+        List<TaxonNodeDto> list = new ArrayList<>();
+        for(SortableTaxonNodeQueryResult queryDTO : result){
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex());
+
+            list.add(nodeDto);
+        }
+        return list;
     }
 }

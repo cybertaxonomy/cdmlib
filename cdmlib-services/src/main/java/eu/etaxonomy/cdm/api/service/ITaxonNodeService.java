@@ -285,4 +285,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
     public UpdateResult cloneSubtree(SubtreeCloneConfigurator config);
 
     public HomotypicGroupDto getHomotypicGroupDto(UUID homotypicGroupUuid, UUID nodeUuid);
+
+    /**
+     * @param nodeUuids
+     * @return
+     */
+    List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids);
+
+    /**
+     * @param nodeUuid
+     * @return
+     */
+    TaxonNodeDto getTaxonNodeDto(UUID nodeUuid);
 }
