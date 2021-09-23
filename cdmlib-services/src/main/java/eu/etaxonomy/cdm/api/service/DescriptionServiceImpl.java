@@ -506,9 +506,10 @@ public class DescriptionServiceImpl
                         if (descElement instanceof QuantitativeDataDto){
 
                             QuantitativeData data = QuantitativeData.NewInstance(feature);
-                            MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) descElement).getMeasurementUnit().getUuid());
-                            data.setUnit(unit);
-
+                            if (((QuantitativeDataDto) descElement).getMeasurementUnit() != null){
+                                MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) descElement).getMeasurementUnit().getUuid());
+                                data.setUnit(unit);
+                            }
                             Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
                             data.getStatisticalValues().clear();
@@ -571,7 +572,7 @@ public class DescriptionServiceImpl
                             if (((QuantitativeDataDto) descElement).getMeasurementUnit() != null){
                                 MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) descElement).getMeasurementUnit().getUuid());
 
-                                if (!data.getUnit().equals(unit)){
+                                if (data.getUnit() == null || (data.getUnit() != null && !data.getUnit().equals(unit))){
                                     data.setUnit(unit);
                                 }
                             }
