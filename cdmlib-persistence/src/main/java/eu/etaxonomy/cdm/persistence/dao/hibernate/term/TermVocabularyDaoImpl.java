@@ -170,13 +170,13 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 	@Override
 	public void missingTermUuids(
-			Map<UUID, Set<UUID>> uuidsRequested,
+			Map<UUID, List<UUID>> uuidsRequested,
 			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse){
 
 		Set<UUID> missingTermCandidateUuids = new HashSet<>();
 
-		for (Set<UUID> uuidsPerVocSet : uuidsRequested.values()){
+		for (List<UUID> uuidsPerVocSet : uuidsRequested.values()){
 			missingTermCandidateUuids.addAll(uuidsPerVocSet);
 		}
 

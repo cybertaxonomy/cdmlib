@@ -104,7 +104,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	 * @param uuidsRepsonse
 	 * @param vocabularyResponse
 	 */
-	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested,
+	public void missingTermUuids(Map<UUID, List<UUID>> uuidsRequested,
 			Map<UUID, Set<UUID>> uuidsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse);
 

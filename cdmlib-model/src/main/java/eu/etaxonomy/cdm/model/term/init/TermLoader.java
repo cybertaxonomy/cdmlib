@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermBase;
 import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
@@ -50,18 +50,18 @@ public class TermLoader implements ITermLoader {
 	}
 
 	@Override
-	public UUID loadUuids(VocabularyEnum vocType, Map<UUID, Set<UUID>> uuidMap) {
+	public UUID loadUuids(VocabularyEnum vocType, Map<UUID, List<UUID>> uuidMap) {
 
 		try {
 			CSVReader reader = getCsvReader(vocType);
 			String[] nextLine = reader.readNext();
 			UUID uuidVocabulary = UUID.fromString(nextLine[0]);
-			Set<UUID> termSet = new HashSet<>();
-			uuidMap.put(uuidVocabulary, termSet);
+			List<UUID> termList = new ArrayList<>();
+			uuidMap.put(uuidVocabulary, termList);
 
 			while ( (nextLine = reader.readNext()) != null) {
 				UUID uuidTerm = UUID.fromString(nextLine[0]);
-				termSet.add(uuidTerm);
+				termList.add(uuidTerm);
 			}
 			reader.close();
 			return uuidVocabulary;
@@ -76,13 +76,14 @@ public class TermLoader implements ITermLoader {
 	}
 
 	@Override
-	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
+	public <T extends DefinedTermBase<T>, S extends OrderedTermBase<S>> TermVocabulary<T> loadTerms(
+	        VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
 
 		try {
 			CSVReader reader = getCsvReader(vocType);
 			String [] nextLine = reader.readNext();
 
-			Class<? extends DefinedTermBase> termClass = vocType.getClazz();
+			Class<T> termClass = (Class<T>)vocType.getClazz();
 
 			//vocabulary
 			TermVocabulary<T> voc;
@@ -102,15 +103,15 @@ public class TermLoader implements ITermLoader {
 			// Ugly, I know, but I don't think we can use a static method here . .
 
 			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance();
-
+			S lastInstance = null;
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				if (nextLine.length == 0){
 					continue;
 				}
 
-				handleSingleTerm(nextLine, terms, termClass, voc,
-						abbrevAsId, classDefiningTermInstance);
+				lastInstance = handleSingleTerm(nextLine, terms, termClass, voc,
+						abbrevAsId, lastInstance, classDefiningTermInstance);
 			}
 	        reader.close();
 			return voc;
@@ -133,22 +134,35 @@ public class TermLoader implements ITermLoader {
 	 * @param classDefiningTermInstance instance for calling readCsvLine
 	 * @return
 	 */
-	private <T extends DefinedTermBase> T handleSingleTerm(String[] csvLine, Map<UUID,DefinedTermBase> terms,
-			Class<? extends DefinedTermBase> termClass,
-			TermVocabulary<T> voc, boolean abbrevAsId,
+	private <T extends DefinedTermBase<T>, S extends OrderedTermBase<S> > S handleSingleTerm(
+	            String[] csvLine, Map<UUID,DefinedTermBase> terms, Class<T> termClass,
+			TermVocabulary<T> voc, boolean abbrevAsId, S lastTerm,
 			T classDefiningTermInstance) {
-		T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(csvLine), voc.getTermType(), terms, abbrevAsId);
-		voc.addTerm(term);
+		T term = classDefiningTermInstance.readCsvLine(termClass, arrayedLine(csvLine), voc.getTermType(), terms, abbrevAsId);
 		terms.put(term.getUuid(), term);
-		return term;
+		if (voc.isInstanceOf(OrderedTermVocabulary.class) && term.isInstanceOf(OrderedTermBase.class)){
+		    @SuppressWarnings("unchecked")
+            OrderedTermVocabulary<S> orderedVoc = CdmBase.deproxy(voc, OrderedTermVocabulary.class);
+		    @SuppressWarnings("unchecked")
+            S orderedTerm = (S)CdmBase.deproxy(term, OrderedTermBase.class);
+		    if (lastTerm != null){
+		        orderedVoc.addTermBelow(orderedTerm, lastTerm);
+		    }else{
+		        orderedVoc.addTerm(orderedTerm);
+		    }
+		    return orderedTerm;
+		}else{
+		    voc.addTerm(term);
+		    return null;
+		}
 	}
 
 
 	@Override
-	public <T extends DefinedTermBase> Set<T> loadSingleTerms(VocabularyEnum vocType,
+	public <T extends DefinedTermBase<T>,S extends OrderedTermBase<S>> Set<T> loadSingleTerms(VocabularyEnum vocType,
 			TermVocabulary<T> voc, Set<UUID> missingTerms) {
 		try {
-			Class<? extends DefinedTermBase> termClass = vocType.getClazz();
+		    Class<T> termClass = (Class<T>)vocType.getClazz();
 
 			CSVReader reader = getCsvReader(vocType);
 			String [] nextLine =  reader.readNext();
@@ -160,18 +174,22 @@ public class TermLoader implements ITermLoader {
 			boolean abbrevAsId = (arrayedLine(nextLine).get(5).equals("1"));
 			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance();
 			Map<UUID,DefinedTermBase> allVocTerms = new HashMap<>();
-			for (T term:voc.getTerms()){
+			for (T term: voc.getTerms()){
 				allVocTerms.put(term.getUuid(), term);
 			}
 
+			UUID lastTermUuid = null;
+			S lastTerm;
 			while ((nextLine = reader.readNext()) != null) {
 				if (nextLine.length == 0){
 					continue;
 				}
 				UUID uuid = UUID.fromString(nextLine[0]);
 				if (missingTerms.contains(uuid)){
-					handleSingleTerm(nextLine, allVocTerms, termClass, voc, abbrevAsId, classDefiningTermInstance);
+				    lastTerm = (S)allVocTerms.get(lastTermUuid);
+					lastTerm = handleSingleTerm(nextLine, allVocTerms, termClass, voc, abbrevAsId, lastTerm, classDefiningTermInstance);
 				}
+				lastTermUuid = uuid;
 			}
 
 			return null;

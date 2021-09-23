@@ -13,8 +13,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -99,12 +99,12 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	      @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
 	)
 	public void testMissingTermUuids() {
-		Set<UUID> uuidSet = new HashSet<>();
+		List<UUID> uuidSet = new ArrayList<>();
 		uuidSet.add(Language.uuidEnglish);
 		uuidSet.add(Language.uuidFrench);
 		UUID uuidNotExisting = UUID.fromString("e93e8c10-d9d2-4ad6-9907-952da6d139c4");
 		uuidSet.add(uuidNotExisting);
-		Map<UUID, Set<UUID>> uuidVocs = new HashMap<>();
+		Map<UUID, List<UUID>> uuidVocs = new HashMap<>();
 		uuidVocs.put( Language.uuidLanguageVocabulary, uuidSet);
 		Map<UUID, Set<UUID>> notExisting = new HashMap<>();
 		Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<>();
