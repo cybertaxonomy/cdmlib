@@ -557,12 +557,14 @@ public class TaxonName
     @XmlElement(name = "CultivarEpithet")
     //TODO Val #3379
     //@NullOrNotEmpty
+    @CacheUpdate("nameCache")
     @Column(length=255)
     private String cultivarEpithet;
 
     //#9761
     @XmlElement(name = "CultivarGroupEpithet")
     @NullOrNotEmpty
+    @CacheUpdate("nameCache")
     @Column(length=255)
     private String cultivarGroupEpithet;
 
