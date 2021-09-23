@@ -449,6 +449,14 @@ public class DescriptionServiceImpl
             if (descriptionBase.getDescribedSpecimenOrObservation() != null){
                 descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), descriptionBase);
             }
+            if (descriptionBase instanceof TaxonDescription){
+
+                descriptionSpecimenMap.put(((TaxonDescription)descriptionBase).getTaxon().getUuid(), descriptionBase);
+            }
+            if (descriptionBase instanceof TaxonNameDescription){
+
+                descriptionSpecimenMap.put(((TaxonNameDescription)descriptionBase).getTaxonName().getUuid(), descriptionBase);
+            }
         }
         MergeResult<DescriptionBase> mergeResult = null;
         for(DescriptionBaseDto descDto : descriptions) {

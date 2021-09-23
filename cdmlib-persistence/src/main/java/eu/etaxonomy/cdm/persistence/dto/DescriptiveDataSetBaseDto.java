@@ -34,6 +34,7 @@ public class DescriptiveDataSetBaseDto implements Serializable{
     private TermTreeDto descriptiveSystem;
     private Set<TaxonNodeDto> subTreeFilter;
     private Set<TermDto> geoFilter;
+    private Set<UUID> descriptionUuids;
 
     private Set<Representation> representations = new HashSet<>();
     private String representation_L10n = null;
@@ -217,6 +218,14 @@ public class DescriptiveDataSetBaseDto implements Serializable{
 
     public void setGeoFilter(Set<TermDto> geoFilter) {
         this.geoFilter = geoFilter;
+    }
+
+    public Set<UUID> getDescriptionUuids() {
+        return descriptionUuids;
+    }
+
+    public void setDescriptionUuids(Set<UUID> descriptionUuids) {
+        this.descriptionUuids = descriptionUuids;
     }
 
 

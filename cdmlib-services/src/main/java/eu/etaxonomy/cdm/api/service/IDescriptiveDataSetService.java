@@ -119,11 +119,11 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
     /**
      * Creates a taxon row wrapper object for the given description
-     * @param taxonDescriptionUuid the taxon description for which the wrapper should be created
+     * @param taxonDescription the taxon description for which the wrapper should be created
      * @param descriptiveDataSet the data set it should be used in
      * @return the created row wrapper
      */
-    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid);
+    public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription taxonDescription, UUID descriptiveDataSetUuid);
 
     /**
      * Returns a {@link SpecimenDescription} for a given specimen with corresponding
