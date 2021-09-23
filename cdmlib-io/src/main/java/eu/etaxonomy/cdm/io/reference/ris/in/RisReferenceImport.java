@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.io.reference.ris.in;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
-import eu.etaxonomy.cdm.common.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.common.URI;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.reference.ris.in.RisRecordReader.RisValue;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 /**
  * @author a.mueller
  * @since 11.05.2017
- *
  */
 @Component
 public class RisReferenceImport
@@ -50,9 +49,6 @@ public class RisReferenceImport
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RisReferenceImport.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doInvoke(RisReferenceImportState state) {
         RisReferenceImportConfigurator config = state.getConfig();
@@ -65,7 +61,6 @@ public class RisReferenceImport
             RisRecordReader risReader = new RisRecordReader(state, reader);
 
             Set<Reference> referencesToSave = new HashSet<>();
-
 
             Map<RisReferenceTag, List<RisValue>> next = risReader.readRecord();
             while (next != RisRecordReader.EOF){
@@ -103,11 +98,6 @@ public class RisReferenceImport
         }
     }
 
-    /**
-     * @param state
-     * @param next
-     * @return
-     */
     private Reference makeReference(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record) {
 
@@ -124,7 +114,6 @@ public class RisReferenceImport
             ref.setInReference(inRef);
         }
         Reference higherRef = inRef == null ? ref : inRef;
-
 
         //Title
         RisValue t1 = getSingleValue(state, record, RisReferenceTag.T1);
@@ -271,20 +260,10 @@ public class RisReferenceImport
         return ref;
     }
 
-    /**
-     * @param ref
-     * @return
-     */
     private boolean hasInRef(Reference ref) {
         return ref.getType() == ReferenceType.BookSection || ref.getType() == ReferenceType.Article ;
     }
 
-
-    /**
-     * @param state
-     * @param record
-     * @return
-     */
     private String recordLocation(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record) {
         RisValue typeTag = this.getSingleValue(state, record, RisReferenceTag.TY, false);
@@ -298,11 +277,6 @@ public class RisReferenceImport
         return result;
     }
 
-    /**
-     * @param state
-     * @param year
-     * @param date
-     */
     private void assertDateYear(RisReferenceImportState state, Integer year, TimePeriod date, RisValue py) {
         if (year != null && date != null && !year.equals(date.getStartYear())){
             String message = "Year 'PY' and date 'DA' are not consistent. PY is neglected.";
@@ -320,11 +294,6 @@ public class RisReferenceImport
         return val1 != null ? val1 : val2;
     }
 
-    /**
-     * @param state
-     * @param da
-     * @return
-     */
     private VerbatimTimePeriod makeDate(RisReferenceImportState state, RisValue da) {
         if (da == null){
             return null;
@@ -354,11 +323,6 @@ public class RisReferenceImport
         return tp;
     }
 
-    /**
-     * @param state
-     * @param py
-     * @return
-     */
     private Integer makeYear(RisReferenceImportState state, RisValue py) {
         if (py == null){
             return null;
@@ -373,11 +337,6 @@ public class RisReferenceImport
         }
     }
 
-    /**
-     * @param state
-     * @param list
-     * @return
-     */
     private TeamOrPersonBase<?> makeAuthor(RisReferenceImportState state, List<RisValue> list) {
         if (list.size() == 1){
             return makePerson(state, list.get(0));
@@ -390,11 +349,6 @@ public class RisReferenceImport
         }
     }
 
-    /**
-     * @param state
-     * @param risValue
-     * @return
-     */
     private Person makePerson(RisReferenceImportState state, RisValue risValue) {
         Person person = Person.NewInstance();
         String[] split = risValue.value.split(",");
@@ -453,11 +407,6 @@ public class RisReferenceImport
         return list;
     }
 
-    /**
-     * @param state
-     * @param list
-     * @param tag
-     */
     private void assertSingle(RisReferenceImportState state, List<RisValue> list, RisReferenceTag tag) {
         if (list.size() > 1){
             String message = "There is more than 1 tag '%s' but only 1 tag is supported by RIS format or"
@@ -469,11 +418,6 @@ public class RisReferenceImport
         }
     }
 
-    /**
-     * @param state
-     * @param next
-     * @return
-     */
     private ReferenceType makeReferenceType(RisReferenceImportState state,
             Map<RisReferenceTag, List<RisValue>> record) {
         RisReferenceTag tyTag = RisReferenceTag.TY;
@@ -484,17 +428,11 @@ public class RisReferenceImport
         return cdmType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean doCheck(RisReferenceImportState state) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isIgnore(RisReferenceImportState state) {
         return false;

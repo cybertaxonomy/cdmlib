@@ -6,8 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
-package eu.etaxonomy.cdm.io.reference;
+package eu.etaxonomy.cdm.io.referenceris.in;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -38,7 +37,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- *
  */
 public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 
@@ -48,25 +46,23 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private IReferenceService referenceService;
 
-
 	private RisReferenceImportConfigurator configurator;
     private RisReferenceImportConfigurator configLong;
 
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/reference/RisReferenceImportTest-input.ris";
+		String inputFile = "/eu/etaxonomy/cdm/io/reference/ris/in/RisReferenceImportTest-input.ris";
 
         try {
             URL url = this.getClass().getResource(inputFile);
             assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
-            String inputFileLong = "/eu/etaxonomy/cdm/io/reference/Acantholimon.ris";
+            String inputFileLong = "/eu/etaxonomy/cdm/io/reference/ris/in/Acantholimon.ris";
             URL urlLong = this.getClass().getResource(inputFileLong);
             assertNotNull("URL for the test file '" + inputFileLong + "' does not exist", urlLong);
 
 			configurator = RisReferenceImportConfigurator.NewInstance(url, null);
 			configLong = RisReferenceImportConfigurator.NewInstance(urlLong, null);
-
 
 		} catch (Exception e) {
 			e.printStackTrace();
