@@ -568,6 +568,13 @@ public class DescriptionServiceImpl
                             QuantitativeData data = HibernateProxyHelper.deproxy(elementBase, QuantitativeData.class);
 
                             Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
+                            if (((QuantitativeDataDto) descElement).getMeasurementUnit() != null){
+                                MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) descElement).getMeasurementUnit().getUuid());
+
+                                if (!data.getUnit().equals(unit)){
+                                    data.setUnit(unit);
+                                }
+                            }
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
                             data.getStatisticalValues().clear();
                             for (StatisticalMeasurementValueDto dataDto: valueDtos){
