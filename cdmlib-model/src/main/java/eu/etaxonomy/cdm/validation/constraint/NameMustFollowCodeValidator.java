@@ -46,6 +46,9 @@ public class NameMustFollowCodeValidator implements
             if (name.getCultivarEpithet() != null){
                 valid = false;
             }
+            if (name.getCultivarGroupEpithet() != null){
+                valid = false;
+            }
         }
         //BacterialName
         if (! (name.isBacterial())){
