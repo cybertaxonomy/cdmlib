@@ -31,11 +31,11 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -157,7 +157,7 @@ public class RisReferenceImport
         RisValue da = getSingleValue(state, record, RisReferenceTag.DA);
         Integer year = makeYear(state, py);
         VerbatimTimePeriod date = makeDate(state, da);
-        assertDateYear(state, year, date, py);
+        date = assertDateYear(state, year, date, py);
         ref.setDatePublished(date);
         //TODO y1 not yet handled
 
@@ -217,6 +217,12 @@ public class RisReferenceImport
             higherRef.setPublisher(pb.value);
         }
 
+        //CY - Place published
+        RisValue cy = getSingleValue(state, record, RisReferenceTag.CY);
+        if (cy != null){
+            higherRef.setPlacePublished(cy.value);
+        }
+
         //Abstract
         RisValue ab = getSingleValue(state, record, RisReferenceTag.AB);
         RisValue n2 = getSingleValue(state, record, RisReferenceTag.N2);
@@ -241,8 +247,7 @@ public class RisReferenceImport
         String recLoc = recordLocation(state, record);
         ref.addImportSource(idStr, null, state.getConfig().getSourceReference(), recLoc);
         if (inRef != null){
-            ref.addImportSource(idStr, null, state.getConfig().getSourceReference(), recLoc);
-
+            inRef.addImportSource(idStr, null, state.getConfig().getSourceReference(), recLoc);
         }
 
         //remove
@@ -277,10 +282,29 @@ public class RisReferenceImport
         return result;
     }
 
-    private void assertDateYear(RisReferenceImportState state, Integer year, TimePeriod date, RisValue py) {
-        if (year != null && date != null && !year.equals(date.getStartYear())){
-            String message = "Year 'PY' and date 'DA' are not consistent. PY is neglected.";
-            state.getResult().addWarning(message, null, py.location);
+    private VerbatimTimePeriod assertDateYear(RisReferenceImportState state, Integer year, VerbatimTimePeriod date, RisValue py) {
+        if (year == null && date == null){
+            return null;
+        }else if (year == null){
+            return date;
+        }else if (date == null){
+            return TimePeriodParser.parseStringVerbatim(String.valueOf(year));
+        }else{
+            if  (!year.equals(date.getStartYear())){
+                if (date.getStartYear() == null){
+                    date.setStartYear(year);
+                }else if (isNotBlank(date.getFreeText())){
+                    date.setStartYear(year);  //does this happen at all?
+                    String message = "Year 'PY' and date 'DA' are not consistent. PY is neglected.";
+                    state.getResult().addWarning(message, null, py.location);
+                    return date;
+                }else{
+                    String message = "Year 'PY' and date 'DA' are not consistent. DA is used for freetext and PY is used for (start) year.";
+                    state.getResult().addWarning(message, null, py.location);
+                    return date;
+                }
+            }
+            return date;
         }
     }
 

@@ -150,9 +150,22 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         Integer expected = 118;  //did not count yet
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
 
-//        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
-//        Assert.assertEquals("There should be 2 references, the article and the journal", 2, list.size());
-//        for (Reference ref : list){
+        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
+//        Assert.assertEquals("There should be 119 references (still need to count them)", 119, list.size());
+        //TODO deduplication
+
+        Reference ref58 = list.stream().filter(r->hasId(r, "58", false)).findFirst().get();
+        Assert.assertNotNull("", ref58);
+        Assert.assertEquals((Integer)2003, ref58.getDatePublished().getStartYear());
+
+        Reference ref53 = list.stream().filter(r->hasId(r, "53", false)).findFirst().get();
+        Assert.assertNotNull("", ref53);
+        Assert.assertEquals(ReferenceType.BookSection, ref53.getType());
+        Assert.assertNotNull("", ref53.getInReference());
+        Assert.assertEquals("Tehran", ref53.getInReference().getPlacePublished());
+
+
+        //        for (Reference ref : list){
 //            Assert.assertTrue(ref.getType() == ReferenceType.Article || ref.getType() == ReferenceType.Journal);
 //            if (ref.getType() == ReferenceType.Article){
 //                //title
@@ -196,6 +209,17 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 //            }
 //        }
 
+    }
+
+    private boolean hasId(Reference ref, String idStr, boolean getInRef) {
+        if (ref.getSources().size() != 1){
+            return false;
+        }else{
+            String idInSource = ref.getSources().iterator().next().getIdInSource();
+            return idStr.equals(idInSource) &&
+                    (getInRef && ref.getInReference()== null
+                      || !getInRef && ref.getInReference()!= null );
+        }
     }
 
     @Override
