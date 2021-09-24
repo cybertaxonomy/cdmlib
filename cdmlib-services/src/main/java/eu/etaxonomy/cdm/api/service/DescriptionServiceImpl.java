@@ -599,7 +599,6 @@ public class DescriptionServiceImpl
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
                             data.getStatisticalValues().clear();
                             for (StatisticalMeasurementValueDto dataDto: valueDtos){
-                                List<StatisticalMeasurementValue> equalUuidsStateData = data.getStatisticalValues().stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
                                 //create new statedata
                                 StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid());
 
