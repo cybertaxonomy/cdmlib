@@ -443,19 +443,32 @@ public class DescriptionServiceImpl
         UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
         Set<DescriptionBase> descriptionsOfDataSet = dataSet.getDescriptions();
-        HashMap<UUID, DescriptionBase> descriptionSpecimenMap = new HashMap();
-
+        HashMap<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap();
+        Set<DescriptionBase> specimenDescriptions;
         for (DescriptionBase descriptionBase: descriptionsOfDataSet){
             if (descriptionBase.getDescribedSpecimenOrObservation() != null){
-                descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), descriptionBase);
+                specimenDescriptions = descriptionSpecimenMap.get(descriptionBase.getDescribedSpecimenOrObservation().getUuid());
+                if (specimenDescriptions == null){
+                    specimenDescriptions = new HashSet<>();
+                }
+                specimenDescriptions.add(descriptionBase);
+                descriptionSpecimenMap.put(descriptionBase.getDescribedSpecimenOrObservation().getUuid(), specimenDescriptions);
             }
             if (descriptionBase instanceof TaxonDescription){
-
-                descriptionSpecimenMap.put(((TaxonDescription)descriptionBase).getTaxon().getUuid(), descriptionBase);
+                specimenDescriptions = descriptionSpecimenMap.get(((TaxonDescription)descriptionBase).getTaxon().getUuid());
+                if (specimenDescriptions == null){
+                    specimenDescriptions = new HashSet<>();
+                }
+                specimenDescriptions.add(descriptionBase);
+                descriptionSpecimenMap.put(((TaxonDescription)descriptionBase).getTaxon().getUuid(), specimenDescriptions);
             }
             if (descriptionBase instanceof TaxonNameDescription){
-
-                descriptionSpecimenMap.put(((TaxonNameDescription)descriptionBase).getTaxonName().getUuid(), descriptionBase);
+                specimenDescriptions = descriptionSpecimenMap.get(((TaxonNameDescription)descriptionBase).getTaxonName().getUuid());
+                if (specimenDescriptions == null){
+                    specimenDescriptions = new HashSet<>();
+                }
+                specimenDescriptions.add(descriptionBase);
+                descriptionSpecimenMap.put(((TaxonNameDescription)descriptionBase).getTaxonName().getUuid(), specimenDescriptions);
             }
         }
         MergeResult<DescriptionBase> mergeResult = null;
@@ -471,7 +484,7 @@ public class DescriptionServiceImpl
                 describedObjectUuid = descDto.getNameDto().getUuid();
             }
 
-            DescriptionBase descSpecimen = descriptionSpecimenMap.get(describedObjectUuid);
+            Set<DescriptionBase> descSpecimen = descriptionSpecimenMap.get(describedObjectUuid);
 
             if (descSpecimen != null ){
 
@@ -480,7 +493,15 @@ public class DescriptionServiceImpl
                 for (Object element: descDto.getElements()){
                     elements.add((DescriptionElementDto)element);
                 }
-                DescriptionBase desc = descriptionSpecimenMap.get(describedObjectUuid);
+
+                DescriptionBase desc = null;
+                for (DescriptionBase tempDesc: descSpecimen){
+                    if (tempDesc.getUuid().equals(descDto.getDescriptionUuid())){
+                        desc = tempDesc;
+                        break;
+                    }
+                }
+
 //                description.setDescribedSpecimenOrObservation(null);
                 Set<DescriptionElementBase> descriptionElements = desc.getElements();
                 for (DescriptionElementDto descElement: elements){
@@ -571,7 +592,6 @@ public class DescriptionServiceImpl
                             Set<StatisticalMeasurementValue> statisticalValues = new HashSet<>();
                             if (((QuantitativeDataDto) descElement).getMeasurementUnit() != null){
                                 MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) descElement).getMeasurementUnit().getUuid());
-
                                 if (data.getUnit() == null || (data.getUnit() != null && !data.getUnit().equals(unit))){
                                     data.setUnit(unit);
                                 }
@@ -595,7 +615,8 @@ public class DescriptionServiceImpl
                         }
                     }
                 }
-                descriptionSpecimenMap.put(describedObjectUuid, desc);
+                descriptionSpecimenMap.get(describedObjectUuid).add(desc);
+
                 description = desc;
             }
             try{
