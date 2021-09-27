@@ -9,31 +9,46 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 public enum AggregationSourceMode implements IKeyTerm{
-    NONE("NO", "None", true, true, false),
-    ALL("ALL", "All sources", true, true, true),
-    ALL_SAMEVALUE("ALSV", "All sources with highest status", true, true, true),
-    DESCRIPTION("DESC","Link to underlying description", true, true, false),
-    TAXON("TAX","Link to child taxon", false, true, false);
+    NONE("NO", "None",           true , true, false, true, true ),
+    ALL("ALL", "All sources",    true , true, true , true, true ),
+    ALL_SAMEVALUE("ALSV", "All sources with highest status",
+                                 true , true, true , true, false),
+    DESCRIPTION("DESC","Link to underlying description",
+                                 true , true, false, true, true ),
+    TAXON("TAX","Link to child taxon",
+                                 false, true, false, true, true );
 
     final private String key;
     final private String label;
     final private boolean supportsWithinTaxon;
     final private boolean supportsToParent;
     final private boolean supportsOriginalSourceType;
+    final private EnumSet<AggregationType> supportedAggregationTypes;
 
     private AggregationSourceMode(String key, String message, boolean supportsWithinTaxon,
-            boolean supportsToParent, boolean supportsOriginalSourceType) {
+            boolean supportsToParent, boolean supportsOriginalSourceType, boolean supportsDistribution, boolean supportsStructuredDescription) {
         this.key = key;
         this.label = message;
         this.supportsWithinTaxon = supportsWithinTaxon;
         this.supportsToParent = supportsToParent;
         this.supportsOriginalSourceType = supportsOriginalSourceType;
+        Set<AggregationType> aggTypes = new HashSet<>();
+        if (supportsDistribution){
+            aggTypes.add(AggregationType.Distribution);
+        }
+        if (supportsStructuredDescription){
+            aggTypes.add(AggregationType.StructuredDescription);
+        }
+        this.supportedAggregationTypes = EnumSet.copyOf(aggTypes);
     }
 
     @Override
@@ -69,9 +84,11 @@ public enum AggregationSourceMode implements IKeyTerm{
      * given {@link AggregationMode} and {@link AggregationType}
      */
     public static List<AggregationSourceMode> list(AggregationMode aggregationMode, AggregationType type){
-        //TODO currently aggType is not yet used as all source modes are available for all aggTypes
         List<AggregationSourceMode> result = new ArrayList<>();
         for(AggregationSourceMode mode : values()){
+            if (type != null && !mode.supportedAggregationTypes.contains(type)){
+                continue;
+            }
             if (aggregationMode == AggregationMode.WithinTaxon && mode.supportsWithinTaxon){
                 result.add(mode);
             }else if (aggregationMode == AggregationMode.ToParent && mode.supportsToParent){
