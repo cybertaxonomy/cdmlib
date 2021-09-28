@@ -141,9 +141,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         engine = new StructuredDescriptionAggregation();
         engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         monitor = DefaultProgressMonitor.NewInstance();
-
     }
-
 
     @Test
     @DataSets({
@@ -308,6 +306,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private DescriptiveDataSet createTestDataset() {
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
+        dataSet.setLabel("Test dataset");
         datasetService.save(dataSet);
 
         SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");

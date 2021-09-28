@@ -25,7 +25,6 @@ public class StructuredDescriptionAggregationConfiguration
 
     private UUID datasetUuid;
 
-
     //TODO merge with DistributionAggregationConfiguration.aggregationMode
     private boolean aggregateToHigherRanks;
 

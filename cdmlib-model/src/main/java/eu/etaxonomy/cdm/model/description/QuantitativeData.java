@@ -643,7 +643,7 @@ public class QuantitativeData
 			//states
 			result.statisticalValues = new HashSet<>();
 			for (StatisticalMeasurementValue data : getStatisticalValues()){
-				StatisticalMeasurementValue newData = (StatisticalMeasurementValue)data.clone();
+				StatisticalMeasurementValue newData = data.clone();
 				result.addStatisticalValue(newData);
 			}
 
@@ -656,11 +656,13 @@ public class QuantitativeData
 		}
 	}
 
+//********************** TO STRING **************************************/
+
 	@Override
 	public String toString() {
-        return getFeature()!=null?getFeature().getLabel():""+
+        return (getFeature()!=null ? getFeature().getLabel(): "") +
                 "[" + statisticalValues +
-                (unit!=null? ", unit=" +unit:"") +
+                (unit!=null ? ", unit=" + unit : "") +
                 (unknownData? ", unknownData=" + unknownData:"")
                 + "]";
 	}
