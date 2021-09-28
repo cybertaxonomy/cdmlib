@@ -220,7 +220,12 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        addDescriptionElement(descriptiveResultHolder, getSpecimenDescriptions(taxon, dataSet));
+        Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
+        addDescriptionElement(descriptiveResultHolder, specimenDescriptions);
+        Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
+        addDescriptionElement(descriptiveResultHolder, literatureDescriptions);
+        //TODO add defaultDescriptions
+
     }
 
     private void addDescriptionElement(StructuredDescriptionResultHolder descriptiveResultHolder,
@@ -344,6 +349,19 @@ public class StructuredDescriptionAggregation
                         }
                     }
                 }
+            }
+        }
+        return result;
+    }
+
+    private Set<TaxonDescription> getLiteratureDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
+        Set<TaxonDescription> result = new HashSet<>();
+        //TODO performance: use DTO service to retrieve specimen descriptions without initializing all taxon descriptions
+        for(TaxonDescription taxonDescription : taxon.getDescriptions()){
+            if(dataSet.getDescriptions().contains(taxonDescription)
+                    && taxonDescription.getTypes().stream().anyMatch(type->type.equals(DescriptionType.SECONDARY_DATA))
+                    && taxonDescription.getTypes().stream().noneMatch(type->type.equals(DescriptionType.CLONE_FOR_SOURCE)) ){
+                result.add(taxonDescription);
             }
         }
         return result;
