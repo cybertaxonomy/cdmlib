@@ -137,7 +137,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             try {
                 aggregate(taxonNodeIdList, aggregateMonitor);
             } catch (Exception e) {
-                result.addException(new RuntimeException("Unhandled error during aggregation", e));
+                result.addException(new RuntimeException("Unhandled error during aggregation: " + e.getMessage() , e));
                 result.setError();
                 done();
                 return result;
