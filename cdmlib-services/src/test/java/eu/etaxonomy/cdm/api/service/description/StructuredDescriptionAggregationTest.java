@@ -266,7 +266,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private void testStatusOk(UpdateResult result) {
         if (result.getStatus() != UpdateResult.Status.OK){
-            Assert.fail("Aggregation should have status OK.");
+            Assert.fail("Aggregation should have status OK but was " + result.toString());
             for (Exception ex : result.getExceptions()){
                 ex.printStackTrace();
             }
