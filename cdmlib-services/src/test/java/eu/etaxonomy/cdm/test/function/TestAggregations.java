@@ -122,7 +122,7 @@ public class TestAggregations {
 		TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(uuidPlantae);
 		filter.setRankMax(Rank.uuidGenus);
 
-		List<AggregationMode> modes = AggregationMode.byRanks();
+		List<AggregationMode> modes = AggregationMode.byToParent();
 		List<UUID> areaList = areaPager.getRecords().stream().map(p ->p.getUuid()).collect(Collectors.toList());
 		DistributionAggregationConfiguration config = DistributionAggregationConfiguration
 		        .NewInstance(modes, areaList, filter, monitor);

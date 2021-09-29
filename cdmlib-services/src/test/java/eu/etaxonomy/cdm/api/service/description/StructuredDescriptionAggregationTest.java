@@ -367,7 +367,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 StructuredDescriptionAggregationConfiguration.NewInstance(filter, monitor);
         config.setDatasetUuid(dataSet.getUuid());
         config.setAggregateToHigherRanks(true);
-        config.setAggregationMode(AggregationMode.byAreasAndRanks());
+        config.setAggregationMode(AggregationMode.byWithinTaxonAndToParent());
         return config;
     }
 
