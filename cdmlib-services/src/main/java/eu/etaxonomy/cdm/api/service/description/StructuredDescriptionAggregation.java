@@ -223,8 +223,10 @@ public class StructuredDescriptionAggregation
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
         addDescriptionElement(descriptiveResultHolder, specimenDescriptions);
-        Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
-        addDescriptionElement(descriptiveResultHolder, literatureDescriptions);
+        if (getConfig().isIncludeLiterature()){
+            Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
+            addDescriptionElement(descriptiveResultHolder, literatureDescriptions);
+        }
         //TODO add defaultDescriptions
 
     }

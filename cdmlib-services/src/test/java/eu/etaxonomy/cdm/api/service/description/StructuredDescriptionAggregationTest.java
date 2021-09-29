@@ -256,8 +256,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         testStatusOk(result);
         testAggregatedDescription();
 
-        dataSet = datasetService.find(dataSet.getId());
-        addLiterature(dataSet);
+        config.setIncludeLiterature(true);
         commitAndStartNewTransaction();
 
         result = engine.invoke(config, repository);
@@ -368,6 +367,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setDatasetUuid(dataSet.getUuid());
         config.setAggregateToHigherRanks(true);
         config.setAggregationMode(AggregationMode.byWithinTaxonAndToParent());
+        config.setIncludeLiterature(false);
         return config;
     }
 
@@ -402,6 +402,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @SuppressWarnings("unchecked")
         TermTree<Feature> descriptiveSystem = termTreeService.find(uuidFeatureTree);
         dataSet.setDescriptiveSystem(descriptiveSystem);
+
+        addLiterature(dataSet);
         return dataSet;
     }
 
