@@ -9,7 +9,7 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -451,8 +451,10 @@ public class StructuredDescriptionAggregation
             sampleSize = newQd.getSampleSize().add(aggQd.getSampleSize());
         }
         if (sampleSize != null && !sampleSize.equals(0f) && aggQd.getAverage() != null && newQd.getAverage() != null){
-            BigDecimal totalSum = aggQd.getAverage().multiply(aggQd.getSampleSize()).add(newQd.getAverage().multiply(newQd.getSampleSize()));
-            average = totalSum.divide(sampleSize, RoundingMode.HALF_EVEN);
+            BigDecimal aggTotalSum = aggQd.getAverage().multiply(aggQd.getSampleSize(), MathContext.DECIMAL32);
+            BigDecimal newTotalSum = newQd.getAverage().multiply(newQd.getSampleSize(), MathContext.DECIMAL32);
+            BigDecimal totalSum = aggTotalSum.add(newTotalSum);
+            average = totalSum.divide(sampleSize, MathContext.DECIMAL32).stripTrailingZeros();  //to be discussed if we really want to reduce precision here, however, due to the current way to compute average we do not have exact precision anyway
         }
         aggQd.setMinimum(min, null);
         aggQd.setMaximum(max, null);
