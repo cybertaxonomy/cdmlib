@@ -158,12 +158,12 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         // 1st aggregation
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
         testAggregatedDescription();
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
         testAggregatedDescription();
     }
 
@@ -196,7 +196,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
@@ -229,7 +229,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
@@ -252,7 +252,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
         testAggregatedDescription();
 
         dataSet = datasetService.find(dataSet.getId());
@@ -260,9 +260,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         commitAndStartNewTransaction();
 
         result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
         testAggregatedDescriptionWithLiterature();
+    }
 
+    private void testStatusOk(UpdateResult result) {
+        if (result.getStatus() != UpdateResult.Status.OK){
+            Assert.fail("Aggregation should have status OK.");
+            for (Exception ex : result.getExceptions()){
+                ex.printStackTrace();
+            }
+        }
     }
 
     private void addLiterature(DescriptiveDataSet dataSet) {
