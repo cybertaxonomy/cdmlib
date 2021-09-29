@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -411,7 +412,6 @@ public class StructuredDescriptionAggregation
         return handleMissingMinOrMax(qd, getConfig().getMissingMinimumMode(), getConfig().getMissingMaximumMode());
     }
 
-
     public static QuantitativeData handleMissingMinOrMax(QuantitativeData aggQD, MissingMinimumMode missingMinMode,
             MissingMaximumMode missingMaxMode) {
         if(aggQD.getMin() == null && aggQD.getMax() != null){
@@ -452,7 +452,7 @@ public class StructuredDescriptionAggregation
         }
         if (sampleSize != null && !sampleSize.equals(0f) && aggQd.getAverage() != null && newQd.getAverage() != null){
             BigDecimal totalSum = aggQd.getAverage().multiply(aggQd.getSampleSize()).add(newQd.getAverage().multiply(newQd.getSampleSize()));
-            average = totalSum.divide(sampleSize);
+            average = totalSum.divide(sampleSize, RoundingMode.HALF_EVEN);
         }
         aggQd.setMinimum(min, null);
         aggQd.setMaximum(max, null);
