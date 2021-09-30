@@ -417,7 +417,7 @@ public class DescriptionServiceImpl
     @Override
     @Transactional(readOnly = false)
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements, boolean returnTransientEntity) {
-        List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList();
+        List<MergeResult<DescriptionBase>> mergedObjects = new ArrayList<>();
 
         for(TaxonDistributionDTO obj : descriptionElements) {
             Iterator<TaxonDescription> iterator = obj.getDescriptionsWrapper().getDescriptions().iterator();
@@ -429,23 +429,21 @@ public class DescriptionServiceImpl
                 TaxonDescription desc = iterator.next();
                 mergedObjects.add(dao.merge(desc, returnTransientEntity));
             }
-
-
         }
 
         return mergedObjects;
     }
-//
+
     @Override
     @Transactional(readOnly = false)
     public UpdateResult mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid) {
-//        List<<DescriptionBase>> mergedObjects = new ArrayList();
+
         UpdateResult result = new UpdateResult();
         DescriptiveDataSet dataSet = descriptiveDataSetDao.load(descriptiveDataSetUuid);
         Set<DescriptionBase> descriptionsOfDataSet = dataSet.getDescriptions();
-        HashMap<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap();
+        HashMap<UUID, Set<DescriptionBase>> descriptionSpecimenMap = new HashMap<>();
         Set<DescriptionBase> specimenDescriptions;
-        for (DescriptionBase descriptionBase: descriptionsOfDataSet){
+        for (DescriptionBase<?> descriptionBase: descriptionsOfDataSet){
             if (descriptionBase.getDescribedSpecimenOrObservation() != null){
                 specimenDescriptions = descriptionSpecimenMap.get(descriptionBase.getDescribedSpecimenOrObservation().getUuid());
                 if (specimenDescriptions == null){
@@ -475,7 +473,7 @@ public class DescriptionServiceImpl
         for(DescriptionBaseDto descDto : descriptions) {
 
             UUID descriptionUUID = descDto.getDescriptionUuid();
-            DescriptionBase description = load(descriptionUUID);
+            DescriptionBase<?> description = load(descriptionUUID);
 
             UUID describedObjectUuid = null;
             if (description instanceof SpecimenDescription){
