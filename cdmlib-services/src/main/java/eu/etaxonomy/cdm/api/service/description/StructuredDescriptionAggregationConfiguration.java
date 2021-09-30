@@ -26,7 +26,7 @@ public class StructuredDescriptionAggregationConfiguration
     private UUID datasetUuid;
 
     boolean includeDefault = true;
-    boolean includeLiterature = false;
+    boolean includeLiterature = true;
 
     private MissingMinimumMode missingMinimumMode = MissingMinimumMode.MinToZero;
     private MissingMaximumMode missingMaximumMode = MissingMaximumMode.MaxToMin;
