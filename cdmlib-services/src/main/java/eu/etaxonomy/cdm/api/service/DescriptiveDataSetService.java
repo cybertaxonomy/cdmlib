@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.DescriptiveSystemRole;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -318,6 +319,7 @@ public class DescriptiveDataSetService
             //if description already exist use the loaded one and add changed data otherwise create a new one and add to specimen
             if (specimenDescription == null){
                 specimenDescription = SpecimenDescription.NewInstance(specimen);
+                specimenDescription.setUuid(specimenDescriptionUuid);
                 List<DescriptionElementDto> elementDtos = descriptionDto.getElements();
                 List<DescriptionElementBase> elements = new ArrayList<>();
                 for (DescriptionElementDto elementDto: elementDtos){
@@ -333,6 +335,8 @@ public class DescriptiveDataSetService
                     if (elementDto instanceof QuantitativeDataDto){
                         eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
                         QuantitativeData data = QuantitativeData.NewInstance(feature);
+                        MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());
+                        data.setUnit(unit);
                         for (StatisticalMeasurementValueDto stateDto:((QuantitativeDataDto) elementDto).getValues()){
                             StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, stateDto.getType().getUuid());
                             StatisticalMeasurementValue value = StatisticalMeasurementValue.NewInstance(statMeasure, stateDto.getValue());
@@ -360,6 +364,18 @@ public class DescriptiveDataSetService
                             allStates.add(state);
                         }
                         element.setStateDataOnly(allStates);
+                    }
+                    if (elementDto instanceof QuantitativeDataDto){
+                        eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
+                        QuantitativeData data = QuantitativeData.NewInstance(feature);
+                        MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());
+                        data.setUnit(unit);
+                        for (StatisticalMeasurementValueDto stateDto:((QuantitativeDataDto) elementDto).getValues()){
+                            StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, stateDto.getType().getUuid());
+                            StatisticalMeasurementValue value = StatisticalMeasurementValue.NewInstance(statMeasure, stateDto.getValue());
+                            data.addStatisticalValue(value);
+                            specimenDescription.addElement(data);
+                        }
                     }
                 }
             }

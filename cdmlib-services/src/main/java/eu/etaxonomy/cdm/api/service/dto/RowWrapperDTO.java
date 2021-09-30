@@ -15,19 +15,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.Character;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -165,24 +170,65 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
     public void setDataValueForCategoricalData(UUID featureUuid, List<TermDto> states){
         DescriptionElementDto descriptionElementBase = featureToElementMap.get(featureUuid);
+
         if(states.isEmpty()){
             removeFeature(featureUuid, descriptionElementBase);
             return;
         }
+        CategoricalDataDto categoricalData = null;
         if(descriptionElementBase!=null && descriptionElementBase instanceof CategoricalDataDto){
-            CategoricalDataDto categoricalData = (CategoricalDataDto)descriptionElementBase;
+            categoricalData = (CategoricalDataDto)descriptionElementBase;
             categoricalData.setStateDataOnly(states);
-            // update display data cache
-            featureToDisplayDataMap.put(featureUuid, generateDisplayString(categoricalData));
+            removeElementForFeature(featureUuid);
+        }else{
+            Feature feature = DefinedTermBase.getTermByClassAndUUID(Feature.class, featureUuid);
+            if (feature == null){
+                feature = DefinedTermBase.getTermByClassAndUUID(Character.class, featureUuid);
+            }
+            categoricalData = new CategoricalDataDto(FeatureDto.fromFeature(feature));
+            categoricalData.setStateDataOnly(states);
         }
+        description.getElements().add(categoricalData);
+        featureToElementMap.put(featureUuid, categoricalData);
+        // update display data cache
+        featureToDisplayDataMap.put(featureUuid, generateDisplayString(categoricalData));
+    }
+
+    /**
+     * @param featureUuid
+     * @param oldElement
+     */
+    private void removeElementForFeature(UUID featureUuid) {
+        DescriptionElementDto oldElement = null;
+        for (DescriptionElementDto elementDto: description.getElements()){
+            if (elementDto.getFeatureUuid()!= null && elementDto.getFeatureUuid().equals(featureUuid)) {
+                oldElement = elementDto;
+                break;
+            }
+
+        }
+        description.getElements().remove(oldElement);
     }
 
     private void removeFeature(UUID featureUuid, DescriptionElementDto descriptionElementBase) {
+        DescriptionElementDto element = featureToElementMap.get(featureUuid);
+        if (element == null){
+            return;
+        }
+        int i = 0;
+
+        for (DescriptionElementDto dto: description.getElements()){
+            if (dto.getFeatureUuid() != null && dto.getFeatureUuid().equals(descriptionElementBase.getFeatureUuid())){
+                break;
+            }
+
+            i++;
+        }
+
+        description.getElements().remove(i);
         featureToElementMap.remove(featureUuid);
         featureToDisplayDataMap.remove(featureUuid);
-        if(descriptionElementBase!=null){
-            description.getElements().remove(descriptionElementBase);
-        }
+
     }
 
     public void setDataValueForQuantitativeData(UUID featureUuid, Map<TermDto, List<String>> textFields, TermDto unit){
@@ -191,35 +237,45 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             removeFeature(featureUuid, descriptionElementBase);
             return;
         }
-        if(descriptionElementBase instanceof QuantitativeDataDto){
-            QuantitativeDataDto quantitativeData = (QuantitativeDataDto)descriptionElementBase;
-            //clear values
-            quantitativeData.getValues().clear();
-            quantitativeData.setMeasurementUnit(unit);
-            //add back all values from text fields
-            textFields.forEach((measure, texts)->{
-                texts.forEach(text->{
-                    String string = text;
-                    try {
-                        if (StringUtils.isNotBlank(string)){
-                            BigDecimal exactValue = new BigDecimal(string);
-    //                        StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance(measure, exactValue);
-                            StatisticalMeasurementValueDto newValueDto = new StatisticalMeasurementValueDto(measure, exactValue, null);
-    //                                StatisticalMeasurementValueDto.fromStatisticalMeasurementValue(newValue);
-                            quantitativeData.getValues().add(newValueDto);
-                        }
-                    } catch (NumberFormatException e) {
-                    }
-                });
-            });
-
-            //TODO: move to merge?
-//            QuantitativeData fixedQuantitativeData = StructuredDescriptionAggregation.handleMissingMinOrMax(quantitativeData,
-//                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
-            // update display data cache
-//            fixedQuantitativeData.setUnit(unit);
-            featureToDisplayDataMap.put(featureUuid, generateDisplayString(quantitativeData));
+        QuantitativeDataDto quantitativeData = null;
+        if (descriptionElementBase == null){
+            Feature feature = DefinedTermBase.getTermByClassAndUUID(Feature.class, featureUuid);
+            if (feature == null){
+                feature = DefinedTermBase.getTermByClassAndUUID(Character.class, featureUuid);
+            }
+            quantitativeData = new QuantitativeDataDto(FeatureDto.fromFeature(feature));
         }
+
+        if(descriptionElementBase != null && descriptionElementBase instanceof QuantitativeDataDto){
+            quantitativeData = (QuantitativeDataDto)descriptionElementBase;
+            //clear values
+
+        }
+        quantitativeData.getValues().clear();
+        quantitativeData.setMeasurementUnit(unit);
+        //add back all values from text fields
+        Set<StatisticalMeasurementValueDto> tempValues = new HashSet<>();
+        textFields.forEach((measure, texts)->{
+            texts.forEach(text->{
+                String string = text;
+                try {
+                    if (StringUtils.isNotBlank(string)){
+                        BigDecimal exactValue = new BigDecimal(string);
+//                        StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance(measure, exactValue);
+                        StatisticalMeasurementValueDto newValueDto = new StatisticalMeasurementValueDto(measure, exactValue, null);
+//                                StatisticalMeasurementValueDto.fromStatisticalMeasurementValue(newValue);
+                        tempValues.add(newValueDto);
+                    }
+                } catch (NumberFormatException e) {
+                }
+            });
+        });
+
+        quantitativeData.setValues(tempValues);
+        removeElementForFeature(featureUuid);
+        description.getElements().add(quantitativeData);
+        featureToElementMap.put(featureUuid, quantitativeData);
+        featureToDisplayDataMap.put(featureUuid, generateDisplayString(quantitativeData));
     }
 
     @Override

@@ -473,8 +473,10 @@ public class DescriptionServiceImpl
         }
         MergeResult<DescriptionBase> mergeResult = null;
         for(DescriptionBaseDto descDto : descriptions) {
+
             UUID descriptionUUID = descDto.getDescriptionUuid();
             DescriptionBase description = load(descriptionUUID);
+
             UUID describedObjectUuid = null;
             if (description instanceof SpecimenDescription){
                 describedObjectUuid = descDto.getSpecimenDto().getUuid();
@@ -485,6 +487,8 @@ public class DescriptionServiceImpl
             }
 
             Set<DescriptionBase> descSpecimen = descriptionSpecimenMap.get(describedObjectUuid);
+
+
 
             if (descSpecimen != null ){
 
@@ -502,8 +506,23 @@ public class DescriptionServiceImpl
                     }
                 }
 
-//                description.setDescribedSpecimenOrObservation(null);
+                DescriptionElementBase removeElement = null;
                 Set<DescriptionElementBase> descriptionElements = desc.getElements();
+                for (DescriptionElementBase elementBase: descriptionElements){
+                    UUID descElementUuid = elementBase.getUuid();
+                    if (descElementUuid != null){
+                        List<DescriptionElementDto> equalUuidsElements = elements.stream().filter( e -> e != null && e.getElementUuid() != null && e.getElementUuid().equals(descElementUuid)).collect(Collectors.toList());
+                        if (equalUuidsElements.size() == 0){
+                            removeElement = elementBase;
+                        }
+                    }
+                }
+                if (removeElement != null){
+                    desc.removeElement(removeElement);
+                }
+
+//                description.setDescribedSpecimenOrObservation(null);
+
                 for (DescriptionElementDto descElement: elements){
                     UUID descElementUuid = descElement.getElementUuid();
                     List<DescriptionElementBase> equalUuidsElements = descriptionElements.stream().filter( e -> e.getUuid().equals(descElementUuid)).collect(Collectors.toList());
@@ -556,18 +575,22 @@ public class DescriptionServiceImpl
                             List<StateDataDto> stateDtos = ((CategoricalDataDto)descElement).getStates();
 
                             data.getStateData().clear();
-                            for (StateDataDto dataDto: stateDtos){
-//                                List<StateData> equalUuidsStateData = states.stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
-//                                if (equalUuidsStateData.size() == 1){
-//                                    //do nothing because state already exist
-//                                }else if (equalUuidsStateData.isEmpty()){
-                                    //create new statedata
-                                    State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
-                                    StateData newStateData = StateData.NewInstance(newState);
-                                    data.addStateData(newStateData);
-//                                }
+                            if (stateDtos.isEmpty()){
+                                desc.removeElement(data);
+                            }else{
+                                for (StateDataDto dataDto: stateDtos){
+    //                                List<StateData> equalUuidsStateData = states.stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
+    //                                if (equalUuidsStateData.size() == 1){
+    //                                    //do nothing because state already exist
+    //                                }else if (equalUuidsStateData.isEmpty()){
+                                        //create new statedata
+                                        State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
+                                        StateData newStateData = StateData.NewInstance(newState);
+                                        data.addStateData(newStateData);
+    //                                }
 
 
+                                }
                             }
                           //delete removed state data
 //                            Set<StateData> toRemove = new HashSet<>();
@@ -598,29 +621,39 @@ public class DescriptionServiceImpl
                             }
                             Set<StatisticalMeasurementValueDto> valueDtos = ((QuantitativeDataDto)descElement).getValues();
                             data.getStatisticalValues().clear();
-                            for (StatisticalMeasurementValueDto dataDto: valueDtos){
-                                //create new statedata
-                                StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid());
+                            if (valueDtos.isEmpty()){
+                                desc.removeElement(data);
+                            }else{
+                                for (StatisticalMeasurementValueDto dataDto: valueDtos){
+                                    //create new statedata
+                                    StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, dataDto.getType().getUuid());
 
-                                StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(statMeasure, dataDto.getValue());
-                                statisticalValues.add(newStatisticalMeasurement);
-                                data.addStatisticalValue(newStatisticalMeasurement);
+                                    StatisticalMeasurementValue newStatisticalMeasurement = StatisticalMeasurementValue.NewInstance(statMeasure, dataDto.getValue());
+                                    statisticalValues.add(newStatisticalMeasurement);
+                                    data.addStatisticalValue(newStatisticalMeasurement);
+                                }
+
+    //                            data.getStatisticalValues().addAll(statisticalValues);
+                                data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
+                                        MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
                             }
-
-//                            data.getStatisticalValues().addAll(statisticalValues);
-                            data = StructuredDescriptionAggregation.handleMissingMinOrMax(data,
-                                    MissingMinimumMode.MinToZero, MissingMaximumMode.MaxToMin);
 
                         }
                     }
+                  //remove deleted elements
+
                 }
+
                 descriptionSpecimenMap.get(describedObjectUuid).add(desc);
 
                 description = desc;
             }
             try{
-                mergeResult = dao.merge(description, true);
-                result.addUpdatedObject( mergeResult.getMergedEntity());
+                if (description != null){
+                    mergeResult = dao.merge(description, true);
+                    result.addUpdatedObject( mergeResult.getMergedEntity());
+                }
+
 //                if (description instanceof SpecimenDescription){
 //                    result.addUpdatedObject(mergeResult.getMergedEntity().getDescribedSpecimenOrObservation());
 //                }else if (description instanceof TaxonDescription){
