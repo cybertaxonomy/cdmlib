@@ -25,9 +25,6 @@ public class StructuredDescriptionAggregationConfiguration
 
     private UUID datasetUuid;
 
-    //TODO merge with DistributionAggregationConfiguration.aggregationMode
-    private boolean aggregateToHigherRanks;
-
     boolean includeDefault = true;
     boolean includeLiterature = false;
 
@@ -68,17 +65,6 @@ public class StructuredDescriptionAggregationConfiguration
     }
 
 // *********************** GETTER / SETTER ****************************/
-
-    //TODO remove
-//    public boolean isAggregateToHigherRanks() {
-//        return getAggregationModes().contains(AggregationMode.ToParent);
-//    }
-    public boolean isAggregateToHigherRanks() {
-        return this.aggregateToHigherRanks;
-    }
-    public void setAggregateToHigherRanks(boolean aggregateToHigherRanks) {
-        this.aggregateToHigherRanks = aggregateToHigherRanks;
-    }
 
     public boolean isIncludeDefault() {
         return includeDefault;
