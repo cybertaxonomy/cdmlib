@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
  *
  * @author a.kohlbecker
  * @since Jul 4, 2016
- *
  */
 public class DynamicBatch {
 
@@ -58,10 +57,6 @@ public class DynamicBatch {
         }
     }
 
-    /**
-     * @param requiredFreeHeap
-     * @throws JvmLimitsException
-     */
     public void setRequiredFreeHeap(double requiredFreeHeap) throws JvmLimitsException {
 
         this.batchMinFreeHeap = (long) (intitialFreeHeap * requiredFreeHeap);
@@ -70,10 +65,6 @@ public class DynamicBatch {
         }
     }
 
-    /**
-     * @param requiredFreeHeap
-     * @throws JvmLimitsException
-     */
     public void setRequiredFreeHeap(long requiredFreeHeap) throws JvmLimitsException {
         this.batchMinFreeHeap = requiredFreeHeap;
         if(memoryLimitsExceeded()) {
@@ -209,7 +200,6 @@ public class DynamicBatch {
 
     }
 
-
     public boolean memoryLimitsExceeded() {
 
         if(!jvmMonitor.hasFreeHeap(batchMinFreeHeap)) {
@@ -221,11 +211,9 @@ public class DynamicBatch {
         } else {
             return false;
         }
-
     }
 
     public JvmMonitor getJvmMonitor() {
         return jvmMonitor;
     }
-
 }

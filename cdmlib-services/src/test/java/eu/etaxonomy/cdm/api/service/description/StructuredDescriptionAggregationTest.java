@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
@@ -73,7 +74,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since 21.11.2019
  */
-@Ignore   //preliminary ignore as it does not always work (depending on other tests)
+@Ignore //preliminary ignore as it does not always work (depending on other tests)
 public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
@@ -139,11 +140,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     @Before
     public void setUp() {
         engine = new StructuredDescriptionAggregation();
-        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
+//        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
         monitor = DefaultProgressMonitor.NewInstance();
-
     }
-
 
     @Test
     @DataSets({
@@ -160,12 +159,12 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         // 1st aggregation
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
         testAggregatedDescription();
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
         testAggregatedDescription();
     }
 
@@ -198,7 +197,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
@@ -231,7 +230,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
@@ -254,19 +253,46 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        Assert.assertEquals(UpdateResult.Status.OK, result.getStatus());
+        testStatusOk(result);
         testAggregatedDescription();
+
+        config.setIncludeLiterature(true);
+        commitAndStartNewTransaction();
+
+        result = engine.invoke(config, repository);
+        testStatusOk(result);
+        testAggregatedDescriptionWithLiterature();
+    }
+
+    private void testStatusOk(UpdateResult result) {
+        if (result.getStatus() != UpdateResult.Status.OK){
+            Assert.fail("Aggregation should have status OK but was " + result.toString());
+            for (Exception ex : result.getExceptions()){
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void addLiterature(DescriptiveDataSet dataSet) {
+
+        //literature description
+        Taxon taxon = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
+        TaxonDescription literatureDescription = TaxonDescription.NewInstance(taxon);
+        literatureDescription.addType(DescriptionType.SECONDARY_DATA);
+        addQuantitativeData(literatureDescription, uuidFeatureLeafLength, new BigDecimal("4.5"), new BigDecimal("6.5"));
+        addCategoricalData(literatureDescription, uuidFeatureLeafColor, uuidLeafColorBlue);
+        dataSet.addDescription(literatureDescription);
     }
 
     private void testAggregatedDescription() {
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina), State.uuidPresent, 2);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina), State.uuidPresent, 3);
         List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina);
         testState(sdAlpinaLeafColor, uuidLeafColorBlue, 2);
         testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
-        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("2"), new BigDecimal("5.0"),
-                new BigDecimal("7.0"), new BigDecimal("6.0"), aggrDescLapsanaCommunisAlpina);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("3"), new BigDecimal("5.0"),
+                new BigDecimal("8.0"), new BigDecimal("6.666667"), aggrDescLapsanaCommunisAlpina);
 
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
@@ -274,26 +300,64 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         List<StateData> sdAdenophoraLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAdenophora);
         testState(sdAdenophoraLeafColor, uuidLeafColorBlue, 0);
         testState(sdAdenophoraLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("1"), new BigDecimal("12.0"),
-                new BigDecimal("12.0"), new BigDecimal("12.0"), aggrDescLapsanaCommunisAdenophora);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("1"), new BigDecimal("10.0"),
+                new BigDecimal("10.0"), new BigDecimal("10.0"), aggrDescLapsanaCommunisAdenophora);
 
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
         TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis), State.uuidPresent, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis), State.uuidPresent, 4);
         List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis);
         testState(sdCommunisLeafColor, uuidLeafColorBlue, 2);
         testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("3"), new BigDecimal("5.0"),
-                new BigDecimal("12.0"), new BigDecimal("8.0"), aggrDescLapsanaCommunis);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("4"), new BigDecimal("5.0"),
+                new BigDecimal("10.0"), new BigDecimal("7.5"), aggrDescLapsanaCommunis);
 
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
         TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana), State.uuidPresent, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana), State.uuidPresent, 4);
         List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana);
         testState(sdLapsanLeafColor, uuidLeafColorBlue, 2);
         testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("3"), new BigDecimal("5.0"),
-                new BigDecimal("12.0"), new BigDecimal("8.0"), aggrDescLapsana);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("4"), new BigDecimal("5.0"),
+                new BigDecimal("10.0"), new BigDecimal("7.5"), aggrDescLapsana);
+    }
+
+    private void testAggregatedDescriptionWithLiterature() {
+        Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
+        TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina), State.uuidPresent, 3);
+        List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina);
+        testState(sdAlpinaLeafColor, uuidLeafColorBlue, 3);
+        testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
+        testQuantitativeData(uuidFeatureLeafLength, null, new BigDecimal("4.5"),
+                new BigDecimal("8.0"), null, aggrDescLapsanaCommunisAlpina);
+
+        Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
+        TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAdenophora), State.uuidPresent, 1);
+        List<StateData> sdAdenophoraLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAdenophora);
+        testState(sdAdenophoraLeafColor, uuidLeafColorBlue, 0);
+        testState(sdAdenophoraLeafColor, uuidLeafColorYellow, 1);
+        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("1"), new BigDecimal("10.0"),
+                new BigDecimal("10.0"), new BigDecimal("10.0"), aggrDescLapsanaCommunisAdenophora);
+
+        Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
+        TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis), State.uuidPresent, 4);
+        List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis);
+        testState(sdCommunisLeafColor, uuidLeafColorBlue, 3);
+        testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
+        testQuantitativeData(uuidFeatureLeafLength, null, new BigDecimal("4.5"),
+                new BigDecimal("10.0"), null, aggrDescLapsanaCommunis);
+
+        Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
+        TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana), State.uuidPresent, 4);
+        List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana);
+        testState(sdLapsanLeafColor, uuidLeafColorBlue, 3);
+        testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
+        testQuantitativeData(uuidFeatureLeafLength, null, new BigDecimal("4.5"),
+                new BigDecimal("10.0"), null, aggrDescLapsana);
     }
 
     private StructuredDescriptionAggregationConfiguration createConfig(DescriptiveDataSet dataSet) {
@@ -302,12 +366,14 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 StructuredDescriptionAggregationConfiguration.NewInstance(filter, monitor);
         config.setDatasetUuid(dataSet.getUuid());
         config.setAggregateToHigherRanks(true);
-        config.setAggregationMode(AggregationMode.byAreasAndRanks());
+        config.setAggregationMode(AggregationMode.byWithinTaxonAndToParent());
+        config.setIncludeLiterature(false);
         return config;
     }
 
     private DescriptiveDataSet createTestDataset() {
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
+        dataSet.setLabel("Test dataset");
         datasetService.save(dataSet);
 
         SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1");
@@ -320,9 +386,13 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         addQuantitativeData(specDescAlpina2, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("7.0"));
         addCategoricalData(specDescAlpina2, uuidFeatureLeafColor, uuidLeafColorBlue);
 
+        SpecimenDescription specDescAlpina3 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen3");
+        addCategoricalData(specDescAlpina3, uuidFeatureLeafPA, State.uuidPresent);
+        addQuantitativeData(specDescAlpina3, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("8.0"));
+
         SpecimenDescription specDescAdenophora = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ADENOPHORA_UUID, "adenophora specimen");
         addCategoricalData(specDescAdenophora, uuidFeatureLeafPA, State.uuidPresent);
-        addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("12.0"));
+        addQuantitativeData(specDescAdenophora, uuidFeatureLeafLength, StatisticalMeasure.EXACT_VALUE(), new BigDecimal("10.0"));
         addCategoricalData(specDescAdenophora, uuidFeatureLeafColor, uuidLeafColorYellow);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
@@ -332,6 +402,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @SuppressWarnings("unchecked")
         TermTree<Feature> descriptiveSystem = termTreeService.find(uuidFeatureTree);
         dataSet.setDescriptiveSystem(descriptiveSystem);
+
+        addLiterature(dataSet);
         return dataSet;
     }
 
@@ -389,19 +461,29 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(stateUuid, stateData.getState().getUuid());
     }
 
-    private void addQuantitativeData(SpecimenDescription specDesc, UUID uuidFeature, StatisticalMeasure type, BigDecimal value) {
+    private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, StatisticalMeasure type, BigDecimal value) {
         Feature feature = (Feature)termService.find(uuidFeature);
         QuantitativeData qd = QuantitativeData.NewInstance(feature);
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(type, value);
         qd.addStatisticalValue(smv);
-        specDesc.addElement(qd);
+        desc.addElement(qd);
     }
 
-    private void addCategoricalData(SpecimenDescription specDesc, UUID featureUuid, UUID stateUUID) {
+    private void addQuantitativeData(DescriptionBase<?> desc, UUID uuidFeature, BigDecimal min, BigDecimal max) {
+        Feature feature = (Feature)termService.find(uuidFeature);
+        QuantitativeData qd = QuantitativeData.NewInstance(feature);
+        StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MIN(), min);
+        qd.addStatisticalValue(smv);
+        smv = StatisticalMeasurementValue.NewInstance(StatisticalMeasure.MAX(), max);
+        qd.addStatisticalValue(smv);
+        desc.addElement(qd);
+    }
+
+    private void addCategoricalData(DescriptionBase<?> desc, UUID featureUuid, UUID stateUUID) {
         Feature feature = (Feature)termService.find(featureUuid);
         State state = (State)termService.find(stateUUID);
         CategoricalData cd = CategoricalData.NewInstance(state, feature);
-        specDesc.addElement(cd);
+        desc.addElement(cd);
     }
 
     private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet, UUID taxonUuid, String specLabel ) {

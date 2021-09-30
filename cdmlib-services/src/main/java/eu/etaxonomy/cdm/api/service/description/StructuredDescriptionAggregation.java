@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.api.service.description;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -211,7 +212,8 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        addDescriptionElement(descriptiveResultHolder, getChildTaxonDescriptions(taxonNode, dataSet));
+        Set<TaxonDescription> childDescriptions = getChildTaxonDescriptions(taxonNode, dataSet);
+        addDescriptionElement(descriptiveResultHolder, childDescriptions);
     }
 
     @Override
@@ -219,13 +221,20 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        addDescriptionElement(descriptiveResultHolder, getSpecimenDescriptions(taxon, dataSet));
+        Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
+        addDescriptionElement(descriptiveResultHolder, specimenDescriptions);
+        if (getConfig().isIncludeLiterature()){
+            Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
+            addDescriptionElement(descriptiveResultHolder, literatureDescriptions);
+        }
+        //TODO add defaultDescriptions
+
     }
 
     private void addDescriptionElement(StructuredDescriptionResultHolder descriptiveResultHolder,
             Set<? extends DescriptionBase<?>> descriptions) {
         boolean descriptionWasUsed = false;
-        for (DescriptionBase<?> desc:descriptions){
+        for (DescriptionBase<?> desc: descriptions){
             for (DescriptionElementBase deb: desc.getElements()){
                 if (hasCharacterData(deb)){
                     if (deb.isInstanceOf(CategoricalData.class)){
@@ -306,37 +315,56 @@ public class StructuredDescriptionAggregation
         Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
         Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
         Set<DescriptionBase<?>> sourceDescriptions = new HashSet<>();
+        @Override
+        public String toString() {
+            return "SDResultHolder [categoricals=" + categoricalMap.size() + ", quantitatives="
+                    + quantitativeMap.size() + ", sourceDescriptions=" + sourceDescriptions.size() + "]";
+        }
     }
 
-    /*
-     * Static utility methods
-     */
-    private static Set<TaxonDescription> getChildTaxonDescriptions(TaxonNode taxonNode, DescriptiveDataSet dataSet) {
+    private Set<TaxonDescription> getChildTaxonDescriptions(TaxonNode taxonNode, DescriptiveDataSet dataSet) {
         Set<TaxonDescription> result = new HashSet<>();
         List<TaxonNode> childNodes = taxonNode.getChildNodes();
         for (TaxonNode childNode : childNodes) {
-            result.addAll(childNode.getTaxon().getDescriptions().stream()
-            .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
-            .filter(desc->dataSet.getDescriptions().contains(desc))
-            .collect(Collectors.toSet()));
+            Set<TaxonDescription> childDescriptions = childNode.getTaxon().getDescriptions();
+            result.addAll(childDescriptions.stream()
+                .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
+                .filter(desc->dataSet.getDescriptions().contains(desc))
+                .collect(Collectors.toSet()));
         }
         return result;
     }
 
-    private static Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
+    private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
         Set<SpecimenDescription> result = new HashSet<>();
+        //TODO performance: use DTO service to retrieve specimen descriptions without initializing all taxon descriptions
         for (TaxonDescription taxonDesc: taxon.getDescriptions()){
             for (DescriptionElementBase taxonDeb : taxonDesc.getElements()){
                 if (taxonDeb.isInstanceOf(IndividualsAssociation.class)){
                     IndividualsAssociation indAss = CdmBase.deproxy(taxonDeb, IndividualsAssociation.class);
                     SpecimenOrObservationBase<?> specimen = indAss.getAssociatedSpecimenOrObservation();
-                     Set<SpecimenDescription> descriptions = (Set)specimen.getDescriptions();
-                     for(SpecimenDescription specimenDescription : descriptions){
-                         if(dataSet.getDescriptions().contains(specimenDescription) && specimenDescription.getTypes().stream().noneMatch(type->type.equals(DescriptionType.CLONE_FOR_SOURCE))){
-                             result.add(specimenDescription);
-                         }
-                     }
+                    @SuppressWarnings({ "unchecked", "rawtypes" })
+                    Set<SpecimenDescription> descriptions = (Set)specimen.getDescriptions();
+                    for(SpecimenDescription specimenDescription : descriptions){
+                        if(dataSet.getDescriptions().contains(specimenDescription) &&
+                                specimenDescription.getTypes().stream().noneMatch(type->type.equals(DescriptionType.CLONE_FOR_SOURCE))){
+                            result.add(specimenDescription);
+                        }
+                    }
                 }
+            }
+        }
+        return result;
+    }
+
+    private Set<TaxonDescription> getLiteratureDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
+        Set<TaxonDescription> result = new HashSet<>();
+        //TODO performance: use DTO service to retrieve specimen descriptions without initializing all taxon descriptions
+        for(TaxonDescription taxonDescription : taxon.getDescriptions()){
+            if(dataSet.getDescriptions().contains(taxonDescription)
+                    && taxonDescription.getTypes().stream().anyMatch(type->type.equals(DescriptionType.SECONDARY_DATA))
+                    && taxonDescription.getTypes().stream().noneMatch(type->type.equals(DescriptionType.CLONE_FOR_SOURCE)) ){
+                result.add(taxonDescription);
             }
         }
         return result;
@@ -369,11 +397,14 @@ public class StructuredDescriptionAggregation
     }
 
     private QuantitativeData handleMissingValues(QuantitativeData qd) {
+        //min max
         qd = handleMissingMinOrMax(qd);
+        //average
         if (qd != null && qd.getAverage() == null){
             BigDecimal n = qd.getSampleSize();
             if(n != null && !n.equals(0f)){
-                qd.setAverage((qd.getMax().add(qd.getMin())).divide(n), null);
+                BigDecimal average = (qd.getMax().add(qd.getMin())).divide(n);
+                qd.setAverage(average, null);
             }
         }
         return qd;
@@ -382,7 +413,6 @@ public class StructuredDescriptionAggregation
     private QuantitativeData handleMissingMinOrMax(QuantitativeData qd) {
         return handleMissingMinOrMax(qd, getConfig().getMissingMinimumMode(), getConfig().getMissingMaximumMode());
     }
-
 
     public static QuantitativeData handleMissingMinOrMax(QuantitativeData aggQD, MissingMinimumMode missingMinMode,
             MissingMaximumMode missingMaxMode) {
@@ -407,7 +437,7 @@ public class StructuredDescriptionAggregation
 
     private QuantitativeData mergeQuantitativeData(QuantitativeData aggQd, QuantitativeData newQd) {
 
-        newQd = aggregateSingleQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a cleear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
+        newQd = aggregateSingleQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a clear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
 
         BigDecimal min = null;
         BigDecimal max = null;
@@ -423,8 +453,10 @@ public class StructuredDescriptionAggregation
             sampleSize = newQd.getSampleSize().add(aggQd.getSampleSize());
         }
         if (sampleSize != null && !sampleSize.equals(0f) && aggQd.getAverage() != null && newQd.getAverage() != null){
-            BigDecimal totalSum = aggQd.getAverage().multiply(aggQd.getSampleSize()).add(newQd.getAverage().multiply(newQd.getSampleSize()));
-            average = totalSum.divide(sampleSize);
+            BigDecimal aggTotalSum = aggQd.getAverage().multiply(aggQd.getSampleSize(), MathContext.DECIMAL32);
+            BigDecimal newTotalSum = newQd.getAverage().multiply(newQd.getSampleSize(), MathContext.DECIMAL32);
+            BigDecimal totalSum = aggTotalSum.add(newTotalSum);
+            average = totalSum.divide(sampleSize, MathContext.DECIMAL32).stripTrailingZeros();  //to be discussed if we really want to reduce precision here, however, due to the current way to compute average we do not have exact precision anyway
         }
         aggQd.setMinimum(min, null);
         aggQd.setMaximum(max, null);

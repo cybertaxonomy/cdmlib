@@ -137,7 +137,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             try {
                 aggregate(taxonNodeIdList, aggregateMonitor);
             } catch (Exception e) {
-                result.addException(new RuntimeException("Unhandled error during aggregation", e));
+                result.addException(new RuntimeException("Unhandled error during aggregation: " + e.getMessage() , e));
                 result.setError();
                 done();
                 return result;
@@ -253,11 +253,12 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 Set<TaxonDescription> excludedDescriptions = new HashSet<>();
 //            excludedDescriptions.add(targetDescription); //not possible because aggregating from children
                 aggregateToParentTaxon(taxonNode, resultHolder, excludedDescriptions);
-            }
-            if (mode == AggregationMode.WithinTaxon){
+            } else if (mode == AggregationMode.WithinTaxon){
                 Set<TaxonDescription> excludedDescriptions = new HashSet<>();
                 excludedDescriptions.add(targetDescription);
                 aggregateWithinSingleTaxon(taxon, resultHolder, excludedDescriptions);
+            }else{
+                throw new IllegalArgumentException("Mode " + mode + " not yet supported");
             }
         }
         addAggregationResultToDescription(targetDescription, resultHolder);

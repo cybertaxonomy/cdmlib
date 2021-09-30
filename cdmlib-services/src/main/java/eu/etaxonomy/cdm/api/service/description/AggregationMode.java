@@ -75,13 +75,13 @@ public enum AggregationMode implements IKeyTerm{
         return result;
     }
 
-    public static List<AggregationMode> byAreasAndRanks(){
+    public static List<AggregationMode> byWithinTaxonAndToParent(){
         return Arrays.asList(new AggregationMode[]{AggregationMode.WithinTaxon, AggregationMode.ToParent});
     }
-    public static List<AggregationMode> byAreas(){
+    public static List<AggregationMode> byWithinTaxon(){
         return Arrays.asList(new AggregationMode[]{AggregationMode.WithinTaxon});
     }
-    public static List<AggregationMode> byRanks(){
+    public static List<AggregationMode> byToParent(){
         return Arrays.asList(new AggregationMode[]{AggregationMode.ToParent});
     }
 
