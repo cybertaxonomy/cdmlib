@@ -292,8 +292,8 @@ public class StructuredDescriptionAggregation
 
             for (StateData sdExist : sdWithExistingStateInAggregation) {
                 List<StateData> aggregatedSameStateData = aggregatedCategoricalData.getStateData().stream()
-                .filter(sd->hasSameState(sdExist, sd))
-                .collect(Collectors.toList());
+                        .filter(sd->hasSameState(sdExist, sd))
+                        .collect(Collectors.toList());
                 for (StateData stateData : aggregatedSameStateData) {
                     if(sdExist.getCount()==null){
                         stateData.incrementCount();
