@@ -110,20 +110,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         return descriptionElementBase;
     }
 
-//    private Collection<String> generateDisplayString(DescriptionElementBase descriptionElementBase){
-//        Collection<String> displayData = new ArrayList<>();
-//        if(descriptionElementBase instanceof CategoricalData){
-//            CategoricalData categoricalData = (CategoricalData)descriptionElementBase;
-//            displayData = categoricalData.getStateData().stream()
-//                    .map(stateData->generateStateDataString(stateData))
-//                    .collect(Collectors.toList());
-//        }
-//        if(descriptionElementBase instanceof QuantitativeData){
-//            QuantitativeData quantitativeData = HibernateProxyHelper.deproxy(descriptionElementBase, QuantitativeData.class);
-//            displayData = Collections.singleton(generateQuantitativeDataString(quantitativeData));
-//        }
-//        return displayData;
-//    }
+
 
     private Collection<String> generateDisplayString(DescriptionElementDto descriptionElementBase){
         Collection<String> displayData = new ArrayList<>();
@@ -179,7 +166,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         if(descriptionElementBase!=null && descriptionElementBase instanceof CategoricalDataDto){
             categoricalData = (CategoricalDataDto)descriptionElementBase;
             categoricalData.setStateDataOnly(states);
-            removeElementForFeature(featureUuid);
+
         }else{
             Feature feature = DefinedTermBase.getTermByClassAndUUID(Feature.class, featureUuid);
             if (feature == null){
@@ -188,6 +175,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             categoricalData = new CategoricalDataDto(FeatureDto.fromFeature(feature));
             categoricalData.setStateDataOnly(states);
         }
+        removeElementForFeature(featureUuid);
         description.getElements().add(categoricalData);
         featureToElementMap.put(featureUuid, categoricalData);
         // update display data cache
