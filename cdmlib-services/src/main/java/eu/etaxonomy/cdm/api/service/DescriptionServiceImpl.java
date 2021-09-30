@@ -525,6 +525,9 @@ public class DescriptionServiceImpl
 
                 for (DescriptionElementDto descElement: elements){
                     UUID descElementUuid = descElement.getElementUuid();
+                    if (descElement instanceof CategoricalDataDto && ((CategoricalDataDto)descElement).getStates().isEmpty() || descElement instanceof QuantitativeDataDto && ((QuantitativeDataDto)descElement).getValues().isEmpty()){
+                        continue;
+                    }
                     List<DescriptionElementBase> equalUuidsElements = descriptionElements.stream().filter( e -> e.getUuid().equals(descElementUuid)).collect(Collectors.toList());
                     eu.etaxonomy.cdm.model.description.Feature feature =  DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Feature.class, descElement.getFeatureUuid());
                     if (feature == null){
@@ -579,36 +582,12 @@ public class DescriptionServiceImpl
                                 desc.removeElement(data);
                             }else{
                                 for (StateDataDto dataDto: stateDtos){
-    //                                List<StateData> equalUuidsStateData = states.stream().filter( e -> e.getUuid().equals(dataDto.getUuid())).collect(Collectors.toList());
-    //                                if (equalUuidsStateData.size() == 1){
-    //                                    //do nothing because state already exist
-    //                                }else if (equalUuidsStateData.isEmpty()){
-                                        //create new statedata
                                         State newState = DefinedTermBase.getTermByClassAndUUID(State.class, dataDto.getState().getUuid());
                                         StateData newStateData = StateData.NewInstance(newState);
                                         data.addStateData(newStateData);
-    //                                }
-
-
                                 }
                             }
-                          //delete removed state data
-//                            Set<StateData> toRemove = new HashSet<>();
-//                            for (StateData stateData:states){
-////                                List<StateDataDto> equalUuidsStateData = new ArrayList<>();
-////                                for (StateDataDto dto: stateDtos){
-////                                    if (dto.getUuid() == stateData.getUuid()){
-////                                        equalUuidsStateData.add(dto);
-////                                    }
-////                                }
-//                                List<StateDataDto> equalUuidsStateData = stateDtos.stream().filter( e -> e.getUuid() == stateData.getUuid()).collect(Collectors.toList());
-//                                if (equalUuidsStateData.size() == 0){
-//                                    toRemove.add(stateData);
-//                                }
-//                            }
-//                            for (StateData remove: toRemove){
-//                                data.removeStateData(remove);
-//                            }
+
                         }else if (elementBase.isInstanceOf(QuantitativeData.class)){
                             QuantitativeData data = HibernateProxyHelper.deproxy(elementBase, QuantitativeData.class);
 
