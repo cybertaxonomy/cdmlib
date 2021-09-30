@@ -660,14 +660,14 @@ public class DescriptiveDataSetService
         newTaxonDescription.setTitleCache(dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
         newTaxonDescription.getTypes().add(descriptionType);
 
-        dataSet.getDescriptiveSystem().getDistinctTerms().forEach(wsFeature->{
-            if(wsFeature.isSupportsCategoricalData()){
-                newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));
-            }
-            else if(wsFeature.isSupportsQuantitativeData()){
-                newTaxonDescription.addElement(QuantitativeData.NewInstance(wsFeature));
-            }
-        });
+//        dataSet.getDescriptiveSystem().getDistinctTerms().forEach(wsFeature->{
+//            if(wsFeature.isSupportsCategoricalData()){
+//                newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));
+//            }
+//            else if(wsFeature.isSupportsQuantitativeData()){
+//                newTaxonDescription.addElement(QuantitativeData.NewInstance(wsFeature));
+//            }
+//        });
         dataSet.addDescription(newTaxonDescription);
         saveOrUpdate(dataSet);
         return createTaxonRowWrapper(newTaxonDescription, dataSet.getUuid());
