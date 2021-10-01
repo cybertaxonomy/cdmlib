@@ -458,7 +458,7 @@ public class Language extends DefinedTermBase<Language> {
     private static final UUID uuidSomali = UUID.fromString("35985d42-51bb-41b7-83a9-58845d499f8b");
     private static final UUID uuidSonghais = UUID.fromString("9ad544c7-f8d7-4bea-9476-26d982917ec8");
     private static final UUID uuidSothoSouthern = UUID.fromString("fb7e9746-1bc6-4384-802d-7784b8b301fa");
-    private static final UUID uuidSpanish_Castilian = UUID.fromString("511d8125-f5e6-445d-aee2-6327375238be");
+    public static final UUID uuidSpanish_Castilian = UUID.fromString("511d8125-f5e6-445d-aee2-6327375238be");
     private static final UUID uuidSardinian = UUID.fromString("f67971e9-49bb-4d85-9bc8-e6a1ea0d950e");
     private static final UUID uuidSrananTongo = UUID.fromString("52cc1adb-b715-4a2a-8aaf-8d32fddd3958");
     private static final UUID uuidSerer = UUID.fromString("3234653f-e10d-48a5-ade7-cd628e75fbe8");
