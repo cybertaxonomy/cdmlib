@@ -22,6 +22,7 @@ public class SortableTaxonNodeQueryResult {
     UUID taxonNodeUuid;
     Integer taxonNodeId;
     String taxonTitleCache;
+    String nameTitleCache;
     Rank nameRank = Rank.UNKNOWN_RANK();
 
 
@@ -32,14 +33,26 @@ public class SortableTaxonNodeQueryResult {
      * @param taxonTitleCache
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache, String nameTitleCache,
             Rank nameRank) {
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.taxonTitleCache = taxonTitleCache;
+        this.nameTitleCache = nameTitleCache;
         if(nameRank != null){
             this.nameRank = nameRank;
         }
+    }
+
+    /**Is this the reason
+     * @param taxonNodeUuid
+     * @param taxonNodeId
+     * @param taxonTitleCache
+     * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
+     */
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
+            Rank nameRank) {
+        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, nameRank);
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
@@ -71,7 +84,12 @@ public class SortableTaxonNodeQueryResult {
         this.nameRank = nameRank;
     }
 
-
+    public String getNameTitleCache() {
+        return nameTitleCache;
+    }
+    public void setNameTitleCache(String nameTitleCache) {
+        this.nameTitleCache = nameTitleCache;
+    }
 
 
 }
