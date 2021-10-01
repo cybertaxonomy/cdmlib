@@ -242,8 +242,8 @@ public class DistributionAggregation
             replaceSources(distribution.getSources(), accumulatedStatusMap.get(area).sources);
 //            addSourcesDeduplicated(distribution.getSources(), accumulatedStatusMap.get(area).sources);
         }
-        for(Distribution toDelteDist: toDelete){
-            targetDescription.removeElement(toDelteDist);
+        for(Distribution toDeleteDist: toDelete){
+            targetDescription.removeElement(toDeleteDist);
         }
     }
 

@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
  * @author a.mueller
  * @since 03.11.2019
  */
-public abstract class DescriptionAggregationConfigurationBase<TASK extends DescriptionAggregationBase> implements Serializable {
+public abstract class DescriptionAggregationConfigurationBase<TASK extends DescriptionAggregationBase>
+            implements Serializable {
 
     private static final long serialVersionUID = -7914819539239986722L;
 

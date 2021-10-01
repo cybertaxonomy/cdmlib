@@ -246,12 +246,12 @@ public class CategoricalData extends DescriptionElementBase {
 
 //********************************** toString **************************************/
 
-
     @Override
     public String toString() {
-        return "[" + stateData +
-                (orderRelevant? ", orderRelevant=" + orderRelevant:"") +
-                (unknownData? ", unknownData=" + unknownData:"")
+        return (getFeature()!=null ? getFeature().getLabel(): "") +
+                "[" + stateData +
+                    (orderRelevant? ", orderRelevant=" + orderRelevant:"") +
+                    (unknownData? ", unknownData=" + unknownData:"")
                 + "]";
     }
 
@@ -276,7 +276,7 @@ public class CategoricalData extends DescriptionElementBase {
             //states
             result.stateData = new ArrayList<>();
             for (StateData stateData : getStateData()){
-                StateData newState = (StateData)stateData.clone();
+                StateData newState = stateData.clone();
                 result.addStateData(newState);
             }
 

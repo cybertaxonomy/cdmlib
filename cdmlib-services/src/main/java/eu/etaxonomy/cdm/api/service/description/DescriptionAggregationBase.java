@@ -290,7 +290,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             if (hasDescriptionType(description)){
-                logger.debug("reusing existing aggregated description for " + taxonToString(taxon));
+                if (logger.isDebugEnabled()){logger.debug("reusing existing aggregated description for " + taxonToString(taxon));}
                 setDescriptionTitle(description, taxon);  //maybe we want to redefine the title
                 return description;
             }

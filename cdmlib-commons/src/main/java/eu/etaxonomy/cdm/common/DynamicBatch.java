@@ -95,12 +95,8 @@ public class DynamicBatch {
     }
 
     /**
-     * 1. Fills all remaining items into the new batch and pads with next items from the iterator.
-     *
+     * 1. Fills all remaining items into the new batch and pads with next items from the iterator.<BR>
      * 2. Resets the internal batchItemCount!!
-     *
-     * @param itemIterator
-     * @return
      */
     public List<Integer> nextItems(Iterator<Integer> itemIterator){
 
