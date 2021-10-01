@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -116,7 +117,17 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
         Collection<String> displayData = new ArrayList<>();
         if(descriptionElementBase instanceof CategoricalDataDto){
             CategoricalDataDto categoricalData = (CategoricalDataDto)descriptionElementBase;
-            displayData = categoricalData.getStates().stream()
+            List<StateDataDto> states = categoricalData.getStates();
+            Collections.sort(states, new Comparator<StateDataDto>() {
+                @Override
+                public int compare(StateDataDto h1, StateDataDto h2) {
+                    if (h1.getCount() != null && h2.getCount() != null){
+                        return -h1.getCount().compareTo(h2.getCount());
+                    }
+                    return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
+                }
+            });
+            displayData = states.stream()
                     .map(stateData->generateStateDataString(stateData))
                     .collect(Collectors.toList());
         }
