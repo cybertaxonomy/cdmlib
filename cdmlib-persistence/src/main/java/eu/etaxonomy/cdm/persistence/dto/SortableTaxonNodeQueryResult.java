@@ -18,11 +18,11 @@ import eu.etaxonomy.cdm.model.name.Rank;
  */
 public class SortableTaxonNodeQueryResult {
 
-    private UUID taxonNodeUuid;
-    private Integer taxonNodeId;
-    private String taxonTitleCache;
-    private String nameTitleCache;
-    private Rank nameRank = Rank.UNKNOWN_RANK();
+    protected UUID taxonNodeUuid;
+    protected Integer taxonNodeId;
+    protected String taxonTitleCache;
+    protected String nameTitleCache;
+    protected Rank nameRank = Rank.UNKNOWN_RANK();
 
     /**Is this the reason
      * @param taxonNodeUuid
