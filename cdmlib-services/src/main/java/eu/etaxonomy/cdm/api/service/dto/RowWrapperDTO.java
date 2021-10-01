@@ -121,28 +121,23 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             Collections.sort(states, new Comparator<StateDataDto>() {
                 @Override
                 public int compare(StateDataDto h1, StateDataDto h2) {
-                    if (h1.getCount() != null && h2.getCount() != null && h1.getCount() != h2.getCount()){
-                        return -h1.getCount().compareTo(h2.getCount());
-                    }
-                    if (h1.getCount() == h2.getCount()){
-                        if (h1.getState() == h2.getState()){
-                            return 0;
-                        }
-                        if (h1.getState() == null){
-                            return -1;
-                        }
-                        if (h2.getState() == null){
-                            return 1;
-                        }
-                        return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
-                    }
-                    if (h1.getCount() == null){
+                    if (h1.getCount() == null && h2.getCount() != null){
                         return -1;
-                    }
-                    if (h2.getCount() == null){
+                    } else if (h2.getCount() == null && h1.getCount() != null){
                         return 1;
+                    } else if (h1.getCount() != h2.getCount()){
+                        return -h1.getCount().compareTo(h2.getCount());
+                    } else {
+                        if (h1.getState() == h2.getState()){
+                            return h1.toString().compareTo(h2.toString());
+                        } else if (h1.getState() == null){
+                            return -1;
+                        } else if (h2.getState() == null){
+                            return 1;
+                        }else{
+                            return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
+                        }
                     }
-                    return h1.toString().compareTo(h2.toString());
                 }
             });
             displayData = states.stream()
