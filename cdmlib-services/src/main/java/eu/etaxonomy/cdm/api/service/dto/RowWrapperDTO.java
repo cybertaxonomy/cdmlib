@@ -124,16 +124,25 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
                     if (h1.getCount() != null && h2.getCount() != null && h1.getCount() != h2.getCount()){
                         return -h1.getCount().compareTo(h2.getCount());
                     }
-                    if (h1.getState() == h2.getState()){
-                        return 0;
+                    if (h1.getCount() == h2.getCount()){
+                        if (h1.getState() == h2.getState()){
+                            return 0;
+                        }
+                        if (h1.getState() == null){
+                            return -1;
+                        }
+                        if (h2.getState() == null){
+                            return 1;
+                        }
+                        return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
                     }
-                    if (h1.getState() == null){
+                    if (h1.getCount() == null){
                         return -1;
                     }
-                    if (h2.getState() == null){
+                    if (h2.getCount() == null){
                         return 1;
                     }
-                    return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
+                    return h1.toString().compareTo(h2.toString());
                 }
             });
             displayData = states.stream()
