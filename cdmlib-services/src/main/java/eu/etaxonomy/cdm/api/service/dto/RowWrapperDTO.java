@@ -121,7 +121,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             Collections.sort(states, new Comparator<StateDataDto>() {
                 @Override
                 public int compare(StateDataDto h1, StateDataDto h2) {
-                    if (h1.getCount() != null && h2.getCount() != null){
+                    if (h1.getCount() != null && h2.getCount() != null && h1.getCount() != h2.getCount()){
                         return -h1.getCount().compareTo(h2.getCount());
                     }
                     return h1.getState().getTitleCache().compareTo(h2.getState().getTitleCache());
