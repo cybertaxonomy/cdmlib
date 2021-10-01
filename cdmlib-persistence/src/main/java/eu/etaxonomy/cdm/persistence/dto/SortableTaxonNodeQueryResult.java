@@ -15,17 +15,14 @@ import eu.etaxonomy.cdm.model.name.Rank;
 /**
  * @author a.kohlbecker
  * @since Mar 20, 2020
- *
  */
 public class SortableTaxonNodeQueryResult {
 
-    UUID taxonNodeUuid;
-    Integer taxonNodeId;
-    String taxonTitleCache;
-    String nameTitleCache;
-    Rank nameRank = Rank.UNKNOWN_RANK();
-
-
+    private UUID taxonNodeUuid;
+    private Integer taxonNodeId;
+    private String taxonTitleCache;
+    private String nameTitleCache;
+    private Rank nameRank = Rank.UNKNOWN_RANK();
 
     /**Is this the reason
      * @param taxonNodeUuid
@@ -44,7 +41,7 @@ public class SortableTaxonNodeQueryResult {
         }
     }
 
-    /**Is this the reason
+    /**
      * @param taxonNodeUuid
      * @param taxonNodeId
      * @param taxonTitleCache

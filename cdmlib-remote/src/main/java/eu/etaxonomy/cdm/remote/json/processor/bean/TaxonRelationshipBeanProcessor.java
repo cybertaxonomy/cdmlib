@@ -17,7 +17,6 @@ import net.sf.json.JsonConfig;
 /**
  * @author a.kohlbecker
  * @since 09.06.2009
- *
  */
 public class TaxonRelationshipBeanProcessor extends AbstractCdmBeanProcessor<TaxonRelationship> {
 
@@ -34,5 +33,4 @@ public class TaxonRelationshipBeanProcessor extends AbstractCdmBeanProcessor<Tax
 
         return json;
     }
-
 }
