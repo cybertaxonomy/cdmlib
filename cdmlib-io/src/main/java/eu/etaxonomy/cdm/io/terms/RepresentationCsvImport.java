@@ -41,13 +41,12 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
  * @since 14.03.2017
  */
 @Component
-public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImportConfigurator, File>{
+public class RepresentationCsvImport
+            extends SimpleImport<RepresentationCsvImportConfigurator, File>{
+
     private static final long serialVersionUID = -5600766240192189822L;
     private static Logger logger = Logger.getLogger(RepresentationCsvImport.class);
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doInvoke(RepresentationCsvImportConfigurator config) {
         try {
@@ -95,7 +94,6 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     /**
@@ -175,10 +173,6 @@ public class RepresentationCsvImport extends SimpleImport<RepresentationCsvImpor
         return term;
     }
 
-    /**
-     * @param uuid
-     * @return
-     */
     private TermBase getTerm(UUID uuid) {
         TermBase result = getTermService().find(uuid);
         if (result == null){
