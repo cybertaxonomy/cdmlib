@@ -175,17 +175,18 @@ public class StructuredDescriptionAggregation
     private void replaceExistingDescriptionElements(TaxonDescription targetDescription,
             Map<Feature, ? extends DescriptionElementBase> elementMap) {
         for (Entry<Feature, ? extends DescriptionElementBase> entry : elementMap.entrySet()) {
-            DescriptionElementBase elementToRemove = null;
+            Set<DescriptionElementBase> elementsToRemove = new HashSet<>();
             DescriptionElementBase elementReplacement = null;
             for (DescriptionElementBase descriptionElementBase : targetDescription.getElements()) {
                 if(descriptionElementBase.getFeature().equals(entry.getKey())){
-                    elementToRemove = descriptionElementBase;
+                    elementsToRemove.add(descriptionElementBase);
                     elementReplacement = entry.getValue();
-                    break;
                 }
             }
-            if(elementToRemove!=null && elementReplacement!=null){
-                targetDescription.removeElement(elementToRemove);
+            if(!elementsToRemove.isEmpty() && elementReplacement!=null){
+                for(DescriptionElementBase elementToRemove : elementsToRemove){
+                    targetDescription.removeElement(elementToRemove);
+                }
                 targetDescription.addElement(elementReplacement);
             }
             else{
