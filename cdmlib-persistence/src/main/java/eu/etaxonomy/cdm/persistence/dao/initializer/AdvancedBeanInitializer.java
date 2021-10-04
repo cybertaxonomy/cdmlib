@@ -375,6 +375,9 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
 
     private void autoinitializeBean(CdmBase bean, AutoInit autoInit) {
         for(AutoPropertyInitializer<CdmBase> init : autoInit.initlializers) {
+            if(logger.isTraceEnabled()) {
+                logger.trace("invoking " + init.getClass().getSimpleName() + ".initialize(" + bean.getClass().getSimpleName() + ")");
+            }
             init.initialize(bean);
         }
     }
@@ -591,10 +594,13 @@ public class AdvancedBeanInitializer<CDM extends CdmBase> extends HibernateBeanI
                 try {
                     Optional<String> fetchJoin = init.hibernateFetchJoin(clazz, beanAlias);
                     if(fetchJoin.isPresent()) {
+                        logger.trace("applying fetch join of " + init.getClass().getSimpleName());
                         autoInit.leftJoinFetch += fetchJoin.get();
                     } else {
                         // the AutoPropertyInitializer is not supporting LEFT JOIN FETCH so it needs to be
                         // used explicitly
+
+                        logger.trace("adding property calling initializer: " + init.getClass().getSimpleName());
                         autoInit.initlializers.add(init);
                     }
                 } catch (Exception e) {
