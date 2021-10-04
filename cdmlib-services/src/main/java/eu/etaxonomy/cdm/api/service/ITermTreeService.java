@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -51,17 +50,9 @@ public interface ITermTreeService extends IIdentifiableEntityService<TermTree> {
 
     public List<TermTreeDto> listTermTreeDtosByTermType(TermType termType);
 
-    /**
-     * @param uuid
-     * @return
-     */
     public TermTreeDto getTermTreeDtoByUuid(UUID uuid);
 
-    /**
-     * @param dtos
-     * @return
-     */
-    UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos);
+    public UpdateResult saveOrUpdateTermTreeDtoList(List<TermTreeDto> dtos);
 
 
 }
