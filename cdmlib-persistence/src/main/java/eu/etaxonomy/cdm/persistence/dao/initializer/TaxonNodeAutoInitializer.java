@@ -13,6 +13,8 @@ import java.util.Optional;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
+ * <i>CURRENTLY UNUSED</i>
+ *
  * @author a.kohlbecker
  * @since 30.07.2010
  */
@@ -22,6 +24,7 @@ public class TaxonNodeAutoInitializer extends AutoPropertyInitializer<TaxonNode>
     public void initialize(TaxonNode bean) {
        beanInitializer.initializeInstance(bean.getTaxon().getName());
        beanInitializer.initializeInstance(bean.getTaxon().getSec());
+       beanInitializer.initializeInstance(bean.getTaxon().getSec().getSources());
     }
 
     @Override
