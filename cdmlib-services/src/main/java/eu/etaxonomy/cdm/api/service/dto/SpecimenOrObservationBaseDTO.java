@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -33,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -57,7 +59,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private SpecimenOrObservationType recordBase;
     private TermBase kindOfUnit;
-    private String collectorsNumber;
+    private String collectorsString;
     private String individualCount;
     private Set<DerivedUnitDTO> derivatives;
 
@@ -91,6 +93,21 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         setSex(specimenOrObservation.getSex());
         setIndividualCount(specimenOrObservation.getIndividualCount());
         lifeStage = specimenOrObservation.getLifeStage();
+        FieldUnit fieldUnit = null;
+        if (specimenOrObservation instanceof FieldUnit){
+            fieldUnit = (FieldUnit)specimenOrObservation;
+        }else{
+            fieldUnit = getFieldUnit((DerivedUnit)specimenOrObservation);
+        }
+        if (fieldUnit != null){
+            AgentBase collector = fieldUnit.getGatheringEvent().getCollector();
+            String fieldNumberString = fieldUnit.getFieldNumber() != null ? " - " + fieldUnit.getFieldNumber(): "";
+
+
+            if (collector != null){
+                collectorsString = collector.getTitleCache() + fieldNumberString;
+            }
+        }
         addDeterminations(specimenOrObservation.getDeterminations());
         setDeterminations(specimenOrObservation.getDeterminations().stream()
                 .map(det -> DeterminationEventDTO.from(det))
@@ -102,6 +119,39 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
             }
         }
+    }
+
+    /**
+     * finds the field unit of the derived unit or null if no field unit exist
+     * @param specimenOrObservation
+     * @return
+     */
+    private FieldUnit getFieldUnit(DerivedUnit specimenOrObservation) {
+        FieldUnit result = null;
+        if (specimenOrObservation.getDerivedFrom() != null && !specimenOrObservation.getDerivedFrom().getOriginals().isEmpty()){
+            for (SpecimenOrObservationBase specimen: specimenOrObservation.getDerivedFrom().getOriginals()){
+                if (specimen instanceof FieldUnit){
+                    return (FieldUnit)specimen;
+                }else if (specimen instanceof DerivedUnit){
+                    getFieldUnit(HibernateProxyHelper.deproxy(specimen,DerivedUnit.class));
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return the collectorsString
+     */
+    public String getCollectorsString() {
+        return collectorsString;
+    }
+
+    /**
+     * @param collectorsString the collectorsString to set
+     */
+    public void setCollectorsString(String collectorsString) {
+        this.collectorsString = collectorsString;
     }
 
     public Set<SpecimenTypeDesignationDTO> getSpecimenTypeDesignations() {
