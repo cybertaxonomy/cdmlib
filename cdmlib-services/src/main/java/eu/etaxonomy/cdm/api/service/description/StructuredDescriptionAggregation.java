@@ -139,7 +139,8 @@ public class StructuredDescriptionAggregation
     }
 
     private void addAggregationSources(TaxonDescription targetDescription,
-            StructuredDescriptionResultHolder structuredResultHolder) {
+                StructuredDescriptionResultHolder structuredResultHolder) {
+
         //FIXME Re-use sources if possible
         //Remove sources from description
         Set<IdentifiableSource> sourcesToRemove = targetDescription.getSources().stream()
@@ -228,12 +229,13 @@ public class StructuredDescriptionAggregation
             Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
             addDescriptionElement(descriptiveResultHolder, literatureDescriptions);
         }
-        //TODO add defaultDescriptions
+        //TODO add default descriptions
 
     }
 
     private void addDescriptionElement(StructuredDescriptionResultHolder descriptiveResultHolder,
             Set<? extends DescriptionBase<?>> descriptions) {
+
         boolean descriptionWasUsed = false;
         for (DescriptionBase<?> desc: descriptions){
             for (DescriptionElementBase deb: desc.getElements()){
@@ -313,9 +315,9 @@ public class StructuredDescriptionAggregation
     }
 
     private class StructuredDescriptionResultHolder implements ResultHolder{
-        Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
-        Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
-        Set<DescriptionBase<?>> sourceDescriptions = new HashSet<>();
+        private Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
+        private Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
+        private Set<DescriptionBase<?>> sourceDescriptions = new HashSet<>();
         @Override
         public String toString() {
             return "SDResultHolder [categoricals=" + categoricalMap.size() + ", quantitatives="

@@ -251,7 +251,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         for (AggregationMode mode : getConfig().getAggregationModes()){
             if (mode == AggregationMode.ToParent){
                 Set<TaxonDescription> excludedDescriptions = new HashSet<>();
-//            excludedDescriptions.add(targetDescription); //not possible because aggregating from children
+//              excludedDescriptions.add(targetDescription); //not possible because aggregating from children
                 aggregateToParentTaxon(taxonNode, resultHolder, excludedDescriptions);
             } else if (mode == AggregationMode.WithinTaxon){
                 Set<TaxonDescription> excludedDescriptions = new HashSet<>();
