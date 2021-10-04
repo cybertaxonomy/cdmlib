@@ -47,6 +47,7 @@
     <bean id="mediaAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.MediaAutoInitializer"></bean>
     <bean id="typeDesignationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TypeDesignationAutoInitializer"></bean>
     <bean id="teamAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TeamAutoInitializer"></bean>
+    <bean id="taxonAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TaxonAutoInitializer"></bean>
 
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.AdvancedBeanInitializer">
     <!--
