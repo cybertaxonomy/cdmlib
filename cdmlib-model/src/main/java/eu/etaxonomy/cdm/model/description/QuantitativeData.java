@@ -637,23 +637,18 @@ public class QuantitativeData
 	@Override
 	public QuantitativeData clone() {
 
-		try {
-			QuantitativeData result = (QuantitativeData)super.clone();
+		QuantitativeData result = (QuantitativeData)super.clone();
 
-			//states
-			result.statisticalValues = new HashSet<>();
-			for (StatisticalMeasurementValue data : getStatisticalValues()){
-				StatisticalMeasurementValue newData = data.clone();
-				result.addStatisticalValue(newData);
-			}
-
-			return result;
-			//no changes to: unit
-		} catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
+		//states
+		result.statisticalValues = new HashSet<>();
+		for (StatisticalMeasurementValue data : getStatisticalValues()){
+			StatisticalMeasurementValue newData = data.clone();
+			result.addStatisticalValue(newData);
 		}
+
+		//no changes to: unit
+
+		return result;
 	}
 
 //********************** TO STRING **************************************/

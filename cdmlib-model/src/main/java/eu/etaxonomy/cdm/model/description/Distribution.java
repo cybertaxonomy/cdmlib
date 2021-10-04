@@ -176,16 +176,10 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     @Override
     public Distribution clone() {
 
-        try {
-            Distribution result = (Distribution)super.clone();
+        Distribution result = (Distribution)super.clone();
 
-            return result;
-            //no changes to: area, status
-        } catch (CloneNotSupportedException e) {
-            logger.warn("Object does not implement cloneable");
-            e.printStackTrace();
-            return null;
-        }
+        return result;
+        //no changes to: area, status
     }
 
 // ************************* to String ***************************************************/

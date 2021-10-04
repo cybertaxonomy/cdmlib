@@ -616,11 +616,7 @@ public class PolytomousKeyGeneratorTest extends TermTestBase {
     private Set<DescriptionElementBase> clonedDescElements(Set<DescriptionElementBase> elements) {
         Set<DescriptionElementBase> result = new HashSet<>();
         for (DescriptionElementBase deb : elements){
-            try {
-                result.add(deb.clone());
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException(e);
-            }
+            result.add(deb.clone());
         }
         return result;
     }

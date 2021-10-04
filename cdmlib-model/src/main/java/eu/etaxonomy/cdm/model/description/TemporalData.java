@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.ExtendedTimePeriod;
 public class TemporalData extends DescriptionElementBase {
 
     private static final long serialVersionUID = -1064249780729501786L;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TemporalData.class);
 
     @XmlElement(name = "Period")
@@ -104,16 +105,10 @@ public class TemporalData extends DescriptionElementBase {
     @Override
     public TemporalData clone() {
 
-        try {
-            TemporalData result = (TemporalData)super.clone();
-            result.setPeriod(this.period.clone());
-            return result;
-            //no changes to ...
-        } catch (CloneNotSupportedException e) {
-            logger.warn("Object does not implement cloneable");
-            e.printStackTrace();
-            return null;
-        }
+        TemporalData result = (TemporalData)super.clone();
+        result.setPeriod(this.period.clone());
+        //no changes to ...
+        return result;
     }
 
 //*********************************** toString *****************************************/

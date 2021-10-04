@@ -547,42 +547,46 @@ public abstract class DescriptionElementBase
      * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
      */
     @Override
-    public DescriptionElementBase clone() throws CloneNotSupportedException{
+    public DescriptionElementBase clone() {
 
-        DescriptionElementBase result = (DescriptionElementBase)super.clone();
+        try {
+            DescriptionElementBase result = (DescriptionElementBase)super.clone();
 
-        //inDescription
-        if (result.inDescription != null){
-            result.inDescription.removeElement(result);
-            result.inDescription = null;
+            //inDescription
+            if (result.inDescription != null){
+                result.inDescription.removeElement(result);
+                result.inDescription = null;
+            }
+
+            //Sources
+            result.sources = new HashSet<>();
+            for (DescriptionElementSource source : getSources()){
+                DescriptionElementSource newSource = source.clone();
+                result.addSource(newSource);
+            }
+
+            //media
+            result.media = new ArrayList<>();
+            for (Media media : getMedia()){
+                result.media.add(media);
+            }
+
+            //modifying text
+            result.modifyingText = cloneLanguageString(getModifyingText());
+
+            //modifiers
+            result.modifiers = new HashSet<>();
+            for (DefinedTerm modifier : getModifiers()){
+                result.modifiers.add(modifier);
+            }
+
+            result.setTimeperiod(timeperiod == null? null:timeperiod.clone());
+
+            //no changes to: feature
+            return result;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
         }
-
-        //Sources
-        result.sources = new HashSet<>();
-        for (DescriptionElementSource source : getSources()){
-            DescriptionElementSource newSource = source.clone();
-            result.addSource(newSource);
-        }
-
-        //media
-        result.media = new ArrayList<>();
-        for (Media media : getMedia()){
-            result.media.add(media);
-        }
-
-        //modifying text
-        result.modifyingText = cloneLanguageString(getModifyingText());
-
-        //modifiers
-        result.modifiers = new HashSet<>();
-        for (DefinedTerm modifier : getModifiers()){
-            result.modifiers.add(modifier);
-        }
-
-        result.setTimeperiod(timeperiod == null? null:timeperiod.clone());
-
-        //no changes to: feature
-        return result;
     }
 
     /**
@@ -590,7 +594,7 @@ public abstract class DescriptionElementBase
      * The new element is added to the <code>description</code>.<BR>
      * @see eu.etaxonomy.cdm.model.common.AnnotatableEntity#clone()
      */
-    public DescriptionElementBase clone(DescriptionBase description) throws CloneNotSupportedException{
+    public DescriptionElementBase clone(DescriptionBase description) {
         DescriptionElementBase result = clone();
         description.addElement(result);
         return result;

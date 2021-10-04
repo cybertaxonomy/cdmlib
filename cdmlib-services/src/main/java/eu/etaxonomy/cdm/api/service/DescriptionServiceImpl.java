@@ -940,20 +940,16 @@ public class DescriptionServiceImpl
 
 
             }
-            try {
-                DescriptionElementBase newElement = element.clone();
-                if (setNameInSource) {
-                    for (DescriptionElementSource source: newElement.getSources()){
-                            if (source.getNameUsedInSource() == null){
-                                source.setNameUsedInSource(name);
-                            }
+            DescriptionElementBase newElement = element.clone();
+            if (setNameInSource) {
+                for (DescriptionElementSource source: newElement.getSources()){
+                        if (source.getNameUsedInSource() == null){
+                            source.setNameUsedInSource(name);
                         }
+                    }
 
-                }
-                targetDescription.addElement(newElement);
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException ("Clone not yet implemented for class " + element.getClass().getName(), e);
             }
+            targetDescription.addElement(newElement);
             if (! isCopy){
                 description.removeElement(element);
                 dao.saveOrUpdate(description);

@@ -65,8 +65,11 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
-public class TaxonInteraction extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
-	private static final long serialVersionUID = -5014025677925668627L;
+public class TaxonInteraction
+        extends DescriptionElementBase
+        implements IMultiLanguageTextHolder{
+
+    private static final long serialVersionUID = -5014025677925668627L;
 	private static final Logger logger = Logger.getLogger(TaxonInteraction.class);
 
 	@XmlElement(name = "Description")
@@ -216,9 +219,7 @@ public class TaxonInteraction extends DescriptionElementBase implements IMultiLa
 			return result;
 			//no changes to: taxon2
 		} catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
+            throw new RuntimeException("Object does not implement cloneable");
 		}
 	}
 

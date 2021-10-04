@@ -270,20 +270,16 @@ public class CategoricalData extends DescriptionElementBase {
     @Override
     public CategoricalData clone() {
 
-        try {
-            CategoricalData result = (CategoricalData)super.clone();
+        CategoricalData result = (CategoricalData)super.clone();
 
-            //states
-            result.stateData = new ArrayList<>();
-            for (StateData stateData : getStateData()){
-                StateData newState = stateData.clone();
-                result.addStateData(newState);
-            }
-
-            //no changes to: orderRelevant
-            return result;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+        //states
+        result.stateData = new ArrayList<>();
+        for (StateData stateData : getStateData()){
+            StateData newState = stateData.clone();
+            result.addStateData(newState);
         }
+
+        //no changes to: orderRelevant
+        return result;
     }
 }

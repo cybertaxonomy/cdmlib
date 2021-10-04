@@ -464,12 +464,11 @@ public class TextData
                 result.multilanguageText.put(language, newLanguageString);
             }
 
-            return result;
             //no changes to: format
+            return result;
+
         } catch (CloneNotSupportedException e) {
-            logger.warn("Object does not implement cloneable");
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Object does not implement cloneable");
         }
     }
 

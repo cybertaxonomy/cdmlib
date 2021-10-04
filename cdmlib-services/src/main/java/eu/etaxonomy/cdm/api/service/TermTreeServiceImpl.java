@@ -151,11 +151,11 @@ public class TermTreeServiceImpl
     }
 
     @Override
-    public DeleteResult delete(UUID featureTreeUuid){
+    public DeleteResult delete(UUID treeUuid){
         DeleteResult result = new DeleteResult();
-        TermTree tree = dao.load(featureTreeUuid);
+        TermTree<?> tree = dao.load(treeUuid);
 
-        TermNode rootNode = CdmBase.deproxy(tree.getRoot());
+        TermNode<?> rootNode = CdmBase.deproxy(tree.getRoot());
         TermNodeDeletionConfigurator config = new TermNodeDeletionConfigurator();
         config.setChildHandling(ChildHandling.DELETE);
         result = termNodeService.deleteNode(rootNode.getUuid(), config);
@@ -186,10 +186,6 @@ public class TermTreeServiceImpl
         return page(null, buildTermTypeFilterRestrictions(termType), pageSize, pageIndex, orderHints, propertyPaths);
     }
 
-    /**
-     * @param termType
-     * @return
-     */
     @Override
     public List<Restriction<?>> buildTermTypeFilterRestrictions(TermType termType) {
         List<Restriction<?>> filterRestrictions = null;

@@ -216,11 +216,11 @@ public class DescriptiveDataSetService
     }
 
     private TaxonNode findTaxonNodeForDescription(SpecimenDescription description, DescriptiveDataSet descriptiveDataSet){
-        SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
+        SpecimenOrObservationBase<?> specimen = description.getDescribedSpecimenOrObservation();
         //get taxon node
 
         @SuppressWarnings("unchecked")
-        Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)descriptiveDataSet.getDescriptions()
+        Set<IndividualsAssociation> associations = descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                 .filter(element->element instanceof IndividualsAssociation)
@@ -549,7 +549,7 @@ public class DescriptiveDataSetService
         result.addDeletedObject(description);// remove taxon description with IndividualsAssociation from data set
         if(description instanceof SpecimenDescription){
             @SuppressWarnings("unchecked")
-            Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
+            Set<IndividualsAssociation> associations = dataSet.getDescriptions()
                     .stream()
                     .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                     .filter(element->element instanceof IndividualsAssociation)
@@ -719,21 +719,17 @@ public class DescriptiveDataSetService
         //clone matching descriptionElements
         for (DescriptionElementBase descriptionElementBase : descriptionElementsToClone) {
             DescriptionElementBase clone;
-            try {
-                clone = descriptionElementBase.clone(newDesription);
-                clone.getSources().forEach(source -> {
-                    if(descriptionElementBase instanceof CategoricalData){
-                        TextData label = new DefaultCategoricalDescriptionBuilder().build((CategoricalData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
-                        source.setOriginalNameString(label.getText(Language.DEFAULT()));
-                    }
-                    else if(descriptionElementBase instanceof QuantitativeData){
-                        TextData label = new DefaultQuantitativeDescriptionBuilder().build((QuantitativeData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
-                        source.setOriginalNameString(label.getText(Language.DEFAULT()));
-                    }
-                });
-            } catch (CloneNotSupportedException e) {
-                //nothing
-            }
+            clone = descriptionElementBase.clone(newDesription);
+            clone.getSources().forEach(source -> {
+                if(descriptionElementBase instanceof CategoricalData){
+                    TextData label = new DefaultCategoricalDescriptionBuilder().build((CategoricalData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
+                    source.setOriginalNameString(label.getText(Language.DEFAULT()));
+                }
+                else if(descriptionElementBase instanceof QuantitativeData){
+                    TextData label = new DefaultQuantitativeDescriptionBuilder().build((QuantitativeData) descriptionElementBase, Arrays.asList(new Language[]{Language.DEFAULT()}));
+                    source.setOriginalNameString(label.getText(Language.DEFAULT()));
+                }
+            });
         }
 
         //add sources of data set
@@ -926,9 +922,6 @@ public class DescriptiveDataSetService
         private DescriptiveDataSetService getOuterType() {
             return DescriptiveDataSetService.this;
         }
-
-
-
     }
 
     @Override
