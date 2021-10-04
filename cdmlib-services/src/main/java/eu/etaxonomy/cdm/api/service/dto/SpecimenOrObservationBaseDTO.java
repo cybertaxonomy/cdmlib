@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -75,12 +74,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     private DefinedTerm sex;
 
     private DefinedTerm lifeStage;
-
-    /**
-     * @deprecated replaced by determinations
-     */
-    @Deprecated
-    private List<TypedEntityReference<TaxonName>> determinedNames;
 
     private List<DeterminationEventDTO>determinations;
 
