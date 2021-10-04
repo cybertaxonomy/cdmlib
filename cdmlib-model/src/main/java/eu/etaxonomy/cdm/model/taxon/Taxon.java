@@ -997,6 +997,7 @@ public class Taxon
         }
     }
 
+    @Transient
     public boolean isMisapplicationOnly() {
         if (!getTaxonNodes().isEmpty()){
             return false;
