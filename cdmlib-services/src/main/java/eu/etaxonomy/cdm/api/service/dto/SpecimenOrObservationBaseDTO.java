@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -100,13 +102,15 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
             fieldUnit = getFieldUnit((DerivedUnit)specimenOrObservation);
         }
         if (fieldUnit != null){
-            AgentBase collector = fieldUnit.getGatheringEvent().getCollector();
-            String fieldNumberString = fieldUnit.getFieldNumber() != null ? " - " + fieldUnit.getFieldNumber(): "";
-
-
-            if (collector != null){
-                collectorsString = collector.getTitleCache() + fieldNumberString;
+            AgentBase collector = null;
+            if (fieldUnit.getGatheringEvent() != null){
+                collector = fieldUnit.getGatheringEvent().getCollector();
             }
+            String fieldNumberString = fieldUnit.getFieldNumber() != null ? fieldUnit.getFieldNumber(): "";
+            if (collector != null){
+                collectorsString = collector.getTitleCache();
+            }
+            collectorsString = StringUtils.isBlank(collectorsString)? fieldNumberString: collectorsString + " - " + fieldNumberString;
         }
         addDeterminations(specimenOrObservation.getDeterminations());
         setDeterminations(specimenOrObservation.getDeterminations().stream()
