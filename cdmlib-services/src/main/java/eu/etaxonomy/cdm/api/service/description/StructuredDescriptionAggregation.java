@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,6 +35,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
@@ -127,14 +127,16 @@ public class StructuredDescriptionAggregation
     @Override
     protected void addAggregationResultToDescription(TaxonDescription targetDescription,
             ResultHolder resultHolder) {
-        StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
 
-        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.categoricalMap);
-        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap);
+        StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
+        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.categoricalMap, CategoricalData.class);
+        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap, QuantitativeData.class);
         addAggregationSources(targetDescription, structuredResultHolder);
 
         if(!targetDescription.getElements().isEmpty()){
             dataSet.addDescription(targetDescription);
+        }else{
+            dataSet.removeDescription(targetDescription);
         }
     }
 
@@ -173,27 +175,114 @@ public class StructuredDescriptionAggregation
         }
     }
 
-    private void replaceExistingDescriptionElements(TaxonDescription targetDescription,
-            Map<Feature, ? extends DescriptionElementBase> elementMap) {
-        for (Entry<Feature, ? extends DescriptionElementBase> entry : elementMap.entrySet()) {
-            Set<DescriptionElementBase> elementsToRemove = new HashSet<>();
-            DescriptionElementBase elementReplacement = null;
-            for (DescriptionElementBase descriptionElementBase : targetDescription.getElements()) {
-                if(descriptionElementBase.getFeature().equals(entry.getKey())){
-                    elementsToRemove.add(descriptionElementBase);
-                    elementReplacement = entry.getValue();
+    private <S extends DescriptionElementBase> void replaceExistingDescriptionElements(TaxonDescription targetDescription,
+            Map<Feature, ? extends DescriptionElementBase> newElementsMap, Class<S> debClass) {
+
+        Set<DescriptionElementBase> elementsToRemove = new HashSet<>(
+                targetDescription.getElements().stream().filter(el->el.isInstanceOf(debClass)).collect(Collectors.toSet()));
+
+        //for each character in "characters of new elements"
+        for (Feature characterNew : newElementsMap.keySet()) {
+
+            //if elements for this character exist in old data, remember any of them to keep (in clean data there should be only max. 1
+            DescriptionElementBase elementToStay = null;
+            for (DescriptionElementBase descriptionElementBase : elementsToRemove) {
+                if(descriptionElementBase.getFeature().equals(characterNew)){
+                    elementToStay = descriptionElementBase;
+                    elementsToRemove.remove(elementToStay);
+                    break;
                 }
             }
-            if(!elementsToRemove.isEmpty() && elementReplacement!=null){
-                for(DescriptionElementBase elementToRemove : elementsToRemove){
-                    targetDescription.removeElement(elementToRemove);
-                }
-                targetDescription.addElement(elementReplacement);
-            }
-            else{
-                targetDescription.addElement(entry.getValue());
+
+            //if there is no element for this character in old data, add the new element for this character to the target description (otherwise reuse old element)
+            if (elementToStay == null){
+                targetDescription.addElement(newElementsMap.get(characterNew));
+            }else{
+                updateDescriptionElement(elementToStay, newElementsMap.get(characterNew));
             }
         }
+
+        //remove all elements not needed anymore
+        for(DescriptionElementBase elementToRemove : elementsToRemove){
+            targetDescription.removeElement(elementToRemove);
+        }
+    }
+
+    private void updateDescriptionElement(DescriptionElementBase elementToStay,
+            DescriptionElementBase newElement) {
+        elementToStay = CdmBase.deproxy(elementToStay);
+        newElement = CdmBase.deproxy(newElement);
+        if (elementToStay instanceof CategoricalData){
+            updateDescriptionElement((CategoricalData)elementToStay, (CategoricalData)newElement);
+        }else if (elementToStay.isInstanceOf(QuantitativeData.class)){
+            updateDescriptionElement((QuantitativeData)elementToStay, (QuantitativeData)newElement);
+        }else{
+            throw new IllegalArgumentException("Class not supported: " + elementToStay.getClass().getName());
+        }
+    }
+
+    private void updateDescriptionElement(CategoricalData elementToStay,
+            CategoricalData newElement) {
+        List<StateData> oldData = new ArrayList<>(elementToStay.getStateData());
+        List<StateData> newData = new ArrayList<>(newElement.getStateData());
+        for (StateData newStateData : newData){
+            State state = newStateData.getState();
+            StateData oldStateData = firstByState(state, oldData);
+            if (oldStateData != null){
+                //for now only state and count is used for aggregation, below code needs to be adapted if this changes
+                oldStateData.setCount(newStateData.getCount());
+                oldData.remove(oldStateData);
+            }else{
+                elementToStay.addStateData(newStateData);
+            }
+        }
+        for (StateData stateDataToRemove : oldData){
+            elementToStay.removeStateData(stateDataToRemove);
+        }
+    }
+
+    private StateData firstByState(State state, List<StateData> oldData) {
+        if (state == null){
+            return null;
+        }
+        for (StateData sd : oldData){
+            if (state.equals(sd.getState())){
+                return sd;
+            }
+        }
+        return null;
+    }
+
+    private void updateDescriptionElement(QuantitativeData elementToStay,
+            QuantitativeData newElement) {
+        Set<StatisticalMeasurementValue> oldValues = new HashSet<>(elementToStay.getStatisticalValues());
+        Set<StatisticalMeasurementValue> newValues = new HashSet<>(newElement.getStatisticalValues());
+        for (StatisticalMeasurementValue newValue : newValues){
+            StatisticalMeasure type = newValue.getType();
+            StatisticalMeasurementValue oldValue = firstValueByType(type, oldValues);
+            if (oldValue != null){
+                //for now only state and count is used for aggregation, below code needs to be adapted if this changes
+                oldValue.setValue(newValue.getValue());
+                oldValues.remove(oldValue);
+            }else{
+                elementToStay.addStatisticalValue(newValue);
+            }
+        }
+        for (StatisticalMeasurementValue valueToRemove : oldValues){
+            elementToStay.removeStatisticalValue(valueToRemove);
+        }
+    }
+
+    private StatisticalMeasurementValue firstValueByType(StatisticalMeasure type, Set<StatisticalMeasurementValue> oldValues) {
+        if (type == null){
+            return null;
+        }
+        for (StatisticalMeasurementValue value : oldValues){
+            if (type.equals(value.getType())){
+                return value;
+            }
+        }
+        return null;
     }
 
     @Override
