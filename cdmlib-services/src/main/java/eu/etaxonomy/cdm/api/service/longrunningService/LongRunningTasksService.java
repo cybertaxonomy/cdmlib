@@ -69,7 +69,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                return descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, monitor);
+                return (Serializable)descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, monitor);
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
