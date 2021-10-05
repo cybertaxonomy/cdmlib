@@ -167,7 +167,7 @@ public class DescriptiveDataSetService
     public Collection<SpecimenNodeWrapper> loadSpecimens(DescriptiveDataSet descriptiveDataSet){
         List<UUID> filteredNodes = findFilteredTaxonNodes(descriptiveDataSet);
         if(filteredNodes.isEmpty()){
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
         Collection<SpecimenNodeWrapper> result = occurrenceService.listUuidAndTitleCacheByAssociatedTaxon(filteredNodes, null, null);
 
@@ -219,6 +219,7 @@ public class DescriptiveDataSetService
         SpecimenOrObservationBase specimen = description.getDescribedSpecimenOrObservation();
         //get taxon node
 
+        @SuppressWarnings("unchecked")
         Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
@@ -300,7 +301,7 @@ public class DescriptiveDataSetService
                 specimenDescription = SpecimenDescription.NewInstance(specimen);
                 specimenDescription.setUuid(specimenDescriptionUuid);
                 List<DescriptionElementDto> elementDtos = descriptionDto.getElements();
-                List<DescriptionElementBase> elements = new ArrayList<>();
+
                 for (DescriptionElementDto elementDto: elementDtos){
                     if (elementDto instanceof CategoricalDataDto){
                         eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
@@ -365,10 +366,7 @@ public class DescriptiveDataSetService
                 }
             }
 
-            if(wrapper==null){
-                result.addException(new IllegalArgumentException("Could not create wrapper for "+wrapper.getDescription()));
-                continue;
-            }
+
             //add specimen description to data set
 
             specimenDescription.addDescriptiveDataSet(dataSet);
@@ -410,7 +408,7 @@ public class DescriptiveDataSetService
             return null;
         }
         else{
-            if (fieldUnits != null && fieldUnits.size()>0){
+            if (fieldUnits.size()>0){
                 fieldUnit = fieldUnits.iterator().next();
             }
         }
@@ -550,14 +548,14 @@ public class DescriptiveDataSetService
         boolean success = dataSet.removeDescription(description);
         result.addDeletedObject(description);// remove taxon description with IndividualsAssociation from data set
         if(description instanceof SpecimenDescription){
-            @SuppressWarnings("cast")
+            @SuppressWarnings("unchecked")
             Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
                     .stream()
                     .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                     .filter(element->element instanceof IndividualsAssociation)
                     .map(ia->(IndividualsAssociation)ia)
                     .collect(Collectors.toSet());
-            Classification classification = dataSet.getTaxonSubtreeFilter().iterator().next().getClassification();
+
             for (IndividualsAssociation individualsAssociation : associations) {
                 if(individualsAssociation.getAssociatedSpecimenOrObservation().equals(description.getDescribedSpecimenOrObservation())){
                     dataSet.removeDescription(individualsAssociation.getInDescription());
@@ -566,7 +564,6 @@ public class DescriptiveDataSetService
             }
         }
         if (description instanceof TaxonDescription){
-            UUID taxonUuid = ((TaxonDescription)description).getTaxon().getUuid();
             DeleteResult isDeletable = descriptionService.isDeletable(description.getUuid());
             for (CdmBase relatedCdmBase: isDeletable.getRelatedObjects()){
                 if (relatedCdmBase instanceof CdmLinkSource){
@@ -624,7 +621,7 @@ public class DescriptiveDataSetService
 
 
         }
-        UUID uuid = dao.delete(dataSet);
+        dao.delete(dataSet);
         monitor.worked(1);
         monitor.done();
         result.includeResult(descriptionResult);
