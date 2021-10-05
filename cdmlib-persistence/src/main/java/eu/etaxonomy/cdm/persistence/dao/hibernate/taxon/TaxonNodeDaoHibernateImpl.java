@@ -1149,15 +1149,9 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeDto(Integer limit, String pattern, UUID classificationUuid) {
-        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, t.titleCache, rank "
-                + ") "
-                + " FROM TaxonNode tn "
-                + "   INNER JOIN tn.taxon AS t "
-                + "   INNER JOIN tn.classification AS cls "
-                + "   INNER JOIN t.name AS name "
-                + "   LEFT OUTER JOIN name.rank AS rank "
-                + " WHERE t.titleCache LIKE :pattern ";
+        String queryString = getTaxonNodeDtoQuery();
+        queryString += "   INNER JOIN tn.classification AS cls " + " WHERE t.titleCache LIKE :pattern ";
+
         if(classificationUuid != null){
             queryString += "AND cls.uuid = :classificationUuid";
         }
@@ -1171,27 +1165,16 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
-        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
+        List<TaxonNodeDto> list = createNodeDtos(result);
 
-        List<TaxonNodeDto> list = new ArrayList<>();
-        for(SortableTaxonNodeQueryResult queryDTO : result){
-            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache()));
-        }
         return list;
     }
 
     @Override
     public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid) {
-        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, t.titleCache, name.titleCache, rank "
-                + ") "
-                + " FROM TaxonNode tn "
-                + "   INNER JOIN tn.taxon AS t "
-                + "   INNER JOIN t.name AS name "
-                + "   LEFT OUTER JOIN name.rank AS rank "
-                + " WHERE t.uuid LIKE :uuid ";
-
-
+        @SuppressWarnings("unchecked")
+        String queryString = getTaxonNodeDtoQuery();
+        queryString += " WHERE t.uuid LIKE :uuid ";
         Query query =  getSession().createQuery(queryString);
 
         query.setParameter("uuid", nodeUuid.toString());
@@ -1199,29 +1182,38 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
-        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
 
-        List<TaxonNodeDto> list = new ArrayList<>();
-        for(SortableTaxonNodeQueryResult queryDTO : result){
-            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache()));
-        }
+
+
+        List<TaxonNodeDto> list = createNodeDtos(result);
         return list.get(0);
     }
 
-    @Override
-    public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
+    /**
+     * @param nodeUuid
+     * @return
+     */
+    private String getTaxonNodeDtoQuery() {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
                 + "tn.uuid, tn.id, t.titleCache, name.titleCache, rank "
                 + ") "
                 + " FROM TaxonNode tn "
                 + "   INNER JOIN tn.taxon AS t "
                 + "   INNER JOIN t.name AS name "
-                + "   LEFT OUTER JOIN name.rank AS rank "
-                + " WHERE t.uuid IN (:uuid) ";
+                + "   LEFT OUTER JOIN name.rank AS rank ";
+
+        return queryString;
+    }
+
+
+
+    @Override
+    public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
+        String queryString = getTaxonNodeDtoQuery();
+        queryString = queryString + " WHERE t.uuid IN (:uuid) ";
 
 
         Query query =  getSession().createQuery(queryString);
-//        List<String> uuidStrings = nodeUuids.stream().map(e -> e.toString()).collect(Collectors.toList());
 
         query.setParameterList("uuid", nodeUuids);
 
@@ -1230,47 +1222,46 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         List<SortableTaxonNodeQueryResult> result = query.list();
         Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
 
-        List<TaxonNodeDto> list = new ArrayList<>();
+        List<TaxonNodeDto> list = createNodeDtos(result);
+
+        return list;
+    }
+
+    /**
+     * @param result
+     * @param list
+     */
+    private List<TaxonNodeDto> createNodeDtos(List<SortableTaxonNodeQueryResult> result) {
+        List<TaxonNodeDto> nodeDtos = new ArrayList<>();
+        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
         for(SortableTaxonNodeQueryResult queryDTO : result){
             TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex());
-
-            list.add(nodeDto);
+            nodeDtos.add(nodeDto);
         }
-        return list;
+        return nodeDtos;
     }
 
     @Override
     public List<TaxonNodeDto> getTaxonNodeForTaxonInClassificationDto(UUID taxonUUID, UUID classificationUuid) {
-        String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, t.titleCache, name.titleCache, rank "
-                + ") "
-                + " FROM TaxonNode tn "
-                + "   INNER JOIN tn.taxon AS t "
-                + "   INNER JOIN tn.classification AS cls "
-                + "   INNER JOIN tn.taxon AS t "
-                + "   INNER JOIN t.name AS name "
-                + "   LEFT OUTER JOIN name.rank AS rank "
-//                + "   LEFT OUTER JOIN tn.taxon.name.rank AS rank "
-                + " WHERE t.uuid = :uuid ";
+        String queryString = getTaxonNodeDtoQuery();
+        queryString = queryString + "   INNER JOIN tn.classification AS cls "  + " WHERE t.uuid = :uuid ";
+
         if(classificationUuid != null){
             queryString += "AND cls.uuid = :classificationUuid";
         }
 
         Query query =  getSession().createQuery(queryString);
-
         query.setParameter("uuid", taxonUUID);
+
         if(classificationUuid != null){
             query.setParameter("classificationUuid", classificationUuid);
         }
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
-        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
 
-        List<TaxonNodeDto> list = new ArrayList<>();
-        for(SortableTaxonNodeQueryResult queryDTO : result){
-            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getNameTitleCache(),queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex()));
-        }
+        List<TaxonNodeDto> list = createNodeDtos(result);
+
         return list;
     }
 
