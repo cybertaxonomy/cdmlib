@@ -129,7 +129,7 @@ public class DescriptiveDataSetService
     }
 
 	@Override
-	public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
+	public List<RowWrapperDTO<?>> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
 	    DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
 	    monitor.beginTask("Load row wrapper", descriptiveDataSet.getDescriptions().size());
 	    List<RowWrapperDTO<?>> wrappers = new ArrayList<>();
@@ -138,7 +138,7 @@ public class DescriptiveDataSetService
             if(monitor.isCanceled()){
                 return new ArrayList<>();
             }
-            RowWrapperDTO rowWrapper = null;
+            RowWrapperDTO<?> rowWrapper = null;
             // only viable descriptions are aggregated, literature or default descriptions
             if(HibernateProxyHelper.isInstanceOf(description, TaxonDescription.class) &&
                     (description.isAggregatedStructuredDescription()
@@ -215,8 +215,8 @@ public class DescriptiveDataSetService
         SpecimenOrObservationBase<?> specimen = description.getDescribedSpecimenOrObservation();
         //get taxon node
 
-
         @SuppressWarnings({ "unchecked", "cast" })
+        //NOTE: don't remove cast as it does not compile on some systems
         Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
@@ -234,7 +234,6 @@ public class DescriptiveDataSetService
 
     @Override
     public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription taxonDescription, UUID descriptiveDataSetUuid) {
-        TaxonNode taxonNode = null;
         Classification classification = null;
         DescriptionBaseDto description = DescriptionBaseDto.fromDescription(taxonDescription);
 
@@ -381,7 +380,7 @@ public class DescriptiveDataSetService
             UUID datasetUuid) {
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid);
         DescriptiveDataSet descriptiveDataSet = load(datasetUuid);
-        SpecimenOrObservationBase specimen = HibernateProxyHelper.deproxy(description.getDescribedSpecimenOrObservation(), SpecimenOrObservationBase.class);
+        SpecimenOrObservationBase<?> specimen = HibernateProxyHelper.deproxy(description.getDescribedSpecimenOrObservation(), SpecimenOrObservationBase.class);
         //supplemental information
         if(taxonNode==null){
             taxonNode = findTaxonNodeForDescription(description, descriptiveDataSet);
@@ -414,7 +413,7 @@ public class DescriptiveDataSetService
             identifier = occurrenceService.getMostSignificantIdentifier(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
         }
         //get country
-        if(fieldUnit!=null && fieldUnit.getGatheringEvent()!=null){
+        if(fieldUnit != null && fieldUnit.getGatheringEvent() != null){
             country = fieldUnit.getGatheringEvent().getCountry();
         }
         //get default taxon description
@@ -502,7 +501,7 @@ public class DescriptiveDataSetService
     public DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid, RemoveDescriptionsFromDescriptiveDataSetConfigurator config) {
         DeleteResult result = new DeleteResult();
         DescriptiveDataSet dataSet = load(descriptiveDataSetUuid);
-        DescriptionBase descriptionBase = descriptionService.load(descriptionUuid);
+        DescriptionBase<?> descriptionBase = descriptionService.load(descriptionUuid);
         if(dataSet==null || descriptionBase==null){
             result.setError();
         }
@@ -523,22 +522,15 @@ public class DescriptiveDataSetService
             result.setError();
         }
         else{
-            for (DescriptionBase description: descriptions){
+            for (DescriptionBase<?> description: descriptions){
                 removeDescriptionFromDataSet(result, dataSet, description, config);
             }
-
-
         }
         return result;
     }
 
-    /**
-     * @param result
-     * @param dataSet
-     * @param description
-     */
     private void removeDescriptionFromDataSet(DeleteResult result, DescriptiveDataSet dataSet,
-            DescriptionBase description, RemoveDescriptionsFromDescriptiveDataSetConfigurator config) {
+            DescriptionBase<?> description, RemoveDescriptionsFromDescriptiveDataSetConfigurator config) {
         if (description == null){
             return;
         }
@@ -546,6 +538,7 @@ public class DescriptiveDataSetService
         result.addDeletedObject(description);// remove taxon description with IndividualsAssociation from data set
         if(description instanceof SpecimenDescription){
             @SuppressWarnings({ "unchecked", "cast" })
+            //NOTE: don't remove cast as it does not compile on some systems
             Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
                     .stream()
                     .flatMap(desc->desc.getElements().stream())// put all description element in one stream
