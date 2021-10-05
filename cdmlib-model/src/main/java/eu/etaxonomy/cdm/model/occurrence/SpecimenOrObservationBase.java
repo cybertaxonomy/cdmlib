@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -363,7 +364,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         for (DescriptionBase<?> descriptionBase : getDescriptions()){
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
                 if (includeImageGallery || descriptionBase.isImageGallery() == false){
-                    specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
+                    specimenDescriptions.add(CdmBase.deproxy(descriptionBase, SpecimenDescription.class));
                 }
 
             }
