@@ -1183,7 +1183,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid) {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, t.titleCache, rank "
+                + "tn.uuid, tn.id, t.titleCache, name.titleCache, rank "
                 + ") "
                 + " FROM TaxonNode tn "
                 + "   INNER JOIN tn.taxon AS t "
@@ -1203,7 +1203,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         List<TaxonNodeDto> list = new ArrayList<>();
         for(SortableTaxonNodeQueryResult queryDTO : result){
-            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache()));
+            list.add(new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache()));
         }
         return list.get(0);
     }
@@ -1211,7 +1211,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
         String queryString = "SELECT new " + SortableTaxonNodeQueryResult.class.getName() + "("
-                + "tn.uuid, tn.id, t.titleCache, rank "
+                + "tn.uuid, tn.id, t.titleCache, name.titleCache, rank "
                 + ") "
                 + " FROM TaxonNode tn "
                 + "   INNER JOIN tn.taxon AS t "
@@ -1232,7 +1232,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
         List<TaxonNodeDto> list = new ArrayList<>();
         for(SortableTaxonNodeQueryResult queryDTO : result){
-            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex());
+            TaxonNodeDto nodeDto = new TaxonNodeDto(queryDTO.getTaxonNodeUuid(), queryDTO.getTaxonNodeId(), queryDTO.getNameTitleCache(), queryDTO.getTaxonTitleCache(), queryDTO.getNameRank().getOrderIndex());
 
             list.add(nodeDto);
         }
