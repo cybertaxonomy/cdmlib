@@ -131,11 +131,6 @@ public class DescriptiveDataSetService
         return dao.getDescriptiveDataSetUuidAndTitleCache( limitOfInitialElements, pattern);
     }
 
-//	@Override
-//    public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
-//        return dao.getDescriptiveDataSetDtoByUuid(uuid);
-//    }
-
 
 	@Override
 	public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
@@ -276,11 +271,9 @@ public class DescriptiveDataSetService
                 continue;
             }
             Taxon taxon = (Taxon) findAny.get();
-//            UUID taxonDescriptionUuid = wrapper..getTaxonDescriptionUuid();
+
             TaxonDescription taxonDescription = null;
-//            if(taxonDescriptionUuid!=null){
-//                taxonDescription = (TaxonDescription) descriptionService.load(taxonDescriptionUuid);
-//            }
+
             SpecimenOrObservationBase<?> specimen = occurrenceService.load(wrapper.getSpecimenDto().getUuid());
             if(taxonDescription==null){
                 Optional<TaxonDescription> associationDescriptionOptional = taxon.getDescriptions().stream()
@@ -371,15 +364,12 @@ public class DescriptiveDataSetService
                     }
                 }
             }
-//            SpecimenRowWrapperDTO rowWrapper = createSpecimenRowWrapper(specimenDescription, wrapper.getTaxonNode().getUuid(), datasetUuid);
+
             if(wrapper==null){
                 result.addException(new IllegalArgumentException("Could not create wrapper for "+wrapper.getDescription()));
                 continue;
             }
             //add specimen description to data set
-
-
-//            specimenDescription = (SpecimenDescription) descriptionService.load(rowWrapper.getDescription().getDescription().getUuid());
 
             specimenDescription.addDescriptiveDataSet(dataSet);
             //add taxon description with IndividualsAssociation to the specimen to data set
@@ -651,15 +641,6 @@ public class DescriptiveDataSetService
         TaxonDescription newTaxonDescription = TaxonDescription.NewInstance(taxonNode.getTaxon());
         newTaxonDescription.setTitleCache(dataSet.getLabel()+": "+newTaxonDescription.generateTitle(), true); //$NON-NLS-2$
         newTaxonDescription.getTypes().add(descriptionType);
-
-//        dataSet.getDescriptiveSystem().getDistinctTerms().forEach(wsFeature->{
-//            if(wsFeature.isSupportsCategoricalData()){
-//                newTaxonDescription.addElement(CategoricalData.NewInstance(wsFeature));
-//            }
-//            else if(wsFeature.isSupportsQuantitativeData()){
-//                newTaxonDescription.addElement(QuantitativeData.NewInstance(wsFeature));
-//            }
-//        });
         dataSet.addDescription(newTaxonDescription);
         saveOrUpdate(dataSet);
         return createTaxonRowWrapper(newTaxonDescription, dataSet.getUuid());
