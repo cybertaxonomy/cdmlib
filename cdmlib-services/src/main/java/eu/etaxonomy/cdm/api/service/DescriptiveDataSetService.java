@@ -219,6 +219,7 @@ public class DescriptiveDataSetService
         SpecimenOrObservationBase<?> specimen = description.getDescribedSpecimenOrObservation();
         //get taxon node
 
+
         @SuppressWarnings({ "unchecked", "cast" })
         Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)descriptiveDataSet.getDescriptions()
                 .stream()
