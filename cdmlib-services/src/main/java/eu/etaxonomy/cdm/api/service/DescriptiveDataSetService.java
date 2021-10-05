@@ -219,8 +219,8 @@ public class DescriptiveDataSetService
         SpecimenOrObservationBase<?> specimen = description.getDescribedSpecimenOrObservation();
         //get taxon node
 
-        @SuppressWarnings("unchecked")
-        Set<IndividualsAssociation> associations = descriptiveDataSet.getDescriptions()
+        @SuppressWarnings({ "unchecked", "cast" })
+        Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)descriptiveDataSet.getDescriptions()
                 .stream()
                 .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                 .filter(element->element instanceof IndividualsAssociation)
@@ -548,8 +548,8 @@ public class DescriptiveDataSetService
         boolean success = dataSet.removeDescription(description);
         result.addDeletedObject(description);// remove taxon description with IndividualsAssociation from data set
         if(description instanceof SpecimenDescription){
-            @SuppressWarnings("unchecked")
-            Set<IndividualsAssociation> associations = dataSet.getDescriptions()
+            @SuppressWarnings({ "unchecked", "cast" })
+            Set<IndividualsAssociation> associations = (Set<IndividualsAssociation>)dataSet.getDescriptions()
                     .stream()
                     .flatMap(desc->desc.getElements().stream())// put all description element in one stream
                     .filter(element->element instanceof IndividualsAssociation)
