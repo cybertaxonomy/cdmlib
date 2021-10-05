@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionType;
 import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -129,8 +130,8 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder) {
 
         StructuredDescriptionResultHolder structuredResultHolder = (StructuredDescriptionResultHolder)resultHolder;
-        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.categoricalMap, CategoricalData.class);
-        replaceExistingDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap, QuantitativeData.class);
+        mergeDescriptionElements(targetDescription, structuredResultHolder.categoricalMap, CategoricalData.class);
+        mergeDescriptionElements(targetDescription, structuredResultHolder.quantitativeMap, QuantitativeData.class);
         addAggregationSources(targetDescription, structuredResultHolder);
 
         if(!targetDescription.getElements().isEmpty()){
@@ -140,56 +141,165 @@ public class StructuredDescriptionAggregation
         }
     }
 
-    private void addAggregationSources(TaxonDescription targetDescription,
+    private <T extends DescriptionBase<?>> void addAggregationSources(TaxonDescription targetDescription,
                 StructuredDescriptionResultHolder structuredResultHolder) {
 
-        //FIXME Re-use sources if possible
         //Remove sources from description
         Set<IdentifiableSource> sourcesToRemove = targetDescription.getSources().stream()
                 .filter(source->source.getType().equals(OriginalSourceType.Aggregation))
                 .collect(Collectors.toSet());
 
-        for (IdentifiableSource source : sourcesToRemove) {
-            targetDescription.removeSource(source);
+        Set<IdentifiableSource> newSources = structuredResultHolder.sources;
+        //TODO FIXME only toParentSourceMode is wrong
+        if (getConfig().getToParentSourceMode() != AggregationSourceMode.NONE){
+            for (IdentifiableSource newSource : newSources) {
+                IdentifiableSource mergeSourceCandidate = findSourceCandidate(targetDescription, newSource);
+                if (mergeSourceCandidate == null){
+                    addNewSource(targetDescription, newSource);
+                }else{
+                    mergeSource(mergeSourceCandidate, newSource);
+                    sourcesToRemove.remove(mergeSourceCandidate);
+                }
+            }
         }
 
-        Set<DescriptionBase<?>> sourceDescriptions = structuredResultHolder.sourceDescriptions;
-        for (DescriptionBase<?> descriptionBase : sourceDescriptions) {
-            DescriptionBase<?> sourceDescription = null;
-            if(descriptionBase.isInstanceOf(SpecimenDescription.class)){
-                DescriptionBase<?> clone = descriptionBase.clone();
-                clone.removeDescriptiveDataSet(dataSet);
-                clone.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
-                SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(descriptionBase, SpecimenDescription.class).getDescribedSpecimenOrObservation();
-                specimen.addDescription(CdmBase.deproxy(clone, SpecimenDescription.class));
-                sourceDescription=clone;
-            }
-            else if(descriptionBase.isInstanceOf(TaxonDescription.class)){
-                Taxon taxon = CdmBase.deproxy(descriptionBase, TaxonDescription.class).getTaxon();
-                taxon.addDescription(CdmBase.deproxy(descriptionBase, TaxonDescription.class));
-                sourceDescription=descriptionBase;
-            }
-            if(sourceDescription!=null){
-                targetDescription.addAggregationSource(sourceDescription);
+        //remove remaining sources to be removed
+        for (IdentifiableSource sourceToRemove : sourcesToRemove) {
+            targetDescription.removeSource(sourceToRemove);
+            if (sourceToRemove.getCdmSource() != null){
+                @SuppressWarnings("unchecked")
+                T description = ((T)sourceToRemove.getCdmSource());
+                ((IDescribable<T>)description.describedEntity()).removeDescription(description);
             }
         }
     }
 
-    private <S extends DescriptionElementBase> void replaceExistingDescriptionElements(TaxonDescription targetDescription,
-            Map<Feature, ? extends DescriptionElementBase> newElementsMap, Class<S> debClass) {
+    private <T extends DescriptionBase<?>> void addNewSource(TaxonDescription targetDescription,
+            IdentifiableSource newSource) {
+        targetDescription.addSource(newSource);
+        if (newSource.getCdmSource() != null){
+            @SuppressWarnings("unchecked")
+            T description = ((T)newSource.getCdmSource());
+            ((IDescribable<T>)description.describedEntity()).addDescription(description);
+        }
+    }
+
+    //mergeablity has been checked before
+    private <T extends DescriptionBase<?>> void mergeSource(IdentifiableSource mergeCandidate, IdentifiableSource newSource) {
+
+        if (newSource.getCdmSource() != null){
+            @SuppressWarnings("unchecked")
+            T newTarget = CdmBase.deproxy((T)newSource.getCdmSource());
+            @SuppressWarnings("unchecked")
+            T existingTarget = CdmBase.deproxy((T)mergeCandidate.getCdmSource());
+            mergeSourceDescription(existingTarget, newTarget);
+            ((IDescribable<T>)existingTarget.describedEntity()).addDescription(existingTarget);
+            ((IDescribable<T>)newTarget.describedEntity()).removeDescription(newTarget);
+        }else{
+            //TODO merge non-description based sources
+        }
+    }
+
+    private <T extends DescriptionBase<?>> void mergeSourceDescription(T existingSourceDescription, T newSourceDescription) {
+
+        Set<DescriptionElementBase> elementsToRemove = new HashSet<>(existingSourceDescription.getElements());
+
+        for (DescriptionElementBase newElement : newSourceDescription.getElements()){
+            DescriptionElementBase newElementClone = newElement.clone();
+            DescriptionElementBase matchingElement = elementsToRemove.stream()
+                    .filter(e->e.getFeature()!= null
+                        && e.getFeature().equals(newElementClone.getFeature()))
+                    .findFirst().get();
+            if (matchingElement != null){
+                mergeDescriptionElement(matchingElement, newElementClone);
+                elementsToRemove.remove(matchingElement);
+            }else{
+                newSourceDescription.addElement(newElementClone);
+            }
+        }
+        addSourceDescriptionToDescribedEntity(newSourceDescription);
+
+        for (DescriptionElementBase debToRemove : elementsToRemove){
+            existingSourceDescription.removeElement(debToRemove);
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends DescriptionBase<?>> void addSourceDescriptionToDescribedEntity(T sourceDescription) {
+        ((IDescribable<T>)sourceDescription.describedEntity()).addDescription(sourceDescription);
+    }
+    @SuppressWarnings("unchecked")
+    private <T extends DescriptionBase<?>> void removeSourceDescriptionFromDescribedEntity(T sourceDescription) {
+        ((IDescribable<T>)sourceDescription.describedEntity()).addDescription(sourceDescription);
+    }
+
+    private IdentifiableSource findSourceCandidate(TaxonDescription targetDescription, IdentifiableSource newSource) {
+        for (IdentifiableSource existingSource : targetDescription.getSources()){
+            boolean isCandidate = isCandidateForSourceReuse(existingSource, newSource);
+            if (isCandidate){
+                return existingSource;
+            }
+        }
+        return null;
+    }
+
+    private boolean isCandidateForSourceReuse(IdentifiableSource existingSource, IdentifiableSource newSource) {
+        if (newSource.getCdmSource()!= null){
+            if (existingSource.getCdmSource() == null){
+                return false;
+            }else {
+                CdmBase newTarget = CdmBase.deproxy((CdmBase)newSource.getCdmSource());
+                CdmBase existingTarget = CdmBase.deproxy((CdmBase)existingSource.getCdmSource());
+                if (!newTarget.getClass().equals(existingTarget.getClass())){
+                    return false;
+                }else{
+                    if (newTarget instanceof SpecimenDescription){
+                        SpecimenOrObservationBase<?> newSob = ((SpecimenDescription)newTarget).getDescribedSpecimenOrObservation();
+                        SpecimenOrObservationBase<?> existingSob = ((SpecimenDescription)existingTarget).getDescribedSpecimenOrObservation();
+                        //for now reuse is possible if both are descriptions for the same specimen
+                        return newSob != null && newSob.equals(existingSob);
+                    }else if (newTarget instanceof TaxonDescription){
+                        Taxon newTaxon = ((TaxonDescription)newTarget).getTaxon();
+                        Taxon existingTaxon = ((TaxonDescription)existingTarget).getTaxon();
+                        //for now reuse is possible if both are descriptions for the same taxon
+                        return newTaxon != null && newTaxon.equals(existingTaxon);
+                    }else{
+                        throw new IllegalStateException("Other classes then SpecimenDescription and TaxonDescription are not yet supported. But was: " + newTarget.getClass());
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private <T extends DescriptionBase<?>> T cloneNewSourceDescription(T newSourceDescription) {
+        @SuppressWarnings("unchecked")
+        T clonedDescription = (T)newSourceDescription.clone();
+        clonedDescription.removeDescriptiveDataSet(dataSet);
+        clonedDescription.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
+        clonedDescription.setTitleCache("Clone: " + clonedDescription.getTitleCache(), true);
+        return clonedDescription;
+    }
+
+    private <S extends DescriptionElementBase> void mergeDescriptionElements(TaxonDescription targetDescription,
+            Map<Feature, ? extends DescriptionElementBase> newElementsMap, Class<? extends DescriptionElementBase> debClass) {
 
         Set<DescriptionElementBase> elementsToRemove = new HashSet<>(
-                targetDescription.getElements().stream().filter(el->el.isInstanceOf(debClass)).collect(Collectors.toSet()));
+                targetDescription.getElements().stream()
+                    .filter(el->el.isInstanceOf(debClass))
+                    .collect(Collectors.toSet()));
 
         //for each character in "characters of new elements"
         for (Feature characterNew : newElementsMap.keySet()) {
 
             //if elements for this character exist in old data, remember any of them to keep (in clean data there should be only max. 1
             DescriptionElementBase elementToStay = null;
-            for (DescriptionElementBase descriptionElementBase : elementsToRemove) {
-                if(descriptionElementBase.getFeature().equals(characterNew)){
-                    elementToStay = descriptionElementBase;
-                    elementsToRemove.remove(elementToStay);
+            for (DescriptionElementBase existingDeb : elementsToRemove) {
+                if(existingDeb.getFeature().equals(characterNew)){
+                    elementToStay = existingDeb;
+                    elementsToRemove.remove(existingDeb);
                     break;
                 }
             }
@@ -198,7 +308,7 @@ public class StructuredDescriptionAggregation
             if (elementToStay == null){
                 targetDescription.addElement(newElementsMap.get(characterNew));
             }else{
-                updateDescriptionElement(elementToStay, newElementsMap.get(characterNew));
+                mergeDescriptionElement(elementToStay, newElementsMap.get(characterNew));
             }
         }
 
@@ -208,20 +318,21 @@ public class StructuredDescriptionAggregation
         }
     }
 
-    private void updateDescriptionElement(DescriptionElementBase elementToStay,
+    private void mergeDescriptionElement(DescriptionElementBase targetElement,
             DescriptionElementBase newElement) {
-        elementToStay = CdmBase.deproxy(elementToStay);
+
+        targetElement = CdmBase.deproxy(targetElement);
         newElement = CdmBase.deproxy(newElement);
-        if (elementToStay instanceof CategoricalData){
-            updateDescriptionElement((CategoricalData)elementToStay, (CategoricalData)newElement);
-        }else if (elementToStay.isInstanceOf(QuantitativeData.class)){
-            updateDescriptionElement((QuantitativeData)elementToStay, (QuantitativeData)newElement);
+        if (targetElement instanceof CategoricalData){
+            mergeDescriptionElement((CategoricalData)targetElement, (CategoricalData)newElement);
+        }else if (targetElement.isInstanceOf(QuantitativeData.class)){
+            mergeDescriptionElement((QuantitativeData)targetElement, (QuantitativeData)newElement);
         }else{
-            throw new IllegalArgumentException("Class not supported: " + elementToStay.getClass().getName());
+            throw new IllegalArgumentException("Class not supported: " + targetElement.getClass().getName());
         }
     }
 
-    private void updateDescriptionElement(CategoricalData elementToStay,
+    private void mergeDescriptionElement(CategoricalData elementToStay,
             CategoricalData newElement) {
         List<StateData> oldData = new ArrayList<>(elementToStay.getStateData());
         List<StateData> newData = new ArrayList<>(newElement.getStateData());
@@ -253,7 +364,7 @@ public class StructuredDescriptionAggregation
         return null;
     }
 
-    private void updateDescriptionElement(QuantitativeData elementToStay,
+    private void mergeDescriptionElement(QuantitativeData elementToStay,
             QuantitativeData newElement) {
         Set<StatisticalMeasurementValue> oldValues = new HashSet<>(elementToStay.getStatisticalValues());
         Set<StatisticalMeasurementValue> newValues = new HashSet<>(newElement.getStatisticalValues());
@@ -304,7 +415,7 @@ public class StructuredDescriptionAggregation
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<TaxonDescription> childDescriptions = getChildTaxonDescriptions(taxonNode, dataSet);
-        addDescriptionElement(descriptiveResultHolder, childDescriptions);
+        addDescriptionToResultHolder(descriptiveResultHolder, childDescriptions);
     }
 
     @Override
@@ -313,45 +424,50 @@ public class StructuredDescriptionAggregation
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
-        addDescriptionElement(descriptiveResultHolder, specimenDescriptions);
+        addDescriptionToResultHolder(descriptiveResultHolder, specimenDescriptions);
         if (getConfig().isIncludeLiterature()){
             Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
-            addDescriptionElement(descriptiveResultHolder, literatureDescriptions);
+            addDescriptionToResultHolder(descriptiveResultHolder, literatureDescriptions);
         }
         //TODO add default descriptions
+        //xxx
 
     }
 
-    private void addDescriptionElement(StructuredDescriptionResultHolder descriptiveResultHolder,
-            Set<? extends DescriptionBase<?>> descriptions) {
+    private void addDescriptionToResultHolder(StructuredDescriptionResultHolder descriptiveResultHolder,
+            Set<? extends DescriptionBase<?>> specimenLiteraturOrDefaultDescriptions) {
 
         boolean descriptionWasUsed = false;
-        for (DescriptionBase<?> desc: descriptions){
+        for (DescriptionBase<?> desc: specimenLiteraturOrDefaultDescriptions){
             for (DescriptionElementBase deb: desc.getElements()){
                 if (hasCharacterData(deb)){
                     if (deb.isInstanceOf(CategoricalData.class)){
                         addToCategorical(CdmBase.deproxy(deb, CategoricalData.class), descriptiveResultHolder);
                         descriptionWasUsed = true;
                     }else if (deb.isInstanceOf(QuantitativeData.class)){
-                        addToQuantitative(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
+                        addToQuantitativData(CdmBase.deproxy(deb, QuantitativeData.class), descriptiveResultHolder);
                         descriptionWasUsed = true;
                     }
                 }
             }
             if(descriptionWasUsed){
-                descriptiveResultHolder.sourceDescriptions.add(desc);
+                IdentifiableSource identifiableSource = IdentifiableSource.NewAggregationSourceInstance();
+                //TODO preliminary (what about distinction within<-> parentChild
+                DescriptionBase<?> clonedDesc = cloneNewSourceDescription(desc);
+                identifiableSource.setCdmSource(clonedDesc);
+                descriptiveResultHolder.sources.add(identifiableSource);
             }
         }
     }
 
-    private void addToQuantitative(QuantitativeData qd, StructuredDescriptionResultHolder resultHolder) {
+    private void addToQuantitativData(QuantitativeData qd, StructuredDescriptionResultHolder resultHolder) {
         QuantitativeData aggregatedQuantitativeData = resultHolder.quantitativeMap.get(qd.getFeature());
         if(aggregatedQuantitativeData==null){
             // no QuantitativeData with this feature in aggregation
             aggregatedQuantitativeData = aggregateSingleQuantitativeData(qd);
         }
         else{
-            aggregatedQuantitativeData = mergeQuantitativeData(aggregatedQuantitativeData, qd);
+            aggregatedQuantitativeData = addToExistingQuantitativeData(aggregatedQuantitativeData, qd);
         }
         if (aggregatedQuantitativeData != null){
             resultHolder.quantitativeMap.put(qd.getFeature(), aggregatedQuantitativeData);
@@ -406,11 +522,13 @@ public class StructuredDescriptionAggregation
     private class StructuredDescriptionResultHolder implements ResultHolder{
         private Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
         private Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
-        private Set<DescriptionBase<?>> sourceDescriptions = new HashSet<>();
+        private Set<IdentifiableSource> sources = new HashSet<>();
         @Override
         public String toString() {
-            return "SDResultHolder [categoricals=" + categoricalMap.size() + ", quantitatives="
-                    + quantitativeMap.size() + ", sourceDescriptions=" + sourceDescriptions.size() + "]";
+            return "SDResultHolder [categoricals=" + categoricalMap.size()
+                + ", quantitatives=" + quantitativeMap.size()
+                + ", sources=" + sources.size()
+                + "]";
         }
     }
 
@@ -427,6 +545,10 @@ public class StructuredDescriptionAggregation
         return result;
     }
 
+    /**
+     * Computes all specimen attached to the given taxon within the given dataSet.
+     * For these secimen it returns all attache
+     * */
     private Set<SpecimenDescription> getSpecimenDescriptions(Taxon taxon, DescriptiveDataSet dataSet) {
         Set<SpecimenDescription> result = new HashSet<>();
         //TODO performance: use DTO service to retrieve specimen descriptions without initializing all taxon descriptions
@@ -435,8 +557,7 @@ public class StructuredDescriptionAggregation
                 if (taxonDeb.isInstanceOf(IndividualsAssociation.class)){
                     IndividualsAssociation indAss = CdmBase.deproxy(taxonDeb, IndividualsAssociation.class);
                     SpecimenOrObservationBase<?> specimen = indAss.getAssociatedSpecimenOrObservation();
-                    @SuppressWarnings({ "unchecked", "rawtypes" })
-                    Set<SpecimenDescription> descriptions = (Set)specimen.getDescriptions();
+                    Set<SpecimenDescription> descriptions = specimen.getSpecimenDescriptions();
                     for(SpecimenDescription specimenDescription : descriptions){
                         if(dataSet.getDescriptions().contains(specimenDescription) &&
                                 specimenDescription.getTypes().stream().noneMatch(type->type.equals(DescriptionType.CLONE_FOR_SOURCE))){
@@ -527,7 +648,7 @@ public class StructuredDescriptionAggregation
         return aggQD;
     }
 
-    private QuantitativeData mergeQuantitativeData(QuantitativeData aggQd, QuantitativeData newQd) {
+    private QuantitativeData addToExistingQuantitativeData(QuantitativeData aggQd, QuantitativeData newQd) {
 
         newQd = aggregateSingleQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a clear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
 
