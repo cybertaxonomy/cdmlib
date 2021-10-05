@@ -30,6 +30,10 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermTreeDao;
+import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
+import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
+import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 
 @Repository
@@ -264,49 +268,49 @@ public class DescriptiveDataSetDao
 
 
 
-//    @Override
-//    public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
-//        String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
-//                + " WHERE a.uuid = :uuid"
-//                + " ORDER BY a.titleCache";
-//        Query query =  getSession().createQuery(queryString);
-//        query.setParameter("uuid", uuid);
-//
-//        @SuppressWarnings("unchecked")
-//        List<Object[]> result = query.list();
-//
-//        List<DescriptiveDataSetBaseDto> list = DescriptiveDataSetBaseDto.descriptiveDataSetBaseDtoListFrom(result);
-//        UUID descriptiveSystemUuid = null;
-//        UUID minRankUuid = null;
-//        UUID maxRankUuid = null;
-//        if (result != null && !result.isEmpty()){
-//            Object[] descriptiveDataSetResult = result.get(0);
-//            descriptiveSystemUuid = (UUID)descriptiveDataSetResult[4];
-//            minRankUuid = (UUID)descriptiveDataSetResult[5];
-//            maxRankUuid = (UUID)descriptiveDataSetResult[6];
-//        }else{
-//            return null;
-//        }
-//        //get descriptiveSystem
-//        DescriptiveDataSetBaseDto dto = list.get(0);
-//        if (descriptiveSystemUuid != null){
-//            TermTreeDto treeDto = termTreeDao.getTermTreeDtosByUuid(descriptiveSystemUuid);
-//            dto.setDescriptiveSystem(treeDto);
-//        }
-//        //get taxon nodes
-//        List<UUID> nodeUuids = getNodeUuidsForDescriptiveDataSet(uuid);
-//        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtos(nodeUuids);
-//        Set<TaxonNodeDto> nodeSet = new HashSet<>(nodeDtos);
-//        dto.setSubTreeFilter(nodeSet);
-//
-//        List<UUID> descriptionUuidList = getDescriptionUuidsForDescriptiveDataSet(uuid);
-//        Set<UUID> descriptionUuids = new HashSet<>(descriptionUuidList);
-//        dto.setDescriptionUuids(descriptionUuids);
-//
-//        TermDto minRank = termDao.getTermDto(minRankUuid);
-//        TermDto maxRank = termDao.getTermDto(maxRankUuid);
-//        dto.setMaxRank(maxRank);
-//        dto.setMinRank(minRank);
-//        return dto;
-//    }
+    @Override
+    public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
+        String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
+                + " WHERE a.uuid = :uuid"
+                + " ORDER BY a.titleCache";
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<DescriptiveDataSetBaseDto> list = DescriptiveDataSetBaseDto.descriptiveDataSetBaseDtoListFrom(result);
+        UUID descriptiveSystemUuid = null;
+        UUID minRankUuid = null;
+        UUID maxRankUuid = null;
+        if (result != null && !result.isEmpty()){
+            Object[] descriptiveDataSetResult = result.get(0);
+            descriptiveSystemUuid = (UUID)descriptiveDataSetResult[4];
+            minRankUuid = (UUID)descriptiveDataSetResult[5];
+            maxRankUuid = (UUID)descriptiveDataSetResult[6];
+        }else{
+            return null;
+        }
+        //get descriptiveSystem
+        DescriptiveDataSetBaseDto dto = list.get(0);
+        if (descriptiveSystemUuid != null){
+            TermTreeDto treeDto = termTreeDao.getTermTreeDtosByUuid(descriptiveSystemUuid);
+            dto.setDescriptiveSystem(treeDto);
+        }
+        //get taxon nodes
+        List<UUID> nodeUuids = getNodeUuidsForDescriptiveDataSet(uuid);
+        List<TaxonNodeDto> nodeDtos = nodeDao.getTaxonNodeDtos(nodeUuids);
+        Set<TaxonNodeDto> nodeSet = new HashSet<>(nodeDtos);
+        dto.setSubTreeFilter(nodeSet);
+
+        List<UUID> descriptionUuidList = getDescriptionUuidsForDescriptiveDataSet(uuid);
+        Set<UUID> descriptionUuids = new HashSet<>(descriptionUuidList);
+        dto.setDescriptionUuids(descriptionUuids);
+
+        TermDto minRank = termDao.getTermDto(minRankUuid);
+        TermDto maxRank = termDao.getTermDto(maxRankUuid);
+        dto.setMaxRank(maxRank);
+        dto.setMinRank(minRank);
+        return dto;
+    }
 }

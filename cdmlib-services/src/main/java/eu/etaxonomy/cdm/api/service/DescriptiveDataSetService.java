@@ -15,8 +15,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,7 +74,6 @@ import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TaxonNodeDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
-import eu.etaxonomy.cdm.persistence.dto.TermTreeDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
@@ -246,9 +243,6 @@ public class DescriptiveDataSetService
     public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription taxonDescription, UUID descriptiveDataSetUuid) {
         TaxonNode taxonNode = null;
         Classification classification = null;
-//        TaxonDescription description = (TaxonDescription) descriptionService.loadDto(taxonDescriptionUuid,
-//                Arrays.asList("taxon", "descriptionElements", "descriptionElements.feature"));
-//        DescriptionBaseDto description = descriptionService.loadDto(taxonDescriptionUuid);
         DescriptionBaseDto description = DescriptionBaseDto.fromDescription(taxonDescription);
 
         DescriptiveDataSet descriptiveDataSet = dao.load(descriptiveDataSetUuid, null);
@@ -259,16 +253,8 @@ public class DescriptiveDataSetService
         TaxonNodeDto nodeDto = null;
         if(classificationOptional.isPresent()){
             classification = classificationOptional.get();
-//            Taxon taxon = (Taxon) taxonService.load(description.getTaxonDto().getId(), Arrays.asList("taxonNodes", "taxonNodes.classification"));
             nodeDto = taxonNodeService.dto(description.getTaxonDto().getUuid(), classification.getUuid());
-//            taxonNode = taxon.getTaxonNode(classification);
-
-//            for (DescriptionBase desc: taxon.getDescriptions()){
-//                descriptions.add(DescriptionBaseDto.fromDescription(desc));
-//            }
         }
-        //TODO: fix getting descriptions
-//        descriptions = new HashSet<>(descriptionService.loadDtosForTaxon(description.getTaxonDto().getUuid()));
 
         return new TaxonRowWrapperDTO(description, nodeDto, descriptions);
     }
@@ -335,8 +321,11 @@ public class DescriptiveDataSetService
                     if (elementDto instanceof QuantitativeDataDto){
                         eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
                         QuantitativeData data = QuantitativeData.NewInstance(feature);
-                        MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());
-                        data.setUnit(unit);
+                        if (((QuantitativeDataDto) elementDto).getMeasurementUnit() != null){
+                            MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());
+                            data.setUnit(unit);
+                        }
+
                         for (StatisticalMeasurementValueDto stateDto:((QuantitativeDataDto) elementDto).getValues()){
                             StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, stateDto.getType().getUuid());
                             StatisticalMeasurementValue value = StatisticalMeasurementValue.NewInstance(statMeasure, stateDto.getValue());
@@ -368,8 +357,11 @@ public class DescriptiveDataSetService
                     if (elementDto instanceof QuantitativeDataDto){
                         eu.etaxonomy.cdm.model.description.Character feature = DefinedTermBase.getTermByClassAndUUID(eu.etaxonomy.cdm.model.description.Character.class, elementDto.getFeatureUuid());
                         QuantitativeData data = QuantitativeData.NewInstance(feature);
-                        MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());
-                        data.setUnit(unit);
+                        if (((QuantitativeDataDto) elementDto).getMeasurementUnit() != null){
+                            MeasurementUnit unit = DefinedTermBase.getTermByClassAndUUID(MeasurementUnit.class, ((QuantitativeDataDto) elementDto).getMeasurementUnit().getUuid());
+                            data.setUnit(unit);
+                        }
+
                         for (StatisticalMeasurementValueDto stateDto:((QuantitativeDataDto) elementDto).getValues()){
                             StatisticalMeasure statMeasure = DefinedTermBase.getTermByClassAndUUID(StatisticalMeasure.class, stateDto.getType().getUuid());
                             StatisticalMeasurementValue value = StatisticalMeasurementValue.NewInstance(statMeasure, stateDto.getValue());
@@ -963,90 +955,7 @@ public class DescriptiveDataSetService
 
     @Override
     public DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid) {
-        String queryString = DescriptiveDataSetBaseDto.getDescriptiveDataSetDtoSelect()
-                + " WHERE a.uuid = :uuid"
-                + " ORDER BY a.titleCache";
-        Query query =  getSession().createQuery(queryString);
-        query.setParameter("uuid", uuid);
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
-
-        List<DescriptiveDataSetBaseDto> list = DescriptiveDataSetBaseDto.descriptiveDataSetBaseDtoListFrom(result);
-        UUID descriptiveSystemUuid = null;
-        UUID minRankUuid = null;
-        UUID maxRankUuid = null;
-        if (result != null && !result.isEmpty()){
-            Object[] descriptiveDataSetResult = result.get(0);
-            descriptiveSystemUuid = (UUID)descriptiveDataSetResult[4];
-            minRankUuid = (UUID)descriptiveDataSetResult[5];
-            maxRankUuid = (UUID)descriptiveDataSetResult[6];
-        }else{
-            return null;
-        }
-        //get descriptiveSystem
-        DescriptiveDataSetBaseDto dto = list.get(0);
-        if (descriptiveSystemUuid != null){
-            TermTreeDto treeDto = termTreeService.getTermTreeDtoByUuid(descriptiveSystemUuid);
-            dto.setDescriptiveSystem(treeDto);
-        }
-        //get taxon nodes
-        List<UUID> nodeUuids = getNodeUuidsForDescriptiveDataSet(uuid);
-        List<TaxonNodeDto> nodeDtos = taxonNodeService.getTaxonNodeDtos(nodeUuids);
-        Set<TaxonNodeDto> nodeSet = new HashSet<>(nodeDtos);
-        dto.setSubTreeFilter(nodeSet);
-
-        List<UUID> descriptionUuidList = getDescriptionUuidsForDescriptiveDataSet(uuid);
-        Set<UUID> descriptionUuids = new HashSet<>(descriptionUuidList);
-        dto.setDescriptionUuids(descriptionUuids);
-
-        TermDto minRank = termDao.getTermDto(minRankUuid);
-        TermDto maxRank = termDao.getTermDto(maxRankUuid);
-        dto.setMaxRank(maxRank);
-        dto.setMinRank(minRank);
-        return dto;
-    }
-
-    private List<UUID> getNodeUuidsForDescriptiveDataSet(UUID uuid) {
-        Session session = getSession();
-
-        String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.taxonSubtreeFilter as t WHERE a.uuid = :uuid";
-
-
-        Query query;
-        query = session.createQuery(queryString);
-        query.setParameter("uuid", uuid);
-
-
-        @SuppressWarnings("unchecked")
-        List<UUID> result = query.list();
-        List<UUID> list = new ArrayList<>();
-        for(UUID object : result){
-            list.add(object);
-        }
-
-        return list;
-    }
-
-    private List<UUID> getDescriptionUuidsForDescriptiveDataSet(UUID uuid) {
-        Session session = getSession();
-
-        String queryString = "SELECT t.uuid  FROM DescriptiveDataSet a JOIN a.descriptions as t WHERE a.uuid = :uuid";
-
-
-        Query query;
-        query = session.createQuery(queryString);
-        query.setParameter("uuid", uuid);
-
-
-        @SuppressWarnings("unchecked")
-        List<UUID> result = query.list();
-        List<UUID> list = new ArrayList<>();
-        for(UUID object : result){
-            list.add(object);
-        }
-
-        return list;
+        return dao.getDescriptiveDataSetDtoByUuid(uuid);
     }
 
 }
