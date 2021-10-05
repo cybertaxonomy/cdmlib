@@ -1172,19 +1172,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
     @Override
     public TaxonNodeDto getTaxonNodeDto(UUID nodeUuid) {
-        @SuppressWarnings("unchecked")
+
         String queryString = getTaxonNodeDtoQuery();
         queryString += " WHERE t.uuid LIKE :uuid ";
         Query query =  getSession().createQuery(queryString);
-
         query.setParameter("uuid", nodeUuid.toString());
-
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
-
-
-
         List<TaxonNodeDto> list = createNodeDtos(result);
         return list.get(0);
     }
@@ -1212,15 +1207,11 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
         String queryString = getTaxonNodeDtoQuery();
         queryString = queryString + " WHERE t.uuid IN (:uuid) ";
 
-
         Query query =  getSession().createQuery(queryString);
-
         query.setParameterList("uuid", nodeUuids);
-
 
         @SuppressWarnings("unchecked")
         List<SortableTaxonNodeQueryResult> result = query.list();
-        Collections.sort(result, new SortableTaxonNodeQueryResultComparator());
 
         List<TaxonNodeDto> list = createNodeDtos(result);
 
