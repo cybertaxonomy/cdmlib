@@ -112,6 +112,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)  //FIXME what is the difference between this and IdentifiableEntity.sources
+    @Deprecated
     private Set<Reference> descriptionSources = new HashSet<>();
 
     @XmlElementWrapper(name = "DescriptiveDataSets")
@@ -408,13 +409,15 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         try{
             result = (DescriptionBase<S>)super.clone();
 
-            //working set
+            //descriptive dataset
+            //TODO do we really want to add the cloned description automatically to the dataset?
             result.descriptiveDataSets = new HashSet<>();
             for (DescriptiveDataSet descriptiveDataSet : getDescriptiveDataSets()){
                 descriptiveDataSet.addDescription(result);
             }
 
-            //descriptions
+            //reference based descriptions
+            //TODO remove
             result.descriptionSources = new HashSet<>();
             for (Reference reference : getDescriptionSources()){
                 result.descriptionSources.add(reference);

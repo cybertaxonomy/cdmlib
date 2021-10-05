@@ -100,9 +100,6 @@ public class DescriptiveDataSetService
     private IDefinedTermDao termDao;
 
     @Autowired
-    private ITermTreeService termTreeService;
-
-    @Autowired
     private IDescriptionService descriptionService;
 
     @Autowired
@@ -131,14 +128,13 @@ public class DescriptiveDataSetService
         return dao.getDescriptiveDataSetUuidAndTitleCache( limitOfInitialElements, pattern);
     }
 
-
 	@Override
 	public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor) {
 	    DescriptiveDataSet descriptiveDataSet = load(descriptiveDataSetUuid);
 	    monitor.beginTask("Load row wrapper", descriptiveDataSet.getDescriptions().size());
-	    ArrayList<RowWrapperDTO> wrappers = new ArrayList<>();
+	    List<RowWrapperDTO<?>> wrappers = new ArrayList<>();
 	    Set<DescriptionBase> descriptions = descriptiveDataSet.getDescriptions();
-	    for (DescriptionBase description : descriptions) {
+	    for (DescriptionBase<?> description : descriptions) {
             if(monitor.isCanceled()){
                 return new ArrayList<>();
             }
