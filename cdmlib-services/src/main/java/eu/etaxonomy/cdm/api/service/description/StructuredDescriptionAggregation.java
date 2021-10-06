@@ -168,8 +168,9 @@ public class StructuredDescriptionAggregation
             targetDescription.removeSource(sourceToRemove);
             if (sourceToRemove.getCdmSource() != null){
                 @SuppressWarnings("unchecked")
-                T description = ((T)sourceToRemove.getCdmSource());
-                ((IDescribable<T>)description.describedEntity()).removeDescription(description);
+                T descriptionToDelete = ((T)sourceToRemove.getCdmSource());
+                ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
+                structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
             }
         }
     }
@@ -402,8 +403,8 @@ public class StructuredDescriptionAggregation
     }
 
     @Override
-    protected void removeDescriptionIfEmpty(TaxonDescription description) {
-        super.removeDescriptionIfEmpty(description);
+    protected void removeDescriptionIfEmpty(TaxonDescription description, ResultHolder resultHolder) {
+        super.removeDescriptionIfEmpty(description, resultHolder);
         if (description.getElements().isEmpty()){
             dataSet.removeDescription(description);
         }
@@ -519,7 +520,7 @@ public class StructuredDescriptionAggregation
         return new StructuredDescriptionResultHolder();
     }
 
-    private class StructuredDescriptionResultHolder implements ResultHolder{
+    private class StructuredDescriptionResultHolder extends ResultHolder{
         private Map<Feature, CategoricalData> categoricalMap = new HashMap<>();
         private Map<Feature, QuantitativeData> quantitativeMap = new HashMap<>();
         private Set<IdentifiableSource> sources = new HashSet<>();
@@ -528,6 +529,7 @@ public class StructuredDescriptionAggregation
             return "SDResultHolder [categoricals=" + categoricalMap.size()
                 + ", quantitatives=" + quantitativeMap.size()
                 + ", sources=" + sources.size()
+                + ", descriptionsToDelete=" + this.descriptionsToDelete.size()
                 + "]";
         }
     }

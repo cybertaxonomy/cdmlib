@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -138,6 +139,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
                 aggregate(taxonNodeIdList, aggregateMonitor);
             } catch (Exception e) {
                 result.addException(new RuntimeException("Unhandled error during aggregation: " + e.getMessage() , e));
+                e.printStackTrace();
                 result.setError();
                 done();
                 return result;
@@ -235,8 +237,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     }
 
-    protected interface ResultHolder{
-
+    protected class ResultHolder{
+        //descriptions are identifiable and therefore are not deleted automatically by removing them from taxon or specimen
+        //here we store all descriptions that need to be deleted after aggregation as they are not needed anymore
+        Set<DescriptionBase<?>> descriptionsToDelete = new HashSet<>();;
     }
 
     protected void accumulateSingleTaxon(TaxonNode taxonNode){
@@ -262,12 +266,22 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             }
         }
         addAggregationResultToDescription(targetDescription, resultHolder);
-        removeDescriptionIfEmpty(targetDescription);
+        removeDescriptionIfEmpty(targetDescription, resultHolder);
+        deleteDescriptionsToDelete(resultHolder);
     }
 
-    protected void removeDescriptionIfEmpty(TaxonDescription description) {
+    private void deleteDescriptionsToDelete(DescriptionAggregationBase<T, CONFIG>.ResultHolder resultHolder) {
+        for (DescriptionBase<?> descriptionToDelete : resultHolder.descriptionsToDelete){
+            if (descriptionToDelete.isPersited()){
+                repository.getDescriptionService().delete(descriptionToDelete);
+            }
+        }
+    }
+
+    protected void removeDescriptionIfEmpty(TaxonDescription description, ResultHolder resultHolder) {
         if (description.getElements().isEmpty()){
             description.getTaxon().removeDescription(description);
+            resultHolder.descriptionsToDelete.add(description);
         }
     }
 

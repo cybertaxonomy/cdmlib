@@ -175,17 +175,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(false, false);
+        testAggregatedDescription(false, false, false);
 
         addSomeDataToFirstAggregation();
         commitAndStartNewTransaction();
-        testAggregatedDescription(true, false);
+        testAggregatedDescription(true, false, false);
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(false, false);
+        testAggregatedDescription(false, false, false);
     }
 
     private void addSomeDataToFirstAggregation() {
@@ -196,6 +196,48 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 .findFirst().get();
 
         addCategoricalData(taxonDescription, uuidFeatureLeafPA, State.uuidPresent);
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    })
+    public void deleteTest() throws JvmLimitsException{
+        createDefaultFeatureTree();
+        DescriptiveDataSet dataSet = createTestDataset();
+        commitAndStartNewTransaction();
+
+        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+
+        // 1st aggregation
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
+        commitAndStartNewTransaction();
+        testAggregatedDescription(false, false, false);
+
+        removeSomeDataFromFirstAggregation();
+        commitAndStartNewTransaction();
+        Assert.assertEquals("Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
+                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (3 cloned aggregated descriptions?) = 17",
+                17, descriptionService.count(null));
+
+        // 2nd aggregation
+        result = engine.invoke(config, repository);
+        testStatusOk(result);
+        commitAndStartNewTransaction();
+        testAggregatedDescription(false, false, true);
+    }
+
+    private void removeSomeDataFromFirstAggregation() {
+        SpecimenOrObservationBase<?> spec3 = occurrenceService.find(T_LAPSANA_COMMUNIS_ALPINA_SPEC3_UUID);
+        DescriptionBase<?> spec3Desc = spec3.getDescriptions().stream()
+                .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
+                .findFirst().get();
+
+        spec3.removeDescription(spec3Desc);
+        descriptionService.delete(spec3Desc);
     }
 
     @Test
@@ -285,14 +327,14 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         testStatusOk(result);
-        testAggregatedDescription(false, false);
+        testAggregatedDescription(false, false, false);
 
         config.setIncludeLiterature(true);
 
         result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         testStatusOk(result);
-        testAggregatedDescription(false, true);  //with literature
+        testAggregatedDescription(false, true, false);  //with literature
     }
 
     private void testStatusOk(UpdateResult result) {
@@ -315,7 +357,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         dataSet.addDescription(literatureDescription);
     }
 
-    private void testAggregatedDescription(boolean withAddedData, boolean withLiterature) {
+    private void testAggregatedDescription(boolean withAddedData, boolean withLiterature, boolean withRemovedData) {
+
+        int intDel = withRemovedData? -1 : 0;
+        int intLit = withLiterature? 1 : 0;
 
         //L. communis alpina
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -323,19 +368,18 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, nElement);
 
         List<StateData> stateData = testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina, withAddedData);
-        testState(stateData, State.uuidPresent, 3);
+        testState(stateData, State.uuidPresent, 3+intDel);
         List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
         int litLeafColorBlue = withLiterature? 1: 0;
         testState(sdAlpinaLeafColor, uuidLeafColorBlue, 2+litLeafColorBlue);
         testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
-        BigDecimal count = withLiterature? null : new BigDecimal("3");
-        BigDecimal avg = withLiterature? null : new BigDecimal("6.666667");
+        BigDecimal count = withLiterature? null : withRemovedData ? new BigDecimal("2"): new BigDecimal("3");
+        BigDecimal avg = withLiterature? null : withRemovedData ? new BigDecimal("6"): new BigDecimal("6.666667");
         BigDecimal min = withLiterature? new BigDecimal("4.5") : new BigDecimal("5.0");
-        testQuantitativeData(uuidFeatureLeafLength, count, min,
-                new BigDecimal("8.0"), avg, aggrDescLapsanaCommunisAlpina);
+        BigDecimal max = withRemovedData ? new BigDecimal("7.0") : new BigDecimal("8.0");
+        testQuantitativeData(uuidFeatureLeafLength, count, min, max, avg, aggrDescLapsanaCommunisAlpina);
         //... sources
-        int intLit = withLiterature? 1 : 0;
-        Assert.assertEquals(3+intLit, aggrDescLapsanaCommunisAlpina.getSources().size());
+        Assert.assertEquals(3+intLit+intDel, aggrDescLapsanaCommunisAlpina.getSources().size());
         SpecimenOrObservationBase<?> specLcommunisAlpina1 = CdmBase.deproxy(occurrenceService.find(T_LAPSANA_COMMUNIS_ALPINA_SPEC1_UUID));
         Assert.assertEquals("Spec1 must have 2 descriptions now. The primary one and the cloned.", 2, specLcommunisAlpina1.getSpecimenDescriptions().size());
         Assert.assertEquals(1, specLcommunisAlpina1.getSpecimenDescriptions().stream().filter(d->d.isCloneForSource()).count());
@@ -356,12 +400,12 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         //L. communis
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
         TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis, false), State.uuidPresent, 4);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis, false), State.uuidPresent, 4+intDel);
         List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis, false);
         testState(sdCommunisLeafColor, uuidLeafColorBlue, 2 + intLit);
         testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
-        count = withLiterature? null : new BigDecimal("4");
-        avg = withLiterature? null : new BigDecimal("7.5");
+        count = withLiterature? null : withRemovedData ? new BigDecimal("3") : new BigDecimal("4");
+        avg = withLiterature? null : withRemovedData ? new BigDecimal("7.333333") : new BigDecimal("7.5");
         testQuantitativeData(uuidFeatureLeafLength, count, min,
                 new BigDecimal("10.0"), avg, aggrDescLapsanaCommunis);
         //... sources
@@ -375,12 +419,10 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         //Lapsana
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
         TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana, false), State.uuidPresent, 4);
+        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana, false), State.uuidPresent, 4+intDel);
         List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana, false);
         testState(sdLapsanLeafColor, uuidLeafColorBlue, 2 + intLit);
         testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
-        count = withLiterature? null : new BigDecimal("4");
-        avg = withLiterature? null : new BigDecimal("7.5");
         testQuantitativeData(uuidFeatureLeafLength, count, min,
                 new BigDecimal("10.0"), avg, aggrDescLapsana);
         //... sources
@@ -391,10 +433,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
 
         //total description count
-        List<DescriptionBase> descs = descriptionService.list(null, null, null, null, null);
         Assert.assertEquals("Should have 4 specimen desc, 1 literature desc, 2 individual association holder, "
                 + "4 aggregated descriptions, 4 cloned specimen descriptions, (3/4 cloned aggregated descriptions?) = 18/19",
-                18+intLit, descs.size());
+                18+intLit+(intDel*2), descriptionService.count(null));
 
     }
 

@@ -327,7 +327,7 @@ public class DistributionAggregation
         } // next super area ....
     }
 
-    private class DistributionResultHolder implements ResultHolder{
+    private class DistributionResultHolder extends ResultHolder{
         Map<NamedArea, StatusAndSources> accumulatedStatusMap = new HashMap<>();
     }
 
