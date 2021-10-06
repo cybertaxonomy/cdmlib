@@ -28,7 +28,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.DataSets;
@@ -74,7 +73,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @since Feb 26, 2013
  */
-@Ignore   //preliminary ignore as it does not always work (depending on other tests)
 public class DistributionAggregationTest extends CdmTransactionalIntegrationTest {
 
     private static Logger logger = Logger.getLogger(DistributionAggregationTest.class);
@@ -160,7 +158,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         book_b.setTitle("book_a");
 
         engine = new DistributionAggregation();
-        engine.setBatchMinFreeHeap(100 * 1024 * 1024);
+        engine.setBatchMinFreeHeap(80 * 1024 * 1024);
         makeStatusOrder();
 
         monitor = DefaultProgressMonitor.NewInstance();
@@ -203,7 +201,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -256,7 +256,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(classificationUuids, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxon(), superAreas, filter, statusOrder, monitor);
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         assertEquals(2, lapsana_communis_alpina.getDescriptions().size());
@@ -299,14 +301,15 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         distributions_LC.add(newDistribution(book_a, yug_ko, PresenceAbsenceTerm.NATIVE(), "4")); // NATIVE should succeed
         addDistributions(T_LAPSANA_COMMUNIS_UUID, distributions_LC);
 
-        commitAndStartNewTransaction(null);
-
         //aggregation
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
+
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         //test
         Taxon lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -376,7 +379,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         removeDistributions(T_LAPSANA_COMMUNIS_UUID, lc_yug_ko_distr);
 
         config.setMonitor(DefaultProgressMonitor.NewInstance());
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         //test
         lapsana_communis  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -465,7 +470,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
@@ -519,7 +526,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         int computedDescriptionsCnt = 0;
@@ -550,7 +559,6 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
      * and makes assertions only on the alternative source references
      */
     @Test
-    @Ignore
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
@@ -569,23 +577,30 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         TaxonNodeFilter filter = TaxonNodeFilter.NewInstance(null, null, null, null, null, lowerRank.getUuid(), upperRank.getUuid());
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
+        config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);  //this is default anyway
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
-        int computedDescriptionsCnt = 0;
-        for(TaxonDescription description : lapsana_communis.getDescriptions()) {
-            if(description.isAggregatedDistribution()) {
-                computedDescriptionsCnt++;
-                assertEquals(2, description.getElements().size());
-                Distribution distribution = (Distribution)description.getElements().iterator().next();
-                if(distribution.getArea().equals(yug_ko)){
-                    assertEquals(2, distribution.getSources().size());
-                    DescriptionElementSource source = distribution.getSources().iterator().next();
-                    assertEquals("2", source.getCitationMicroReference());
-                }
-            }
-        }
-        assertEquals(1, computedDescriptionsCnt);
+
+        assertEquals(1, lapsana_communis.getDescriptions().stream().filter(d->d.isAggregatedDistribution()).count());
+        TaxonDescription lc_description = lapsana_communis.getDescriptions().stream().filter(d->d.isAggregatedDistribution()).findFirst().get();
+        assertEquals(2, lc_description.getElements().size());
+
+        Distribution dist_yu_ko = lc_description.getElements().stream()
+                .map(el->(Distribution)el).filter(d->d.getArea().equals(yug_ko)).findFirst().get();
+        assertEquals(1, dist_yu_ko.getSources().size());
+        DescriptionElementSource source = dist_yu_ko.getSources().iterator().next();
+        assertNotNull("", source.getCdmSource());
+        //TODO more checks
+
+        Distribution dist_yu = lc_description.getElements().stream()
+                .map(el->(Distribution)el).filter(d->d.getArea().equals(yug)).findFirst().get();
+        assertEquals(1, dist_yu.getSources().size());
+        source = dist_yu.getSources().iterator().next();
+        assertNotNull("", source.getCdmSource());
+        //TODO more checks
     }
 
     /**
@@ -613,7 +628,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
         assertEquals(1, lapsana_communis.getDescriptions().size());
@@ -652,7 +669,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setAggregatingSourceTypes(EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource));
         config.setToParentSourceMode(AggregationSourceMode.ALL);
+        commitAndStartNewTransaction();
         engine.invoke(config, repository);
+        commitAndStartNewTransaction();
 
         //test
         Taxon lapsana_communis_alpina = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
