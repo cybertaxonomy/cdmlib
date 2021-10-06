@@ -59,7 +59,7 @@ public class DynamicBatch {
 
     public void setRequiredFreeHeap(double requiredFreeHeap) throws JvmLimitsException {
 
-        this.batchMinFreeHeap = (long) (intitialFreeHeap * requiredFreeHeap);
+        this.batchMinFreeHeap = (long)(intitialFreeHeap * requiredFreeHeap);
         if(memoryLimitsExceeded()) {
             throw new JvmLimitsException("Not enough free heap for batch");
         }
