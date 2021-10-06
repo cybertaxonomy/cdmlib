@@ -174,7 +174,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         // 1st aggregation
         UpdateResult result = engine.invoke(config, repository);
         testStatusOk(result);
+        commitAndStartNewTransaction();
         testAggregatedDescription(false, false);
+
         addSomeDataToFirstAggregation();
         commitAndStartNewTransaction();
         testAggregatedDescription(true, false);
@@ -182,6 +184,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         // 2nd aggregation
         result = engine.invoke(config, repository);
         testStatusOk(result);
+        commitAndStartNewTransaction();
         testAggregatedDescription(false, false);
     }
 
@@ -189,7 +192,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription taxonDescription = taxLapsanaCommunisAlpina.getDescriptions().stream()
                 .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
-                .collect(Collectors.toList()).iterator().next();
+                .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
+                .findFirst().get();
 
         addCategoricalData(taxonDescription, uuidFeatureLeafPA, State.uuidPresent);
     }
@@ -385,6 +389,12 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(1, taxonDescriptionMap.size());
         Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).size());
         Assert.assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+
+        //total description count
+        List<DescriptionBase> descs = descriptionService.list(null, null, null, null, null);
+        Assert.assertEquals("Should have 4 specimen desc, 1 literature desc, 2 individual association holder, "
+                + "4 aggregated descriptions, 4 cloned specimen descriptions, (3/4 cloned aggregated descriptions?) = 18/19",
+                18+intLit, descs.size());
 
     }
 
