@@ -588,12 +588,12 @@ public class DescriptiveDataSetService
         DeleteResult result = new DeleteResult();
         DeleteResult descriptionResult = new DeleteResult();
         if (!dataSet.getDescriptions().isEmpty()){
-            Set<DescriptionBase> descriptions = new HashSet();;
-            for (DescriptionBase desc: dataSet.getDescriptions()){
+            Set<DescriptionBase> descriptions = new HashSet<>();;
+            for (DescriptionBase<?> desc: dataSet.getDescriptions()){
                 descriptions.add(desc);
             }
             monitor.subTask("Delete descriptions");
-            for (DescriptionBase desc: descriptions){
+            for (DescriptionBase<?> desc: descriptions){
                 dataSet.removeDescription(desc);
                 if (desc instanceof SpecimenDescription && config.isDeleteAllSpecimenDescriptions()){
                     descriptionResult.includeResult(descriptionService.deleteDescription(desc));
@@ -605,12 +605,8 @@ public class DescriptiveDataSetService
                     }else if (desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC) && config.isDeleteAllAggregatedDescriptions()){
                         descriptionResult.includeResult(descriptionService.deleteDescription(desc));
                     }
-
                 }
-
             }
-
-
         }
         dao.delete(dataSet);
         monitor.worked(1);
