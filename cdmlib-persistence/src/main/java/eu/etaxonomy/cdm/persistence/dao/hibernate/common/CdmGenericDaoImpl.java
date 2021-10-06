@@ -211,7 +211,7 @@ public class CdmGenericDaoImpl
 		Map<String,?> allClassMetadata = sessionFactory.getAllClassMetadata();
 		Collection<String> keys = allClassMetadata.keySet();
 		for (String strKey : keys){
-			if (! strKey.endsWith("_AUD")){
+			if (! strKey.endsWith("_AUD") && !strKey.endsWith("_AUD1")){
 				try {
                     Class<?> clazz = Class.forName(strKey);
 					boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
