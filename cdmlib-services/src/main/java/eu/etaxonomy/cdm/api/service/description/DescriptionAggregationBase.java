@@ -81,7 +81,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 
-    public final UpdateResult invoke(CONFIG config, ICdmRepository repository) throws JvmLimitsException{
+    public final UpdateResult invoke(CONFIG config, ICdmRepository repository){
         init(config, repository);
         return doInvoke();
     }
