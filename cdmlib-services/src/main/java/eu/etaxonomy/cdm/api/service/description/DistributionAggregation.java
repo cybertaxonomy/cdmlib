@@ -239,7 +239,7 @@ public class DistributionAggregation
                 distribution.setStatus(status);
                 toDelete.remove(distribution);  //we keep the distribution for reuse
             }
-            replaceSources(distribution.getSources(), accumulatedStatusMap.get(area).sources);
+            replaceSources(distribution, accumulatedStatusMap.get(area).sources);
 //            addSourcesDeduplicated(distribution.getSources(), accumulatedStatusMap.get(area).sources);
         }
         for(Distribution toDeleteDist: toDelete){
@@ -597,11 +597,11 @@ public class DistributionAggregation
         return voc;
     }
 
-    private void replaceSources(Set<DescriptionElementSource> oldSources, Set<DescriptionElementSource> newSources) {
-        Set<DescriptionElementSource> toDeleteSources = new HashSet<>(oldSources);
+    private void replaceSources(Distribution distribution, Set<DescriptionElementSource> newSources) {
+        Set<DescriptionElementSource> toDeleteSources = new HashSet<>(distribution.getSources());
         for(DescriptionElementSource newSource : newSources) {
             boolean contained = false;
-            for(DescriptionElementSource existingSource: oldSources) {
+            for(DescriptionElementSource existingSource: distribution.getSources()) {
                 if(existingSource.equalsByShallowCompare(newSource)) {
                     contained = true;
                     toDeleteSources.remove(existingSource);
@@ -610,7 +610,7 @@ public class DistributionAggregation
             }
             if(!contained) {
                 try {
-                    oldSources.add(newSource.clone());
+                    distribution.addSource(newSource.clone());
                 } catch (CloneNotSupportedException e) {
                     // should never happen
                     throw new RuntimeException(e);
@@ -618,7 +618,7 @@ public class DistributionAggregation
             }
         }
         for (DescriptionElementSource toDeleteSource : toDeleteSources){
-            oldSources.remove(toDeleteSource);
+            distribution.removeSource(toDeleteSource);
         }
     }
 

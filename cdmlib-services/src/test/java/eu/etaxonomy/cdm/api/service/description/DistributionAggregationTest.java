@@ -366,7 +366,9 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         nativ_mn_distr.add(distrNative);
         addDistributions(T_LAPSANA_COMMUNIS_ALPINA_UUID, nativ_mn_distr);
 
-        DescriptionElementSource lca_yug_ko_source = descriptionService.loadDescriptionElement(distributions_LCA.get(1).getUuid(), null).getSources().iterator().next();
+        Set<DescriptionElementSource> lca_yug_ko_sources = descriptionService.loadDescriptionElement(distributions_LCA.get(1).getUuid(), null).getSources();
+        Assert.assertEquals(1, lca_yug_ko_sources.size());
+        DescriptionElementSource lca_yug_ko_source = lca_yug_ko_sources.iterator().next();
         lca_yug_ko_source.setCitationMicroReference("2a");
 
         //remove L communis/yug_ko ;
