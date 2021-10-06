@@ -289,7 +289,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="DistributionAggregationTest.xml"),
     })
-    public void testArea_rank_and_area_1() throws JvmLimitsException {
+    public void testArea_rank_and_area_1() {
 
         //Lapsana communis alpina
         List<Distribution> distributions_LCA = new ArrayList<>();
@@ -326,6 +326,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         UUID lapsanaDescriptionUuid = lapsanaAggregatedDescription.getUuid();
         UUID yugDistributionUuid = null;
         UUID yug_mn_DistributionUuid = null;
+
         for (DescriptionElementBase element : lapsanaAggregatedDescription.getElements()){
             Distribution lapsanaDistribution = (Distribution)element;
             if(lapsanaDistribution.getArea().equals(yug)){
@@ -703,7 +704,6 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
     /**
      * Creates a new description for the taxon identified by the UUIDs
-     * @return
      */
     private TaxonDescription addDistributions(UUID taxonUuid, Collection<Distribution> distributions) {
         Taxon taxon = (Taxon) taxonService.load(taxonUuid);

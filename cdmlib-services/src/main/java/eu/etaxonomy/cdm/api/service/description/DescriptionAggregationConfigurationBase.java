@@ -38,9 +38,6 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     private boolean adaptBatchSize = true;
 
     private boolean doClearExistingDescription = false;
-    private boolean doReuseDescriptions = false;
-    private boolean doReuseDescriptionElements = false;
-    private boolean doReuseSources = false;
 
     private IProgressMonitor monitor;
 

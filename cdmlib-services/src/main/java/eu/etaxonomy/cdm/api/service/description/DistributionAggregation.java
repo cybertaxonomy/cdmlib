@@ -296,17 +296,13 @@ public class DistributionAggregation
             // TODO consider using the TermHierarchyLookup (only in local branch a.kohlbecker)
             Set<NamedArea> subAreas = getSubAreasFor(superArea);
             for(NamedArea subArea : subAreas){
-                if(logger.isTraceEnabled()){
-                    logger.trace("accumulateByArea() - \t\t" + termToString(subArea));
-                }
+                if(logger.isTraceEnabled()){logger.trace("accumulateByArea() - \t\t" + termToString(subArea));}
                 // step through all distributions for the given subArea
                 for(Distribution distribution : distributions){
                     //TODO AM is the status handling here correct? The mapping to CDM handled
                     if(subArea.equals(distribution.getArea()) && distribution.getStatus() != null) {
                         PresenceAbsenceTerm status = distribution.getStatus();
-                        if(logger.isTraceEnabled()){
-                            logger.trace("accumulateByArea() - \t\t" + termToString(subArea) + ": " + termToString(status));
-                        }
+                        if(logger.isTraceEnabled()){logger.trace("accumulateByArea() - \t\t" + termToString(subArea) + ": " + termToString(status));}
                         // skip all having a status value in the ignore list
                         if (status == null || getByAreaIgnoreStatusList().contains(status)
                                 || (getConfig().isIgnoreAbsentStatusByArea() && status.isAbsenceTerm())){
@@ -363,6 +359,11 @@ public class DistributionAggregation
 
         public void addSources(Set<DescriptionElementSource> sources) {
             addSourcesDeduplicated(this.sources, sources);
+        }
+
+        @Override
+        public String toString() {
+            return "StatusAndSources [status=" + status + ", sources=" + sources.size() + "]";
         }
     }
 
@@ -522,8 +523,8 @@ public class DistributionAggregation
     private Set<TaxonDescription> descriptionsFor(Taxon taxon, Set<TaxonDescription> excludedDescriptions) {
         Set<TaxonDescription> result = new HashSet<>();
         for(TaxonDescription description: taxon.getDescriptions()) {
-//            readOnlyIfInSession(description); //not needed for tests anymore
-            if (!excludedDescriptions.contains(description)){
+//          readOnlyIfInSession(description); //not needed for tests anymore
+            if (excludedDescriptions == null || !excludedDescriptions.contains(description)){
                 result.add(description);
             }
         }
