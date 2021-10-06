@@ -357,9 +357,7 @@ public class DescriptiveDataSetService
                 }
             }
 
-
             //add specimen description to data set
-
             specimenDescription.addDescriptiveDataSet(dataSet);
             //add taxon description with IndividualsAssociation to the specimen to data set
             taxonDescription.addDescriptiveDataSet(dataSet);
