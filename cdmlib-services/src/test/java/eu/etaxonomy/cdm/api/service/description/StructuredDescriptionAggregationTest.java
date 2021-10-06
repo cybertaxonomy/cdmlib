@@ -548,10 +548,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private SpecimenDescription createSpecimenDescription(DescriptiveDataSet dataSet, UUID taxonUuid, String specLabel, UUID specimenUuid ) {
         Taxon taxon = (Taxon)taxonService.find(taxonUuid);
-        TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
         DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         specimen.setTitleCache(specLabel, true);
         specimen.setUuid(specimenUuid);
+        TaxonDescription taxonDescription = taxon.getDescriptions(DescriptionType.INDIVIDUALS_ASSOCIATION).stream()
+            .findFirst()
+            .orElseGet(()->{
+                TaxonDescription td = TaxonDescription.NewInstance(taxon);
+                td.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
+                td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + getTaxonLabel(taxon), true);
+                return td;}
+             );
         IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance(specimen);
         // TODO this has to be discussed; currently the description with the InidividualsAssociation is
         // needed in the dataset for performance reasons
@@ -561,6 +568,14 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         dataSet.addDescription(specDesc);
         return specDesc;
+    }
+
+    private String getTaxonLabel(Taxon taxon) {
+        if (taxon.getName() != null){
+            return taxon.getName().getTitleCache();
+        }else{
+            return taxon.getTitleCache();
+        }
     }
 
     private Feature createFeature(UUID uuid, String label, boolean isQuantitative) {

@@ -276,7 +276,7 @@ public class DescriptiveDataSetService
                     .findFirst().orElseGet(()->{
                         TaxonDescription td = TaxonDescription.NewInstance(taxon);
                         td.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
-                        td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + taxon.getTitleCache(), true);
+                        td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + getTaxonLabel(taxon), true);
                         return td;});
 
             IndividualsAssociation association = IndividualsAssociation.NewInstance(specimen);
@@ -367,6 +367,14 @@ public class DescriptiveDataSetService
         }
         saveOrUpdate(dataSet);
         return result;
+    }
+
+    private String getTaxonLabel(Taxon taxon) {
+        if (taxon.getName() != null){
+            return taxon.getName().getTitleCache();
+        }else{
+            return taxon.getTitleCache();
+        }
     }
 
     private SpecimenRowWrapperDTO createSpecimenRowWrapper(SpecimenDescription description, UUID taxonNodeUuid,
