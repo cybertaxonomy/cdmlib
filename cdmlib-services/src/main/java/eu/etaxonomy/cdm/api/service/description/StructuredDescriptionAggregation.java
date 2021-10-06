@@ -108,7 +108,7 @@ public class StructuredDescriptionAggregation
     @Override
     protected TaxonDescription createNewDescription(Taxon taxon) {
         String title = taxon.getTitleCache();
-        logger.debug("creating new description for " + title);
+        if (logger.isDebugEnabled()){logger.debug("creating new description for " + title);}
         TaxonDescription description = TaxonDescription.NewInstance(taxon);
         description.addType(DescriptionType.AGGREGATED_STRUC_DESC);
         setDescriptionTitle(description, taxon);
