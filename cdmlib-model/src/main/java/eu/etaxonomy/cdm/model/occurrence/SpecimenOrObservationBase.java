@@ -375,7 +375,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * Returns the {@link SpecimenDescription specimen descriptions} which act as an image gallery
      * and which this specimen is part of.
      * @see #getDescriptions()
-     * @return
      */
     @Transient
     public Set<SpecimenDescription> getSpecimenDescriptionImageGallery() {
@@ -392,7 +391,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     /**
      * Adds a new description to this specimen or observation
-     * @param description
      */
     @Override
     public void addDescription(DescriptionBase description) {
@@ -405,7 +403,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     /**
      * Removes a specimen from a description (removes a description from this specimen)
-     * @param description
      */
     @Override
     public void removeDescription(DescriptionBase description) {
@@ -414,7 +411,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
             description.setDescribedSpecimenOrObservation(null);
         }
     }
-
 
     public Set<DerivationEvent> getDerivationEvents() {
         if(derivationEvents == null) {

@@ -255,7 +255,6 @@ public abstract class OriginalSourceBase
 	@Override
 	public OriginalSourceBase clone() throws CloneNotSupportedException{
 
-	    @SuppressWarnings("unchecked")
         OriginalSourceBase result = (OriginalSourceBase)super.clone();
 
 		Set<ExternalLink> links = new HashSet<>();

@@ -370,7 +370,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      */
     protected void commitAndStartNewTransaction(final String[] tableNames) {
         commit();
-        if(logger.isEnabledFor(Level.DEBUG)){
+        if(tableNames != null && logger.isEnabledFor(Level.DEBUG)){
             printDataSet(System.out, tableNames);
 //          careful, the following will overwrite existing files:
 //          writeDbUnitDataSetFile(tableNames);
