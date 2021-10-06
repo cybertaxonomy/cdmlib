@@ -63,7 +63,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     public static final Logger logger = Logger.getLogger(DescriptionAggregationBase.class);
 
-    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;  //800 MB
+    private static final long BATCH_MIN_FREE_HEAP = 200  * 1024 * 1024;  //800 MB
     /**
      * ratio of the initially free heap which should not be used
      * during the batch processing. This amount of the heap is reserved
