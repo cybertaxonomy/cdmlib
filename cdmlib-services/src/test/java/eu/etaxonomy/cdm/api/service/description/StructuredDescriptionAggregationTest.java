@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
-import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -162,7 +161,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void reaggregationTest() throws JvmLimitsException{
+    public void reaggregationTest(){
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
@@ -202,7 +201,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void deleteTest() throws JvmLimitsException{
+    public void deleteTest() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
@@ -244,7 +243,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void incompleteQuantitativeDataTest() throws JvmLimitsException{
+    public void incompleteQuantitativeDataTest() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -280,7 +279,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void incompleteCategoricalDataTest() throws JvmLimitsException{
+    public void incompleteCategoricalDataTest() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -315,7 +314,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void aggregationTest() throws JvmLimitsException{
+    public void aggregationTest() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();
