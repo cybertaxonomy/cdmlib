@@ -276,7 +276,7 @@ public class DescriptiveDataSetService
                     .findFirst().orElseGet(()->{
                         TaxonDescription td = TaxonDescription.NewInstance(taxon);
                         td.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
-                        td.setTitleCache("Specimens for " + taxon.getTitleCache(), true);
+                        td.setTitleCache("Specimens used by " + dataSet.getTitleCache() + " for " + taxon.getTitleCache(), true);
                         return td;});
 
             IndividualsAssociation association = IndividualsAssociation.NewInstance(specimen);
