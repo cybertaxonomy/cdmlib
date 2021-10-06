@@ -269,26 +269,21 @@ public class DescriptiveDataSetService
             }
             Taxon taxon = (Taxon) findAny.get();
 
-            TaxonDescription taxonDescription = null;
-
             SpecimenOrObservationBase<?> specimen = occurrenceService.load(wrapper.getSpecimenDto().getUuid());
-            if(taxonDescription==null){
-                Optional<TaxonDescription> associationDescriptionOptional = taxon.getDescriptions().stream()
-                        .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
-                        .findFirst();
-                if(!associationDescriptionOptional.isPresent()){
-                    taxonDescription = TaxonDescription.NewInstance(taxon);
-                    taxonDescription.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
-                }
-                else{
-                    taxonDescription = associationDescriptionOptional.get();
-                }
 
-                IndividualsAssociation association = IndividualsAssociation.NewInstance(specimen);
-                taxonDescription.addElement(association);
-                taxonService.saveOrUpdate(taxon);
-                result.addUpdatedObject(taxon);
-            }
+            TaxonDescription taxonDescription = taxon.getDescriptions().stream()
+                    .filter(desc->desc.getTypes().contains(DescriptionType.INDIVIDUALS_ASSOCIATION))
+                    .findFirst().orElseGet(()->{
+                        TaxonDescription td = TaxonDescription.NewInstance(taxon);
+                        td.addType(DescriptionType.INDIVIDUALS_ASSOCIATION);
+                        td.setTitleCache("Specimens for " + taxon.getTitleCache(), true);
+                        return td;});
+
+            IndividualsAssociation association = IndividualsAssociation.NewInstance(specimen);
+            taxonDescription.addElement(association);
+            taxonService.saveOrUpdate(taxon);
+            result.addUpdatedObject(taxon);
+
             UUID specimenDescriptionUuid = wrapper.getDescription().getDescriptionUuid();
             DescriptionBaseDto descriptionDto = wrapper.getDescription();
             DescriptionBase<?> specimenDescription =  descriptionService.load(specimenDescriptionUuid);
