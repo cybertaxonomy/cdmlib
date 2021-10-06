@@ -327,32 +327,32 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         UUID yugDistributionUuid = null;
         UUID yug_mn_DistributionUuid = null;
         for (DescriptionElementBase element : lapsanaAggregatedDescription.getElements()){
-            Distribution labsanaDistribution = (Distribution)element;
-            if(labsanaDistribution.getArea().equals(yug)){
+            Distribution lapsanaDistribution = (Distribution)element;
+            if(lapsanaDistribution.getArea().equals(yug)){
                 numExpectedFound++;
-                assertEquals("Aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE(), labsanaDistribution.getStatus());
-                assertEquals(2, labsanaDistribution.getSources().size());
+                assertEquals("Aggregated status of area YUG is wrong", PresenceAbsenceTerm.NATIVE(), lapsanaDistribution.getStatus());
+                assertEquals(2, lapsanaDistribution.getSources().size());
                 // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
-                assertTrue(sourceExists(labsanaDistribution.getSources(), book_a, "2"));
-                assertTrue(sourceExists(labsanaDistribution.getSources(), book_a, "4"));
-                yugDistributionUuid = labsanaDistribution.getUuid(); //for later
+                assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "2"));
+                assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "4"));
+                yugDistributionUuid = lapsanaDistribution.getUuid(); //for later
             }
-            if(labsanaDistribution.getArea().equals(yug_mn)){
+            if(lapsanaDistribution.getArea().equals(yug_mn)){
                 numExpectedFound++;
-                assertEquals("Aggregated status of area YUG-MN is wrong", PresenceAbsenceTerm.CULTIVATED(), labsanaDistribution.getStatus());
-                assertEquals(2, labsanaDistribution.getSources().size());
+                assertEquals("Aggregated status of area YUG-MN is wrong", PresenceAbsenceTerm.CULTIVATED(), lapsanaDistribution.getStatus());
+                assertEquals(2, lapsanaDistribution.getSources().size());
                 // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
-                assertTrue(sourceExists(labsanaDistribution.getSources(), book_a, "1"));
-                assertTrue(sourceExists(labsanaDistribution.getSources(), book_a, "3"));
-                yug_mn_DistributionUuid = labsanaDistribution.getUuid();  //for reaggregation test
+                assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "1"));
+                assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "3"));
+                yug_mn_DistributionUuid = lapsanaDistribution.getUuid();  //for reaggregation test
             }
-            if(labsanaDistribution.getArea().equals(yug_ko)){
+            if(lapsanaDistribution.getArea().equals(yug_ko)){
                 numExpectedFound++;
-                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE(), labsanaDistribution.getStatus());
-                assertEquals(2, labsanaDistribution.getSources().size());
+                assertEquals("aggregated status of area YUG-KO wrong", PresenceAbsenceTerm.NATIVE(), lapsanaDistribution.getStatus());
+                assertEquals(2, lapsanaDistribution.getSources().size());
                 // should contain source_LCA_yug_ma and source_LCA_yug_ko, testing the microreference which is unique in the tests
-                assertTrue(sourceExists(labsanaDistribution.getSources(), book_a, "2"));
-                assertTrue(sourceExists(labsanaDistribution.getSources(), book_a, "4"));
+                assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "2"));
+                assertTrue(sourceExists(lapsanaDistribution.getSources(), book_a, "4"));
             }
         }
         assertEquals("All three expected areas should have been found before", numExpectedFound, 3);

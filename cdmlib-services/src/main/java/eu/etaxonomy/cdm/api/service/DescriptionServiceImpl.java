@@ -663,14 +663,14 @@ public class DescriptionServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public DeleteResult deleteDescription(DescriptionBase description) {
+    public DeleteResult deleteDescription(DescriptionBase<?> description) {
 
         DeleteResult deleteResult = new DeleteResult();
         if (description == null){
             return deleteResult;
         }
-        description = load(description.getId(), Arrays.asList("descriptiveDataSets"));
         //avoid lazy init exception
+        description = load(description.getId(), Arrays.asList("descriptiveDataSets"));
 
         deleteResult = isDeletable(description.getUuid());
         if (deleteResult.getRelatedObjects() != null && deleteResult.getRelatedObjects().size() == 1){
@@ -697,9 +697,8 @@ public class DescriptionServiceImpl
         	    deleteResult.addUpdatedObject(specimen);
         	}
 
-        	Set<DescriptiveDataSet> descriptiveDataSets = description.getDescriptiveDataSets();
-        	for (Iterator<DescriptiveDataSet> iterator = descriptiveDataSets.iterator(); iterator.hasNext();) {
-        	    iterator.next().removeDescription(description);
+        	for (DescriptiveDataSet dataset : description.getDescriptiveDataSets()) {
+        	    dataset.removeDescription(description);
             }
 
         	dao.delete(description);
@@ -728,20 +727,17 @@ public class DescriptionServiceImpl
             return result;
         }
         for (CdmBase ref: references){
-            String message = null;
-            if (description instanceof TaxonDescription && ref instanceof Taxon && ((TaxonDescription)description).getTaxon().equals(ref)){
+            if (description instanceof TaxonDescription && ref instanceof Taxon && ref.equals(((TaxonDescription)description).getTaxon())){
                 continue;
-            } else if (description instanceof TaxonNameDescription && ref instanceof TaxonName && ((TaxonNameDescription)description).getTaxonName().equals(ref)){
+            } else if (description instanceof TaxonNameDescription && ref instanceof TaxonName && ref.equals(((TaxonNameDescription)description).getTaxonName())){
                 continue;
-            } else if (description instanceof SpecimenDescription && ref instanceof SpecimenOrObservationBase && ((SpecimenDescription)description).getDescribedSpecimenOrObservation().equals(ref)){
+            } else if (description instanceof SpecimenDescription && ref instanceof SpecimenOrObservationBase && ref.equals(((SpecimenDescription)description).getDescribedSpecimenOrObservation())){
                 continue;
             } else if (ref instanceof DescriptionElementBase){
                 continue;
             }else {
-                message = "The description can't be completely deleted because it is referenced by " + ref.getUserFriendlyTypeName() ;
+                String message = "The description can't be completely deleted because it is referenced by " + ref.getUserFriendlyTypeName() ;
                 result.setAbort();
-            }
-            if (message != null){
                 result.addException(new ReferencedObjectUndeletableException(message));
                 result.addRelatedObject(ref);
             }

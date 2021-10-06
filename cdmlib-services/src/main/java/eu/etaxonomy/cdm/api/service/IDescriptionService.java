@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
@@ -531,86 +530,36 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public Pager<TermDto> pageNamedAreasInUse(boolean includeAllParents, Integer pageSize,
             Integer pageNumber);
 
-	public DeleteResult deleteDescription(DescriptionBase description);
+	/**
+	 * Deletes the description and prior removes it from taxon, specimen or descriptive dataset.
+	 */
+	public DeleteResult deleteDescription(DescriptionBase<?> description);
 
 	public DeleteResult deleteDescription(UUID descriptionUuid);
 
-    /**
-     * @param sourceTaxon
-     * @param targetTaxon
-     * @return
-     */
     public UpdateResult moveTaxonDescriptions(Taxon sourceTaxon, Taxon targetTaxon, boolean setNameInSource);
 
-    /**
-     * @param sourceTaxonUuid
-     * @param targetTaxonUuid
-     * @return
-     */
     public UpdateResult moveTaxonDescriptions(UUID sourceTaxonUuid, UUID targetTaxonUuid, boolean setNameInSource);
 
-
-    /**
-     * @param descriptionElementUUIDs
-     * @param targetDescriptionUuid
-     * @param isCopy
-     * @return
-     */
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetDescriptionUuid,
             boolean isCopy, boolean setNameInSource);
 
-    /**
-     * @param descriptionElementUUIDs
-     * @param targetTaxonUuid
-     * @param moveMessage
-     * @param isCopy
-     * @return
-     */
     public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs, UUID targetTaxonUuid,
             String moveMessage, boolean isCopy, boolean setNameInSource);
 
-    /**
-     * @param descriptionUUID
-     * @param targetTaxonUuid
-     * @return
-     */
     public UpdateResult moveTaxonDescription(UUID descriptionUuid, UUID targetTaxonUuid, boolean setNameInSource);
 
-    /**
-     * @param descriptionElements
-     * @param returnTransientEntity
-     * @return
-     */
     public List<MergeResult<DescriptionBase>> mergeDescriptionElements(Collection<TaxonDistributionDTO> descriptionElements,
             boolean returnTransientEntity);
 
-    /**
-     * @param descriptions
-     * @param returnTransientEntity
-     * @return
-     */
     public UpdateResult mergeDescriptions(Collection<DescriptionBaseDto> descriptions, UUID descriptiveDataSetUuid);
 
-
-    /**
-     * @param descriptionElementUUIDs
-     * @param targetDescription
-     * @param isCopy
-     * @return
-     */
-    UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs,
+    public UpdateResult moveDescriptionElementsToDescription(Set<UUID> descriptionElementUUIDs,
             DescriptionBase targetDescription, boolean isCopy, boolean setNameInSource);
 
     public DeleteResult isDeletable(UUID descriptionUuid);
 
     public DescriptionBaseDto loadDto(UUID descriptionUuid);
 
-    /**
-     * @param taxonUuid
-     * @return
-     */
-    List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid);
-
-
-
+    public List<DescriptionBaseDto> loadDtosForTaxon(UUID taxonUuid);
 }
