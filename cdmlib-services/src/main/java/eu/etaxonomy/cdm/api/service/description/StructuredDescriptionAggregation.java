@@ -625,6 +625,7 @@ public class StructuredDescriptionAggregation
 
     private QuantitativeData aggregateSingleQuantitativeData(QuantitativeData sourceQd){
         QuantitativeData aggQD = QuantitativeData.NewInstance(sourceQd.getFeature());
+        aggQD.setUnit(sourceQd.getUnit());
         Set<BigDecimal> exactValues = sourceQd.getExactValues();
         if(!exactValues.isEmpty()){
             Comparator<BigDecimal> comp = Comparator.naturalOrder();

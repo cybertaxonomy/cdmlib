@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
@@ -671,6 +672,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(min, leafLength.getMin());
         Assert.assertEquals(max, leafLength.getMax());
         Assert.assertEquals(avg, leafLength.getAverage());
+        Assert.assertEquals(MeasurementUnit.METER(), leafLength.getUnit());
+        Assert.assertNotNull(leafLength.getUnit());
     }
 
 
@@ -712,6 +715,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         QuantitativeData qd = QuantitativeData.NewInstance(feature);
         StatisticalMeasurementValue smv = StatisticalMeasurementValue.NewInstance(type, value);
         qd.addStatisticalValue(smv);
+        Assert.assertNotNull(MeasurementUnit.METER());
+        qd.setUnit(MeasurementUnit.METER());
         desc.addElement(qd);
     }
 
