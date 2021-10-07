@@ -30,8 +30,8 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
 
     private TaxonNodeFilter taxonNodeFilter;
 
-    private AggregationSourceMode toParentSourceMode = AggregationSourceMode.DESCRIPTION;
-    private AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.ALL_SAMEVALUE;
+    private AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.NONE; //to be defined by implementing class
+    private AggregationSourceMode toParentSourceMode = AggregationSourceMode.NONE; //to be defined by implementing class
 
     private List<AggregationMode> aggregationModes;
 
