@@ -161,28 +161,28 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void reaggregationTest(){
+    public void testReaggregation(){
         createDefaultFeatureTree();
-        DescriptiveDataSet dataSet = createTestDataset();
+        DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
 
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         // 1st aggregation
         UpdateResult result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig());
+        verifyAggregatedDescription(new TestConfig());
 
         addSomeDataToFirstAggregation();
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig().setWithAddedData());
+        verifyAggregatedDescription(new TestConfig().setWithAddedData());
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig());
+        verifyAggregatedDescription(new TestConfig());
     }
 
     private void addSomeDataToFirstAggregation() {
@@ -201,18 +201,18 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void deleteTest() {
+    public void testDeleteTest() {
         createDefaultFeatureTree();
-        DescriptiveDataSet dataSet = createTestDataset();
+        DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
 
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         // 1st aggregation
         UpdateResult result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig());
+        verifyAggregatedDescription(new TestConfig());
 
         removeSomeDataFromFirstAggregation();
         commitAndStartNewTransaction();
@@ -222,9 +222,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig().setWithRemoved());
+        verifyAggregatedDescription(new TestConfig().setWithRemoved());
     }
 
     private void removeSomeDataFromFirstAggregation() {
@@ -243,7 +243,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void incompleteQuantitativeDataTest() {
+    public void testIncompleteQuantitativeData() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -266,11 +266,11 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
-        testQuantitativeData(uuidFeatureLeafLength, null, new BigDecimal("0.0"), new BigDecimal("7.0"), null, aggrDescLapsanaCommunisAlpina);
+        TaxonDescription aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
+        verifyQuantitativeData(uuidFeatureLeafLength, null, new BigDecimal("0.0"), new BigDecimal("7.0"), null, aggrDescLapsanaCommunisAlpina);
     }
 
     @Test
@@ -279,7 +279,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void incompleteCategoricalDataTest() {
+    public void testIncompleteCategoricalData() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -299,13 +299,13 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
-        List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
-        testState(sdAlpinaLeafColor, uuidLeafColorBlue, 0);
-        testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
+        TaxonDescription aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
+        List<StateData> sdAlpinaLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
+        verifyState(sdAlpinaLeafColor, uuidLeafColorBlue, 0);
+        verifyState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
     }
 
     @Test
@@ -314,9 +314,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void noneSourceTest() {
+    public void testSourceModes() {
         createDefaultFeatureTree();
-        DescriptiveDataSet dataSet = createTestDataset();
+        DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
 
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
@@ -325,48 +325,48 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         // 1st aggregation
         UpdateResult result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);
         config.setToParentSourceMode(AggregationSourceMode.NONE);
         result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);
         config.setToParentSourceMode(AggregationSourceMode.TAXON);
         result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
         config.setToParentSourceMode(AggregationSourceMode.TAXON);
         result = engine.invoke(config, repository);
-        testStatusOk(result);
+        verifyStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.ALL);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         result = engine.invoke(config, repository);
-        testStatusNotOk(result);
+        verifyStatusNotOk(result);
         commitAndStartNewTransaction();
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.ALL);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         result = engine.invoke(config, repository);
-        testStatusNotOk(result);
+        verifyStatusNotOk(result);
         commitAndStartNewTransaction();
 
 //        removeSomeDataFromFirstAggregation();
@@ -388,27 +388,27 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void aggregationTest() {
+    public void testAggregation() {
         createDefaultFeatureTree();
-        DescriptiveDataSet dataSet = createTestDataset();
+        DescriptiveDataSet dataSet = createTestData();
         commitAndStartNewTransaction();
 
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
-        testStatusOk(result);
-        testAggregatedDescription(new TestConfig());
+        verifyStatusOk(result);
+        verifyAggregatedDescription(new TestConfig());
 
         config.setIncludeLiterature(true);
 
         result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
-        testStatusOk(result);
-        testAggregatedDescription(new TestConfig().setWithLiterature());
+        verifyStatusOk(result);
+        verifyAggregatedDescription(new TestConfig().setWithLiterature());
     }
 
-    private void testStatusOk(UpdateResult result) {
+    private void verifyStatusOk(UpdateResult result) {
         if (result.getStatus() != UpdateResult.Status.OK){
             Assert.fail("Aggregation should have status OK but was " + result.toString());
             for (Exception ex : result.getExceptions()){
@@ -417,7 +417,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         }
     }
 
-    private void testStatusNotOk(UpdateResult result) {
+    private void verifyStatusNotOk(UpdateResult result) {
         if (result.getStatus() == UpdateResult.Status.OK){
             Assert.fail("Aggregation should fail but did not " + result.toString());
             //TODO test for expected exception
@@ -453,7 +453,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         }
     }
 
-    private void testAggregatedDescription(TestConfig config) {
+    private void verifyAggregatedDescription(TestConfig config) {
 
         boolean withRemovedData = config.withRemovedData;
         boolean withLiterature = config.withLiterature;
@@ -467,19 +467,19 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         //L. communis alpina
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         int nElement = withAddedData ? 4 : 3;
-        TaxonDescription aggrDescLapsanaCommunisAlpina = testTaxonDescriptions(taxLapsanaCommunisAlpina, nElement);
+        TaxonDescription aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, nElement);
 
-        List<StateData> stateData = testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina, withAddedData);
-        testState(stateData, State.uuidPresent, 3+intDel);
-        List<StateData> sdAlpinaLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
+        List<StateData> stateData = verifyCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAlpina, withAddedData);
+        verifyState(stateData, State.uuidPresent, 3+intDel);
+        List<StateData> sdAlpinaLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
         int litLeafColorBlue = withLiterature? 1: 0;
-        testState(sdAlpinaLeafColor, uuidLeafColorBlue, 2+litLeafColorBlue);
-        testState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
+        verifyState(sdAlpinaLeafColor, uuidLeafColorBlue, 2+litLeafColorBlue);
+        verifyState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
         BigDecimal count = withLiterature? null : withRemovedData ? new BigDecimal("2"): new BigDecimal("3");
         BigDecimal avg = withLiterature? null : withRemovedData ? new BigDecimal("6"): new BigDecimal("6.666667");
         BigDecimal min = withLiterature? new BigDecimal("4.5") : new BigDecimal("5.0");
         BigDecimal max = withRemovedData ? new BigDecimal("7.0") : new BigDecimal("8.0");
-        testQuantitativeData(uuidFeatureLeafLength, count, min, max, avg, aggrDescLapsanaCommunisAlpina);
+        verifyQuantitativeData(uuidFeatureLeafLength, count, min, max, avg, aggrDescLapsanaCommunisAlpina);
         //... sources
         int nWithinSources = isWithinNone ? 0 : 3+intLit+intDel;
         Assert.assertEquals(nWithinSources, aggrDescLapsanaCommunisAlpina.getSources().size());
@@ -495,24 +495,24 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //L. communis adenophora
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
-        TaxonDescription aggrDescLapsanaCommunisAdenophora = testTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAdenophora, false), State.uuidPresent, 1);
-        List<StateData> sdAdenophoraLeafColor = testCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAdenophora, false);
-        testState(sdAdenophoraLeafColor, uuidLeafColorBlue, 0);
-        testState(sdAdenophoraLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, new BigDecimal("1"), new BigDecimal("10.0"),
+        TaxonDescription aggrDescLapsanaCommunisAdenophora = verifyTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
+        verifyState(verifyCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAdenophora, false), State.uuidPresent, 1);
+        List<StateData> sdAdenophoraLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAdenophora, false);
+        verifyState(sdAdenophoraLeafColor, uuidLeafColorBlue, 0);
+        verifyState(sdAdenophoraLeafColor, uuidLeafColorYellow, 1);
+        verifyQuantitativeData(uuidFeatureLeafLength, new BigDecimal("1"), new BigDecimal("10.0"),
                 new BigDecimal("10.0"), new BigDecimal("10.0"), aggrDescLapsanaCommunisAdenophora);
 
         //L. communis
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
-        TaxonDescription aggrDescLapsanaCommunis = testTaxonDescriptions(taxLapsanaCommunis, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis, false), State.uuidPresent, 4+intDel);
-        List<StateData> sdCommunisLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis, false);
-        testState(sdCommunisLeafColor, uuidLeafColorBlue, 2 + intLit);
-        testState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
+        TaxonDescription aggrDescLapsanaCommunis = verifyTaxonDescriptions(taxLapsanaCommunis, 3);
+        verifyState(verifyCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis, false), State.uuidPresent, 4+intDel);
+        List<StateData> sdCommunisLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis, false);
+        verifyState(sdCommunisLeafColor, uuidLeafColorBlue, 2 + intLit);
+        verifyState(sdCommunisLeafColor, uuidLeafColorYellow, 1);
         count = withLiterature? null : withRemovedData ? new BigDecimal("3") : new BigDecimal("4");
         avg = withLiterature? null : withRemovedData ? new BigDecimal("7.333333") : new BigDecimal("7.5");
-        testQuantitativeData(uuidFeatureLeafLength, count, min,
+        verifyQuantitativeData(uuidFeatureLeafLength, count, min,
                 new BigDecimal("10.0"), avg, aggrDescLapsanaCommunis);
         //... sources
         int nToParent = isToParentNone ? 0 : 2;
@@ -533,12 +533,12 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //Lapsana
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
-        TaxonDescription aggrDescLapsana = testTaxonDescriptions(taxLapsana, 3);
-        testState(testCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana, false), State.uuidPresent, 4+intDel);
-        List<StateData> sdLapsanLeafColor = testCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana, false);
-        testState(sdLapsanLeafColor, uuidLeafColorBlue, 2 + intLit);
-        testState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
-        testQuantitativeData(uuidFeatureLeafLength, count, min,
+        TaxonDescription aggrDescLapsana = verifyTaxonDescriptions(taxLapsana, 3);
+        verifyState(verifyCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana, false), State.uuidPresent, 4+intDel);
+        List<StateData> sdLapsanLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana, false);
+        verifyState(sdLapsanLeafColor, uuidLeafColorBlue, 2 + intLit);
+        verifyState(sdLapsanLeafColor, uuidLeafColorYellow, 1);
+        verifyQuantitativeData(uuidFeatureLeafLength, count, min,
                 new BigDecimal("10.0"), avg, aggrDescLapsana);
         //... sources
         nToParent = isToParentNone ? 0 : 1;
@@ -604,7 +604,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         return config;
     }
 
-    private DescriptiveDataSet createTestDataset() {
+    private DescriptiveDataSet createTestData() {
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         dataSet.setLabel("Test dataset");
         datasetService.save(dataSet);
@@ -644,7 +644,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         return dataSet;
     }
 
-    private TaxonDescription testTaxonDescriptions(Taxon taxon, int elementSize){
+    private TaxonDescription verifyTaxonDescriptions(Taxon taxon, int elementSize){
         List<TaxonDescription> taxonDescriptions = taxon.getDescriptions().stream()
                 .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
                 .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
@@ -657,7 +657,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         return aggrDesc;
     }
 
-    private void testQuantitativeData(UUID featureUuid, BigDecimal sampleSize, BigDecimal min,
+    private void verifyQuantitativeData(UUID featureUuid, BigDecimal sampleSize, BigDecimal min,
             BigDecimal max, BigDecimal avg, TaxonDescription aggrDesc) {
         List<QuantitativeData> quantitativeDatas = aggrDesc.getElements().stream()
                 .filter(element->element.getFeature().getUuid().equals(featureUuid))
@@ -672,7 +672,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
 
-    private List<StateData> testCategoricalData(UUID featureUuid, int stateDataCount, TaxonDescription taxonDescription, boolean withAddedData) {
+    private List<StateData> verifyCategoricalData(UUID featureUuid, int stateDataCount, TaxonDescription taxonDescription, boolean withAddedData) {
         List<CategoricalData> categoricalDatas = taxonDescription.getElements().stream()
                 .filter(element->element.getFeature().getUuid().equals(featureUuid))
                 .map(catData->CdmBase.deproxy(catData, CategoricalData.class))
@@ -690,7 +690,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         return stateDatas;
     }
 
-    private void testState(List<StateData> stateDatas, UUID stateUuid, Integer stateDataCount){
+    private void verifyState(List<StateData> stateDatas, UUID stateUuid, Integer stateDataCount){
         List<StateData> filteredStateDatas = stateDatas.stream()
                 .filter(stateData->stateData.getState()!=null && stateData.getState().getUuid().equals(stateUuid))
                 .collect(Collectors.toList());
