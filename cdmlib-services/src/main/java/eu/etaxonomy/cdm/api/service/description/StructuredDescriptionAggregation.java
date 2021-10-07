@@ -161,7 +161,7 @@ public class StructuredDescriptionAggregation
             }
         }
 
-        //remove remaining sources to be removed
+        //remove remaining sources-to-be-removed
         for (IdentifiableSource sourceToRemove : sourcesToRemove) {
             targetDescription.removeSource(sourceToRemove);
             if (sourceToRemove.getCdmSource() != null){
@@ -176,7 +176,9 @@ public class StructuredDescriptionAggregation
     private <T extends DescriptionBase<?>> void addNewSource(TaxonDescription targetDescription,
             IdentifiableSource newSource) {
 
+        //add source
         targetDescription.addSource(newSource);
+        //if it is a description add it to the described entity (specimen, taxon)
         ICdmBase target = newSource.getCdmSource();
         if (target != null){
             if (target.isInstanceOf(DescriptionBase.class)){
@@ -504,7 +506,7 @@ public class StructuredDescriptionAggregation
         QuantitativeData aggregatedQuantitativeData = resultHolder.quantitativeMap.get(qd.getFeature());
         if(aggregatedQuantitativeData==null){
             // no QuantitativeData with this feature in aggregation
-            aggregatedQuantitativeData = aggregateSingleQuantitativeData(qd);
+            aggregatedQuantitativeData = aggregateWithinQuantitativeData(qd);
         }
         else{
             aggregatedQuantitativeData = addToExistingQuantitativeData(aggregatedQuantitativeData, qd);
@@ -624,13 +626,16 @@ public class StructuredDescriptionAggregation
         return result;
     }
 
-    private QuantitativeData aggregateSingleQuantitativeData(QuantitativeData sourceQd){
+    /**
+     * Evaluates statistics for exact values collection and handles missing min and max values
+     */
+    private QuantitativeData aggregateWithinQuantitativeData(QuantitativeData sourceQd){
         QuantitativeData aggQD = QuantitativeData.NewInstance(sourceQd.getFeature());
         aggQD.setUnit(sourceQd.getUnit());
         Set<BigDecimal> exactValues = sourceQd.getExactValues();
         if(!exactValues.isEmpty()){
-            Comparator<BigDecimal> comp = Comparator.naturalOrder();
             // qd is not already aggregated
+            Comparator<BigDecimal> comp = Comparator.naturalOrder();
             int exactValueSampleSize = exactValues.size();
             BigDecimal exactValueMin = exactValues.stream().min(comp).get();
             BigDecimal exactValueMax = exactValues.stream().max(comp).get();
@@ -692,7 +697,7 @@ public class StructuredDescriptionAggregation
 
     private QuantitativeData addToExistingQuantitativeData(QuantitativeData aggQd, QuantitativeData newQd) {
 
-        newQd = aggregateSingleQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a clear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
+        newQd = aggregateWithinQuantitativeData(newQd); //alternatively we could check, if newQd is already basically aggregated, but for this we need a clear definition what the minimum requirements are and how ExactValues and MinMax if existing in parallel should be handled.
 
         BigDecimal min = null;
         BigDecimal max = null;

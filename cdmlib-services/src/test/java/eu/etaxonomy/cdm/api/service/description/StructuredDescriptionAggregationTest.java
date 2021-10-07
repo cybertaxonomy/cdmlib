@@ -810,6 +810,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     }
 
 //    @Test
+    //to create the taxonomic classification available also as .xml file
     @Override
     public void createTestDataSet() throws FileNotFoundException {
 
