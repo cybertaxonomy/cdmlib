@@ -361,13 +361,19 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setWithinTaxonSourceMode(AggregationSourceMode.ALL);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         result = engine.invoke(config, repository);
-        verifyStatusNotOk(result);
+        verifyStatusError(result, "Unsupported source mode for within-taxon aggregation: ALL");
         commitAndStartNewTransaction();
 
-        config.setWithinTaxonSourceMode(AggregationSourceMode.ALL);
+        config.setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);
+        config.setToParentSourceMode(AggregationSourceMode.ALL);
+        result = engine.invoke(config, repository);
+        verifyStatusError(result, "Unsupported source mode for to-parent aggregation: ALL");
+        commitAndStartNewTransaction();
+
+        config.setWithinTaxonSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         result = engine.invoke(config, repository);
-        verifyStatusNotOk(result);
+        verifyStatusError(result, "Unsupported source mode for within-taxon aggregation: ALL_SAMEVALUE");
         commitAndStartNewTransaction();
 
 //        removeSomeDataFromFirstAggregation();
@@ -418,10 +424,18 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         }
     }
 
-    private void verifyStatusNotOk(UpdateResult result) {
-        if (result.getStatus() == UpdateResult.Status.OK){
-            Assert.fail("Aggregation should fail but did not " + result.toString());
-            //TODO test for expected exception
+    private void verifyStatusError(UpdateResult result, String expectedMessage) {
+        if (result.getStatus() != UpdateResult.Status.ERROR){
+            Assert.fail("Aggregation should fail with status error " + result.toString());
+        }
+        if (result.getExceptions().isEmpty()){
+            Assert.fail("Failing aggregation include exception " + result.toString());
+        }
+        Exception e = result.getExceptions().iterator().next();
+        if (! (e instanceof AggregationException)){
+            Assert.fail("Exception should be of type AggregationException " + result.toString());
+        }else if (expectedMessage != null){
+            Assert.assertEquals(expectedMessage, e.getMessage());
         }
     }
 

@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -79,6 +80,17 @@ public class StructuredDescriptionAggregation
         logger.info("Time elapsed for pre-accumulate() : " + (end1 - start) / (1000) + "s");
     }
 
+    @Override
+    protected void verifyConfiguration(IProgressMonitor monitor){
+        if (!AggregationSourceMode.list(AggregationMode.ToParent, AggregationType.StructuredDescription)
+            .contains(getConfig().getToParentSourceMode())){
+            throw new AggregationException("Unsupported source mode for to-parent aggregation: " + getConfig().getToParentSourceMode());
+        }
+        if (!AggregationSourceMode.list(AggregationMode.WithinTaxon, AggregationType.StructuredDescription)
+                .contains(getConfig().getWithinTaxonSourceMode())){
+                throw new AggregationException("Unsupported source mode for within-taxon aggregation: " + getConfig().getWithinTaxonSourceMode());
+        }
+    }
 
     private boolean hasCharacterData(DescriptionElementBase element) {
         return hasCategoricalData(element) || hasQuantitativeData(element);
@@ -164,11 +176,18 @@ public class StructuredDescriptionAggregation
         //remove remaining sources-to-be-removed
         for (IdentifiableSource sourceToRemove : sourcesToRemove) {
             targetDescription.removeSource(sourceToRemove);
-            if (sourceToRemove.getCdmSource() != null){
-                @SuppressWarnings("unchecked")
-                T descriptionToDelete = ((T)sourceToRemove.getCdmSource());
-                ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
-                structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
+            ICdmTarget target = sourceToRemove.getCdmSource();
+            if (target != null){
+                if (target.isInstanceOf(DescriptionBase.class)){
+                    @SuppressWarnings("unchecked")
+                    T descriptionToDelete = ((T)sourceToRemove.getCdmSource());
+                    ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
+                    structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
+                }else if (target.isInstanceOf(Taxon.class)){
+                    //nothing to do for now
+                } else {
+                    throw new AggregationException("CdmLink target type not yet supported: " + target.getClass().getSimpleName());
+                }
             }
         }
     }
@@ -206,10 +225,10 @@ public class StructuredDescriptionAggregation
             }else if (newTarget instanceof Taxon){
                 //nothing to do for now (we do not support reuse of sources linking to different taxa yet)
             }else{
-                throw new IllegalStateException("Sources not linking to a description or a taxon instance currently not yet supported.");
+                throw new AggregationException("Sources not linking to a description or a taxon instance currently not yet supported.");
             }
         }else{
-            throw new IllegalStateException("Sources not linking to another CdmBase instance currently not yet supported.");
+            throw new AggregationException("Sources not linking to another CdmBase instance currently not yet supported.");
         }
     }
 
@@ -281,7 +300,7 @@ public class StructuredDescriptionAggregation
                     }else if (newTarget instanceof Taxon){
                         return newTarget.equals(existingTarget);
                     }else{
-                        throw new IllegalStateException("Other classes then SpecimenDescription and TaxonDescription are not yet supported. But was: " + newTarget.getClass());
+                        throw new AggregationException("Other classes then SpecimenDescription and TaxonDescription are not yet supported. But was: " + newTarget.getClass());
                     }
                 }
             }
@@ -344,7 +363,7 @@ public class StructuredDescriptionAggregation
         }else if (targetElement.isInstanceOf(QuantitativeData.class)){
             mergeDescriptionElement((QuantitativeData)targetElement, (QuantitativeData)newElement);
         }else{
-            throw new IllegalArgumentException("Class not supported: " + targetElement.getClass().getName());
+            throw new AggregationException("Class not supported: " + targetElement.getClass().getName());
         }
     }
 
@@ -484,16 +503,18 @@ public class StructuredDescriptionAggregation
                             Taxon taxon = ((TaxonDescription) desc).getTaxon();
                             source.setCdmSource(taxon);
                         }else {
-                            throw new IllegalStateException("Description type not yet supported for aggregation source mode TAXON: " + desc.getClass().getSimpleName() );
+                            throw new AggregationException("Description type not yet supported for aggregation source mode TAXON: " + desc.getClass().getSimpleName() );
                         }
                         break;
-                    case ALL: //not yet supported
-                    case ALL_SAMEVALUE: //makes no sense
                     case NONE:
                         source = null;
                         break;
+                    case ALL: //not yet supported
+                        throw new AggregationException("Source mode not yet supported: " + sourceMode);
+                    case ALL_SAMEVALUE: //makes no sense
+                        throw new AggregationException("Illegal source mode: " + sourceMode);
                     default:
-                        throw new IllegalStateException("Source mode not yet supported:" + sourceMode);
+                        throw new AggregationException("Source mode not supported: " + sourceMode);
                 }
                 if (source != null){
                     descriptiveResultHolder.sources.add(source);

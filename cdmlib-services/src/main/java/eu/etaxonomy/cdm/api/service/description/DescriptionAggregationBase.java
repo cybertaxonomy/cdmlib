@@ -122,10 +122,13 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             try {
                 preAggregate(subMonitor);
             } catch (Exception e) {
-                result.addException(new RuntimeException("Unhandled error during pre-aggregation", e));
-                result.setError();
-                done();
-                return result;
+                return handleException(e, "Unhandled error during pre-aggregation");
+            }
+
+            try {
+                verifyConfiguration(subMonitor);
+            } catch (Exception e) {
+                return handleException(e, "Unhandled error during configuration check");
             }
 
             subMonitor.worked(preAccumulateTicks);
@@ -138,11 +141,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             try {
                 aggregate(taxonNodeIdList, aggregateMonitor);
             } catch (Exception e) {
-                result.addException(new RuntimeException("Unhandled error during aggregation: " + e.getMessage() , e));
-                e.printStackTrace();
-                result.setError();
-                done();
-                return result;
+                return handleException(e, "Unhandled error during aggregation");
             }
 
             double end = System.currentTimeMillis();
@@ -155,7 +154,20 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             result.addException(new RuntimeException("Unhandled error during doInvoke", e));
             return result;
         }
+    }
 
+    private UpdateResult handleException(Exception e, String unhandledMessage) {
+        Exception ex;
+        if (e instanceof AggregationException){
+            ex = e;
+        }else{
+            ex = new RuntimeException(unhandledMessage + ": " + e.getMessage() , e);
+            e.printStackTrace();
+        }
+        result.addException(ex);
+        result.setError();
+        done();
+        return result;
     }
 
     protected void aggregate(List<Integer> taxonNodeIdList, IProgressMonitor subMonitor)  throws JvmLimitsException {
@@ -329,6 +341,8 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected abstract List<String> descriptionInitStrategy();
 
     protected abstract void preAggregate(IProgressMonitor monitor);
+
+    protected abstract void verifyConfiguration(IProgressMonitor monitor);
 
     /**
      * hook for initializing object when a new transaction starts
