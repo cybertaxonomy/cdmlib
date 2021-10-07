@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -158,7 +159,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         book_b.setTitle("book_a");
 
         engine = new DistributionAggregation();
-        engine.setBatchMinFreeHeap(80 * 1024 * 1024);
+        engine.setBatchMinFreeHeap(50 * 1024 * 1024);
         makeStatusOrder();
 
         monitor = DefaultProgressMonitor.NewInstance();
@@ -202,7 +203,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         Taxon lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -257,7 +259,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxon(), superAreas, filter, statusOrder, monitor);
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         lapsana_communis_alpina  = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -308,7 +311,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
 
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         //test
@@ -380,7 +384,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
 
         config.setMonitor(DefaultProgressMonitor.NewInstance());
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         //test
@@ -471,7 +476,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -527,7 +533,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -579,7 +586,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);  //this is default anyway
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -629,7 +637,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         Taxon lapsana_communis = (Taxon) taxonService.load(T_LAPSANA_COMMUNIS_UUID);
@@ -670,7 +679,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         config.setAggregatingSourceTypes(EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource));
         config.setToParentSourceMode(AggregationSourceMode.ALL);
         commitAndStartNewTransaction();
-        engine.invoke(config, repository);
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
         commitAndStartNewTransaction();
 
         //test
@@ -757,6 +767,14 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         return out.toString();
     }
 
+    private void testStatusOk(UpdateResult result) {
+        if (result.getStatus() != UpdateResult.Status.OK){
+            Assert.fail("Aggregation should have status OK but was " + result.toString());
+            for (Exception ex : result.getExceptions()){
+                ex.printStackTrace();
+            }
+        }
+    }
 
     //@Test //  uncomment to create test data file//
     @Override
