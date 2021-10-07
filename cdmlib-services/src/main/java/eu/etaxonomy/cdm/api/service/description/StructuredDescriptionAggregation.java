@@ -229,6 +229,7 @@ public class StructuredDescriptionAggregation
             }
         }
         addSourceDescriptionToDescribedEntity(newSourceDescription);
+        existingSourceDescription.setTitleCache(newSourceDescription.getTitleCache(), true);
 
         for (DescriptionElementBase debToRemove : elementsToRemove){
             existingSourceDescription.removeElement(debToRemove);
