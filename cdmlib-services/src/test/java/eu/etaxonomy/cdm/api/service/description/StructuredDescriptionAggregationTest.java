@@ -601,6 +601,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setDatasetUuid(dataSet.getUuid());
         config.setAggregationMode(AggregationMode.byWithinTaxonAndToParent());
         config.setIncludeLiterature(false);
+        config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);  //test where written against DESCRIPTION at the beginning so we use this as default for the tests
+
         return config;
     }
 
