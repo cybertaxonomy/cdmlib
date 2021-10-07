@@ -172,17 +172,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(false, false, false);
+        testAggregatedDescription(new TestConfig());
 
         addSomeDataToFirstAggregation();
         commitAndStartNewTransaction();
-        testAggregatedDescription(true, false, false);
+        testAggregatedDescription(new TestConfig().setWithAddedData());
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(false, false, false);
+        testAggregatedDescription(new TestConfig());
     }
 
     private void addSomeDataToFirstAggregation() {
@@ -212,7 +212,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(false, false, false);
+        testAggregatedDescription(new TestConfig());
 
         removeSomeDataFromFirstAggregation();
         commitAndStartNewTransaction();
@@ -224,7 +224,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
-        testAggregatedDescription(false, false, true);
+        testAggregatedDescription(new TestConfig().setWithRemoved());
     }
 
     private void removeSomeDataFromFirstAggregation() {
@@ -314,6 +314,80 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
+    public void noneSourceTest() {
+        createDefaultFeatureTree();
+        DescriptiveDataSet dataSet = createTestDataset();
+        commitAndStartNewTransaction();
+
+        StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
+        config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
+        config.setToParentSourceMode(AggregationSourceMode.NONE);
+
+        // 1st aggregation
+        UpdateResult result = engine.invoke(config, repository);
+        testStatusOk(result);
+        commitAndStartNewTransaction();
+        testAggregatedDescription(new TestConfig().setAggConfig(config));
+
+        config.setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);
+        config.setToParentSourceMode(AggregationSourceMode.NONE);
+        result = engine.invoke(config, repository);
+        testStatusOk(result);
+        commitAndStartNewTransaction();
+        testAggregatedDescription(new TestConfig().setAggConfig(config));
+
+        config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
+        config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
+        result = engine.invoke(config, repository);
+        testStatusOk(result);
+        commitAndStartNewTransaction();
+        testAggregatedDescription(new TestConfig().setAggConfig(config));
+
+        config.setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);
+        config.setToParentSourceMode(AggregationSourceMode.TAXON);
+        result = engine.invoke(config, repository);
+        testStatusOk(result);
+        commitAndStartNewTransaction();
+        testAggregatedDescription(new TestConfig().setAggConfig(config));
+
+        config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
+        config.setToParentSourceMode(AggregationSourceMode.TAXON);
+        result = engine.invoke(config, repository);
+        testStatusOk(result);
+        commitAndStartNewTransaction();
+        testAggregatedDescription(new TestConfig().setAggConfig(config));
+
+        config.setWithinTaxonSourceMode(AggregationSourceMode.ALL);
+        config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
+        result = engine.invoke(config, repository);
+        testStatusNotOk(result);
+        commitAndStartNewTransaction();
+
+        config.setWithinTaxonSourceMode(AggregationSourceMode.ALL);
+        config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
+        result = engine.invoke(config, repository);
+        testStatusNotOk(result);
+        commitAndStartNewTransaction();
+
+//        removeSomeDataFromFirstAggregation();
+//        commitAndStartNewTransaction();
+//        Assert.assertEquals("Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
+//                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (3 cloned aggregated descriptions?) = 17",
+//                17, descriptionService.count(null));
+//
+//        // 2nd aggregation
+//        result = engine.invoke(config, repository);
+//        testStatusOk(result);
+//        commitAndStartNewTransaction();
+//        testAggregatedDescription(false, false, true);
+    }
+
+    @Test
+    @DataSets({
+        @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+        @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
+        @DataSet(value="StructuredDescriptionAggregationTest.xml"),
+    })
     public void aggregationTest() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestDataset();
@@ -324,14 +398,14 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         testStatusOk(result);
-        testAggregatedDescription(false, false, false);
+        testAggregatedDescription(new TestConfig());
 
         config.setIncludeLiterature(true);
 
         result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         testStatusOk(result);
-        testAggregatedDescription(false, true, false);  //with literature
+        testAggregatedDescription(new TestConfig().setWithLiterature());
     }
 
     private void testStatusOk(UpdateResult result) {
@@ -340,6 +414,13 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
             for (Exception ex : result.getExceptions()){
                 ex.printStackTrace();
             }
+        }
+    }
+
+    private void testStatusNotOk(UpdateResult result) {
+        if (result.getStatus() == UpdateResult.Status.OK){
+            Assert.fail("Aggregation should fail but did not " + result.toString());
+            //TODO test for expected exception
         }
     }
 
@@ -354,8 +435,32 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         dataSet.addDescription(literatureDescription);
     }
 
-    private void testAggregatedDescription(boolean withAddedData, boolean withLiterature, boolean withRemovedData) {
+    private class TestConfig{
+        boolean withAddedData;
+        boolean withLiterature;
+        boolean withRemovedData;
+        AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.DESCRIPTION;
+        AggregationSourceMode toParentSourceMode = AggregationSourceMode.DESCRIPTION;
 
+        private TestConfig setWithAddedData() {withAddedData = true; return this;}
+        private TestConfig setWithLiterature() {withLiterature = true; return this;}
+        private TestConfig setWithRemoved() {withRemovedData = true; return this;}
+
+        public TestConfig setAggConfig(StructuredDescriptionAggregationConfiguration config) {
+            withinTaxonSourceMode = config.getWithinTaxonSourceMode();
+            toParentSourceMode = config.getToParentSourceMode();
+            return this;
+        }
+    }
+
+    private void testAggregatedDescription(TestConfig config) {
+
+        boolean withRemovedData = config.withRemovedData;
+        boolean withLiterature = config.withLiterature;
+        boolean withAddedData = config.withAddedData;
+        boolean isWithinNone = config.withinTaxonSourceMode.isNone();
+        boolean isToParentNone = config.toParentSourceMode.isNone();
+        boolean isToParentTaxon = config.toParentSourceMode.isTaxon();
         int intDel = withRemovedData? -1 : 0;
         int intLit = withLiterature? 1 : 0;
 
@@ -376,13 +481,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         BigDecimal max = withRemovedData ? new BigDecimal("7.0") : new BigDecimal("8.0");
         testQuantitativeData(uuidFeatureLeafLength, count, min, max, avg, aggrDescLapsanaCommunisAlpina);
         //... sources
-        Assert.assertEquals(3+intLit+intDel, aggrDescLapsanaCommunisAlpina.getSources().size());
+        int nWithinSources = isWithinNone ? 0 : 3+intLit+intDel;
+        Assert.assertEquals(nWithinSources, aggrDescLapsanaCommunisAlpina.getSources().size());
         SpecimenOrObservationBase<?> specLcommunisAlpina1 = CdmBase.deproxy(occurrenceService.find(T_LAPSANA_COMMUNIS_ALPINA_SPEC1_UUID));
-        Assert.assertEquals("Spec1 must have 2 descriptions now. The primary one and the cloned.", 2, specLcommunisAlpina1.getSpecimenDescriptions().size());
-        Assert.assertEquals(1, specLcommunisAlpina1.getSpecimenDescriptions().stream().filter(d->d.isCloneForSource()).count());
-        DescriptionBase<?> clonedDesc = specLcommunisAlpina1.getDescriptions().stream().filter(d->d.isCloneForSource()).findFirst().get();
-        DescriptionBase<?> sourceDescription = getSingleSpecimenDescriptionSource(aggrDescLapsanaCommunisAlpina, T_LAPSANA_COMMUNIS_ALPINA_SPEC1_UUID);
-        Assert.assertEquals(clonedDesc, sourceDescription);
+        int nCloned = isWithinNone ? 0 : 1;
+        Assert.assertEquals("Spec1 must have 2 descriptions now. The primary one and the cloned.", 1+nCloned, specLcommunisAlpina1.getSpecimenDescriptions().size());
+        Assert.assertEquals(nCloned, specLcommunisAlpina1.getSpecimenDescriptions().stream().filter(d->d.isCloneForSource()).count());
+        if (nCloned > 0){
+            DescriptionBase<?> clonedDesc = specLcommunisAlpina1.getDescriptions().stream().filter(d->d.isCloneForSource()).findFirst().get();
+            DescriptionBase<?> sourceDescription = getSingleSpecimenDescriptionSource(aggrDescLapsanaCommunisAlpina, T_LAPSANA_COMMUNIS_ALPINA_SPEC1_UUID);
+            Assert.assertEquals(clonedDesc, sourceDescription);
+        }
 
         //L. communis adenophora
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
@@ -406,12 +515,21 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         testQuantitativeData(uuidFeatureLeafLength, count, min,
                 new BigDecimal("10.0"), avg, aggrDescLapsanaCommunis);
         //... sources
-        Assert.assertEquals(2, aggrDescLapsanaCommunis.getSources().size());
+        int nToParent = isToParentNone ? 0 : 2;
+        Assert.assertEquals(nToParent, aggrDescLapsanaCommunis.getSources().size());
         Map<UUID, List<TaxonDescription>> taxonDescriptionMap = getSourceTaxonDescriptionMap(aggrDescLapsanaCommunis);
-        Assert.assertEquals(2, taxonDescriptionMap.size());
-        Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
-        Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
-        Assert.assertNotEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+        int nToParentDescs = isToParentTaxon? 0 : nToParent;
+        Assert.assertEquals(nToParentDescs, taxonDescriptionMap.size());
+        if (nToParentDescs > 0){
+            Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
+            Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
+            Assert.assertNotEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+        }else if (isToParentTaxon){
+            Map<UUID, List<Taxon>> taxonToTaxonSourceMap = getSourceTaxonMap(aggrDescLapsanaCommunis);
+            Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
+            Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
+            Assert.assertEquals(taxLapsanaCommunisAlpina, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+        }
 
         //Lapsana
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
@@ -423,19 +541,29 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         testQuantitativeData(uuidFeatureLeafLength, count, min,
                 new BigDecimal("10.0"), avg, aggrDescLapsana);
         //... sources
-        Assert.assertEquals(1, aggrDescLapsana.getSources().size());
+        nToParent = isToParentNone ? 0 : 1;
+        Assert.assertEquals(nToParent, aggrDescLapsana.getSources().size());
+        nToParentDescs = isToParentTaxon? 0 : nToParent;
         taxonDescriptionMap = getSourceTaxonDescriptionMap(aggrDescLapsana);
-        Assert.assertEquals(1, taxonDescriptionMap.size());
-        Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).size());
-        Assert.assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+        Assert.assertEquals(nToParentDescs, taxonDescriptionMap.size());
+        if (nToParentDescs > 0){
+            Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).size());
+            Assert.assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+        }else if (isToParentTaxon){
+            Map<UUID, List<Taxon>> taxonToTaxonSourceMap = getSourceTaxonMap(aggrDescLapsana);
+            Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_UUID).size());
+            Assert.assertEquals(taxLapsanaCommunis, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+        }
 
         //total description count
+        nCloned = (isToParentNone || isToParentTaxon ? 0 : 3) + (isWithinNone ? 0 : 4);
         Assert.assertEquals("Should have 4 specimen desc, 1 literature desc, 2 individual association holder, "
-                + "4 aggregated descriptions, 4 cloned specimen descriptions, (3/4 cloned aggregated descriptions?) = 18/19",
-                18+intLit+(intDel*2), descriptionService.count(null));
+                + "4 aggregated descriptions, 4/0 cloned specimen descriptions, (3/4/0 cloned aggregated descriptions?) = 18/19",
+                11+nCloned+intLit+(intDel*2), descriptionService.count(null));
 
     }
 
+    //a map of the taxon uuid to the attached source descriptions
     private Map<UUID, List<TaxonDescription>> getSourceTaxonDescriptionMap(TaxonDescription desc) {
         return desc.getSources().stream().filter(s->(s.getCdmSource() instanceof TaxonDescription))
             .map(s->CdmBase.deproxy(s.getCdmSource(), TaxonDescription.class))
@@ -445,6 +573,14 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private static Function<DescriptionBase<?>, UUID> fDescToDescribedUuid =
             ((Function<DescriptionBase<?>, IDescribable<?>>)(d->d.isInstanceOf(SpecimenDescription.class)? d.getDescribedSpecimenOrObservation(): CdmBase.deproxy(d, TaxonDescription.class).getTaxon()))
             .andThen(IDescribable::getUuid);
+
+    //a map of the taxon to the attached taxon (source link)
+    private Map<UUID, List<Taxon>> getSourceTaxonMap(TaxonDescription desc) {
+        return desc.getSources().stream().filter(s->(s.getCdmSource() instanceof Taxon))
+            .map(s->CdmBase.deproxy(s.getCdmSource(), Taxon.class))
+            .collect(Collectors.groupingBy(t->t.getUuid()));
+    }
+
 
     private DescriptionBase<?> getSingleSpecimenDescriptionSource(
             TaxonDescription aggrDescLapsanaCommunisAlpina, UUID specimenUuid) {

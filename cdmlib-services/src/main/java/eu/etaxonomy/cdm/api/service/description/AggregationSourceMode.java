@@ -82,6 +82,14 @@ public enum AggregationSourceMode implements IKeyTerm{
         return supportsOriginalSourceType;
     }
 
+    public boolean isNone(){
+        return this == NONE;
+    }
+
+    public boolean isTaxon(){
+        return this == TAXON;
+    }
+
     /**
      * Returns a list of {@link AggregationSourceMode}s available for the
      * given {@link AggregationMode} and {@link AggregationType}

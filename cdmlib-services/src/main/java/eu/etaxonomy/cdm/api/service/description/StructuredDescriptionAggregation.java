@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import eu.etaxonomy.cdm.common.BigDecimalUtil;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -174,25 +175,37 @@ public class StructuredDescriptionAggregation
 
     private <T extends DescriptionBase<?>> void addNewSource(TaxonDescription targetDescription,
             IdentifiableSource newSource) {
+
         targetDescription.addSource(newSource);
-        if (newSource.getCdmSource() != null){
-            @SuppressWarnings("unchecked")
-            T description = ((T)newSource.getCdmSource());
-            ((IDescribable<T>)description.describedEntity()).addDescription(description);
+        ICdmBase target = newSource.getCdmSource();
+        if (target != null){
+            if (target.isInstanceOf(DescriptionBase.class)){
+                @SuppressWarnings("unchecked")
+                T description = (T)CdmBase.deproxy(target);
+                ((IDescribable<T>)description.describedEntity()).addDescription(description);
+            }
         }
     }
 
     //mergeablity has been checked before
     private <T extends DescriptionBase<?>> void mergeSource(IdentifiableSource mergeCandidate, IdentifiableSource newSource) {
 
-        if (newSource.getCdmSource() != null){
-            @SuppressWarnings("unchecked")
-            T newTarget = CdmBase.deproxy((T)newSource.getCdmSource());
-            @SuppressWarnings("unchecked")
-            T existingTarget = CdmBase.deproxy((T)mergeCandidate.getCdmSource());
-            mergeSourceDescription(existingTarget, newTarget);
-            ((IDescribable<T>)existingTarget.describedEntity()).addDescription(existingTarget);
-            ((IDescribable<T>)newTarget.describedEntity()).removeDescription(newTarget);
+        ICdmBase newTarget = newSource.getCdmSource();
+        if (newTarget != null){
+            newTarget = CdmBase.deproxy(newTarget);
+            if (newTarget instanceof DescriptionBase){
+                @SuppressWarnings("unchecked")
+                T newTargetDesc = (T)newTarget;
+                @SuppressWarnings("unchecked")
+                T existingTargetDesc = CdmBase.deproxy((T)mergeCandidate.getCdmSource());
+                mergeSourceDescription(existingTargetDesc, newTargetDesc);
+                ((IDescribable<T>)existingTargetDesc.describedEntity()).addDescription(existingTargetDesc);
+                ((IDescribable<T>)newTargetDesc.describedEntity()).removeDescription(newTargetDesc);
+            }else if (newTarget instanceof Taxon){
+                //nothing to do for now (we do not support reuse of sources linking to different taxa yet)
+            }else{
+                throw new IllegalStateException("Sources not linking to a description or a taxon instance currently not yet supported.");
+            }
         }else{
             throw new IllegalStateException("Sources not linking to another CdmBase instance currently not yet supported.");
         }
@@ -247,8 +260,8 @@ public class StructuredDescriptionAggregation
             if (existingSource.getCdmSource() == null){
                 return false;
             }else {
-                CdmBase newTarget = CdmBase.deproxy((CdmBase)newSource.getCdmSource());
-                CdmBase existingTarget = CdmBase.deproxy((CdmBase)existingSource.getCdmSource());
+                ICdmBase newTarget = CdmBase.deproxy(newSource.getCdmSource());
+                ICdmBase existingTarget = CdmBase.deproxy((CdmBase)existingSource.getCdmSource());
                 if (!newTarget.getClass().equals(existingTarget.getClass())){
                     return false;
                 }else{
@@ -262,6 +275,8 @@ public class StructuredDescriptionAggregation
                         Taxon existingTaxon = ((TaxonDescription)existingTarget).getTaxon();
                         //for now reuse is possible if both are descriptions for the same taxon
                         return newTaxon != null && newTaxon.equals(existingTaxon);
+                    }else if (newTarget instanceof Taxon){
+                        return newTarget.equals(existingTarget);
                     }else{
                         throw new IllegalStateException("Other classes then SpecimenDescription and TaxonDescription are not yet supported. But was: " + newTarget.getClass());
                     }
