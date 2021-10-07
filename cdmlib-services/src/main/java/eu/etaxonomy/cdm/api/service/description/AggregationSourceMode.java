@@ -19,11 +19,11 @@ import eu.etaxonomy.cdm.model.term.IKeyTerm;
 
 public enum AggregationSourceMode implements IKeyTerm{
     NONE("NO", "None",           true , true, false, true, true ),
-    ALL("ALL", "All sources",    true , true, true , true, true ),
+    ALL("ALL", "All sources",    true , true, true , true, false), //for now we do not support structured descriptions, may change in future
     ALL_SAMEVALUE("ALSV", "All sources with highest status",
-                                 true , true, true , true, false),
+                                 true , true, true , true, false), //does not make sense for struc. descriptions
     DESCRIPTION("DESC","Link to underlying description",
-                                 true , true, false, true, true ),
+                                 true , true, false, true, true ),  //probably not really supported for distributions yet, at least not for "within taxon"
     TAXON("TAX","Link to child taxon",
                                  false, true, false, true, true );
 
@@ -34,8 +34,11 @@ public enum AggregationSourceMode implements IKeyTerm{
     final private boolean supportsOriginalSourceType;
     final private EnumSet<AggregationType> supportedAggregationTypes;
 
-    private AggregationSourceMode(String key, String message, boolean supportsWithinTaxon,
-            boolean supportsToParent, boolean supportsOriginalSourceType, boolean supportsDistribution, boolean supportsStructuredDescription) {
+    private AggregationSourceMode(String key, String message,
+            boolean supportsWithinTaxon, boolean supportsToParent,
+            boolean supportsOriginalSourceType,
+            boolean supportsDistribution, boolean supportsStructuredDescription) {
+
         this.key = key;
         this.label = message;
         this.supportsWithinTaxon = supportsWithinTaxon;
