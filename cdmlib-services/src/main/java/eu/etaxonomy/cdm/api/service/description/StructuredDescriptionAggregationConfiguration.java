@@ -49,6 +49,7 @@ public class StructuredDescriptionAggregationConfiguration
     protected StructuredDescriptionAggregationConfiguration(TaxonNodeFilter filter,
             List<AggregationMode> aggregationModes, IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature) {
         super(filter, monitor, aggregationModes);
+        setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);  //default mode for structured descriptions
         if (includeDefault != null){
             this.includeDefault = includeDefault;
         }

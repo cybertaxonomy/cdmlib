@@ -150,16 +150,13 @@ public class StructuredDescriptionAggregation
                 .collect(Collectors.toSet());
 
         Set<IdentifiableSource> newSources = structuredResultHolder.sources;
-        //TODO FIXME only toParentSourceMode is wrong
-        if (getConfig().getToParentSourceMode() != AggregationSourceMode.NONE){
-            for (IdentifiableSource newSource : newSources) {
-                IdentifiableSource mergeSourceCandidate = findSourceCandidate(targetDescription, newSource);
-                if (mergeSourceCandidate == null){
-                    addNewSource(targetDescription, newSource);
-                }else{
-                    mergeSource(mergeSourceCandidate, newSource);
-                    sourcesToRemove.remove(mergeSourceCandidate);
-                }
+        for (IdentifiableSource newSource : newSources) {
+            IdentifiableSource mergeSourceCandidate = findSourceCandidate(targetDescription, newSource);
+            if (mergeSourceCandidate == null){
+                addNewSource(targetDescription, newSource);
+            }else{
+                mergeSource(mergeSourceCandidate, newSource);
+                sourcesToRemove.remove(mergeSourceCandidate);
             }
         }
 
@@ -197,7 +194,7 @@ public class StructuredDescriptionAggregation
             ((IDescribable<T>)existingTarget.describedEntity()).addDescription(existingTarget);
             ((IDescribable<T>)newTarget.describedEntity()).removeDescription(newTarget);
         }else{
-            //TODO merge non-description based sources
+            throw new IllegalStateException("Sources not linking to another CdmBase instance currently not yet supported.");
         }
     }
 
@@ -232,7 +229,7 @@ public class StructuredDescriptionAggregation
     }
     @SuppressWarnings("unchecked")
     private <T extends DescriptionBase<?>> void removeSourceDescriptionFromDescribedEntity(T sourceDescription) {
-        ((IDescribable<T>)sourceDescription.describedEntity()).addDescription(sourceDescription);
+        ((IDescribable<T>)sourceDescription.describedEntity()).removeDescription(sourceDescription);
     }
 
     private IdentifiableSource findSourceCandidate(TaxonDescription targetDescription, IdentifiableSource newSource) {
@@ -416,7 +413,7 @@ public class StructuredDescriptionAggregation
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<TaxonDescription> childDescriptions = getChildTaxonDescriptions(taxonNode, dataSet);
-        addDescriptionToResultHolder(descriptiveResultHolder, childDescriptions);
+        addDescriptionToResultHolder(descriptiveResultHolder, childDescriptions, AggregationMode.ToParent);
     }
 
     @Override
@@ -425,10 +422,10 @@ public class StructuredDescriptionAggregation
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
         Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
-        addDescriptionToResultHolder(descriptiveResultHolder, specimenDescriptions);
+        addDescriptionToResultHolder(descriptiveResultHolder, specimenDescriptions, AggregationMode.WithinTaxon);
         if (getConfig().isIncludeLiterature()){
             Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
-            addDescriptionToResultHolder(descriptiveResultHolder, literatureDescriptions);
+            addDescriptionToResultHolder(descriptiveResultHolder, literatureDescriptions, AggregationMode.WithinTaxon);
         }
         //TODO add default descriptions
         //xxx
@@ -436,7 +433,8 @@ public class StructuredDescriptionAggregation
     }
 
     private void addDescriptionToResultHolder(StructuredDescriptionResultHolder descriptiveResultHolder,
-            Set<? extends DescriptionBase<?>> specimenLiteraturOrDefaultDescriptions) {
+            Set<? extends DescriptionBase<?>> specimenLiteraturOrDefaultDescriptions,
+            AggregationMode aggregationMode) {
 
         boolean descriptionWasUsed = false;
         for (DescriptionBase<?> desc: specimenLiteraturOrDefaultDescriptions){
@@ -451,12 +449,37 @@ public class StructuredDescriptionAggregation
                     }
                 }
             }
-            if(descriptionWasUsed){
-                IdentifiableSource identifiableSource = IdentifiableSource.NewAggregationSourceInstance();
-                //TODO preliminary (what about distinction within<-> parentChild
-                DescriptionBase<?> clonedDesc = cloneNewSourceDescription(desc);
-                identifiableSource.setCdmSource(clonedDesc);
-                descriptiveResultHolder.sources.add(identifiableSource);
+
+            //sources
+            AggregationSourceMode sourceMode = getConfig().getSourceMode(aggregationMode);
+            if(descriptionWasUsed && sourceMode != AggregationSourceMode.NONE){
+                IdentifiableSource source = IdentifiableSource.NewAggregationSourceInstance();
+                desc = CdmBase.deproxy(desc);
+
+                switch (sourceMode){
+                    case DESCRIPTION:
+                        DescriptionBase<?> clonedDesc = cloneNewSourceDescription(desc);
+                        source.setCdmSource(clonedDesc);
+                        break;
+                    case TAXON:
+                        if (desc instanceof TaxonDescription){
+                            Taxon taxon = ((TaxonDescription) desc).getTaxon();
+                            source.setCdmSource(taxon);
+                        }else {
+                            throw new IllegalStateException("Description type not yet supported for aggregation source mode TAXON: " + desc.getClass().getSimpleName() );
+                        }
+                        break;
+                    case ALL: //not yet supported
+                    case ALL_SAMEVALUE: //makes no sense
+                    case NONE:
+                        source = null;
+                        break;
+                    default:
+                        throw new IllegalStateException("Source mode not yet supported:" + sourceMode);
+                }
+                if (source != null){
+                    descriptiveResultHolder.sources.add(source);
+                }
             }
         }
     }

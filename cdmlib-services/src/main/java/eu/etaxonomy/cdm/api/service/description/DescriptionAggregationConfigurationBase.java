@@ -110,6 +110,17 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     public void setToParentSourceMode(AggregationSourceMode toParentSourceMode) {
         this.toParentSourceMode = toParentSourceMode;
     }
+    public AggregationSourceMode getSourceMode(AggregationMode aggregationMode){
+        AggregationSourceMode result;
+        if (aggregationMode == AggregationMode.WithinTaxon){
+            result = withinTaxonSourceMode;
+        }else if (aggregationMode == AggregationMode.ToParent){
+            result = toParentSourceMode;
+        }else{
+            throw new IllegalArgumentException("Aggregation mode not yet supported: " + aggregationMode);
+        }
+        return result == null ? AggregationSourceMode.NONE : result;
+    }
 
     public AggregationSourceMode getWithinTaxonSourceMode() {
         return withinTaxonSourceMode;
