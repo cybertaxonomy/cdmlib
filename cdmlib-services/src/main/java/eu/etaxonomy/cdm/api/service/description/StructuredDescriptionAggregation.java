@@ -245,9 +245,9 @@ public class StructuredDescriptionAggregation
                     .findFirst();
             if (matchingElement.isPresent()){
                 mergeDescriptionElement(matchingElement.get(), newElementClone);
-                elementsToRemove.remove(matchingElement);
+                elementsToRemove.remove(matchingElement.get());
             }else{
-                newSourceDescription.addElement(newElementClone);
+                existingSourceDescription.addElement(newElementClone);
             }
         }
         addSourceDescriptionToDescribedEntity(newSourceDescription);
