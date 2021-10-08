@@ -124,12 +124,12 @@ public class DistributionAggregation
     @Override
     protected void verifyConfiguration(IProgressMonitor monitor){
         if (!AggregationSourceMode.list(AggregationMode.ToParent, AggregationType.Distribution)
-            .contains(getConfig().getToParentSourceMode())){
+                .contains(getConfig().getToParentSourceMode())){
             throw new AggregationException("Unsupported source mode for to-parent aggregation: " + getConfig().getToParentSourceMode());
         }
         if (!AggregationSourceMode.list(AggregationMode.WithinTaxon, AggregationType.Distribution)
                 .contains(getConfig().getWithinTaxonSourceMode())){
-                throw new AggregationException("Unsupported source mode for within-taxon aggregation: " + getConfig().getToParentSourceMode());
+            throw new AggregationException("Unsupported source mode for within-taxon aggregation: " + getConfig().getToParentSourceMode());
         }
     }
 

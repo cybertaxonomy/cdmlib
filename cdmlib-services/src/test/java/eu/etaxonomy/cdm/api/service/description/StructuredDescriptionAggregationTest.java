@@ -105,6 +105,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     private static final UUID uuidFeatureLeafPA = UUID.fromString("c4dfd16f-f2ed-45e0-8f4d-7fe1ae880510");
     private static UUID uuidFeatureLeafLength = UUID.fromString("3c19b50b-4a8e-467e-b7d4-89ebc05a33e1");
     private static UUID uuidFeatureLeafColor = UUID.fromString("1e8f503c-5aeb-4788-b4f9-84128f7141c7");
+    private static UUID uuidFeatureLeafAdd = UUID.fromString("774b52a5-c16c-43e5-94e7-3946b506554d");
 
     private static UUID uuidLeafColorBlue = UUID.fromString("9b4df19d-f89d-4788-9d71-d1f6f7cae910");
     private static UUID uuidLeafColorYellow = UUID.fromString("4cf0881b-0e7b-489a-9fdb-adbe6ae4e0ae");
@@ -179,11 +180,20 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig().setWithAddedData());
 
-        // 2nd aggregation
+        // 2nd aggregation => should be same as originally as data was only added to aggregation to see if it is correctly deleted
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig());
+
+        // reaggregate with an element having a feature not yet in the existing descriptions
+        addNewFeature();
+        commitAndStartNewTransaction();
+        result = engine.invoke(config, repository);
+        verifyStatusOk(result);
+        commitAndStartNewTransaction();
+        verifyAggregatedDescription(new TestConfig().setWithFeature());
+
     }
 
     private void addSomeDataToFirstAggregation() {
@@ -194,6 +204,16 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
                 .findFirst().get();
 
         addCategoricalData(taxonDescription, uuidFeatureLeafPA, State.uuidPresent);
+    }
+
+    private void addNewFeature() {
+        SpecimenOrObservationBase<?> spec1 = occurrenceService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_SPEC1_UUID);
+        SpecimenDescription specimenDescription = (SpecimenDescription)spec1.getDescriptions().stream()
+                .filter(desc->!desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
+                .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
+                .findFirst().get();
+
+        addQuantitativeData(specimenDescription, uuidFeatureLeafAdd, new BigDecimal("2.5"), new BigDecimal("3.6"));
     }
 
     @Test
@@ -454,12 +474,14 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         boolean withAddedData;
         boolean withLiterature;
         boolean withRemovedData;
+        boolean withFeature;
         AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.DESCRIPTION;
         AggregationSourceMode toParentSourceMode = AggregationSourceMode.DESCRIPTION;
 
         private TestConfig setWithAddedData() {withAddedData = true; return this;}
         private TestConfig setWithLiterature() {withLiterature = true; return this;}
         private TestConfig setWithRemoved() {withRemovedData = true; return this;}
+        private TestConfig setWithFeature() {withFeature = true; return this;}
 
         public TestConfig setAggConfig(StructuredDescriptionAggregationConfiguration config) {
             withinTaxonSourceMode = config.getWithinTaxonSourceMode();
@@ -474,6 +496,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         boolean withLiterature = config.withLiterature;
         boolean withAddedData = config.withAddedData;
         boolean isWithinNone = config.withinTaxonSourceMode.isNone();
+        boolean withFeature = config.withFeature;
         boolean isToParentNone = config.toParentSourceMode.isNone();
         boolean isToParentTaxon = config.toParentSourceMode.isTaxon();
         int intDel = withRemovedData? -1 : 0;
@@ -510,7 +533,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //L. communis adenophora
         Taxon taxLapsanaCommunisAdenophora = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID);
-        TaxonDescription aggrDescLapsanaCommunisAdenophora = verifyTaxonDescriptions(taxLapsanaCommunisAdenophora, 3);
+        int nEl = withFeature ? 4 : 3;
+        TaxonDescription aggrDescLapsanaCommunisAdenophora = verifyTaxonDescriptions(taxLapsanaCommunisAdenophora, nEl);
         verifyState(verifyCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunisAdenophora, false), State.uuidPresent, 1);
         List<StateData> sdAdenophoraLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAdenophora, false);
         verifyState(sdAdenophoraLeafColor, uuidLeafColorBlue, 0);
@@ -520,7 +544,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //L. communis
         Taxon taxLapsanaCommunis = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_UUID);
-        TaxonDescription aggrDescLapsanaCommunis = verifyTaxonDescriptions(taxLapsanaCommunis, 3);
+        TaxonDescription aggrDescLapsanaCommunis = verifyTaxonDescriptions(taxLapsanaCommunis, nEl);
         verifyState(verifyCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsanaCommunis, false), State.uuidPresent, 4+intDel);
         List<StateData> sdCommunisLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsanaCommunis, false);
         verifyState(sdCommunisLeafColor, uuidLeafColorBlue, 2 + intLit);
@@ -548,7 +572,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //Lapsana
         Taxon taxLapsana = (Taxon)taxonService.find(T_LAPSANA_UUID);
-        TaxonDescription aggrDescLapsana = verifyTaxonDescriptions(taxLapsana, 3);
+        TaxonDescription aggrDescLapsana = verifyTaxonDescriptions(taxLapsana, nEl);
         verifyState(verifyCategoricalData(uuidFeatureLeafPA, 1, aggrDescLapsana, false), State.uuidPresent, 4+intDel);
         List<StateData> sdLapsanLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 2, aggrDescLapsana, false);
         verifyState(sdLapsanLeafColor, uuidLeafColorBlue, 2 + intLit);
@@ -806,20 +830,33 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         //leaf p/a
         //  leaf length
         //  leaf color
+
+        //tree
         TermTree<Feature> featureTree = TermTree.NewFeatureInstance();
         featureTree.setUuid(uuidFeatureTree);
+
+        //leaf p/a
         Feature featureLeafPA = createFeature(uuidFeatureLeafPA, "LeafPA", false);
         TermNode<Feature> leafPANode = featureTree.getRoot().addChild(featureLeafPA);
+
+        //leaf length
         Feature featureLeafLength = createFeature(uuidFeatureLeafLength, "LeafLength", true);
         leafPANode.addChild(featureLeafLength);
+
+        //leaf color
         Feature featureLeafColor = createFeature(uuidFeatureLeafColor, "LeafColor", false);
         leafPANode.addChild(featureLeafColor);
+        TermVocabulary<State> stateVoc = TermVocabulary.NewInstance(TermType.State, State.class, "", "Colors", null, null);
         State yellow = createState("Yellow", uuidLeafColorYellow);
         State blue = createState("Blue", uuidLeafColorBlue);
-        TermVocabulary<State> stateVoc = TermVocabulary.NewInstance(TermType.State, State.class, "", "Colors", null, null);
         stateVoc.addTerm(yellow);
         stateVoc.addTerm(blue);
         featureLeafColor.addSupportedCategoricalEnumeration(stateVoc);
+
+        //additional feature
+        Feature featureLeafAdd = createFeature(uuidFeatureLeafAdd, "Add", true);
+        leafPANode.addChild(featureLeafAdd);
+
         vocabularyService.save(stateVoc);
     }
 
