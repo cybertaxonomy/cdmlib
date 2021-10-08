@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -98,8 +99,8 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 collector = fieldUnit.getGatheringEvent().getCollector();
             }
             String fieldNumberString = CdmUtils.Nz(fieldUnit.getFieldNumber());
-            if (collector != null){
-                collectorsString = collector.getTitleCache();
+            if (collector != null && collector instanceof TeamOrPersonBase){
+                collectorsString = ((TeamOrPersonBase)collector).getCollectorTitleCache();
             }
             collectorsString = CdmUtils.concat(" - ", collectorsString, fieldNumberString);
         }
