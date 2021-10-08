@@ -50,12 +50,6 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public TermVocabulary<Feature> getDefaultFeatureVocabulary();
 
     /**
-     * @deprecated use TermService#getVocabulary(VocabularyType) instead
-     */
-    @Deprecated
-    public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
-
-    /**
      * Gets a DescriptionElementBase instance matching the supplied uuid
      *
      * @param uuid the uuid of the DescriptionElement of interest

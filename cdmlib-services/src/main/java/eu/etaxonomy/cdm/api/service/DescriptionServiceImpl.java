@@ -754,11 +754,6 @@ public class DescriptionServiceImpl
     }
 
     @Override
-    public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {
-        return vocabularyDao.findByUuid(uuid);
-    }
-
-    @Override
     @Deprecated
     public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
