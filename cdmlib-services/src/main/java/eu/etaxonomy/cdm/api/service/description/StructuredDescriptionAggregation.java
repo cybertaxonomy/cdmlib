@@ -236,8 +236,8 @@ public class StructuredDescriptionAggregation
     private <T extends DescriptionBase<?>> void mergeSourceDescription(T existingSourceDescription, T newSourceDescription) {
 
         Set<DescriptionElementBase> elementsToRemove = new HashSet<>(existingSourceDescription.getElements());
-
-        for (DescriptionElementBase newElement : newSourceDescription.getElements()){
+        Set<DescriptionElementBase> newElements = new HashSet<>(newSourceDescription.getElements());
+        for (DescriptionElementBase newElement : newElements){
             DescriptionElementBase newElementClone = newElement.clone();
             Optional<DescriptionElementBase> matchingElement = elementsToRemove.stream()
                     .filter(e->e.getFeature()!= null
