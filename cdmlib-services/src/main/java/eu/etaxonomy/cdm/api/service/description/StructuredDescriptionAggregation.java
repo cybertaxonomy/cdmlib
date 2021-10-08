@@ -181,7 +181,7 @@ public class StructuredDescriptionAggregation
             if (target != null){
                 if (target.isInstanceOf(DescriptionBase.class)){
                     @SuppressWarnings("unchecked")
-                    T descriptionToDelete = ((T)sourceToRemove.getCdmSource());
+                    T descriptionToDelete = (T)target;
                     ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
                     structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
                 }else if (target.isInstanceOf(Taxon.class)){

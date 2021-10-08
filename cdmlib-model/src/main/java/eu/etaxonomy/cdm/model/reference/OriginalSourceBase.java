@@ -138,7 +138,6 @@ public abstract class OriginalSourceBase
 
 	/**
 	 * Constructor
-	 * @param type
 	 */
 	protected OriginalSourceBase(OriginalSourceType type){
 		if (type == null){
@@ -217,11 +216,11 @@ public abstract class OriginalSourceBase
     }
 	*/
 
-
 //	@Override
 //    public void setCdmSource(CdmLinkSource cdmSource) {
 //        this.cdmSource = cdmSource;
 //    }
+
     @Override
     public void setCdmSource(ICdmTarget cdmTarget){
         if (cdmTarget != null){

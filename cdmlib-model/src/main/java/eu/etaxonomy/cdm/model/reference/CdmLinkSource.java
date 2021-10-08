@@ -69,7 +69,7 @@ public class CdmLinkSource extends CdmLinkBase {
 
 //******************* CONSTRUCTOR *********************/
 
-    public CdmLinkSource(){}  //mayb protected is enough, needs to be tested for loading
+    public CdmLinkSource(){}  //maybe protected is enough, needs to be tested for loading
 
     public CdmLinkSource(ICdmTarget target) {
 //        this.source = source;
