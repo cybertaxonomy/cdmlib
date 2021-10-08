@@ -237,6 +237,7 @@ public class StructuredDescriptionAggregation
 
         Set<DescriptionElementBase> elementsToRemove = new HashSet<>(existingSourceDescription.getElements());
         Set<DescriptionElementBase> newElements = new HashSet<>(newSourceDescription.getElements());
+
         for (DescriptionElementBase newElement : newElements){
             DescriptionElementBase newElementClone = newElement.clone();
             Optional<DescriptionElementBase> matchingElement = elementsToRemove.stream()
