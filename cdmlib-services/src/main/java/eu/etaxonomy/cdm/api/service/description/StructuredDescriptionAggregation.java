@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -238,12 +239,12 @@ public class StructuredDescriptionAggregation
 
         for (DescriptionElementBase newElement : newSourceDescription.getElements()){
             DescriptionElementBase newElementClone = newElement.clone();
-            DescriptionElementBase matchingElement = elementsToRemove.stream()
+            Optional<DescriptionElementBase> matchingElement = elementsToRemove.stream()
                     .filter(e->e.getFeature()!= null
                         && e.getFeature().equals(newElementClone.getFeature()))
-                    .findFirst().get();
-            if (matchingElement != null){
-                mergeDescriptionElement(matchingElement, newElementClone);
+                    .findFirst();
+            if (matchingElement.isPresent()){
+                mergeDescriptionElement(matchingElement.get(), newElementClone);
                 elementsToRemove.remove(matchingElement);
             }else{
                 newSourceDescription.addElement(newElementClone);
