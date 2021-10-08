@@ -23,6 +23,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
@@ -283,7 +284,9 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     private void deleteDescriptionsToDelete(DescriptionAggregationBase<T, CONFIG>.ResultHolder resultHolder) {
         for (DescriptionBase<?> descriptionToDelete : resultHolder.descriptionsToDelete){
             if (descriptionToDelete.isPersited()){
-                repository.getDescriptionService().delete(descriptionToDelete);
+                getSession().flush(); // move to service method #9801
+                DeleteResult result = repository.getDescriptionService().deleteDescription(descriptionToDelete);
+                //TODO handle result somehow if not OK, but careful, descriptions may be linked >1x and therefore maybe deleted only after last link was removed
             }
         }
     }

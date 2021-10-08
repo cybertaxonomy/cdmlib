@@ -94,15 +94,28 @@ public class CdmLinkSource extends CdmLinkBase {
         }
     }
 
+    //maybe only workaround #9801
+    public boolean hasNoTarget(){
+        return taxon == null && description == null;
+    }
+
     public void setTarget(ICdmTarget target) {
         target = CdmBase.deproxy(target);
-        if (target instanceof DescriptionBase<?>){
+        if (target == null){
+            setToNull(); //workaround? #9801
+        }else if (target instanceof DescriptionBase<?>){
             this.description = (DescriptionBase<?>)target;
         }else if (target instanceof Taxon){
             this.taxon = (Taxon)target;
         }else{
             throw new IllegalArgumentException("Target class not supported by CdmSource");
         }
+    }
+
+    //workaround? #9801
+    private void setToNull() {
+        this.description = null;
+        this.taxon = null;
     }
 
 // ********************************* CLONE **********************************/

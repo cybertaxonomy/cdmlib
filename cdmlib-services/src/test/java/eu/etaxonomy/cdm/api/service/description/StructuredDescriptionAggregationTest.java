@@ -174,17 +174,17 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig());
+        verifyAggregatedDescription(new TestConfig(config));
 
         addSomeDataToFirstAggregation();
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setWithAddedData());
+        verifyAggregatedDescription(new TestConfig(config).setWithAddedData());
 
         // 2nd aggregation => should be same as originally as data was only added to aggregation to see if it is correctly deleted
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig());
+        verifyAggregatedDescription(new TestConfig(config));
 
         // reaggregate with an element having a feature not yet in the existing descriptions
         addNewFeature();
@@ -192,7 +192,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setWithFeature());
+        verifyAggregatedDescription(new TestConfig(config).setWithFeature());
 
     }
 
@@ -233,19 +233,19 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig());
+        verifyAggregatedDescription(new TestConfig(config));
 
         removeSomeDataFromFirstAggregation();
         commitAndStartNewTransaction();
         Assert.assertEquals("Should have 3 specimen desc, 1 literature desc, 2 individual association holder, "
-                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (3 cloned aggregated descriptions?) = 17",
-                17, descriptionService.count(null));
+                + "4 aggregated descriptions, 4 cloned specimen descriptions (still not deleted), (0(3) cloned aggregated descriptions?) = 14",
+                14, descriptionService.count(null));
 
         // 2nd aggregation
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setWithRemoved());
+        verifyAggregatedDescription(new TestConfig(config).setWithRemoved());
     }
 
     private void removeSomeDataFromFirstAggregation() {
@@ -348,35 +348,35 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);
         config.setToParentSourceMode(AggregationSourceMode.NONE);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);
         config.setToParentSourceMode(AggregationSourceMode.TAXON);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.NONE);
         config.setToParentSourceMode(AggregationSourceMode.TAXON);
         result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
-        verifyAggregatedDescription(new TestConfig().setAggConfig(config));
+        verifyAggregatedDescription(new TestConfig(config));
 
         config.setWithinTaxonSourceMode(AggregationSourceMode.ALL);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
@@ -425,14 +425,14 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         UpdateResult result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         verifyStatusOk(result);
-        verifyAggregatedDescription(new TestConfig());
+        verifyAggregatedDescription(new TestConfig(config));
 
         config.setIncludeLiterature(true);
 
         result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         verifyStatusOk(result);
-        verifyAggregatedDescription(new TestConfig().setWithLiterature());
+        verifyAggregatedDescription(new TestConfig(config));
     }
 
     private void verifyStatusOk(UpdateResult result) {
@@ -472,22 +472,23 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
     private class TestConfig{
         boolean withAddedData;
-        boolean withLiterature;
         boolean withRemovedData;
         boolean withFeature;
-        AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.DESCRIPTION;
-        AggregationSourceMode toParentSourceMode = AggregationSourceMode.DESCRIPTION;
+        final boolean withLiterature;
+        final boolean cloneAggSourceDesc;
+        final AggregationSourceMode withinTaxonSourceMode;
+        final AggregationSourceMode toParentSourceMode;
 
-        private TestConfig setWithAddedData() {withAddedData = true; return this;}
-        private TestConfig setWithLiterature() {withLiterature = true; return this;}
-        private TestConfig setWithRemoved() {withRemovedData = true; return this;}
-        private TestConfig setWithFeature() {withFeature = true; return this;}
 
-        public TestConfig setAggConfig(StructuredDescriptionAggregationConfiguration config) {
+        private TestConfig(StructuredDescriptionAggregationConfiguration config) {
             withinTaxonSourceMode = config.getWithinTaxonSourceMode();
             toParentSourceMode = config.getToParentSourceMode();
-            return this;
+            cloneAggSourceDesc = config.isCloneAggregatedSourceDescriptions();
+            withLiterature = config.isIncludeLiterature();
         }
+        private TestConfig setWithAddedData() {withAddedData = true; return this;}
+        private TestConfig setWithRemoved() {withRemovedData = true; return this;}
+        private TestConfig setWithFeature() {withFeature = true; return this;}
     }
 
     private void verifyAggregatedDescription(TestConfig config) {
@@ -499,6 +500,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         boolean withFeature = config.withFeature;
         boolean isToParentNone = config.toParentSourceMode.isNone();
         boolean isToParentTaxon = config.toParentSourceMode.isTaxon();
+        boolean cloneAggSourceDesc = config.cloneAggSourceDesc;
+
         int intDel = withRemovedData? -1 : 0;
         int intLit = withLiterature? 1 : 0;
 
@@ -562,7 +565,11 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         if (nToParentDescs > 0){
             Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
             Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ADENOPHORA_UUID).size());
-            Assert.assertNotEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+            if (cloneAggSourceDesc){
+                Assert.assertNotEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+            }else{
+                Assert.assertEquals(aggrDescLapsanaCommunisAlpina, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).get(0));
+            }
         }else if (isToParentTaxon){
             Map<UUID, List<Taxon>> taxonToTaxonSourceMap = getSourceTaxonMap(aggrDescLapsanaCommunis);
             Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_ALPINA_UUID).size());
@@ -587,7 +594,12 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         Assert.assertEquals(nToParentDescs, taxonDescriptionMap.size());
         if (nToParentDescs > 0){
             Assert.assertEquals(1, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).size());
-            Assert.assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+            if (cloneAggSourceDesc){
+                Assert.assertNotEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+            }else{
+                Assert.assertEquals(aggrDescLapsanaCommunis, taxonDescriptionMap.get(T_LAPSANA_COMMUNIS_UUID).get(0));
+            }
+
         }else if (isToParentTaxon){
             Map<UUID, List<Taxon>> taxonToTaxonSourceMap = getSourceTaxonMap(aggrDescLapsana);
             Assert.assertEquals(1, taxonToTaxonSourceMap.get(T_LAPSANA_COMMUNIS_UUID).size());
@@ -595,7 +607,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         }
 
         //total description count
-        nCloned = (isToParentNone || isToParentTaxon ? 0 : 3) + (isWithinNone ? 0 : 4);
+        nCloned = (isToParentNone || isToParentTaxon || !cloneAggSourceDesc ? 0 : 3) + (isWithinNone ? 0 : 4);
         Assert.assertEquals("Should have 4 specimen desc, 1 literature desc, 2 individual association holder, "
                 + "4 aggregated descriptions, 4/0 cloned specimen descriptions, (3/4/0 cloned aggregated descriptions?) = 18/19",
                 11+nCloned+intLit+(intDel*2), descriptionService.count(null));

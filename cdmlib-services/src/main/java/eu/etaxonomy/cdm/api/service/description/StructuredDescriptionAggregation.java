@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.ICdmTarget;
 import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -177,13 +176,18 @@ public class StructuredDescriptionAggregation
         //remove remaining sources-to-be-removed
         for (IdentifiableSource sourceToRemove : sourcesToRemove) {
             targetDescription.removeSource(sourceToRemove);
-            ICdmTarget target = sourceToRemove.getCdmSource();
+            ICdmBase target = CdmBase.deproxy(sourceToRemove.getCdmSource());
             if (target != null){
-                if (target.isInstanceOf(DescriptionBase.class)){
+                sourceToRemove.setCdmSource(null); //workaround for missing orphan removal #9801
+                if (target instanceof DescriptionBase){
                     @SuppressWarnings("unchecked")
                     T descriptionToDelete = (T)target;
-                    ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
-                    structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
+                    if (descriptionToDelete.isCloneForSource()){
+                        //TODO maybe this is not really needed as it is later done anyway with .deltedDescription
+                        //but currently this still leads to an re-saved by cascade exception
+                        ((IDescribable<T>)descriptionToDelete.describedEntity()).removeDescription(descriptionToDelete);
+                        structuredResultHolder.descriptionsToDelete.add(descriptionToDelete);
+                    }
                 }else if (target.isInstanceOf(Taxon.class)){
                     //nothing to do for now
                 } else {
@@ -222,7 +226,9 @@ public class StructuredDescriptionAggregation
                 T existingTargetDesc = CdmBase.deproxy((T)mergeCandidate.getCdmSource());
                 mergeSourceDescription(existingTargetDesc, newTargetDesc);
                 ((IDescribable<T>)existingTargetDesc.describedEntity()).addDescription(existingTargetDesc);
-                ((IDescribable<T>)newTargetDesc.describedEntity()).removeDescription(newTargetDesc);
+                if (!existingTargetDesc.equals(newTargetDesc)){
+                    ((IDescribable<T>)newTargetDesc.describedEntity()).removeDescription(newTargetDesc);
+                }
             }else if (newTarget instanceof Taxon){
                 //nothing to do for now (we do not support reuse of sources linking to different taxa yet)
             }else{
@@ -312,8 +318,12 @@ public class StructuredDescriptionAggregation
     }
 
     private <T extends DescriptionBase<?>> T cloneNewSourceDescription(T newSourceDescription) {
+        if (!getConfig().isCloneAggregatedSourceDescriptions() && newSourceDescription.isAggregatedStructuredDescription()){
+            return newSourceDescription;
+        }
         @SuppressWarnings("unchecked")
         T clonedDescription = (T)newSourceDescription.clone();
+//        clonedDescription.removeSources();
         clonedDescription.removeDescriptiveDataSet(dataSet);
         clonedDescription.getTypes().add(DescriptionType.CLONE_FOR_SOURCE);
         clonedDescription.setTitleCache("Clone: " + clonedDescription.getTitleCache(), true);

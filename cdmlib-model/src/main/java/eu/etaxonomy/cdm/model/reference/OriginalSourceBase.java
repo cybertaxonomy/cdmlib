@@ -226,6 +226,9 @@ public abstract class OriginalSourceBase
         if (cdmTarget != null){
             this.cdmSource = CdmLinkSource.NewInstance(cdmTarget);
         }else{
+            if (cdmSource != null){
+                cdmSource.setTarget(null);  //as long as orphan-removal does not work #9801
+            }
             this.cdmSource = null;
         }
     }

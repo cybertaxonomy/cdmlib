@@ -684,17 +684,22 @@ public class DescriptionServiceImpl
             }
         }
         if (deleteResult.isOk() ){
+            CdmBase.deproxy(description);
         	if (description instanceof TaxonDescription){
-        		TaxonDescription taxDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+        		TaxonDescription taxDescription = (TaxonDescription)description;
         		Taxon tax = taxDescription.getTaxon();
-        		tax.removeDescription(taxDescription, true);
-                deleteResult.addUpdatedObject(tax);
+        		if (tax != null){
+        		    tax.removeDescription(taxDescription, true);
+        		    deleteResult.addUpdatedObject(tax);
+        		}
         	}
-        	else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)){
-        	    SpecimenDescription specimenDescription = HibernateProxyHelper.deproxy(description, SpecimenDescription.class);
+        	else if (description instanceof SpecimenDescription){
+        	    SpecimenDescription specimenDescription = (SpecimenDescription)description;
         	    SpecimenOrObservationBase<?> specimen = specimenDescription.getDescribedSpecimenOrObservation();
-        	    specimen.removeDescription(specimenDescription);
-        	    deleteResult.addUpdatedObject(specimen);
+        	    if (specimen != null){
+        	        specimen.removeDescription(specimenDescription);
+        	        deleteResult.addUpdatedObject(specimen);
+        	    }
         	}
 
         	for (DescriptiveDataSet dataset : description.getDescriptiveDataSets()) {
@@ -735,6 +740,8 @@ public class DescriptionServiceImpl
                 continue;
             } else if (ref instanceof DescriptionElementBase){
                 continue;
+            } else if (ref instanceof CdmLinkSource && ((CdmLinkSource)ref).hasNoTarget()) {
+                continue; //maybe only workaround #9801
             }else {
                 String message = "The description can't be completely deleted because it is referenced by " + ref.getUserFriendlyTypeName() ;
                 result.setAbort();
