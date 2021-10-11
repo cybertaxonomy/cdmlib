@@ -20,7 +20,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -29,10 +33,9 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TaxonName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.term.DefinedTerm;
@@ -57,7 +60,7 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private SpecimenOrObservationType recordBase;
     private TermBase kindOfUnit;
-    private String collectorsNumber;
+    private String collectorsString;
     private String individualCount;
     private Set<DerivedUnitDTO> derivatives;
 
@@ -74,12 +77,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
 
     private DefinedTerm lifeStage;
 
-    /**
-     * @deprecated replaced by determinations
-     */
-    @Deprecated
-    private List<TypedEntityReference<TaxonName>> determinedNames;
-
     private List<DeterminationEventDTO>determinations;
 
     protected SpecimenOrObservationBaseDTO(SpecimenOrObservationBase<?> specimenOrObservation) {
@@ -91,7 +88,27 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         setSex(specimenOrObservation.getSex());
         setIndividualCount(specimenOrObservation.getIndividualCount());
         lifeStage = specimenOrObservation.getLifeStage();
-        addDeterminations(specimenOrObservation.getDeterminations());
+        FieldUnit fieldUnit = null;
+        if (specimenOrObservation instanceof FieldUnit){
+            fieldUnit = (FieldUnit)specimenOrObservation;
+        }else{
+            fieldUnit = getFieldUnit((DerivedUnit)specimenOrObservation);
+        }
+        if (fieldUnit != null){
+            AgentBase<?> collector = null;
+            if (fieldUnit.getGatheringEvent() != null){
+                collector = fieldUnit.getGatheringEvent().getCollector();
+            }
+            String fieldNumberString = CdmUtils.Nz(fieldUnit.getFieldNumber());
+            if (collector != null){
+                if (collector.isInstanceOf(TeamOrPersonBase.class)){
+                    collectorsString = CdmBase.deproxy(collector, TeamOrPersonBase.class).getCollectorTitleCache();
+                }else{
+                    collectorsString = collector.getTitleCache();  //institutions
+                }
+            }
+            collectorsString = CdmUtils.concat(" - ", collectorsString, fieldNumberString);
+        }
         setDeterminations(specimenOrObservation.getDeterminations().stream()
                 .map(det -> DeterminationEventDTO.from(det))
                 .collect(Collectors.toList())
@@ -102,6 +119,31 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
                 setSpecimenTypeDesignations(derivedUnit.getSpecimenTypeDesignations());
             }
         }
+    }
+
+    /**
+     * finds the field unit of the derived unit or null if no field unit exist
+     * @param specimenOrObservation
+     * @return
+     */
+    private FieldUnit getFieldUnit(DerivedUnit specimenOrObservation) {
+        if (specimenOrObservation.getDerivedFrom() != null && !specimenOrObservation.getDerivedFrom().getOriginals().isEmpty()){
+            for (SpecimenOrObservationBase<?> specimen: specimenOrObservation.getDerivedFrom().getOriginals()){
+                if (specimen instanceof FieldUnit){
+                    return (FieldUnit)specimen;
+                }else if (specimen instanceof DerivedUnit){
+                    getFieldUnit(HibernateProxyHelper.deproxy(specimen,DerivedUnit.class));
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getCollectorsString() {
+        return collectorsString;
+    }
+    public void setCollectorsString(String collectorsString) {
+        this.collectorsString = collectorsString;
     }
 
     public Set<SpecimenTypeDesignationDTO> getSpecimenTypeDesignations() {
@@ -125,16 +167,9 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         this.sources = sources;
     }
 
-    /**
-     * @return the derivateDataDTO
-     */
     public DerivationTreeSummaryDTO getDerivationTreeSummary() {
         return derivationTreeSummary;
     }
-
-    /**
-     * @param derivationTreeSummary the derivateDataDTO to set
-     */
     public void setDerivationTreeSummary(DerivationTreeSummaryDTO derivationTreeSummary) {
         this.derivationTreeSummary = derivationTreeSummary;
         if(derivationTreeSummary != null) {
@@ -144,13 +179,9 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         }
     }
 
-    /**
-     * @return the characterData
-     */
     public TreeSet<AbstractMap.SimpleEntry<String, String>> getCharacterData() {
         return characterData;
     }
-
     public void addCharacterData(String character, String state){
       if(characterData==null){
           characterData = new TreeSet<>(new PairComparator());
@@ -177,16 +208,9 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
         }
     }
 
-    /**
-     * @return the hasCharacterData
-     */
     public boolean isHasCharacterData() {
         return hasCharacterData;
     }
-
-    /**
-     * @param hasCharacterData the hasCharacterData to set
-     */
     public void setHasCharacterData(boolean hasCharacterData) {
         this.hasCharacterData = hasCharacterData;
     }
@@ -403,31 +427,6 @@ public abstract class SpecimenOrObservationBaseDTO extends TypedEntityReference<
     }
     public void setIndividualCount(String individualCount) {
         this.individualCount = individualCount;
-    }
-
-    @Deprecated
-    public List<TypedEntityReference<TaxonName>> getDeterminedNames() {
-        return determinedNames;
-    }
-
-    @Deprecated
-    public void addDeterminations(Set<DeterminationEvent> determinations) {
-        if(determinedNames==null){
-            determinedNames = new ArrayList<>();
-        }
-        TaxonName preferredName = null;
-        for (DeterminationEvent event:determinations){
-            if (event.getPreferredFlag()){
-                preferredName = event.getTaxonName();
-            }
-        }
-        if (preferredName != null){
-            determinedNames.add(TypedEntityReference.fromEntity(preferredName));
-        }else{
-            for (DeterminationEvent event:determinations){
-                determinedNames.add(TypedEntityReference.fromEntity(event.getTaxonName()));
-            }
-        }
     }
 
     public List<DeterminationEventDTO> getDeterminations() {

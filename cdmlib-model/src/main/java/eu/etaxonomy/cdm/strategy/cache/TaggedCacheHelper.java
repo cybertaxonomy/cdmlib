@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.strategy.cache;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.Stack;
@@ -33,6 +34,18 @@ public class TaggedCacheHelper {
      * @see #createString(List, HTMLTagRules)
      */
     public static String createString(List<? extends TaggedText> tags) {
+        return createString(tags, null);
+    }
+    /**
+     * Creates a string from tagged text by concatenating all tags with a whitespace.
+     * @param tags
+     *  The TaggedText elements
+     * @param excludes
+     *  Set up {@link TagEnum}s to remove from the resulting text
+     * @return the concatenated string
+     * @see #createString(List, HTMLTagRules)
+     */
+    public static String createString(List<? extends TaggedText> tags, EnumSet<TagEnum> excludes) {
         StringBuilder result = new StringBuilder();
 
         boolean isSeparator;
@@ -40,6 +53,9 @@ public class TaggedCacheHelper {
         int index = 0;
         for (index = 0; index < tags.size(); index++){
             TaggedText tag = tags.get(index);
+            if(excludes != null && excludes.contains(tag.getType())) {
+                continue;
+            }
             isSeparator = tag.getType().isSeparator();
             if (! wasSeparator && ! isSeparator ){
                 result.append(" ");

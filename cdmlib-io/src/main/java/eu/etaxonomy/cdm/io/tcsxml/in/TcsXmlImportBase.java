@@ -323,7 +323,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 				Element elSimple = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
 				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
 				result = Team.NewInstance();
-				result.setNomenclaturalTitle(simple);
+				result.setNomenclaturalTitleCache(simple, true);
 			}
 		}
 		return result;

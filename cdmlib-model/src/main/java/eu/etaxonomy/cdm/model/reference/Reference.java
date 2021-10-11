@@ -402,11 +402,11 @@ public class Reference
 
 //*************************** GETTER / SETTER ******************************************/
 
-    // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
+    // @Transient - must not be transient, since this property needs to be included in all serializations produced by the remote layer
     @Override
     public String getTitleCache(){
         String result = super.getTitleCache();
-        if (isBlank(result)){
+        if (isBlank(result) && !isProtectedTitleCache()){
             this.titleCache = this.getAbbrevTitleCache(true);
         }
         return titleCache;

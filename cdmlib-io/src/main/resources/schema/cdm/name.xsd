@@ -33,7 +33,7 @@
       <xs:complexContent>
         <xs:extension base="name:BotanicalName">
           <xs:sequence>
-            <xs:element name="CultivarName" type="xs:string"/>
+            <xs:element name="CultivarEpithet" type="xs:string"/>
           </xs:sequence>
         </xs:extension>
       </xs:complexContent>

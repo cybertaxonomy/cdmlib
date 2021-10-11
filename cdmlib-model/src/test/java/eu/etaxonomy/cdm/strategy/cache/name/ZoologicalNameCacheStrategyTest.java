@@ -83,13 +83,13 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 
 
 		author = Person.NewInstance();
-		author.setNomenclaturalTitle(authorString);
+		author.setNomenclaturalTitleCache(authorString, true);
 		exAuthor = Person.NewInstance();
-		exAuthor.setNomenclaturalTitle(exAuthorString);
+		exAuthor.setNomenclaturalTitleCache(exAuthorString, true);
 		basAuthor = Person.NewInstance();
-		basAuthor.setNomenclaturalTitle(basAuthorString);
+		basAuthor.setNomenclaturalTitleCache(basAuthorString, true);
 		exBasAuthor = Person.NewInstance();
-		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
+		exBasAuthor.setNomenclaturalTitleCache(exBasAuthorString, true);
 	}
 
 /********* TEST *******************************************/
@@ -173,7 +173,7 @@ public class ZoologicalNameCacheStrategyTest extends NameCacheStrategyTestBase {
 	@Test
 	public final void testGetInfraGenusTaggedNameCache() {
 		String methodName = "getInfraGenusTaggedNameCache";
-		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class);
+		Method method = getMethod(TaxonNameDefaultCacheStrategy.class, methodName, INonViralName.class, boolean.class);
 
 		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));

@@ -509,7 +509,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		String cultivarNameGroup = (elCultivarNameGroup == null)? "" : elCultivarNameGroup.getTextNormalize();
 		if (! "".equals(cultivarNameGroup.trim())){
 			if (name.isCultivar()){
-				makeCultivarName();
+				makeCultivarEpithet();
 			}else{
 				logger.warn("Non cultivar name has 'cultivar name group' element. Omitted");
 			}
@@ -517,7 +517,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		return;
 	}
 
-	private void makeCultivarName(){
+	private void makeCultivarEpithet(){
 		//TODO
 		//logger.warn("'makeCultivarName' Not yet implemented");
 	}

@@ -67,7 +67,6 @@ public class SortIndexUpdaterWrapper implements Serializable {
 
         if (config.isDoTaxonNode()){
             updater = SortIndexUpdater.NewUpdateExistingSortindexInstance(null, "Update taxon node sortindex", TAXON_NODE, "parent_id", "sortIndex", true);
-
             result.includeResult(update(updater, monitor));
         }
         if (config.isDoTermNode()){

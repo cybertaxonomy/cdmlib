@@ -167,6 +167,8 @@ public class DescriptionElementSource extends NamedSourceBase{
 	@Override
 	public DescriptionElementSource clone() throws CloneNotSupportedException{
 		DescriptionElementSource result = (DescriptionElementSource)super.clone();
+		//we don't expect the source to belong to the same description element
+        result.sourcedElement = null;
 
 		//no changes
 		return result;

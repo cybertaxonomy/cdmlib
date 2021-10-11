@@ -47,6 +47,4 @@ public abstract class AuthorityBase extends CdmBase{
     protected AuthorityBase() {
         super();
     }
-
-
 }

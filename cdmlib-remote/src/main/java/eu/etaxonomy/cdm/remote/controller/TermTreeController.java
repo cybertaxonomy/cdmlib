@@ -21,7 +21,7 @@ import io.swagger.annotations.Api;
 
 @Controller
 @Api("termTree")
-@RequestMapping(value = {"/featureTree/{uuid}", "/termTree/{uuid}"})
+@RequestMapping(value = {"/termTree/{uuid}"})
 public class TermTreeController extends AbstractIdentifiableController<TermTree, ITermTreeService> {
     @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TermTreeController.class);

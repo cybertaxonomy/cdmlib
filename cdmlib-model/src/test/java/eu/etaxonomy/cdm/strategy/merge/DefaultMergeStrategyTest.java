@@ -348,7 +348,7 @@ public class DefaultMergeStrategyTest extends TermTestBase {
 		Person person3 = Person.NewTitledInstance("person3");
 
 		team1.setTitleCache("Team1", true);
-		team1.setNomenclaturalTitle("T.1");
+		team1.setNomenclaturalTitleCache("T.1", true);
 		String street1 = "Strasse1";
 		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));

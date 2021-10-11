@@ -32,9 +32,9 @@ import eu.etaxonomy.cdm.api.service.config.SortIndexUpdaterConfigurator;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationBase;
 import eu.etaxonomy.cdm.api.service.description.DescriptionAggregationConfigurationBase;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
-import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IRemotingProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RemotingProgressMonitorThread;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 
 /**
  * @author k.luther
@@ -68,7 +68,7 @@ public class LongRunningTasksService implements ILongRunningTasksService{
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor monitor) {
-                return descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, monitor);
+                return (Serializable)descriptiveDataSetService.getRowWrapper(descriptiveDataSetUuid, monitor);
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
@@ -91,14 +91,13 @@ public class LongRunningTasksService implements ILongRunningTasksService{
                     for(Exception e : updateResult.getExceptions()) {
                         monitor.addReport(e.getMessage());
                     }
-                } catch (JvmLimitsException e) {
-                    String warning = "Memory problem. Java Virtual Machine limits exceeded. Task was interrupted";
+                } catch (Exception e) {
+                    String warning = "Unhandled error. Task was interrupted";
                     monitor.warning(warning, e);
                     monitor.addReport(warning);
                 }
                 monitor.setResult(updateResult);
                 return updateResult;
-
             }
         };
         UUID uuid = progressMonitorService.registerNewRemotingMonitor(monitorThread);
@@ -195,14 +194,14 @@ public class LongRunningTasksService implements ILongRunningTasksService{
     }
 
     @Override
-    public UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType) {
+    public UUID monitLongRunningTask(Set<UUID> movingUuids, UUID targetTreeNodeUuid, int movingType, SecReferenceHandlingEnum secHandling, UUID secUuid) {
 
         RemotingProgressMonitorThread monitorThread = new RemotingProgressMonitorThread() {
             @Override
             public Serializable doRun(IRemotingProgressMonitor remotingMonitor) {
                 UpdateResult result;
 
-                result = taxonNodeService.moveTaxonNodes(movingUuids,targetTreeNodeUuid, movingType,  remotingMonitor);
+                result = taxonNodeService.moveTaxonNodes(movingUuids,targetTreeNodeUuid, movingType, secHandling, secUuid, remotingMonitor);
                 for(Exception e : result.getExceptions()) {
                     remotingMonitor.addReport(e.getMessage());
                 }

@@ -187,8 +187,8 @@ public class NonViralNameTest extends EntityTestBase {
 
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
-		team1.setNomenclaturalTitle(strTeam1);
-		team2.setNomenclaturalTitle(strTeam2);
+		team1.setNomenclaturalTitleCache(strTeam1, true);
+		team2.setNomenclaturalTitleCache(strTeam2, true);
 		nonViralName1.setGenusOrUninomial("Abies");
 		nonViralName1.setSpecificEpithet("alba");
 		nonViralName1.setNomenclaturalReference(ref1);

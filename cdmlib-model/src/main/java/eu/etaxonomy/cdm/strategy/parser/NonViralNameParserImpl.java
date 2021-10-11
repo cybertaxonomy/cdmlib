@@ -29,8 +29,6 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.VerbatimTimePeriod;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.IBotanicalName;
-import eu.etaxonomy.cdm.model.name.ICultivarPlantName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -96,16 +94,17 @@ public class NonViralNameParserImpl
 
 	public INonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
 		INonViralName result = null;
-		if(code ==null) {
+		if(code == null) {
 			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
-			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();;
+			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();
 			boolean isBacteriologicalName = false;
-			boolean isCultivatedPlantName = false;
+			boolean isCultivatedPlantName = anyCultivarNameUnorderedPattern.matcher(fullString).find()
+			        && anyCultivarNamePattern.matcher(fullString).find() ;
 			if ( (isBotanicalName || isCultivatedPlantName) && ! isZoologicalName && !isBacteriologicalName){
-				if (isBotanicalName){
-					result = TaxonNameFactory.NewBotanicalInstance(rank);
+				if (isCultivatedPlantName){
+				    result = TaxonNameFactory.NewCultivarInstance(rank);
 				}else{
-					result = TaxonNameFactory.NewCultivarInstance(rank);
+				    result = TaxonNameFactory.NewBotanicalInstance(rank);
 				}
 			}else if ( isZoologicalName /*&& ! isBotanicalName*/ && !isBacteriologicalName && !isCultivatedPlantName){
 				result = TaxonNameFactory.NewZoologicalInstance(rank);
@@ -190,7 +189,9 @@ public class NonViralNameParserImpl
 	    INonViralName nameToBeFilled = CdmBase.deproxy(nameToBeFilledOrig);
 		if (nameToBeFilled.isZoological()){
 			return anyZooFullName;
-		}else if (nameToBeFilled.isBotanical()) {
+		}else if (nameToBeFilled.isCultivar()) {
+            return anyCultivarFullName;
+        }else if (nameToBeFilled.isBotanical()) {
 			return anyBotanicFullName;
 		}else if (nameToBeFilled.isNonViral()) {
 			return anyBotanicFullName;  //TODO ?
@@ -210,7 +211,9 @@ public class NonViralNameParserImpl
 
 		if (nameToBeFilled.isZoological()){
 			return anyZooName;
-		}else if (nameToBeFilled.isBotanical()) {
+		}else if (nameToBeFilled.isCultivar()) {
+            return anyCultivarName;
+        }else if (nameToBeFilled.isBotanical()) {
 		    return anyBotanicName;
 		}else if (nameToBeFilled.isNonViral()){
 			return anyZooName;  //TODO ?
@@ -250,16 +253,16 @@ public class NonViralNameParserImpl
 
 		//separate name and reference part
 		String nameAndRefSeparatorRegEx = "(^" + localFullNameRegEx + ")("+ referenceSeperator + ")";
-		Matcher nameAndRefSeparatorMatcher = getMatcher (nameAndRefSeparatorRegEx, fullReferenceString);
+		Matcher nameAndRefSeparatorMatcher = getMatcher(nameAndRefSeparatorRegEx, fullReferenceString);
 
-		Matcher onlyNameMatcher = getMatcher (localFullNameRegEx, fullReferenceString);
+		Matcher onlyNameMatcher = getMatcher(localFullNameRegEx, fullReferenceString);
 		Matcher hybridMatcher = hybridFormulaPattern.matcher(fullReferenceString);
-		Matcher onlySimpleNameMatcher = getMatcher (localSimpleNameRegEx, fullReferenceString);
+		Matcher onlySimpleNameMatcher = getMatcher(localSimpleNameRegEx, fullReferenceString);
 
 		if (onlyNameMatcher.matches()){
 			makeEmpty = false;
 			parseFullName(nameToBeFilled, fullReferenceString, rank, makeEmpty);
-		} else if (nameAndRefSeparatorMatcher.find()){
+		}else if (nameAndRefSeparatorMatcher.find()){
 			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
 		}else if (hybridMatcher.matches() ){
 		    //I do not remember why we need makeEmpty = false for onlyNameMatcher,
@@ -424,7 +427,7 @@ public class NonViralNameParserImpl
             for (int i=0+off;i<n && i-off-off2 < originalNameSplit.length; i++){
                 String namePart = CdmUtils.Nz(nameSplit[i]);
                 String originalPart = originalNameSplit[i-off-off2];
-                if (StringUtils.isBlank(namePart)){
+                if (isBlank(namePart)){
                     originalPart = null;
                     off2++;
                 }
@@ -444,7 +447,7 @@ public class NonViralNameParserImpl
 
         String[] finalSplit = new String[n];
         for (int i = 0; i < n; i++){
-            if (StringUtils.isBlank(nameSplit[i])){
+            if (isBlank(nameSplit[i])){
                 if (bestOffset<i){
                     bestOffset++;
                 }
@@ -578,7 +581,6 @@ public class NonViralNameParserImpl
 			}
 		}
 
-
 		//detail
 		String pDetailPhrase = detailSeparator + fWs + detail + fWs + end;
 		Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, strReference);
@@ -603,11 +605,6 @@ public class NonViralNameParserImpl
 		ref.setProblemEnds(end);
 	}
 
-	/**
-	 * @param nameToBeFilled
-	 * @param strReference
-	 * @return
-	 */
 	private Reference makeDetailYearUnparsable(INonViralName nameToBeFilled, String strReference) {
 		Reference ref;
 
@@ -623,9 +620,6 @@ public class NonViralNameParserImpl
 
 	/**
 	 * Parses the referenceTitlePart, including the author volume and edition.
-	 * @param reference
-	 * @param year
-	 * @return
 	 */
 	public INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
 		IBook result = null;
@@ -904,11 +898,11 @@ public class NonViralNameParserImpl
 		String[] epi = pattern.split(fullNameString);
 		try {
 	    	//cultivars //TODO 2 implement cultivars
-//		    if ( cultivarMarkerRE.match(fullName) ){ funktioniert noch nicht, da es z.B. auch Namen gibt, wie 't Hart
-//		    	result = parseCultivar(fullName);
-//		    }
+		    if (nameToBeFilled.isCultivar() && parseCultivar(fullNameString, (TaxonName)nameToBeFilled) ){
+		    	//nothing to do, already parsed in method
+		    }
 
-		    if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
+		    else if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
 		    	//supraGeneric
 				if (rank != null && ! hasCheckRankProblem  && (rank.isSupraGeneric()|| rank.isGenus())){
 					nameToBeFilled.setRank(rank);
@@ -1143,7 +1137,7 @@ public class NonViralNameParserImpl
 		    }
 
 			//authors
-		    if (StringUtils.isNotBlank(authorString) ){
+		    if (isNotBlank(authorString) ){
 				handleAuthors(nameToBeFilled, fullNameString, authorString);
 			}
 		    handleOriginalSpelling(nameToBeFilled);
@@ -1151,7 +1145,7 @@ public class NonViralNameParserImpl
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.addParsingProblem(ParserProblem.RankNotSupported);
 			nameToBeFilled.setTitleCache(fullNameString, true);
-			// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+			// FIXME Quick fix, otherwise search would not deliver results for unparsable names
 			nameToBeFilled.setNameCache(fullNameString,true);
 			// END
 			logger.info("unknown rank (" + (rank == null? "null":rank) + ") or abbreviation in string " +  fullNameString);
@@ -1170,7 +1164,7 @@ public class NonViralNameParserImpl
     private String extendSecondHybridPart(INonViralName givenName, String secondNameString) {
         //first letter of genus given
         if (secondNameString.matches("^" + abbrevHybridGenus + ".*")){
-            if (StringUtils.isNotBlank(givenName.getGenusOrUninomial())){
+            if (isNotBlank(givenName.getGenusOrUninomial())){
                 if (secondNameString.substring(0,1).equals(givenName.getGenusOrUninomial().substring(0, 1))){
                     secondNameString = secondNameString.replaceAll("^" + abbrevHybridGenus, givenName.getGenusOrUninomial() + " ");
                 }
@@ -1226,7 +1220,7 @@ public class NonViralNameParserImpl
 		String speciesEpi = CdmUtils.Nz(nameToBeFilled.getSpecificEpithet());
 		boolean isSpeciesHybrid = speciesEpi.startsWith(hybridSign);
 		if (isSpeciesHybrid){
-			if (StringUtils.isBlank(infrageneric)){
+			if (isBlank(infrageneric)){
 				nameToBeFilled.setBinomHybrid(true);
 			}else{
 				nameToBeFilled.setTrinomHybrid(true);
@@ -1292,11 +1286,6 @@ public class NonViralNameParserImpl
 		}
 	}
 
-	/**
-	 * @param nameToBeFilled
-	 * @param fullNameString
-	 * @param authorString
-	 */
 	public void handleAuthors(INonViralName nameToBeFilled, String fullNameString, String authorString) {
 	    TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];
@@ -1514,7 +1503,6 @@ public class NonViralNameParserImpl
 		}else{
 			return parsedTeam(authorString);
 		}
-
 	}
 
 	/**
@@ -1540,11 +1528,6 @@ public class NonViralNameParserImpl
 		return result;
 	}
 
-
-/**
-     * @param author
-     * @return
-     */
     private String normalizeNomenclaturalPersonString(String author) {
         if (removeSpaceAfterDot){
             author = author.replaceAll("\\.\\s", ".");
@@ -1552,68 +1535,60 @@ public class NonViralNameParserImpl
         return author;
     }
 
-    //	// Parsing of the given full name that has been identified as a cultivar already somwhere else.
-//	// The ... cv. ... syntax is not covered here as it is not according the rules for naming cultivars.
-	public IBotanicalName parseCultivar(String fullName) throws StringNotParsableException{
-		ICultivarPlantName result = null;
-		    String[] words = oWsPattern.split(fullName);
+    // Parsing of the given full name that has been identified as a cultivar already somewhere else.
+	// The ... cv. ... syntax is not covered here as it is not according the rules for naming cultivars.
+	public boolean parseCultivar(String fullNameStr, TaxonName nameToBeFilled){
 
-		    /* ---------------------------------------------------------------------------------
-		     * cultivar
-		     * ---------------------------------------------------------------------------------*/
-			if (fullName.indexOf(" '") != 0){
-				//TODO location of 'xx' is probably not arbitrary
-				Matcher cultivarMatcher = cultivarPattern.matcher(fullName);
-				if (cultivarMatcher.find()){
-					String namePart = fullName.replaceFirst(cultivar, "");
+	    Matcher anyCultivarNameMatcher = anyCultivarNamePattern.matcher(fullNameStr);
+	    Matcher anyCultivarFullNameMatcher = anyCultivarFullNamePattern.matcher(fullNameStr);
 
-					String cultivarPart = cultivarMatcher.group(0).replace("'","").trim();
-					//OLD: String cultivarPart = cultivarRE.getParen(0).replace("'","").trim();
+	    boolean findFull = anyCultivarFullNameMatcher.find();
+	    boolean findSimple = anyCultivarNameMatcher.find();
+	    boolean simpleOnly = findSimple && !findFull || anyCultivarNameMatcher.matches();
+        Matcher matcher = simpleOnly ? anyCultivarNameMatcher : anyCultivarFullNameMatcher;
+        boolean matches = matcher.matches();
 
-					result = (ICultivarPlantName)parseFullName(namePart);
-					result.setCultivarName(cultivarPart);
-				}
-			}else if (fullName.indexOf(" cv.") != 0){
-				// cv. is old form (not official)
-				throw new StringNotParsableException("Cultivars with only cv. not yet implemented in name parser!");
-			}
+		if (matches || anyCultivarNameMatcher.matches() ){
+		    String scientificName = matcher.group(1);
+		    String cultivarEpi = matcher.group("cultivar");
+		    String groupEpi = matcher.group("cultivarGroup");
+		    String brGroupName = matcher.group("cultivarBrGroup");
+		    String grexName = matcher.group("cultivarGrex");
+		    String author = simpleOnly ? null : matcher.group("cultivarAuthor");
 
-		    /* ---------------------------------------------------------------------------------
-		     * cultivar group
-		     * ---------------------------------------------------------------------------------
-		     */
-			// TODO in work
-			//Ann. this is not the official way of noting cultivar groups
-		    String group = oWs + "Group" + oWs + capitalEpiWord + end;
-			Pattern groupRE = Pattern.compile(group);
-			Matcher groupMatcher = groupRE.matcher(fullName);
-			if (groupMatcher.find()){
-		    	if (! words[words.length - 2].equals("group")){
-		            throw new StringNotParsableException ("fct ParseHybrid --> term before cultivar group name in " + fullName + " should be 'group'");
-		        }else{
+		    //handle not exact matches
+		    if (isBlank(groupEpi) && isBlank(cultivarEpi) && isBlank(brGroupName) && isBlank(grexName)){
+		        //name is a botanical name only, should not happen anymore
+		        return false;
+		    }else if (isNotBlank(groupEpi) && isNotBlank(cultivarEpi)){
+                return false;
+            }else if (isNotBlank(brGroupName) && isNotBlank(grexName) && isBlank(cultivarEpi)){
+                return false;
+            }
+		    String scientificFullName = CdmUtils.concat(" ", scientificName, author);
+		    parseFullName(nameToBeFilled, scientificFullName, null, false);
 
-		        	String namePart = fullName.substring(0, groupMatcher.start(0) - 0);
-		        	//OLD: String namePart = fullName.substring(0, groupRE.getParenStart(0) - 0);
-
-		        	String cultivarPart = words[words.length -1];
-		        	result = (ICultivarPlantName)parseFullName(namePart);
-		        	if (result != null){
-		        		result.setCultivarName(cultivarPart);
-
-		        		//OLD: result.setCultivarGroupName(cultivarPart);
-		        	}
-		        }
-
-		    }
-//		    // ---------------------------------------------------------------------------------
-//		    if ( result = "" ){
-//		        return "I: fct ParseCultivar: --> could not parse cultivar " + fullName;
-//		    }else{
-//		        return result;
-	//	    }
-			return result; //TODO
+            if (isNotBlank(grexName)){
+                nameToBeFilled.setRank(Rank.GREX_ICNCP());
+                nameToBeFilled.setCultivarGroupEpithet(grexName);
+            }
+            if (isNotBlank(groupEpi) || isNotBlank(brGroupName)){
+                nameToBeFilled.setRank(Rank.CULTIVARGROUP());
+                if (isBlank(groupEpi)){
+                    groupEpi = brGroupName;
+                }
+                nameToBeFilled.setCultivarGroupEpithet(CdmUtils.concat(" ", grexName, groupEpi));
+            }
+            if (isNotBlank(cultivarEpi)){
+                nameToBeFilled.setRank(Rank.CULTIVAR());
+                cultivarEpi = cultivarEpi.substring(1, cultivarEpi.length()-1);
+                nameToBeFilled.setCultivarEpithet(cultivarEpi);
+            }
+            return true;
+		}else{
+		    return false;
+		}
 	}
-
 
 	private void makeEmpty(INonViralName name){
 	    TaxonName nameToBeFilled = TaxonName.castAndDeproxy(name);
@@ -1622,13 +1597,11 @@ public class NonViralNameParserImpl
 		nameToBeFilled.setFullTitleCache(null, false);
 		nameToBeFilled.setNameCache(null, false);
 
-		nameToBeFilled.setAppendedPhrase(null);
-		nameToBeFilled.setBasionymAuthorship(null);
 		nameToBeFilled.setCombinationAuthorship(null);
+		nameToBeFilled.setBasionymAuthorship(null);
 		nameToBeFilled.setExBasionymAuthorship(null);
 		nameToBeFilled.setExCombinationAuthorship(null);
 		nameToBeFilled.setAuthorshipCache(null, false);
-
 
 		//delete problems except check rank
 		makeProblemEmpty(nameToBeFilled);
@@ -1636,11 +1609,13 @@ public class NonViralNameParserImpl
 		// TODO ?
 		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
 
-
 		nameToBeFilled.setGenusOrUninomial(null);
 		nameToBeFilled.setInfraGenericEpithet(null);
 		nameToBeFilled.setSpecificEpithet(null);
 		nameToBeFilled.setInfraSpecificEpithet(null);
+		nameToBeFilled.setCultivarEpithet(null);
+		nameToBeFilled.setCultivarGroupEpithet(null);
+		nameToBeFilled.setAppendedPhrase(null);
 
 		nameToBeFilled.setNomenclaturalMicroReference(null);
 		nameToBeFilled.setNomenclaturalReference(null);
@@ -1654,11 +1629,11 @@ public class NonViralNameParserImpl
 
 		nameToBeFilled.setBreed(null);
 		nameToBeFilled.setOriginalPublicationYear(null);
+		nameToBeFilled.setPublicationYear(null);
 
 		//nom status handled in nom status parser, otherwise we loose additional information like reference etc.
 		//hybrid relationships handled in hybrid formula and at end of fullNameParser
 	}
-
 
     /**
      * If <code>true</code> author names are parsed such that spaces after the abbreviated
@@ -1672,5 +1647,13 @@ public class NonViralNameParserImpl
      */
     public void setRemoveSpaceAfterDot(boolean removeSpaceAfterDot) {
         this.removeSpaceAfterDot = removeSpaceAfterDot;
+    }
+
+    private boolean isNotBlank(String str){
+        return StringUtils.isNotBlank(str);
+    }
+
+    private boolean isBlank(String str){
+        return StringUtils.isBlank(str);
     }
 }

@@ -9,7 +9,7 @@ public class CsvIOConfigurator implements Serializable{
     private String encoding = "UTF-8";
 	private String linesTerminatedBy = "\r\n";
 	private String fieldsEnclosedBy = "\"";
-	private boolean hasHeaderLines = true;
+	private boolean includeHeaderLines = true;
 	private String fieldsTerminatedBy=";";
 
 	public static CsvIOConfigurator NewInstance(){
@@ -36,11 +36,11 @@ public class CsvIOConfigurator implements Serializable{
 	public void setFieldsEnclosedBy(String fieldsEnclosedBy) {
 		this.fieldsEnclosedBy = fieldsEnclosedBy;
 	}
-	public boolean isHasHeaderLines() {
-		return hasHeaderLines;
+	public boolean isIncludeHeaderLines() {
+		return includeHeaderLines;
 	}
-	public void setHasHeaderLines(boolean hasHeaderLines) {
-		this.hasHeaderLines = hasHeaderLines;
+	public void setIncludeHeaderLines(boolean hasHeaderLines) {
+		this.includeHeaderLines = hasHeaderLines;
 	}
 	public String getFieldsTerminatedBy() {
 		return fieldsTerminatedBy;

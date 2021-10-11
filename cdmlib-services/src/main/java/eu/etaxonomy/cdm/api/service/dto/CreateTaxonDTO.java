@@ -9,10 +9,12 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.TaxonNodeAgentRelation;
 
 /**
  * @author k.luther
@@ -35,6 +37,8 @@ public class CreateTaxonDTO implements Serializable{
     private boolean isDoubtful;
     private String appendedPhrase;
     private boolean isPublish;
+
+    Set<TaxonNodeAgentRelation> agentRelations;
 
     public CreateTaxonDTO(UUID nameUuid, UUID secUuid, String secMicroRef, boolean isDoubtful,
             String appendedPhrase, boolean isPublish, String taxonNameString,
@@ -88,6 +92,20 @@ public class CreateTaxonDTO implements Serializable{
     }
     public void setSecMicroReference(String secMicroReference) {
         this.secMicroReference = secMicroReference;
+    }
+
+    /**
+     * @return the agentRelations
+     */
+    public Set<TaxonNodeAgentRelation> getAgentRelations() {
+        return agentRelations;
+    }
+
+    /**
+     * @param agentRelations the agentRelations to set
+     */
+    public void setAgentRelations(Set<TaxonNodeAgentRelation> agentRelations) {
+        this.agentRelations = agentRelations;
     }
 
     public boolean isDoubtful() {

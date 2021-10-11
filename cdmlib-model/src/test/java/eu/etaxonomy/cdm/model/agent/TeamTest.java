@@ -35,7 +35,7 @@ public class TeamTest {
 	public void setUp() throws Exception {
 		teamProtected = Team.NewInstance();
 		teamProtected.setTitleCache("Team1", true);
-		teamProtected.setNomenclaturalTitle("NomTeam1");
+		teamProtected.setNomenclaturalTitleCache("NomTeam1", true);
 
 		PropertyChangeListener listener = new PropertyChangeListener(){
         	@Override
@@ -68,7 +68,7 @@ public class TeamTest {
 	@Test
 	public void testSetNomenclaturalTitleString() {
 		eventWasFired = false;
-		teamProtected.setNomenclaturalTitle("NomTeam1a");
+		teamProtected.setNomenclaturalTitleCache("NomTeam1a", true);
 		Assert.assertTrue("setNomenclaturalTitle(String, boolean) needs to fire property change event", eventWasFired);
 		Assert.assertEquals("Nom title Cache of team 1 must be 'NomTeam1a'", "NomTeam1a", teamProtected.getNomenclaturalTitleCache());
 	}

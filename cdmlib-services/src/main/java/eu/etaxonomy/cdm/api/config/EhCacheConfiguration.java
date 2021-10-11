@@ -22,10 +22,8 @@ import net.sf.ehcache.config.DiskStoreConfiguration;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
- *
  * @author a.kohlbecker
  * @since Feb 1, 2017
- *
  */
 @Configuration
 // @EnableCaching // for future use
@@ -62,12 +60,9 @@ public class EhCacheConfiguration implements DisposableBean {
         return cacheManager;
     }
 
-
     /**
      * Returns the default cache configuration for the cache
      * named {@link CdmCacherBase#DEFAULT_CACHE_NAME "cdmDefaultCache"}
-     *
-     * @return
      */
     protected CacheConfiguration getDefaultCacheConfiguration() {
 
@@ -82,12 +77,10 @@ public class EhCacheConfiguration implements DisposableBean {
                 .eternal(false)
                 // default ttl and tti set to 2 hours
                 .timeToLiveSeconds(60*60*2)
-                .timeToIdleSeconds(60*60*2)
-                .statistics(true);
+                .timeToIdleSeconds(60*60*2);
 
         return cc;
     }
-
 
     @Override
     public void destroy() {
@@ -96,5 +89,4 @@ public class EhCacheConfiguration implements DisposableBean {
             this.cacheManager.shutdown();
         }
     }
-
 }

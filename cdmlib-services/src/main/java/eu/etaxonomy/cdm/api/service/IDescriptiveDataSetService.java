@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +23,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.dto.DescriptiveDataSetBaseDto;
 import eu.etaxonomy.cdm.persistence.dto.SpecimenNodeWrapper;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
@@ -61,7 +61,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param the progress monitor
      * @return a list of row wrapper objects
      */
-    public ArrayList<RowWrapperDTO> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor);
+    public List<RowWrapperDTO<?>> getRowWrapper(UUID descriptiveDataSetUuid, IProgressMonitor monitor);
 
     /**
      * Loads all available specimens wrapped in a {@link SpecimenNodeWrapper} object for
@@ -118,11 +118,11 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
 
     /**
      * Creates a taxon row wrapper object for the given description
-     * @param taxonDescriptionUuid the taxon description for which the wrapper should be created
+     * @param taxonDescription the taxon description for which the wrapper should be created
      * @param descriptiveDataSet the data set it should be used in
      * @return the created row wrapper
      */
-    public TaxonRowWrapperDTO createTaxonRowWrapper(UUID taxonDescriptionUuid, UUID descriptiveDataSetUuid);
+    public TaxonRowWrapperDTO createTaxonRowWrapper(TaxonDescription taxonDescription, UUID descriptiveDataSetUuid);
 
     /**
      * Returns a {@link SpecimenDescription} for a given specimen with corresponding
@@ -142,7 +142,7 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      * @param featureUuid the feature which has to support categorical data
      * @return list of all supported states
      */
-    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
+    public Map<UUID,List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids);
 
     /**
      * Creates a new taxon description with the features defined in the dataset for the
@@ -207,5 +207,11 @@ public interface IDescriptiveDataSetService extends IIdentifiableEntityService<D
      */
     DeleteResult removeDescription(UUID descriptionUuid, UUID descriptiveDataSetUuid,
             RemoveDescriptionsFromDescriptiveDataSetConfigurator config);
+
+    /**
+     * @param uuid
+     * @return
+     */
+    DescriptiveDataSetBaseDto getDescriptiveDataSetDtoByUuid(UUID uuid);
 
 }

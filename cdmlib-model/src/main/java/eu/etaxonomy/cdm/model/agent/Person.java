@@ -347,19 +347,24 @@ public class Person extends TeamOrPersonBase<Person>{
     public String getNomenclaturalTitle() {
         return nomenclaturalTitle;
     }
-    @Override
+    /**
+     * Sets the nomenclatural title.
+     */
     public void setNomenclaturalTitle(String nomenclaturalTitle) {
         this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
     }
     @Override
-    public void setNomenclaturalTitleCache(String nomenclaturalTitle) {
-        this.nomenclaturalTitle = isBlank(nomenclaturalTitle) ? null : nomenclaturalTitle;
+    public void setNomenclaturalTitleCache(String nomenclaturalTitleCache, boolean protectCache){
+        this.nomenclaturalTitleCache = nomenclaturalTitleCache;
+        if (protectCache){
+            this.setNomenclaturalTitle(nomenclaturalTitleCache);
+        }
     }
 
     /**
      * Returns the initials of this person as used in bibliographic
-     * references. Usually these are the first letters of each givenname
-     * followed by "." per givenname. For East Asian names it may
+     * references. Usually these are the first letters of each given name
+     * followed by "." per given name. For East Asian names it may
      * be the first 2 letters. Also dashes are kept.
      * @return the initials
      */
@@ -456,7 +461,7 @@ public class Person extends TeamOrPersonBase<Person>{
         result |= updateNomenclaturalCache();
         result |= updateCollectorCache();
 
-         return result;
+        return result;
     }
 
     private boolean updateNomenclaturalCache() {

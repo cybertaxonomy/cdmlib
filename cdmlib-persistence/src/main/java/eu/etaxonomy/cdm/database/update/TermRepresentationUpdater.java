@@ -21,6 +21,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
  * Class for updating term representations.
+ * Updates those representation parts not being passed as <code>null</code>.
+ *
  * @author a.mueller
  * @since 27.09.2011
  */

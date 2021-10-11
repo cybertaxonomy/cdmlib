@@ -11,6 +11,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.term.TermNode;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
+import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -28,6 +29,13 @@ public interface ITermNodeDao extends IVersionableDao<TermNode> {
      */
     public List<TermNode> list(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints,
             List<String> propertyPaths);
+
+    /**
+     * @param limit
+     * @param pattern
+     * @return
+     */
+    List<UuidAndTitleCache<TermNode>> getUuidAndTitleCache(Integer limit, String pattern);
 
 
 }

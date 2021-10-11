@@ -104,7 +104,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	 * @param uuidsRepsonse
 	 * @param vocabularyResponse
 	 */
-	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested,
+	public void missingTermUuids(Map<UUID, List<UUID>> uuidsRequested,
 			Map<UUID, Set<UUID>> uuidsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse);
 
@@ -120,7 +120,7 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param vocabularyUuid the id of the vocabulary
      * @return a collection of top level terms
      */
-    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type);
+    public List<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type);
 
     /**
      * Loads all terms for the given vocabulary

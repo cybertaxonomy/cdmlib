@@ -23,6 +23,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter.ORDER;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -63,7 +65,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     public static final Logger logger = Logger.getLogger(DescriptionAggregationBase.class);
 
-    private static final long BATCH_MIN_FREE_HEAP = 800  * 1024 * 1024;  //800 MB
+    private static final long BATCH_MIN_FREE_HEAP = 150  * 1024 * 1024;  //800 MB
     /**
      * ratio of the initially free heap which should not be used
      * during the batch processing. This amount of the heap is reserved
@@ -81,7 +83,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 
-    public final UpdateResult invoke(CONFIG config, ICdmRepository repository) throws JvmLimitsException{
+    public final UpdateResult invoke(CONFIG config, ICdmRepository repository){
         init(config, repository);
         return doInvoke();
     }
@@ -121,10 +123,13 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             try {
                 preAggregate(subMonitor);
             } catch (Exception e) {
-                result.addException(new RuntimeException("Unhandled error during pre-aggregation", e));
-                result.setError();
-                done();
-                return result;
+                return handleException(e, "Unhandled error during pre-aggregation");
+            }
+
+            try {
+                verifyConfiguration(subMonitor);
+            } catch (Exception e) {
+                return handleException(e, "Unhandled error during configuration check");
             }
 
             subMonitor.worked(preAccumulateTicks);
@@ -137,10 +142,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             try {
                 aggregate(taxonNodeIdList, aggregateMonitor);
             } catch (Exception e) {
-                result.addException(new RuntimeException("Unhandled error during aggregation", e));
-                result.setError();
-                done();
-                return result;
+                return handleException(e, "Unhandled error during aggregation");
             }
 
             double end = System.currentTimeMillis();
@@ -153,7 +155,20 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             result.addException(new RuntimeException("Unhandled error during doInvoke", e));
             return result;
         }
+    }
 
+    private UpdateResult handleException(Exception e, String unhandledMessage) {
+        Exception ex;
+        if (e instanceof AggregationException){
+            ex = e;
+        }else{
+            ex = new RuntimeException(unhandledMessage + ": " + e.getMessage() , e);
+            e.printStackTrace();
+        }
+        result.addException(ex);
+        result.setError();
+        done();
+        return result;
     }
 
     protected void aggregate(List<Integer> taxonNodeIdList, IProgressMonitor subMonitor)  throws JvmLimitsException {
@@ -235,8 +250,10 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     }
 
-    protected interface ResultHolder{
-
+    protected class ResultHolder{
+        //descriptions are identifiable and therefore are not deleted automatically by removing them from taxon or specimen
+        //here we store all descriptions that need to be deleted after aggregation as they are not needed anymore
+        Set<DescriptionBase<?>> descriptionsToDelete = new HashSet<>();;
     }
 
     protected void accumulateSingleTaxon(TaxonNode taxonNode){
@@ -250,23 +267,34 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         ResultHolder resultHolder = createResultHolder();
         for (AggregationMode mode : getConfig().getAggregationModes()){
             if (mode == AggregationMode.ToParent){
-                Set<TaxonDescription> excludedDescriptions = new HashSet<>();
-//            excludedDescriptions.add(targetDescription); //not possible because aggregating from children
-                aggregateToParentTaxon(taxonNode, resultHolder, excludedDescriptions);
-            }
-            if (mode == AggregationMode.WithinTaxon){
+                aggregateToParentTaxon(taxonNode, resultHolder, new HashSet<>()); ////excludedDescriptions because aggregating from children
+            } else if (mode == AggregationMode.WithinTaxon){
                 Set<TaxonDescription> excludedDescriptions = new HashSet<>();
                 excludedDescriptions.add(targetDescription);
                 aggregateWithinSingleTaxon(taxon, resultHolder, excludedDescriptions);
+            }else{
+                throw new IllegalArgumentException("Mode " + mode + " not yet supported");
             }
         }
         addAggregationResultToDescription(targetDescription, resultHolder);
-        removeDescriptionIfEmpty(targetDescription);
+        removeDescriptionIfEmpty(targetDescription, resultHolder);
+        deleteDescriptionsToDelete(resultHolder);
     }
 
-    protected void removeDescriptionIfEmpty(TaxonDescription description) {
+    private void deleteDescriptionsToDelete(DescriptionAggregationBase<T, CONFIG>.ResultHolder resultHolder) {
+        for (DescriptionBase<?> descriptionToDelete : resultHolder.descriptionsToDelete){
+            if (descriptionToDelete.isPersited()){
+                getSession().flush(); // move to service method #9801
+                DeleteResult result = repository.getDescriptionService().deleteDescription(descriptionToDelete);
+                //TODO handle result somehow if not OK, but careful, descriptions may be linked >1x and therefore maybe deleted only after last link was removed
+            }
+        }
+    }
+
+    protected void removeDescriptionIfEmpty(TaxonDescription description, ResultHolder resultHolder) {
         if (description.getElements().isEmpty()){
             description.getTaxon().removeDescription(description);
+            resultHolder.descriptionsToDelete.add(description);
         }
     }
 
@@ -289,7 +317,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
             if (hasDescriptionType(description)){
-                logger.debug("reusing existing aggregated description for " + taxonToString(taxon));
+                if (logger.isDebugEnabled()){logger.debug("reusing existing aggregated description for " + taxonToString(taxon));}
                 setDescriptionTitle(description, taxon);  //maybe we want to redefine the title
                 return description;
             }
@@ -316,6 +344,8 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
     protected abstract List<String> descriptionInitStrategy();
 
     protected abstract void preAggregate(IProgressMonitor monitor);
+
+    protected abstract void verifyConfiguration(IProgressMonitor monitor);
 
     /**
      * hook for initializing object when a new transaction starts

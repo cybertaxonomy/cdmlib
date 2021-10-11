@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.hibernate.search.UriBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IIntextReferenceTarget;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IPublishable;
@@ -363,7 +364,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         for (DescriptionBase<?> descriptionBase : getDescriptions()){
             if (descriptionBase.isInstanceOf(SpecimenDescription.class)){
                 if (includeImageGallery || descriptionBase.isImageGallery() == false){
-                    specimenDescriptions.add(descriptionBase.deproxy(descriptionBase, SpecimenDescription.class));
+                    specimenDescriptions.add(CdmBase.deproxy(descriptionBase, SpecimenDescription.class));
                 }
 
             }
@@ -374,7 +375,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
      * Returns the {@link SpecimenDescription specimen descriptions} which act as an image gallery
      * and which this specimen is part of.
      * @see #getDescriptions()
-     * @return
      */
     @Transient
     public Set<SpecimenDescription> getSpecimenDescriptionImageGallery() {
@@ -391,7 +391,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     /**
      * Adds a new description to this specimen or observation
-     * @param description
      */
     @Override
     public void addDescription(DescriptionBase description) {
@@ -404,7 +403,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
     /**
      * Removes a specimen from a description (removes a description from this specimen)
-     * @param description
      */
     @Override
     public void removeDescription(DescriptionBase description) {
@@ -413,7 +411,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
             description.setDescribedSpecimenOrObservation(null);
         }
     }
-
 
     public Set<DerivationEvent> getDerivationEvents() {
         if(derivationEvents == null) {

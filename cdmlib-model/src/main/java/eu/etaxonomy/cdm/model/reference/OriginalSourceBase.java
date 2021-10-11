@@ -138,7 +138,6 @@ public abstract class OriginalSourceBase
 
 	/**
 	 * Constructor
-	 * @param type
 	 */
 	protected OriginalSourceBase(OriginalSourceType type){
 		if (type == null){
@@ -217,16 +216,19 @@ public abstract class OriginalSourceBase
     }
 	*/
 
-
 //	@Override
 //    public void setCdmSource(CdmLinkSource cdmSource) {
 //        this.cdmSource = cdmSource;
 //    }
+
     @Override
     public void setCdmSource(ICdmTarget cdmTarget){
         if (cdmTarget != null){
             this.cdmSource = CdmLinkSource.NewInstance(cdmTarget);
         }else{
+            if (cdmSource != null){
+                cdmSource.setTarget(null);  //as long as orphan-removal does not work #9801
+            }
             this.cdmSource = null;
         }
     }
@@ -255,7 +257,6 @@ public abstract class OriginalSourceBase
 	@Override
 	public OriginalSourceBase clone() throws CloneNotSupportedException{
 
-	    @SuppressWarnings("unchecked")
         OriginalSourceBase result = (OriginalSourceBase)super.clone();
 
 		Set<ExternalLink> links = new HashSet<>();

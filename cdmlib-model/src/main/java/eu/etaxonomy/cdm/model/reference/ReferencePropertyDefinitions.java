@@ -66,7 +66,11 @@ public class ReferencePropertyDefinitions {
 
         iAuthoredPublicationBase = merge(iPublicationBase , iWithAuthorAndDate, iWithDoi);
 
-        iSection = merge(iReference, iWithAuthorAndDate, iWithDoi, iNomenclaturalReference);
+        // ----------------------------------------------------------------------------
+        // Field visibility different from ISection definition see discussion at
+        //  - https://dev.e-taxonomy.eu/redmine/issues/9706#note-3
+        // iSection = merge(iReference, iWithAuthorAndDate, iWithDoi, iNomenclaturalReference); // commented to fix visibility
+        put(iSection, "authorship");
         put(iSection, "pages");
         put(iSection, "inReference");
 

@@ -4,7 +4,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.26.0</version>
+    <version>5.27.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -86,6 +86,21 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
     </dependency>
+    <!-- needed for JavaMailSender -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mailapi</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.subethamail</groupId>
+        <artifactId>subethasmtp</artifactId>
+        <scope>test</scope>
+    </dependency>    
+    <!-- =========================== -->
     <dependency>
       <groupId>com.ibm.lsid</groupId>
       <artifactId>lsid-server</artifactId>

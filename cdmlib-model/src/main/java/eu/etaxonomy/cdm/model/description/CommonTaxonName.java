@@ -191,15 +191,9 @@ public class CommonTaxonName extends DescriptionElementBase {
     @Override
     public CommonTaxonName clone() {
 
-        try {
-            CommonTaxonName result = (CommonTaxonName)super.clone();
-            return result;
-            //no changes to name, language, area
-        } catch (CloneNotSupportedException e) {
-            logger.warn("Object does not implement cloneable");
-            e.printStackTrace();
-            return null;
-        }
+        CommonTaxonName result = (CommonTaxonName)super.clone();
+        return result;
+        //no changes to name, language, area
     }
 
 //*********************************** toString *****************************************/

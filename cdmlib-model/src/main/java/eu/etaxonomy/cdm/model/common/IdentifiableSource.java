@@ -104,6 +104,11 @@ public class IdentifiableSource
         return result;
     }
 
+    public static IdentifiableSource NewAggregationSourceInstance(){
+        IdentifiableSource result = NewInstance(OriginalSourceType.Aggregation);
+        return result;
+    }
+
 // ******************************** FIELDS ************************************/
 
 

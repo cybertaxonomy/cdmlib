@@ -26,6 +26,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -98,7 +99,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 	public final void testSwapSynonymAndAcceptedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymType);
 
-		UpdateResult result = service.swapSynonymAndAcceptedTaxon(s1, t1, true, false);
+		UpdateResult result = service.swapSynonymAndAcceptedTaxon(s1, t1, true, false, SecReferenceHandlingSwapEnum.KeepOrWarn, null, null);
 		Synonym syn = (Synonym)service.load(s1.getUuid());
 		//only the name has changed
 		Assert.assertNotNull(syn);
@@ -169,7 +170,7 @@ public class TaxonServiceImplBusinessTest extends CdmTransactionalIntegrationTes
 		//run
 		Taxon newTaxon = null;
 		try {
-			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, null, null, SecReferenceHandlingEnum.KeepAlways, false).getCdmEntity();
+			newTaxon = (Taxon)service.changeSynonymToAcceptedTaxon(s1, t1, null, null, SecReferenceHandlingEnum.KeepOrWarn, false).getCdmEntity();
 		} catch (HomotypicalGroupChangeException e1) {
 			Assert.fail("Invocation of change method should not throw an exception");
 		}

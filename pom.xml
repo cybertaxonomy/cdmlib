@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-parent</artifactId>
-  <version>5.26.0</version>
+  <version>5.27.0</version>
   <name>CDM Library</name>
   <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
   <url>http://cybertaxonomy.eu/cdmlib/</url>
@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>cdmlib-commons</module>
+    
     <module>cdmlib-model</module>
 	<module>cdmlib-db</module>
     <module>cdmlib-test</module>
@@ -841,6 +842,18 @@
      <!--    <scope>test</scope>  -->
 		<version>${project.version}</version>
 	  </dependency>
+      <dependency>
+        <!-- used in cdmlib-services for the EmailSendTest -->
+        <groupId>org.subethamail</groupId>
+        <artifactId>subethasmtp</artifactId>
+        <version>3.1.7</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>1.1.1</version>
+      </dependency>
       <!-- ******* aspect ******* -->
       <dependency>
         <!-- not really needed as long as aspectjweaver is on classpath which is a superset of aspectjrt -->
@@ -1647,6 +1660,12 @@
          <groupId>com.sun</groupId>
          <artifactId>tools</artifactId>
          <version>1.8.0</version>
+      </dependency>
+      <!-- Email functionality (used in cdmlib-services) -->
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mailapi</artifactId>
+        <version>1.4.3</version>
       </dependency>
    </dependencies>    
   </dependencyManagement>

@@ -233,8 +233,6 @@ public class TermTree <T extends DefinedTermBase>
 
 	/**
 	 * Computes a set of distinct terms that are present in this term tree
-	 *
-	 * @return
 	 */
     @Override
     @Transient

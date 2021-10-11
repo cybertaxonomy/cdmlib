@@ -45,26 +45,27 @@ public class TermDto extends AbstractTermDto{
     private String idInVocabulary = null;
     private Collection<TermDto> includes;
     private Collection<TermDto> generalizationOf;
-    private Set<Representation> vocRepresentations = null;
-    private String vocRepresentation_L10n = null;
-    private String vocRepresentation_L10n_abbreviatedLabel = null;
+//    this should be handled in vocabularyDto
+//    private Set<Representation> vocRepresentations = null;
+//    private String vocRepresentation_L10n = null;
+//    private String vocRepresentation_L10n_abbreviatedLabel = null;
     private Collection<UUID> media = null;
     private NamedAreaLevel level = null;
 
-    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
-        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, null, titleCache);
-    }
+//    private TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
+//            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
+//        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, titleCache);
+//    }
 
     protected TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations, String titleCache) {
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
         super(uuid, representations, titleCache);
         this.partOfUuid = partOfUuid;
         this.kindOfUuid = kindOfUuid;
         this.vocabularyUuid = vocabularyUuid;
         this.orderIndex = orderIndex;
         this.idInVocabulary = idInVocabulary;
-        this.vocRepresentations = vocRepresentations;
+//        this.vocRepresentations = vocRepresentations;
         setTermType(termType);
     }
 
@@ -81,6 +82,9 @@ public class TermDto extends AbstractTermDto{
     }
 
     static public TermDto fromTerm(DefinedTermBase<?> term, Set<Representation> representations, boolean initializeToTop) {
+        if (term == null){
+            return null;
+        }
         DefinedTermBase<?> partOf = term.getPartOf();
         DefinedTermBase<?> kindOf = term.getKindOf();
         TermVocabulary<?> vocabulary = term.getVocabulary();
@@ -122,37 +126,37 @@ public class TermDto extends AbstractTermDto{
 
     @Override
     public void localize(ITermRepresentation_L10n representation_L10n) {
-        if(vocRepresentations!=null){
-            representation_L10n.localize(vocRepresentations);
-            if (representation_L10n.getLabel() != null) {
-                setVocRepresentation_L10n(representation_L10n.getLabel());
-            }
-            if (representation_L10n.getAbbreviatedLabel() != null) {
-                setVocRepresentation_L10n_abbreviatedLabel(representation_L10n.getAbbreviatedLabel());
-            }
-        }
+//        if(vocRepresentations!=null){
+//            representation_L10n.localize(vocRepresentations);
+//            if (representation_L10n.getLabel() != null) {
+//                setVocRepresentation_L10n(representation_L10n.getLabel());
+//            }
+//            if (representation_L10n.getAbbreviatedLabel() != null) {
+//                setVocRepresentation_L10n_abbreviatedLabel(representation_L10n.getAbbreviatedLabel());
+//            }
+//        }
         super.localize(representation_L10n);
     }
 
-    public void setVocRepresentation_L10n(String vocRepresentation_L10n) {
-        this.vocRepresentation_L10n = vocRepresentation_L10n;
-    }
-
+//    public void setVocRepresentation_L10n(String vocRepresentation_L10n) {
+//        this.vocRepresentation_L10n = vocRepresentation_L10n;
+//    }
+//
     public String getVocRepresentation_L10n() {
-        return vocRepresentation_L10n;
+        return vocabularyDto.getRepresentation_L10n();
     }
-
-    public void setVocRepresentation_L10n_abbreviatedLabel(String vocRepresentation_L10n_abbreviatedLabel) {
-        this.vocRepresentation_L10n_abbreviatedLabel = vocRepresentation_L10n_abbreviatedLabel;
-    }
-
+//
+//    public void setVocRepresentation_L10n_abbreviatedLabel(String vocRepresentation_L10n_abbreviatedLabel) {
+//        this.vocRepresentation_L10n_abbreviatedLabel = vocRepresentation_L10n_abbreviatedLabel;
+//    }
+//
     public String getVocRepresentation_L10n_abbreviatedLabel() {
-        return vocRepresentation_L10n_abbreviatedLabel;
+        return vocabularyDto.getRepresentation_L10n_abbreviatedLabel();
     }
-
-    protected void addVocRepresentation(Representation vocRepresentation){
-        this.vocRepresentations.add(vocRepresentation);
-    }
+//
+//    protected void addVocRepresentation(Representation vocRepresentation){
+//        this.vocRepresentations.add(vocRepresentation);
+//    }
 
     public void setPartOfDto(TermDto partOfDto) {
         this.partOfDto = partOfDto;
@@ -266,7 +270,7 @@ public class TermDto extends AbstractTermDto{
                 + "v.uuid, "
                 + "a.orderIndex, "
                 + "a.idInVocabulary, "
-                + "voc_rep,  "
+//                + "voc_rep,  "
                 + "a.termType,  "
                 + "a.uri,  "
                 + "m,  "
@@ -278,7 +282,7 @@ public class TermDto extends AbstractTermDto{
                 + "LEFT JOIN a.media as m "
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
-                + "LEFT JOIN v.representations as voc_rep "
+//                + "LEFT JOIN v.representations as voc_rep "
                 ;
 
         String[] result = new String[3];
@@ -304,11 +308,11 @@ public class TermDto extends AbstractTermDto{
                 if(elements[1]!=null){
                     dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
                 }
-                if(elements[7]!=null){
-                    dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
-                }
-                if(elements[10]!=null){
-                    dtoMap.get(uuid).addMedia(((Media) elements[10]).getUuid());
+//                if(elements[7]!=null){
+//                    dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
+//                }
+                if(elements[9]!=null){
+                    dtoMap.get(uuid).addMedia(((Media) elements[9]).getUuid());
                 }
             } else {
                 // term representation
@@ -319,30 +323,30 @@ public class TermDto extends AbstractTermDto{
                 }
                 // term media
                 Set<UUID> mediaUuids = new HashSet<>();
-                if(elements[10] instanceof Media) {
-                    mediaUuids.add(((Media) elements[10]).getUuid());
+                if(elements[9] instanceof Media) {
+                    mediaUuids.add(((Media) elements[9]).getUuid());
                 }
                 // voc representation
-                Set<Representation> vocRepresentations = new HashSet<>();
-                if(elements[7] instanceof Representation) {
-                    vocRepresentations = new HashSet<>(7);
-                    vocRepresentations.add((Representation)elements[7]);
-                }
+//                Set<Representation> vocRepresentations = new HashSet<>();
+//                if(elements[7] instanceof Representation) {
+//                    vocRepresentations = new HashSet<>(7);
+//                    vocRepresentations.add((Representation)elements[7]);
+//                }
                 TermDto termDto = new TermDto(
                         uuid,
                         representations,
-                        (TermType)elements[8],
+                        (TermType)elements[7],
                         (UUID)elements[2],
                         (UUID)elements[3],
                         (UUID)elements[4],
                         (Integer)elements[5],
                         (String)elements[6],
-                        vocRepresentations,
-                        (String)elements[11]);
-                termDto.setUri((URI)elements[9]);
+//                        vocRepresentations,
+                        (String)elements[10]);
+                termDto.setUri((URI)elements[8]);
                 termDto.setMedia(mediaUuids);
-                if (elements.length>12 && elements[12] != null){
-                    termDto.setLevel((NamedAreaLevel)elements[12]);
+                if (elements.length>11 && elements[11] != null){
+                    termDto.setLevel((NamedAreaLevel)elements[11]);
                 }
 
                 dtoMap.put(uuid, termDto);

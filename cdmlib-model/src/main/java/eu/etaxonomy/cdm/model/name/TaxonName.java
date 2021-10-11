@@ -173,7 +173,8 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
     //fungi
     "anamorphic",
     //cultivar plant names
-    "cultivarName"
+    "cultivarGroupEpithet",
+    "cultivarEpithet"
 })
 @XmlRootElement(name = "TaxonName")
 @Entity
@@ -329,7 +330,7 @@ public class TaxonName
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true, mappedBy="sourcedName")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @CacheUpdate(noUpdate ="titleCache")
     @IndexedEmbedded
     private NomenclaturalSource nomenclaturalSource;
@@ -553,11 +554,19 @@ public class TaxonName
     //Cultivar attribute(s)
 
     //the characteristical name of the cultivar
-    @XmlElement(name = "CultivarName")
+    @XmlElement(name = "CultivarEpithet")
     //TODO Val #3379
     //@NullOrNotEmpty
+    @CacheUpdate("nameCache")
     @Column(length=255)
-    private String cultivarName;
+    private String cultivarEpithet;
+
+    //#9761
+    @XmlElement(name = "CultivarGroupEpithet")
+    @NullOrNotEmpty
+    @CacheUpdate("nameCache")
+    @Column(length=255)
+    private String cultivarGroupEpithet;
 
     // ************** FUNGUS name attributes
     //to indicate that the type of the name is asexual or not
@@ -1276,18 +1285,30 @@ public class TaxonName
 
     // **** Cultivar Name ************
 
-
     @Override
-    public String getCultivarName(){
-        return this.cultivarName;
+    public String getCultivarEpithet(){
+        return this.cultivarEpithet;
     }
 
     /**
-     * @see  #getCultivarName()
+     * @see  #getCultivarEpithet()
      */
     @Override
-    public void setCultivarName(String cultivarName){
-        this.cultivarName = isBlank(cultivarName) ? null : cultivarName;
+    public void setCultivarEpithet(String cultivarEpithet){
+        this.cultivarEpithet = isBlank(cultivarEpithet) ? null : cultivarEpithet;
+    }
+
+    @Override
+    public String getCultivarGroupEpithet(){
+        return this.cultivarGroupEpithet;
+    }
+
+    /**
+     * @see  #getCultivarGroupEpithet()
+     */
+    @Override
+    public void setCultivarGroupEpithet(String cultivarGroupEpithet){
+        this.cultivarGroupEpithet = isBlank(cultivarGroupEpithet) ? null : cultivarGroupEpithet;
     }
 
     // **************** Fungus Name
@@ -3738,7 +3759,7 @@ public class TaxonName
             //acronym
             //subGenusAuthorship, nameApprobation
             //anamorphic
-            //cultivarName
+            //cultivarEpithet,cultivarGroupEpithet
             return result;
         } catch (CloneNotSupportedException e) {
             logger.warn("Object does not implement cloneable");

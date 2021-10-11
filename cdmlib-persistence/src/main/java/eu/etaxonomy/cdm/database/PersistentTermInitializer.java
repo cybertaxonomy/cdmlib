@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.database;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -108,7 +109,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 
             //load uuids from csv files
             logger.info("Start new ... " );
-            Map<UUID, Set<UUID>> uuidMap = new HashMap<>();
+            Map<UUID, List<UUID>> uuidMap = new HashMap<>();
             Map<UUID, VocabularyEnum> vocTypeMap = new HashMap<>();
 
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
@@ -128,7 +129,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 
             for( VocabularyEnum vocabularyType : VocabularyEnum.values()) {   //required to keep the order (language must be the first vocabulary to load)
             	UUID vocUuid = vocabularyType.getUuid();
-            	if (missingTermUuids.keySet().contains(vocabularyType.getUuid())  || vocabularyMap.get(vocUuid) == null ){
+            	if (missingTermUuids.keySet().contains(vocabularyType.getUuid()) || vocabularyMap.get(vocUuid) == null ){
 
             		VocabularyEnum vocType = vocTypeMap.get(vocUuid);  //TODO not really necessary, we could also do VocType.getUuuid();
 	            	TermVocabulary<?> voc = vocabularyMap.get(vocUuid);

@@ -114,8 +114,10 @@ public class TaxonPortalController extends TaxonController{
             "$",
             "sources",
             "statusNote",
-            // taxon relations
-//            "relationsToThisName.fromTaxon.name",
+            "relationsFromThisTaxon.toTaxon.secSource.citation.authorship",
+            "relationsFromThisTaxon.toTaxon.secSource.citation.inReference.authorship",
+            "relationsToThisTaxon.fromTaxon.secSource.citation.authorship",
+            "relationsToThisTaxon.fromTaxon.secSource.citation.inReference.authorship",
             // the name
             "name.$",
             "name.nomenclaturalSource.citation.authorship",

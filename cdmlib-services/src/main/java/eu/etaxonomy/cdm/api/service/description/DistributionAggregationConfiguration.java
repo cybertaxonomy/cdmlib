@@ -57,7 +57,7 @@ public class DistributionAggregationConfiguration
     }
 
     public static DistributionAggregationConfiguration NewInstance(List<AggregationMode> aggregationModes, List<UUID> superAreas,
-            TaxonNodeFilter filter, TermTree<PresenceAbsenceTerm> statusOrder,  IProgressMonitor monitor){
+            TaxonNodeFilter filter, TermTree<PresenceAbsenceTerm> statusOrder, IProgressMonitor monitor){
 
         DistributionAggregationConfiguration result = new DistributionAggregationConfiguration(aggregationModes, superAreas, filter, monitor);
         result.setStatusOrder(statusOrder);
@@ -69,6 +69,9 @@ public class DistributionAggregationConfiguration
     private DistributionAggregationConfiguration(List<AggregationMode> aggregationModes, List<UUID> superAreas,
             TaxonNodeFilter filter, IProgressMonitor monitor) {
         super(filter, monitor, aggregationModes);
+        setWithinTaxonSourceMode(AggregationSourceMode.ALL_SAMEVALUE);  //default mode for distribution descriptions
+        setToParentSourceMode(AggregationSourceMode.DESCRIPTION);  //default mode for structured descriptions
+
         this.superAreasUuids = superAreas;
     }
 

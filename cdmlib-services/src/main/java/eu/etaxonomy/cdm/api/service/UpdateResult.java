@@ -46,16 +46,6 @@ public class UpdateResult implements Serializable{
 
     private CdmBase cdmEntity;
 
-
-    //		private Set<PersistPair> objectsToDelete = new HashSet<>();
-    //
-    //		private Set<PersistPair> objectsToSave = new HashSet<>();
-
-    //		protected class PersistPair{
-    //			protected CdmBase objectToPersist;
-    //			protected ICdmEntityDao<CdmBase> dao;
-    //		}
-
     public enum Status {
         OK(0),
         ABORT(1),
@@ -73,6 +63,7 @@ public class UpdateResult implements Serializable{
     }
 
     //***************************** GETTER /SETTER /ADDER *************************/
+
     /**
      * The resulting status of an update action.
      *
@@ -123,27 +114,6 @@ public class UpdateResult implements Serializable{
     public void addUpdatedObjects(Set<? extends CdmBase> updatedObjects) {
         this.updatedObjects.addAll(updatedObjects);
     }
-
-    //		/**
-    //		 * @return
-    //		 */
-    //		public Set<PersistPair> getObjectsToDelete() {
-    //			return objectsToDelete;
-    //		}
-    //		public void setObjectsToDelete(Set<PersistPair> objectsToDelete) {
-    //			this.objectsToDelete = objectsToDelete;
-    //		}
-    //
-    //		/**
-    //		 * @return
-    //		 */
-    //		public Set<PersistPair> getObjectsToSave() {
-    //			return objectsToSave;
-    //		}
-    //		public void setObjectsToSave(Set<PersistPair> objectsToSave) {
-    //			this.objectsToSave = objectsToSave;
-    //		}
-
 
     //****************** CONVENIENCE *********************************************/
 
@@ -222,9 +192,9 @@ public class UpdateResult implements Serializable{
             relatedObjectString = relatedObjectString.substring(0, relatedObjectString.length()-separator.length());
         }
         return "[UpdateResult]\n" +
-        "Status: " + status.toString()+"\n" +
-        "Exceptions: " + exceptionString+"\n" +
-        "Related Objects: "+relatedObjectString;
+            "Status: " + status.toString()+"\n" +
+            "Exceptions: " + exceptionString+"\n" +
+            "Related Objects: "+relatedObjectString;
     }
     public void setCdmEntity(CdmBase cdmBase) {
         this.cdmEntity = cdmBase;

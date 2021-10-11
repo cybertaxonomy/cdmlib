@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.term;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -117,21 +119,23 @@ public class DefinedTermDaoImpl
 	 * Searches by Label
 	 */
 	@Override
-    public List<DefinedTermBase> findByTitle(String queryString) {
-		return findByTitle(queryString, null);
+    public List<DefinedTermBase> findByLabel(String queryString) {
+		return findByLabel(queryString, null);
 	}
 
 	/**
 	 * Searches by Label
 	 */
 	@Override
-    public List<DefinedTermBase> findByTitle(String queryString, CdmBase sessionObject) {
+    public List<DefinedTermBase> findByLabel(String queryString, CdmBase sessionObject) {
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitle(String queryString, CdmBase sessionObject)");
 		Session session = getSession();
 		if ( sessionObject != null ) {//attache the object to the session, TODO needed?
 			session.update(sessionObject);
 		}
-		Query query = session.createQuery("select term from DefinedTermBase term join fetch term.representations representation where representation.label = :label");
+		Query query = session.createQuery("SELECT term "
+		        + " FROM DefinedTermBase term JOIN FETCH term.representations representation "
+		        + " WHERE representation.label = :label");
 		query.setParameter("label", queryString);
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		List<DefinedTermBase> result = deduplicateResult(query.list());
@@ -644,27 +648,6 @@ public class DefinedTermDaoImpl
     @Override
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
         Session session = getSession();
-//        Query query = null;
-//        if (pattern != null){
-//            if (vocs != null && !vocs.isEmpty()){
-//                query = session.createQuery("from NamedArea where titleCache like :pattern and vocabulary in :vocs ORDER BY titleCache");
-//                query.setParameterList("vocs", vocs);
-//            }else{
-//                query = session.createQuery("from NamedArea where titleCache like :pattern ORDER BY titleCache");
-//            }
-//            pattern = pattern.replace("*", "%");
-//            pattern = pattern.replace("?", "_");
-//            pattern = pattern + "%";
-//            query.setParameter("pattern", pattern);
-//
-//        } else {
-//            query = session.createQuery("FROM NamedArea WHERE vocabulary IN :vocs ORDER BY titleCache");
-//            query.setParameterList("vocs", vocs);
-//        }
-//        if (limit != null && limit > 0){
-//           query.setMaxResults(limit);
-//        }
-
         if (clazz == null){
             clazz = (Class)type;
         }
@@ -700,8 +683,6 @@ public class DefinedTermDaoImpl
         if (limit == null){
             limit = 1;
         }
-//        int firstItem = (pageNumber - 1) * limit;
-
         crit.setFirstResult(0);
         @SuppressWarnings("unchecked")
         List<S> results = deduplicateResult(crit.list());
@@ -753,31 +734,6 @@ public class DefinedTermDaoImpl
         return results;
     }
 
-    //FIXME AM: this returns only NamedArea counts though not mentioned in method name, fortunately it is currently not in use
-    @Override
-    public long count(List<TermVocabulary> vocs, String pattern){
-        Session session = getSession();
-        Query query = null;
-        if (pattern != null){
-            if (vocs != null && !vocs.isEmpty()){
-                query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE titleCache LIKE :pattern AND vocabulary IN :vocs");
-                query.setParameterList("vocs", vocs);
-            }else{
-                query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE titleCache LIKE :pattern ");
-            }
-            pattern = pattern.replace("*", "%");
-            pattern = pattern.replace("?", "_");
-            pattern = pattern + "%";
-            query.setParameter("pattern", pattern);
-
-        } else {
-            query = session.createQuery("SELECT COUNT(*) FROM NamedArea WHERE vocabulary IN :vocs");
-            query.setParameterList("vocs", vocs);
-        }
-
-        Long result = (Long) query.uniqueResult();
-        return result;
-    }
 
     @Override
     public Collection<TermDto> getIncludesAsDto(
@@ -841,6 +797,29 @@ public class DefinedTermDaoImpl
     }
 
     @Override
+    public TermDto findByUUIDAsDto(UUID uuid) {
+        String queryString = TermDto.getTermDtoSelect()
+                + " where a.uuid like :uuid ";
+
+
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+
+        List<TermDto> list = TermDto.termDtoListFrom(result);
+        if (list.size()== 1){
+            return list.get(0);
+        }else{
+            return null;
+        }
+
+    }
+
+
+    @Override
     public Collection<TermDto> findByTypeAsDto(TermType termType) {
         if (termType == null){
             return null;
@@ -882,31 +861,36 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid){
-        List<TermDto> list = new ArrayList<>();
-        String supportedCategoriesQueryString = "SELECT cat.uuid "
-                + "from DefinedTermBase t "
-                + "join t.supportedCategoricalEnumerations as cat "
-                + "where t.uuid = :featureUuid";
-        Query supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString);
-        supportedCategoriesQuery.setParameter("featureUuid", featureUuid);
-        @SuppressWarnings("unchecked")
-		List<UUID> supportedCategories = supportedCategoriesQuery.list();
-        if(supportedCategories.isEmpty()){
-            return list;
+    public  Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids){
+        Map<UUID, List<TermDto>> map = new HashMap<>();
+        for (UUID featureUuid: featureUuids){
+            List<TermDto> list = new ArrayList<>();
+            String supportedCategoriesQueryString = "SELECT cat.uuid "
+                    + "from DefinedTermBase t "
+                    + "join t.supportedCategoricalEnumerations as cat "
+                    + "where t.uuid = :featureUuid";
+            Query supportedCategoriesQuery =  getSession().createQuery(supportedCategoriesQueryString);
+            supportedCategoriesQuery.setParameter("featureUuid", featureUuid);
+            @SuppressWarnings("unchecked")
+    		List<UUID> supportedCategories = supportedCategoriesQuery.list();
+            if(supportedCategories.isEmpty()){
+                map.put(featureUuid, list);
+                continue;
+            }
+
+            String queryString = TermDto.getTermDtoSelect()
+                    + "where v.uuid in (:supportedCategories) "
+                    + "order by a.titleCache";
+            Query query =  getSession().createQuery(queryString);
+            query.setParameterList("supportedCategories", supportedCategories);
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> result = query.list();
+
+            list = TermDto.termDtoListFrom(result);
+            map.put(featureUuid, list);
         }
-
-        String queryString = TermDto.getTermDtoSelect()
-                + "where v.uuid in (:supportedCategories) "
-                + "order by a.titleCache";
-        Query query =  getSession().createQuery(queryString);
-        query.setParameterList("supportedCategories", supportedCategories);
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
-
-        list = TermDto.termDtoListFrom(result);
-        return list;
+        return map;
     }
 
     @Override
@@ -966,5 +950,26 @@ public class DefinedTermDaoImpl
 
         List<TermDto> list = FeatureDto.termDtoListFrom(result);
         return list;
+    }
+
+    @Override
+    public TermDto getTermDto(UUID uuid) {
+        String queryString = TermDto.getTermDtoSelect()
+                + " where a.uuid = :uuid ";
+
+
+        Query query =  getSession().createQuery(queryString);
+        query.setParameter("uuid", uuid);
+
+
+
+        @SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
+        TermDto dto = null;
+        List<TermDto> dtoList = TermDto.termDtoListFrom(result);
+        if (dtoList != null && !dtoList.isEmpty()){
+            dto = dtoList.get(0);
+        }
+        return dto;
     }
 }

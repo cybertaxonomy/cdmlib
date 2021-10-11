@@ -15,16 +15,14 @@ import eu.etaxonomy.cdm.model.name.Rank;
 /**
  * @author a.kohlbecker
  * @since Mar 20, 2020
- *
  */
 public class SortableTaxonNodeQueryResult {
 
-    UUID taxonNodeUuid;
-    Integer taxonNodeId;
-    String taxonTitleCache;
-    Rank nameRank = Rank.UNKNOWN_RANK();
-
-
+    protected UUID taxonNodeUuid;
+    protected Integer taxonNodeId;
+    protected String taxonTitleCache;
+    protected String nameTitleCache;
+    protected Rank nameRank = Rank.UNKNOWN_RANK();
 
     /**Is this the reason
      * @param taxonNodeUuid
@@ -32,14 +30,26 @@ public class SortableTaxonNodeQueryResult {
      * @param taxonTitleCache
      * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
      */
-    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache, String nameTitleCache,
             Rank nameRank) {
         this.taxonNodeUuid = taxonNodeUuid;
         this.taxonNodeId = taxonNodeId;
         this.taxonTitleCache = taxonTitleCache;
+        this.nameTitleCache = nameTitleCache;
         if(nameRank != null){
             this.nameRank = nameRank;
         }
+    }
+
+    /**
+     * @param taxonNodeUuid
+     * @param taxonNodeId
+     * @param taxonTitleCache
+     * @param nameRank {@link Rank.#UNKNOWN_RANK()} will be used in case this is <code>null</code>
+     */
+    public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache,
+            Rank nameRank) {
+        this(taxonNodeUuid, taxonNodeId, taxonTitleCache, null, nameRank);
     }
 
     public SortableTaxonNodeQueryResult(UUID taxonNodeUuid, Integer taxonNodeId, String taxonTitleCache) {
@@ -71,7 +81,12 @@ public class SortableTaxonNodeQueryResult {
         this.nameRank = nameRank;
     }
 
-
+    public String getNameTitleCache() {
+        return nameTitleCache;
+    }
+    public void setNameTitleCache(String nameTitleCache) {
+        this.nameTitleCache = nameTitleCache;
+    }
 
 
 }

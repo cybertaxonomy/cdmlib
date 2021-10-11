@@ -12,10 +12,12 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -174,6 +176,18 @@ public interface IDefinedTermDao
 
 	public DefinedTermBase findByUri(URI uri);
 
+
+    /**
+     * Searches by representation label
+     */
+	public List<DefinedTermBase> findByLabel(String queryString);
+
+	/**
+     * Searches by representation label
+     */
+    public List<DefinedTermBase> findByLabel(String queryString, CdmBase sessionObject);
+
+
 	/**
 	 * Retrieves all {@link DefinedTermBase}s with the given {@link TermType}
 	 * @param termType the term type to filter the terms
@@ -220,6 +234,8 @@ public interface IDefinedTermDao
      */
     public Collection<TermDto> getKindOfsAsDto(TermDto parentTerm);
 
+    public TermDto getTermDto(UUID uuid);
+
 
     /**
      * Returns a collection of {@link TermDto}s that match the given search parameters.
@@ -239,19 +255,11 @@ public interface IDefinedTermDao
     public Collection<TermDto> findByUriAsDto(URI uri, String termLabel, TermType termType);
 
     /**
-     * Returns the number of terms in the vocabularies vocs filteres by the given pattern
-     * @param vocs
-     * @param pattern
-     * @return
+     * Returns all states for all supportedCategoricalEnumeration of the categorical features
+     * @param set of featureUuids the feature which has to support categorical data
+     * @return map of lists of all supported states
      */
-    public long count(List<TermVocabulary> vocs, String pattern);
-
-    /**
-     * Returns all states for all supportedCategoricalEnumeration of this categorical feature
-     * @param featureUuid the feature which has to support categorical data
-     * @return list of all supported states
-     */
-    public List<TermDto> getSupportedStatesForFeature(UUID featureUuid);
+    public Map<UUID, List<TermDto>> getSupportedStatesForFeature(Set<UUID> featureUuids);
 
     public Collection<TermDto> findByUUIDsAsDto(List<UUID> uuidList);
 
@@ -260,5 +268,7 @@ public interface IDefinedTermDao
     public Collection<TermDto> findFeatureByUUIDsAsDto(List<UUID> uuidList);
 
     public Collection<TermDto> findFeatureByTitleAsDto(String pattern);
+
+    public TermDto findByUUIDAsDto(UUID uuid);
 
 }

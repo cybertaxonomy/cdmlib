@@ -23,23 +23,21 @@ import eu.etaxonomy.cdm.model.reference.OriginalSourceType;
  * @author a.mueller
  * @since 03.11.2019
  */
-public abstract class DescriptionAggregationConfigurationBase<TASK extends DescriptionAggregationBase> implements Serializable {
+public abstract class DescriptionAggregationConfigurationBase<TASK extends DescriptionAggregationBase>
+            implements Serializable {
 
     private static final long serialVersionUID = -7914819539239986722L;
 
     private TaxonNodeFilter taxonNodeFilter;
 
-    private AggregationSourceMode toParentSourceMode = AggregationSourceMode.DESCRIPTION;
-    private AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.ALL_SAMEVALUE;
+    private AggregationSourceMode withinTaxonSourceMode = AggregationSourceMode.NONE; //to be defined by implementing class
+    private AggregationSourceMode toParentSourceMode = AggregationSourceMode.NONE; //to be defined by implementing class
 
     private List<AggregationMode> aggregationModes;
 
     private boolean adaptBatchSize = true;
 
     private boolean doClearExistingDescription = false;
-    private boolean doReuseDescriptions = false;
-    private boolean doReuseDescriptionElements = false;
-    private boolean doReuseSources = false;
 
     private IProgressMonitor monitor;
 
@@ -111,6 +109,17 @@ public abstract class DescriptionAggregationConfigurationBase<TASK extends Descr
     }
     public void setToParentSourceMode(AggregationSourceMode toParentSourceMode) {
         this.toParentSourceMode = toParentSourceMode;
+    }
+    public AggregationSourceMode getSourceMode(AggregationMode aggregationMode){
+        AggregationSourceMode result;
+        if (aggregationMode == AggregationMode.WithinTaxon){
+            result = withinTaxonSourceMode;
+        }else if (aggregationMode == AggregationMode.ToParent){
+            result = toParentSourceMode;
+        }else{
+            throw new IllegalArgumentException("Aggregation mode not yet supported: " + aggregationMode);
+        }
+        return result == null ? AggregationSourceMode.NONE : result;
     }
 
     public AggregationSourceMode getWithinTaxonSourceMode() {

@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.INonViralName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -254,7 +255,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
         service.saveOrUpdate(synonym);
-        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, false);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, false, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
 
         // find forces flush
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
@@ -277,7 +278,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         createTestDataSet();
         synonym.setSec(ReferenceFactory.newArticle());
         service.saveOrUpdate(synonym);
-        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, true);
+        UpdateResult result = service.swapSynonymAndAcceptedTaxon(synonym, taxWithSyn, true, true, SecReferenceHandlingSwapEnum.AlwaysDelete, null, null);
 
         // find forces flush
         Taxon tax = (Taxon)service.find(result.getCdmEntity().getUuid());
@@ -343,35 +344,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     }
 
-    @Test
-    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonServiceImplTest.testMoveSynonymToAnotherTaxon.xml")
-    public final void testChangeSynonymToAcceptedTaxonWithSecHandlingAlwaysKeep(){
-        Taxon genus = getTestTaxon();
-        TaxonNode node = genus.getTaxonNodes().iterator().next();
-        UpdateResult result = new UpdateResult();
-        TaxonBase<?> syn = service.find(SYNONYM2_UUID);
-        Reference sec = ReferenceFactory.newBook();
-        sec.setTitleCache("Flora Cuba", true);
-        syn.setSec(sec);
-        service.saveOrUpdate(syn);
-        try {
-            result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), null, null, SecReferenceHandlingEnum.KeepAlways, true);
-        } catch (HomotypicalGroupChangeException e) {
-            Assert.fail("Invocation of change method should not throw an exception");
-        }
-        taxWithSyn = null;
-        //test flush (resave deleted object)
-        syn = service.find(SYNONYM2_UUID);
-        taxWithSyn = (Taxon)service.find(SPECIES2_UUID);
-        TaxonNode taxNodeNew = nodeService.find(result.getCdmEntity().getUuid());
-        Taxon taxNew = taxNodeNew.getTaxon();
-        assertNull(syn);
-        assertNotNull(taxWithSyn);
-        assertNotNull(taxNew);
-        assertNotNull(taxNew.getSec());
-        assertEquals(sec, taxNew.getSec());
 
-    }
 
     @Test
     public final void testChangeSynonymToAcceptedTaxonWithSecHandlingUseNewParentSec(){
@@ -418,7 +391,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         syn.setSec(sec);
         service.saveOrUpdate(syn);
         try {
-            result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), newSecUuid, "23", SecReferenceHandlingEnum.WarningSelect, true);
+            result = service.changeSynonymToAcceptedTaxon(SYNONYM2_UUID, SPECIES2_UUID, node.getUuid(), newSecUuid, "23", SecReferenceHandlingEnum.KeepOrSelect, true);
         } catch (HomotypicalGroupChangeException e) {
             Assert.fail("Invocation of change method should not throw an exception");
         }
@@ -2003,7 +1976,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botName.setTitleCache("Hieracium L.", true);
         botName.setGenusOrUninomial("Hieracium");
         botName.setCombinationAuthorship(Person.NewInstance());
-        botName.getCombinationAuthorship().setNomenclaturalTitle("L.");
+        botName.getCombinationAuthorship().setNomenclaturalTitleCache("L.", true);
         botName.setUuid(GENUS_NAME_UUID);
         Taxon genusTaxon = Taxon.NewInstance(botName, sec);
         genusTaxon.setUuid(GENUS_UUID);
@@ -2022,7 +1995,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies.setGenusOrUninomial("Hieracium");
         botSpecies.setSpecificEpithet("asturianum");
         botSpecies.setCombinationAuthorship(Person.NewInstance());
-        botSpecies.getCombinationAuthorship().setNomenclaturalTitle("Pau");
+        botSpecies.getCombinationAuthorship().setNomenclaturalTitleCache("Pau", true);
         botSpecies.setUuid(SPECIES1_NAME_UUID);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec);
         childTaxon.setUuid(SPECIES1_UUID);
@@ -2052,7 +2025,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         botSpecies2.setGenusOrUninomial("Hieracium");
         botSpecies2.setSpecificEpithet("wolffii");
         botSpecies2.setCombinationAuthorship(Person.NewInstance());
-        botSpecies2.getCombinationAuthorship().setNomenclaturalTitle("Zahn");
+        botSpecies2.getCombinationAuthorship().setNomenclaturalTitleCache("Zahn", true);
         botSpecies2.setUuid(SPECIES2_NAME_UUID);
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec);
         childTaxon2.setUuid(SPECIES2_UUID);

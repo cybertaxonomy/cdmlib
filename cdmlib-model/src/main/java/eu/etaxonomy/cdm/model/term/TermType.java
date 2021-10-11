@@ -560,6 +560,8 @@ public enum TermType implements IEnumTerm<TermType>{
                 return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, labelString, null);
             case PresenceAbsenceTerm:
                 return eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm.NewPresenceInstance(null, labelString, null);
+            case Language:
+                return eu.etaxonomy.cdm.model.common.Language.NewInstance((String)null, labelString, (String)null);
             default:
                 return null;
         }

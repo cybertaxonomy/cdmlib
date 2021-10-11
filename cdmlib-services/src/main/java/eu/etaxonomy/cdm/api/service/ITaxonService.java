@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonName;
@@ -98,9 +99,9 @@ public interface ITaxonService
      * @param setNameInSource
      * @return
      */
-    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, boolean newUuidForAcceptedTaxon);
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, boolean newUuidForAcceptedTaxon, SecReferenceHandlingSwapEnum secHandling, Reference secRefAcc, Reference secRefSyn);
 
-    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon);
+    public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid, UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon, SecReferenceHandlingSwapEnum secHandling, UUID newSecAcc, UUID newSecSyn);
 
     /**
      * Changes a synonym into an accepted taxon and removes

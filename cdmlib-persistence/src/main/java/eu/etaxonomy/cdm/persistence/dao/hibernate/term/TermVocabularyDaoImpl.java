@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dto.CharacterDto;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
@@ -169,13 +170,13 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 	@Override
 	public void missingTermUuids(
-			Map<UUID, Set<UUID>> uuidsRequested,
+			Map<UUID, List<UUID>> uuidsRequested,
 			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse){
 
 		Set<UUID> missingTermCandidateUuids = new HashSet<>();
 
-		for (Set<UUID> uuidsPerVocSet : uuidsRequested.values()){
+		for (List<UUID> uuidsPerVocSet : uuidsRequested.values()){
 			missingTermCandidateUuids.addAll(uuidsPerVocSet);
 		}
 
@@ -307,19 +308,23 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
     }
 
     @Override
-    public Collection<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type) {
+    public List<TermDto> getTopLevelTerms(UUID vocabularyUuid, TermType type) {
         String queryString;
         if (type.equals(TermType.NamedArea)){
             queryString = TermDto.getTermDtoSelectNamedArea();
         }else if (type.equals(TermType.Feature) || type.isKindOf(TermType.Feature)){
-            queryString = FeatureDto.getTermDtoSelect();
+            if (type.equals(TermType.Character)){
+                queryString = CharacterDto.getTermDtoSelect();
+            }else{
+                queryString = FeatureDto.getTermDtoSelect();
+            }
         }else{
             queryString = TermDto.getTermDtoSelect();
         }
         queryString = queryString
-                + "where v.uuid = :vocabularyUuid "
-                + "and a.partOf is null "
-                + "and a.kindOf is null";
+                + " where v.uuid = :vocabularyUuid ";
+//                + "and a.partOf is null "
+//                + "and a.kindOf is null";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("vocabularyUuid", vocabularyUuid);
 
@@ -327,7 +332,11 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         List<Object[]> result = query.list();
         List<TermDto> list = null;
         if (type.equals(TermType.Feature)|| type.isKindOf(TermType.Feature)){
-            list = FeatureDto.termDtoListFrom(result);
+            if (type.equals(TermType.Character)){
+                list = CharacterDto.termDtoListFrom(result);
+            }else{
+                list = FeatureDto.termDtoListFrom(result);
+            }
         }else{
             list = TermDto.termDtoListFrom(result);
         }

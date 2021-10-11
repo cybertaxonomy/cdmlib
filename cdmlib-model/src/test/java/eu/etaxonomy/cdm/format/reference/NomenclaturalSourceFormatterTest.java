@@ -68,9 +68,9 @@ public class NomenclaturalSourceFormatterTest {
         articleTeam1 = Team.NewInstance();
         articleTeam2 = Team.NewInstance();
         articleTeam1.setTitleCache("Team1", true);
-        articleTeam1.setNomenclaturalTitle("T.");
+        articleTeam1.setNomenclaturalTitleCache("T.", true);
         articleTeam2.setTitleCache("Team2", true);
-        articleTeam2.setNomenclaturalTitle("TT.");
+        articleTeam2.setNomenclaturalTitleCache("TT.", true);
 
         //book / section
         book1 = ReferenceFactory.newBook();
@@ -459,6 +459,16 @@ public class NomenclaturalSourceFormatterTest {
         Reference book = ReferenceFactory.newBook();
         book.setTitleCache("Only titlecache", true);
         Assert.assertEquals("Only titlecache: 36", formatter.format(book, "36"));
+    }
 
+    @Test
+    public void testEmptyWithProtectedTitleCache(){
+        Reference ref = ReferenceFactory.newBook();
+        ref.setProtectedTitleCache(true);
+        String result = formatter.format(ref, null);
+        Assert.assertEquals("", result);
+        ref.setTitleCache("xxx", true);
+        result = formatter.format(ref, null);
+        Assert.assertEquals("xxx", result);
     }
 }

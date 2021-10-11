@@ -320,11 +320,13 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * <i>Angelica silvestris</i> L.<BR>
 	 * A misspelling is always accicentally (not on purpose). Therefore misspellings are overlapping with
 	 * {@link #ORTHOGRAPHIC_VARIANT orthographic variants} (in an old version of this documentation they
-	 * were called a subset but it seem doubtful that certain typos are orth. vars. according to Art. 61.2 (ICNAFP).
+	 * were called a subset but it seems doubtful that certain typos are orth. vars. according to Art. 61.2 (ICNAFP).
      * and are complementary to {@link #EMENDATION() emendations}.
 	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
 	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.<BR>
 	 * Misspellings are not handled in the ICNAFP.
+	 *
+	 * @see https://dev.e-taxonomy.eu/redmine/issues/9386 for discussion on symmetry of this relation
 	 *
 	 * @see #ORTHOGRAPHIC_VARIANT()
 	 */

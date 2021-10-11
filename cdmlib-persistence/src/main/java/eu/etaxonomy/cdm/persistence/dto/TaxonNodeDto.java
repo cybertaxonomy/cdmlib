@@ -87,7 +87,22 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         super(uuid, id, titleCache);
     }
 
-    public TaxonNodeDto(Class type, ITaxonTreeNode taxonTreeNode) {
+    public TaxonNodeDto(UUID uuid, Integer id, String nameTitleCache, String taxonTitleCache) {
+        super(uuid, id, nameTitleCache, taxonTitleCache);
+
+    }
+
+    public TaxonNodeDto(UUID uuid, Integer id, String nameTitleCache, String taxonTitleCache, Integer rankOrderIndex) {
+        super(uuid, id, nameTitleCache, taxonTitleCache);
+        this.rankOrderIndex = rankOrderIndex;
+    }
+
+    public TaxonNodeDto(UUID uuid, Integer id, String titleCache, Integer rankOrderIndex) {
+        super(uuid, id, titleCache);
+        this.rankOrderIndex = rankOrderIndex;
+    }
+
+    public TaxonNodeDto(Class<? extends ITaxonTreeNode> type, ITaxonTreeNode taxonTreeNode) {
         super(type, taxonTreeNode.getUuid(), taxonTreeNode.getId(), null);
         Taxon taxon = null;
         TaxonNode taxonNode = null;
@@ -179,7 +194,6 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
     public TaxonNodeStatus getStatus() {
         return status;
     }
-
 
     public boolean isUnplaced() {
         return status == null ? false : status.equals(TaxonNodeStatus.UNPLACED);

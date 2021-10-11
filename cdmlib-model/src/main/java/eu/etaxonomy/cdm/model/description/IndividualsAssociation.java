@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class IndividualsAssociation extends DescriptionElementBase
-        implements IMultiLanguageTextHolder, Cloneable{
+        implements IMultiLanguageTextHolder {
 	private static final long serialVersionUID = -4117554860254531809L;
 	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);
 
@@ -201,10 +201,7 @@ public class IndividualsAssociation extends DescriptionElementBase
 			return result;
 			//no changes to: associatedSpecimenOrObservation
 		} catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException("Object does not implement cloneable");
 		}
 	}
-
 }

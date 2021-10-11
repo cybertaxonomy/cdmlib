@@ -19,10 +19,8 @@ import org.apache.log4j.Logger;
 /**
  * @author a.kohlbecker
  * @since Jul 1, 2016
- *
  */
 public class JvmMonitor {
-
 
     public static final Logger logger = Logger.getLogger(JvmMonitor.class);
 
@@ -83,18 +81,11 @@ public class JvmMonitor {
         return true;
     }
 
-    /**
-     * @param maxUsedFraction
-     * @return
-     */
     private boolean _hasFreeHeap(long freeHeapLimit) {
         long freeHeap = getFreeHeap(false);
         return freeHeap > freeHeapLimit;
     }
 
-    /**
-     * @return
-     */
     public long getFreeHeap(boolean gcBeforeMeasure) {
         if(gcBeforeMeasure) {
             Runtime.getRuntime().gc();

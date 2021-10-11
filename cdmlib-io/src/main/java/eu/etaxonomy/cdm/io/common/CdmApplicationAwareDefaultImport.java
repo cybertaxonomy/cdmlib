@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Constructor;
@@ -37,7 +36,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @since 20.06.2008
  */
-
 @Component("defaultImport")
 public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> implements ICdmImporter<T>, ApplicationContextAware {
     private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultImport.class);

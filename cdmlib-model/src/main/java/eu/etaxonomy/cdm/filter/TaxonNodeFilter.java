@@ -100,6 +100,10 @@ public class TaxonNodeFilter implements Serializable{
         return new TaxonNodeFilter().setRankMin(rankMin).setRankMax(rankMax);
     }
 
+    public static TaxonNodeFilter NewRankInstance(UUID rankMinUuid, UUID rankMaxUuid){
+        return new TaxonNodeFilter().setRankMin(rankMinUuid).setRankMax(rankMaxUuid);
+    }
+
     public static TaxonNodeFilter NewAreaInstance(NamedArea area){
         return new TaxonNodeFilter().orArea(area);
     }
@@ -152,7 +156,7 @@ public class TaxonNodeFilter implements Serializable{
 // ********************** reset *****************************/
 
     public void reset(){
-        subtrees = new ArrayList<>();
+        resetSubtrees();
         resetAreas();
         resetRanks();
         resetDistributionStatus();
@@ -184,6 +188,10 @@ public class TaxonNodeFilter implements Serializable{
     private void resetRanks() {
         rankMin = null;
         rankMax = null;
+    }
+
+    private void resetSubtrees() {
+        subtrees = new ArrayList<>();
     }
 
 //*************************************

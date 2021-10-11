@@ -211,7 +211,7 @@ public class CdmGenericDaoImpl
 		Map<String,?> allClassMetadata = sessionFactory.getAllClassMetadata();
 		Collection<String> keys = allClassMetadata.keySet();
 		for (String strKey : keys){
-			if (! strKey.endsWith("_AUD")){
+			if (! strKey.endsWith("_AUD") && !strKey.endsWith("_AUD1")){
 				try {
                     Class<?> clazz = Class.forName(strKey);
 					boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
@@ -681,7 +681,8 @@ public class CdmGenericDaoImpl
 		boolean noMatch = false;
 		Map<String, List<MatchMode>> replaceMatchers = new HashMap<>();
 		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
-			boolean cacheProtected = (Boolean)cacheMatcher.getProtectedField(matching).get(objectToMatch);
+		    Field protectedField = cacheMatcher.getProtectedField(matching);
+			boolean cacheProtected = protectedField == null ? false : (Boolean)protectedField.get(objectToMatch);
 			if (cacheProtected == true){
 				String cacheValue = (String)cacheMatcher.getField().get(objectToMatch);
 				if (StringUtils.isBlank(cacheValue)){

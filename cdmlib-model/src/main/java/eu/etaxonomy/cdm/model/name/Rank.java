@@ -108,6 +108,8 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final UUID uuidInfragenericTaxon = UUID.fromString("41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9");
     public static final UUID uuidSpecies = UUID.fromString("b301f787-f319-4ccc-a10f-b4ed3b99a86d");
     private static final UUID uuidSubspecificAggregate = UUID.fromString("72c248b9-027d-4402-b375-dd4f0850c9ad");
+    private static final UUID uuidGrexInfraspec = UUID.fromString("08dcb4ff-ac58-48a3-93af-efb3d836ac84");
+    private static final UUID uuidSubgrex = UUID.fromString("fc7cd06f-199c-4128-92b2-312ac42efc34");
     private static final UUID uuidSubspecies = UUID.fromString("462a7819-8b00-4190-8313-88b5be81fad5");
     private static final UUID uuidInfraspecies = UUID.fromString("f28ebc9e-bd50-4194-9af1-42f5cb971a2c");
     private static final UUID uuidNatio = UUID.fromString("965f2f38-7f97-4270-ab5a-1999bf050a22");
@@ -118,7 +120,9 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidSubsubvariety = UUID.fromString("bff22f84-553a-4429-a4e7-c4b3796c3a18");
 
     public static final UUID uuidProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+    public static final UUID uuidSubproles = UUID.fromString("47bd1439-c2ba-4c4e-994f-9c60853258f8");
     public static final UUID uuidRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
+    public static final UUID uuidLusus = UUID.fromString("4c8e12f6-2c16-4eda-a7db-fd247dcce789");
     public static final UUID uuidSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
 
     private static final UUID uuidConvar = UUID.fromString("2cc740c9-cebb-43c8-9b06-1bef79e6a56a");
@@ -128,11 +132,11 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidSubsubform = UUID.fromString("1c8ac389-4349-4ae0-87be-7239f6635068");
     public static final UUID uuidInfraspecificTaxon = UUID.fromString("eb75c27d-e154-4570-9d96-227b2df60474");
     private static final UUID uuidCandidate = UUID.fromString("ead9a1f5-dfd4-4de2-9121-70a47accb10b");
-    private static final UUID uuidDenominationClass = UUID.fromString("49bdf74a-2170-40ed-8be2-887a0db517bf");
-    private static final UUID uuidGrex = UUID.fromString("08dcb4ff-ac58-48a3-93af-efb3d836ac84");
-    private static final UUID uuidGraftChimaera = UUID.fromString("6b4063bc-f934-4796-9bf3-0ef3aea5c1cb");
-    private static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
-    private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
+    public static final UUID uuidDenominationClass = UUID.fromString("49bdf74a-2170-40ed-8be2-887a0db517bf");
+    public static final UUID uuidGrexICNCP = UUID.fromString("1abffd79-1a1e-4a00-bb48-08df756d73d3");
+    public static final UUID uuidGraftChimaera = UUID.fromString("6b4063bc-f934-4796-9bf3-0ef3aea5c1cb");
+    public static final UUID uuidCultivarGroup = UUID.fromString("d763e7d3-e7de-4bb1-9d75-225ca6948659");
+    public static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
     private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
 
     //additional (not yet in csv files, but used in single databases)
@@ -356,6 +360,12 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final Rank SUBSPECIFICAGGREGATE(){
         return getTermByUuid(uuidSubspecificAggregate);
     }
+    public static final Rank GREX_INFRASPEC(){
+        return getTermByUuid(uuidGrexInfraspec);
+    }
+    public static final Rank SUBGREX(){
+        return getTermByUuid(uuidSubgrex);
+    }
     public static final Rank SUBSPECIES(){
         return getTermByUuid(uuidSubspecies);
     }
@@ -380,8 +390,14 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final Rank PROLES(){
         return getTermByUuid(uuidProles);
     }
+    public static final Rank SUBPROLES(){
+        return getTermByUuid(uuidSubproles);
+    }
     public static final Rank RACE(){
         return getTermByUuid(uuidRace);
+    }
+    public static final Rank LUSUS(){
+        return getTermByUuid(uuidLusus);
     }
     public static final Rank SUBLUSUS(){
         return getTermByUuid(uuidSublusus);
@@ -415,8 +431,8 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final Rank DENOMINATIONCLASS(){
         return getTermByUuid(uuidDenominationClass);
     }
-    public static final Rank GREX(){
-        return getTermByUuid(uuidGrex);
+    public static final Rank GREX_ICNCP(){
+        return getTermByUuid(uuidGrexICNCP);
     }
     public static final Rank GRAFTCHIMAERA(){
         return getTermByUuid(uuidGraftChimaera);
@@ -559,6 +575,14 @@ public class Rank extends OrderedTermBase<Rank> {
         return this.rankClass.equals(RankClass.Infraspecific); // (this.isLower(Rank.SPECIES()));
     }
 
+    @Transient
+    public boolean isCultivar(){
+        //TODO handle correctly as rankClass?
+        return this.uuid.equals(uuidCultivar) || this.uuid.equals(uuidCultivarGroup)
+                || this.uuid.equals(uuidGraftChimaera) || this.uuid.equals(uuidGrexICNCP)
+                || this.uuid.equals(uuidDenominationClass);
+    }
+
 
     /**
      * Returns the rank identified through a label or the identifier within the vocabulary
@@ -598,6 +622,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     public static Rank getRankByNameOrIdInVoc(String strRank, boolean useUnknown) throws UnknownCdmTypeException{
         try {
+            strRank = strRank.replace("prol.", "proles");
             return getRankByIdInVoc(strRank);
         } catch (UnknownCdmTypeException e) {
             return getRankByName(strRank, useUnknown);

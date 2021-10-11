@@ -14,12 +14,16 @@ package eu.etaxonomy.cdm.model.metadata;
  */
 public enum SecReferenceHandlingEnum implements IKeyLabel {
 
-    AlwaysDelete("AlwaysDelete", "Always delete"),
-    WarningSelect("WarningSelect", "Warning and select"),
-    KeepWhenSame("KeepWhenSame", "Keep if syn sec and new parent sec are the same, warn otherwise"),
-    KeepAlways("KeepAlways", "Keep always"),
+//    AlwaysDelete("AlwaysDelete", "Remove all related secundum references"),
+//    WarningSelect("WarningSelect", "If secs differ select new one"),
+//    WarnWhenDifferent("WarnWhenDifferent", "Warn if secs are different"),
+
+    AlwaysDelete("AlwaysDelete", "Always remove secundum references"),
+    AlwaysSelect("AlwaysSelect", "Always select new secundum references"),
+    KeepOrSelect("KeepOrSelect", "Keep if all related secs are the same, select otherwise"),
+    KeepOrWarn("KeepOrWarn", "Keep if all related secs are the same, warn otherwise"),
     UseNewParentSec("UseNewParentSec", "Always use new parent sec");
-//    UseOldParentSec("UseOldParentSec", "Always use old parent sec");
+
 
     private String label;
     private String key;

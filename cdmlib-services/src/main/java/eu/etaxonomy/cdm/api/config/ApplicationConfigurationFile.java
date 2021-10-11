@@ -11,37 +11,25 @@ package eu.etaxonomy.cdm.api.config;
 /**
  * @author a.kohlbecker
  * @since Feb 16, 2018
- *
  */
 public class ApplicationConfigurationFile {
 
-    String defaultContet =
+    private String defaultContet =
             "#   application configuration file    #\n" +
             "######################################";
 
-    String fileName;
+    private String fileName;
 
-    /**
-     * @param defaultContet
-     * @param fileName
-     */
     public ApplicationConfigurationFile(String fileName, String defaultContet) {
         this.defaultContet = defaultContet;
         this.fileName = fileName;
     }
 
-    /**
-     * @return the defaultContet
-     */
     public String getDefaultContet() {
         return defaultContet;
     }
 
-    /**
-     * @return the fileName
-     */
     public String getFileName() {
         return fileName;
     }
-
 }

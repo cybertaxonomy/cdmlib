@@ -25,12 +25,19 @@ public class StructuredDescriptionAggregationConfiguration
 
     private UUID datasetUuid;
 
-
-    //TODO merge with DistributionAggregationConfiguration.aggregationMode
-    private boolean aggregateToHigherRanks;
-
     boolean includeDefault = true;
-    boolean includeLiterature = false;
+    boolean includeLiterature = true;
+    /**
+     * If source mode is {@link AggregationSourceMode#DESCRIPTION} descriptions
+     * are cloned as sources. This parameter defines if aggregated descriptions
+     * being the sources for further aggregation should also be cloned or
+     * can be handled as stable as usually they are not changing overtime
+     * or stability is not a requirement.
+     * TODO maybe we want to move it to base class
+     * TODO maybe we need the same for non-aggregated descriptions
+     * (generell or specific for specimen, literature and/or default descriptions).
+     */
+    boolean cloneAggregatedSourceDescriptions = false;
 
     private MissingMinimumMode missingMinimumMode = MissingMinimumMode.MinToZero;
     private MissingMaximumMode missingMaximumMode = MissingMaximumMode.MaxToMin;
@@ -53,6 +60,8 @@ public class StructuredDescriptionAggregationConfiguration
     protected StructuredDescriptionAggregationConfiguration(TaxonNodeFilter filter,
             List<AggregationMode> aggregationModes, IProgressMonitor monitor, Boolean includeDefault, Boolean includeLiterature) {
         super(filter, monitor, aggregationModes);
+        setWithinTaxonSourceMode(AggregationSourceMode.DESCRIPTION);  //default mode for structured descriptions
+        setToParentSourceMode(AggregationSourceMode.TAXON);  //default mode for structured descriptions
         if (includeDefault != null){
             this.includeDefault = includeDefault;
         }
@@ -69,17 +78,6 @@ public class StructuredDescriptionAggregationConfiguration
     }
 
 // *********************** GETTER / SETTER ****************************/
-
-    //TODO remove
-//    public boolean isAggregateToHigherRanks() {
-//        return getAggregationModes().contains(AggregationMode.ToParent);
-//    }
-    public boolean isAggregateToHigherRanks() {
-        return this.aggregateToHigherRanks;
-    }
-    public void setAggregateToHigherRanks(boolean aggregateToHigherRanks) {
-        this.aggregateToHigherRanks = aggregateToHigherRanks;
-    }
 
     public boolean isIncludeDefault() {
         return includeDefault;
@@ -114,5 +112,10 @@ public class StructuredDescriptionAggregationConfiguration
     }
     public void setMissingMaximumMode(MissingMaximumMode missingMaximumMode) {
         this.missingMaximumMode = missingMaximumMode;
+    }
+
+    public boolean isCloneAggregatedSourceDescriptions() {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

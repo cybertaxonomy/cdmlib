@@ -44,22 +44,17 @@ public class CacheMatcher extends FieldMatcherBase {
 
 	public Field getProtectedField(Matching matching){
 		FieldMatcher fieldMatcher = getProtectedFieldMatcher(matching);
-		return fieldMatcher.getField();
+		return fieldMatcher == null? null:fieldMatcher.getField();
 	}
     public FieldMatcher getProtectedFieldMatcher(Matching matching){
         String protectedPropertyName = getProtectedPropertyName();
         return matching.getFieldMatcher(protectedPropertyName);
     }
 
-	/**
-	 * @return
-	 */
 	public String getProtectedPropertyName() {
 		String protectedPropertyName = "protected" + this.getPropertyName().substring(0, 1).toUpperCase() + this.getPropertyName().substring(1);
 		return protectedPropertyName;
 	}
-
-
 
 	public List<DoubleResult<String, MatchMode>> getReplaceMatchModes(Matching matching) throws MatchException{
 		List<DoubleResult<String, MatchMode>> result = new ArrayList<>();

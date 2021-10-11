@@ -47,6 +47,7 @@ import org.hibernate.search.annotations.ClassBridge;
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.ICdmUuidCacher;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -376,7 +377,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
     protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);
 
-
     @Override
     public T readCsvLine(Class<T> termClass, List<String> csvLine, TermType termType, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
@@ -528,7 +528,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase>
 
 	public static <T extends DefinedTermBase> T getTermByClassAndUUID(Class<T> clazz, UUID uuid) {
 	    if(cacher != null) {
-	        Object obj = getCacher().load(uuid);
+	        Object obj = HibernateProxyHelper.deproxy(getCacher().load(uuid));
+
 	        if(obj != null && obj.getClass().equals(clazz)) {
 	            return (T)obj;
 	        }

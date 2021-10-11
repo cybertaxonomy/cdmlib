@@ -21,7 +21,7 @@ public enum CdmLightExportTable {
     HOMOTYPIC_GROUP("HomotypicGroup", homotypicGroupColumns()),
     NOMENCLATURAL_AUTHOR("PersonOrTeam", nomenclaturalAuthorColumns()),
     NOMENCLATURAL_AUTHOR_TEAM_RELATION("PersonTeamRelation", nomenclaturalAuthorTeamRelColumns()),
-    //TYPE_DESIGNATION("TypeDesignation", typeDesignationColumns()),
+    TYPE_DESIGNATION("SpecimenTypeDesignation", typeDesignationColumns()),
     SPECIMEN("Specimen", specimenColumns()),
     TAXON("Taxon", taxonColumns()),
     SYNONYM("Synonym", synonymColumns()),
@@ -35,7 +35,8 @@ public enum CdmLightExportTable {
     IDENTIFIER("Identifier", identifierColumns()),
     MEDIA("MediaFact", mediaColumns()),
 //    CONDENSED_DISTRIBUTION_FACT("CondensedDistributionFact", compressedDistributionFactColumns()),
-    NAME_FACT("NameFact", nameFactColumns())
+    NAME_FACT("NameFact", nameFactColumns()),
+    TYPE_SPECIMEN_NAME("NameSpecimenTypeRelation", typeDesignationNameColumns())
     ;
 
     //Taxon/Synonym
@@ -188,11 +189,18 @@ public enum CdmLightExportTable {
     protected static final String AUTHOR_TEAM_SEQ_NUMBER = "SequenceNumber";
 
     //TypeDesignations
+    protected static final String TYPE_ID="Type_ID";
     protected static final String SPECIMEN_FK = "Specimen_Fk";
+    protected static final String TYPIFIED_NAME_FK = "TypifiedName_Fk";
     protected static final String TYPE_VERBATIM_CITATION = "TypeVerbatimCitation";
-    protected static final String TYPE_CATEGORY = "TypeCategory";
-    protected static final String TYPE_DESIGNATED_BY_STRING = "TypeDesignatedByString";
-    protected static final String TYPE_DESIGNATED_BY_REF_FK = "TypeDesignationByRef_Fk";
+    protected static final String TYPE_STATUS = "TypeStatus";
+    protected static final String TYPE_INFORMATION_REF_STRING = "TypeInformationSource";
+    protected static final String TYPE_INFORMATION_REF_FK = "TypeInfoSourcePreferred_Fk";
+    protected static final String TYPE_DESIGNATED_BY_REF_FK = "TypeDesignatedBy_Fk";
+
+    //Type_Name_Rel
+    protected static final String TYPE_FK="Type_Fk";
+
 
     //Specimen
     protected static final String SPECIMEN_ID = "Specimen_ID";
@@ -348,8 +356,15 @@ public enum CdmLightExportTable {
     }
 
     final static String[] typeDesignationColumns(){
-        return new String[]{SPECIMEN_FK, NAME_FK, TYPE_VERBATIM_CITATION, TYPE_CATEGORY, TYPE_DESIGNATED_BY_STRING, TYPE_DESIGNATED_BY_REF_FK};
+        return new String[]{TYPE_ID, TYPIFIED_NAME_FK, SPECIMEN_FK, //TYPE_VERBATIM_CITATION,
+                TYPE_STATUS, TYPE_DESIGNATED_BY_REF_FK, TYPE_INFORMATION_REF_STRING, TYPE_INFORMATION_REF_FK};
+
     }
+
+    final static String[] typeDesignationNameColumns(){
+        return new String[]{TYPE_FK, NAME_FK};
+    }
+
 
     final static String[] specimenColumns() {
         return new String[]{SPECIMEN_ID, SPECIMEN_CITATION, FIELDUNIT_CITATION, LOCALITY, COUNTRY, AREA_CATEGORY1, AREA_NAME1, AREA_CATEGORY2, AREA_NAME2, AREA_CATEGORY3, AREA_NAME3,

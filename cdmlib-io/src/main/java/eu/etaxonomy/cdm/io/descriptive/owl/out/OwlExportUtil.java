@@ -44,11 +44,10 @@ import eu.etaxonomy.cdm.persistence.dto.TermDto;
 /**
  * @author pplitzner
  * @since May 22, 2019
- *
  */
 public class OwlExportUtil {
 
-    static Resource createVocabularyResource(TermVocabulary vocabulary, ICdmRepository repo, StructureTreeOwlExportState state) {
+    static Resource createVocabularyResource(TermVocabulary<?> vocabulary, ICdmRepository repo, StructureTreeOwlExportState state) {
         String vocabularyResourceUri = getVocabularyResourceUri(vocabulary, state);
         //check if vocabulary exists
         if(state.getModel().containsResource(ResourceFactory.createResource(vocabularyResourceUri))){
@@ -79,7 +78,7 @@ public class OwlExportUtil {
     }
 
     private static Resource addTopLevelTerm(TermDto termDto, Resource vocabularyResource, ICdmRepository repo, StructureTreeOwlExportState state) {
-        DefinedTermBase term = repo.getTermService().load(termDto.getUuid());
+        DefinedTermBase<?> term = repo.getTermService().load(termDto.getUuid());
         Resource termResource = addTerm(term, vocabularyResource, repo, state);
         vocabularyResource.addProperty(OwlUtil.propVocTopLevelTerm, termResource);
         termResource.addLiteral(OwlUtil.propTermIsTopLevel, true);
@@ -96,12 +95,12 @@ public class OwlExportUtil {
 
         // export includes and generalizationOf
         Set<DefinedTermBase> generalizationOf = term.getGeneralizationOf();
-        for (DefinedTermBase kindOf : generalizationOf) {
+        for (DefinedTermBase<?> kindOf : generalizationOf) {
             Resource kindOfResource = addTerm(kindOf, vocabularyResource, repo, state);
             termResource.addProperty(OwlUtil.propTermIsGeneralizationOf, kindOfResource);
         }
         Set<DefinedTermBase> includes = term.getIncludes();
-        for (DefinedTermBase partOf : includes) {
+        for (DefinedTermBase<?> partOf : includes) {
             Resource partOfResource = addTerm(partOf, vocabularyResource, repo, state);
             termResource.addProperty(OwlUtil.propTermIncludes, partOfResource);
         }

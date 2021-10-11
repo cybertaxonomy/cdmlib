@@ -421,10 +421,6 @@
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.bean.NameRelationshipBeanProcessor" />
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonRelationship">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonRelationshipBeanProcessor" />
-        </entry>
         <entry key="eu.etaxonomy.cdm.model.term.TermBase">
           <bean
             class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">

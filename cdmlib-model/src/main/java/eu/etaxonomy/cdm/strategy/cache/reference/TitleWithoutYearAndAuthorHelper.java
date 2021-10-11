@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
 /**
  * @author a.mueller
  * @since 25.05.2016
- *
  */
 public class TitleWithoutYearAndAuthorHelper {
     private static final Logger logger = Logger.getLogger(TitleWithoutYearAndAuthorHelper.class);
@@ -48,9 +47,10 @@ public class TitleWithoutYearAndAuthorHelper {
     public static String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev, boolean isNomRef){
         ReferenceType type = ref.getType();
         if (! ReferenceDefaultCacheStrategy.isNomRef(type)){
-            logger.warn("getTitleWithoutYearAndAuthor should not be required"
-                    + " for reference type " + type.getLabel() +
-                    " and does not exist. Use Generic getTitleWithoutYearAndAuthorGeneric instead");
+            //NOTE: this method is now called always for generating the reference abbrevTitleCache, therefore it is also called for non-nomenclatural reference.
+//            logger.warn("getTitleWithoutYearAndAuthor should not be required"
+//                    + " for reference type " + type.getLabel() +
+//                    " and does not exist. Use Generic getTitleWithoutYearAndAuthorGeneric instead");
             return getTitleWithoutYearAndAuthorGeneric(ref, isAbbrev);
         }else if (type == ReferenceType.Article){
             return getTitleWithoutYearAndAuthorArticle(ref, isAbbrev, isNomRef);

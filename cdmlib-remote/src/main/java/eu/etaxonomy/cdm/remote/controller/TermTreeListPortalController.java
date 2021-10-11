@@ -23,7 +23,7 @@ import io.swagger.annotations.Api;
  */
 @Controller
 @Api("portal_termTree")
-@RequestMapping(value = {"/portal/featureTree", "/portal/termTree"})
+@RequestMapping(value = {"/portal/termTree"})
 public class TermTreeListPortalController extends TermTreeListController {
 
     private static final List<String> TERMTREE_INIT_STRATEGY = Arrays.asList(

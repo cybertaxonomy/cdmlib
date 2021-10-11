@@ -6,11 +6,16 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.agent;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
+
 /**
-* Interface providing methods for nomenclatural authorship.
+* Interface providing methods for nomenclatural authorship.<BR><BR>
+*
+* Note: As this interface is only needed in context of
+* {@link INomenclaturalAuthorCacheStrategy} only getter methods are provided.
 *
 * @author a.mueller
 * @since 17-APR-2008
@@ -18,24 +23,18 @@ package eu.etaxonomy.cdm.model.agent;
 public interface INomenclaturalAuthor {
 
 	/**
-	 * @see {@link TeamOrPersonBase#getNomenclaturalTitleCache()}
-	 *
+	 * @see TeamOrPersonBase#getNomenclaturalTitleCache()
 	 */
     public String getNomenclaturalTitleCache();
 
-
 	/**
-	 * @see {@link #getNomenclaturalTitleCache()}
-	 * @deprecated to be replaced by {@link #getNomenclaturalTitleCache()}
-	 */
-    @Deprecated
-	public void setNomenclaturalTitle(String nomenclaturalTitle);
-
-    /**
-     * fixes the missing setter method that corresponds to {@link #getNomenclaturalTitleCache()} see #9729
+     * Sets the nomenclatural titlecache and the protectedNomenclaturalTitle flag.
+     * If protected is set to <code>false</code> the nomenclaturalTitleCache may be
+     * recomputed so this should be handled with care. Usually this method is expected
+     * to be called with <code>protectCache = true</code>.
      *
-     * @see {@link TeamOrPersonBase#getNomenclaturalTitleCache()}
+     * @see TeamOrPersonBase#getNomenclaturalTitleCache()
+     * @see IdentifiableEntity#setTitleCache(String, boolean)
      */
-    public void setNomenclaturalTitleCache(String nomenclaturalTitle);
-
+    public void setNomenclaturalTitleCache(String nomenclaturalTitle, boolean protectCache);
 }

@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
  *
  * @author a.kohlbecker
  * @since Jul 4, 2016
- *
  */
 public class DynamicBatch {
 
@@ -58,22 +57,14 @@ public class DynamicBatch {
         }
     }
 
-    /**
-     * @param requiredFreeHeap
-     * @throws JvmLimitsException
-     */
     public void setRequiredFreeHeap(double requiredFreeHeap) throws JvmLimitsException {
 
-        this.batchMinFreeHeap = (long) (intitialFreeHeap * requiredFreeHeap);
+        this.batchMinFreeHeap = (long)(intitialFreeHeap * requiredFreeHeap);
         if(memoryLimitsExceeded()) {
             throw new JvmLimitsException("Not enough free heap for batch");
         }
     }
 
-    /**
-     * @param requiredFreeHeap
-     * @throws JvmLimitsException
-     */
     public void setRequiredFreeHeap(long requiredFreeHeap) throws JvmLimitsException {
         this.batchMinFreeHeap = requiredFreeHeap;
         if(memoryLimitsExceeded()) {
@@ -104,12 +95,8 @@ public class DynamicBatch {
     }
 
     /**
-     * 1. Fills all remaining items into the new batch and pads with next items from the iterator.
-     *
+     * 1. Fills all remaining items into the new batch and pads with next items from the iterator.<BR>
      * 2. Resets the internal batchItemCount!!
-     *
-     * @param itemIterator
-     * @return
      */
     public List<Integer> nextItems(Iterator<Integer> itemIterator){
 
@@ -209,7 +196,6 @@ public class DynamicBatch {
 
     }
 
-
     public boolean memoryLimitsExceeded() {
 
         if(!jvmMonitor.hasFreeHeap(batchMinFreeHeap)) {
@@ -221,11 +207,9 @@ public class DynamicBatch {
         } else {
             return false;
         }
-
     }
 
     public JvmMonitor getJvmMonitor() {
         return jvmMonitor;
     }
-
 }

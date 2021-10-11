@@ -11,11 +11,9 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -91,7 +89,6 @@ public class TaxonNodeOutStreamPartitioner<STATE extends IoStateBase>
             "taxon.synonyms.markers.type.vocabulary.terms.*",
             "taxon.synonyms.markers.type.vocabulary.terms.type.*",
             "taxon.synonyms.markers.type.vocabulary.terms.representations.*",
-
 
             "taxon.name.combinationAuthorship.*",
             "taxon.name.combinationAuthorship.sources.*",

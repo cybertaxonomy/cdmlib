@@ -21,8 +21,11 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
-
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * The abstract class for such {@link AgentBase agents} ({@link Person persons} or {@link Team teams}) who might also be used
@@ -49,12 +52,14 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
     @XmlElement(name="CollectorTitleCache")
     @Field(index=Index.YES)
     @Column(length=800)//see #1592
+    @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.NONE)  //TODO: still needs to be checked if correct. ReplaceMode was chosen as it is not the only cache.
     protected String collectorTitleCache;
 
     //under construction #9664
     @XmlElement(name="NomenclaturalTitleCache")
     @Field(index=Index.YES)
     @Column(length=800)//see #1592
+    @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.NONE)  //TODO: still needs to be checked if correct. ReplaceMode was chosen as it is not the only cache.
     protected String nomenclaturalTitleCache;
 
 //  from E+M import (still needed?)
@@ -73,6 +78,22 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<T>>
         }
         return nomenclaturalTitleCache;
     }
+    /**
+     * Setter method for nomenclaturalTitleCache to be compliant with JavaBeans specification.
+     * As a cache is usually a computed field the value set will usually not be persisted
+     * but recomputed there this method should not be used for setting the cache field
+     * with a few exceptions.
+     * @deprecated Only exists for being compliant with JavaBeans, for setting the nomenclaturalTitleCache
+     *             persistently use {@link #setNomenclaturalTitleCache(String, boolean)} instead.
+     * @see IdentifiableEntity#setTitleCache(String)
+     */
+    @Deprecated
+    public void setNomenclaturalTitleCache(String nomenclaturalTitleCache) {
+        this.nomenclaturalTitleCache = getTruncatedCache(nomenclaturalTitleCache);
+    }
+    @Override
+    public abstract void setNomenclaturalTitleCache(String nomenclaturalTitle, boolean protectCache);
+
 
     //#4311
     public String getCollectorTitleCache() {

@@ -147,8 +147,8 @@ public class CdmIDResolver extends IDResolver {
 
 
 	@Override
-	public Callable<?> resolve(final String id, final Class targetType) throws SAXException {
-		return new Callable() {
+	public Callable<Object> resolve(final String id, final Class targetType) throws SAXException {
+		return new Callable<Object>() {
 	        @Override
             public Object call() throws Exception {
 	          logger.info("Resolving " + id + " for class " + targetType);
@@ -198,11 +198,11 @@ public class CdmIDResolver extends IDResolver {
 					   *
 					   */
 
-					  AgentBase agent = agentService.find(uuid);
+					  AgentBase<?> agent = agentService.find(uuid);
 					  if(agent != null) {
 						  return agent;
 					  }
-					  DefinedTermBase term = termService.find(uuid);
+					  DefinedTermBase<?> term = termService.find(uuid);
 					  if(term != null) {
 						  return term;
 					  }
@@ -220,10 +220,10 @@ public class CdmIDResolver extends IDResolver {
 	}
 
 	private Object resolveObject(UUID uuid, Class targetType, IService service) throws SAXException {
-		Object object = service.find(uuid);
-		  if(object == null) {
-			  throw new SAXException(targetType.getSimpleName() + " with " + uuid + " not found");
-		  }
-		  return object;
+	    Object object = service.find(uuid);
+		if(object == null) {
+		    throw new SAXException(targetType.getSimpleName() + " with " + uuid + " not found");
+		}
+		return object;
 	}
 }

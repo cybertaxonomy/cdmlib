@@ -354,11 +354,11 @@ public class DefaultMatchStrategyTest extends TermTestBase {
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		Assert.assertTrue("Contacts should be ignoredin default match strategy", matchStrategy.invoke(team1, team2).isSuccessful());
 
-		team1.setNomenclaturalTitle("nomTitle1");
-		team2.setNomenclaturalTitle("nomTitle2");
+		team1.setNomenclaturalTitleCache("nomTitle1", true);
+		team2.setNomenclaturalTitleCache("nomTitle2", true);
 		Assert.assertFalse("Agents with differing nomenclatural titles should not match", matchStrategy.invoke(team1, team2).isSuccessful());
 		//restore
-		team2.setNomenclaturalTitle("nomTitle1");
+		team2.setNomenclaturalTitleCache("nomTitle1", true);
 		Assert.assertTrue("Agents with equal nomenclatural titles should match", matchStrategy.invoke(team1, team2).isSuccessful());
 
 		Person person1 = Person.NewTitledInstance("person1");

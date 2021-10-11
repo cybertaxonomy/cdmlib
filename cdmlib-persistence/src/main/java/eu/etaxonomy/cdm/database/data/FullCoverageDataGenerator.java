@@ -874,7 +874,7 @@ public class FullCoverageDataGenerator {
 
 		TaxonName botName = TaxonNameFactory.NewCultivarInstance(Rank.SUBSPECIES());
 		botName.setAnamorphic(true);
-		botName.setCultivarName("cultivarName");
+		botName.setCultivarEpithet("cultivarEpithet");
 		botName.setGenusOrUninomial("Genus");
 		botName.setInfraGenericEpithet("InfraGeneric");
 		botName.setSpecificEpithet("specificEpithet");

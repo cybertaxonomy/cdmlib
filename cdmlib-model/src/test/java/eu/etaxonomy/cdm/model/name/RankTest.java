@@ -78,7 +78,9 @@ public class RankTest extends EntityTestBase {
 	private static final UUID uuidSubsubvariety = UUID.fromString("bff22f84-553a-4429-a4e7-c4b3796c3a18");
 
 	private static final UUID uuidProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+    private static final UUID uuidSubproles = UUID.fromString("47bd1439-c2ba-4c4e-994f-9c60853258f8");
 	private static final UUID uuidRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
+	private static final UUID uuidLusus = UUID.fromString("4c8e12f6-2c16-4eda-a7db-fd247dcce789");
 	private static final UUID uuidSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
 
 	private static final UUID uuidConvar = UUID.fromString("2cc740c9-cebb-43c8-9b06-1bef79e6a56a");
@@ -359,35 +361,43 @@ public class RankTest extends EntityTestBase {
 	public void testPROLES() {
 		assertEquals(uuidProles,  Rank.PROLES().getUuid());
 	}
+    @Test
+    public void testSUBPROLES() {
+        assertEquals(uuidSubproles,  Rank.SUBPROLES().getUuid());
+    }
 
 	@Test
 	public void testRACE() {
-		assertEquals(uuidRace,  Rank.RACE().getUuid());
+		assertEquals(uuidRace, Rank.RACE().getUuid());
 	}
-
+    @Test
+    public void testLUSUS() {
+        assertEquals(uuidLusus, Rank.LUSUS().getUuid());
+    }
 	@Test
 	public void testSUBLUSUS() {
-		assertEquals(uuidSublusus,  Rank.SUBLUSUS().getUuid());
+		assertEquals(uuidSublusus, Rank.SUBLUSUS().getUuid());
 	}
 
 	@Test
 	public void testCONVAR() {
-		assertEquals(uuidConvar,  Rank.CONVAR().getUuid());
+		assertEquals(uuidConvar, Rank.CONVAR().getUuid());
+		assertFalse(Rank.CONVAR().isCultivar());  //#6387
 	}
 
 	@Test
 	public void testFORM() {
-		assertEquals(uuidForm,  Rank.FORM().getUuid());
+		assertEquals(uuidForm, Rank.FORM().getUuid());
 	}
 
 	@Test
 	public void testSPECIALFORM() {
-		assertEquals(uuidSpecialForm,  Rank.SPECIALFORM().getUuid());
+		assertEquals(uuidSpecialForm, Rank.SPECIALFORM().getUuid());
 	}
 
 	@Test
 	public void testSUBFORM() {
-		assertEquals(uuidSubform,  Rank.SUBFORM().getUuid());
+		assertEquals(uuidSubform, Rank.SUBFORM().getUuid());
 	}
 
 	@Test
@@ -402,7 +412,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testCANDIDATE() {
-		assertEquals(uuidCandidate,  Rank.CANDIDATE().getUuid());
+		assertEquals(uuidCandidate, Rank.CANDIDATE().getUuid());
 	}
 
 	@Test
@@ -412,7 +422,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testGREX() {
-		assertEquals(uuidGrex,  Rank.GREX().getUuid());
+		assertEquals(uuidGrex, Rank.GREX_INFRASPEC().getUuid());
 	}
 
 	@Test
@@ -422,7 +432,7 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testCULTIVARGROUP() {
-		assertEquals(uuidCultivarGroup,  Rank.CULTIVARGROUP().getUuid());	}
+		assertEquals(uuidCultivarGroup, Rank.CULTIVARGROUP().getUuid());	}
 
 	@Test
 	public void testCULTIVAR() {
@@ -505,7 +515,13 @@ public class RankTest extends EntityTestBase {
 		assertTrue(Rank.SUBSPECIES().isInfraSpecific());
 		assertTrue(Rank.SUBSPECIES().isInfraSpecific());
 		assertTrue(Rank.SUBSPECIES().isInfraSpecific());
-		assertTrue(Rank.CULTIVAR().isInfraSpecific());
+		assertTrue(Rank.CULTIVAR().isInfraSpecific());   //AM: ??
+
+		assertTrue(Rank.GREX_INFRASPEC().isInfraSpecific());
+	    assertTrue(Rank.SUBGREX().isInfraSpecific());
+        assertTrue(Rank.LUSUS().isInfraSpecific());
+        assertTrue(Rank.SUBLUSUS().isInfraSpecific());
+        assertTrue(Rank.PROLES().isInfraSpecific());
 	}
 
 	@Test

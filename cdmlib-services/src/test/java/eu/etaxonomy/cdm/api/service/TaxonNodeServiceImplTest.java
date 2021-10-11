@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
 import eu.etaxonomy.cdm.model.name.IBotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -579,7 +580,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
     	Assert.assertEquals(allNodes.get(2).getTaxon(), abiesBalsamea );
     	Assert.assertEquals(allNodes.get(1).getTaxon(), abiesAlba );
 
-    	taxonNodeService.moveTaxonNode(balsameaNode.getUuid(), abiesAlbaNode.getUuid(),1);
+    	taxonNodeService.moveTaxonNode(balsameaNode.getUuid(), abiesAlbaNode.getUuid(),1, SecReferenceHandlingEnum.KeepOrWarn, null);
     	commitAndStartNewTransaction();
 
     	classification = classificationService.load(classification.getUuid());

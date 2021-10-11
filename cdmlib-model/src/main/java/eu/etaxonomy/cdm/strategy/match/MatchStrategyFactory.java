@@ -36,7 +36,7 @@ public class MatchStrategyFactory {
 
             addParsedAgentBaseMatchModes(parsedPersonMatchStrategy);
 
-            //FIXME adapt for  for inRef authors
+            //FIXME adapt for inRef authors
             parsedPersonMatchStrategy.setMatchMode("nomenclaturalTitle", MatchMode.EQUAL);
 
             //FIXME adapt for inRef authors
@@ -397,7 +397,7 @@ public class MatchStrategyFactory {
             //equal
             String[] equalParams = new String[]{"acronym","anamorphic","appendedPhrase",
                     "binomHybrid", "monomHybrid","trinomHybrid","hybridFormula",
-                    "breed","cultivarName","infraGenericEpithet","infraSpecificEpithet",
+                    "breed","cultivarEpithet","infraGenericEpithet","infraSpecificEpithet",
                     "publicationYear","originalPublicationYear","specificEpithet","subGenusAuthorship"};
             for(String param : equalParams){
                 originalSpellingMatchStrategy.setMatchMode(param, MatchMode.EQUAL);

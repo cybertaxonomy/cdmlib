@@ -6,8 +6,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
-package eu.etaxonomy.cdm.io.reference;
+package eu.etaxonomy.cdm.io.referenceris.in;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -38,7 +37,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- *
  */
 public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 
@@ -48,25 +46,23 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private IReferenceService referenceService;
 
-
 	private RisReferenceImportConfigurator configurator;
     private RisReferenceImportConfigurator configLong;
 
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/reference/RisReferenceImportTest-input.ris";
+		String inputFile = "/eu/etaxonomy/cdm/io/reference/ris/in/RisReferenceImportTest-input.ris";
 
         try {
             URL url = this.getClass().getResource(inputFile);
             assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 
-            String inputFileLong = "/eu/etaxonomy/cdm/io/reference/Acantholimon.ris";
+            String inputFileLong = "/eu/etaxonomy/cdm/io/reference/ris/in/Acantholimon.ris";
             URL urlLong = this.getClass().getResource(inputFileLong);
             assertNotNull("URL for the test file '" + inputFileLong + "' does not exist", urlLong);
 
 			configurator = RisReferenceImportConfigurator.NewInstance(url, null);
 			configLong = RisReferenceImportConfigurator.NewInstance(urlLong, null);
-
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -154,9 +150,22 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
         Integer expected = 118;  //did not count yet
         Assert.assertEquals(expected, result.getNewRecords(Reference.class));
 
-//        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
-//        Assert.assertEquals("There should be 2 references, the article and the journal", 2, list.size());
-//        for (Reference ref : list){
+        List<Reference> list = referenceService.list(Reference.class, null, null, null, null);
+//        Assert.assertEquals("There should be 119 references (still need to count them)", 119, list.size());
+        //TODO deduplication
+
+        Reference ref58 = list.stream().filter(r->hasId(r, "58", false)).findFirst().get();
+        Assert.assertNotNull("", ref58);
+        Assert.assertEquals((Integer)2003, ref58.getDatePublished().getStartYear());
+
+        Reference ref53 = list.stream().filter(r->hasId(r, "53", false)).findFirst().get();
+        Assert.assertNotNull("", ref53);
+        Assert.assertEquals(ReferenceType.BookSection, ref53.getType());
+        Assert.assertNotNull("", ref53.getInReference());
+        Assert.assertEquals("Tehran", ref53.getInReference().getPlacePublished());
+
+
+        //        for (Reference ref : list){
 //            Assert.assertTrue(ref.getType() == ReferenceType.Article || ref.getType() == ReferenceType.Journal);
 //            if (ref.getType() == ReferenceType.Article){
 //                //title
@@ -200,6 +209,17 @@ public class RisReferenceImportTest extends CdmTransactionalIntegrationTest {
 //            }
 //        }
 
+    }
+
+    private boolean hasId(Reference ref, String idStr, boolean getInRef) {
+        if (ref.getSources().size() != 1){
+            return false;
+        }else{
+            String idInSource = ref.getSources().iterator().next().getIdInSource();
+            return idStr.equals(idInSource) &&
+                    (getInRef && ref.getInReference()== null
+                      || !getInRef && ref.getInReference()!= null );
+        }
     }
 
     @Override

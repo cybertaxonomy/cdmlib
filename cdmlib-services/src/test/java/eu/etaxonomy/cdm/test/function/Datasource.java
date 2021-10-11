@@ -26,8 +26,13 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.description.AggregationMode;
+import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
+import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -35,7 +40,9 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.description.DescriptiveDataSet;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -52,6 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
+import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
 
 public class Datasource {
@@ -73,22 +81,22 @@ public class Datasource {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-		server = "localhost";
-		database = "cdm_test";
-//		database = "cdm_production_edaphobase";
-		username = "edit";
-		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		server = "localhost";
+//		database = "cdm_test";
+////		database = "cdm_production_edaphobase";
+//		username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		server = "160.45.63.171";
-//		database = "cdm_production_flora_malesiana_prospective";
+//		database = "xxx";
 //		username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 
-//		server = "test.e-taxonomy.eu";
-//		database = "cdm_test2";
-//		username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+		server = "test.e-taxonomy.eu";
+		database = "cdm_rem_conf_am";
+		username = "edit";
+		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		String server = "localhost";
 //		String database = "testCDM";
@@ -122,11 +130,51 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
-		appCtr.getOccurrenceService().findRootUnitDTOs(UUID.fromString("2debf5ee-cb57-40bc-af89-173d1d17cefe"));
-
+//		appCtr.getOccurrenceService().findRootUnitDTOs(UUID.fromString("2debf5ee-cb57-40bc-af89-173d1d17cefe"));
+//		aggregateDDS(appCtr);
+		aggregateDistribution(appCtr);
 
 		appCtr.close();
 		System.exit(0);
+	}
+
+    private void aggregateDistribution(CdmApplicationController app){
+
+        System.out.println("agg distr");
+        DefaultProgressMonitor monitor = DefaultProgressMonitor.NewInstance();
+
+        UUID descriptaceaeUuid = UUID.fromString("5a37c47c-347c-49f8-88ba-2720b194dfb9");
+
+        TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(descriptaceaeUuid);
+        filter.setIncludeUnpublished(true);
+        List<AggregationMode> aggregationModes = AggregationMode.byToParent();
+        TermTree<PresenceAbsenceTerm> statusOrder = null;
+        List<UUID> superAreas = new ArrayList<>();
+        DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(aggregationModes, superAreas, filter, statusOrder, monitor);
+        config.setAdaptBatchSize(false);
+        UpdateResult result = config.getTaskInstance().invoke(config, app);
+        System.out.println(result);
+    }
+
+	private void aggregateDDS(CdmApplicationController app){
+
+	    System.out.println("find dds");
+	    DescriptiveDataSet dds = app.getDescriptiveDataSetService().find(21);
+	    UUID facciniaSubtreeUuid = UUID.fromString("cf0bc346-a203-4ad7-ad25-477098361db6");
+	    UUID arenarioAdamssubtreeUuid = UUID.fromString("0215e668-0a65-42cd-85e0-d97ce78e758b");
+
+	    TaxonNodeFilter filter = TaxonNodeFilter.NewSubtreeInstance(arenarioAdamssubtreeUuid);
+	    filter.setIncludeUnpublished(true);
+
+	    DefaultProgressMonitor monitor = DefaultProgressMonitor.NewInstance();
+	    StructuredDescriptionAggregationConfiguration config = StructuredDescriptionAggregationConfiguration.NewInstance(filter, monitor);
+        config.setDatasetUuid(dds.getUuid());
+        config.setAggregationMode(AggregationMode.byWithinTaxonAndToParent());
+        config.setAdaptBatchSize(false);
+        UpdateResult result = config.getTaskInstance().invoke(config, app);
+        System.out.println(result);
+
+//	    app.getLongRunningTasksService().invoke(config);
 	}
 
     private void listClassification(CdmApplicationController appCtr, List<String> propertyPaths) {

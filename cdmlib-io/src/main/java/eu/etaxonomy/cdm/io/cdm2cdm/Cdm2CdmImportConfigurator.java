@@ -8,7 +8,12 @@
 */
 package eu.etaxonomy.cdm.io.cdm2cdm;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.ICdmImportSource;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
 import eu.etaxonomy.cdm.io.common.ITaxonNodeOutStreamPartitioner;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
@@ -22,30 +27,35 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @since 17.08.2019
  */
 public  class Cdm2CdmImportConfigurator
-        extends ImportConfiguratorBase<Cdm2CdmImportState, ICdmDataSource>{
+        extends ImportConfiguratorBase<Cdm2CdmImportState, ICdmImportSource>{
 
     private static final long serialVersionUID = 5454400624983256935L;
 
     private static IInputTransformer myTransformer = null;
 
     private TaxonNodeFilter taxonNodeFilter = TaxonNodeFilter.NewInstance();
+
+    private Set<UUID> vocabularyFilter = new HashSet<>();
+    private Set<UUID> graphFilter = new HashSet<>();
     private ITaxonNodeOutStreamPartitioner partitioner;
-    private boolean concurrent = false;
+    private boolean concurrent = false;  //
 
     private boolean doTaxa = true;
     private boolean doDescriptions = true;
+    private boolean doVocabularies = true;
+
     private boolean addSources = true;
     private boolean removeImportSources = false;
 
 //***************************** NewInstance ************************/
 
-    public static Cdm2CdmImportConfigurator NewInstace(ICdmDataSource source, ICdmDataSource destination){
+    public static Cdm2CdmImportConfigurator NewInstace(ICdmImportSource source, ICdmDataSource destination){
         return new Cdm2CdmImportConfigurator(source, destination);
     }
 
 // ***************************** CONSTRUCTOR **********************/
 
-    public Cdm2CdmImportConfigurator(ICdmDataSource source, ICdmDataSource destination) {
+    public Cdm2CdmImportConfigurator(ICdmImportSource source, ICdmDataSource destination) {
         super(myTransformer);
         this.setSource(source);
         this.setDestination(destination);
@@ -53,6 +63,7 @@ public  class Cdm2CdmImportConfigurator
 
 // ****************************** METHODS *********************/
 
+    @SuppressWarnings("unchecked")
     @Override
     public Cdm2CdmImportState getNewState() {
         return new Cdm2CdmImportState(this);
@@ -62,6 +73,7 @@ public  class Cdm2CdmImportConfigurator
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[]{
+                Cdm2CdmVocabularyImport.class,
                 Cdm2CdmTaxonNodeImport.class ,
                 Cdm2CdmDescriptionImport.class ,
         };
@@ -122,5 +134,27 @@ public  class Cdm2CdmImportConfigurator
     }
     public void setRemoveImportSources(boolean removeImportSources) {
         this.removeImportSources = removeImportSources;
+    }
+
+    public boolean isDoVocabularies() {
+        return doVocabularies;
+    }
+
+    public void setDoVocabularies(boolean doVocabularies) {
+        this.doVocabularies = doVocabularies;
+    }
+
+    public Set<UUID> getVocabularyFilter() {
+        return vocabularyFilter;
+    }
+    public void setVocabularyFilter(Set<UUID> vocabularyFilter) {
+        this.vocabularyFilter = vocabularyFilter;
+    }
+
+    public Set<UUID> getGraphFilter() {
+        return graphFilter;
+    }
+    public void setGraphFilter(Set<UUID> graphFilter) {
+        this.graphFilter = graphFilter;
     }
 }

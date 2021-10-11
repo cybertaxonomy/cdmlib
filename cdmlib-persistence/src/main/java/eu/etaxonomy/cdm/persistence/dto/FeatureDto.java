@@ -49,11 +49,11 @@ public class FeatureDto extends TermDto {
     Set<TermVocabularyDto> recommendedModifierEnumeration = new HashSet<>();
 
     public FeatureDto(UUID uuid, Set<Representation> representations, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, Set<Representation> vocRepresentations, boolean isAvailableForTaxon,
-            boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache, boolean isSupportsCategoricalData, boolean isSupportsQuantitativeData,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, //Set<Representation> vocRepresentations,
+            boolean isAvailableForTaxon, boolean isAvailableForTaxonName, boolean isAvailableForOccurrence, String titleCache, boolean isSupportsCategoricalData, boolean isSupportsQuantitativeData,
             Set<TermVocabularyDto> supportedCategoricalEnumerations, Set<TermVocabularyDto> recommendedModifierEnumeration,  Set<TermDto> recommendedMeasurementUnits,  Set<TermDto> recommendedStatisticalMeasures){
         super(uuid, representations, TermType.Feature, partOfUuid, kindOfUuid,
-                vocabularyUuid, orderIndex, idInVocabulary, vocRepresentations, titleCache);
+                vocabularyUuid, orderIndex, idInVocabulary, titleCache);
         this.isAvailableForOccurrence = isAvailableForOccurrence;
         this.isAvailableForTaxon = isAvailableForTaxon;
         this.isAvailableForTaxonName = isAvailableForTaxonName;
@@ -67,8 +67,34 @@ public class FeatureDto extends TermDto {
         this.recommendedModifierEnumeration = recommendedModifierEnumeration;
     }
 
-    static public FeatureDto fromTerm(Feature term) {
-        FeatureDto result = (FeatureDto) fromTerm(term, null, false);
+
+
+    static public FeatureDto fromFeature(Feature term) {
+        UUID partOfUuid = term.getPartOf() != null? term.getPartOf().getUuid(): null;
+        UUID kindOfUuid = term.getKindOf() != null? term.getKindOf().getUuid(): null;
+        UUID vocUuid =  term.getVocabulary() != null? term.getVocabulary().getUuid(): null;
+        Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
+        for (TermVocabulary<State> stateVoc:term.getSupportedCategoricalEnumerations()){
+            supportedCategoricalEnumerations.add(TermVocabularyDto.fromVocabulary(stateVoc));
+        }
+
+        Set<TermVocabularyDto> recommendedModifiers = new HashSet<>();
+        for (TermVocabulary<DefinedTerm> modifier:term.getRecommendedModifierEnumeration()){
+            recommendedModifiers.add(TermVocabularyDto.fromVocabulary(modifier));
+        }
+
+        Set<TermDto> recommendedMeasurementUnits= new HashSet<>();
+        for (MeasurementUnit measurementUnit:term.getRecommendedMeasurementUnits()){
+            recommendedMeasurementUnits.add(TermDto.fromTerm(measurementUnit));
+        }
+
+        Set<TermDto> recommendedStatisticalMeasures = new HashSet<>();
+        for (StatisticalMeasure statMeasure:term.getRecommendedStatisticalMeasures()){
+            recommendedStatisticalMeasures.add(TermDto.fromTerm(statMeasure));
+        }
+
+        FeatureDto result =  new FeatureDto(term.getUuid(), term.getRepresentations(), partOfUuid, kindOfUuid, vocUuid, null, term.getIdInVocabulary(), term.isAvailableForTaxon(), term.isAvailableForTaxonName(), term.isAvailableForOccurrence(),
+                term.getTitleCache(),term.isSupportsCategoricalData(), term.isSupportsQuantitativeData(), supportedCategoricalEnumerations, recommendedModifiers, recommendedMeasurementUnits, recommendedStatisticalMeasures);
         result.isAvailableForOccurrence = term.isAvailableForOccurrence();
         result.isAvailableForTaxon = term.isAvailableForTaxon();
         result.isAvailableForTaxonName = term.isAvailableForTaxonName();
@@ -245,7 +271,7 @@ public class FeatureDto extends TermDto {
                 + "v.uuid, "
                 + "a.orderIndex, "
                 + "a.idInVocabulary, "
-                + "voc_rep,  "
+//                + "voc_rep,  "
                 + "a.termType,  "
                 + "a.uri,  "
                 + "m,  "
@@ -264,7 +290,7 @@ public class FeatureDto extends TermDto {
                 + "LEFT JOIN a.media as m "
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
-                + "LEFT JOIN v.representations as voc_rep "
+//                + "LEFT JOIN v.representations as voc_rep "
                 + "LEFT JOIN a.recommendedModifierEnumeration as recommendedModifierEnumeration "
                 + "LEFT JOIN a.recommendedStatisticalMeasures as recommendedStatisticalMeasures "
                 + "LEFT JOIN a.supportedCategoricalEnumerations as supportedCategoricalEnumerations "
@@ -290,11 +316,11 @@ public class FeatureDto extends TermDto {
                 if(elements[1]!=null){
                     dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
                 }
-                if(elements[7]!=null){
-                    dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
-                }
-                if(elements[10]!=null){
-                    dtoMap.get(uuid).addMedia(((Media) elements[10]).getUuid());
+//                if(elements[7]!=null){
+//                    dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
+//                }
+                if(elements[9]!=null){
+                    dtoMap.get(uuid).addMedia(((Media) elements[9]).getUuid());
                 }
             } else {
                 // term representation
@@ -305,20 +331,20 @@ public class FeatureDto extends TermDto {
                 }
                 // term media
                 Set<UUID> mediaUuids = new HashSet<>();
-                if(elements[10] instanceof Media) {
-                    mediaUuids.add(((Media) elements[10]).getUuid());
+                if(elements[9] instanceof Media) {
+                    mediaUuids.add(((Media) elements[9]).getUuid());
                 }
                 // voc representation
-                Set<Representation> vocRepresentations = new HashSet<>();
-                if(elements[7] instanceof Representation) {
-                    vocRepresentations = new HashSet<Representation>(7);
-                    vocRepresentations.add((Representation)elements[7]);
-                }
+//                Set<Representation> vocRepresentations = new HashSet<>();
+//                if(elements[7] instanceof Representation) {
+//                    vocRepresentations = new HashSet<Representation>(7);
+//                    vocRepresentations.add((Representation)elements[7]);
+//                }
                 boolean isAvailableForTaxon = false;
                 boolean isAvailableForTaxonName = false;
                 boolean isAvailableForOccurrence = false;
 
-                EnumSet<CdmClass> availableForString = (EnumSet<CdmClass>)elements[11];
+                EnumSet<CdmClass> availableForString = (EnumSet<CdmClass>)elements[10];
 
                 if (availableForString.contains(CdmClass.TAXON)){
                     isAvailableForTaxon = true;
@@ -332,7 +358,7 @@ public class FeatureDto extends TermDto {
                 boolean isSupportsCategoricalData = false;
                 boolean isSupportsQuantitativeData = false;
 
-                EnumSet<CdmClass> supportsString = (EnumSet<CdmClass>)elements[13];
+                EnumSet<CdmClass> supportsString = (EnumSet<CdmClass>)elements[12];
 
                 if (supportsString.contains(CdmClass.CATEGORICAL_DATA)){
                     isSupportsCategoricalData = true;
@@ -341,7 +367,7 @@ public class FeatureDto extends TermDto {
                     isSupportsQuantitativeData = true;
                 }
 
-                Object o = elements[14];
+                Object o = elements[13];
                 Set<TermVocabularyDto> recommendedModifierDtos = new HashSet<>();
                 if (o instanceof TermVocabulary){
                     recommendedModifierDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
@@ -356,7 +382,7 @@ public class FeatureDto extends TermDto {
 
 
 
-                o = elements[15];
+                o = elements[14];
                 Set<TermDto> recommendedStatisticalMeasuresDtos = new HashSet<>();
                 if (o instanceof StatisticalMeasure){
                     recommendedStatisticalMeasuresDtos.add(TermDto.fromTerm((StatisticalMeasure)o));
@@ -368,7 +394,7 @@ public class FeatureDto extends TermDto {
                         }
                     }
                 }
-                o =  elements[16];
+                o =  elements[15];
                 Set<TermVocabularyDto> supportedCategoricalDtos = new HashSet<>();
                 if (o instanceof TermVocabulary){
                     supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary((TermVocabulary)o));
@@ -384,12 +410,12 @@ public class FeatureDto extends TermDto {
 //                        supportedCategoricalDtos.add(TermVocabularyDto.fromVocabulary(voc));
 //                    }
 //                }
-                o = elements[17];
+                o = elements[16];
                 Set<TermDto> recommendedMeasurementUnitsDtos = new HashSet<>();
                 if (o instanceof MeasurementUnit){
                     recommendedMeasurementUnitsDtos.add(TermDto.fromTerm((MeasurementUnit)o));
                 }else if (o instanceof Set){
-                    Set<MeasurementUnit> recommendedMeasurementUnits = (Set<MeasurementUnit>) elements[17];
+                    Set<MeasurementUnit> recommendedMeasurementUnits = (Set<MeasurementUnit>) elements[16];
                     for (MeasurementUnit term: recommendedMeasurementUnits){
                         recommendedMeasurementUnitsDtos.add(TermDto.fromTerm(term));
                     }
@@ -409,11 +435,11 @@ public class FeatureDto extends TermDto {
                         (UUID)elements[4],
                         (Integer)elements[5],
                         (String)elements[6],
-                        vocRepresentations,
+//                        vocRepresentations,
                         isAvailableForTaxon,
                         isAvailableForTaxonName,
                         isAvailableForOccurrence,
-                        (String)elements[12],
+                        (String)elements[11],
                         isSupportsCategoricalData,
                         isSupportsQuantitativeData,
                         supportedCategoricalDtos,
@@ -421,7 +447,7 @@ public class FeatureDto extends TermDto {
                         recommendedMeasurementUnitsDtos,
                         recommendedStatisticalMeasuresDtos)
                         ;
-                termDto.setUri((URI)elements[9]);
+                termDto.setUri((URI)elements[8]);
                 termDto.setMedia(mediaUuids);
 
 

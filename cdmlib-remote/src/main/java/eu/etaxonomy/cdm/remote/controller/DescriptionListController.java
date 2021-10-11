@@ -48,7 +48,6 @@ import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.l10n.LocaleContext;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.util.DistributionOrder;
-import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionConfiguration;
 import eu.etaxonomy.cdm.ext.geo.CondensedDistributionRecipe;
@@ -208,7 +207,7 @@ public class DescriptionListController
                                 modes, areaUuids, filter, progressMonitorController.getMonitor(transmissionEngineMonitorUuid));
                         DistributionAggregation distrAggr = new DistributionAggregation();
                         distrAggr.invoke(config, repository);
-                    } catch (JvmLimitsException e) {
+                    } catch (Exception e) {
                         IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(transmissionEngineMonitorUuid);
                         monitor.setIsFailed(true);
                         monitor.setFeedback(e);

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.api.config;
 /**
  * @author a.kohlbecker
  * @since Feb 16, 2018
- *
  */
 public class CdmConfigurationFileNames {
 

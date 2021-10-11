@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.io.descriptive.owl.out;
 
 import java.io.File;
@@ -19,12 +18,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
 
-
 /**
- *
  * @author pplitzner
  * @since May 2, 2019
- *
  */
 public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<StructureTreeOwlExportState, IExportTransformer, File> {
 
@@ -35,7 +31,6 @@ public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<S
 
     private List<UUID> featureTreeUuids = new ArrayList<>();
     private List<UUID> vocabularyUuids = new ArrayList<>();
-
 
     private StructureTreeOwlExportConfigurator() {
         super(null);
@@ -50,6 +45,7 @@ public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<S
         return new StructureTreeOwlExportState(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void makeIoClassList() {
         ioClassList = new Class[] {
@@ -79,5 +75,4 @@ public class StructureTreeOwlExportConfigurator extends ExportConfiguratorBase<S
     public String getDestinationNameString() {
         return null;
     }
-
 }

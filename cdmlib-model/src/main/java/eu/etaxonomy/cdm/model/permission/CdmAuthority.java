@@ -23,14 +23,27 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.springframework.security.core.GrantedAuthority;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 
 /**
- * CDM authority class.<BR>
+ * Model class for representing a structured CDM Authority<BR>.
+ *
+ * To be extended by implementations of {@link GrantedAuthority}.
+ * that will replace {@link GrantedAuthorityImpl} in future version.
+ *
+ * It consists of 4 parts:<BR>
+ * <ul>
+ * <li>permission class: for defining a filter on a certain CDM class handled by this authority (obligatory)</li>
+ * <li>property: a certain property in the above permission class (optional)</li>
+ * <li>operations: the set of allowed operations from CRUD (obligatory)</li>
+ * <li>target: for defining a filter on a certain instance of the permission class (optional)</li>
+ * </ul>
  *
  * @see https://dev.e-taxonomy.eu/redmine/issues/7099
  *
@@ -55,7 +68,7 @@ public class CdmAuthority extends AuthorityBase {
      * and in it's {@link TermVocabulary vocabulary}.
      */
     @XmlAttribute(name ="PermissionClass")
-//    @NotNull
+//    @NotNull  //AM: why did we remove NotNull here? For now ther permission class should be obligatory IMO
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
         parameters = {@Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.permission.PermissionClass")}
     )
@@ -74,7 +87,6 @@ public class CdmAuthority extends AuthorityBase {
     @XmlJavaTypeAdapter(UUIDAdapter.class)
     @Type(type="uuidUserType")
     @Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
-//    @NotNull
     private UUID targetUuid;
 
 // *************************** Factory Methods ********************************/
@@ -94,11 +106,11 @@ public class CdmAuthority extends AuthorityBase {
         super();
         this.permissionClass = permissionClass;
         this.property = property;
-        this.operations = operations;
+        setOperations(operations);
         this.targetUuid = targetUuid;
     }
 
-    // ********************** GETTER / SETTER **************************/
+// ********************** GETTER / SETTER **************************/
 
     public PermissionClass getPermissionClass() {
         return permissionClass;
@@ -122,9 +134,15 @@ public class CdmAuthority extends AuthorityBase {
     }
 
     public EnumSet<CRUD> getOperations() {
+        if (operations == null){  //just in case
+            operations = EnumSet.noneOf(CRUD.class);
+        }
         return operations;
     }
     public void setOperations(EnumSet<CRUD> operations) {
+        if (operations == null){
+            operations = EnumSet.noneOf(CRUD.class);
+        }
         this.operations = operations;
     }
     public void addOperation(CRUD operation){
@@ -134,7 +152,46 @@ public class CdmAuthority extends AuthorityBase {
         this.operations.remove(operation);
     }
 
+// *********************** STRING *****************************
+
+    @Override
+    public String toString() {
+        return (permissionClass != null ? permissionClass : "-NO CLASS-")
+             + (isNotBlank(property) ? "." + property : "")
+             + "" + operations + ""
+             + (targetUuid != null ? "{" + targetUuid + "}" : "");
+    }
+
+
+
 // ************************* CLONE *****************************/
+
+    public boolean isEqual(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        CdmAuthority other = (CdmAuthority) obj;
+        if (permissionClass != other.permissionClass) {
+            return false;
+        }
+        if (!operations.equals(other.operations)) {
+            return false;
+        }
+        if (!CdmUtils.Nz(property).equals(CdmUtils.Nz(other.property))){
+            return false;
+        }
+        if (targetUuid == null) {
+            if (other.targetUuid != null) {
+                return false;
+            }
+        } else if (!targetUuid.equals(other.targetUuid)) {
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public CdmAuthority clone() throws CloneNotSupportedException {
@@ -143,4 +200,5 @@ public class CdmAuthority extends AuthorityBase {
         result.operations = this.operations.clone();
         return result;
     }
+
 }

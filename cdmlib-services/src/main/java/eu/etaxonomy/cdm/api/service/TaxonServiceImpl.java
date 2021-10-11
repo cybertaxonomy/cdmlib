@@ -96,8 +96,11 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.ExternalLink;
+import eu.etaxonomy.cdm.model.media.ExternalLinkType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingEnum;
+import eu.etaxonomy.cdm.model.metadata.SecReferenceHandlingSwapEnum;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.IZoologicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -126,6 +129,7 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
+import eu.etaxonomy.cdm.persistence.dto.MergeResult;
 import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -207,36 +211,75 @@ public class TaxonServiceImpl
 
     @Override
     @Transactional(readOnly = false)
-    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, boolean newUuidForAcceptedTaxon){
+    public UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, boolean newUuidForAcceptedTaxon, SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
         if (newUuidForAcceptedTaxon){
-            return swapSynonymAndAcceptedTaxonNewUuid(synonym, acceptedTaxon, setNameInSource);
+            return swapSynonymAndAcceptedTaxonNewUuid(synonym, acceptedTaxon, setNameInSource, secHandling, newSecAcc, newSecSyn);
         }else{
-            return swapSynonymAndAcceptedTaxon(synonym, acceptedTaxon, setNameInSource);
+            return swapSynonymAndAcceptedTaxon(synonym, acceptedTaxon, setNameInSource, secHandling, newSecAcc, newSecSyn);
         }
     }
 
-    private UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
+    private UpdateResult swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
         UpdateResult result = new UpdateResult();
         String oldTaxonTitleCache = acceptedTaxon.getTitleCache();
 
     	TaxonName synonymName = synonym.getName();
     	TaxonName taxonName = HibernateProxyHelper.deproxy(acceptedTaxon.getName());
+    	Reference secAccepted = acceptedTaxon.getSec();
+    	String microRefSecAccepted = acceptedTaxon.getSecMicroReference();
+    	Reference secSynonym = synonym.getSec();
+        String microRefSecSynonym = synonym.getSecMicroReference();
 
+//        if (secHandling.equals(SecReferenceHandlingSwapEnum.AlwaysDelete) || (secAccepted != null && secSynonym != null && !secAccepted.getUuid().equals(secSynonym.getUuid()) && (secHandling.equals(SecReferenceHandlingSwapEnum.AlwaysSelect) || secHandling.equals(SecReferenceHandlingSwapEnum.KeepOrSelect)))){
+//            secAccepted = null;
+//            microRefSecAccepted = null;
+//            secSynonym = null;
+//            microRefSecSynonym = null;
+//        }
+
+
+    	Set<ExternalLink> accLinks = new HashSet<>();
+    	if (acceptedTaxon.getSecSource() != null){
+        	for (ExternalLink link: acceptedTaxon.getSecSource().getLinks()){
+                accLinks.add(ExternalLink.NewInstance(ExternalLinkType.Unknown, link.getUri()));
+            }
+    	}
     	acceptedTaxon.setName(synonymName);
+    	acceptedTaxon.setSec(newSecAcc);
+//    	acceptedTaxon.setSecMicroReference(synonym.getSecMicroReference());
+
+//    	if (synonym.getSecSource()!= null && synonym.getSecSource().getLinks() != null){
+//    	    acceptedTaxon.getSecSource().getLinks().clear();
+//        	for (ExternalLink link: synonym.getSecSource().getLinks()){
+//        	    acceptedTaxon.getSecSource().addLink(ExternalLink.NewInstance(ExternalLinkType.Unknown, link.getUri()));
+//            }
+//    	}
+
     	synonym.setName(taxonName);
+    	synonym.setSec(newSecSyn);
+//        synonym.setSecMicroReference(microRefSecAccepted);
+//        if (synonym.getSecSource() != null){
+//            synonym.getSecSource().getLinks().clear();
+//            for (ExternalLink link: accLinks){
+//                synonym.getSecSource().addLink(link);
+//            }
+//        }
 
     	//nameUsedInSource
     	handleNameUsedInSourceForSwap(setNameInSource, taxonName, oldTaxonTitleCache, acceptedTaxon.getDescriptions());
 
-    	saveOrUpdate(acceptedTaxon);
-    	saveOrUpdate(synonym);
-    	result.setCdmEntity(acceptedTaxon);
-    	result.addUpdatedObject(synonym);
+    	acceptedTaxon.resetTitleCache();
+    	synonym.resetTitleCache();
+
+    	MergeResult mergeTaxon = merge(acceptedTaxon, true);
+    	MergeResult mergeSynonym = merge(synonym, true);
+    	result.setCdmEntity((CdmBase) mergeTaxon.getMergedEntity());
+    	result.addUpdatedObject((CdmBase) mergeSynonym.getMergedEntity());
 
 		return result;
     }
 
-    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource){
+    private UpdateResult swapSynonymAndAcceptedTaxonNewUuid(Synonym synonym, Taxon acceptedTaxon, boolean setNameInSource, SecReferenceHandlingSwapEnum secHandling, Reference newSecAcc, Reference newSecSyn){
         UpdateResult result = new UpdateResult();
         acceptedTaxon.removeSynonym(synonym);
         TaxonName synonymName = synonym.getName();
@@ -255,6 +298,7 @@ public class TaxonServiceImpl
             acceptedTaxon.removeSynonym(syn);
         }
         Taxon newTaxon = acceptedTaxon.clone(true, true, false, true);
+        newTaxon.setSec(newSecAcc);
 
         //move descriptions
         Set<TaxonDescription> descriptionsToCopy = new HashSet<>(acceptedTaxon.getDescriptions());
@@ -318,6 +362,7 @@ public class TaxonServiceImpl
         Synonym newSynonym = synonym.clone();
         newSynonym.setName(taxonName);
         newSynonym.setPublish(acceptedTaxon.isPublish());
+        newSynonym.setSec(newSecSyn);
         if (sameHomotypicGroup){
             newTaxon.addSynonym(newSynonym, SynonymType.HOMOTYPIC_SYNONYM_OF());
         }else{
@@ -374,9 +419,7 @@ public class TaxonServiceImpl
             result.setAbort();
             return result;
         }
-        if (secHandling != null && secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
-            newSecRef = synonym.getSec();
-        }
+
         Taxon newAcceptedTaxon = Taxon.NewInstance(synonymName, newSecRef, microRef);
         newAcceptedTaxon.setPublish(synonym.isPublish());
         dao.save(newAcceptedTaxon);
@@ -385,7 +428,7 @@ public class TaxonServiceImpl
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
 
         for (Synonym heteroSynonym : heteroSynonyms){
-            if (secHandling == null || !secHandling.equals(SecReferenceHandlingEnum.KeepAlways)){
+            if (secHandling == null){
                 heteroSynonym.setSec(newSecRef);
             }
             if (synonym.equals(heteroSynonym)){
@@ -431,21 +474,19 @@ public class TaxonServiceImpl
             case AlwaysDelete:
                 newSecRef = null;
                 break;
-            case KeepAlways:
-                break;
             case UseNewParentSec:
                 newSecRef = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
                 break;
-            case KeepWhenSame:
+            case KeepOrWarn:
                 Reference parentSec = newParentNode.getTaxon() != null? newParentNode.getTaxon().getSec(): null;
                 Reference synSec = synonym.getSec();
-                if (parentSec != null && synSec != null && parentSec.equals(synSec)){
-                    newSecRef = synonym.getSec();
+                if (synSec != null ){
+                    newSecRef = CdmBase.deproxy(synSec);
                 }else{
                     newSecRef = CdmBase.deproxy(referenceService.load(newSec));
                 }
                 break;
-            case WarningSelect:
+            case KeepOrSelect:
                 newSecRef = CdmBase.deproxy(referenceService.load(newSec));
                 break;
             default:
@@ -3414,13 +3455,16 @@ public class TaxonServiceImpl
 	@Override
 	@Transactional(readOnly = false)
 	public UpdateResult swapSynonymAndAcceptedTaxon(UUID synonymUUid,
-			UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon) {
+			UUID acceptedTaxonUuid, boolean setNameInSource, boolean newUuidForAcceptedTaxon, SecReferenceHandlingSwapEnum secHandling, UUID newSecAcc, UUID newSecSyn) {
 		TaxonBase<?> base = this.load(synonymUUid);
 		Synonym syn = HibernateProxyHelper.deproxy(base, Synonym.class);
 		base = this.load(acceptedTaxonUuid);
 		Taxon taxon = HibernateProxyHelper.deproxy(base, Taxon.class);
 
-		return this.swapSynonymAndAcceptedTaxon(syn, taxon, setNameInSource, newUuidForAcceptedTaxon);
+		Reference refAcc = referenceService.load(newSecAcc);
+		Reference refSyn = referenceService.load(newSecSyn);
+
+		return this.swapSynonymAndAcceptedTaxon(syn, taxon, setNameInSource, newUuidForAcceptedTaxon, secHandling, refAcc, refSyn);
 	}
 
     @Override
