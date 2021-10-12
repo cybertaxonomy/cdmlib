@@ -129,7 +129,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
-    @ManyToMany(fetch = FetchType.LAZY /*, orphanRemoval=false*/)  //#5762 M:N now
+    @ManyToMany(fetch = FetchType.LAZY)  //#5762 M:N now
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     //TODO
     @Merge(MergeMode.ADD_CLONE)
