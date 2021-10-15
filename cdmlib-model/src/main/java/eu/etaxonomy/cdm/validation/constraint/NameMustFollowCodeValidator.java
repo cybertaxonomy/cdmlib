@@ -22,13 +22,12 @@ import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
 /**
  * Validator for name parts. Required since {@link TaxonName} has
  * no subclasses anymore. This validator checks if the names follow
- * the old sublassing rules.
+ * the old subclassing rules.
  * <BR><BR>
  * https://dev.e-taxonomy.eu/redmine/issues/6363
  *
  * @author a.mueller
  * @since 11.03.2017
- *
  */
 public class NameMustFollowCodeValidator implements
         ConstraintValidator<NameMustFollowCode, TaxonName> {

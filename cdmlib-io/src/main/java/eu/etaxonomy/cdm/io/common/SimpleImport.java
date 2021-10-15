@@ -27,7 +27,7 @@ public abstract class SimpleImport<CONFIG extends ImportConfiguratorBase, SOURCE
 
     @Override
     protected boolean doCheck(EmptyImportState state) {
-        return false;
+        return true;
     }
 
     @Override

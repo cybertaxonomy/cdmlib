@@ -25,52 +25,55 @@ public class CorrectEpithetsForRankValidator implements ConstraintValidator<Corr
 	@Override
 	public boolean isValid(INonViralName name, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
+		if (name.isCultivar()){
+		    return valid;  //there are no strict rules for cultivar ranks so far
+		}
 		if(name.isSupraGeneric() || name.isGenus()) {
 			if(isNotBlank(name.getInfraGenericEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addNode("infraGenericEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addPropertyNode("infraGenericEpithet").addConstraintViolation();
 			}
 
 			if(isNotBlank(name.getSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addNode("specificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addPropertyNode("specificEpithet").addConstraintViolation();
 			}
 			if(isNotBlank(name.getInfraSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addNode("infraSpecificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addPropertyNode("infraSpecificEpithet").addConstraintViolation();
 			}
 		} else if(name.isInfraGeneric()) {
 			if(isBlank(name.getInfraGenericEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addNode("infraGenericEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addPropertyNode("infraGenericEpithet").addConstraintViolation();
 			}
 
 			if(isNotBlank(name.getSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addNode("specificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addPropertyNode("specificEpithet").addConstraintViolation();
 			}
 			if(isNotBlank(name.getInfraSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addNode("infraSpecificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addPropertyNode("infraSpecificEpithet").addConstraintViolation();
 			}
 		} else if(name.isSpecies()) {
 			if(isBlank(name.getSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addNode("specificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addPropertyNode("specificEpithet").addConstraintViolation();
 			}
 
 			if(isNotBlank(name.getInfraSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addNode("infraSpecificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNotNull}").addPropertyNode("infraSpecificEpithet").addConstraintViolation();
 			}
 		} else if(name.isInfraSpecific()) {
 			if(isBlank(name.getSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addNode("specificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addPropertyNode("specificEpithet").addConstraintViolation();
 			}
 			if(isBlank(name.getInfraSpecificEpithet())) {
 				valid = false;
-				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addNode("infraSpecificEpithet").addConstraintViolation();
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank.epithetNull}").addPropertyNode("infraSpecificEpithet").addConstraintViolation();
 			}
 		}
 		if (!valid){
