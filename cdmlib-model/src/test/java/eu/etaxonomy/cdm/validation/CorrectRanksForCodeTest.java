@@ -66,6 +66,11 @@ public class CorrectRanksForCodeTest extends ValidationTestBase {
         constraintViolations  = validator.validate(name, Level2.class, Default.class);
         assertFalse("There should be a constraint violation as this name of rank cultivar has code ICNafp", constraintViolations.isEmpty());
         assertHasConstraintOnValidator((Set)constraintViolations, CorrectRanksForCodeValidator.class);
+
+        name.setNameType(NomenclaturalCode.ICNCP);
+        name.setRank(Rank.SPECIES());
+        assertFalse("There should be a constraint violation as this name of rank cultivar has code ICNafp", constraintViolations.isEmpty());
+        assertHasConstraintOnValidator((Set)constraintViolations, CorrectRanksForCodeValidator.class);
 	}
 
 	@Test

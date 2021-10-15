@@ -35,15 +35,10 @@ public class CorrectRanksForCodeValidator implements ConstraintValidator<Correct
 		boolean valid = true;
 		if (name.getRank() != null){
 		    UUID rankUuid = name.getRank().getUuid();
-		    if(rankUuid.equals(Rank.uuidCultivar) ||
-		            rankUuid.equals(Rank.uuidCultivarGroup) ||
-		            rankUuid.equals(Rank.uuidGrexICNCP) ||
-                    rankUuid.equals(Rank.uuidGraftChimaera) ||
-                    rankUuid.equals(Rank.uuidDenominationClass)
-		            ) {
-		        if (!name.isCultivar()){
-		            valid = false;
- 		        }
+		    if(isCultivarUuid(rankUuid) && !name.isCultivar()){
+		        valid = false;
+		    }else if (name.isCultivar() && !isCultivarUuid(rankUuid)){
+		        valid = false;
 		    }else if (rankUuid.equals(Rank.uuidSectionZoology) ||
                     rankUuid.equals(Rank.uuidSubsectionZoology)
                     ) {
@@ -62,5 +57,13 @@ public class CorrectRanksForCodeValidator implements ConstraintValidator<Correct
 		}
 		return valid;
 	}
+
+    private boolean isCultivarUuid(UUID rankUuid) {
+        return rankUuid.equals(Rank.uuidCultivar) ||
+        rankUuid.equals(Rank.uuidCultivarGroup) ||
+        rankUuid.equals(Rank.uuidGrexICNCP) ||
+        rankUuid.equals(Rank.uuidGraftChimaera) ||
+        rankUuid.equals(Rank.uuidDenominationClass);
+    }
 
 }
