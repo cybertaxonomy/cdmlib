@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.List;
@@ -16,7 +15,6 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.NamedSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-
 /**
  * @author n.hoffmann
  * @since Sep 18, 2009
@@ -25,44 +23,23 @@ public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableE
 
 	/**
 	 * Adds a taxon node as a child of the ITreeNode at the last position.
-	 *
-	 * @param childNode
-	 * @param citation
-	 * @param microCitation
-	 * @param synonymToBeUsed
-	 * @return the child node
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation);
 
 	/**
 	 * Adds a taxon node as a child of this {@link ITreeNode} at the index position.
-	 * @param childNode
-	 * @param index
-	 * @param citation
-	 * @param microCitation
-	 * @return
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, int index, Reference citation, String microCitation);
 
 
 	/**
 	 * Adds a taxon as a child of the ITreeNode at the last position.
-	 *
-	 * @param taxon
-	 * @param citation
-	 * @param microCitation
-	 * @return the child node
 	 */
 	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation);
 
 
 	/**
 	 * Adds a taxon as a child of the ITreeNode at the index position.
-	 *
-	 * @param taxon
-	 * @param citation
-	 * @param microCitation
-	 * @return the child node
 	 */
 	public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation);
 
@@ -101,29 +78,11 @@ public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableE
 	 */
  	public abstract String getMicroReference();
 
-    /**
-     * @param taxon
-     * @param source
-     * @param microCitation
-     * @return
-     */
-    TaxonNode addChildTaxon(Taxon taxon, NamedSource source);
+    public TaxonNode addChildTaxon(Taxon taxon, NamedSource source);
 
-    /**
-     * @param taxon
-     * @param index
-     * @param source
-     * @return
-     */
-    TaxonNode addChildTaxon(Taxon taxon, int index, NamedSource source);
 
-    /**
-     * @param child
-     * @param index
-     * @param source
-     * @param microReference
-     * @return
-     */
-    TaxonNode addChildNode(TaxonNode child, int index, NamedSource source);
+    public TaxonNode addChildTaxon(Taxon taxon, int index, NamedSource source);
+
+    public TaxonNode addChildNode(TaxonNode child, int index, NamedSource source);
 
 }

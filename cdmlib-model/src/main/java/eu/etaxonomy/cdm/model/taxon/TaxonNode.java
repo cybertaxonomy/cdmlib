@@ -150,14 +150,6 @@ public class TaxonNode
     //see https://dev.e-taxonomy.eu/redmine/issues/4200
     private Integer sortIndex = -1;
 
-//    //the source for this placement
-//    @XmlElement(name = "source")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//    @OneToOne(fetch = FetchType.LAZY, orphanRemoval=true)
-//    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.PERSIST})
-//    private DescriptionElementSource source;
-
     @XmlElement(name = "countChildren")
     private int countChildren;
 
