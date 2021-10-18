@@ -143,7 +143,7 @@ public class TermDto extends AbstractTermDto{
 //    }
 //
     public String getVocRepresentation_L10n() {
-        return vocabularyDto.getRepresentation_L10n();
+        return vocabularyDto == null ? null : vocabularyDto.getRepresentation_L10n();
     }
 //
 //    public void setVocRepresentation_L10n_abbreviatedLabel(String vocRepresentation_L10n_abbreviatedLabel) {
@@ -151,7 +151,7 @@ public class TermDto extends AbstractTermDto{
 //    }
 //
     public String getVocRepresentation_L10n_abbreviatedLabel() {
-        return vocabularyDto.getRepresentation_L10n_abbreviatedLabel();
+        return vocabularyDto == null ? null : vocabularyDto.getRepresentation_L10n_abbreviatedLabel();
     }
 //
 //    protected void addVocRepresentation(Representation vocRepresentation){
