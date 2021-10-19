@@ -280,11 +280,11 @@ public class ClassificationServiceImpl
         TaxonNode node = taxonNodeService.find(nodeUuid);
         if(node == null){
             logger.warn("The specified taxon is not found in the given tree.");
-            return null;
+            return new ArrayList<>(0);
         }else if (subtree != null && !node.isDescendant(subtree)){
             //TODO handle as exception? E.g. FilterException, AccessDeniedException?
             logger.warn("The specified taxon is not found for the given subtree.");
-            return null;
+            return new ArrayList<>(0);
         }
 
         return loadTreeBranch(node, subtree, baseRank, includeUnpublished, propertyPaths);
