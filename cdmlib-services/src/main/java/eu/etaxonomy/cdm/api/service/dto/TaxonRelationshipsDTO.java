@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 
@@ -52,12 +53,15 @@ public class TaxonRelationshipsDTO {
         private UUID typeUuid;
         private SourceDTO sec;
         private SourceDTO relSec;
+        private Set<UUID> classificationsUUIDs;
 
 
         public TaxonRelationDTO(TaxonRelationship relation, Direction direction, List<Language> languages) {
             Taxon relatedTaxon = direction == Direction.relatedTo? relation.getToTaxon()
                     : relation.getFromTaxon();
             this.taxonUuid = relatedTaxon.getUuid();
+
+            classificationsUUIDs = relatedTaxon.getTaxonNodes().stream().map(tn -> tn.getClassification().getUuid()).collect(Collectors.toSet());
             this.doubtful = relation.isDoubtful();
             this.direction = direction;
             TaxonRelationshipType relType = relation.getType();
@@ -156,6 +160,11 @@ public class TaxonRelationshipsDTO {
          */
         public void setTypeUuid(UUID typeUuid) {
             this.typeUuid = typeUuid;
+        }
+
+
+        public Set<UUID> getClassificationsUUIDs() {
+            return classificationsUUIDs;
         }
 
     }
