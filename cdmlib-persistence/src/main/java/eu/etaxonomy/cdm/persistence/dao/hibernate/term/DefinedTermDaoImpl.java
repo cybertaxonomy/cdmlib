@@ -70,6 +70,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -793,6 +794,18 @@ public class DefinedTermDaoImpl
         List<Object[]> result = query.list();
 
         List<TermDto> list = TermDto.termDtoListFrom(result);
+        queryString = TermVocabularyDto.getTermCollectionDtoSelect() + " where a.uuid = :uuid";
+
+        query = getSession().createQuery(queryString);
+        for (TermDto dto: list){
+            query.setParameter("uuid", dto.getVocabularyUuid());
+            result = query.list();
+            List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(result);
+            if (!vocs.isEmpty()){
+                dto.setVocabularyDto(vocs.get(0));
+            }
+        }
+
         return list;
     }
 
