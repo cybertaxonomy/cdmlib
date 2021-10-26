@@ -524,6 +524,9 @@ public class DescriptionServiceImpl
 //                description.setDescribedSpecimenOrObservation(null);
 
                 for (DescriptionElementDto descElement: elements){
+                    if (descElement == null){
+                        continue;
+                    }
                     UUID descElementUuid = descElement.getElementUuid();
                     if (descElement instanceof CategoricalDataDto && ((CategoricalDataDto)descElement).getStates().isEmpty() || descElement instanceof QuantitativeDataDto && ((QuantitativeDataDto)descElement).getValues().isEmpty()){
                         continue;
