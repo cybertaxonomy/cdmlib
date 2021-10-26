@@ -780,6 +780,8 @@ public class DefinedTermDaoImpl
 
     @Override
     public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType) {
+
+        //terms
         String termQueryString = TermDto.getTermDtoSelect()
                 + " where a.titleCache like :title "
                 + (termType!=null?" and a.termType = :termType ":"");
@@ -795,11 +797,11 @@ public class DefinedTermDaoImpl
         List<Object[]> termArrayResult = termQuery.list();
         List<TermDto> list = TermDto.termDtoListFrom(termArrayResult);
 
+        //vocabularies
         String vocQueryString = TermCollectionDto.getTermCollectionDtoSelect() + " where a.uuid = :uuid";
         Query vocQuery = getSession().createQuery(vocQueryString);
         Map<UUID,TermVocabularyDto> vocMap = new HashMap<>();
         for (TermDto dto: list){
-
             UUID vocUuid = dto.getVocabularyUuid();
             TermVocabularyDto vocDto = vocMap.get(vocUuid);
             if (vocDto == null){
