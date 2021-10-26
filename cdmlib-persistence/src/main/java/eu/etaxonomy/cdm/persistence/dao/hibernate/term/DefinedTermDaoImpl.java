@@ -778,7 +778,7 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findByTitleAsDto(String title, TermType termType) {
+    public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType) {
         String queryString = TermDto.getTermDtoSelect()
                 + " where a.titleCache like :title "
                 + (termType!=null?" and a.termType = :termType ":"");
