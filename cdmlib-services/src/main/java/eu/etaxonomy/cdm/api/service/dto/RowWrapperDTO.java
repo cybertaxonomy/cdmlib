@@ -271,7 +271,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             }
             i++;
         }
-        for (Integer index: indices){
+        for (int index: indices){
             description.getElements().remove(index);
         }
         featureToElementMap.remove(featureUuid);

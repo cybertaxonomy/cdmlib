@@ -504,19 +504,21 @@ public class DescriptionServiceImpl
                     }
                 }
 
-                DescriptionElementBase removeElement = null;
+                Set<DescriptionElementBase> removeElements = new HashSet<>();
                 Set<DescriptionElementBase> descriptionElements = desc.getElements();
                 for (DescriptionElementBase elementBase: descriptionElements){
                     UUID descElementUuid = elementBase.getUuid();
                     if (descElementUuid != null){
                         List<DescriptionElementDto> equalUuidsElements = elements.stream().filter( e -> e != null && e.getElementUuid() != null && e.getElementUuid().equals(descElementUuid)).collect(Collectors.toList());
-                        if (equalUuidsElements.size() == 0){
-                            removeElement = elementBase;
+                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && ((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty())){
+                            removeElements.add(elementBase);
                         }
                     }
                 }
-                if (removeElement != null){
-                    desc.removeElement(removeElement);
+                if (!removeElements.isEmpty()){
+                    for (DescriptionElementBase el: removeElements){
+                        desc.removeElement(el);
+                    }
                 }
 
 //                description.setDescribedSpecimenOrObservation(null);
