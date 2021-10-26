@@ -797,14 +797,18 @@ public class DefinedTermDaoImpl
 
         String vocQueryString = TermCollectionDto.getTermCollectionDtoSelect() + " where a.uuid = :uuid";
         Query vocQuery = getSession().createQuery(vocQueryString);
-
+        Map<UUID,TermVocabularyDto> vocMap = new HashMap<>();
         for (TermDto dto: list){
-            vocQuery.setParameter("uuid", dto.getVocabularyUuid());
-            @SuppressWarnings("unchecked")
-            List<Object[]> vocArrayResult = vocQuery.list();
-            List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(vocArrayResult);
-            if (!vocs.isEmpty()){
-                dto.setVocabularyDto(vocs.get(0));
+            UUID vocUuid = dto.getVocabularyUuid();
+            if (vocMap.get(vocUuid) == null){
+                vocQuery.setParameter("uuid", dto.getVocabularyUuid());
+                @SuppressWarnings("unchecked")
+                List<Object[]> vocArrayResult = vocQuery.list();
+                List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(vocArrayResult);
+                if (!vocs.isEmpty()){
+                    dto.setVocabularyDto(vocs.get(0));
+                    vocMap.put(vocUuid, vocs.get(0));
+                }
             }
         }
 
