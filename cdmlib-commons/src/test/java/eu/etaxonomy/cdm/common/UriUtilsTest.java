@@ -53,7 +53,7 @@ public class UriUtilsTest {
     }
 
     @Test
-    public void testGetResourceLengthNull2() throws ClientProtocolException, IOException, HttpException{
+    public void testGetResourceLengthNull2(){
         if(UriUtils.isInternetAvailable(null)){
 			try {
 				@SuppressWarnings("unused")
@@ -61,8 +61,7 @@ public class UriUtilsTest {
 				System.out.println("  sdf");
 //				Assert.assertEquals(9143, UriUtils.getResourceLength(uri, null));
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Assert.fail();
 			}
 
         } else {
