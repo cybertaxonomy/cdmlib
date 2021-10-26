@@ -87,6 +87,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     public QuantitativeDataDto addQuantitativeData(FeatureDto feature){
         QuantitativeDataDto data = new QuantitativeDataDto(feature);
         description.addElement(data);
+        removeElementForFeature(feature.getUuid());
         addToFeatureToElementMap(feature.getUuid(), data);
         return data;
     }
@@ -105,6 +106,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
     public CategoricalDataDto addCategoricalData(FeatureDto feature){
         CategoricalDataDto data = new CategoricalDataDto(feature);
         description.addElement(data);
+        removeElementForFeature(feature.getUuid());
         addToFeatureToElementMap(feature.getUuid(), data);
         return data;
     }
@@ -209,9 +211,14 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             return;
         }
         CategoricalDataDto categoricalData = null;
-        if(descriptionElementBase!=null && descriptionElementBase instanceof CategoricalDataDto){
-            categoricalData = (CategoricalDataDto)descriptionElementBase;
-            categoricalData.setStateDataOnly(states);
+        if(descriptionElementBase!=null){
+            if (descriptionElementBase.size() == 1){
+                DescriptionElementDto dto = descriptionElementBase.iterator().next();
+                if (dto instanceof CategoricalDataDto){
+                    categoricalData = (CategoricalDataDto)dto;
+                    categoricalData.setStateDataOnly(states);
+                }
+            }
 
         }else{
             Feature feature = DefinedTermBase.getTermByClassAndUUID(Feature.class, featureUuid);
@@ -244,6 +251,8 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
 
         }
         description.getElements().remove(oldElement);
+        featureToElementMap.remove(featureUuid);
+        featureToDisplayDataMap.remove(featureUuid);
     }
 
     private void removeFeature(UUID featureUuid, Set<DescriptionElementDto> descriptionElementBases) {
@@ -285,10 +294,19 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
             quantitativeData = new QuantitativeDataDto(FeatureDto.fromFeature(feature));
         }
 
-        if(descriptionElementBase != null && descriptionElementBase instanceof QuantitativeDataDto){
-            quantitativeData = (QuantitativeDataDto)descriptionElementBase;
-            //clear values
+        if(descriptionElementBase!=null){
+            if (descriptionElementBase.size() == 1){
+                DescriptionElementDto dto = descriptionElementBase.iterator().next();
+                if (dto instanceof QuantitativeDataDto){
+                    quantitativeData = (QuantitativeDataDto)dto;
+                }
+            }
 
+
+        }
+        if (quantitativeData == null){
+            //TODO: check whether this is possible
+            return;
         }
         quantitativeData.getValues().clear();
         quantitativeData.setMeasurementUnit(unit);
