@@ -43,8 +43,10 @@ public class AbstractTermDto implements Serializable, Comparable<AbstractTermDto
         this.uuid = uuid;
         this.titleCache = titleCache;
 
-        for(Representation rep: representations){
-            this.representations.add(rep.clone());
+        if (representations != null){
+            for(Representation rep: representations){
+                this.representations.add(rep.clone());
+            }
         }
     }
 
