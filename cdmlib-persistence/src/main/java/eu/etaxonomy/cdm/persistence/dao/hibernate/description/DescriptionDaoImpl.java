@@ -861,7 +861,7 @@ public class DescriptionDaoImpl
         Query query = getSession().createQuery(queryString.toString());
 
         List<Object[]> areasInUse = query.list();
-        List<Object[]> parentResults = new ArrayList<Object[]>();
+        List<Object[]> parentResults = new ArrayList<>();
 
         if(!areasInUse.isEmpty()) {
             Set<Object> allAreaIds = new HashSet<>(areasInUse.size());

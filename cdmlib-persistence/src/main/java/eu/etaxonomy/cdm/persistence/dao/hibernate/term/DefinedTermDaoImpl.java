@@ -69,6 +69,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -779,28 +780,29 @@ public class DefinedTermDaoImpl
 
     @Override
     public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType) {
-        String queryString = TermDto.getTermDtoSelect()
+        String termQueryString = TermDto.getTermDtoSelect()
                 + " where a.titleCache like :title "
                 + (termType!=null?" and a.termType = :termType ":"");
 
         title = title.replace("*", "%");
-        Query query =  getSession().createQuery(queryString);
-        query.setParameter("title", "%"+title+"%");
+        Query termQuery =  getSession().createQuery(termQueryString);
+        termQuery.setParameter("title", "%"+title+"%");
         if(termType!=null){
-            query.setParameter("termType", termType);
+            termQuery.setParameter("termType", termType);
         }
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> termArrayResult = termQuery.list();
+        List<TermDto> list = TermDto.termDtoListFrom(termArrayResult);
 
-        List<TermDto> list = TermDto.termDtoListFrom(result);
-        queryString = TermVocabularyDto.getTermCollectionDtoSelect() + " where a.uuid = :uuid";
+        String vocQueryString = TermCollectionDto.getTermCollectionDtoSelect() + " where a.uuid = :uuid";
+        Query vocQuery = getSession().createQuery(vocQueryString);
 
-        query = getSession().createQuery(queryString);
         for (TermDto dto: list){
-            query.setParameter("uuid", dto.getVocabularyUuid());
-            result = query.list();
-            List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(result);
+            vocQuery.setParameter("uuid", dto.getVocabularyUuid());
+            @SuppressWarnings("unchecked")
+            List<Object[]> vocArrayResult = vocQuery.list();
+            List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(vocArrayResult);
             if (!vocs.isEmpty()){
                 dto.setVocabularyDto(vocs.get(0));
             }

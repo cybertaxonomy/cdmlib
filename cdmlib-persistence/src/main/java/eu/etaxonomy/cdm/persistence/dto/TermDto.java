@@ -333,7 +333,6 @@ public class TermDto extends AbstractTermDto{
                     mediaUuids.add(((Media) elements[9]).getUuid());
                 }
 
-
                 TermDto termDto = new TermDto(
                         uuid,
                         representations,
