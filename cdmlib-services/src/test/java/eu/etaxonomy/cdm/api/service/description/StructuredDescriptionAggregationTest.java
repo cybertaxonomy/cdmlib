@@ -153,7 +153,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
     @Before
     public void setUp() {
         engine = new StructuredDescriptionAggregation();
-        engine.setBatchMinFreeHeap(50 * 1024 * 1024);
+        engine.setBatchMinFreeHeap(35 * 1024 * 1024);
         monitor = DefaultProgressMonitor.NewInstance();
     }
 
