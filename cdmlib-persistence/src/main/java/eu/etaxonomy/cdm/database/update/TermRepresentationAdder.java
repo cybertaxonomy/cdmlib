@@ -70,7 +70,7 @@ public class TermRepresentationAdder
 			String name = label != null ? label : abbrev != null ? abbrev : description;
 			String message = "Term for representations update does not exist. Term not updated: " + CdmUtils.Nz(name) + "(" + uuidTerm + ")";
 			monitor.warning(message);
-			result.addError(message, this, "invoke");
+			result.addWarning(message, this, "invoke");
 			return;
 		}else{
 		    termId = rs.getInt("id");
@@ -84,7 +84,7 @@ public class TermRepresentationAdder
 				String message = "Language for language uuid (%s) could not be found. Term representations not updated.";
 				message = String.format(message, uuidLanguage.toString());
 				monitor.warning(message);
-	            result.addError(message, this, "invoke");
+	            result.addWarning(message, this, "invoke");
 	            return;
 			}
 		}
@@ -94,7 +94,7 @@ public class TermRepresentationAdder
             String message = "Representation for language uuid (%s) already exists. Did not add term representation.";
             message = String.format(message, uuidLanguage.toString());
             monitor.warning(message);
-            result.addError(message, this, "invoke");
+            result.addWarning(message, this, "invoke");
             return;
 		}
 
