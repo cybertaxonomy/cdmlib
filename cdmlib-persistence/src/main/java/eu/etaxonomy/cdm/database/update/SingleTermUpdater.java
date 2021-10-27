@@ -74,7 +74,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	private SingleTermUpdater(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
 	        String description, String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
 	        String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
-		super(null, stepName);
+		super(stepList, stepName);
 		this.termType = termType;
 		this.idInVocabulary = idInVocabulary;
 		this.symbol = symbol;
