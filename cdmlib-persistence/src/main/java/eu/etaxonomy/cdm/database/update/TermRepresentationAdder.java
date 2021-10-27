@@ -59,8 +59,6 @@ public class TermRepresentationAdder
 		this.isReverse = isReverse;
 	}
 
-
-
 	@Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,
             CaseType caseType, SchemaUpdateResult result) throws SQLException{
@@ -123,14 +121,6 @@ public class TermRepresentationAdder
 		return;
 	}
 
-	/**
-	 * @param datasource
-	 * @param monitor
-	 * @param langId
-	 * @param caseType
-	 * @return
-	 * @throws SQLException
-	 */
 	private Integer getRepresentationId(ICdmDataSource datasource,
 			IProgressMonitor monitor, Integer langId, CaseType caseType) throws SQLException {
 		//representation
@@ -156,5 +146,4 @@ public class TermRepresentationAdder
 		}
 		return repId;
 	}
-
 }

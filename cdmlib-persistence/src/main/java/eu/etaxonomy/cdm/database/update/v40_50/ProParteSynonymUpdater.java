@@ -157,7 +157,7 @@ public class ProParteSynonymUpdater extends SchemaUpdaterStepBase {
 
 
     private void invokeSingle(boolean isPartial, int typeId, ICdmDataSource datasource, IProgressMonitor monitor,
-            CaseType caseType, SchemaUpdateResult result) throws SQLException {
+            CaseType caseType, SchemaUpdateResult result){
 
         try {
             //get maxId from taxonRelationship
