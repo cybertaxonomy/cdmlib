@@ -92,7 +92,7 @@ public class TermRepresentationUpdater
 			String name = label != null ? label : abbrev != null ? abbrev : description;
 			String message = "Term for representations update does not exist. Term not updated: " + CdmUtils.Nz(name) + "(" + uuidTerm + ")";
 			monitor.warning(message);
-			result.addError(message, this, "invoke");
+			result.addWarning(message, this, "invoke");
 			return;
 		}
 
@@ -104,7 +104,7 @@ public class TermRepresentationUpdater
 				String message = "Language for language uuid (%s) could not be found. Term representations not updated.";
 				message = String.format(message, uuidLanguage.toString());
 				monitor.warning(message);
-	            result.addError(message, this, "invoke");
+	            result.addWarning(message, this, "invoke");
 	            return;
 			}
 		}
@@ -112,7 +112,7 @@ public class TermRepresentationUpdater
 		Integer repId = getRepresentationId(datasource, monitor, langId, caseType);
 		if (repId == null){
 			String message = "repId is null";
-		    result.addError(message, this, "invoke");
+		    result.addWarning(message, this, "invoke");
 			return;
 		}
 
