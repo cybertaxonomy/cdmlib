@@ -242,7 +242,7 @@ public class AbcdGgbnImportTest extends CdmTransactionalIntegrationTest {
         assertNotNull(dnaSample.getPreservation());
         assertEquals("DNeasy Plant Mini Spin Kit Qiagen", derivedFrom.getDescription());
         //sample designation
-        Set<String> identifiers = dnaSample.getIdentifiers((DefinedTerm) termService.find(DefinedTerm.uuidSampleDesignation));
+        Set<String> identifiers = dnaSample.getIdentifierStrings((DefinedTerm) termService.find(DefinedTerm.uuidSampleDesignation));
         assertNotNull(identifiers);
         assertEquals(1, identifiers.size());
         assertEquals("CAM010", identifiers.iterator().next());

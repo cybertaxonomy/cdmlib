@@ -416,17 +416,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.identifiers;
     }
     /**
-     * @param type
      * @return a set of identifier value strings
      */
-    public Set<String> getIdentifiers(DefinedTerm type){
-       return getIdentifiers(type == null? null :type.getUuid());
+    public Set<String> getIdentifierStrings(DefinedTerm type){
+       return getIdentifierStrings(type == null? null :type.getUuid());
     }
     /**
      * @param identifierTypeUuid
      * @return a set of identifier value strings
      */
-    public Set<String> getIdentifiers(UUID identifierTypeUuid){
+    public Set<String> getIdentifierStrings(UUID identifierTypeUuid){
         Set<String> result = new HashSet<>();
         for (Identifier identifier : getIdentifiers()){
             if ( (identifier.getType()== null && identifierTypeUuid == null)
@@ -441,13 +440,21 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * <code>null</code> if no such identifier exists.
      * @param identifierTypeUuid
      */
-    public String getIdentifier(UUID identifierTypeUuid){
-        Set<Identifier> set = getIdentifiers_(identifierTypeUuid);
+    public String getIdentifierString(UUID identifierTypeUuid){
+        Set<Identifier> set = getIdentifiers(identifierTypeUuid);
         return set.isEmpty()? null : set.iterator().next().getIdentifier();
     }
+    /**
+     * Returns the first identifier of the given type.
+     * <code>null</code> if no such identifier exists.
+     * @param identifierTypeUuid
+     */
+    public Identifier getIdentifier(UUID identifierTypeUuid){
+        Set<Identifier> set = getIdentifiers(identifierTypeUuid);
+        return set.isEmpty()? null : set.iterator().next();
+    }
 
-
-    public Set<Identifier> getIdentifiers_(UUID identifierTypeUuid){
+    public Set<Identifier> getIdentifiers(UUID identifierTypeUuid){
         Set<Identifier> result = new HashSet<>();
         for (Identifier identifier : getIdentifiers()){
             if ( (identifier.getType()== null && identifierTypeUuid == null)
