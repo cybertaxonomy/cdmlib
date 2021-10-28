@@ -148,8 +148,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
     @SpringBeanByType
     private IDescriptiveDataSetService datasetService;
 
-    private StructuredDescriptionAggregation engine;
-
     private IProgressMonitor monitor;
 
     @Before
@@ -168,7 +166,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
     public void testGetRowWrapper(){
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestDataset();
-         commitAndStartNewTransaction();
+        commitAndStartNewTransaction();
 
         List<RowWrapperDTO<?>> result =  datasetService.getRowWrapper(dataSet.getUuid(), monitor);
 
@@ -176,7 +174,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         assertTrue(result.size() == 5);
         //check rowWrapper
         //specimen_1 2 categorical and 1 quantitative
-        for (RowWrapperDTO row: result){
+        for (RowWrapperDTO<?> row: result){
             if (row instanceof SpecimenRowWrapperDTO){
                 SpecimenRowWrapperDTO specimen = (SpecimenRowWrapperDTO)row;
                 if (specimen.getSpecimenDto().getLabel().equals("alpina specimen1")){
@@ -243,8 +241,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
 
     }
 
-
-
     @Test
     @DataSets({
         @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
@@ -260,7 +256,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         List<DescriptionBaseDto> descToUpdate = new ArrayList<>();
         UUID updatedDescription = null;
         int elementCount = 0;
-        for (RowWrapperDTO row: result){
+        for (RowWrapperDTO<?> row: result){
             if (row instanceof SpecimenRowWrapperDTO){
                 SpecimenRowWrapperDTO specimen = (SpecimenRowWrapperDTO)row;
                 DescriptionBaseDto descDto = specimen.getDescription();
@@ -282,7 +278,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         descriptionService.mergeDescriptions(descToUpdate, dataSet.getUuid());
 
         commitAndStartNewTransaction();
-        DescriptionBase description = descriptionService.load(updatedDescription);
+        DescriptionBase<?> description = descriptionService.load(updatedDescription);
         assertEquals(description.getElements().size(),elementCount +1);
         for(Object el: description.getElements()){
             if (el instanceof QuantitativeData){
@@ -292,7 +288,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
                 }
             }
         }
-
     }
 
     @Test
