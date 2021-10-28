@@ -89,7 +89,6 @@ public class DescriptiveDataSet
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<>();
 
