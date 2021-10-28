@@ -89,10 +89,10 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author k.luther
  * @since 01.10.2021
  */
-public class DescriptiveDatasetServiceTest extends CdmTransactionalIntegrationTest {
+public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTest {
 
     @SuppressWarnings("unused")
-    private static Logger logger = Logger.getLogger(DescriptiveDatasetServiceTest.class);
+    private static Logger logger = Logger.getLogger(DescriptiveDataSetServiceTest.class);
 
 
     private static final UUID T_LAPSANA_UUID = UUID.fromString("f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8");
