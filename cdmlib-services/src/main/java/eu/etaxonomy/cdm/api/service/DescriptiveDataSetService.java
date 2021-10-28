@@ -140,14 +140,14 @@ public class DescriptiveDataSetService
             }
             RowWrapperDTO<?> rowWrapper = null;
             // only viable descriptions are aggregated, literature or default descriptions
-            if(HibernateProxyHelper.isInstanceOf(description, TaxonDescription.class) &&
+            if(description.isInstanceOf(TaxonDescription.class) &&
                     (description.isAggregatedStructuredDescription()
                             || description.getTypes().contains(DescriptionType.DEFAULT_VALUES_FOR_AGGREGATION)
                             || description.getTypes().contains(DescriptionType.SECONDARY_DATA)
                             )){
                 rowWrapper = createTaxonRowWrapper((TaxonDescription)description, descriptiveDataSet.getUuid());
             }
-            else if (HibernateProxyHelper.isInstanceOf(description, SpecimenDescription.class)&&
+            else if (description.isInstanceOf(SpecimenDescription.class)&&
                     !description.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE)){
                 rowWrapper = createSpecimenRowWrapper(HibernateProxyHelper.deproxy(description, SpecimenDescription.class), descriptiveDataSetUuid);
             }
@@ -381,7 +381,7 @@ public class DescriptiveDataSetService
             UUID datasetUuid) {
         TaxonNode taxonNode = taxonNodeService.load(taxonNodeUuid);
         DescriptiveDataSet descriptiveDataSet = load(datasetUuid);
-        SpecimenOrObservationBase<?> specimen = HibernateProxyHelper.deproxy(description.getDescribedSpecimenOrObservation(), SpecimenOrObservationBase.class);
+        SpecimenOrObservationBase<?> specimen = CdmBase.deproxy(description.getDescribedSpecimenOrObservation());
         //supplemental information
         if(taxonNode==null){
             taxonNode = findTaxonNodeForDescription(description, descriptiveDataSet);
@@ -410,7 +410,7 @@ public class DescriptiveDataSetService
             }
         }
         //get identifier
-        if(HibernateProxyHelper.isInstanceOf(specimen, DerivedUnit.class)){
+        if(specimen.isInstanceOf(DerivedUnit.class)){
             identifier = occurrenceService.getMostSignificantIdentifier(HibernateProxyHelper.deproxy(specimen, DerivedUnit.class));
         }
         //get country

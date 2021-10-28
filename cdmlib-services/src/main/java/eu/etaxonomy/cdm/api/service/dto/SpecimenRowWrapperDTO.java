@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2018 EDIT
 * European Distributed Institute of Taxonomy
@@ -20,7 +19,6 @@ import eu.etaxonomy.cdm.persistence.dto.UuidAndTitleCache;
 /**
  * @author pplitzner
  * @since 16.04.2018
- *
  */
 public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
 
@@ -86,12 +84,11 @@ public class SpecimenRowWrapperDTO extends RowWrapperDTO<SpecimenDescription> {
         return country;
     }
 
-    public void setDefaultDescription(TaxonRowWrapperDTO defaultDescription) {
-        this.defaultDescription = defaultDescription;
-    }
-
     public TaxonRowWrapperDTO getDefaultDescription() {
         return defaultDescription;
+    }
+    public void setDefaultDescription(TaxonRowWrapperDTO defaultDescription) {
+        this.defaultDescription = defaultDescription;
     }
 
     public SpecimenOrObservationType getType(){

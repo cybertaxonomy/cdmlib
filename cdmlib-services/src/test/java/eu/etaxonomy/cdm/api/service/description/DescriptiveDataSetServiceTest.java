@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.api.service.dto.RowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.SpecimenRowWrapperDTO;
 import eu.etaxonomy.cdm.api.service.dto.StateDataDto;
 import eu.etaxonomy.cdm.api.service.dto.StatisticalMeasurementValueDto;
-import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -272,7 +271,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
                 descDto.addElement(quantDto);
                 descToUpdate.add(descDto);
                 updatedDescription = descDto.getDescriptionUuid();
-
             }
         }
         descriptionService.mergeDescriptions(descToUpdate, dataSet.getUuid());
@@ -297,7 +295,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     @Ignore
-    public void incompleteCategoricalDataTest() throws JvmLimitsException{
+    public void incompleteCategoricalDataTest(){
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -343,10 +341,6 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         addCategoricalData(literatureDescription, uuidFeatureLeafColor, uuidLeafColorBlue);
         dataSet.addDescription(literatureDescription);
     }
-
-
-
-
 
     private DescriptiveDataSet createTestDataset() {
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
