@@ -486,8 +486,6 @@ public class DescriptionServiceImpl
 
             Set<DescriptionBase> descSpecimen = descriptionSpecimenMap.get(describedObjectUuid);
 
-
-
             if (descSpecimen != null ){
 
 //                TODO: elements are Dtos now, no cdm entities, needs to get the value and replace or create new description element
@@ -496,8 +494,8 @@ public class DescriptionServiceImpl
                     elements.add((DescriptionElementDto)element);
                 }
 
-                DescriptionBase desc = null;
-                for (DescriptionBase tempDesc: descSpecimen){
+                DescriptionBase<?> desc = null;
+                for (DescriptionBase<?> tempDesc: descSpecimen){
                     if (tempDesc.getUuid().equals(descDto.getDescriptionUuid())){
                         desc = tempDesc;
                         break;
