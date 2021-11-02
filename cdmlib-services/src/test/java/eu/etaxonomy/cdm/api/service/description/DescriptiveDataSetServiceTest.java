@@ -247,7 +247,7 @@ public class DescriptiveDataSetServiceTest extends CdmTransactionalIntegrationTe
         @DataSet(value="/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"),
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
-    public void addQuantitativeDataTest() {
+    public void testAddQuantitativeData() {
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = createTestDataset();
         commitAndStartNewTransaction();

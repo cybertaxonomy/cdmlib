@@ -27,17 +27,12 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class TermVocabularyDto extends TermCollectionDto {
 
     private static final long serialVersionUID = 7667822208618658310L;
-    /**
-     * @param uuid
-     * @param representations
-     * @param termType
-     */
+
     public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicate, isOrderRelevant, isFlat);
-        // TODO Auto-generated constructor stub
     }
 
-    public static TermVocabularyDto fromVocabulary(TermVocabulary voc) {
+    public static TermVocabularyDto fromVocabulary(TermVocabulary<?> voc) {
         TermVocabularyDto dto = new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat());
         return dto;
     }

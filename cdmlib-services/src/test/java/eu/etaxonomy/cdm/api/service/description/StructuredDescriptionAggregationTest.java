@@ -301,6 +301,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         @DataSet(value="StructuredDescriptionAggregationTest.xml"),
     })
     public void testIncompleteCategoricalData() {
+
+        //create data
         createDefaultFeatureTree();
         DescriptiveDataSet dataSet = DescriptiveDataSet.NewInstance();
         datasetService.save(dataSet);
@@ -317,6 +319,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         dataSet.setDescriptiveSystem(descriptiveSystem);
         commitAndStartNewTransaction();
 
+        //aggregate
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         UpdateResult result = engine.invoke(config, repository);

@@ -470,12 +470,18 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
+
+        //specimen descriptions
         Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
         addDescriptionToResultHolder(descriptiveResultHolder, specimenDescriptions, AggregationMode.WithinTaxon);
+
+        //"literature" descriptions
         if (getConfig().isIncludeLiterature()){
             Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
             addDescriptionToResultHolder(descriptiveResultHolder, literatureDescriptions, AggregationMode.WithinTaxon);
         }
+
+        //"default" descriptions
         //TODO add default descriptions
         //xxx
 
