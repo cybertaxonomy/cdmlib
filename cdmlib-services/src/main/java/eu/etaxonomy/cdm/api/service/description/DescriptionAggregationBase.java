@@ -277,7 +277,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
             }
         }
         addAggregationResultToDescription(targetDescription, resultHolder);
-        removeDescriptionIfEmpty(targetDescription, resultHolder);
+        removeDescriptionIfEmpty(targetDescription, resultHolder);  //AM: necessary? Seems to be done in addAggregationResultToDescription() already...
         deleteDescriptionsToDelete(resultHolder);
     }
 

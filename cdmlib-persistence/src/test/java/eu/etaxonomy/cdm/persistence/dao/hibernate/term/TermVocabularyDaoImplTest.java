@@ -184,7 +184,6 @@ public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
         @SuppressWarnings("unchecked")
         TermVocabulary<NamedArea> continentVoc = dao.findByUuid(NamedArea.uuidContinentVocabulary);
         continentVoc.addRepresentation(Representation.NewInstance("Kontinente", "Kontinente", "Kont.", Language.GERMAN()));
-//        dao.flush();
         vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
         Assert.assertEquals("Deduplication for representations does not work", 4, vocDtos.size());
         int repSize = vocDtos.stream().filter(voc->voc.getUuid().equals(NamedArea.uuidContinentVocabulary)).findFirst().get().getRepresentations().size();
