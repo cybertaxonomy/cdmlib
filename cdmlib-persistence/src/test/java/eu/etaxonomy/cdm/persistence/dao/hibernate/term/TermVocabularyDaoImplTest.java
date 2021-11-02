@@ -36,14 +36,14 @@ import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.babadshanjan
  * @since 10.02.2009
  */
-public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
+public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TermVocabularyDaoImplTest.class);
 
@@ -170,19 +170,25 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	}
 
 	@Test
+    @DataSets({
+          @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+          @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
+    )
 	public void testFindVocabularyDtoByTermTypes(){
 	    Set<TermType> termTypes = new HashSet<>();
 	    termTypes.add(TermType.NamedArea);
-	    List<TermVocabularyDto> vocDto = dao.findVocabularyDtoByTermTypes(termTypes, true);
-	    Assert.assertEquals(4, vocDto.size());
+	    List<TermVocabularyDto> vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
+	    Assert.assertEquals(4, vocDtos.size());
 
 	    //#9825 test deduplication
         @SuppressWarnings("unchecked")
         TermVocabulary<NamedArea> continentVoc = dao.findByUuid(NamedArea.uuidContinentVocabulary);
         continentVoc.addRepresentation(Representation.NewInstance("Kontinente", "Kontinente", "Kont.", Language.GERMAN()));
-        dao.flush();
-        vocDto = dao.findVocabularyDtoByTermTypes(termTypes, true);
-        Assert.assertEquals("Deduplication for representations does not work", 4, vocDto.size());
+//        dao.flush();
+        vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
+        Assert.assertEquals("Deduplication for representations does not work", 4, vocDtos.size());
+        int repSize = vocDtos.stream().filter(voc->voc.getUuid().equals(NamedArea.uuidContinentVocabulary)).findFirst().get().getRepresentations().size();
+        Assert.assertEquals("There should be 2 representations for continent vocabulary", 2, repSize);
 	}
 
     @Override
