@@ -133,18 +133,6 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
         return connection;
     }
 
-//  @SpringBeanByType
-//  private IAgentDao agentDao;
-//
-//  @Before
-//  public void debugExistingUsers(){
-//      StringBuilder agentstr = new StringBuilder();
-//      for(AgentBase agent : agentDao.list(null, null)) {
-//          agentstr.append(agent.getId()).append(", ");
-//      }
-//      System.err.println("####" +  agentstr);
-//  }
-
     /**
      * How to use:
      * <ol>

@@ -633,6 +633,7 @@ public class DefinedTermDaoImpl
         while (it.hasNext()){
             S a = it.next();
             if (a != last){
+                //AM: why is this necessary?
                 if (!result.contains(a)){
                     result.add(a);
                 }
