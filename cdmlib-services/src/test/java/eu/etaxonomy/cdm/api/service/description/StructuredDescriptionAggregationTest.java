@@ -327,7 +327,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         //test aggregation with categorical data without states (empty categorical data)
         verifyStatusOk(result);
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
-        //if no state at all exists in description even the description is not created (this was different before but changed with xxx)
+        //if no state at all exists in description even the description is not created (this was different before but changed with 9b8a8049439 / #9804)
         verifyNumberTaxonDescriptions(taxLapsanaCommunisAlpina, 0);
 
         //add data for another feature
@@ -338,12 +338,9 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         verifyStatusOk(result);
         taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
-        verifyNumberDescriptionElements(aggrDescLapsanaCommunisAlpina, uuidFeatureLeafColor, 0);
-//        List<StateData> sdAlpinaLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 0, aggrDescLapsanaCommunisAlpina, false);
-//        verifyState(sdAlpinaLeafColor, uuidLeafColorBlue, 0);
-//        verifyState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
+        verifyNumberDescriptionElements(aggrDescLapsanaCommunisAlpina, uuidFeatureLeafColor, 0);  //we don't expect empty categorical data anymore #9804
 
-        //test duplicates
+        //test if data for same feature but from >1 description items run into 1 description item when aggregated
         specDescAlpina1 = (SpecimenDescription)descriptionService.find(specDescAlpina1.getUuid());
         addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
         addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
@@ -356,7 +353,6 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         List<StateData> sdAlpinaLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
         verifyState(sdAlpinaLeafColor, uuidLeafColorBlue, 2);
         verifyState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
-
     }
 
     @Test
