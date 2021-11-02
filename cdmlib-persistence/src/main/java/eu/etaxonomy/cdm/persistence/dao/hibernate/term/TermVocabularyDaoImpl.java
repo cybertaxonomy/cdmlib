@@ -419,25 +419,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         List<Object[]> result = query.list();
         List<TermVocabularyDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return dtos;
-
-//        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
-//        for (Object[] elements : result) {
-//            UUID uuid = (UUID)elements[0];
-//            TermType termType = (TermType)elements[1];
-//            if(dtoMap.containsKey(uuid)){
-//                dtoMap.get(uuid).addRepresentation((Representation)elements[2]);
-//            } else {
-//                Set<Representation> representations = new HashSet<>();
-//                if(elements[2] instanceof Representation) {
-//                    representations = new HashSet<Representation>();
-//                    representations.add((Representation)elements[2]);
-//                } else {
-//                    representations = (Set<Representation>)elements[2];
-//                }
-//                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType, (String)elements[3]));
-//            }
-//        }
-//        return new ArrayList<>(dtoMap.values());
     }
 
     @Override
