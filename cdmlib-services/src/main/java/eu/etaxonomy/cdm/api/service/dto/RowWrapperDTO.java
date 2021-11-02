@@ -79,7 +79,7 @@ public abstract class RowWrapperDTO <T extends DescriptionBase> implements Seria
      */
     private void addDisplayStringsToMap(UUID featureUuid, Collection<String> displayData) {
         if (featureToDisplayDataMap.get(featureUuid) == null){
-            featureToDisplayDataMap.put(featureUuid, new HashSet<>());
+            featureToDisplayDataMap.put(featureUuid, new ArrayList<>());
         }
         featureToDisplayDataMap.get(featureUuid).addAll(displayData);
     }
