@@ -308,6 +308,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         datasetService.save(dataSet);
 
         SpecimenDescription specDescAlpina1 = createSpecimenDescription(dataSet, T_LAPSANA_COMMUNIS_ALPINA_UUID, "alpina specimen1", T_LAPSANA_COMMUNIS_ALPINA_SPEC1_UUID);
+        //create empty categorical data
         addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, null);
 
         TaxonNode tnLapsana = taxonNodeService.find(TN_LAPSANA_UUID);
@@ -321,15 +322,41 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //aggregate
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
-
         UpdateResult result = engine.invoke(config, repository);
-        verifyStatusOk(result);
 
+        //test aggregation with categorical data without states (empty categorical data)
+        verifyStatusOk(result);
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
+        //if no state at all exists in description even the description is not created (this was different before but changed with xxx)
+        verifyNumberTaxonDescriptions(taxLapsanaCommunisAlpina, 0);
+
+        //add data for another feature
+        specDescAlpina1 = (SpecimenDescription)descriptionService.find(specDescAlpina1.getUuid());
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafPA, State.uuidPresent);
+        commitAndStartNewTransaction();
+        result = engine.invoke(config, repository);
+        verifyStatusOk(result);
+        taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
         TaxonDescription aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 1);
+        verifyNumberDescriptionElements(aggrDescLapsanaCommunisAlpina, uuidFeatureLeafColor, 0);
+//        List<StateData> sdAlpinaLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 0, aggrDescLapsanaCommunisAlpina, false);
+//        verifyState(sdAlpinaLeafColor, uuidLeafColorBlue, 0);
+//        verifyState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
+
+        //test duplicates
+        specDescAlpina1 = (SpecimenDescription)descriptionService.find(specDescAlpina1.getUuid());
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
+        addCategoricalData(specDescAlpina1, uuidFeatureLeafColor, uuidLeafColorBlue);
+        commitAndStartNewTransaction();
+        result = engine.invoke(config, repository);
+
+        verifyStatusOk(result);
+        taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
+        aggrDescLapsanaCommunisAlpina = verifyTaxonDescriptions(taxLapsanaCommunisAlpina, 2);  //for leafPA and for color
         List<StateData> sdAlpinaLeafColor = verifyCategoricalData(uuidFeatureLeafColor, 1, aggrDescLapsanaCommunisAlpina, false);
-        verifyState(sdAlpinaLeafColor, uuidLeafColorBlue, 0);
+        verifyState(sdAlpinaLeafColor, uuidLeafColorBlue, 2);
         verifyState(sdAlpinaLeafColor, uuidLeafColorYellow, 0);
+
     }
 
     @Test
@@ -700,17 +727,32 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         return dataSet;
     }
 
-    private TaxonDescription verifyTaxonDescriptions(Taxon taxon, int elementSize){
-        List<TaxonDescription> taxonDescriptions = taxon.getDescriptions().stream()
+    private TaxonDescription verifyTaxonDescriptions(Taxon taxon, int elementCount){
+        List<TaxonDescription> aggrNonCloneTaxonDescriptions = taxon.getDescriptions().stream()
                 .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
                 .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE))
                 .collect(Collectors.toList());
 
-        Assert.assertEquals(1, taxonDescriptions.size());
-        TaxonDescription aggrDesc = taxonDescriptions.iterator().next();
+        Assert.assertEquals(1, aggrNonCloneTaxonDescriptions.size());
+        TaxonDescription aggrDesc = aggrNonCloneTaxonDescriptions.iterator().next();
         Set<DescriptionElementBase> elements = aggrDesc.getElements();
-        Assert.assertEquals(elementSize, elements.size());
+        Assert.assertEquals(elementCount, elements.size());
         return aggrDesc;
+    }
+
+    private void verifyNumberTaxonDescriptions(Taxon taxon, long descriptionCount){
+        long n = taxon.getDescriptions().stream()
+            .filter(desc->desc.getTypes().contains(DescriptionType.AGGREGATED_STRUC_DESC))
+            .filter(desc->!desc.getTypes().contains(DescriptionType.CLONE_FOR_SOURCE)).count();
+        Assert.assertEquals(descriptionCount, n);
+    }
+
+    private void verifyNumberDescriptionElements(DescriptionBase<?> description, UUID featureUuid, long elementCount){
+        long n = description.getElements().stream()
+                .filter(element->element.getFeature().getUuid().equals(featureUuid))
+                .map(catData->CdmBase.deproxy(catData, CategoricalData.class))
+                .count();
+        Assert.assertEquals(elementCount, n);
     }
 
     private void verifyQuantitativeData(UUID featureUuid, BigDecimal sampleSize, BigDecimal min,
