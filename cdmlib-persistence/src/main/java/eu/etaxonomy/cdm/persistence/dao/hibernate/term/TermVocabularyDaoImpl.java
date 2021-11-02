@@ -416,7 +416,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
             query.setParameter("pattern", pattern);
         }
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> result = DefinedTermDaoImpl.deduplicateResult(query.list());
         List<TermVocabularyDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return dtos;
     }
