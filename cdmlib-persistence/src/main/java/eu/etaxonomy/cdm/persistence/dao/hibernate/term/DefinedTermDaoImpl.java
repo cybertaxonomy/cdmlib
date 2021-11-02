@@ -650,7 +650,6 @@ public class DefinedTermDaoImpl
 
     @Override
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
-        Session session = getSession();
         if (clazz == null){
             clazz = (Class)type;
         }

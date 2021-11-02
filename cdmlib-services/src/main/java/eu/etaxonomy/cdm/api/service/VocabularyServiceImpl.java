@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		this.dao = dao;
 	}
 
-
 	@Override
 	@Transactional(readOnly = false)
     public UpdateResult updateCaches(Class<? extends TermVocabulary> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TermVocabulary> cacheStrategy, IProgressMonitor monitor) {
@@ -57,7 +55,6 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		}
 		return super.updateCachesImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
-
 
     @Override
     public List<TermVocabulary> listByTermType(TermType termType, boolean includeSubTypes,
@@ -186,7 +183,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
     @Transactional(readOnly = false)
     @Override
     public TermDto addNewTerm(TermType termType, UUID vocabularyUUID) {
-        DefinedTermBase term = termType.getEmptyDefinedTermBase();
+        DefinedTermBase<?> term = termType.getEmptyDefinedTermBase();
         termService.save(term);
         TermVocabulary vocabulary = dao.load(vocabularyUUID);
         vocabulary.addTerm(term);
@@ -199,7 +196,6 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
             Integer limit, String pattern) {
         return dao.getUuidAndTitleCache(clazz, termType, limit, pattern);
     }
-
 
     @Override
     public List<TermVocabularyDto> findVocabularyDtoByVocabularyUuids(List<UUID> vocUuids) {
