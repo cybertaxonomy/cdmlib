@@ -514,9 +514,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase>
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <S extends T> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit, Integer start,
             List<OrderHint> orderHints, List<String> propertyPaths) {
