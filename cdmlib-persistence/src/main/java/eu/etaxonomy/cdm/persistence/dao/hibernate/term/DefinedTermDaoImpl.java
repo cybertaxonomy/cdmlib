@@ -31,6 +31,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -66,6 +67,7 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
@@ -995,5 +997,48 @@ public class DefinedTermDaoImpl
             dto = dtoList.get(0);
         }
         return dto;
+    }
+
+  //***************** Overrides for deduplication *******************************/
+
+    @Override
+    public List<DefinedTermBase> loadList(Collection<Integer> ids, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.loadList(ids, orderHints, propertyPaths));
+    }
+
+    @Override
+    public List<DefinedTermBase> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(uuids, pageSize, pageNumber, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(clazz, uuids, pageSize, pageNumber, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(type, restrictions, limit, start, orderHints, propertyPaths));
+    }
+
+    @Override
+    public List<DefinedTermBase> list(Integer limit, Integer start, List<OrderHint> orderHints) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints));
+    }
+
+    @Override
+    public List<DefinedTermBase> list(Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> type, Integer limit, Integer start,
+            List<OrderHint> orderHints) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(type, limit, start, orderHints));
     }
 }
