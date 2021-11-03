@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
-import eu.etaxonomy.cdm.io.operation.config.NonReferencedObjectsDeleterConfigurator;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
