@@ -322,9 +322,9 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
             queryString = TermDto.getTermDtoSelect();
         }
         queryString = queryString
-                + " where v.uuid = :vocabularyUuid ";
-//                + "and a.partOf is null "
-//                + "and a.kindOf is null";
+                + " where v.uuid = :vocabularyUuid "
+                + " and a.partOf is null "
+                + " and a.kindOf is null";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("vocabularyUuid", vocabularyUuid);
 
