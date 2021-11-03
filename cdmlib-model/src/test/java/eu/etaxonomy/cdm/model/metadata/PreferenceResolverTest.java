@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 /**
  * @author a.mueller
  * @since 29.11.2018
- *
  */
 public class PreferenceResolverTest {
 
@@ -31,9 +30,6 @@ public class PreferenceResolverTest {
     CdmPreference pref4;
     PrefKey key;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         pref1 = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/taxeditor/distributionEditor/"),
@@ -45,6 +41,7 @@ public class PreferenceResolverTest {
         pref3 = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/distributionEditor/"),
                 PreferencePredicate.AvailableDistributionAreaVocabularies,
                 "abc");
+        //same as pref3 for testing exception handling
         pref3b = CdmPreference.NewInstance(PreferenceSubject.NewInstance("/distributionEditor/"),
                 PreferencePredicate.AvailableDistributionAreaVocabularies,
                 "def");
@@ -66,6 +63,7 @@ public class PreferenceResolverTest {
         Assert.assertSame(pref3, result);
     }
 
+    //test exception for >1 preferences with equally matching keys
     @Test
     public void testException() {
         List<CdmPreference> list;
@@ -83,7 +81,4 @@ public class PreferenceResolverTest {
             Assert.assertEquals(PreferenceResolver.MULTI_BEST_MATCHING, e.getMessage());
         }
     }
-
-
-
 }

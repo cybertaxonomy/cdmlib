@@ -29,12 +29,6 @@ public class RepresentationCsvImportConfigurator
     private boolean overrideWithEmpty;
     private UUID languageUuid;
 
-
-    /**
-     * @param source
-     * @param cdmDestination
-     * @return
-     */
     public static RepresentationCsvImportConfigurator NewInstance(InputStreamReader file,
             ICdmDataSource cdmDestination) {
         return new RepresentationCsvImportConfigurator(file, cdmDestination);

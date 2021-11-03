@@ -208,15 +208,16 @@ public class CategoricalData extends DescriptionElementBase {
 // ********************* CONVENIENCE ******************************************/
 
     /**
-     * Convenience method which returns only the list of states. Leaving out modifiers and modifying text.
-     * @return
+     * Convenience method returning only the list of states. Leaving out modifiers and modifying text.
      */
     @Transient
     public List<State> getStatesOnly(){
-        List<State> result = new ArrayList<State>();
+        List<State> result = new ArrayList<>();
         for (StateData stateData : getStateData()){
             State state = stateData.getState();
-            result.add(state);
+            if (state != null){
+                result.add(state);
+            }
         }
         return result;
     }

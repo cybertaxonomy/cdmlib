@@ -49,7 +49,7 @@ public class InReferenceValidator implements ConstraintValidator<InReference, Re
     		}
     		if (!isValid){
     			constraintValidatorContext.disableDefaultConstraintViolation();
-    			constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.wrongInReferenceForReferenceType.message}").addNode("inReference").addConstraintViolation();
+    			constraintValidatorContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.InReference.wrongInReferenceForReferenceType.message}").addPropertyNode("inReference").addConstraintViolation();
     		}
 		}catch(NullPointerException e){
 			return isValid;

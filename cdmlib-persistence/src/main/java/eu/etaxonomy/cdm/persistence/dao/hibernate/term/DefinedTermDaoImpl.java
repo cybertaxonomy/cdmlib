@@ -31,6 +31,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.URI;
@@ -66,10 +67,13 @@ import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dto.FeatureDto;
+import eu.etaxonomy.cdm.persistence.dto.TermCollectionDto;
 import eu.etaxonomy.cdm.persistence.dto.TermDto;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -631,6 +635,7 @@ public class DefinedTermDaoImpl
         while (it.hasNext()){
             S a = it.next();
             if (a != last){
+                //AM: why is this necessary?
                 if (!result.contains(a)){
                     result.add(a);
                 }
@@ -647,7 +652,6 @@ public class DefinedTermDaoImpl
 
     @Override
     public <S extends DefinedTermBase> List<S> list(Class<S> clazz, List<TermVocabulary> vocs, Integer pageNumber, Integer limit, String pattern, MatchMode matchmode){
-        Session session = getSession();
         if (clazz == null){
             clazz = (Class)type;
         }
@@ -777,22 +781,44 @@ public class DefinedTermDaoImpl
     }
 
     @Override
-    public Collection<TermDto> findByTitleAsDto(String title, TermType termType) {
-        String queryString = TermDto.getTermDtoSelect()
+    public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType) {
+
+        //terms
+        String termQueryString = TermDto.getTermDtoSelect()
                 + " where a.titleCache like :title "
                 + (termType!=null?" and a.termType = :termType ":"");
 
         title = title.replace("*", "%");
-        Query query =  getSession().createQuery(queryString);
-        query.setParameter("title", "%"+title+"%");
+        Query termQuery =  getSession().createQuery(termQueryString);
+        termQuery.setParameter("title", "%"+title+"%");
         if(termType!=null){
-            query.setParameter("termType", termType);
+            termQuery.setParameter("termType", termType);
         }
 
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
+        List<Object[]> termArrayResult = termQuery.list();
+        List<TermDto> list = TermDto.termDtoListFrom(termArrayResult);
 
-        List<TermDto> list = TermDto.termDtoListFrom(result);
+        //vocabularies
+        String vocQueryString = TermCollectionDto.getTermCollectionDtoSelect() + " where a.uuid = :uuid";
+        Query vocQuery = getSession().createQuery(vocQueryString);
+        Map<UUID,TermVocabularyDto> vocMap = new HashMap<>();
+        for (TermDto dto: list){
+            UUID vocUuid = dto.getVocabularyUuid();
+            TermVocabularyDto vocDto = vocMap.get(vocUuid);
+            if (vocDto == null){
+                vocQuery.setParameter("uuid", dto.getVocabularyUuid());
+                @SuppressWarnings("unchecked")
+                List<Object[]> vocArrayResult = vocQuery.list();
+                List<TermVocabularyDto> vocs = TermVocabularyDto.termVocabularyDtoListFrom(vocArrayResult);
+                if (!vocs.isEmpty()){
+                    vocDto = vocs.get(0);
+                    vocMap.put(vocUuid, vocs.get(0));
+                }
+            }
+            dto.setVocabularyDto(vocDto);
+        }
+
         return list;
     }
 
@@ -971,5 +997,48 @@ public class DefinedTermDaoImpl
             dto = dtoList.get(0);
         }
         return dto;
+    }
+
+  //***************** Overrides for deduplication *******************************/
+
+    @Override
+    public List<DefinedTermBase> loadList(Collection<Integer> ids, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.loadList(ids, orderHints, propertyPaths));
+    }
+
+    @Override
+    public List<DefinedTermBase> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(uuids, pageSize, pageNumber, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(clazz, uuids, pageSize, pageNumber, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(type, restrictions, limit, start, orderHints, propertyPaths));
+    }
+
+    @Override
+    public List<DefinedTermBase> list(Integer limit, Integer start, List<OrderHint> orderHints) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints));
+    }
+
+    @Override
+    public List<DefinedTermBase> list(Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends DefinedTermBase> List<S> list(Class<S> type, Integer limit, Integer start,
+            List<OrderHint> orderHints) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(type, limit, start, orderHints));
     }
 }

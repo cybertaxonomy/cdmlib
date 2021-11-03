@@ -27,26 +27,21 @@ import eu.etaxonomy.cdm.model.term.TermVocabulary;
 public class TermVocabularyDto extends TermCollectionDto {
 
     private static final long serialVersionUID = 7667822208618658310L;
-    /**
-     * @param uuid
-     * @param representations
-     * @param termType
-     */
+
     public TermVocabularyDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, termType, titleCache, isAllowDuplicate, isOrderRelevant, isFlat);
-        // TODO Auto-generated constructor stub
     }
 
-    public static TermVocabularyDto fromVocabulary(TermVocabulary voc) {
+    public static TermVocabularyDto fromVocabulary(TermVocabulary<?> voc) {
         TermVocabularyDto dto = new TermVocabularyDto(voc.getUuid(), voc.getRepresentations(), voc.getTermType(), voc.getTitleCache(), voc.isAllowDuplicates(), voc.isOrderRelevant(), voc.isFlat());
         return dto;
     }
 
-    public static List<TermVocabularyDto> termVocabularyDtoListFrom(List<Object[]> results) {
+    public static List<TermVocabularyDto> termVocabularyDtoListFrom(List<Object[]> queryResult) {
         List<TermVocabularyDto> dtos = new ArrayList<>(); // list to ensure order
         // map to handle multiple representations because of LEFT JOIN
-        Map<UUID, TermCollectionDto> dtoMap = new HashMap<>(results.size());
-        for (Object[] elements : results) {
+        Map<UUID, TermCollectionDto> dtoMap = new HashMap<>(queryResult.size());
+        for (Object[] elements : queryResult) {
             UUID uuid = (UUID)elements[0];
             if(dtoMap.containsKey(uuid)){
                 // multiple results for one voc -> multiple (voc) representation
@@ -58,10 +53,9 @@ public class TermVocabularyDto extends TermCollectionDto {
                 // voc representation
                 Set<Representation> representations = new HashSet<>();
                 if(elements[1] instanceof Representation) {
-                    representations = new HashSet<Representation>(1);
+                    representations = new HashSet<>(1);
                     representations.add((Representation)elements[1]);
                 }
-
 
                 TermVocabularyDto termVocDto = new TermVocabularyDto(
                         uuid,
@@ -72,12 +66,10 @@ public class TermVocabularyDto extends TermCollectionDto {
                         (boolean)elements[5],
                         (boolean)elements[6]);
 
-
                 dtoMap.put(uuid, termVocDto);
                 dtos.add(termVocDto);
             }
         }
         return dtos;
     }
-
 }

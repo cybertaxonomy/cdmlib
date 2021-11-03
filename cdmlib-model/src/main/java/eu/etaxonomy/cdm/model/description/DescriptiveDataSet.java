@@ -82,7 +82,6 @@ public class DescriptiveDataSet
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private TermTree<Feature> descriptiveSystem;
 
 	@XmlElementWrapper(name = "Descriptions")
@@ -90,7 +89,6 @@ public class DescriptiveDataSet
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	@NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<>();
 
@@ -99,7 +97,6 @@ public class DescriptiveDataSet
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @NotNull
     //a positive filter that defines that all taxa in the subtree belong to
     //the dataset. If the filter is NOT set, taxa need to be explicitly defined
@@ -114,7 +111,6 @@ public class DescriptiveDataSet
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
     @JoinTable(name="DescriptiveDataSet_NamedArea")
     @NotNull
     private Set<NamedArea> geoFilter = new HashSet<>();

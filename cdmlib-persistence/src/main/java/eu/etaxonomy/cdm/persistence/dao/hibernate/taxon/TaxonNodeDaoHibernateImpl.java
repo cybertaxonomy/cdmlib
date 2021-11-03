@@ -1205,7 +1205,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
     @Override
     public List<TaxonNodeDto> getTaxonNodeDtos(List<UUID> nodeUuids) {
         String queryString = getTaxonNodeDtoQuery();
-        queryString = queryString + " WHERE t.uuid IN (:uuid) ";
+        queryString = queryString + " WHERE tn.uuid IN (:uuid) ";
 
         Query query =  getSession().createQuery(queryString);
         query.setParameterList("uuid", nodeUuids);

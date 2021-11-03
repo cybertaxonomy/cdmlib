@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,18 +30,20 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.term.Representation;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.persistence.dto.TermVocabularyDto;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.babadshanjan
  * @since 10.02.2009
  */
-public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
+public class TermVocabularyDaoImplTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(TermVocabularyDaoImplTest.class);
 
@@ -164,6 +167,27 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
         newVoc.setProtectedTitleCache(true);
         Assert.assertEquals("German Label should be new title cache again as English representation is not there anymore", "Deutsches Label", newVoc.getTitleCache());
 
+	}
+
+	@Test
+    @DataSets({
+          @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDB_with_Terms_DataSet.xml"),
+          @DataSet("/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml")}
+    )
+	public void testFindVocabularyDtoByTermTypes(){
+	    Set<TermType> termTypes = new HashSet<>();
+	    termTypes.add(TermType.NamedArea);
+	    List<TermVocabularyDto> vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
+	    Assert.assertEquals(4, vocDtos.size());
+
+	    //#9825 test deduplication
+        @SuppressWarnings("unchecked")
+        TermVocabulary<NamedArea> continentVoc = dao.findByUuid(NamedArea.uuidContinentVocabulary);
+        continentVoc.addRepresentation(Representation.NewInstance("Kontinente", "Kontinente", "Kont.", Language.GERMAN()));
+        vocDtos = dao.findVocabularyDtoByTermTypes(termTypes, true);
+        Assert.assertEquals("Deduplication for representations does not work", 4, vocDtos.size());
+        int repSize = vocDtos.stream().filter(voc->voc.getUuid().equals(NamedArea.uuidContinentVocabulary)).findFirst().get().getRepresentations().size();
+        Assert.assertEquals("There should be 2 representations for continent vocabulary", 2, repSize);
 	}
 
     @Override

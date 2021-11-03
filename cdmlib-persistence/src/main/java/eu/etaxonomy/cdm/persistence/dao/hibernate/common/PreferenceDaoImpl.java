@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
@@ -39,11 +38,6 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 	public CdmPreference get(PrefKey key){
 		Session session = getSession();
 		return session.get(CdmPreference.class, key);
-
-		//old
-//		StatelessSession session = getSessionFactory().openStatelessSession();
-//		return (CdmPreference) session.get(CdmPreference.class, key);
-
 	}
 
 	@Override
@@ -58,13 +52,6 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
 //		if (predicate == null ||
 //		        !preference.isAllowOverride()){
 		    getSession().save(preference);
-
-		//old
-//		if (pref == null){
-//			getSessionFactory().openStatelessSession().insert(preference);
-//		}else{
-//			getSessionFactory().openStatelessSession().update(preference);
-//		}
 	}
 
 	@Override
@@ -73,17 +60,8 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao, Initia
         if (pref != null){
             getSession().delete(pref);
         }
-
     }
 
-    /**
-     * Return null if obj is null, obj.toString otherwise
-     * @param defaultValue
-     * @return
-     */
-    private Object nullOrToString(Object obj) {
-        return obj == null? null: obj.toString();
-    }
 
     @Override
     public List<CdmPreference> list(IPreferencePredicate<?> predicate){

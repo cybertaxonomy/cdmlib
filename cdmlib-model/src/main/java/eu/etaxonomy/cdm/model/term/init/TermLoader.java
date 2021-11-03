@@ -179,14 +179,17 @@ public class TermLoader implements ITermLoader {
 			}
 
 			UUID lastTermUuid = null;
-			S lastTerm;
+			S lastTerm = null;
 			while ((nextLine = reader.readNext()) != null) {
 				if (nextLine.length == 0){
 					continue;
 				}
 				UUID uuid = UUID.fromString(nextLine[0]);
 				if (missingTerms.contains(uuid)){
-				    lastTerm = (S)allVocTerms.get(lastTermUuid);
+				    DefinedTermBase<?> nonOrderedLastTerm = allVocTerms.get(lastTermUuid);
+				    if (nonOrderedLastTerm.isInstanceOf(OrderedTermBase.class)){  //to avoid ClassCastException
+				        lastTerm = (S)allVocTerms.get(lastTermUuid);
+				    }
 					lastTerm = handleSingleTerm(nextLine, allVocTerms, termClass, voc, abbrevAsId, lastTerm, classDefiningTermInstance);
 				}
 				lastTermUuid = uuid;

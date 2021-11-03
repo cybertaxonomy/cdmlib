@@ -470,12 +470,18 @@ public class StructuredDescriptionAggregation
             ResultHolder resultHolder,
             Set<TaxonDescription> excludedDescriptions) {
         StructuredDescriptionResultHolder descriptiveResultHolder = (StructuredDescriptionResultHolder)resultHolder;
+
+        //specimen descriptions
         Set<SpecimenDescription> specimenDescriptions = getSpecimenDescriptions(taxon, dataSet);
         addDescriptionToResultHolder(descriptiveResultHolder, specimenDescriptions, AggregationMode.WithinTaxon);
+
+        //"literature" descriptions
         if (getConfig().isIncludeLiterature()){
             Set<TaxonDescription> literatureDescriptions = getLiteratureDescriptions(taxon, dataSet);
             addDescriptionToResultHolder(descriptiveResultHolder, literatureDescriptions, AggregationMode.WithinTaxon);
         }
+
+        //"default" descriptions
         //TODO add default descriptions
         //xxx
 
@@ -551,12 +557,14 @@ public class StructuredDescriptionAggregation
 
     private void addToCategorical(CategoricalData cd, StructuredDescriptionResultHolder resultHolder) {
         CategoricalData aggregatedCategoricalData = resultHolder.categoricalMap.get(cd.getFeature());
-        if(aggregatedCategoricalData==null){
+        if(aggregatedCategoricalData == null){
             // no CategoricalData with this feature in aggregation
             aggregatedCategoricalData = cd.clone();
             // set count to 1 if not set
-            aggregatedCategoricalData.getStateData().stream().filter(sd->sd.getCount()==null).forEach(sd->sd.incrementCount());
-            resultHolder.categoricalMap.put(aggregatedCategoricalData.getFeature(), aggregatedCategoricalData);
+            if (!aggregatedCategoricalData.getStatesOnly().isEmpty()){
+                aggregatedCategoricalData.getStateData().stream().filter(sd->sd.getCount()==null).forEach(sd->sd.incrementCount());
+                resultHolder.categoricalMap.put(aggregatedCategoricalData.getFeature(), aggregatedCategoricalData);
+            }
         }
         else{
             // split all StateData into those where the state already exists and those where it doesn't

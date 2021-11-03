@@ -159,7 +159,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         book_b.setTitle("book_a");
 
         engine = new DistributionAggregation();
-        engine.setBatchMinFreeHeap(50 * 1024 * 1024);
+        engine.setBatchMinFreeHeap(35 * 1024 * 1024);
         makeStatusOrder();
 
         monitor = DefaultProgressMonitor.NewInstance();

@@ -613,8 +613,8 @@ public class TermServiceImpl
     }
 
     @Override
-    public Collection<TermDto> findByTitleAsDto(String title, TermType termType){
-        return dao.findByTitleAsDto(title, termType);
+    public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType){
+        return dao.findByTitleAsDtoWithVocDto(title, termType);
     }
 
     @Override

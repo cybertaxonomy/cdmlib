@@ -75,6 +75,7 @@ public class SchemaUpdater_5251_5270 extends SchemaUpdaterBase {
 		ColumnAdder.NewStringInstance(stepList, stepName, tableName, newColumnName, INCLUDE_AUDIT);
 
 		//update where rank = CultivarGroup
+		stepName = "Update rank = cultivarGroup";
 		String sql = "UPDATE @@TaxonName@@ "
 		        + " SET cultivarGroupEpithet = cultivarEpithet,  cultivarEpithet = null "
 		        + " WHERE rank_id IN (SELECT id FROM @@DefinedTermBase@@ r WHERE r.uuid = 'd763e7d3-e7de-4bb1-9d75-225ca6948659')";

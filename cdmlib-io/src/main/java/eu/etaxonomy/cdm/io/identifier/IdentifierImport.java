@@ -175,7 +175,7 @@ public class IdentifierImport
                 this.commitTransaction(tx);
                 return null;
             }
-            Set<Identifier> existingIdentifiers = entity.getIdentifiers_(idType.getUuid());
+            Set<Identifier> existingIdentifiers = entity.getIdentifiers(idType.getUuid());
             if (!existingIdentifiers.isEmpty()){
                 identifier = existingIdentifiers.iterator().next();
                 if (!CdmUtils.nullSafeEqual(identifier.getIdentifier(), value)){
@@ -198,7 +198,7 @@ public class IdentifierImport
                 this.commitTransaction(tx);
                 return null;
             }else{
-                Set<Identifier> existingIdentifiers = entity.getIdentifiers_(idType.getUuid());
+                Set<Identifier> existingIdentifiers = entity.getIdentifiers(idType.getUuid());
                 if (existingIdentifiers.size() == 1){
                     identifier = existingIdentifiers.iterator().next();
                     if (!CdmUtils.nullSafeEqual(identifier.getIdentifier(), value)){

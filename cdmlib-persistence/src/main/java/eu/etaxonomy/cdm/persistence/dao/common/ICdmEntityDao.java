@@ -320,19 +320,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public T loadWithoutInitializing(int id);
 
-    /**
-     * @param ids
-     * @param propertyPaths
-     * @return
-     * @throws DataAccessException
-     */
     public List<T> loadList(Collection<Integer> ids, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
 
-    /**
-     * @param Uuid
-     * @return
-     * @throws DataAccessException
-     */
     public T findByUuid(UUID Uuid) throws DataAccessException;
 
     /**
@@ -346,39 +335,13 @@ public interface ICdmEntityDao<T extends CdmBase> {
      */
     public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException;
 
-
-    /**
-     * @param uuids
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     * @throws DataAccessException
-     */
     public List<T> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
 
-
-    /**
-     * @param clazz
-     * @param uuids
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     * @throws DataAccessException
-     */
     public <S extends T> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException;
-
-
 
     /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and
      * initializes all its *ToOne relations.
-     *
-     * @param uuid
-     * @return
      */
     public T load(UUID uuid);
 

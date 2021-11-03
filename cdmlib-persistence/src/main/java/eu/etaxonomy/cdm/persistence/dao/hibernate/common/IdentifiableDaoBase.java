@@ -707,7 +707,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity>
     protected <E extends IAnnotatableEntity> List<UuidAndTitleCache<E>> getUuidAndAbbrevTitleCache(Query query){
         List<UuidAndTitleCache<E>> list = new ArrayList<>();
 
-		List<Object[]> result = query.list();
+		@SuppressWarnings("unchecked")
+        List<Object[]> result = query.list();
 
         for(Object[] object : result){
             list.add(new UuidAndTitleCache<E>((UUID) object[0],(Integer) object[1], (String) object[3], (String) object[2]));

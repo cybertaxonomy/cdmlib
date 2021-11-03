@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -214,10 +213,8 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         NamedArea africa = HibernateProxyHelper.deproxy(termDao.load(africaUuid), NamedArea.class);
         NamedArea germany = HibernateProxyHelper.deproxy(termDao.load(germanyUuid), NamedArea.class);
 
-//        System.out.println("filter1:" + new DateTime().toString());
         TaxonNodeFilter filter = new TaxonNodeFilter(europe);
         List<UUID> listUuid = filterDao.listUuids(filter);
-        System.out.println("assert:" + new DateTime().toString());
 
         assertEquals(message, 3, listUuid.size());
         Assert.assertTrue(listUuid.contains(node1.getUuid()));
@@ -225,24 +222,19 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
         Assert.assertFalse(listUuid.contains(node4.getUuid())); //status is absent
 
-//        System.out.println("filter2:" + new DateTime().toString());
         filter = new TaxonNodeFilter(germany);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
 
-//        System.out.println("filter3:" + new DateTime().toString());
         filter = new TaxonNodeFilter(middleEurope);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 1, listUuid.size());
         Assert.assertTrue(listUuid.contains(node3.getUuid()));
 
-//        System.out.println("filter4:" + new DateTime().toString());
         filter = new TaxonNodeFilter(africa);
         listUuid = filterDao.listUuids(filter);
         assertEquals(message, 0, listUuid.size());
-
-//        System.out.println("end:" + new DateTime().toString());
 
     }
 
@@ -354,11 +346,9 @@ public class TaxonNodeFilterDaoHibernateImplTest extends CdmTransactionalIntegra
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 6 children including unpublished should be returned", 6, listUuid.size());
 
-
         filter.setIncludeRootNodes(true);
         listUuid = filterDao.listUuids(filter);
         Assert.assertEquals("All 7 children including root node should be returned", 7, listUuid.size());
-
     }
 
     @Test

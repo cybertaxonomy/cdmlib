@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.common.URI;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -57,15 +58,15 @@ public class TermDto extends AbstractTermDto{
 //        this(uuid, representations, termType, partOfUuid, kindOfUuid, vocabularyUuid, orderIndex, idInVocabulary, titleCache);
 //    }
 
-    protected TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
-            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary, String titleCache) {
+    public TermDto(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
+            UUID vocabularyUuid, Integer orderIndex, String idInVocabulary,  String titleCache) {
         super(uuid, representations, titleCache);
         this.partOfUuid = partOfUuid;
         this.kindOfUuid = kindOfUuid;
         this.vocabularyUuid = vocabularyUuid;
         this.orderIndex = orderIndex;
         this.idInVocabulary = idInVocabulary;
-//        this.vocRepresentations = vocRepresentations;
+//        this.vocabularyDto = vocDto;
         setTermType(termType);
     }
 
@@ -88,6 +89,10 @@ public class TermDto extends AbstractTermDto{
         DefinedTermBase<?> partOf = term.getPartOf();
         DefinedTermBase<?> kindOf = term.getKindOf();
         TermVocabulary<?> vocabulary = term.getVocabulary();
+        if (representations == null){
+            term = HibernateProxyHelper.deproxy(term, DefinedTermBase.class);
+            representations = term.getRepresentations();
+        }
 
         TermDto dto = new TermDto(
                         term.getUuid(),
@@ -97,7 +102,8 @@ public class TermDto extends AbstractTermDto{
                         (kindOf!=null?kindOf.getUuid():null),
                         (vocabulary!=null?vocabulary.getUuid():null),
                         (term instanceof OrderedTermBase)?((OrderedTermBase<?>) term).getOrderIndex():null,
-                         term.getIdInVocabulary(), term.getTitleCache());
+                         term.getIdInVocabulary(),
+                         term.getTitleCache());
         dto.setUri(term.getUri());
         if(initializeToTop){
             if(partOf!=null){
@@ -113,10 +119,12 @@ public class TermDto extends AbstractTermDto{
         if(term.getMedia()!=null){
             Collection<UUID> mediaUuids = new HashSet<>();
             Set<Media> media = term.getMedia();
-            for (Media medium : media) {
-                mediaUuids.add(medium.getUuid());
-            }
-            dto.setMedia(mediaUuids);
+
+                for (Media medium : media) {
+                    mediaUuids.add(medium.getUuid());
+                }
+                dto.setMedia(mediaUuids);
+
         }
         if (term instanceof NamedArea && ((NamedArea)term).getLevel() != null){
             dto.setLevel(((NamedArea)term).getLevel());
@@ -143,7 +151,7 @@ public class TermDto extends AbstractTermDto{
 //    }
 //
     public String getVocRepresentation_L10n() {
-        return vocabularyDto.getRepresentation_L10n();
+        return vocabularyDto == null ? null : vocabularyDto.getRepresentation_L10n();
     }
 //
 //    public void setVocRepresentation_L10n_abbreviatedLabel(String vocRepresentation_L10n_abbreviatedLabel) {
@@ -151,7 +159,7 @@ public class TermDto extends AbstractTermDto{
 //    }
 //
     public String getVocRepresentation_L10n_abbreviatedLabel() {
-        return vocabularyDto.getRepresentation_L10n_abbreviatedLabel();
+        return vocabularyDto == null ? null : vocabularyDto.getRepresentation_L10n_abbreviatedLabel();
     }
 //
 //    protected void addVocRepresentation(Representation vocRepresentation){
@@ -270,11 +278,11 @@ public class TermDto extends AbstractTermDto{
                 + "v.uuid, "
                 + "a.orderIndex, "
                 + "a.idInVocabulary, "
-//                + "voc_rep,  "
                 + "a.termType,  "
                 + "a.uri,  "
                 + "m,  "
                 + "a.titleCache ";
+
         String sqlFromString =   " FROM "+fromTable+" as a ";
 
         String sqlJoinString =  "LEFT JOIN a.partOf as p "
@@ -282,7 +290,7 @@ public class TermDto extends AbstractTermDto{
                 + "LEFT JOIN a.media as m "
                 + "LEFT JOIN a.representations AS r "
                 + "LEFT JOIN a.vocabulary as v "
-//                + "LEFT JOIN v.representations as voc_rep "
+
                 ;
 
         String[] result = new String[3];
@@ -308,9 +316,7 @@ public class TermDto extends AbstractTermDto{
                 if(elements[1]!=null){
                     dtoMap.get(uuid).addRepresentation((Representation)elements[1]);
                 }
-//                if(elements[7]!=null){
-//                    dtoMap.get(uuid).addVocRepresentation((Representation)elements[7]);
-//                }
+
                 if(elements[9]!=null){
                     dtoMap.get(uuid).addMedia(((Media) elements[9]).getUuid());
                 }
@@ -326,12 +332,7 @@ public class TermDto extends AbstractTermDto{
                 if(elements[9] instanceof Media) {
                     mediaUuids.add(((Media) elements[9]).getUuid());
                 }
-                // voc representation
-//                Set<Representation> vocRepresentations = new HashSet<>();
-//                if(elements[7] instanceof Representation) {
-//                    vocRepresentations = new HashSet<>(7);
-//                    vocRepresentations.add((Representation)elements[7]);
-//                }
+
                 TermDto termDto = new TermDto(
                         uuid,
                         representations,
@@ -341,7 +342,6 @@ public class TermDto extends AbstractTermDto{
                         (UUID)elements[4],
                         (Integer)elements[5],
                         (String)elements[6],
-//                        vocRepresentations,
                         (String)elements[10]);
                 termDto.setUri((URI)elements[8]);
                 termDto.setMedia(mediaUuids);

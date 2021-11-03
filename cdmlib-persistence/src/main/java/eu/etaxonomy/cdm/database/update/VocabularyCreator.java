@@ -24,9 +24,9 @@ import eu.etaxonomy.cdm.model.term.TermType;
 /**
  * @author a.mueller
  * @since 10.09.2010
- *
  */
 public class VocabularyCreator extends SchemaUpdaterStepBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VocabularyCreator.class);
 
@@ -38,6 +38,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase {
 	}
 
 // *************************** VARIABLES *****************************************/
+
 	private UUID uuidVocabulary;
 	private String description;
 	private String label;
@@ -75,7 +76,6 @@ public class VocabularyCreator extends SchemaUpdaterStepBase {
 			return;
 		}
 
-
 		//vocId
 		Integer vocId;
 		String sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("TermVocabulary");
@@ -88,7 +88,6 @@ public class VocabularyCreator extends SchemaUpdaterStepBase {
 			result.addError(message, this, "invoke");
             return;
 		}
-
 
 		String id = Integer.toString(vocId);
 		String created  = getNowString();
@@ -147,8 +146,6 @@ public class VocabularyCreator extends SchemaUpdaterStepBase {
 		return;
 	}
 
-
-
 	private String nullSafeString(String abbrev) {
 		if (abbrev == null){
 			return "NULL";
@@ -161,5 +158,4 @@ public class VocabularyCreator extends SchemaUpdaterStepBase {
 		String stepName = "Create new vocabulary '"+ label + "'";
 		return stepName;
 	}
-
 }

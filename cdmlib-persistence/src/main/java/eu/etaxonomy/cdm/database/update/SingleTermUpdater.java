@@ -26,19 +26,13 @@ import eu.etaxonomy.cdm.model.term.TermType;
  * Creates a new term if a term with the same given uuid does not exist yet
  * @author a.mueller
  * @since 10.09.2010
- *
  */
 public class SingleTermUpdater extends SchemaUpdaterStepBase {
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 
-	/**
-	 * @Deprecated use {@link #NewInstance(String, TermType, UUID, String, String, String, String, UUID, UUID, boolean, UUID)} instead
-	 */
-	@Deprecated
-	public static final SingleTermUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-		return new SingleTermUpdater(stepList, stepName, null, uuidTerm, null, null, description, label, abbrev, null, null, null, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
-	}
+// **************************** FACTORY METHODS ********************************/
 
 	public static final SingleTermUpdater NewInstance(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
 	        String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
@@ -46,14 +40,15 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		        description, label, abbrev, null, null, null, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
 	}
 
-	   public static final SingleTermUpdater NewReverseInstance(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
-	           String description,  String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
-	           String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-	        return new SingleTermUpdater(stepList, stepName, termType, uuidTerm, idInVocabulary,symbol,
-	                description, label, abbrev, reverseDescription, reverseLabel, reverseAbbrev,
-	                dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
-	    }
+    public static final SingleTermUpdater NewReverseInstance(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
+           String description,  String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
+           String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
+        return new SingleTermUpdater(stepList, stepName, termType, uuidTerm, idInVocabulary,symbol,
+                description, label, abbrev, reverseDescription, reverseLabel, reverseAbbrev,
+                dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);
+    }
 
+// *************************** VARIABLES *****************************************/
 
 	private final UUID uuidTerm ;
 	private final String description;
@@ -74,12 +69,12 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 	private boolean transitive = false;
 	private String symbol;
 
-
+// ***************************** CONSTRUCTOR ***************************************/
 
 	private SingleTermUpdater(List<ISchemaUpdaterStep> stepList, String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String symbol,
 	        String description, String label, String abbrev, String reverseDescription, String reverseLabel, String reverseAbbrev,
 	        String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
-		super(null, stepName);
+		super(stepList, stepName);
 		this.termType = termType;
 		this.idInVocabulary = idInVocabulary;
 		this.symbol = symbol;
@@ -96,6 +91,8 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase {
 		this.reverseLabel = reverseLabel;
 		this.reverseAbbrev = reverseAbbrev;
 	}
+
+// ******************************* METHODS *************************************************/
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,

@@ -32,6 +32,16 @@ public class FeatureDto_ extends TermDto {
     private static final long serialVersionUID = -5138575401281727741L;
 
 
+    private EnumSet<CdmClass> supportedDataTypes = EnumSet.of(CdmClass.TEXT_DATA);
+
+    private Set<TermVocabularyDto> recommendedModifierEnumeration = new HashSet<>();
+
+    private Set<TermDto> recommendedStatisticalMeasures = new HashSet<>();
+
+    private Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
+
+    private Set<TermDto> recommendedMeasurementUnits = new HashSet<>();
+
     public FeatureDto_(UUID uuid, Set<Representation> representations, TermType termType, UUID partOfUuid, UUID kindOfUuid,
             UUID vocabularyUuid, String idInVocabulary, String titleCache, EnumSet<CdmClass> supportedDataTypes,
             Set<TermVocabularyDto> recommendedModifierEnumeration, Set<TermDto> recommendedStatisticalMeasures,
@@ -71,7 +81,7 @@ public class FeatureDto_ extends TermDto {
             dto.supportedDataTypes.remove(CdmClass.TEXT_DATA);
         }
         TermVocabularyDto vocDto;
-        for (TermVocabulary voc: feature.getRecommendedModifierEnumeration()){
+        for (TermVocabulary<?> voc: feature.getRecommendedModifierEnumeration()){
             vocDto = TermVocabularyDto.fromVocabulary(voc);
             dto.recommendedModifierEnumeration.add(vocDto);
         }
@@ -80,7 +90,7 @@ public class FeatureDto_ extends TermDto {
             termDto = TermDto.fromTerm(term);
             dto.recommendedStatisticalMeasures.add(termDto);
         }
-        for (TermVocabulary voc: feature.getSupportedCategoricalEnumerations()){
+        for (TermVocabulary<?> voc: feature.getSupportedCategoricalEnumerations()){
             vocDto = TermVocabularyDto.fromVocabulary(voc);
             dto.supportedCategoricalEnumerations.add(vocDto);
         }
@@ -94,66 +104,39 @@ public class FeatureDto_ extends TermDto {
 
     }
 
-    private EnumSet<CdmClass> supportedDataTypes = EnumSet.of(CdmClass.TEXT_DATA);
-
-    private Set<TermVocabularyDto> recommendedModifierEnumeration = new HashSet<>();
-
-    private Set<TermDto> recommendedStatisticalMeasures = new HashSet<>();
-
-    private Set<TermVocabularyDto> supportedCategoricalEnumerations = new HashSet<>();
-
-    private Set<TermDto> recommendedMeasurementUnits = new HashSet<>();
-
 
     public EnumSet<CdmClass> getSupportedDataTypes() {
         return supportedDataTypes;
     }
-
-
     public void setSupportedDataTypes(EnumSet<CdmClass> supportedDataTypes) {
         this.supportedDataTypes = supportedDataTypes;
     }
 
-
     public Set<TermVocabularyDto> getRecommendedModifierEnumeration() {
         return recommendedModifierEnumeration;
     }
-
-
     public void setRecommendedModifierEnumeration(Set<TermVocabularyDto> recommendedModifierEnumeration) {
         this.recommendedModifierEnumeration = recommendedModifierEnumeration;
     }
 
-
     public Set<TermDto> getRecommendedStatisticalMeasures() {
         return recommendedStatisticalMeasures;
     }
-
-
     public void setRecommendedStatisticalMeasures(Set<TermDto> recommendedStatisticalMeasures) {
         this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
     }
 
-
     public Set<TermVocabularyDto> getSupportedCategoricalEnumerations() {
         return supportedCategoricalEnumerations;
     }
-
-
     public void setSupportedCategoricalEnumerations(Set<TermVocabularyDto> supportedCategoricalEnumerations) {
         this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
     }
 
-
     public Set<TermDto> getRecommendedMeasurementUnits() {
         return recommendedMeasurementUnits;
     }
-
-
     public void setRecommendedMeasurementUnits(Set<TermDto> recommendedMeasurementUnits) {
         this.recommendedMeasurementUnits = recommendedMeasurementUnits;
     }
-
-
-
 }

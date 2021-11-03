@@ -85,8 +85,8 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidOrder = UUID.fromString("b0785a65-c1c1-4eb4-88c7-dbd3df5aaad1");
     private static final UUID uuidSuborder = UUID.fromString("768ad378-fa85-42ab-b668-763225832f57");
     private static final UUID uuidInfraorder = UUID.fromString("84099182-a6f5-47d7-8586-33c9e9955a10");
-    private static final UUID uuidSectionZoology = UUID.fromString("691d371e-10d7-43f0-93db-3d7fa1a62c54");
-    private static final UUID uuidSubsectionZoology = UUID.fromString("0ed32d28-adc4-4303-a9ca-68e2acd67e33");
+    public static final UUID uuidSectionZoology = UUID.fromString("691d371e-10d7-43f0-93db-3d7fa1a62c54");
+    public static final UUID uuidSubsectionZoology = UUID.fromString("0ed32d28-adc4-4303-a9ca-68e2acd67e33");
     private static final UUID uuidSuperfamily = UUID.fromString("2cfa510a-dcea-4a03-b66a-b1528f9b0796");
     private static final UUID uuidFamily = UUID.fromString("af5f2481-3192-403f-ae65-7c957a0f02b6");
     private static final UUID uuidSubfamily = UUID.fromString("862526ee-7592-4760-a23a-4ff3641541c5");
@@ -99,8 +99,8 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final UUID uuidGenus = UUID.fromString("1b11c34c-48a8-4efa-98d5-84f7f66ef43a");
     private static final UUID uuidSubgenus = UUID.fromString("78786e16-2a70-48af-a608-494023b91904");
     private static final UUID uuidInfragenus = UUID.fromString("a9972969-82cd-4d54-b693-a096422f13fa");
-    private static final UUID uuidSectionBotany = UUID.fromString("3edff68f-8527-49b5-bf91-7e4398bb975c");
-    private static final UUID uuidSubsectionBotany = UUID.fromString("d20f5b61-d463-4448-8f8a-c1ff1f262f59");
+    public static final UUID uuidSectionBotany = UUID.fromString("3edff68f-8527-49b5-bf91-7e4398bb975c");
+    public static final UUID uuidSubsectionBotany = UUID.fromString("d20f5b61-d463-4448-8f8a-c1ff1f262f59");
     private static final UUID uuidSeries = UUID.fromString("d7381ecf-48f8-429b-9c54-f461656978cd");
     private static final UUID uuidSubseries = UUID.fromString("80c9a263-f4db-4a13-b6c2-b7fec1aa1200");
     private static final UUID uuidSpeciesAggregate = UUID.fromString("1ecae058-4217-4f75-9c27-6d8ba099ac7a");

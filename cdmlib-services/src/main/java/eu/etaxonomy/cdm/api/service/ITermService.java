@@ -244,7 +244,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param termType the termType that the terms have to match
      * @return a collection of matching term DTOs
      */
-    public Collection<TermDto> findByTitleAsDto(String title, TermType termType);
+    public Collection<TermDto> findByTitleAsDtoWithVocDto(String title, TermType termType);
 
     /**
      * Returns a collection of {@link TermDto}s that match the given search parameters.

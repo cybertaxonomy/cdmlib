@@ -486,8 +486,6 @@ public class DescriptionServiceImpl
 
             Set<DescriptionBase> descSpecimen = descriptionSpecimenMap.get(describedObjectUuid);
 
-
-
             if (descSpecimen != null ){
 
 //                TODO: elements are Dtos now, no cdm entities, needs to get the value and replace or create new description element
@@ -496,32 +494,37 @@ public class DescriptionServiceImpl
                     elements.add((DescriptionElementDto)element);
                 }
 
-                DescriptionBase desc = null;
-                for (DescriptionBase tempDesc: descSpecimen){
+                DescriptionBase<?> desc = null;
+                for (DescriptionBase<?> tempDesc: descSpecimen){
                     if (tempDesc.getUuid().equals(descDto.getDescriptionUuid())){
                         desc = tempDesc;
                         break;
                     }
                 }
 
-                DescriptionElementBase removeElement = null;
+                Set<DescriptionElementBase> removeElements = new HashSet<>();
                 Set<DescriptionElementBase> descriptionElements = desc.getElements();
                 for (DescriptionElementBase elementBase: descriptionElements){
                     UUID descElementUuid = elementBase.getUuid();
                     if (descElementUuid != null){
                         List<DescriptionElementDto> equalUuidsElements = elements.stream().filter( e -> e != null && e.getElementUuid() != null && e.getElementUuid().equals(descElementUuid)).collect(Collectors.toList());
-                        if (equalUuidsElements.size() == 0){
-                            removeElement = elementBase;
+                        if (equalUuidsElements.size() == 0 || (equalUuidsElements.size() == 1 && equalUuidsElements.get(0)instanceof QuantitativeDataDto && ((QuantitativeDataDto)equalUuidsElements.get(0)).getValues().isEmpty())){
+                            removeElements.add(elementBase);
                         }
                     }
                 }
-                if (removeElement != null){
-                    desc.removeElement(removeElement);
+                if (!removeElements.isEmpty()){
+                    for (DescriptionElementBase el: removeElements){
+                        desc.removeElement(el);
+                    }
                 }
 
 //                description.setDescribedSpecimenOrObservation(null);
 
                 for (DescriptionElementDto descElement: elements){
+                    if (descElement == null){
+                        continue;
+                    }
                     UUID descElementUuid = descElement.getElementUuid();
                     if (descElement instanceof CategoricalDataDto && ((CategoricalDataDto)descElement).getStates().isEmpty() || descElement instanceof QuantitativeDataDto && ((QuantitativeDataDto)descElement).getValues().isEmpty()){
                         continue;

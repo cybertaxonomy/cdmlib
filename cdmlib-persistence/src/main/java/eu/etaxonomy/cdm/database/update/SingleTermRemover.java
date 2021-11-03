@@ -30,12 +30,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class SingleTermRemover
         extends SchemaUpdaterStepBase{
 
-    private String uuidTerm ;
-    private List<String> checkUsedQueries = new ArrayList<>();
-    private boolean isAudit = false;
-
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermRemover.class);
+
+// **************************** FACTORY METHODS ********************************/
 
 	public static final SingleTermRemover NewInstance(List<ISchemaUpdaterStep> stepList, String stepName,
 	        String uuidTerm, List<String> checkUsedQueries, int adapt){
@@ -66,6 +64,14 @@ public class SingleTermRemover
         return new SingleTermRemover(stepList, stepName, uuidTerm, checkUsedQueries, true);
     }
 
+// *************************** VARIABLES *****************************************/
+
+    private String uuidTerm ;
+    private List<String> checkUsedQueries = new ArrayList<>();
+    private boolean isAudit = false;
+
+// ***************************** CONSTRUCTOR ***************************************/
+
 	private SingleTermRemover(List<ISchemaUpdaterStep> stepList, String stepName, String uuidTerm,
 	        List<String> checkUsedQueries, boolean isAudit) {
 		super(stepList, stepName);
@@ -73,6 +79,8 @@ public class SingleTermRemover
 		this.checkUsedQueries = checkUsedQueries;
 		this.isAudit = isAudit;
 	}
+
+// ******************************* METHODS *************************************************/
 
     @Override
     public void invoke(ICdmDataSource datasource, IProgressMonitor monitor,

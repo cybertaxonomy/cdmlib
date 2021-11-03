@@ -24,6 +24,7 @@ import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmClass;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.model.term.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.term.TermType;
 import eu.etaxonomy.cdm.model.term.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.common.Restriction;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.term.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dto.CharacterDto;
@@ -322,9 +324,9 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
             queryString = TermDto.getTermDtoSelect();
         }
         queryString = queryString
-                + " where v.uuid = :vocabularyUuid ";
-//                + "and a.partOf is null "
-//                + "and a.kindOf is null";
+                + " where v.uuid = :vocabularyUuid "
+                + " and a.partOf is null "
+                + " and a.kindOf is null";
         Query query =  getSession().createQuery(queryString);
         query.setParameter("vocabularyUuid", vocabularyUuid);
 
@@ -419,25 +421,6 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
         List<Object[]> result = query.list();
         List<TermVocabularyDto> dtos = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return dtos;
-
-//        Map<UUID, TermVocabularyDto> dtoMap = new HashMap<>(result.size());
-//        for (Object[] elements : result) {
-//            UUID uuid = (UUID)elements[0];
-//            TermType termType = (TermType)elements[1];
-//            if(dtoMap.containsKey(uuid)){
-//                dtoMap.get(uuid).addRepresentation((Representation)elements[2]);
-//            } else {
-//                Set<Representation> representations = new HashSet<>();
-//                if(elements[2] instanceof Representation) {
-//                    representations = new HashSet<Representation>();
-//                    representations.add((Representation)elements[2]);
-//                } else {
-//                    representations = (Set<Representation>)elements[2];
-//                }
-//                dtoMap.put(uuid, new TermVocabularyDto(uuid, representations, termType, (String)elements[3]));
-//            }
-//        }
-//        return new ArrayList<>(dtoMap.values());
     }
 
     @Override
@@ -515,6 +498,48 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
         list = TermVocabularyDto.termVocabularyDtoListFrom(result);
         return list;
+    }
 
+//***************** Overrides for deduplication *******************************/
+
+    @Override
+    public List<TermVocabulary> loadList(Collection<Integer> ids, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.loadList(ids, orderHints, propertyPaths));
+    }
+
+    @Override
+    public List<TermVocabulary> list(Collection<UUID> uuids, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(uuids, pageSize, pageNumber, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends TermVocabulary> List<S> list(Class<S> clazz, Collection<UUID> uuids, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws DataAccessException {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(clazz, uuids, pageSize, pageNumber, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends TermVocabulary> List<S> list(Class<S> type, List<Restriction<?>> restrictions, Integer limit,
+            Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(type, restrictions, limit, start, orderHints, propertyPaths));
+    }
+
+    @Override
+    public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints));
+    }
+
+    @Override
+    public List<TermVocabulary> list(Integer limit, Integer start, List<OrderHint> orderHints,
+            List<String> propertyPaths) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(limit, start, orderHints, propertyPaths));
+    }
+
+    @Override
+    public <S extends TermVocabulary> List<S> list(Class<S> type, Integer limit, Integer start,
+            List<OrderHint> orderHints) {
+        return DefinedTermDaoImpl.deduplicateResult(super.list(type, limit, start, orderHints));
     }
 }

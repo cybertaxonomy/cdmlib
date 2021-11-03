@@ -52,7 +52,7 @@ public class DnaSampleDefaultCacheStrategy
 		String result = getCollectionAndAccession(dnaSample);
         //sample designation
 		if (isBlank(result)){
-            result = dnaSample.getIdentifier(DefinedTerm.uuidSampleDesignation);
+            result = dnaSample.getIdentifierString(DefinedTerm.uuidSampleDesignation);
         }
 		//any other identifier
 		if (isBlank(result)){

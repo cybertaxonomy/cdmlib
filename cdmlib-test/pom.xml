@@ -3,7 +3,7 @@
   <parent>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-    <version>5.27.0</version>
+    <version>5.28.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -136,6 +136,7 @@
 
     <!-- ******* DATABASES DRIVER ******* -->
 
+    <!-- for other databases see also #6025 -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>

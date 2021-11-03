@@ -101,6 +101,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
+import eu.etaxonomy.cdm.validation.annotation.CorrectRanksForCode;
 import eu.etaxonomy.cdm.validation.annotation.NameMustFollowCode;
 import eu.etaxonomy.cdm.validation.annotation.NameMustHaveAuthority;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
@@ -185,6 +186,7 @@ import eu.etaxonomy.cdm.validation.annotation.ValidTaxonomicYear;
         @javax.persistence.Index(name = "taxonNameBaseNameCacheIndex", columnList = "nameCache") })
 @NameMustFollowCode
 @CorrectEpithetsForRank(groups = Level2.class)
+@CorrectRanksForCode(groups = Level2.class)
 @NameMustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonName")

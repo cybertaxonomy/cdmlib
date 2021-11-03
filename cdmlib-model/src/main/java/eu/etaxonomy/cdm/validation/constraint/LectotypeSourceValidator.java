@@ -39,5 +39,4 @@ public class LectotypeSourceValidator implements ConstraintValidator<ValidLectot
         }
         return isValid;
     }
-
 }

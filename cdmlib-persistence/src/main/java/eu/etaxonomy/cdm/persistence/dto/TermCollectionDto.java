@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2018 EDIT
 * European Distributed Institute of Taxonomy
@@ -21,7 +20,6 @@ import eu.etaxonomy.cdm.model.term.TermType;
 /**
  * @author pplitzner
  * @date 05.11.2018
- *
  */
 public class TermCollectionDto extends AbstractTermDto {
 
@@ -33,7 +31,6 @@ public class TermCollectionDto extends AbstractTermDto {
     private boolean containsDuplicates = false;
     private boolean isOrderRelevant;
     private boolean isFlat;
-    private boolean isAllowModifications = true;
 
     public TermCollectionDto(UUID uuid, Set<Representation> representations, TermType termType, String titleCache, boolean isAllowDuplicate, boolean isOrderRelevant, boolean isFlat) {
         super(uuid, representations, titleCache);
@@ -68,18 +65,9 @@ public class TermCollectionDto extends AbstractTermDto {
         terms.remove(term);
     }
 
-
-
-    /**
-     * @return the isAllowDuplicate
-     */
     public boolean isAllowDuplicate() {
         return isAllowDuplicate;
     }
-
-    /**
-     * @param isAllowDuplicate the isAllowDuplicate to set
-     */
     public void setAllowDuplicate(boolean isAllowDuplicate) {
         this.isAllowDuplicate = isAllowDuplicate;
     }
@@ -97,30 +85,16 @@ public class TermCollectionDto extends AbstractTermDto {
         this.containsDuplicates = containsDuplicates;
     }
 
-    /**
-     * @return the isOrderRelevant
-     */
     public boolean isOrderRelevant() {
         return isOrderRelevant;
     }
-
-    /**
-     * @param isOrderRelevant the isOrderRelevant to set
-     */
     public void setOrderRelevant(boolean isOrderRelevant) {
         this.isOrderRelevant = isOrderRelevant;
     }
 
-    /**
-     * @return the isFlat
-     */
     public boolean isFlat() {
         return isFlat;
     }
-
-    /**
-     * @param isFlat the isFlat to set
-     */
     public void setFlat(boolean isFlat) {
         this.isFlat = isFlat;
     }
@@ -139,13 +113,7 @@ public class TermCollectionDto extends AbstractTermDto {
                 + "a.orderRelevant,"
                 + "a.isFlat "
 
-
                 + "FROM "+fromTable+" as a "
                 + "LEFT JOIN a.representations AS r ";
-
     }
-
-
-
-
 }

@@ -381,7 +381,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
         String ipniId = record.get(SCIENTIFIC_NAME_ID);
         if (isNotBlank(ipniId)){
-            Set<String> ipniIds = name.getIdentifiers(DefinedTerm.uuidIpniNameIdentifier);
+            Set<String> ipniIds = name.getIdentifierStrings(DefinedTerm.uuidIpniNameIdentifier);
             if (!ipniIds.contains(ipniId)){
                 makeIpniId(state, name);
             }
@@ -389,7 +389,7 @@ public class WfoAccessTaxonImport<STATE extends WfoAccessImportState>
 
         String plantListId = record.get(REFERENCES);
         if (isNotBlank(plantListId)){
-            Set<String> plantListIds = name.getIdentifiers(DefinedTerm.uuidPlantListIdentifier);
+            Set<String> plantListIds = name.getIdentifierStrings(DefinedTerm.uuidPlantListIdentifier);
             plantListId = makeTplIdPart(plantListId);
             if (!plantListIds.contains(plantListId)){
                 makePlantListIdentifier(state, name);
