@@ -189,7 +189,6 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
     //#6381
     @Test
     public void testGetTitleCacheAccessionBarcodeCatalogNumber() {
-        //Note: Collection Code B might be deduplicated in future
         addPlantDescription(fieldUnit, plantDescription);
         collection.setCode("B");
         String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue";
