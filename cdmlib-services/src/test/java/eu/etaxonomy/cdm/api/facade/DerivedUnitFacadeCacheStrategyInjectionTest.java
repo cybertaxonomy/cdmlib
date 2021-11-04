@@ -59,8 +59,10 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @author a.mueller
  * @since 2010 Jun 3
  */
-public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactionalIntegrationTest {
-	@SuppressWarnings("unused")
+public class DerivedUnitFacadeCacheStrategyInjectionTest
+        extends CdmTransactionalIntegrationTest {
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyInjectionTest.class);
 
     @SpringBeanByType
@@ -238,7 +240,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
         Assert.assertTrue("FieldUnit should be proxy otherwise the test does not test what it should", fieldUnit instanceof HibernateProxy);
         FieldUnit myFieldUnit = CdmBase.deproxy(fieldUnit, FieldUnit.class);
         myFieldUnit.setTitleCache(null, false);
-        String expectedFieldUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1.2\"N, 12°18'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker.";
+        String expectedFieldUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker.";
         Assert.assertEquals(expectedFieldUnitCache, myFieldUnit.getTitleCache());
     }
 
