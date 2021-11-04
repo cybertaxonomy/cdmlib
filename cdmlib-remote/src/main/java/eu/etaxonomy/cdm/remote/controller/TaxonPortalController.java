@@ -85,7 +85,6 @@ import io.swagger.annotations.Api;
  *
  * @author a.kohlbecker
  * @since 20.07.2009
- *
  */
 @Controller
 @Api("portal_taxon")
@@ -561,21 +560,6 @@ public class TaxonPortalController extends TaxonController{
     }
 
     /**
-     * @param uuid
-     * @param type
-     * @param mimeTypes
-     * @param relationshipUuids
-     * @param relationshipInversUuids
-     * @param includeTaxonDescriptions
-     * @param includeOccurrences
-     * @param includeTaxonNameDescriptions
-     * @param widthOrDuration
-     * @param height
-     * @param size
-     * @param response
-     * @param initStrategy
-     * @return
-     * @throws IOException
      * @Deprecated To be replaced by other loadMediaForTaxonAndRelated method
      */
     @Deprecated
@@ -588,23 +572,6 @@ public class TaxonPortalController extends TaxonController{
                 includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, response, taxonInitStrategy, null);
     }
 
-    /**
-     * @param uuid
-     * @param type
-     * @param mimeTypes
-     * @param relationshipUuids
-     * @param relationshipInversUuids
-     * @param includeTaxonDescriptions
-     * @param includeOccurrences
-     * @param includeTaxonNameDescriptions
-     * @param widthOrDuration
-     * @param height
-     * @param size
-     * @param response
-     * @param initStrategy
-     * @return
-     * @throws IOException
-     */
     public  EntityMediaContext<Taxon> loadMediaForTaxonAndRelated(UUID uuid,
             UuidList relationshipUuids, UuidList relationshipInversUuids,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
@@ -612,7 +579,6 @@ public class TaxonPortalController extends TaxonController{
             List<String> taxonInitStrategy, List<String> mediaInitStrategy) throws IOException {
 
         boolean includeUnpublished = NO_UNPUBLISHED;
-
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, taxonInitStrategy);
         taxon = checkExistsAndAccess(taxon, includeUnpublished, response);
@@ -622,7 +588,7 @@ public class TaxonPortalController extends TaxonController{
         List<Media> media = listMediaForTaxon(taxon, includeRelationships,
                 includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, mediaInitStrategy);
 
-        EntityMediaContext<Taxon> entityMediaContext = new EntityMediaContext<Taxon>(taxon, media);
+        EntityMediaContext<Taxon> entityMediaContext = new EntityMediaContext<>(taxon, media);
 
         return entityMediaContext;
     }
