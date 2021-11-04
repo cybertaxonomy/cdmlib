@@ -214,7 +214,7 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         //but deduplication should take place if explicitly set
         specimen.setAccessionNumber("B 12345");
         specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(false, true, true));
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1.2\"N, 12°18'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 12345); flowers blue.";
+        correctCache = correctCache.replace("B: B12345", "B: 12345");
         Assert.assertEquals(correctCache, specimen.getTitleCache());
     }
 
