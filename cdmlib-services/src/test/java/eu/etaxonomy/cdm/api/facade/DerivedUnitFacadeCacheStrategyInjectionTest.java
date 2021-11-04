@@ -203,8 +203,8 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
 
     @Test
     public void testGetFieldUnitTitleCache() {
-//        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue.";
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker.";
+//        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker";
 
 //        DescriptionElementBase ecologyItem = TextData.NewInstance(Feature.ECOLOGY(), ecology, Language.DEFAULT(), null);
 //        SpecimenDescription fieldUnitDescription = SpecimenDescription.NewInstance(fieldUnit);
@@ -240,7 +240,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest
         Assert.assertTrue("FieldUnit should be proxy otherwise the test does not test what it should", fieldUnit instanceof HibernateProxy);
         FieldUnit myFieldUnit = CdmBase.deproxy(fieldUnit, FieldUnit.class);
         myFieldUnit.setTitleCache(null, false);
-        String expectedFieldUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker.";
+        String expectedFieldUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker";
         Assert.assertEquals(expectedFieldUnitCache, myFieldUnit.getTitleCache());
     }
 
