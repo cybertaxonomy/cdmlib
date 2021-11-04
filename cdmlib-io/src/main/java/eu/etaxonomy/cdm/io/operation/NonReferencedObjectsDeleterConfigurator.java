@@ -35,6 +35,9 @@ public class NonReferencedObjectsDeleterConfigurator
 	private boolean isKeepReferencesWithTitle = false;
 	private boolean isKeepRisSources = false;
 
+	//if true, records are not deleted but only reported (later this will be part of the analyzing step
+	private boolean doOnlyReport = false;
+
 	public NonReferencedObjectsDeleterConfigurator() {
 		super(null);
 	}
@@ -91,6 +94,14 @@ public class NonReferencedObjectsDeleterConfigurator
     }
     public void setKeepRisSources(boolean isKeepRisSources) {
         this.isKeepRisSources = isKeepRisSources;
+    }
+
+    //doOnlyReport
+    public boolean isDoOnlyReport() {
+        return doOnlyReport;
+    }
+    public void setDoOnlyReport(boolean doOnlyReport) {
+        this.doOnlyReport = doOnlyReport;
     }
 
     @Override
