@@ -134,7 +134,7 @@ public class FieldUnitDefaultCacheStrategyTest extends TermTestBase {
 
     @Test
     public void testGetTitleCache() {
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue.";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; flowers blue";
         addEcology(fieldUnit, ecology);
         addPlantDescription(fieldUnit, plantDescription);
         Assert.assertEquals(correctCache, fieldUnit.getTitleCache());

@@ -56,7 +56,7 @@ public class FieldUnitDefaultCacheStrategy
     private boolean includeReferenceSystem = true;
 
     private boolean includePlantDescription = true;
-    private boolean addTrailingDot = true;
+    private boolean addTrailingDot = false;
 
     public static FieldUnitDefaultCacheStrategy NewInstance(){
         return new FieldUnitDefaultCacheStrategy(null, null, null, null);
