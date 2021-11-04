@@ -236,7 +236,7 @@ public class DerivedUnit
      */
 	@Override
     protected void initDefaultCacheStrategy() {
-        this.cacheStrategy = new DerivedUnitDefaultCacheStrategy();
+        this.cacheStrategy = DerivedUnitDefaultCacheStrategy.NewInstance();
     }
 
     @Override

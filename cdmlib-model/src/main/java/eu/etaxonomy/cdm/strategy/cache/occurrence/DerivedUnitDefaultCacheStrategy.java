@@ -46,9 +46,34 @@ public class DerivedUnitDefaultCacheStrategy
 
     private boolean skipFieldUnit = false;
     private boolean addTrailingDot = true;
+    private boolean deduplicateCollectionCodeInNumber = false;
 
     private static final FieldUnitDefaultCacheStrategy fieldUnitCacheStrategy
         = FieldUnitDefaultCacheStrategy.NewInstance(false, false);
+
+    public static DerivedUnitDefaultCacheStrategy NewInstance(){
+        return new DerivedUnitDefaultCacheStrategy();
+    }
+
+    public static DerivedUnitDefaultCacheStrategy NewInstance(boolean skipFieldUnit, boolean addTrailingDot,
+            boolean deduplicateCollectionCodeInNumber){
+        return new DerivedUnitDefaultCacheStrategy(skipFieldUnit, addTrailingDot, deduplicateCollectionCodeInNumber);
+    }
+
+//******************************* CONSTRUCTOR *******************************************/
+
+    //default value constructor
+    private DerivedUnitDefaultCacheStrategy() {}
+
+
+    private DerivedUnitDefaultCacheStrategy(boolean skipFieldUnit, boolean addTrailingDot,
+            boolean deduplicateCollectionCodeInNumber) {
+        this.skipFieldUnit = skipFieldUnit;
+        this.addTrailingDot = addTrailingDot;
+        this.deduplicateCollectionCodeInNumber = deduplicateCollectionCodeInNumber;
+    }
+
+//******************************* METHODS ***************************************************/
 
     @Override
     protected String doGetTitleCache(DerivedUnit specimen) {
@@ -81,11 +106,9 @@ public class DerivedUnitDefaultCacheStrategy
             }
         }
 
-
         if (addTrailingDot){
             result = CdmUtils.addTrailingDotIfNotExists(result);
         }
-
         return result;
     }
 
@@ -115,17 +138,13 @@ public class DerivedUnitDefaultCacheStrategy
     }
 
     /**
-     * Produces the collection barcode which is the combination of the collection code and
-     * accession number.
-     *
-     * @param result
-     * @param derivedUnit
-     * @return
+     * Produces the collection code and number which is the combination of the collection code and
+     * accession number or barcode.
      */
     public String getSpecimenLabel(DerivedUnit derivedUnit) {
         String code = getCode(derivedUnit);
         String identifier = getUnitNumber(derivedUnit /*, code*/);
-        String collectionData = CdmUtils.concat(" ", code, identifier);
+        String collectionData = CdmUtils.concat(": ", code, identifier);
         return collectionData;
     }
 
@@ -145,11 +164,13 @@ public class DerivedUnitDefaultCacheStrategy
         }else{
             result = derivedUnit.getCatalogNumber();
         }
-        String code = getCode(derivedUnit);
-        if(result != null){
-            result = result.trim();
-            if(isNotBlank(code) && result.startsWith(code + " ")){
-                result = result.replaceAll("^" + code + "\\s", "");
+        if(deduplicateCollectionCodeInNumber){
+            String code = getCode(derivedUnit);
+            if(result != null){
+                result = result.trim();
+                if(isNotBlank(code) && result.startsWith(code + " ")){
+                    result = result.replaceAll("^" + code + "\\s", "");
+                }
             }
         }
         return result;
