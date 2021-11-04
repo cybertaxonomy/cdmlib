@@ -164,7 +164,7 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
 
     @Test
     public void testGetTitleCache() {
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue.";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue";
         addEcology(fieldUnit, ecology);
         addPlantDescription(fieldUnit, plantDescription);
         collection.setCode("B");
@@ -178,7 +178,7 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
 
     @Test
     public void testGetTitleCacheWithEtAl() {
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue.";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3 May 2005, Kilian 5678, A. Muller, Kohlbecker & al.; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue";
         collector.setHasMoreMembers(true);
         addEcology(fieldUnit, ecology);
         addPlantDescription(fieldUnit, plantDescription);
@@ -192,20 +192,20 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         //Note: Collection Code B might be deduplicated in future
         addPlantDescription(fieldUnit, plantDescription);
         collection.setCode("B");
-        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue.";
+        String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue";
         Assert.assertEquals(correctCache, specimen.getTitleCache());
 
         specimen.setAccessionNumber(null);
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: B12345678); flowers blue.";
+        correctCache = correctCache.replace("B: 8909756", "B: B12345678");
         Assert.assertEquals(correctCache, specimen.getTitleCache());
 
         specimen.setBarcode(null);
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: UU879873590); flowers blue.";
+        correctCache = correctCache.replace("B: B12345678", "B: UU879873590");
         Assert.assertEquals(correctCache, specimen.getTitleCache());
 
         //no deduplication of collection code in accession number according to #6865
         specimen.setAccessionNumber("B 12345");
-        correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: B 12345); flowers blue.";
+        correctCache = correctCache.replace("B: UU879873590", "B: B 12345");
         Assert.assertEquals(correctCache, specimen.getTitleCache());
         specimen.setAccessionNumber("B12345");
         correctCache = correctCache.replace("B 12345", "B12345");
@@ -213,9 +213,20 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
 
         //but deduplication should take place if explicitly set
         specimen.setAccessionNumber("B 12345");
-        specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(false, true, true));
+        specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(false, false, true));
         correctCache = correctCache.replace("B: B12345", "B: 12345");
         Assert.assertEquals(correctCache, specimen.getTitleCache());
+
+        //with trailing full stop #9849
+        specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(false, true, true));
+        correctCache = correctCache + ".";
+        Assert.assertEquals(correctCache, specimen.getTitleCache());
+
+        //skip field unit
+        specimen.setCacheStrategy(DerivedUnitDefaultCacheStrategy.NewInstance(true, false, false));
+        correctCache = "Greuter, Pl. Dahlem. 456 (B: B 12345)";
+        Assert.assertEquals(correctCache, specimen.getTitleCache());
+
     }
 
     @Test
@@ -230,7 +241,7 @@ public class DerivedUnitDefaultCacheStrategyTest extends TermTestBase {
         Assert.assertEquals("DerivedUnit#0<"+specimen.getUuid()+">", specimen.getTitleCache());
 
         specimen.setBarcode("B996633");
-        Assert.assertEquals("(B996633).", specimen.getTitleCache());  //maybe brackets and/or the full stop will be removed in future
+        Assert.assertEquals("(B996633)", specimen.getTitleCache());  //maybe brackets will be removed in future
 
     }
 

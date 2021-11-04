@@ -45,7 +45,7 @@ public class DerivedUnitDefaultCacheStrategy
     protected UUID getUuid() {return uuid;}
 
     private boolean skipFieldUnit = false;
-    private boolean addTrailingDot = true;
+    private boolean addTrailingDot = false;
     private boolean deduplicateCollectionCodeInNumber = false;
 
     private static final FieldUnitDefaultCacheStrategy fieldUnitCacheStrategy

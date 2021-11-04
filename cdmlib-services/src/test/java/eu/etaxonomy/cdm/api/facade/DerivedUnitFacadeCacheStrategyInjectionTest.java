@@ -184,8 +184,8 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
 
 	@Test
 	public void testGetSpecimenTitleCache() {
-//		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B 8909756); flowers blue.";
-		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756).";
+//		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), sand dunes, 3.5.2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756); flowers blue";
+		String correctCache = "Germany, Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E (WGS84), 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (B: 8909756)";
 
 //		DescriptionElementBase ecologyItem = TextData.NewInstance(Feature.ECOLOGY(), ecology, Language.DEFAULT(), null);
 //		SpecimenDescription fieldUnitDescription = SpecimenDescription.NewInstance(fieldUnit);
@@ -225,7 +225,7 @@ public class DerivedUnitFacadeCacheStrategyInjectionTest extends CdmTransactiona
         Assert.assertTrue("Specimen should be proxy otherwise the test does not test what it should", specimen instanceof HibernateProxy);
         DerivedUnit myUnit = CdmBase.deproxy(specimen, DerivedUnit.class);
         myUnit.setTitleCache(null, false);
-        String expectedDerivedUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10°34'1.2\"N, 12°18'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (8909756).";
+        String expectedDerivedUnitCache = "Berlin-Dahlem, E side of Englerallee, alt. 40 m, 10\u00B034'1.2\"N, 12\u00B018'E, 3 May 2005, Kilian 5678, A. Muller & Kohlbecker; Greuter, Pl. Dahlem. 456 (8909756)";
         Assert.assertEquals(expectedDerivedUnitCache, myUnit.getTitleCache());
     }
 
