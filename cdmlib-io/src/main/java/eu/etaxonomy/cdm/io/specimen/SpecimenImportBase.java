@@ -1146,7 +1146,7 @@ public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STA
 
 	                designation.setTypeStatus(specimenTypeDesignationstatus);
 	                designation.setTypeSpecimen(state.getDerivedUnitBase());
-	                name.addTypeDesignation(designation, true);
+	                name.addTypeDesignation(designation, false);
 	            }
 	        }
 	        save(state.getDerivedUnitBase(), state);
