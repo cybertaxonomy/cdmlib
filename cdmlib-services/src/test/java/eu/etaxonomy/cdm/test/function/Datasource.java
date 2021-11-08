@@ -81,26 +81,28 @@ public class Datasource {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-		server = "localhost";
-		database = "cdm_bupleurum";
-//		database = "cdm_production_edaphobase";
-		username = "edit";
-		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		server = "localhost";
+//		database = "cdm_test";
+////		database = "cdm_production_edaphobase";
+//		username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		server = "160.45.63.171";
-//		database = "cdm_production_salvador";
+//		database = "xxx";
 //		username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-//		server = "test.e-taxonomy.eu";
-//		database = "cdm_rem_conf_am";
-//		username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+		server = "test.e-taxonomy.eu";
+		database = "cdm_rem_conf_am";
+		username = "edit";
+		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		String server = "localhost";
 //		String database = "testCDM";
 //		String username = "postgres";
 //		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
+
 
 //		//SQLServer
 //		server = "BGBM-PESISQL";
@@ -128,15 +130,13 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
 
-		doTemporary(appCtr);
+//		appCtr.getOccurrenceService().findRootUnitDTOs(UUID.fromString("2debf5ee-cb57-40bc-af89-173d1d17cefe"));
+//		aggregateDDS(appCtr);
+		aggregateDistribution(appCtr);
 
 		appCtr.close();
 		System.exit(0);
 	}
-
-    private void doTemporary(CdmApplicationController appCtr) {
-        //xx
-    }
 
     private void aggregateDistribution(CdmApplicationController app){
 

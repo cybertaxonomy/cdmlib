@@ -687,9 +687,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         if (media == null) {
                             continue;
                         }
-                        if (!state.getConfig().isAddMediaAsMediaSpecimen()) {
-                            derivedUnitFacade.addDerivedUnitMedia(media);
-                        } else {
+                        derivedUnitFacade.addDerivedUnitMedia(media);
+                        if (state.getConfig().isAddMediaAsMediaSpecimen()) {
                             // add media also as specimen scan
                             MediaSpecimen mediaSpecimen = MediaSpecimen
                                     .NewInstance(SpecimenOrObservationType.StillImage);
@@ -704,6 +703,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             derivationEvent.addDerivative(mediaSpecimen);
                             derivedUnitFacade.innerDerivedUnit().addDerivationEvent(derivationEvent);
                         }
+
                     } catch (MalformedURLException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
