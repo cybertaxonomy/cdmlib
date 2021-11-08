@@ -157,7 +157,7 @@ public interface IOccurrenceService
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of media instances
      */
-    public Pager<Media> getMediainHierarchy(SpecimenOrObservationBase rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public Pager<Media> getMediaInHierarchy(SpecimenOrObservationBase<?> rootOccurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a count of determinations that have been made for a given occurence and for a given taxon concept

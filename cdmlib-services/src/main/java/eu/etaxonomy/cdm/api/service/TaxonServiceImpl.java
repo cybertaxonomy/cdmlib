@@ -1056,7 +1056,7 @@ public class TaxonServiceImpl
                     }
                 }
                 //media in hierarchy
-                taxonMedia.addAll(occurrenceService.getMediainHierarchy(occurrence, null, null, propertyPath).getRecords());
+                taxonMedia.addAll(occurrenceService.getMediaInHierarchy(occurrence, null, null, propertyPath).getRecords());
             }
         }
 
