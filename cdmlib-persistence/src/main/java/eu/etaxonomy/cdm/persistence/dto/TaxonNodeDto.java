@@ -118,6 +118,8 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             classification = (Classification) taxonTreeNode;
             taxonNode = classification.getRootNode();
             //taxon should always be null for rootnode therefore no assignment here
+        }else{
+            throw new IllegalStateException("Class not yet handled: " +  taxonTreeNode.getClass().getName());
         }
 
         //taxon or titleCache
@@ -139,23 +141,21 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
         taxonStatus = TaxonStatus.Accepted;
 
         //taxonNode
-        if (taxonNode != null){
-            taxonomicChildrenCount = taxonNode.getCountChildren();
-            status = taxonNode.getStatus();
+        taxonomicChildrenCount = taxonNode.getCountChildren();
+        status = taxonNode.getStatus();
 
-            for(Language lang : taxonNode.getStatusNote().keySet()) {
-                statusNote.put(lang, taxonNode.getStatusNote(lang));
-            }
-
-            treeIndex = taxonNode.treeIndex();
-            if(taxonNode.getParent() != null) {
-                parentUUID = taxonNode.getParent().getUuid();
-            } else {
-                parentUUID = null;
-            }
-
-            sortIndex = taxonNode.getSortIndex();
+        for(Language lang : taxonNode.getStatusNote().keySet()) {
+            statusNote.put(lang, taxonNode.getStatusNote(lang));
         }
+
+        treeIndex = taxonNode.treeIndex();
+        if(taxonNode.getParent() != null) {
+            parentUUID = taxonNode.getParent().getUuid();
+        } else {
+            parentUUID = null;
+        }
+
+        sortIndex = taxonNode.getSortIndex();
 
         //classification
         if (classification != null){
