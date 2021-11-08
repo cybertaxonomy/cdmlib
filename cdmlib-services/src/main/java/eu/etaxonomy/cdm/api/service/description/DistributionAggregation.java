@@ -236,6 +236,7 @@ public class DistributionAggregation
         if (getConfig().isDoClearExistingDescription()){
             clearDescription(targetDescription);
         }else{
+            //TODO shouldn't this be filled with all deb's?
             toDelete = new HashSet<>();
         }
         for (NamedArea area : accumulatedStatusMap.keySet()) {

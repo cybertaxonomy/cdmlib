@@ -15,7 +15,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -26,12 +29,14 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.description.AggregationMode;
 import eu.etaxonomy.cdm.api.service.description.DistributionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.description.StructuredDescriptionAggregationConfiguration;
 import eu.etaxonomy.cdm.api.service.dto.GroupedTaxonDTO;
+import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.config.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -61,9 +66,21 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.term.DefinedTermBase;
 import eu.etaxonomy.cdm.model.term.TermTree;
 import eu.etaxonomy.cdm.model.term.init.TermNotFoundException;
+import eu.etaxonomy.cdm.persistence.dao.initializer.EntityInitStrategy;
+import eu.etaxonomy.cdm.remote.controller.MediaPortalController;
+import eu.etaxonomy.cdm.remote.controller.TaxonPortalController;
+import eu.etaxonomy.cdm.remote.controller.TaxonPortalController.EntityMediaContext;
+import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
+import eu.etaxonomy.cdm.remote.editor.UuidList;
+import eu.etaxonomy.cdm.remote.io.application.CdmRemoteApplicationController;
 
-public class Datasource {
-	private static final Logger logger = Logger.getLogger(Datasource.class);
+/**
+ * @author a.mueller
+ * @since 08.11.2021
+ */
+public class TestScript {
+
+	private static final Logger logger = Logger.getLogger(TestScript.class);
 
 
 	private void testNewConfigControler(){
@@ -81,16 +98,17 @@ public class Datasource {
 
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 
-		server = "localhost";
-		database = "cdm_bupleurum";
-//		database = "cdm_production_edaphobase";
+//		server = "localhost";
+//		database = "cdm_bupleurum";
+////		database = "cdm_production_edaphobase";
+//		username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+		server = "160.45.63.171";
+		database = "cdm_production_campanulaceae";
 		username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-//		server = "160.45.63.171";
-//		database = "cdm_production_salvador";
-//		username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
 //		server = "test.e-taxonomy.eu";
 //		database = "cdm_rem_conf_am";
@@ -101,6 +119,7 @@ public class Datasource {
 //		String database = "testCDM";
 //		String username = "postgres";
 //		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null));
+
 
 //		//SQLServer
 //		server = "BGBM-PESISQL";
@@ -124,18 +143,51 @@ public class Datasource {
 //       username = "edit";
 //       dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
-		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource, schema);
+		CdmApplicationController appCtr = CdmRemoteApplicationController.NewRemoteInstance(dataSource, schema);
 
-		doTemporary(appCtr);
+		try {
+            doTemporary(appCtr);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+//		List<UuidAndTitleCache<TaxonBase>> list = appCtr.getTaxonService().getUuidAndTitleCache(null, 10, "Abies alba%");
+//		System.out.println(list);
+//		appCtr.getOccurrenceService().findRootUnitDTOs(UUID.fromString("2debf5ee-cb57-40bc-af89-173d1d17cefe"));
+//		aggregateDDS(appCtr);
+//		aggregateDistribution(appCtr);
 
 		appCtr.close();
 		System.exit(0);
 	}
 
-    private void doTemporary(CdmApplicationController appCtr) {
-        //xx
+    private void doTemporary(CdmApplicationController appCtr) throws IOException {
+
+        UUID taxonUUID = UUID.fromString("cdcacbda-11c0-4cb8-a2e0-8d7abc5ae756");
+        boolean includeTaxonomicChildren = true;
+        UuidList relationshipUuids = new UuidList();
+        UuidList relationshipInversUuids = new UuidList();
+        boolean includeTaxonDescriptions = true;
+        boolean includeOccurrences = true;
+        boolean includeTaxonNameDescriptions = true;
+        HttpServletResponse response = null;
+        TaxonPortalController taxonPortalController = (TaxonPortalController) appCtr.getBean("taxonPortalController");
+        ITermService termService = appCtr.getTermService();
+
+        EntityInitStrategy taxonInitStrategy = includeTaxonomicChildren? TaxonPortalController.TAXON_WITH_CHILDNODES_INIT_STRATEGY : TaxonPortalController.TAXON_INIT_STRATEGY;
+        EntityMediaContext<Taxon> entityMediaContext = taxonPortalController.loadMediaForTaxonAndRelated(taxonUUID,
+                relationshipUuids, relationshipInversUuids,
+                includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                response, taxonInitStrategy.getPropertyPaths(),
+                MediaPortalController.MEDIA_INIT_STRATEGY.getPropertyPaths());
+
+        if(includeTaxonomicChildren){
+            Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+            entityMediaContext.setMedia(
+                    taxonPortalController.addTaxonomicChildrenMedia(includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions, entityMediaContext.getEntity(), includeRelationships, entityMediaContext.getMedia())
+                            );
+        }
     }
 
     private void aggregateDistribution(CdmApplicationController app){
@@ -495,11 +547,8 @@ public class Datasource {
 		System.out.println("\nEnd Datasource");
 	}
 
-	/**
-	 * @param args
-	 */
 	public static void  main(String[] args) {
-		Datasource cc = new Datasource();
+	    TestScript cc = new TestScript();
     	cc.test();
 	}
 
