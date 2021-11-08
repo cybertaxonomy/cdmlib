@@ -104,16 +104,23 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
 
     public TaxonNodeDto(Class<? extends ITaxonTreeNode> type, ITaxonTreeNode taxonTreeNode) {
         super(type, taxonTreeNode.getUuid(), taxonTreeNode.getId(), null);
+
         Taxon taxon = null;
         TaxonNode taxonNode = null;
         Classification classification = null;
+
+        //taxonNode, taxon, classification
         if (taxonTreeNode instanceof TaxonNode){
             taxonNode = (TaxonNode)taxonTreeNode;
+            classification = taxonNode.getClassification();
             taxon = taxonNode.getTaxon();
         }else if (taxonTreeNode instanceof Classification){
             classification = (Classification) taxonTreeNode;
+            taxonNode = classification.getRootNode();
+            //taxon should always be null for rootnode therefore no assignment here
         }
 
+        //taxon or titleCache
         if (taxon != null){
             setTitleCache(taxon.getName() != null ? taxon.getName().getTitleCache() : taxon.getTitleCache());
             secUuid = taxon.getSec() != null ? taxon.getSec().getUuid() : null;
@@ -124,17 +131,15 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             rankOrderIndex =taxon.getNullSafeRank() != null ? taxon.getNullSafeRank().getOrderIndex() : null;
             taxonIsPublish = taxon.isPublish();
         }else{
-            if (taxonNode != null && taxonNode.getClassification() != null){
-                setTitleCache(taxonNode.getClassification().getTitleCache());
-            } else if (classification != null){
+            if (classification != null){
                 setTitleCache(classification.getTitleCache());
             }
             rankOrderIndex = null;
         }
-        if (taxonNode != null || classification != null){
-            if (classification != null){
-                taxonNode = classification.getRootNode();
-            }
+        taxonStatus = TaxonStatus.Accepted;
+
+        //taxonNode
+        if (taxonNode != null){
             taxonomicChildrenCount = taxonNode.getCountChildren();
             status = taxonNode.getStatus();
 
@@ -150,14 +155,12 @@ public class TaxonNodeDto extends UuidAndTitleCache<ITaxonTreeNode> {
             }
 
             sortIndex = taxonNode.getSortIndex();
-            if(taxonNode.getClassification() != null) {
-                classificationUUID = taxonNode.getClassification().getUuid();
-            } else if (classification != null){
-                classificationUUID = classification.getUuid();
-            }
-
         }
-        taxonStatus = TaxonStatus.Accepted;
+
+        //classification
+        if (classification != null){
+            classificationUUID = classification.getUuid();
+        }
     }
 
     public TaxonNodeDto(Synonym synonym, boolean isHomotypic) {
