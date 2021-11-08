@@ -66,6 +66,7 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.compare.taxon.HomotypicGroupTaxonComparator;
 import eu.etaxonomy.cdm.compare.taxon.TaxonComparator;
@@ -1079,12 +1080,18 @@ public class TaxonServiceImpl
             }
         }
 
-        logger.trace("listMedia() - initialize");
+        taxonMedia = deduplicateMedia(taxonMedia);
+
+        if (logger.isTraceEnabled()){logger.trace("listMedia() - initialize");}
         beanInitializer.initializeAll(taxonMedia, propertyPath);
 
         if (logger.isTraceEnabled()){logger.trace("listMedia() - END");}
 
         return taxonMedia;
+    }
+
+    private List<Media> deduplicateMedia(List<Media> taxonMedia) {
+        return CdmUtils.removeIdentical(taxonMedia);
     }
 
     @Override
