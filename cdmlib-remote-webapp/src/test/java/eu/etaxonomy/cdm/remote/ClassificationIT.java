@@ -14,9 +14,7 @@ import org.junit.Test;
 /**
  * @author a.kohlbecker
  * @since Mar 3, 2014
- *
  */
-
 public class ClassificationIT extends WebServiceTestBase  {
 
     public static final Logger logger = Logger.getLogger(ClassificationIT.class);
@@ -27,5 +25,4 @@ public class ClassificationIT extends WebServiceTestBase  {
         logger.debug("response: " + response);
         assertTrue(response.contains("My Classification"));
     }
-
 }

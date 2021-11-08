@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -38,7 +39,6 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
  *
  * @author a.kohlbecker
  * @since Oct 6, 2016
- *
  */
 @EnableWebSecurity
 @Import(OAuth2ServerConfiguration.class)
@@ -57,7 +57,6 @@ public class MultiWebSecurityConfiguration {
      * Check for full authentication for remoting services
      * @author a.kohlbecker
      * @since Oct 6, 2016
-     *
      */
     @Configuration
     @Order(2)
@@ -82,7 +81,6 @@ public class MultiWebSecurityConfiguration {
      *
      * @author a.kohlbecker
      * @since Jan 16, 2017
-     *
      */
     @Configuration
     @Order(1)
@@ -109,7 +107,6 @@ public class MultiWebSecurityConfiguration {
      *
      * @author a.kohlbecker
      * @since Oct 6, 2016
-     *
      */
     @Configuration
     public static class DefaultWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -149,10 +146,6 @@ public class MultiWebSecurityConfiguration {
         }
     }
 
-    /**
-     * @param globalManagementClients
-     * @throws IOException
-     */
     private void makeManagingUsersPropertiesFile(File propertiesFile) throws IOException {
         propertiesFile.createNewFile();
         FileUtils.write(
@@ -175,7 +168,8 @@ public class MultiWebSecurityConfiguration {
                 + "# This properties file should contain entries in the form\n"
                 + "#    username=password\n"
                 + "# -------------------------------------------------------------------------------------------\n"
-                + "#\n"
+                + "#\n",
+                Charset.defaultCharset()
                 );
         }
 }

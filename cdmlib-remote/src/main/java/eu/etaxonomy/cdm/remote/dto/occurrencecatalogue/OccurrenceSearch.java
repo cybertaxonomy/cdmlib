@@ -22,11 +22,8 @@ import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
  * <P>
  *
  * @author p.kelbert
- * @version 1.0
  * @since march 10 2014
  */
-
-
 public class OccurrenceSearch implements RemoteResponse {
 
     private OccurrenceSearchRequest request;

@@ -3,7 +3,6 @@
  * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
  */
-
 package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
@@ -22,23 +21,17 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @since 17.11.2008
  */
 public class CdmDefaultIOBase<T extends IIoConfigurator> {
-	@SuppressWarnings("unused")
+
+    @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDefaultIOBase.class);
 
 	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
-
 
 	protected ICdmRepository cdmApp = null;
 
 	/**
 	 * Creates a new {@link CdmApplicationController} if it does not exist yet
 	 * or if createNew is <ocde>true</code>
-	 *
-	 * @param config
-	 * @param destination
-	 * @param omitTermLoading
-	 * @param createNew
-	 * @return
 	 */
 	protected boolean startApplicationController(IIoConfigurator config,
 			ICdmDataSource cdmSource, boolean omitTermLoading, boolean createNew) {
@@ -84,5 +77,4 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	public void setCdmAppController(ICdmRepository cdmApp) {
 		this.cdmApp = cdmApp;
 	}
-
 }

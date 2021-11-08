@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.database;
 
 import static eu.etaxonomy.cdm.common.XmlHelp.getBeansRoot;
@@ -48,6 +47,7 @@ public class CdmPersistentDataSource
         extends CdmDataSourceBase
         implements ICdmPersistentSource {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
@@ -70,8 +70,6 @@ public class CdmPersistentDataSource
 
 	/**
 	 * Returns the default CdmDataSource
-	 * @return the default CdmDataSource
-	 * @throws DataSourceNotFoundException
 	 */
 	public final static CdmPersistentDataSource NewDefaultInstance() throws DataSourceNotFoundException {
 		return NewInstance("default");
@@ -79,8 +77,6 @@ public class CdmPersistentDataSource
 
 	/**
 	 * Returns the default CdmDataSource
-	 * @return the default CdmDataSource
-	 * @throws DataSourceNotFoundException
 	 */
 	public final static CdmPersistentDataSource NewLocalHsqlInstance() throws DataSourceNotFoundException{
 		return NewInstance("localDefaultHsql");

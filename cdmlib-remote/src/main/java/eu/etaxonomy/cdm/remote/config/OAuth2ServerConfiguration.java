@@ -100,7 +100,6 @@ public class OAuth2ServerConfiguration {
     /**
      * @author a.kohlbecker
      * @since Oct 6, 2016
-     *
      */
     @Configuration
     @EnableAuthorizationServer
@@ -133,13 +132,13 @@ public class OAuth2ServerConfiguration {
              * Client for 'implicit grant'
              */
             builder.withClient(CLIENT_ID)
-            //.resourceIds(RESOURCE_ID)
-            .authorizedGrantTypes("authorization_code", "refresh_token", "implicit")
-            .authorities("ROLE_CLIENT")
-            .scopes("read", "write", "trust")
-            .secret("secret") // secret for login of the client into /oauth/token
-            .autoApprove("read");
-            // @formatter:on
+                //.resourceIds(RESOURCE_ID)
+                .authorizedGrantTypes("authorization_code", "refresh_token", "implicit")
+                .authorities("ROLE_CLIENT")
+                .scopes("read", "write", "trust")
+                .secret("secret") // secret for login of the client into /oauth/token
+                .autoApprove("read");
+                // @formatter:on
 
         }
 

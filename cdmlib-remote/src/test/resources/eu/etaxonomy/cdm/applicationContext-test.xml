@@ -15,7 +15,7 @@
     <!-- 
         This applicationContext is not a full cdm application context. It only covers the remote components 
         without service and persistence. The cacheManager is usually provided via a Java config class in
-        eu/etaxonomy/cdm/service/api/conf which cannot  use in this context. Therefore we are 
+        eu/etaxonomy/cdm/service/api/conf which cannot be used in this context. Therefore we are 
         using the EhCacheManagerFactoryBean here to initialize the cacheManager bean.
      -->
     <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.config.ConfigFileUtil;
 /**
  * @author a.kohlbecker
  * @since 20.07.2010
- *
  */
 public abstract class AbstractWebApplicationConfigurer  implements InitializingBean {
 
@@ -63,9 +62,7 @@ public abstract class AbstractWebApplicationConfigurer  implements InitializingB
                             + java.io.File.separator
                             + CDMLIB_REMOTE_PROPERTIES
                     );
-                if (in != null) {
-                    userDefinedProperties.load(in);
-                }
+                userDefinedProperties.load(in);
             } catch (IOException e) {
                 logger.debug("No per user " + CDMLIB_REMOTE_PROPERTIES + " found.");
             }
@@ -123,15 +120,12 @@ public abstract class AbstractWebApplicationConfigurer  implements InitializingB
     protected void addErrorMessageToServletContextAttributes(String errorMessage) {
         Object o = webApplicationContext.getServletContext().getAttribute(ATTRIBUTE_ERROR_MESSAGES);
         List<String> messages;
-        if(o != null  && o instanceof List<?>){
+        if(o instanceof List<?>){
             messages = (List<String>) o;
         } else {
-            messages = new ArrayList<String>();
+            messages = new ArrayList<>();
         }
         messages.add(errorMessage);
         webApplicationContext.getServletContext().setAttribute(ATTRIBUTE_ERROR_MESSAGES, messages);
     }
-
-
-
 }

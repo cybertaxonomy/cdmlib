@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache>
   <!--
-    This configuration is loaded by the default cache configuration. An in only to be used in specific 
-    Test contexts.
+    This configuration is loaded by the default cache configuration. It is only to be used in specific 
+    test contexts.
   -->
   <defaultCache maxElementsInMemory="10" eternal="false"
     timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true" />

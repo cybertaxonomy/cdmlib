@@ -977,7 +977,7 @@ public class TaxonServiceImpl
     //    logger.setLevel(Level.TRACE);
 //        Logger.getLogger("org.hibernate.SQL").setLevel(Level.TRACE);
 
-        logger.trace("listMedia() - START");
+        if (logger.isTraceEnabled()){logger.trace("listMedia() - START");}
 
         Set<Taxon> taxa = new HashSet<>();
         List<Media> taxonMedia = new ArrayList<>();
@@ -989,14 +989,14 @@ public class TaxonServiceImpl
 
         // --- resolve related taxa
         if (includeRelationships != null && ! includeRelationships.isEmpty()) {
-            logger.trace("listMedia() - resolve related taxa");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - resolve related taxa");}
             taxa = listRelatedTaxa(taxon, includeRelationships, null, includeUnpublished, null, null, null);
         }
 
         taxa.add((Taxon) dao.load(taxon.getUuid()));
 
         if(includeTaxonDescriptions != null && includeTaxonDescriptions){
-            logger.trace("listMedia() - includeTaxonDescriptions");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - includeTaxonDescriptions");}
             List<TaxonDescription> taxonDescriptions = new ArrayList<>();
             // --- TaxonDescriptions
             for (Taxon t : taxa) {
@@ -1022,7 +1022,7 @@ public class TaxonServiceImpl
 
 
         if(includeOccurrences != null && includeOccurrences) {
-            logger.trace("listMedia() - includeOccurrences");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - includeOccurrences");}
             @SuppressWarnings("rawtypes")
             Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<>();
             // --- Specimens
@@ -1061,11 +1061,11 @@ public class TaxonServiceImpl
         }
 
         if(includeTaxonNameDescriptions != null && includeTaxonNameDescriptions) {
-            logger.trace("listMedia() - includeTaxonNameDescriptions");
+            if (logger.isTraceEnabled()){logger.trace("listMedia() - includeTaxonNameDescriptions");}
             // --- TaxonNameDescription
             Set<TaxonNameDescription> nameDescriptions = new HashSet<>();
             for (Taxon t : taxa) {
-                nameDescriptions .addAll(t.getName().getDescriptions());
+                nameDescriptions.addAll(t.getName().getDescriptions());
             }
             for(TaxonNameDescription nameDescription: nameDescriptions){
                 if (!limitToGalleries || nameDescription.isImageGallery()) {
@@ -1082,7 +1082,7 @@ public class TaxonServiceImpl
         logger.trace("listMedia() - initialize");
         beanInitializer.initializeAll(taxonMedia, propertyPath);
 
-        logger.trace("listMedia() - END");
+        if (logger.isTraceEnabled()){logger.trace("listMedia() - END");}
 
         return taxonMedia;
     }

@@ -21,16 +21,9 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 /**
  * @author a.kohlbecker
  * @since Jan 24, 2013
- *
  */
 public class ControllerUtils {
 
-    /**
-     * @param relationshipUuids
-     * @param relationshipInversUuids
-     * @param includeRelationships
-     * @return
-     */
     public static Set<TaxonRelationshipEdge> loadIncludeRelationships(UuidList relationshipUuids, UuidList relationshipInversUuids, ITermService termService) {
         Set<TaxonRelationshipEdge> includeRelationships = null;
         if(relationshipUuids != null || relationshipInversUuids != null){
@@ -53,6 +46,4 @@ public class ControllerUtils {
         }
         return includeRelationships;
     }
-
-
 }

@@ -131,8 +131,6 @@ public class CdmApplicationController implements ICdmRepository {
 	/**
 	 * Constructor, opens an spring ApplicationContext by using the according data source
 	 * and the default database schema validation type
-	 *
-	 * @param dataSource
 	 */
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource){
 		return CdmApplicationController.NewInstance(null, dataSource, defaultDbSchemaValidation, false);
@@ -142,7 +140,6 @@ public class CdmApplicationController implements ICdmRepository {
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation){
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
 	}
-
 
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, omitTermLoading);
@@ -171,42 +168,18 @@ public class CdmApplicationController implements ICdmRepository {
 	//		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor,listeners);
 	//	}
 
-	/**
-	 * @return
-	 */
 	protected static ClassPathResource getClasspathResource(){
 		return new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 	}
 
-
-	/**
-	 * @return
-	 * @throws DataSourceNotFoundException
-	 */
 	protected static CdmPersistentDataSource getDefaultDatasource() throws DataSourceNotFoundException{
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		return dataSource;
 	}
 
-
-	/**
-	 *
-	 * FIXME:Remoting this constructor is added only to allow extension of this cntroller
-	 * class. and should be removed after refactoring
-	 */
-	protected CdmApplicationController(){
-		applicationContextResource = null;
-		progressMonitor = null;
-	}
-
-
 	/**
 	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data
 	 * source
-	 *
-	 * @param dataSource
-	 * @param dbSchemaValidation
-	 * @param omitTermLoading
 	 */
 	protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation,
 	        HibernateConfiguration hibernateConfig,
@@ -221,7 +194,6 @@ public class CdmApplicationController implements ICdmRepository {
 
 		setNewDataSource(dataSource, dbSchemaValidation, hibernateConfig, omitTermLoading, listeners);
 	}
-
 
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the
