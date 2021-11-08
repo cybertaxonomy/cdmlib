@@ -196,6 +196,16 @@ public class CdmApplicationController implements ICdmRepository {
 	}
 
 	/**
+    *
+    * FIXME:Remoting this constructor is added only to allow extension of this cntroller
+    * class. and should be removed after refactoring
+    */
+   protected CdmApplicationController(){
+       applicationContextResource = null;
+       progressMonitor = null;
+   }
+
+	/**
 	 * Sets the application context to a new spring ApplicationContext by using the
 	 * according data source and initializes the Controller.
 	 *
