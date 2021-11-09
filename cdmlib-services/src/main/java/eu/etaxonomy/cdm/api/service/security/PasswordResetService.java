@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -110,13 +111,16 @@ public class PasswordResetService implements IPasswordResetService {
      * @return A <code>Future</code> for a <code>Boolean</code> flag. The
      *         boolean value will be <code>false</code> in case the max access
      *         rate for this method has been exceeded and a time out has
-     *         occurred. Other internal error states are intentionally hidden to
-     *         avoid leaking of information on the existence of users (see above
-     *         link to the Forgot_Password_Cheat_Sheet).
+     *         occurred on in case of other errors or in case of
+     *         {@UsernameNotFoundException}. Internal error states that may
+     *         expose sensitive information are intentionally hidden this way
+     *         (see above link to the Forgot_Password_Cheat_Sheet).
+     * @throws MailException
+     *             in case sending the email has failed
      */
     @Override
     @Async
-    public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) {
+    public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException {
 
         if (emailResetToken_rateLimiter.tryAcquire(Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS))) {
 
@@ -132,6 +136,8 @@ public class PasswordResetService implements IPasswordResetService {
                 logger.info("Password reset request for  " + userNameOrEmail + " has been send");
             } catch (UsernameNotFoundException e) {
                 logger.warn("Password reset request for unknown user, cause: " + e.getMessage());
+            } catch (MailException e) {
+                throw e;
             }
             return new AsyncResult<Boolean>(true);
         } else {
@@ -155,7 +161,7 @@ public class PasswordResetService implements IPasswordResetService {
      * @param additionalValuesMap
      *  Additional named values for to be replaced in the template strings.
      */
-    public void sendEmail(String userEmail, String userName, String subjectTemplate, String bodyTemplate, Map<String, String> additionalValuesMap) {
+    public void sendEmail(String userEmail, String userName, String subjectTemplate, String bodyTemplate, Map<String, String> additionalValuesMap) throws MailException {
 
         String from = env.getProperty(SendEmailConfigurer.FROM_ADDRESS);
         String dataSourceBeanId = env.getProperty(CdmConfigurationKeys.CDM_DATA_SOURCE_ID);
@@ -217,10 +223,13 @@ public class PasswordResetService implements IPasswordResetService {
      *         avoid leaking of information on the existence of users (see above
      *         link to the Forgot_Password_Cheat_Sheet).
      * @throws PasswordResetException
+     *             in case an invalid token has been used
+     * @throws MailException
+     *             in case sending the email has failed
      */
     @Override
     @Async
-    public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException {
+    public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException, MailException {
 
         if (resetPassword_rateLimiter.tryAcquire(Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS))) {
 
