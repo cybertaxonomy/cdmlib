@@ -9,10 +9,12 @@
 package eu.etaxonomy.cdm.api.service.security;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,8 +68,9 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
 
     private Wiser wiser = null;
 
-    CountDownLatch resetTokenSendSignal;
-    CountDownLatch passwordChangedSignal;
+    private CountDownLatch resetTokenSendSignal;
+    private CountDownLatch resetTokenSendSignal2;
+    private CountDownLatch passwordChangedSignal;
     Throwable assyncError = null;
 
     @Before
@@ -156,9 +159,49 @@ public class PasswordResetServiceTest extends eu.etaxonomy.cdm.test.integration.
         WiserMessage successMessage = wiser.getMessages().get(1);
         MimeMessage successMimeMessage = successMessage.getMimeMessage();
         assertEquals(PasswordResetService.RESET_SUCCESS_EMAIL_SUBJECT_TEMPLATE.replace("${userName}", userName), successMimeMessage.getSubject());
-
     }
 
+    @Test
+    @DataSet(loadStrategy = CleanSweepInsertLoadStrategy.class, value="/eu/etaxonomy/cdm/database/ClearDBDataSet.xml")
+    public void emailResetTokenTimeoutTest() throws Throwable {
+
+        // printDataSet(System.err, "UserAccount");
+
+        // Logger.getLogger(PasswordResetRequest.class).setLevel(Level.DEBUG);
+
+        resetTokenSendSignal = new CountDownLatch(1);
+        resetTokenSendSignal2 = new CountDownLatch(1);
+
+        passwordResetService.setRateLimiterTimeout(Duration.ofMillis(1)); // as should as possible to allow the fist call to be successful (with 1ns the fist call fails!)
+        ListenableFuture<Boolean> emailResetFuture = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture.addCallback(
+                requestSuccessVal -> {
+                    resetTokenSendSignal.countDown();
+                }, futureException -> {
+                    assyncError = futureException;
+                    resetTokenSendSignal.countDown();
+                });
+
+        ListenableFuture<Boolean> emailResetFuture2 = passwordResetService.emailResetToken(userName, requestFormUrlTemplate);
+        emailResetFuture2.addCallback(
+                requestSuccessVal -> {
+                    resetTokenSendSignal2.countDown();
+                }, futureException -> {
+                    assyncError = futureException;
+                    resetTokenSendSignal2.countDown();
+                });
+
+
+        // -- wait for passwordResetService.emailResetToken() to complete
+        resetTokenSendSignal.await();
+        resetTokenSendSignal2.await();
+
+        if(assyncError != null) {
+            throw assyncError; // an error should not have been thrown
+        }
+        assertTrue("First request should have been successful", emailResetFuture.get());
+        assertFalse("Second request should have been rejecded", emailResetFuture2.get());
+    }
 
     @Override
     public void createTestDataSet() throws FileNotFoundException {

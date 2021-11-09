@@ -50,11 +50,13 @@ import eu.etaxonomy.cdm.persistence.dao.permission.IUserDao;
 @Transactional(readOnly = true)
 public class PasswordResetService implements IPasswordResetService {
 
+    private static Logger logger = Logger.getLogger(PasswordResetRequest.class);
+
     private static final int RATE_LIMTER_TIMEOUT_SECONDS = 2;
 
     private static final double PERMITS_PER_SECOND = 0.3;
 
-    private static Logger logger = Logger.getLogger(PasswordResetRequest.class);
+
 
     @Autowired
     private IUserDao userDao;
@@ -71,6 +73,7 @@ public class PasswordResetService implements IPasswordResetService {
     @Autowired
     Environment env;
 
+    Duration rateLimiterTimeout = null;
     RateLimiter emailResetToken_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
     RateLimiter resetPassword_rateLimiter = RateLimiter.create(PERMITS_PER_SECOND);
 
@@ -122,7 +125,7 @@ public class PasswordResetService implements IPasswordResetService {
     @Async
     public ListenableFuture<Boolean> emailResetToken(String userNameOrEmail, String passwordRequestFormUrlTemplate) throws MailException {
 
-        if (emailResetToken_rateLimiter.tryAcquire(Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS))) {
+        if (emailResetToken_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
 
             try {
                 User user = findUser(userNameOrEmail);
@@ -219,9 +222,7 @@ public class PasswordResetService implements IPasswordResetService {
      * @return A <code>Future</code> for a <code>Boolean</code> flag. The
      *         boolean value will be <code>false</code> in case the max access
      *         rate for this method has been exceeded and a time out has
-     *         occurred. Other internal error states are intentionally hidden to
-     *         avoid leaking of information on the existence of users (see above
-     *         link to the Forgot_Password_Cheat_Sheet).
+     *         occurred.
      * @throws PasswordResetException
      *             in case an invalid token has been used
      * @throws MailException
@@ -231,7 +232,7 @@ public class PasswordResetService implements IPasswordResetService {
     @Async
     public ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException, MailException {
 
-        if (resetPassword_rateLimiter.tryAcquire(Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS))) {
+        if (resetPassword_rateLimiter.tryAcquire(getRateLimiterTimeout())) {
 
             Optional<PasswordResetRequest> resetRequest = passwordResetTokenStore.findResetRequest(token);
             if (resetRequest.isPresent()) {
@@ -248,6 +249,16 @@ public class PasswordResetService implements IPasswordResetService {
             }
         }
         return new AsyncResult<Boolean>(false);
+    }
+
+    @Override
+    public Duration getRateLimiterTimeout() {
+        return Duration.ofSeconds(RATE_LIMTER_TIMEOUT_SECONDS);
+    }
+
+    @Override
+    public void setRateLimiterTimeout(Duration timeout) {
+        this.rateLimiterTimeout = timeout;
     }
 
 }

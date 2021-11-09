@@ -8,6 +8,8 @@
 */
 package eu.etaxonomy.cdm.api.service.security;
 
+import java.time.Duration;
+
 import org.springframework.util.concurrent.ListenableFuture;
 
 /**
@@ -61,5 +63,11 @@ public interface IPasswordResetService {
      * @throws PasswordResetException
      */
     ListenableFuture<Boolean> resetPassword(String token, String newPassword) throws PasswordResetException;
+
+
+    void setRateLimiterTimeout(Duration timeout);
+
+
+    Duration getRateLimiterTimeout();
 
 }
