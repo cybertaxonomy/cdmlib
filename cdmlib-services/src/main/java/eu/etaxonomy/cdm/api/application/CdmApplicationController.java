@@ -197,8 +197,8 @@ public class CdmApplicationController implements ICdmRepository {
 
 	/**
     *
-    * FIXME:Remoting this constructor is added only to allow extension of this cntroller
-    * class. and should be removed after refactoring
+    * FIXME:Remoting this constructor is added only to allow extension of this controller
+    * class and should be removed after re-factoring
     */
    protected CdmApplicationController(){
        applicationContextResource = null;

@@ -22,39 +22,20 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  * @author a.mueller
  * @since 04.01.2012
- *
  */
 public class DeleteResult extends UpdateResult{
 
     private static final long serialVersionUID = 8856465763413085548L;
-
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeleteResult.class);
 
-
-
-	private final List<Exception> exceptions = new ArrayList();
-
-	private final Set<CdmBase> relatedObjects = new HashSet();
-
-	private Set<CdmBase> deletedObjects = new HashSet();
-
-//
-//	private Set<PersistPair> objectsToSave = new HashSet<>();
-
-//	protected class PersistPair{
-//		protected CdmBase objectToPersist;
-//		protected ICdmEntityDao<CdmBase> dao;
-//	}
-
-
+	private final Set<CdmBase> relatedObjects = new HashSet<>();
+	private Set<CdmBase> deletedObjects = new HashSet<>();
 
 //***************************** GETTER /SETTER /ADDER *************************/
 
-
 	/**
 	 * Related objects that prevent the delete action to take place.
-	 * @return
 	 */
 	public Set<CdmBase> getRelatedObjects() {
 		return relatedObjects;
