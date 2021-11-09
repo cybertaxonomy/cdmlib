@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.common.DynamicBatch;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -78,17 +77,17 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
 
     private ICdmRepository repository;
     private CONFIG config;
-    private UpdateResult result;
+    private DeleteResult result;
 
     private long batchMinFreeHeap = BATCH_MIN_FREE_HEAP;
 
 
-    public final UpdateResult invoke(CONFIG config, ICdmRepository repository){
+    public final DeleteResult invoke(CONFIG config, ICdmRepository repository){
         init(config, repository);
         return doInvoke();
     }
 
-    protected UpdateResult doInvoke() {
+    protected DeleteResult doInvoke() {
 
         try {
             //TODO FIXME use UpdateResult
@@ -157,7 +156,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         }
     }
 
-    private UpdateResult handleException(Exception e, String unhandledMessage) {
+    private DeleteResult handleException(Exception e, String unhandledMessage) {
         Exception ex;
         if (e instanceof AggregationException){
             ex = e;
@@ -379,7 +378,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         if(config.getMonitor() == null){
             config.setMonitor(new NullProgressMonitor());
         }
-        result = new UpdateResult();
+        result = new DeleteResult();
     }
 
     protected void addSourcesDeduplicated(Set<DescriptionElementSource> target, Set<DescriptionElementSource> sourcesToAdd) {
@@ -486,7 +485,7 @@ public abstract class DescriptionAggregationBase<T extends DescriptionAggregatio
         return config;
     }
 
-    protected UpdateResult getResult() {
+    protected DeleteResult getResult() {
         return result;
     }
 

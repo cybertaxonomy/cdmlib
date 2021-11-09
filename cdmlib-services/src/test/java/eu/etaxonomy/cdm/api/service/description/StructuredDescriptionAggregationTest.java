@@ -26,6 +26,7 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IDescriptiveDataSetService;
@@ -36,7 +37,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.ITermTreeService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
-import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.filter.TaxonNodeFilter;
@@ -171,7 +171,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         // 1st aggregation
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
@@ -230,7 +230,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
         // 1st aggregation
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
@@ -286,7 +286,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
 
         Taxon taxLapsanaCommunisAlpina = (Taxon)taxonService.find(T_LAPSANA_COMMUNIS_ALPINA_UUID);
@@ -322,7 +322,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         //aggregate
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
 
         //test aggregation with categorical data without states (empty categorical data)
         verifyStatusOk(result);
@@ -371,7 +371,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         config.setToParentSourceMode(AggregationSourceMode.NONE);
 
         // 1st aggregation
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         verifyStatusOk(result);
         commitAndStartNewTransaction();
         verifyAggregatedDescription(new TestConfig(config));
@@ -448,7 +448,7 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
 
         StructuredDescriptionAggregationConfiguration config = createConfig(dataSet);
 
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         commitAndStartNewTransaction();
         verifyStatusOk(result);
         verifyAggregatedDescription(new TestConfig(config));
@@ -461,8 +461,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         verifyAggregatedDescription(new TestConfig(config));
     }
 
-    private void verifyStatusOk(UpdateResult result) {
-        if (result.getStatus() != UpdateResult.Status.OK){
+    private void verifyStatusOk(DeleteResult result) {
+        if (result.getStatus() != DeleteResult.Status.OK){
             Assert.fail("Aggregation should have status OK but was " + result.toString());
             for (Exception ex : result.getExceptions()){
                 ex.printStackTrace();
@@ -470,8 +470,8 @@ public class StructuredDescriptionAggregationTest extends CdmTransactionalIntegr
         }
     }
 
-    private void verifyStatusError(UpdateResult result, String expectedMessage) {
-        if (result.getStatus() != UpdateResult.Status.ERROR){
+    private void verifyStatusError(DeleteResult result, String expectedMessage) {
+        if (result.getStatus() != DeleteResult.Status.ERROR){
             Assert.fail("Aggregation should fail with status error " + result.toString());
         }
         if (result.getExceptions().isEmpty()){

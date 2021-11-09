@@ -34,12 +34,12 @@ import org.unitils.dbunit.annotation.DataSets;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.application.ICdmRepository;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.UpdateResult;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.JvmLimitsException;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
@@ -203,7 +203,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -259,7 +259,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         DistributionAggregationConfiguration config = DistributionAggregationConfiguration.NewInstance(
                 AggregationMode.byWithinTaxon(), superAreas, filter, statusOrder, monitor);
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -311,7 +311,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
 
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -476,7 +476,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -533,7 +533,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.ALL_SAMEVALUE);
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -586,7 +586,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byWithinTaxonAndToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);  //this is default anyway
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -637,7 +637,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
                 AggregationMode.byToParent(), superAreas, filter, monitor);
         config.setToParentSourceMode(AggregationSourceMode.DESCRIPTION);
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -679,7 +679,7 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         config.setAggregatingSourceTypes(EnumSet.of(OriginalSourceType.PrimaryTaxonomicSource));
         config.setToParentSourceMode(AggregationSourceMode.ALL);
         commitAndStartNewTransaction();
-        UpdateResult result = engine.invoke(config, repository);
+        DeleteResult result = engine.invoke(config, repository);
         testStatusOk(result);
         commitAndStartNewTransaction();
 
@@ -767,8 +767,8 @@ public class DistributionAggregationTest extends CdmTransactionalIntegrationTest
         return out.toString();
     }
 
-    private void testStatusOk(UpdateResult result) {
-        if (result.getStatus() != UpdateResult.Status.OK){
+    private void testStatusOk(DeleteResult result) {
+        if (result.getStatus() != DeleteResult.Status.OK){
             Assert.fail("Aggregation should have status OK but was " + result.toString());
             for (Exception ex : result.getExceptions()){
                 ex.printStackTrace();
